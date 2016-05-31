@@ -1,0 +1,43 @@
+# HDX configuration
+hdx_site: "https://test-data.hdx.rwlabs.org/"
+dataset:
+  required_fields:
+    - name
+    - title
+    - dataset_date
+    - groups
+    - owner_org
+    - author
+    - author_email
+    - maintainer
+    - maintainer_email
+    - license_id
+    - subnational
+    - notes
+    - caveats
+    - data_update_frequency
+    - methodology
+    - methodology_other
+    - dataset_source
+    - package_creator
+    - private
+    - url
+    - state
+    - tags
+resource:
+  dataset_id: package_id
+  required_fields:
+    - package_id
+    - name
+    - description
+galleryitem:
+  dataset_id: dataset_id
+  required_fields:
+    - dataset_id
+    - title
+    - type
+    - description
+    - url
+    - image_url
+  ignore_on_update:
+    - dataset_id

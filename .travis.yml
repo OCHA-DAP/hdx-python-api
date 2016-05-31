@@ -1,0 +1,25 @@
+language: python
+python:
+  - "3.4"
+
+#
+# Command to install dependencies.
+#
+install:
+  - pip install coveralls codecov
+  - pip install -r requirements.txt
+
+#
+# Run tests + coverage.
+#
+script: nosetests --with-coverage
+
+#
+# Send coverage report to coveralls.io
+#
+after_success:
+  - coveralls
+  - codecov
+
+notifications:
+    email: false

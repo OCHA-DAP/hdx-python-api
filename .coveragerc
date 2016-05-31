@@ -1,0 +1,10 @@
+[report]
+omit =
+    */python?.?/*
+    */venv/*
+    */site-packages/nose/*
+    */tests/*
+    *__init__*
+
+exclude_lines =
+    if __name__ == '__main__':
