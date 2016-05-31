@@ -20,7 +20,7 @@ class ConfigurationError(Exception):
 
 class Configuration(collections.UserDict):
     def __init__(self, hdx_key_file: str = '%s/.hdxkey' % expanduser("~"), input_type: str = 'yaml',
-                 hdx_config_file='config/hdx_configuration.yml', scraper_config_file=None):
+                 hdx_config_file='hdx_configuration.yml', scraper_config_file=None):
         super(Configuration, self).__init__()
         if scraper_config_file:
             self.data = load_and_merge_data(input_type, [hdx_config_file, scraper_config_file])

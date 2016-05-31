@@ -19,7 +19,7 @@ setup(
                         'scraperwiki>=0.5.1'
                         ],
     package_data = {
-        # Include any *.yml files found in the 'config' package, too:
-        'config': ['*.yml'],
+        # If any package contains *.yml files, include them:
+        '': ['*.yml'],
     },
 )
