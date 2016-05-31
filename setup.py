@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='hdx-python-api',
     version='0.1',
-    packages=find_packages(exclude=['ez_setup', 'tests', 'tests.*']) + ['config'],
+    packages=find_packages(exclude=['ez_setup', 'tests', 'tests.*']),
     url='http://data.humdata.org/',
     license='PSF',
     author='Michael Rans',
@@ -19,9 +19,7 @@ setup(
                         'scraperwiki>=0.5.1'
                         ],
     package_data = {
-        # If any package contains *.txt or *.md files, include them:
-        '': ['*.txt', '*.md'],
-        # And include any *.yml files found in the 'config' package, too:
+        # Include any *.yml files found in the 'config' package, too:
         'config': ['*.yml'],
     },
 )
