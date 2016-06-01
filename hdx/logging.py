@@ -59,7 +59,7 @@ def setup_logging(**kwargs):
     else:
         if not smtp_config_yaml:
             print('No smtp configuration parameter. Using default.')
-            smtp_config_yaml = script_dir_plus_file(os.path.join('config', 'smtp_configuration.yml'), setup_logging)
+            smtp_config_yaml = os.path.join('config', 'smtp_configuration.yml')
         print('Loading smtp configuration from: %s' % smtp_config_yaml)
         smtp_config_dict = load_yaml(smtp_config_yaml)
 
