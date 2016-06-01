@@ -161,7 +161,7 @@ class Dataset(HDXObject):
                 resource_names.add(resource_name)
                 for old_resource in old_resources:
                     if resource_name == old_resource['name']:
-                        logger.warning('Resource exists. Updating. %s' % resource_name)
+                        logger.warning('Resource exists. Updating %s' % resource_name)
                         merge_two_dictionaries(resource, old_resource)
                         break
             for old_resource in old_resources:
@@ -181,7 +181,7 @@ class Dataset(HDXObject):
                 galleryitem_titles.add(galleryitem_title)
                 for new_galleryitem in old_gallery:
                     if galleryitem_title == new_galleryitem['title']:
-                        logger.warning('Gallery item exists. Updating. %s' % galleryitem_title)
+                        logger.warning('Gallery item exists. Updating %s' % galleryitem_title)
                         merge_two_dictionaries(galleryitem, new_galleryitem)
                         galleryitem.update_in_hdx()
             for old_galleryitem in old_gallery:
@@ -205,7 +205,7 @@ class Dataset(HDXObject):
         """
         self.check_required_fields()
         if self._load_existing_object('dataset', 'name'):
-            logger.warning('Dataset exists. Updating. %s' % self.data['name'])
+            logger.warning('Dataset exists. Updating %s' % self.data['name'])
             self._merge_hdx_update(True, True)
             return
 
