@@ -7,6 +7,7 @@ Dataset class; contains all logic for creating,
 checking, and updating datasets.
 
 """
+from os.path import join
 import copy
 import logging
 
@@ -54,35 +55,67 @@ class Dataset(HDXObject):
     def init_resources(self):
         self.resources = list()
 
-    def add_resource(self, resource: dict):
-        self._addupdate_hdxobject(self.resources, 'name', Resource, resource)
+    def add_update_resource(self, resource):
+        if isinstance(resource, Resource):
+            if 'package_id' in resource:
+                raise HDXError("Resource %s being added already has a dataset id!" % (resource['name']))
+            self._addupdate_hdxobject(self.resources, 'name', self._underlying_object, resource)
+            return
+        if isinstance(resource, dict):
+            self._addupdate_hdxobject(self.resources, 'name', Resource, resource)
+            return
+        raise HDXError("Type %s cannot be added as a resource!" % type(resource).__name__)
 
-    def add_resources(self, resources: list):
+    def add_update_resources(self, resources: list):
         if not isinstance(resources, list):
             raise HDXError('Resources should be a list!')
         for resource in resources:
-            self.add_resource(resource)
+            self.add_update_resource(resource)
 
-    def get_resources(self):
-        return self.resources
+    def delete_resource(self, id: str):
+        for i, resource in enumerate(self.resources):
+            resourceid = resource.get('id', None)
+            if resourceid and resourceid == id:
+                resource.delete_from_hdx()
+                del self.resources[i]
 
     def init_gallery(self):
         self.gallery = list()
 
-    def add_galleryitem(self, galleryitem: dict):
-        self._addupdate_hdxobject(self.gallery, 'title', GalleryItem, galleryitem)
+    def add_update_galleryitem(self, galleryitem):
+        if isinstance(galleryitem, GalleryItem):
+            if 'dataset_id' in galleryitem:
+                raise HDXError("Gallery item %s being added already has a dataset id!" % (galleryitem['name']))
+            self._addupdate_hdxobject(self.gallery, 'title', self._underlying_object, galleryitem)
+            return
+        if isinstance(galleryitem, dict):
+            self._addupdate_hdxobject(self.gallery, 'title', GalleryItem, galleryitem)
 
-    def add_gallery(self, gallery: list):
+        raise HDXError("Type %s cannot be added as a gallery item!" % type(galleryitem).__name__)
+
+    def add_update_gallery(self, gallery: list):
         if not isinstance(gallery, list):
             raise HDXError('Gallery should be a list!')
         for galleryitem in gallery:
-            self.add_galleryitem(galleryitem)
+            self.add_update_galleryitem(galleryitem)
 
     def get_gallery(self):
         return self.gallery
 
-    def load_static(self, input_type: str = 'yaml', static_data='config/hdx_dataset_static.yml'):
-        self.load(input_type, static_data)
+    def delete_galleryitem(self, id: str):
+        for i, galleryitem in enumerate(self.gallery):
+            galleryitemid = galleryitem.get('id', None)
+            if galleryitemid and galleryitemid == id:
+                galleryitem.delete_from_hdx()
+                del self.gallery[i]
+
+    def update_yaml(self, path: str=join('config', 'hdx_dataset_static.yml')):
+        super(Dataset, self).update_yaml(path)
+        self.separate_resources()
+        self.separate_gallery()
+
+    def update_json(self, path: str=join('config', 'hdx_dataset_static.json')):
+        super(Dataset, self).update_json(path)
         self.separate_resources()
         self.separate_gallery()
 

@@ -8,6 +8,7 @@ GalleryItem item; defines all logic for creating,
 updating, and checking visualizations in galleries.
 
 """
+from os.path import join
 import logging
 
 from hdx.configuration import Configuration
@@ -33,8 +34,12 @@ class GalleryItem(HDXObject):
             initial_data = dict()
         super(GalleryItem, self).__init__(configuration, self.action_url, initial_data)
 
-    def load_static(self, input_type: str = 'yaml', static_data='config/hdx_galleryitem_static.yml'):
-        self.load(input_type, static_data)
+    def update_yaml(self, path: str=join('config', 'hdx_galleryitem_static.yml')):
+        super(GalleryItem, self).update_yaml(path)
+
+    def update_json(self, path: str=join('config', 'hdx_galleryitem_static.json')):
+        super(GalleryItem, self).update_json(path)
+
 
     def load_from_hdx(self, identifier) -> bool:
         """

@@ -17,7 +17,7 @@ import requests
 from hdx.configuration import Configuration
 from hdx.utilities.dictionary import merge_two_dictionaries
 from hdx.utilities.json import EnhancedJSONEncoder
-from hdx.utilities.loader import load_data_into_existing_dict
+from hdx.utilities.loader import load_yaml_into_existing_dict, load_json_into_existing_dict
 
 logger = logging.getLogger(__name__)
 
@@ -49,15 +49,14 @@ class HDXObject(collections.UserDict):
             'content-type': 'application/json'
         }
 
-    def load(self, input_type: str, input_data):
-        self.data = load_data_into_existing_dict(self.data, input_type, input_data)
-
     def get_old_data_dict(self):
         return self.old_data
 
-    @abc.abstractmethod
-    def load_static(self, input_type: str = 'yaml', static_data='config/hdx_dataset_static.yml'):
-        return
+    def update_yaml(self, path: str):
+        self.data = load_yaml_into_existing_dict(self.data, path)
+
+    def update_json(self, path: str):
+        self.data = load_json_into_existing_dict(self.data, path)
 
     def _get_from_hdx(self, object_type, id_field, url=None):
         """
@@ -190,6 +189,10 @@ class HDXObject(collections.UserDict):
         if id_field_name not in self.data:
             raise HDXError("No %s field (mandatory) in %s!" % (id_field_name, object_type))
         self._save_to_hdx('delete', id_field_name)
+
+    @staticmethod
+    def _underlying_object(_, object):
+        return object
 
     def _addupdate_hdxobject(self, hdxobjects, id_field, hdxobjectclass, new_hdxobject):
         found = False
