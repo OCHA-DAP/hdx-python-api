@@ -79,6 +79,9 @@ class Dataset(HDXObject):
                 resource.delete_from_hdx()
                 del self.resources[i]
 
+    def get_resources(self):
+        return self.resources
+
     def init_gallery(self):
         self.gallery = list()
 
@@ -99,15 +102,15 @@ class Dataset(HDXObject):
         for galleryitem in gallery:
             self.add_update_galleryitem(galleryitem)
 
-    def get_gallery(self):
-        return self.gallery
-
     def delete_galleryitem(self, id: str):
         for i, galleryitem in enumerate(self.gallery):
             galleryitemid = galleryitem.get('id', None)
             if galleryitemid and galleryitemid == id:
                 galleryitem.delete_from_hdx()
                 del self.gallery[i]
+
+    def get_gallery(self):
+        return self.gallery
 
     def update_yaml(self, path: str=join('config', 'hdx_dataset_static.yml')):
         super(Dataset, self).update_yaml(path)
