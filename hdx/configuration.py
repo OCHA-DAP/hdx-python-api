@@ -25,8 +25,8 @@ class ConfigurationError(Exception):
 class Configuration(collections.UserDict):
     def __init__(self, hdx_key_file: str = '%s/.hdxkey' % expanduser("~"), **kwargs):
         super(Configuration, self).__init__()
-        hdx_config_found = False
 
+        hdx_config_found = False
         hdx_config_dict = kwargs.get('hdx_config_dict', None)
         if hdx_config_dict:
             hdx_config_found = True

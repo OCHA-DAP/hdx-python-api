@@ -13,6 +13,7 @@ def setup_logging(**kwargs):
     """Setup logging configuration
 
     """
+    logging_config_found = False
     logging_config_dict = kwargs.get('logging_config_dict', None)
     if logging_config_dict:
         logging_config_found = True
@@ -37,6 +38,7 @@ def setup_logging(**kwargs):
         print('Loading logging configuration from: %s' % logging_config_yaml)
         logging_config_dict = load_yaml(logging_config_yaml)
 
+    smtp_config_found = False
     smtp_config_dict = kwargs.get('smtp_config_dict', None)
     if smtp_config_dict:
         smtp_config_found = True
