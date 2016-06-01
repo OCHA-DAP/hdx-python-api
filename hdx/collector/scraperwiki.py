@@ -19,14 +19,14 @@ logger = logging.getLogger(__name__)
 setup_logging()
 
 
-def wrapper(scrapermainfn, scraper_config_file='config/scraper_configuration.yml'):
+def wrapper(scrapermainfn, **kwargs):
     """Wrapper"""
 
     try:
         #
         # Setting up configuration
         #
-        configuration = Configuration(scraper_config_file=scraper_config_file)
+        configuration = Configuration(**kwargs)
 
         hdx_site = configuration['hdx_site']
         logger.info('--------------------------------------------------')
