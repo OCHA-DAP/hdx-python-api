@@ -9,7 +9,7 @@ from disk.
 
 """
 import collections
-from os.path import expanduser
+from os.path import expanduser, join
 import logging
 
 from hdx.utilities.loader import load_yaml, load_and_merge_yaml, load_json, load_and_merge_json, script_dir_plus_file
@@ -52,7 +52,7 @@ class Configuration(collections.UserDict):
             hdx_config_dict = load_yaml(hdx_config_yaml)
 
         scraper_config_found = False
-        scraper_config_dict = kwargs.get('scraper_config_dict', dict())
+        scraper_config_dict = kwargs.get('scraper_config_dict', None)
         if scraper_config_dict:
             scraper_config_found = True
             logger.info('Loading scraper configuration from dictionary')
@@ -66,16 +66,24 @@ class Configuration(collections.UserDict):
             scraper_config_dict = load_json(scraper_config_json)
 
         scraper_config_yaml = kwargs.get('scraper_config_yaml', None)
+        if scraper_config_found:
+            if scraper_config_yaml:
+                raise ConfigurationError('More than one scraper configuration file given!')
+        else:
+            if not scraper_config_yaml:
+                logger.info('No scraper configuration parameter. Using default.')
+                scraper_config_yaml = join('config', 'scraper_configuration.yml')
+            logger.info('Loading scraper configuration from: %s' % scraper_config_yaml)
+            scraper_config_dict = load_yaml(scraper_config_yaml)
+
+        scraper_config_yaml = kwargs.get('scraper_config_yaml', None)
         if scraper_config_yaml:
             if scraper_config_found:
                 raise ConfigurationError('More than one scraper configuration file given!')
             logger.info('Loading scraper configuration from: %s' % scraper_config_yaml)
             scraper_config_dict = load_yaml(scraper_config_yaml)
 
-        if scraper_config_dict:
-            self.data = merge_two_dictionaries(hdx_config_dict, scraper_config_dict)
-        else:
-            self.data = hdx_config_dict
+        self.data = merge_two_dictionaries(hdx_config_dict, scraper_config_dict)
 
         if 'hdx_site' not in self.data:
             raise ConfigurationError('hdx_site not defined in configuration!')
