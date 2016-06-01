@@ -76,13 +76,6 @@ class Configuration(collections.UserDict):
             logger.info('Loading scraper configuration from: %s' % scraper_config_yaml)
             scraper_config_dict = load_yaml(scraper_config_yaml)
 
-        scraper_config_yaml = kwargs.get('scraper_config_yaml', None)
-        if scraper_config_yaml:
-            if scraper_config_found:
-                raise ConfigurationError('More than one scraper configuration file given!')
-            logger.info('Loading scraper configuration from: %s' % scraper_config_yaml)
-            scraper_config_dict = load_yaml(scraper_config_yaml)
-
         self.data = merge_two_dictionaries(hdx_config_dict, scraper_config_dict)
 
         if 'hdx_site' not in self.data:
