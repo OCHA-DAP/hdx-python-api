@@ -172,7 +172,7 @@ class HDXObject(collections.UserDict):
         """
         self.check_required_fields()
         if self._load_existing_object(object_type, id_field_name):
-            logger.warning('%s exists. Updating. %s' % (object_type, self.data[id_field_name]))
+            logger.warning('%s exists. Updating %s' % (object_type, self.data[id_field_name]))
             self._merge_hdx_update(object_type, id_field_name)
         else:
             self._save_to_hdx('create', id_field_name)
