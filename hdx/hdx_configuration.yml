@@ -1,5 +1,5 @@
 # HDX configuration
-hdx_site: "https://test-data.hdx.rwlabs.org/"
+hdx_site: "https://data.humdata.org/"
 dataset:
   required_fields:
     - name
