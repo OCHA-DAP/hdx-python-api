@@ -52,12 +52,10 @@ class Configuration(collections.UserDict):
             hdx_config_dict = load_yaml(hdx_config_yaml)
 
         scraper_config_found = False
-        scraper_dict = dict()
-        scraper_config_dict = kwargs.get('scraper_config_dict', None)
+        scraper_config_dict = kwargs.get('scraper_config_dict', dict())
         if scraper_config_dict:
             scraper_config_found = True
             logger.info('Loading scraper configuration from dictionary')
-            scraper_dict = scraper_config_dict
 
         scraper_config_json = kwargs.get('scraper_config_json', None)
         if scraper_config_json:
@@ -65,14 +63,14 @@ class Configuration(collections.UserDict):
                 raise ConfigurationError('More than one scraper configuration file given!')
             scraper_config_found = True
             logger.info('Loading scraper configuration from: %s' % scraper_config_json)
-            scraper_dict = load_json(scraper_config_json)
+            scraper_config_dict = load_json(scraper_config_json)
 
         scraper_config_yaml = kwargs.get('scraper_config_yaml', None)
         if scraper_config_yaml:
             if scraper_config_found:
                 raise ConfigurationError('More than one scraper configuration file given!')
             logger.info('Loading scraper configuration from: %s' % scraper_config_yaml)
-            scraper_dict = load_yaml(scraper_config_yaml)
+            scraper_config_dict = load_yaml(scraper_config_yaml)
 
         if scraper_config_dict:
             self.data = merge_two_dictionaries(hdx_config_dict, scraper_config_dict)
