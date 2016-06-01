@@ -29,7 +29,7 @@ class GalleryItem(HDXObject):
         'list': 'related_list?id='
     }
 
-    def __init__(self, configuration: Configuration, initial_data=None):
+    def __init__(self, configuration: Configuration, initial_data: dict=None):
         if not initial_data:
             initial_data = dict()
         super(GalleryItem, self).__init__(configuration, self.action_url, initial_data)
@@ -41,7 +41,7 @@ class GalleryItem(HDXObject):
         super(GalleryItem, self).update_json(path)
 
 
-    def load_from_hdx(self, identifier) -> bool:
+    def load_from_hdx(self, identifier: str) -> bool:
         """
         Checks if the gallery item exists in HDX.
 

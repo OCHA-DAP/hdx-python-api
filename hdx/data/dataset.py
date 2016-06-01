@@ -31,7 +31,7 @@ class Dataset(HDXObject):
         'create': 'package_create'
     }
 
-    def __init__(self, configuration: Configuration, initial_data=None, include_gallery=True):
+    def __init__(self, configuration: Configuration, initial_data: dict=None, include_gallery: bool=True):
         if not initial_data:
             initial_data = dict()
         super(Dataset, self).__init__(configuration, self.action_url, initial_data)
@@ -79,7 +79,7 @@ class Dataset(HDXObject):
                 resource.delete_from_hdx()
                 del self.resources[i]
 
-    def get_resources(self):
+    def get_resources(self) -> list:
         return self.resources
 
     def init_gallery(self):
@@ -109,7 +109,7 @@ class Dataset(HDXObject):
                 galleryitem.delete_from_hdx()
                 del self.gallery[i]
 
-    def get_gallery(self):
+    def get_gallery(self) -> list:
         return self.gallery
 
     def update_yaml(self, path: str=join('config', 'hdx_dataset_static.yml')):
@@ -122,7 +122,7 @@ class Dataset(HDXObject):
         self.separate_resources()
         self.separate_gallery()
 
-    def load_from_hdx(self, id_or_name) -> bool:
+    def load_from_hdx(self, id_or_name: str) -> bool:
         """
         Load the dataset from HDX.
 
@@ -152,7 +152,7 @@ class Dataset(HDXObject):
         for galleryitem in self.gallery:
             galleryitem.check_required_fields([self.configuration['galleryitem']['dataset_id']])
 
-    def _merge_hdx_update(self, update_resources, update_gallery):
+    def _merge_hdx_update(self, update_resources: bool, update_gallery: bool):
         merge_two_dictionaries(self.data, self.old_data)
         del self.data['resources']
         del self.data['gallery']
@@ -193,7 +193,7 @@ class Dataset(HDXObject):
                     old_galleryitem.create_in_hdx()
                     self.gallery.append(old_galleryitem)
 
-    def update_in_hdx(self, update_resources=True, update_gallery=True):
+    def update_in_hdx(self, update_resources: bool=True, update_gallery: bool=True):
         """
         Updates a dataset in HDX.
 

@@ -110,12 +110,12 @@ class HDXObject(collections.UserDict):
     def check_required_fields(self, ignore_fields: list = list()):
         return
 
-    def _check_required_fields(self, object_type, ignore_fields):
+    def _check_required_fields(self, object_type: str, ignore_fields: list):
         for field in self.configuration['%s' % object_type]['required_fields']:
             if field not in self.data and field not in ignore_fields:
                 raise HDXError("Field %s is missing in %s!" % (field, object_type))
 
-    def _merge_hdx_update(self, object_type, id_field_name):
+    def _merge_hdx_update(self, object_type: str, id_field_name: str):
         merge_two_dictionaries(self.data, self.old_data)
         self.check_required_fields(self.configuration['%s' % object_type].get('ignore_on_update', []))
         self._save_to_hdx('update', id_field_name)
@@ -124,7 +124,7 @@ class HDXObject(collections.UserDict):
     def update_in_hdx(self):
         return
 
-    def _update_in_hdx(self, object_type, id_field_name):
+    def _update_in_hdx(self, object_type: str, id_field_name: str):
         """
         Updates an object in HDX.
 
@@ -133,7 +133,7 @@ class HDXObject(collections.UserDict):
         self._check_load_existing_object(object_type, id_field_name)
         self._merge_hdx_update(object_type, id_field_name)
 
-    def _post_to_hdx(self, action, data, id_field_name):
+    def _post_to_hdx(self, action: str, data, id_field_name: str):
         """
         Creates or updates an HDX object in HDX.
 
@@ -148,7 +148,7 @@ class HDXObject(collections.UserDict):
         else:
             return False, result.text
 
-    def _save_to_hdx(self, action, id_field_name):
+    def _save_to_hdx(self, action: str, id_field_name: str):
         """
         Creates, updates or deletes an HDX object in HDX.
 
@@ -165,7 +165,7 @@ class HDXObject(collections.UserDict):
     def create_in_hdx(self):
         return
 
-    def _create_in_hdx(self, object_type, id_field_name):
+    def _create_in_hdx(self, object_type: str, id_field_name: str):
         """
         Creates an HDX object in HDX.
 
@@ -181,7 +181,7 @@ class HDXObject(collections.UserDict):
     def delete_from_hdx(self):
         return
 
-    def _delete_from_hdx(self, object_type, id_field_name):
+    def _delete_from_hdx(self, object_type: str, id_field_name: str):
         """
         Deletes an HDX object from HDX.
 
@@ -194,7 +194,7 @@ class HDXObject(collections.UserDict):
     def _underlying_object(_, object):
         return object
 
-    def _addupdate_hdxobject(self, hdxobjects, id_field, hdxobjectclass, new_hdxobject):
+    def _addupdate_hdxobject(self, hdxobjects, id_field: str, hdxobjectclass, new_hdxobject):
         found = False
         for hdxobject in hdxobjects:
             if hdxobject[id_field] == new_hdxobject[id_field]:
@@ -204,7 +204,7 @@ class HDXObject(collections.UserDict):
         if not found:
             hdxobjects.append(hdxobjectclass(self.configuration, new_hdxobject))
 
-    def _separate_hdxobjects(self, hdxobjects, hdxobjects_name, id_field, hdxobjectclass):
+    def _separate_hdxobjects(self, hdxobjects, hdxobjects_name, id_field: str, hdxobjectclass):
         new_hdxobjects = self.data.get(hdxobjects_name, None)
         if new_hdxobjects:
             hdxobject_names = set()
