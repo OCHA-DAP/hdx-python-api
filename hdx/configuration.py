@@ -5,6 +5,8 @@ import logging
 from collections import UserDict
 from os.path import expanduser, join
 
+from typing import Optional
+
 from hdx.utilities.loader import load_yaml, load_json, script_dir_plus_file
 from .utilities.dictionary import merge_two_dictionaries
 
@@ -19,7 +21,7 @@ class Configuration(UserDict):
     """Configuration for HDX
 
     Args:
-        hdx_key_file (str): Path to HDX key file
+        hdx_key_file (Optional[str]): Path to HDX key file. Defaults to ~/.hdxkey
         **kwargs:
             hdx_config_dict (dict): HDX configuration dictionary
             or
@@ -36,7 +38,7 @@ class Configuration(UserDict):
                                     Defaults to internal scraper_configuration.yml.
     """
 
-    def __init__(self, hdx_key_file: str = '%s/.hdxkey' % expanduser("~"), **kwargs):
+    def __init__(self, hdx_key_file: Optional[str] = join('%s' % expanduser("~"), '.hdxkey'), **kwargs):
         super(Configuration, self).__init__()
         hdx_config_found = False
         hdx_config_dict = kwargs.get('hdx_config_dict', None)
@@ -44,7 +46,7 @@ class Configuration(UserDict):
             hdx_config_found = True
             logger.info('Loading HDX configuration from dictionary')
 
-        hdx_config_json = kwargs.get('hdx_config_json', None)
+        hdx_config_json = kwargs.get('hdx_config_json', '')
         if hdx_config_json:
             if hdx_config_found:
                 raise ConfigurationError('More than one HDX configuration file given!')
@@ -52,7 +54,7 @@ class Configuration(UserDict):
             logger.info('Loading HDX configuration from: %s' % hdx_config_json)
             hdx_config_dict = load_json(hdx_config_json)
 
-        hdx_config_yaml = kwargs.get('hdx_config_yaml', None)
+        hdx_config_yaml = kwargs.get('hdx_config_yaml', '')
         if hdx_config_found:
             if hdx_config_yaml:
                 raise ConfigurationError('More than one HDX configuration file given!')
@@ -64,12 +66,12 @@ class Configuration(UserDict):
             hdx_config_dict = load_yaml(hdx_config_yaml)
 
         scraper_config_found = False
-        scraper_config_dict = kwargs.get('scraper_config_dict', None)
+        scraper_config_dict = kwargs.get('scraper_config_dict', '')
         if scraper_config_dict:
             scraper_config_found = True
             logger.info('Loading scraper configuration from dictionary')
 
-        scraper_config_json = kwargs.get('scraper_config_json', None)
+        scraper_config_json = kwargs.get('scraper_config_json', '')
         if scraper_config_json:
             if scraper_config_found:
                 raise ConfigurationError('More than one scraper configuration file given!')
@@ -77,7 +79,7 @@ class Configuration(UserDict):
             logger.info('Loading scraper configuration from: %s' % scraper_config_json)
             scraper_config_dict = load_json(scraper_config_json)
 
-        scraper_config_yaml = kwargs.get('scraper_config_yaml', None)
+        scraper_config_yaml = kwargs.get('scraper_config_yaml', '')
         if scraper_config_found:
             if scraper_config_yaml:
                 raise ConfigurationError('More than one scraper configuration file given!')
@@ -125,7 +127,6 @@ class Configuration(UserDict):
             str: HDX api key
 
         """
-        apikey = None
         with open(path, 'rt') as f:
             apikey = f.read().replace('\n', '')
         if not apikey:

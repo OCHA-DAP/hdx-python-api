@@ -4,7 +4,7 @@
 import logging
 from os.path import join
 
-from typing import Optional, Any, List
+from typing import Optional, List
 
 from hdx.configuration import Configuration
 from .hdxobject import HDXObject
@@ -65,11 +65,11 @@ class Resource(HDXObject):
 
         return self._load_from_hdx('resource', identifier)
 
-    def check_required_fields(self, ignore_fields: List[Any] = list()) -> None:
+    def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
         """Check that metadata for resource is complete
 
         Args:
-            ignore_fields (List[Any]): Any fields to ignore in the check. Default is empty list.
+            ignore_fields (List[str]): Any fields to ignore in the check. Default is empty list.
 
         Returns:
             None

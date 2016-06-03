@@ -21,7 +21,7 @@ def load_and_merge_yaml(paths: List[str]) -> dict:
     """Load multiple YAML files and merge into one dictionary
 
     Args:
-        paths (list[str]): Paths to YAML files
+        paths (List[str]): Paths to YAML files
 
     Returns:
         dict: Dictionary of merged YAML files
@@ -35,7 +35,7 @@ def load_and_merge_json(paths: List[str]) -> dict:
     """Load multiple JSON files and merge into one dictionary
 
     Args:
-        paths (list[str]): Paths to JSON files
+        paths (List[str]): Paths to JSON files
 
     Returns:
         dict: Dictionary of merged JSON files
@@ -82,7 +82,6 @@ def load_yaml(path: str) -> dict:
     Returns:
         dict: Dictionary containing loaded YAML file
     """
-    yamldict = None
     with open(path, 'rt') as f:
         yamldict = yaml.safe_load(f.read())
     if not yamldict:
@@ -99,7 +98,6 @@ def load_json(path: str) -> dict:
     Returns:
         dict: Dictionary containing loaded JSON file
     """
-    jsondict = None
     with open(path, 'rt') as f:
         jsondict = json.loads(f.read())
     if not jsondict:

@@ -106,7 +106,7 @@ class Dataset(HDXObject):
         """Add new or update existing resources with new metadata to the dataset
 
         Args:
-            resources (list[Any]): Resources metadata from a list of either Resource objects or dictionaries
+            resources (List[Any]): Resources metadata from a list of either Resource objects or dictionaries
 
         Returns:
             None
@@ -116,18 +116,18 @@ class Dataset(HDXObject):
         for resource in resources:
             self.add_update_resource(resource)
 
-    def delete_resource(self, id: str) -> None:
+    def delete_resource(self, identifier: str) -> None:
         """Delete a resource from the dataset
 
         Args:
-            id (str): Id of resource to delete
+            identifier (str): Id of resource to delete
 
         Returns:
             None
         """
         for i, resource in enumerate(self.resources):
             resourceid = resource.get('id', None)
-            if resourceid and resourceid == id:
+            if resourceid and resourceid == identifier:
                 resource.delete_from_hdx()
                 del self.resources[i]
 
@@ -135,7 +135,7 @@ class Dataset(HDXObject):
         """Get dataset's resources
 
         Returns:
-            list[Resource]: List of Resource objects
+            List[Resource]: List of Resource objects
 
         """
         return self.resources
@@ -172,7 +172,7 @@ class Dataset(HDXObject):
         """Add new or update existing gallery items with new metadata to the dataset
 
         Args:
-            gallery (list[Any]): Gallery metadata from a list of either GalleryItem objects or dictionaries
+            gallery (List[Any]): Gallery metadata from a list of either GalleryItem objects or dictionaries
 
         Returns:
             None
@@ -182,18 +182,18 @@ class Dataset(HDXObject):
         for galleryitem in gallery:
             self.add_update_galleryitem(galleryitem)
 
-    def delete_galleryitem(self, id: str) -> None:
+    def delete_galleryitem(self, identifier: str) -> None:
         """Delete a gallery item from the dataset
 
         Args:
-            id (str): Id of gallery item to delete
+            identifier (str): Id of gallery item to delete
 
         Returns:
             None
         """
         for i, galleryitem in enumerate(self.gallery):
             galleryitemid = galleryitem.get('id', None)
-            if galleryitemid and galleryitemid == id:
+            if galleryitemid and galleryitemid == identifier:
                 galleryitem.delete_from_hdx()
                 del self.gallery[i]
 
@@ -201,7 +201,7 @@ class Dataset(HDXObject):
         """Get dataset's gallery
 
         Returns:
-            list[GalleryItem]: List of GalleryItem objects
+            List[GalleryItem]: List of GalleryItem objects
 
         """
         return self.gallery
@@ -257,11 +257,11 @@ class Dataset(HDXObject):
                 self.separate_gallery()
         return True
 
-    def check_required_fields(self, ignore_fields: List[Any] = list()) -> None:
+    def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
         """Check that metadata for dataset and its resources and gallery is complete
 
         Args:
-            ignore_fields (List[Any]): Any fields to ignore in the check. Default is empty list.
+            ignore_fields (List[str]): Any fields to ignore in the check. Default is empty list.
 
         Returns:
             None

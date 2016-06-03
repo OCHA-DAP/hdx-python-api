@@ -7,7 +7,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
 import abc
 import json
 import logging
-from  collections import UserDict
+from collections import UserDict
 
 import requests
 from typing import Optional, List, Any, Tuple, TypeVar, Union
@@ -84,7 +84,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
         """
         self.data = load_json_into_existing_dict(self.data, path)
 
-    def _get_from_hdx(self, object_type: str, id_field: str, url: Optional[str] = None):
+    def _get_from_hdx(self, object_type: str, id_field: str, url: Optional[str] = None) -> Optional[dict]:
         """Checks if the hdx object exists in HDX.
 
         Args:
@@ -93,7 +93,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
             url (Optional[str]): Replacement CKAN url to use. Defaults to None.
 
         Returns:
-            None
+            Optional[dict]: HDX object dictionary if successful or None if not
 
         """
         if not id_field:
@@ -165,22 +165,22 @@ New HDX objects should extend this in similar fashion to Resource for example.
             raise HDXError("No existing %s to update!" % object_type)
 
     @abc.abstractmethod
-    def check_required_fields(self, ignore_fields: List[Any] = list()) -> None:
+    def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
         """Abstract method to check that metadata for HDX object is complete
 
         Args:
-            ignore_fields (List[Any]): Any fields to ignore in the check. Default is empty list.
+            ignore_fields (List[str]): Any fields to ignore in the check. Default is empty list.
 
         Returns:
             None
         """
         return
 
-    def _check_required_fields(self, object_type: str, ignore_fields: list) -> None:
+    def _check_required_fields(self, object_type: str, ignore_fields: List[str]) -> None:
         """Helper method to check that metadata for HDX object is complete
 
         Args:
-            ignore_fields (list): Any fields to ignore in the check
+            ignore_fields (List[str]): Any fields to ignore in the check
 
         Returns:
             None

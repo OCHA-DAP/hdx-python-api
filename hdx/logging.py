@@ -8,7 +8,7 @@ from hdx.utilities.loader import load_yaml, load_json, script_dir_plus_file
 from .utilities.dictionary import merge_two_dictionaries
 
 
-class loggingError(Exception):
+class LoggingError(Exception):
     pass
 
 
@@ -40,18 +40,18 @@ def setup_logging(**kwargs) -> None:
         logging_config_found = True
         print('Loading logging configuration from dictionary')
 
-    logging_config_json = kwargs.get('logging_config_json', None)
+    logging_config_json = kwargs.get('logging_config_json', '')
     if logging_config_json:
         if logging_config_found:
-            raise loggingError('More than one logging configuration file given!')
+            raise LoggingError('More than one logging configuration file given!')
         logging_config_found = True
         print('Loading logging configuration from: %s' % logging_config_json)
         logging_config_dict = load_json(logging_config_json)
 
-    logging_config_yaml = kwargs.get('logging_config_yaml', None)
+    logging_config_yaml = kwargs.get('logging_config_yaml', '')
     if logging_config_found:
         if logging_config_yaml:
-            raise loggingError('More than one logging configuration file given!')
+            raise LoggingError('More than one logging configuration file given!')
     else:
         if not logging_config_yaml:
             print('No logging configuration parameter. Using default.')
@@ -65,18 +65,18 @@ def setup_logging(**kwargs) -> None:
         smtp_config_found = True
         print('Loading smtp configuration from dictionary')
 
-    smtp_config_json = kwargs.get('smtp_config_json', None)
+    smtp_config_json = kwargs.get('smtp_config_json', '')
     if smtp_config_json:
         if smtp_config_found:
-            raise loggingError('More than one smtp configuration file given!')
+            raise LoggingError('More than one smtp configuration file given!')
         smtp_config_found = True
         print('Loading smtp configuration from: %s' % smtp_config_json)
         smtp_config_dict = load_json(smtp_config_json)
 
-    smtp_config_yaml = kwargs.get('smtp_config_yaml', None)
+    smtp_config_yaml = kwargs.get('smtp_config_yaml', '')
     if smtp_config_found:
         if smtp_config_yaml:
-            raise loggingError('More than one smtp configuration file given!')
+            raise LoggingError('More than one smtp configuration file given!')
     else:
         if not smtp_config_yaml:
             print('No smtp configuration parameter. Using default.')
