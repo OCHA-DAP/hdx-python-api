@@ -22,20 +22,13 @@ class Configuration(UserDict):
 
     Args:
         hdx_key_file (Optional[str]): Path to HDX key file. Defaults to ~/.hdxkey
-        **kwargs:
-            hdx_config_dict (dict): HDX configuration dictionary
-            or
-            hdx_config_json (str): Path to JSON HDX configuration
-            or
-            hdx_config_yaml (str): Path to YAML HDX configuration
-                                    Defaults to internal hdx_configuration.yml.
-            and
-            scraper_config_dict (dict): Scraper configuration dictionary
-            or
-            hdx_config_json (str): Path to JSON Scraper configuration
-            or
-            hdx_config_yaml (str): Path to YAML Scraper configuration
-                                    Defaults to internal scraper_configuration.yml.
+        **kwargs: See below
+        hdx_config_dict (dict): HDX configuration dictionary OR
+        hdx_config_json (str): Path to JSON HDX configuration OR
+        hdx_config_yaml (str): Path to YAML HDX configuration. Defaults to internal hdx_configuration.yml.
+        scraper_config_dict (dict): Scraper configuration dictionary OR
+        scraper_config_json (str): Path to JSON Scraper configuration OR
+        scraper_config_yaml (str): Path to YAML Scraper configuration. Defaults to internal scraper_configuration.yml.
     """
 
     def __init__(self, hdx_key_file: Optional[str] = join('%s' % expanduser("~"), '.hdxkey'), **kwargs):

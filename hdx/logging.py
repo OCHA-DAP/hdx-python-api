@@ -16,20 +16,13 @@ def setup_logging(**kwargs) -> None:
     """Setup logging configuration
 
     Args:
-        **kwargs:
-                logging_config_dict (dict): Logging configuration dictionary
-                or
-                logging_config_json (str): Path to JSON Logging configuration
-                or
-                logging_config_yaml (str): Path to YAML Logging configuration.
-                                            Defaults to internal logging_configuration.yml.
-                and
-                smtp_config_dict (dict): Email Logging configuration dictionary
-                or
-                smtp_config_json (str): Path to JSON Email Logging configuration
-                or
-                smtp_config_yaml (str): Path to YAML Email Logging configuration
-                                            Defaults to internal smtp_configuration.yml.
+        **kwargs: See below
+        logging_config_dict (dict): Logging configuration dictionary OR
+        logging_config_json (str): Path to JSON Logging configuration OR
+        logging_config_yaml (str): Path to YAML Logging configuration. Defaults to internal logging_configuration.yml.
+        smtp_config_dict (dict): Email Logging configuration dictionary OR
+        smtp_config_json (str): Path to JSON Email Logging configuration OR
+        smtp_config_yaml (str): Path to YAML Email Logging configuration. Defaults to internal smtp_configuration.yml.
 
     Returns:
         None

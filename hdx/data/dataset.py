@@ -27,7 +27,8 @@ class Dataset(HDXObject):
             initial_data (Optional[dict]): Initial dataset metadata dictionary. Defaults to None.
             include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
     """
-    action_url = {
+
+    _action_url = {
         'show': 'package_show?id=',
         'update': 'package_update',
         'create': 'package_create'
@@ -37,7 +38,7 @@ class Dataset(HDXObject):
                  include_gallery: Optional[bool] = True):
         if not initial_data:
             initial_data = dict()
-        super(Dataset, self).__init__(configuration, self.action_url, initial_data)
+        super(Dataset, self).__init__(configuration, self._action_url, initial_data)
         self.include_gallery = include_gallery
         self.init_resources()
         self.init_gallery()
@@ -250,7 +251,7 @@ class Dataset(HDXObject):
             self.separate_resources()
         if self.include_gallery:
             gallery = self._get_from_hdx('gallery', self.data['id'], '%s%s' % (self.base_url,
-                                                                               GalleryItem.action_url['list']))
+                                                                               GalleryItem._action_url['list']))
             if gallery:
                 self.data['gallery'] = gallery
                 self.old_data['gallery'] = copy.deepcopy(self.gallery)

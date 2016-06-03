@@ -37,13 +37,13 @@ New HDX objects should extend this in similar fashion to Resource for example.
     """
     __metaclass__ = abc.ABCMeta
 
-    action_api_url = '/api/3/action/'
+    _action_api_url = '/api/3/action/'
 
     def __init__(self, configuration: Configuration, action_url: dict, initial_data: dict):
         super(HDXObject, self).__init__(initial_data)
         self.configuration = configuration
         self.old_data = None
-        self.base_url = '%s%s' % (configuration.get_hdx_site(), self.action_api_url)
+        self.base_url = '%s%s' % (configuration.get_hdx_site(), self._action_api_url)
         self.url = dict()
         for key in action_url:
             self.url[key] = '%s%s' % (self.base_url, action_url[key])
