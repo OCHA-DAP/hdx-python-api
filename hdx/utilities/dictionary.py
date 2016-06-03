@@ -22,9 +22,8 @@ def merge_two_dictionaries(a: dict, b: dict) -> dict:
     # ## debug output
     # sys.stderr.write("DEBUG: %s to %s\n" %(b,a))
     try:
-        if a is None or isinstance(a, str) or isinstance(a, str) or isinstance(a, int) \
-                or isinstance(a, int) or isinstance(
-            a, float):
+        if a is None or isinstance(a, str) or isinstance(a, str) or isinstance(a, int) or isinstance(a, int) \
+                or isinstance(a, float):
             # border case for first run or if a is a primitive
             a = b
         elif isinstance(a, list):
@@ -80,8 +79,10 @@ def dict_diff(d1: dict, d2: dict, no_key: Optional[str] = '<KEYNOTFOUND>') -> di
         dict: Comparison dictionary
 
     """
-    both = d1.keys() & d2.keys()
+    d1keys = set(d1.keys())
+    d2keys = set(d2.keys())
+    both = d1keys & d2keys
     diff = {k: (d1[k], d2[k]) for k in both if d1[k] != d2[k]}
-    diff.update({k: (d1[k], no_key) for k in d1.keys() - both})
-    diff.update({k: (no_key, d2[k]) for k in d2.keys() - both})
+    diff.update({k: (d1[k], no_key) for k in d1keys - both})
+    diff.update({k: (no_key, d2[k]) for k in d2keys - both})
     return diff
