@@ -1,18 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""
-LOAD CONFIGURATION:
-------------------
-
-Script designed to load the configuration file
-from disk.
-
-"""
+"""Configuration for HDX"""
 import collections
-from os.path import expanduser, join
 import logging
+from os.path import expanduser, join
 
-from hdx.utilities.loader import load_yaml, load_and_merge_yaml, load_json, load_and_merge_json, script_dir_plus_file
+from hdx.utilities.loader import load_yaml, load_json, script_dir_plus_file
 from .utilities.dictionary import merge_two_dictionaries
 
 logger = logging.getLogger(__name__)
@@ -23,9 +16,28 @@ class ConfigurationError(Exception):
 
 
 class Configuration(collections.UserDict):
+    """Configuration for HDX
+
+    Args:
+        hdx_key_file (str): Path to HDX key file
+        **kwargs:
+            hdx_config_dict (dict): HDX configuration dictionary
+            or
+            hdx_config_json (str): Path to JSON HDX configuration
+            or
+            hdx_config_yaml (str): Path to YAML HDX configuration
+                                    Defaults to internal hdx_configuration.yml.
+            and
+            scraper_config_dict (dict): Scraper configuration dictionary
+            or
+            hdx_config_json (str): Path to JSON Scraper configuration
+            or
+            hdx_config_yaml (str): Path to YAML Scraper configuration
+                                    Defaults to internal scraper_configuration.yml.
+    """
+
     def __init__(self, hdx_key_file: str = '%s/.hdxkey' % expanduser("~"), **kwargs):
         super(Configuration, self).__init__()
-
         hdx_config_found = False
         hdx_config_dict = kwargs.get('hdx_config_dict', None)
         if hdx_config_dict:
@@ -83,16 +95,34 @@ class Configuration(collections.UserDict):
 
         self.data['api_key'] = self.load_api_key(hdx_key_file)
 
-    def get_api_key(self):
+    def get_api_key(self) -> str:
+        """
+
+        Returns:
+            str: HDX api key
+
+        """
         return self.data['api_key']
 
-    def get_hdx_site(self):
+    def get_hdx_site(self) -> str:
+        """
+
+        Returns:
+            str: HDX web site url
+
+        """
         return self.data['hdx_site']
 
     @staticmethod
-    def load_api_key(path: str):
+    def load_api_key(path: str) -> str:
         """
         Load configuration parameters.
+
+        Args:
+            path (str): Path to HDX key
+
+        Returns:
+            str: HDX api key
 
         """
         apikey = None

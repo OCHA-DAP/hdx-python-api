@@ -1,16 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""
-ScraperWiki:
----------
-
-ScraperWiki runner.
-
-"""
+"""Wrapper that handles ScraperWiki and calls scraper main function"""
 import logging
 import sys
 
 import scraperwiki
+from typing import Callable
 
 from hdx.configuration import Configuration
 from hdx.logging import setup_logging
@@ -19,8 +14,16 @@ logger = logging.getLogger(__name__)
 setup_logging()
 
 
-def wrapper(scrapermainfn, **kwargs):
-    """Wrapper"""
+def wrapper(scrapermainfn: Callable[[Configuration], None], **kwargs) -> bool:
+    """Wrapper that handles ScraperWiki and calls scraper main function
+
+    Args:
+        scrapermainfn ((configuration) -> None): main function of scraper
+        **kwargs: configuration parameters to pass to HDX Configuration class
+
+    Returns:
+        bool: True = success, False = failure
+    """
 
     try:
         #

@@ -1,5 +1,15 @@
 from setuptools import setup, find_packages
 
+requirements = ['colorlog',
+                'ndg-httpsclient',
+                'pyasn1',
+                'pyOpenSSL',
+                'pyaml',
+                'requests',
+                'scraperwiki',
+                'typing'
+                ]
+
 setup(
     name='hdx-python-api',
     version='0.1',
@@ -10,15 +20,8 @@ setup(
     author_email='rans@email.com',
     description='HDX Python Library',
 
-    install_requires = ['colorlog>=2.6.3',
-                        'ndg-httpsclient>=0.4.0',
-                        'pyasn1>=0.1.9',
-                        'pyOpenSSL>=16.0.0',
-                        'pyaml>=15.8.2',
-                        'requests>=2.9.1',
-                        'scraperwiki>=0.5.1'
-                        ],
-    package_data = {
+    install_requires=requirements,
+    package_data={
         # If any package contains *.yml files, include them:
         '': ['*.yml'],
     },

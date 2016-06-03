@@ -1,15 +1,29 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+"""Dict utilities"""
+
 import collections
 
+from typing import List, Optional
 
-def merge_two_dictionaries(a: dict, b: dict):
-    """merges b into a and return merged result
 
-    NOTE: tuples and arbitrary objects are not handled as it is totally ambiguous what should happen"""
+def merge_two_dictionaries(a: dict, b: dict) -> dict:
+    """Merges b into a and returns merged result
+
+    NOTE: tuples and arbitrary objects are not handled as it is totally ambiguous what should happen
+
+    Args:
+        a (dict): dictionary to merge into
+        b: (dict): dictionary to merge from
+
+    Returns:
+        dict: Merged dictionary
+    """
     key = None
     # ## debug output
     # sys.stderr.write("DEBUG: %s to %s\n" %(b,a))
     try:
-        if a is None or isinstance(a, str) or isinstance(a, str) or isinstance(a, int)\
+        if a is None or isinstance(a, str) or isinstance(a, str) or isinstance(a, int) \
                 or isinstance(a, int) or isinstance(
             a, float):
             # border case for first run or if a is a primitive
@@ -39,14 +53,34 @@ def merge_two_dictionaries(a: dict, b: dict):
     return a
 
 
-def merge_dictionaries(dicts: list) -> dict:
+def merge_dictionaries(dicts: List[dict]) -> dict:
+    """Merges all dictionaries in dicts into a single dictionary and returns result
+
+    Args:
+        dicts (List[dict]): Dictionaries to merge into the first one in the list
+
+    Returns:
+        dict: Merged dictionary
+
+    """
     dict1 = dicts[0]
     for otherconfig in dicts[1:]:
         merge_two_dictionaries(dict1, otherconfig)
     return dict1
 
 
-def dict_diff(d1: dict, d2: dict, no_key: str = '<KEYNOTFOUND>'):
+def dict_diff(d1: dict, d2: dict, no_key: Optional[str] = '<KEYNOTFOUND>') -> dict:
+    """Compares two dictionaries
+
+    Args:
+        d1 (dict): First dictionary to compare
+        d2 (dict): Second dictionary to compare
+        no_key (Optional[str]): What value to use if key is not found Defaults to '<KEYNOTFOUND>'.
+
+    Returns:
+        dict: Comparison dictionary
+
+    """
     both = d1.keys() & d2.keys()
     diff = {k: (d1[k], d2[k]) for k in both if d1[k] != d2[k]}
     diff.update({k: (d1[k], no_key) for k in d1.keys() - both})

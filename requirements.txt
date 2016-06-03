@@ -1,2 +1,8 @@
--e .
-
+colorlog==2.6.3
+ndg-httpsclient==0.4.0
+pyasn1==0.1.9
+pyOpenSSL==16.0.0
+pyaml==15.8.2
+requests==2.9.1
+scraperwiki==0.5.1
+typing==3.5.1

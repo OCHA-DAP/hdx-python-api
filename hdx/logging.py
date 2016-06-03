@@ -1,7 +1,10 @@
-import os
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+"""Configuration of logging"""
 import logging.config
+import os
 
-from hdx.utilities.loader import load_yaml, load_and_merge_yaml, load_json, load_and_merge_json, script_dir_plus_file
+from hdx.utilities.loader import load_yaml, load_json, script_dir_plus_file
 from .utilities.dictionary import merge_two_dictionaries
 
 
@@ -9,9 +12,27 @@ class loggingError(Exception):
     pass
 
 
-def setup_logging(**kwargs):
+def setup_logging(**kwargs) -> None:
     """Setup logging configuration
 
+    Args:
+        **kwargs:
+                logging_config_dict (dict): Logging configuration dictionary
+                or
+                logging_config_json (str): Path to JSON Logging configuration
+                or
+                logging_config_yaml (str): Path to YAML Logging configuration.
+                                            Defaults to internal logging_configuration.yml.
+                and
+                smtp_config_dict (dict): Email Logging configuration dictionary
+                or
+                smtp_config_json (str): Path to JSON Email Logging configuration
+                or
+                smtp_config_yaml (str): Path to YAML Email Logging configuration
+                                            Defaults to internal smtp_configuration.yml.
+
+    Returns:
+        None
     """
     logging_config_found = False
     logging_config_dict = kwargs.get('logging_config_dict', None)

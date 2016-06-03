@@ -1,13 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""
-Runner:
----------
-
-Simple runner.
-
-"""
+"""Wrapper to simplify scraper setup that calls scraper main function"""
 import logging
+
+from typing import Callable
 
 from hdx.configuration import Configuration
 from hdx.logging import setup_logging
@@ -16,8 +12,16 @@ logger = logging.getLogger(__name__)
 setup_logging()
 
 
-def wrapper(scrapermainfn, **kwargs):
-    """Wrapper"""
+def wrapper(scrapermainfn: Callable[[Configuration], None], **kwargs) -> None:
+    """Wrapper to simplify scraper setup that calls scraper main function
+
+    Args:
+        scrapermainfn ((configuration) -> None): main function of scraper
+        **kwargs: configuration parameters to pass to HDX Configuration class
+
+    Returns:
+        None
+    """
 
     #
     # Setting up configuration
