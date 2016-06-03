@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """Configuration for HDX"""
-import collections
 import logging
+from collections import UserDict
 from os.path import expanduser, join
 
 from hdx.utilities.loader import load_yaml, load_json, script_dir_plus_file
@@ -15,7 +15,7 @@ class ConfigurationError(Exception):
     pass
 
 
-class Configuration(collections.UserDict):
+class Configuration(UserDict):
     """Configuration for HDX
 
     Args:

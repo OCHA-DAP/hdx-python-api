@@ -4,8 +4,7 @@
 
 Usage example: json.dumps(data, cls=EnhancedJSONEncoder)
 """
-
-import collections
+from collections import UserDict
 from json import JSONEncoder
 
 from typing import Any
@@ -27,6 +26,6 @@ class EnhancedJSONEncoder(JSONEncoder):
             Any: Internal object dictionary if a UserDict or result of call to JSONEncoder.default
 
         """
-        if isinstance(obj, collections.UserDict):
+        if isinstance(obj, UserDict):
             return obj.data
         return JSONEncoder.default(self, obj)

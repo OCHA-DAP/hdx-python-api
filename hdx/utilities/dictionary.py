@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """Dict utilities"""
-
-import collections
+from collections import UserDict
 
 from typing import List, Optional
 
@@ -36,9 +35,9 @@ def merge_two_dictionaries(a: dict, b: dict) -> dict:
             else:
                 # append to list
                 a.append(b)
-        elif isinstance(a, dict) or isinstance(a, collections.UserDict):
+        elif isinstance(a, dict) or isinstance(a, UserDict):
             # dicts must be merged
-            if isinstance(b, dict) or isinstance(b, collections.UserDict):
+            if isinstance(b, dict) or isinstance(b, UserDict):
                 for key in b:
                     if key in a:
                         a[key] = merge_two_dictionaries(a[key], b[key])

@@ -5,12 +5,12 @@ New HDX objects should extend this in similar fashion to Resource for example.
 """
 
 import abc
-import collections
 import json
 import logging
+from  collections import UserDict
 
 import requests
-from typing import Optional, List, Any
+from typing import Optional, List, Any, Tuple, TypeVar, Union
 
 from hdx.configuration import Configuration
 from hdx.utilities.dictionary import merge_two_dictionaries
@@ -19,12 +19,14 @@ from hdx.utilities.loader import load_yaml_into_existing_dict, load_json_into_ex
 
 logger = logging.getLogger(__name__)
 
+HDXObjectUpperBound = TypeVar('T', bound='HDXObject')
+
 
 class HDXError(Exception):
     pass
 
 
-class HDXObject(collections.UserDict):
+class HDXObject(UserDict):
     """HDXObject abstract class containing helper functions for creating, checking, and updating HDX objects.
 New HDX objects should extend this in similar fashion to Resource for example.
 
@@ -203,20 +205,40 @@ New HDX objects should extend this in similar fashion to Resource for example.
 
     @abc.abstractmethod
     def update_in_hdx(self) -> None:
+        """Abstract method to check if HDX object exists in HDX and if so, update it
+
+        Returns:
+            None
+
+        """
         return
 
     def _update_in_hdx(self, object_type: str, id_field_name: str) -> None:
-        """
-        Updates an object in HDX.
+        """Helper method to check if HDX object exists in HDX and if so, update it
+
+        Args:
+            object_type (str): Description of HDX object type (for messages)
+            id_field_name (str): Name of field containing HDX object identifier
+
+        Returns:
+            None
 
         """
 
         self._check_load_existing_object(object_type, id_field_name)
         self._merge_hdx_update(object_type, id_field_name)
 
-    def _post_to_hdx(self, action: str, data, id_field_name: str) -> None:
-        """
-        Creates or updates an HDX object in HDX.
+    def _post_to_hdx(self, action: str, data: dict, id_field_name: str) -> Union[Tuple[bool, dict], Tuple[bool, str]]:
+        """Creates or updates an HDX object in HDX and return HDX object metadata dict
+
+        Args:
+            action (str): Action to perform: 'create' or 'update'
+            data (dict): Data to write to HDX
+            id_field_name (str): Name of field containing HDX object identifier
+
+        Returns:
+            Union[(bool, dict), (bool, str)]: (True, dict of HDX object metadata) if successful,
+                                                (False, error text) if not
 
         """
         result = requests.post(
@@ -230,8 +252,15 @@ New HDX objects should extend this in similar fashion to Resource for example.
             return False, result.text
 
     def _save_to_hdx(self, action: str, id_field_name: str) -> None:
-        """
-        Creates, updates or deletes an HDX object in HDX.
+        """Creates or updates an HDX object in HDX, saving current data and replacing with returned HDX object data
+        from HDX
+
+        Args:
+            action (str): Action to perform: 'create' or 'update'
+            id_field_name (str): Name of field containing HDX object identifier
+
+        Returns:
+            None
 
         """
         success, result = self._post_to_hdx(action, self.data, id_field_name)
@@ -244,11 +273,24 @@ New HDX objects should extend this in similar fashion to Resource for example.
 
     @abc.abstractmethod
     def create_in_hdx(self) -> None:
+        """Abstract method to check if resource exists in HDX and if so, update it, otherwise create it
+
+        Returns:
+            None
+
+        """
         return
 
     def _create_in_hdx(self, object_type: str, id_field_name: str) -> None:
-        """
-        Creates an HDX object in HDX.
+        """Helper method to check if resource exists in HDX and if so, update it, otherwise create it
+
+
+        Args:
+            object_type (str): Description of HDX object type (for messages)
+            id_field_name (str): Name of field containing HDX object identifier
+
+        Returns:
+            None
 
         """
         self.check_required_fields()
@@ -260,22 +302,55 @@ New HDX objects should extend this in similar fashion to Resource for example.
 
     @abc.abstractmethod
     def delete_from_hdx(self) -> None:
+        """Abstract method to deletes a resource from HDX
+
+        Returns:
+            None
+        """
         return
 
     def _delete_from_hdx(self, object_type: str, id_field_name: str) -> None:
-        """
-        Deletes an HDX object from HDX.
+        """Helper method to deletes a resource from HDX
 
+        Args:
+            object_type (str): Description of HDX object type (for messages)
+            id_field_name (str): Name of field containing HDX object identifier
+
+        Returns:
+            None
         """
         if id_field_name not in self.data:
             raise HDXError("No %s field (mandatory) in %s!" % (id_field_name, object_type))
         self._save_to_hdx('delete', id_field_name)
 
     @staticmethod
-    def _underlying_object(_, object):
-        return object
+    def _underlying_object(_: Any, b: Any) -> Any:
+        """Function to return second argument passed in
 
-    def _addupdate_hdxobject(self, hdxobjects, id_field: str, hdxobjectclass, new_hdxobject) -> None:
+        Args:
+            _ (Any): Argument to ignore
+            b (Any): Argument to return
+
+        Returns:
+            Any: Return argument b
+
+        """
+        return b
+
+    def _addupdate_hdxobject(self, hdxobjects: List[HDXObjectUpperBound], id_field: str, hdxobjectclass: type,
+                             new_hdxobject: HDXObjectUpperBound) -> None:
+        """Helper function to add a new HDX object to a supplied list of HDX objects or update existing metadata if the object
+        already exists in the list
+
+        Args:
+            hdxobjects (list[T <= HDXObject]): List of HDX objects to which to add new objects or update existing ones
+            id_field (str): Field on which to match to determine if object already exists in list
+            hdxobjectclass (type): Type of the HDX Object to be added/updated
+            new_hdxobject (T <= HDXObject): The HDX object to be added/updated
+
+        Returns:
+            None
+        """
         found = False
         for hdxobject in hdxobjects:
             if hdxobject[id_field] == new_hdxobject[id_field]:
@@ -285,7 +360,21 @@ New HDX objects should extend this in similar fashion to Resource for example.
         if not found:
             hdxobjects.append(hdxobjectclass(self.configuration, new_hdxobject))
 
-    def _separate_hdxobjects(self, hdxobjects, hdxobjects_name, id_field: str, hdxobjectclass) -> None:
+    def _separate_hdxobjects(self, hdxobjects: List[HDXObjectUpperBound], hdxobjects_name: str, id_field: str,
+                             hdxobjectclass: type) -> None:
+        """Helper function to take a list of HDX objects contained in the internal dictionary and add them to a
+        supplied list of HDX objects or update existing metadata if any objects already exist in the list. The list in
+        the internal dictionary is then deleted.
+
+        Args:
+            hdxobjects (list[T <= HDXObject]): List of HDX objects to which to add new objects or update existing ones
+            hdxobjects_name (str): Name of key in internal dictionary from which to obtain list of HDX objects
+            id_field (str): Field on which to match to determine if object already exists in list
+            hdxobjectclass (type): Type of the HDX Object to be added/updated
+
+        Returns:
+            None
+        """
         new_hdxobjects = self.data.get(hdxobjects_name, None)
         if new_hdxobjects:
             hdxobject_names = set()

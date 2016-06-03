@@ -95,7 +95,7 @@ class Resource(HDXObject):
         self._create_in_hdx('resource', 'url')
 
     def delete_from_hdx(self) -> None:
-        """Deletes a resource from HDX.
+        """Deletes a resource from HDX
 
         Returns:
             None
