@@ -25,10 +25,10 @@ class Configuration(UserDict):
         **kwargs: See below
         hdx_config_dict (dict): HDX configuration dictionary OR
         hdx_config_json (str): Path to JSON HDX configuration OR
-        hdx_config_yaml (str): Path to YAML HDX configuration. Defaults to internal hdx_configuration.yml.
-        scraper_config_dict (dict): Scraper configuration dictionary OR
-        scraper_config_json (str): Path to JSON Scraper configuration OR
-        scraper_config_yaml (str): Path to YAML Scraper configuration. Defaults to internal scraper_configuration.yml.
+        hdx_config_yaml (str): Path to YAML HDX configuration. Defaults to library's internal hdx_configuration.yml.
+        collector_config_dict (dict): Collector configuration dictionary OR
+        collector_config_json (str): Path to JSON Collector configuration OR
+        collector_config_yaml (str): Path to YAML Collector configuration. Defaults to config/collector_configuration.yml.
     """
 
     def __init__(self, hdx_key_file: Optional[str] = join('%s' % expanduser("~"), '.hdxkey'), **kwargs):
@@ -58,36 +58,37 @@ class Configuration(UserDict):
             logger.info('Loading HDX configuration from: %s' % hdx_config_yaml)
             hdx_config_dict = load_yaml(hdx_config_yaml)
 
-        scraper_config_found = False
-        scraper_config_dict = kwargs.get('scraper_config_dict', '')
-        if scraper_config_dict:
-            scraper_config_found = True
-            logger.info('Loading scraper configuration from dictionary')
+        collector_config_found = False
+        collector_config_dict = kwargs.get('collector_config_dict', None)
+        if collector_config_dict is not None:
+            collector_config_found = True
+            logger.info('Loading collector configuration from dictionary')
 
-        scraper_config_json = kwargs.get('scraper_config_json', '')
-        if scraper_config_json:
-            if scraper_config_found:
-                raise ConfigurationError('More than one scraper configuration file given!')
-            scraper_config_found = True
-            logger.info('Loading scraper configuration from: %s' % scraper_config_json)
-            scraper_config_dict = load_json(scraper_config_json)
+        collector_config_json = kwargs.get('collector_config_json', '')
+        if collector_config_json:
+            if collector_config_found:
+                raise ConfigurationError('More than one collector configuration file given!')
+            collector_config_found = True
+            logger.info('Loading collector configuration from: %s' % collector_config_json)
+            collector_config_dict = load_json(collector_config_json)
 
-        scraper_config_yaml = kwargs.get('scraper_config_yaml', '')
-        if scraper_config_found:
-            if scraper_config_yaml:
-                raise ConfigurationError('More than one scraper configuration file given!')
+        collector_config_yaml = kwargs.get('collector_config_yaml', '')
+        if collector_config_found:
+            if collector_config_yaml:
+                raise ConfigurationError('More than one collector configuration file given!')
         else:
-            if not scraper_config_yaml:
-                logger.info('No scraper configuration parameter. Using default.')
-                scraper_config_yaml = join('config', 'scraper_configuration.yml')
-            logger.info('Loading scraper configuration from: %s' % scraper_config_yaml)
-            scraper_config_dict = load_yaml(scraper_config_yaml)
+            if not collector_config_yaml:
+                logger.info('No collector configuration parameter. Using default.')
+                collector_config_yaml = join('config', 'collector_configuration.yml')
+            logger.info('Loading collector configuration from: %s' % collector_config_yaml)
+            collector_config_dict = load_yaml(collector_config_yaml)
 
-        self.data = merge_two_dictionaries(hdx_config_dict, scraper_config_dict)
+        self.data = merge_two_dictionaries(hdx_config_dict, collector_config_dict)
 
         if 'hdx_site' not in self.data:
             raise ConfigurationError('hdx_site not defined in configuration!')
 
+        hdx_key_file = kwargs.get('hdx_key_file', hdx_key_file)  # Use kwargs key file instead of parameter passed one
         self.data['api_key'] = self.load_api_key(hdx_key_file)
 
     def get_api_key(self) -> str:
