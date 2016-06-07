@@ -93,7 +93,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
             url (Optional[str]): Replacement CKAN url to use. Defaults to None.
 
         Returns:
-            Optional[dict]: HDX object dictionary if successful or None if not
+            (bool, dict): (True/False, HDX object metadata/Error)
 
         """
         if not id_field:
@@ -238,8 +238,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
             id_field_name (str): Name of field containing HDX object identifier
 
         Returns:
-            Union[(bool, dict), (bool, str)]: (True, dict of HDX object metadata) if successful,
-                                                (False, error text) if not
+            (bool, dict): (True/False, HDX object metadata/Error)
 
         """
         result = requests.post(
