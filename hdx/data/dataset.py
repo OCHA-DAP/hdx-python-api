@@ -299,11 +299,11 @@ class Dataset(HDXObject):
                     if resource_name == old_resource['name']:
                         logger.warning('Resource exists. Updating %s' % resource_name)
                         merge_two_dictionaries(resource, old_resource)
-                        resource.check_required_fields()
+                        resource.check_required_fields(['package_id'])
                         break
             for old_resource in old_resources:
                 if not old_resource['name'] in resource_names:
-                    old_resource.check_required_fields()
+                    old_resource.check_required_fields(['package_id'])
                     self.resources.append(old_resource)
         old_gallery = self.old_data.get('gallery', None)
         if self.resources:
@@ -324,8 +324,8 @@ class Dataset(HDXObject):
                         galleryitem.check_required_fields()
                         galleryitem.update_in_hdx('dataset_id')
             for old_galleryitem in old_gallery:
-                old_galleryitem['dataset_id'] = self.data['id']
                 if not old_galleryitem['title'] in galleryitem_titles:
+                    old_galleryitem['dataset_id'] = self.data['id']
                     old_galleryitem.check_required_fields()
                     old_galleryitem.create_in_hdx()
                     self.gallery.append(old_galleryitem)
