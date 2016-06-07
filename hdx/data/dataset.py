@@ -317,12 +317,12 @@ class Dataset(HDXObject):
             for i, galleryitem in enumerate(self.gallery):
                 galleryitem_title = galleryitem['title']
                 galleryitem_titles.add(galleryitem_title)
-                for new_galleryitem in old_gallery:
-                    if galleryitem_title == new_galleryitem['title']:
+                for old_galleryitem in old_gallery:
+                    if galleryitem_title == old_galleryitem['title']:
                         logger.warning('Gallery item exists. Updating %s' % galleryitem_title)
-                        merge_two_dictionaries(galleryitem, new_galleryitem)
-                        galleryitem.check_required_fields()
-                        galleryitem.update_in_hdx('dataset_id')
+                        merge_two_dictionaries(galleryitem, old_galleryitem)
+                        galleryitem.check_required_fields(['dataset_id'])
+                        galleryitem.update_in_hdx()
             for old_galleryitem in old_gallery:
                 if not old_galleryitem['title'] in galleryitem_titles:
                     old_galleryitem['dataset_id'] = self.data['id']
