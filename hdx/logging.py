@@ -22,7 +22,7 @@ def setup_logging(**kwargs) -> None:
         logging_config_yaml (str): Path to YAML Logging configuration. Defaults to internal logging_configuration.yml.
         smtp_config_dict (dict): Email Logging configuration dictionary OR
         smtp_config_json (str): Path to JSON Email Logging configuration OR
-        smtp_config_yaml (str): Path to YAML Email Logging configuration. Defaults to internal smtp_configuration.yml.
+        smtp_config_yaml (str): Path to YAML Email Logging configuration. Defaults to config/smtp_configuration.yml.
 
     Returns:
         None

@@ -21,8 +21,8 @@ class Configuration(UserDict):
     """Configuration for HDX
 
     Args:
-        hdx_key_file (Optional[str]): Path to HDX key file. Defaults to ~/.hdxkey
         **kwargs: See below
+        hdx_key_file (Optional[str]): Path to HDX key file. Defaults to ~/.hdxkey
         hdx_config_dict (dict): HDX configuration dictionary OR
         hdx_config_json (str): Path to JSON HDX configuration OR
         hdx_config_yaml (str): Path to YAML HDX configuration. Defaults to library's internal hdx_configuration.yml.
@@ -31,8 +31,12 @@ class Configuration(UserDict):
         collector_config_yaml (str): Path to YAML Collector configuration. Defaults to config/collector_configuration.yml.
     """
 
-    def __init__(self, hdx_key_file: Optional[str] = join('%s' % expanduser("~"), '.hdxkey'), **kwargs):
+    def __init__(self, **kwargs):
         super(Configuration, self).__init__()
+
+        hdx_key_file = kwargs.get('hdx_key_file', join('%s' % expanduser("~"), '.hdxkey'))
+        self.data['api_key'] = self.load_api_key(hdx_key_file)
+
         hdx_config_found = False
         hdx_config_dict = kwargs.get('hdx_config_dict', None)
         if hdx_config_dict:
@@ -88,9 +92,6 @@ class Configuration(UserDict):
         if 'hdx_site' not in self.data:
             raise ConfigurationError('hdx_site not defined in configuration!')
 
-        hdx_key_file = kwargs.get('hdx_key_file', hdx_key_file)  # Use kwargs key file instead of parameter passed one
-        self.data['api_key'] = self.load_api_key(hdx_key_file)
-
     def get_api_key(self) -> str:
         """
 
@@ -125,4 +126,5 @@ class Configuration(UserDict):
             apikey = f.read().replace('\n', '')
         if not apikey:
             raise (ValueError('HDX api key is empty!'))
+        logger.info('Loaded HDX api key from: %s' % path)
         return apikey
