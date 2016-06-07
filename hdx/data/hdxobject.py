@@ -111,8 +111,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
                 return True, json_result['result']
             else:
                 return False, json_result['error']
-        else:
-            return False, result.text
+        raise HDXError('HTTP Get failed when trying to read %s\n%s' % (id_field, result.text))
 
     def _load_from_hdx(self, object_type: str, id_field: str) -> bool:
         """Helper method to load the HDX object given by identifier from HDX
@@ -254,8 +253,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
                 return True, json_result['result']
             else:
                 return False, json_result['error']
-        else:
-            return False, result.text
+        raise HDXError('HTTP Post failed when trying to %s %s\n%s' % (action, self.data[id_field_name], result.text))
 
     def _save_to_hdx(self, action: str, id_field_name: str) -> None:
         """Creates or updates an HDX object in HDX, saving current data and replacing with returned HDX object data
@@ -275,7 +273,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
             self.old_data = self.data
             self.data = result
         else:
-            raise HDXError('failed to %s %s\n%s' % (action, self.data[id_field_name], result))
+            raise HDXError('Failed to %s %s\n%s' % (action, self.data[id_field_name], result))
 
     @abc.abstractmethod
     def create_in_hdx(self) -> None:
