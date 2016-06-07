@@ -34,9 +34,6 @@ class Configuration(UserDict):
     def __init__(self, **kwargs):
         super(Configuration, self).__init__()
 
-        hdx_key_file = kwargs.get('hdx_key_file', join('%s' % expanduser("~"), '.hdxkey'))
-        self.data['api_key'] = self.load_api_key(hdx_key_file)
-
         hdx_config_found = False
         hdx_config_dict = kwargs.get('hdx_config_dict', None)
         if hdx_config_dict:
@@ -88,6 +85,9 @@ class Configuration(UserDict):
             collector_config_dict = load_yaml(collector_config_yaml)
 
         self.data = merge_two_dictionaries(hdx_config_dict, collector_config_dict)
+
+        hdx_key_file = kwargs.get('hdx_key_file', join('%s' % expanduser("~"), '.hdxkey'))
+        self.data['api_key'] = self.load_api_key(hdx_key_file)
 
         if 'hdx_site' not in self.data:
             raise ConfigurationError('hdx_site not defined in configuration!')
