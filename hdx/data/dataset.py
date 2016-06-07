@@ -250,10 +250,10 @@ class Dataset(HDXObject):
             self.old_data["resources"] = copy.deepcopy(self.resources)
             self.separate_resources()
         if self.include_gallery:
-            gallery = self._get_from_hdx('gallery', self.data['id'], '%s%s' % (self.base_url,
-                                                                               GalleryItem._action_url['list']))
-            if gallery:
-                self.data['gallery'] = gallery
+            success, result = self._get_from_hdx('gallery', self.data['id'], '%s%s' % (self.base_url,
+                                                                                       GalleryItem._action_url['list']))
+            if success:
+                self.data['gallery'] = result
                 self.old_data['gallery'] = copy.deepcopy(self.gallery)
                 self.separate_gallery()
         return True

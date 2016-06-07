@@ -100,14 +100,19 @@ New HDX objects should extend this in similar fashion to Resource for example.
             raise HDXError("Empty %s identifier!" % object_type)
         if url is None:
             url = self.url['show']
-        check = requests.get(
+        result = requests.get(
             '%s%s' % (url, id_field),
-            headers=self.headers, auth=('dataproject', 'humdata')).json()
+            headers=self.headers, auth=('dataproject', 'humdata'))
 
-        if check['success'] is True:
-            return check['result']
+        if result.status_code == 200:
+            logger.info('Read successfully %s' % id_field)
+            json_result = result.json()
+            if json_result['success']:
+                return True, json_result['result']
+            else:
+                return False, json_result['error']
         else:
-            return None
+            return False, result.text
 
     def _load_from_hdx(self, object_type: str, id_field: str) -> bool:
         """Helper method to load the HDX object given by identifier from HDX
@@ -120,15 +125,12 @@ New HDX objects should extend this in similar fashion to Resource for example.
             bool: True if loaded, False if not
 
         """
-        temp_data = self.old_data
-        self.old_data = self.data
-        self.data = None
-        self.data = self._get_from_hdx(object_type, id_field)
-        if not self.data:
-            self.data = self.old_data
-            self.old_data = temp_data
-            return False
-        return True
+        success, result = self._get_from_hdx(object_type, id_field)
+        if success:
+            self.old_data = self.data
+            self.data = result
+            return True
+        return False
 
     @abc.abstractmethod
     def load_from_hdx(self, id_field: str) -> bool:
@@ -245,9 +247,13 @@ New HDX objects should extend this in similar fashion to Resource for example.
             self.url[action], data=json.dumps(data, cls=EnhancedJSONEncoder),
             headers=self.headers, auth=('dataproject', 'humdata'))
 
-        if result.status_code // 100 == 2:
+        if result.status_code == 200:
             logger.info('%sd successfully %s' % (action, data[id_field_name]))
-            return True, result.json()['result']
+            json_result = result.json()
+            if json_result['success']:
+                return True, json_result['result']
+            else:
+                return False, json_result['error']
         else:
             return False, result.text
 
