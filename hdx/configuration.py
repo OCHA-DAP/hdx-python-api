@@ -22,7 +22,7 @@ class Configuration(UserDict):
 
     Args:
         **kwargs: See below
-        hdx_key_file (Optional[str]): Path to HDX key file. Defaults to ~/.hdxkey
+        hdx_key_file (Optional[str]): Path to HDX key file. Defaults to ~/.hdxkey.
         hdx_config_dict (dict): HDX configuration dictionary OR
         hdx_config_json (str): Path to JSON HDX configuration OR
         hdx_config_yaml (str): Path to YAML HDX configuration. Defaults to library's internal hdx_configuration.yml.
