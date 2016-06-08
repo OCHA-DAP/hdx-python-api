@@ -310,6 +310,7 @@ class Dataset(HDXObject):
         del self.data['gallery']
         old_resources = self.old_data.get('resources', None)
         if update_resources and old_resources:
+            resource_dataset_id = [self.configuration['resource']['dataset_id']]
             resource_names = set()
             for resource in self.resources:
                 resource_name = resource['name']
@@ -318,11 +319,11 @@ class Dataset(HDXObject):
                     if resource_name == old_resource['name']:
                         logger.warning('Resource exists. Updating %s' % resource_name)
                         merge_two_dictionaries(resource, old_resource)
-                        resource.check_required_fields(['package_id'])
+                        resource.check_required_fields(resource_dataset_id)
                         break
             for old_resource in old_resources:
                 if not old_resource['name'] in resource_names:
-                    old_resource.check_required_fields(['package_id'])
+                    old_resource.check_required_fields(resource_dataset_id)
                     self.resources.append(old_resource)
         old_gallery = self.old_data.get('gallery', None)
         if self.resources:
@@ -333,6 +334,7 @@ class Dataset(HDXObject):
         if self.include_gallery and update_gallery and old_gallery:
             self.old_data['gallery'] = copy.deepcopy(self.gallery)
             galleryitem_titles = set()
+            galleryitem_dataset_id = [self.configuration['galleryitem']['dataset_id']]
             for i, galleryitem in enumerate(self.gallery):
                 galleryitem_title = galleryitem['title']
                 galleryitem_titles.add(galleryitem_title)
@@ -340,11 +342,11 @@ class Dataset(HDXObject):
                     if galleryitem_title == old_galleryitem['title']:
                         logger.warning('Gallery item exists. Updating %s' % galleryitem_title)
                         merge_two_dictionaries(galleryitem, old_galleryitem)
-                        galleryitem.check_required_fields(['dataset_id'])
+                        galleryitem.check_required_fields(galleryitem_dataset_id)
                         galleryitem.update_in_hdx()
             for old_galleryitem in old_gallery:
                 if not old_galleryitem['title'] in galleryitem_titles:
-                    old_galleryitem['dataset_id'] = self.data['id']
+                    old_galleryitem[galleryitem_dataset_id] = self.data['id']
                     old_galleryitem.check_required_fields()
                     old_galleryitem.create_in_hdx()
                     self.gallery.append(old_galleryitem)
@@ -378,18 +380,20 @@ class Dataset(HDXObject):
             self._dataset_merge_hdx_update(True, True)
             return
 
+        resource_dataset_id = [self.configuration['resource']['dataset_id']]
         if self.resources:
             self.data['resources'] = self.resources
             for resource in self.resources:
-                resource.check_required_fields()
+                resource.check_required_fields(resource_dataset_id)
         self._save_to_hdx('create', 'name')
         self.init_resources()
         self.separate_resources()
 
         if self.include_gallery:
             self.old_data['gallery'] = copy.deepcopy(self.gallery)
+            galleryitem_dataset_id = [self.configuration['galleryitem']['dataset_id']]
             for i, galleryitem in enumerate(self.gallery):
-                galleryitem['dataset_id'] = self.data['id']
+                galleryitem[galleryitem_dataset_id] = self.data['id']
                 galleryitem.check_required_fields()
                 galleryitem.create_in_hdx()
 
