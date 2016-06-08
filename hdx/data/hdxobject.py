@@ -131,19 +131,6 @@ New HDX objects should extend this in similar fashion to Resource for example.
             return True
         return False
 
-    @abc.abstractmethod
-    def load_from_hdx(self, id_field: str) -> bool:
-        """Abstract method to load the HDX object given by identifier from HDX, saving any existing content in old_data
-
-        Args:
-            id_field (str): HDX object identifier
-
-        Returns:
-            bool: True if loaded, False if not
-
-        """
-        return
-
     @staticmethod
     @abc.abstractmethod
     def read_from_hdx(configuration: Configuration, id_field: str) -> Optional[HDXObjectUpperBound]:
