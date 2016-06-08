@@ -55,14 +55,14 @@ class GalleryItem(HDXObject):
 
     @staticmethod
     def read_from_hdx(configuration: Configuration, identifier: str) -> Optional['GalleryItem']:
-        """Loads the gallery item given by identifier from HDX
+        """Reads the gallery item given by identifier from HDX and returns GalleryItem object
 
         Args:
             configuration (Configuration): HDX Configuration
             identifier (str): Identifier of gallery item
 
         Returns:
-            Optional[GalleryItem]: GalleryItem object if loaded, None if not
+            Optional[GalleryItem]: GalleryItem object if successful read, None if not
 
         """
 

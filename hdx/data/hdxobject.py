@@ -147,14 +147,14 @@ New HDX objects should extend this in similar fashion to Resource for example.
     @staticmethod
     @abc.abstractmethod
     def read_from_hdx(configuration: Configuration, id_field: str) -> Optional[HDXObjectUpperBound]:
-        """Abstract method to read the HDX object given by identifier from HDX
+        """Abstract method to read the HDX object given by identifier from HDX and return it
 
         Args:
             configuration (Configuration): HDX Configuration
             id_field (str): HDX object identifier
 
         Returns:
-            Optional[T <= HDXObject]: Created HDX object with metadata read from HDX or None
+            Optional[T <= HDXObject]: HDX object if successful read, None if not
 
         """
         return

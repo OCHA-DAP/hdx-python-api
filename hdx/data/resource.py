@@ -54,14 +54,14 @@ class Resource(HDXObject):
 
     @staticmethod
     def read_from_hdx(configuration: Configuration, identifier: str) -> Optional['Resource']:
-        """Loads the resource given by identifier from HDX
+        """Reads the resource given by identifier from HDX and returns Resource object
 
         Args:
             configuration (Configuration): HDX Configuration
             identifier (str): Identifier of resource
 
         Returns:
-            Optional[Resource]: Resource object if loaded, None if not
+            Optional[Resource]: Resource object if successful read, None if not
 
         """
 

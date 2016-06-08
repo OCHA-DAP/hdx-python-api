@@ -235,14 +235,14 @@ class Dataset(HDXObject):
 
     @staticmethod
     def read_from_hdx(configuration: Configuration, identifier: str) -> Optional['Dataset']:
-        """Loads the dataset given by identifier from HDX
+        """Reads the dataset given by identifier from HDX and returns Dataset object
 
         Args:
             configuration (Configuration): HDX Configuration
             identifier (str): Identifier of dataset
 
         Returns:
-            Optional[Dataset]: Dataset object if loaded, None if not
+            Optional[Dataset]: Dataset object if successful read, None if not
 
         """
 
