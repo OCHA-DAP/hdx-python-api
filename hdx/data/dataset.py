@@ -375,7 +375,7 @@ class Dataset(HDXObject):
 
         """
         self.check_required_fields()
-        if self._dataset_load_from_hdx('name'):
+        if self._dataset_load_from_hdx(self.data['name']):
             logger.warning('Dataset exists. Updating %s' % self.data['name'])
             self._dataset_merge_hdx_update(True, True)
             return
