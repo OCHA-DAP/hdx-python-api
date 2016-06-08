@@ -233,7 +233,26 @@ class Dataset(HDXObject):
         self.separate_resources()
         self.separate_gallery()
 
-    def load_from_hdx(self, id_or_name: str) -> bool:
+    @staticmethod
+    def read_from_hdx(configuration: Configuration, identifier: str) -> Optional['Dataset']:
+        """Loads the dataset given by identifier from HDX
+
+        Args:
+            configuration (Configuration): HDX Configuration
+            identifier (str): Identifier of dataset
+
+        Returns:
+            Optional[Dataset]: Dataset object if loaded, None if not
+
+        """
+
+        dataset = Dataset(configuration)
+        result = dataset._dataset_load_from_hdx(identifier)
+        if result:
+            return dataset
+        return None
+
+    def _dataset_load_from_hdx(self, id_or_name: str) -> bool:
         """Loads the dataset given by either id or name from HDX
 
         Args:
@@ -276,7 +295,7 @@ class Dataset(HDXObject):
         for galleryitem in self.gallery:
             galleryitem.check_required_fields([self.configuration['galleryitem']['dataset_id']])
 
-    def _merge_hdx_update(self, update_resources: bool, update_gallery: bool) -> None:
+    def _dataset_merge_hdx_update(self, update_resources: bool, update_gallery: bool) -> None:
         """Helper method to check if dataset or its resources or gallery items exist and update them
 
         Args:
@@ -341,8 +360,10 @@ class Dataset(HDXObject):
             None
 
         """
-        self._check_load_existing_object('dataset', 'name')
-        self._merge_hdx_update(update_resources, update_gallery)
+        self._check_existing_object('dataset', 'name')
+        if not self._dataset_load_from_hdx(self.data['name']):
+            raise HDXError("No existing dataset to update!")
+        self._dataset_merge_hdx_update(update_resources, update_gallery)
 
     def create_in_hdx(self) -> None:
         """Check if dataset exists in HDX and if so, update it, otherwise create it
@@ -352,9 +373,9 @@ class Dataset(HDXObject):
 
         """
         self.check_required_fields()
-        if self._load_existing_object('dataset', 'name'):
+        if self._dataset_load_from_hdx('name'):
             logger.warning('Dataset exists. Updating %s' % self.data['name'])
-            self._merge_hdx_update(True, True)
+            self._dataset_merge_hdx_update(True, True)
             return
 
         if self.resources:

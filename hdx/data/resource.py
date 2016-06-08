@@ -52,18 +52,24 @@ class Resource(HDXObject):
         """
         super(Resource, self).update_json(path)
 
-    def load_from_hdx(self, identifier: str) -> bool:
+    @staticmethod
+    def read_from_hdx(configuration: Configuration, identifier: str) -> Optional['Resource']:
         """Loads the resource given by identifier from HDX
 
         Args:
+            configuration (Configuration): HDX Configuration
             identifier (str): Identifier of resource
 
         Returns:
-            bool: True if loaded, False if not
+            Optional[Resource]: Resource object if loaded, None if not
 
         """
 
-        return self._load_from_hdx('resource', identifier)
+        resource = Resource(configuration)
+        result = resource._load_from_hdx('resource', identifier)
+        if result:
+            return resource
+        return None
 
     def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
         """Check that metadata for resource is complete

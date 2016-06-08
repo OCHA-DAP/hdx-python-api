@@ -84,7 +84,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
         """
         self.data = load_json_into_existing_dict(self.data, path)
 
-    def _get_from_hdx(self, object_type: str, id_field: str, url: Optional[str] = None) -> Optional[dict]:
+    def _get_from_hdx(self, object_type: str, id_field: str, url: Optional[str] = None) -> Tuple[bool, dict]:
         """Checks if the hdx object exists in HDX.
 
         Args:
@@ -133,7 +133,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
 
     @abc.abstractmethod
     def load_from_hdx(self, id_field: str) -> bool:
-        """Abstract method to load the HDX object given by identifier from HDX
+        """Abstract method to load the HDX object given by identifier from HDX, saving any existing content in old_data
 
         Args:
             id_field (str): HDX object identifier
@@ -144,7 +144,28 @@ New HDX objects should extend this in similar fashion to Resource for example.
         """
         return
 
-    def _load_existing_object(self, object_type: str, id_field_name: str) -> None:
+    @staticmethod
+    @abc.abstractmethod
+    def read_from_hdx(configuration: Configuration, id_field: str) -> Optional[HDXObjectUpperBound]:
+        """Abstract method to read the HDX object given by identifier from HDX
+
+        Args:
+            configuration (Configuration): HDX Configuration
+            id_field (str): HDX object identifier
+
+        Returns:
+            Optional[T <= HDXObject]: Created HDX object with metadata read from HDX or None
+
+        """
+        return
+
+    def _check_existing_object(self, object_type: str, id_field_name: str):
+        if not self.data:
+            raise HDXError("No data in %s!" % object_type)
+        if id_field_name not in self.data:
+            raise HDXError("No %s field (mandatory) in %s!" % (id_field_name, object_type))
+
+    def _check_load_existing_object(self, object_type, id_field_name):
         """Check metadata exists and contains HDX object identifier, and if so load HDX object
 
         Args:
@@ -155,14 +176,8 @@ New HDX objects should extend this in similar fashion to Resource for example.
             None
 
         """
-        if not self.data:
-            raise HDXError("No data in %s!" % object_type)
-        if id_field_name not in self.data:
-            raise HDXError("No %s field (mandatory) in %s!" % (id_field_name, object_type))
-        return self.load_from_hdx(self.data[id_field_name])
-
-    def _check_load_existing_object(self, object_type, id_field_name):
-        if not self._load_existing_object(object_type, id_field_name):
+        self._check_existing_object(object_type, id_field_name)
+        if not self._load_from_hdx(object_type, self.data[id_field_name]):
             raise HDXError("No existing %s to update!" % object_type)
 
     @abc.abstractmethod
@@ -297,7 +312,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
 
         """
         self.check_required_fields()
-        if self._load_existing_object(object_type, id_field_name):
+        if self._load_from_hdx(object_type, self.data[id_field_name]):
             logger.warning('%s exists. Updating %s' % (object_type, self.data[id_field_name]))
             self._merge_hdx_update(object_type, id_field_name)
         else:

@@ -53,18 +53,24 @@ class GalleryItem(HDXObject):
         """
         super(GalleryItem, self).update_json(path)
 
-    def load_from_hdx(self, identifier: str) -> bool:
+    @staticmethod
+    def read_from_hdx(configuration: Configuration, identifier: str) -> Optional['GalleryItem']:
         """Loads the gallery item given by identifier from HDX
 
         Args:
+            configuration (Configuration): HDX Configuration
             identifier (str): Identifier of gallery item
 
         Returns:
-            bool: True if loaded, False if not
+            Optional[GalleryItem]: GalleryItem object if loaded, None if not
 
         """
 
-        return self._load_from_hdx('gallery item', identifier)
+        galleryitem = GalleryItem(configuration)
+        result = galleryitem._load_from_hdx('galleryitem', identifier)
+        if result:
+            return galleryitem
+        return None
 
     def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
         """Check that metadata for gallery item is complete
