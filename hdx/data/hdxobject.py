@@ -105,11 +105,20 @@ New HDX objects should extend this in similar fashion to Resource for example.
             headers=self.headers, auth=('dataproject', 'humdata'))
 
         if result.status_code == 200:
-            logger.info('Read successfully %s' % id_field)
             json_result = result.json()
             if json_result['success']:
+                logger.info('Read successfully %s' % id_field)
                 return True, json_result['result']
             else:
+                logger.info('HTTP Get successful, but failed reading %s' % id_field)
+                return False, json_result['error']
+        if result.status_code == 404:
+            logger.debug('HTTP Get returned 404')
+            json_result = result.json()
+            if json_result['success']:
+                raise HDXError('HTTP Get returned 404, but Success = True for %s\n%s' % (id_field, result.text))
+            else:
+                logger.info('HTTP Get returned 404 and failed reading %s' % id_field)
                 return False, json_result['error']
         raise HDXError('HTTP Get failed when trying to read %s\n%s' % (id_field, result.text))
 
