@@ -1,0 +1,4 @@
+handlers:
+    error_mail_handler:
+        toaddrs: abc@abc.com
+        subject: "SCRAPER FAILED"

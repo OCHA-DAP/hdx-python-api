@@ -7,11 +7,12 @@ import sys
 import scraperwiki
 from typing import Callable
 
+from hdx.collector import logging_kwargs
 from hdx.configuration import Configuration
 from hdx.logging import setup_logging
 
 logger = logging.getLogger(__name__)
-setup_logging()
+setup_logging(**logging_kwargs)
 
 
 def wrapper(collectormainfn: Callable[[Configuration], None], **kwargs) -> bool:

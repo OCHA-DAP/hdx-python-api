@@ -1,0 +1,8 @@
+{
+  "handlers": {
+    "error_mail_handler": {
+      "toaddrs": "123@123.com",
+      "subject": "SCRAPER FAILED"
+    }
+  }
+}

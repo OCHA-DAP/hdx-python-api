@@ -1,0 +1,27 @@
+version: 1
+disable_existing_loggers: False
+formatters:
+    simple:
+        format: "%(levelname)s - %(asctime)s - %(name)s - %(message)s"
+        datefmt: '%Y-%m-%d %H:%M:%S'
+    color:
+        (): colorlog.ColoredFormatter
+        format: "%(log_color)s%(levelname)s%(reset)s - %(asctime)s - %(name)s - %(message)s"
+        datefmt: '%Y-%m-%d %H:%M:%S'
+handlers:
+    console:
+        class: logging.StreamHandler
+        level: DEBUG
+        formatter: color
+        stream: ext://sys.stdout
+
+    error_mail_handler:
+        class: logging.handlers.SMTPHandler
+        level: CRITICAL
+        formatter: simple
+        mailhost: localhost
+        fromaddr: noreply@localhost
+
+root:
+    level: INFO
+    handlers: [console, error_mail_handler]

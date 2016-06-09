@@ -52,6 +52,15 @@ def setup_logging(**kwargs) -> None:
         print('Loading logging configuration from: %s' % logging_config_yaml)
         logging_config_dict = load_yaml(logging_config_yaml)
 
+    smtp_config_in_logging = False
+    for _, handler in logging_config_dict['handlers'].items():
+        if 'SMTP' in handler['class']:
+            smtp_config_in_logging = True
+            break
+    if not smtp_config_in_logging:
+        logging.config.dictConfig(logging_config_dict)
+        return
+
     smtp_config_found = False
     smtp_config_dict = kwargs.get('smtp_config_dict', None)
     if smtp_config_dict:

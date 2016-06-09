@@ -1,0 +1,22 @@
+{
+  "hdx_site": "https://data.humdata.org/",
+  "dataset": {
+    "required_fields": [
+      "name",
+      "dataset_date"
+    ]
+  },
+  "resource": {
+    "dataset_id": "package_id",
+    "required_fields": [
+      "name",
+      "description"
+    ]
+  },
+  "galleryitem": {
+    "dataset_id": "dataset_id",
+    "required_fields": [
+      "dataset_id"
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+# HDX configuration
+hdx_site: "https://data.humdata.org/"
+dataset:
+  required_fields:
+    - name
+    - title
+    - dataset_date
+resource:
+  dataset_id: package_id
+  required_fields:
+    - package_id
+    - name
+    - description
+galleryitem:
+  dataset_id: dataset_id
+  required_fields:
+    - dataset_id
+    - title
+  ignore_on_update:
+    - dataset_id
