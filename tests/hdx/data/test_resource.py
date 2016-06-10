@@ -23,7 +23,7 @@ class MockResponse:
 
 class TestResource():
     @pytest.fixture(scope="function")
-    def return_resource(self, monkeypatch):
+    def get(self, monkeypatch):
         def mockreturn(url, headers, auth):
             if 'TEST1' in url:
                 return MockResponse(200,
@@ -37,8 +37,32 @@ class TestResource():
             if 'TEST4' in url:
                 return MockResponse(200,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
+            return MockResponse(404,
+                                '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
 
         monkeypatch.setattr(requests, 'get', mockreturn)
+
+    @pytest.fixture(scope="function")
+    def post(self, monkeypatch):
+        def mockreturn(url, data, headers, auth):
+            datadict = json.loads(data)
+            if datadict['name'] == 'MyResource1':
+                return MockResponse(200,
+                                    '{"success": true, "result": {"cache_last_updated": null, "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d", "webstore_last_updated": null, "datastore_active": false, "id": "de6549d8-268b-4dfe-adaf-a4ae5c8510d5", "size": null, "state": "active", "hash": "", "description": "My Resource", "format": "XLSX", "tracking_summary": {"total": 0, "recent": 0}, "last_modified": null, "url_type": null, "mimetype": null, "cache_url": null, "name": "MyResource1", "created": "2016-06-07T08:57:27.367939", "url": "http://test/spreadsheet.xlsx", "webstore_url": null, "mimetype_inner": null, "position": 0, "revision_id": "43765383-1fce-471f-8166-d6c8660cc8a9", "resource_type": null}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}')
+            if datadict['name'] == 'MyResource2':
+                return MockResponse(404,
+                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}')
+            if datadict['name'] == 'MyResource3':
+                return MockResponse(404,
+                                    '{"success": true, "result": {"cache_last_updated": null, "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d", "webstore_last_updated": null, "datastore_active": false, "id": "de6549d8-268b-4dfe-adaf-a4ae5c8510d5", "size": null, "state": "active", "hash": "", "description": "My Resource", "format": "XLSX", "tracking_summary": {"total": 0, "recent": 0}, "last_modified": null, "url_type": null, "mimetype": null, "cache_url": null, "name": "MyResource1", "created": "2016-06-07T08:57:27.367939", "url": "http://test/spreadsheet.xlsx", "webstore_url": null, "mimetype_inner": null, "position": 0, "revision_id": "43765383-1fce-471f-8166-d6c8660cc8a9", "resource_type": null}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}')
+            if datadict['name'] == 'MyResource4':
+                return MockResponse(200,
+                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}')
+
+            return MockResponse(404,
+                                '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}')
+
+        monkeypatch.setattr(requests, 'post', mockreturn)
 
     @pytest.fixture(scope="class")
     def configuration(self):
@@ -46,7 +70,7 @@ class TestResource():
         collector_config_yaml = join('fixtures', 'config', 'collector_configuration.yml')
         return Configuration(hdx_key_file=hdx_key_file, collector_config_yaml=collector_config_yaml)
 
-    def test_read_from_hdx(self, configuration, return_resource):
+    def test_read_from_hdx(self, configuration, get):
         resource = Resource.read_from_hdx(configuration, 'TEST1')
         assert resource['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
         assert resource['name'] == 'ACLED-All-Africa-File_20160101-to-date.xlsx'
@@ -57,3 +81,30 @@ class TestResource():
             resource = Resource.read_from_hdx(configuration, 'TEST3')
         resource = Resource.read_from_hdx(configuration, 'TEST4')
         assert resource is None
+
+    def test_create_in_hdx(self, configuration, get, post):
+        resourcedata = {
+            'name': 'MyResource1',
+            'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',
+            'format': 'xlsx',
+            'url': 'http://test/spreadsheet.xlsx',
+            'description': 'My Resource'
+        }
+        resource = Resource(configuration, resourcedata)
+        resource.create_in_hdx()
+        assert resource['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
+
+        resourcedata['name'] = 'MyResource2'
+        resource = Resource(configuration, resourcedata)
+        with pytest.raises(HDXError):
+            resource.create_in_hdx()
+
+        resourcedata['name'] = 'MyResource3'
+        resource = Resource(configuration, resourcedata)
+        with pytest.raises(HDXError):
+            resource.create_in_hdx()
+
+        resourcedata['name'] = 'MyResource4'
+        resource = Resource(configuration, resourcedata)
+        with pytest.raises(HDXError):
+            resource.create_in_hdx()
