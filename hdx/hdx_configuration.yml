@@ -29,6 +29,8 @@ resource:
   required_fields:
     - package_id
     - name
+    - format
+    - url
     - description
 galleryitem:
   dataset_id: dataset_id

@@ -23,6 +23,7 @@ class GalleryItem(HDXObject):
         'show': 'related_show?id=',
         'update': 'related_update',
         'create': 'related_create',
+        'delete': 'related_delete',
         'list': 'related_list?id='
     }
 
@@ -99,7 +100,7 @@ class GalleryItem(HDXObject):
             None
 
         """
-        self._create_in_hdx('galleryitem', 'title')
+        self._create_in_hdx('galleryitem', 'id', 'title')
 
     def delete_from_hdx(self) -> None:
         """Deletes a gallery item from HDX.

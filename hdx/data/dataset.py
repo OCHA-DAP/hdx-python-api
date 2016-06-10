@@ -31,7 +31,8 @@ class Dataset(HDXObject):
     _action_url = {
         'show': 'package_show?id=',
         'update': 'package_update',
-        'create': 'package_create'
+        'create': 'package_create',
+        'delete': 'package_delete'
     }
 
     def __init__(self, configuration: Configuration, initial_data: Optional[dict] = None,

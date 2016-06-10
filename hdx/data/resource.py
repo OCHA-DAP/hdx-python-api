@@ -22,7 +22,8 @@ class Resource(HDXObject):
     _action_url = {
         'show': 'resource_show?id=',
         'update': 'resource_update',
-        'create': 'resource_create'
+        'create': 'resource_create',
+        'delete': 'resource_delete'
     }
 
     def __init__(self, configuration: Configuration, initial_data: Optional[dict] = None):
@@ -98,7 +99,7 @@ class Resource(HDXObject):
             None
 
         """
-        self._create_in_hdx('resource', 'url')
+        self._create_in_hdx('resource', 'id', 'name')
 
     def delete_from_hdx(self) -> None:
         """Deletes a resource from HDX
