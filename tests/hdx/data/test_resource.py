@@ -42,6 +42,14 @@ class TestResource():
                   'webstore_url': None, 'mimetype_inner': None, 'position': 0,
                   'revision_id': '43765383-1fce-471f-8166-d6c8660cc8a9', 'resource_type': None}
 
+    @pytest.fixture(scope='class')
+    def static_yaml(self):
+        return join('fixtures', 'config', 'hdx_resource_static.yml')
+
+    @pytest.fixture(scope='class')
+    def static_json(self):
+        return join('fixtures', 'config', 'hdx_resource_static.json')
+
     @pytest.fixture(scope='function')
     def get(self, monkeypatch):
         def mockreturn(url, headers, auth):
@@ -128,7 +136,7 @@ class TestResource():
             datadict = json.loads(data)
             if datadict['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5':
                 return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete}' % data)
+                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}' % data)
 
             return MockResponse(404,
                                 '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}')
@@ -223,3 +231,21 @@ class TestResource():
         del resource['id']
         with pytest.raises(HDXError):
             resource.delete_from_hdx()
+
+    def test_update_yaml(self, configuration, static_yaml):
+        resource_data = copy.deepcopy(TestResource.resource_data)
+        resource = Resource(configuration, resource_data)
+        assert resource['name'] == 'MyResource1'
+        assert resource['format'] == 'xlsx'
+        resource.update_yaml(static_yaml)
+        assert resource['name'] == 'MyResource1'
+        assert resource['format'] == 'csv'
+
+    def test_update_json(self, configuration, static_json):
+        resource_data = copy.deepcopy(TestResource.resource_data)
+        resource = Resource(configuration, resource_data)
+        assert resource['name'] == 'MyResource1'
+        assert resource['format'] == 'xlsx'
+        resource.update_yaml(static_json)
+        assert resource['name'] == 'MyResource1'
+        assert resource['format'] == 'zipped csv'

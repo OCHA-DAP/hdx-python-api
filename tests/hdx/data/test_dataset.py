@@ -115,22 +115,77 @@ class TestDataset():
         'solr_additions': '{"countries": ["Algeria", "Zimbabwe"]}',
         'dataset_date': '06/04/2016'}
 
+    resources_data = [{"id": "de6549d8-268b-4dfe-adaf-a4ae5c8510d5", "description": "Resource1",
+                       "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d", "name": "Resource1",
+                       "url": "http://resource1.xlsx",
+                       "format": "xlsx"},
+                      {"id": "DEF", "description": "Resource2",
+                       "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d", "name": "Resource2",
+                       "url": "http://resource2.csv",
+                       "format": "csv"}]
+
+    gallery_data = [
+        {
+            'view_count': 0,
+            'description': 'The dynamic maps below have been drawn from ACLED Version 6. They illustrate key dynamics in event types, reported fatalities, and actor categories. Clicking on the maps, and selecting or de-selecting options in the legends, allows users to interactively edit and manipulate the visualisations, and export or share the finished visuals. The maps are visualised using Tableau Public.',
+            'title': 'MyGalleryItem1',
+            'url': 'http://www.acleddata.com/visuals/maps/dynamic-maps/',
+            'created': '2016-06-14T00:01:18.330364',
+            'featured': 0,
+            'image_url': 'http://docs.humdata.org/wp-content/uploads/acled_visual.png',
+            'type': 'visualization',
+            'id': 'd59a01d8-e52b-4337-bcda-fceb1d059bef',
+            'owner_id': '196196be-6037-4488-8b71-d786adf4c081'}
+    ]
+
+    gallerydict = {
+        'description': 'My GalleryItem',
+        '__extras': {
+            'view_count': 1
+        },
+        'url': 'http://visualisation/url/',
+        'title': 'MyGalleryItem1',
+        'featured': 0,
+        'image_url': 'http://myvisual/visual.png',
+        'type': 'visualization',
+        'id': '2f90d964-f980-4513-ad1b-5df6b2d044ff',
+        'owner_id': '196196be-6037-4488-8b71-d786adf4c081'
+    }
+
+    @pytest.fixture(scope='class')
+    def static_yaml(self):
+        return join('fixtures', 'config', 'hdx_dataset_static.yml')
+
+    @pytest.fixture(scope='class')
+    def static_json(self):
+        return join('fixtures', 'config', 'hdx_dataset_static.json')
+
     @pytest.fixture(scope='function')
     def get(self, monkeypatch):
         def mockreturn(url, headers, auth):
-            result = json.dumps(TestDataset.resultdict)
-            if 'TEST1' in url:
+            if 'related_list' in url:
+                result = json.dumps(TestDataset.gallery_data)
                 return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}' % result)
-            if 'TEST2' in url:
-                return MockResponse(404,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}')
-            if 'TEST3' in url:
-                return MockResponse(404,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}' % result)
-            if 'TEST4' in url:
+                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}' % result)
+            elif 'related_show' in url:
+                result = json.dumps(TestDataset.gallerydict)
                 return MockResponse(200,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}')
+                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}' % result)
+            else:
+                result = json.dumps(TestDataset.resultdict)
+                if 'TEST1' in url:
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}' % result)
+                if 'TEST2' in url:
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}')
+                if 'TEST3' in url:
+                    return MockResponse(404,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}' % result)
+                if 'TEST4' in url:
+                    return MockResponse(200,
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}')
+
             return MockResponse(404,
                                 '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}')
 
@@ -139,6 +194,10 @@ class TestDataset():
     @pytest.fixture(scope='function')
     def post_create(self, monkeypatch):
         def mockreturn(url, data, headers, auth):
+            if 'related' in url:
+                result = json.dumps(TestDataset.gallerydict)
+                return MockResponse(200,
+                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}' % result)
             if 'create' not in url:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_create"}')
@@ -169,23 +228,34 @@ class TestDataset():
             if 'update' not in url:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "TEST ERROR: Not update", "__type": "TEST ERROR: Not Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}')
-            datadict = json.loads(data)
-            resultdict = copy.deepcopy(TestDataset.resultdict)
-            merge_two_dictionaries(resultdict, datadict)
+            if 'related' in url:
+                result = json.dumps(TestDataset.gallerydict)
+                return MockResponse(200,
+                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}' % result)
+            else:
+                datadict = json.loads(data)
+                resultdict = copy.deepcopy(TestDataset.resultdict)
+                merge_two_dictionaries(resultdict, datadict)
+                for i, resource in enumerate(resultdict['resources']):
+                    for j, resource2 in enumerate(resultdict['resources']):
+                        if i != j:
+                            if resource == resource2:
+                                del resultdict['resources'][j]
+                                break
 
-            result = json.dumps(resultdict)
-            if datadict['name'] == 'MyDataset1':
-                return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}' % result)
-            if datadict['name'] == 'MyDataset2':
-                return MockResponse(404,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}')
-            if datadict['name'] == 'MyDataset3':
-                return MockResponse(404,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}' % result)
-            if datadict['name'] == 'MyDataset4':
-                return MockResponse(200,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}')
+                result = json.dumps(resultdict)
+                if datadict['name'] == 'MyDataset1':
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}' % result)
+                if datadict['name'] == 'MyDataset2':
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}')
+                if datadict['name'] == 'MyDataset3':
+                    return MockResponse(404,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}' % result)
+                if datadict['name'] == 'MyDataset4':
+                    return MockResponse(200,
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}')
 
             return MockResponse(404,
                                 '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}')
@@ -198,6 +268,10 @@ class TestDataset():
             if 'delete' not in url:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "TEST ERROR: Not delete", "__type": "TEST ERROR: Not Delete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_delete"}')
+            if 'resource' in url or 'related' in url:
+                return MockResponse(200,
+                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_delete"}' % data)
+
             datadict = json.loads(data)
             if datadict['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d':
                 return MockResponse(200,
@@ -219,6 +293,8 @@ class TestDataset():
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
         assert dataset['name'] == 'MyDataset1'
         assert dataset['dataset_date'] == '06/04/2016'
+        assert len(dataset.resources) == 2
+        assert len(dataset.gallery) == 1
         dataset = Dataset.read_from_hdx(configuration, 'TEST2')
         assert dataset is None
         with pytest.raises(HDXError):
@@ -239,6 +315,8 @@ class TestDataset():
         dataset = Dataset(configuration, dataset_data)
         dataset.create_in_hdx()
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
+        assert len(dataset.resources) == 2
+        assert len(dataset.gallery) == 0
 
         dataset_data['name'] = 'MyDataset2'
         dataset = Dataset(configuration, dataset_data)
@@ -253,6 +331,19 @@ class TestDataset():
         dataset = Dataset(configuration, dataset_data)
         with pytest.raises(HDXError):
             dataset.create_in_hdx()
+
+        dataset_data = copy.deepcopy(TestDataset.dataset_data)
+        gallery_data = copy.deepcopy(TestDataset.gallery_data)
+        dataset_data["gallery"] = gallery_data
+        with pytest.raises(HDXError):
+            dataset = Dataset(configuration, dataset_data)
+        del dataset_data["gallery"]
+        dataset = Dataset(configuration, dataset_data)
+        dataset.add_update_gallery(gallery_data)
+        dataset.create_in_hdx()
+        assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
+        assert len(dataset.resources) == 2
+        assert len(dataset.gallery) == 1
 
     def test_update_in_hdx(self, configuration, get, post_update):
         dataset = Dataset(configuration)
@@ -283,12 +374,19 @@ class TestDataset():
             dataset.update_in_hdx()
 
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
+        gallery_data = copy.deepcopy(TestDataset.gallery_data)
         dataset_data['name'] = 'MyDataset1'
         dataset_data['id'] = 'TEST1'
         dataset = Dataset(configuration, dataset_data)
+        dataset.add_update_gallery(gallery_data)
         dataset.create_in_hdx()
         assert dataset['id'] == 'TEST1'
         assert dataset['dataset_date'] == '03/23/2016'
+        assert len(dataset.resources) == 2
+        assert len(dataset.gallery) == 1
+        dataset.update_in_hdx()
+        assert len(dataset.resources) == 2
+        assert len(dataset.gallery) == 1
 
     def test_delete_from_hdx(self, configuration, get, post_delete):
         dataset = Dataset.read_from_hdx(configuration, 'TEST1')
@@ -296,3 +394,67 @@ class TestDataset():
         del dataset['id']
         with pytest.raises(HDXError):
             dataset.delete_from_hdx()
+
+    def test_update_yaml(self, configuration, static_yaml):
+        dataset_data = copy.deepcopy(TestDataset.dataset_data)
+        dataset = Dataset(configuration, dataset_data)
+        assert dataset['name'] == 'MyDataset1'
+        assert dataset['author'] == 'AN Other'
+        dataset.update_yaml(static_yaml)
+        assert dataset['name'] == 'MyDataset1'
+        assert dataset['author'] == 'acled'
+        assert dataset.get_resources() == [{"id": "ABC", "description": "Resource1",
+                                            "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d", "name": "Resource1",
+                                            "url": "http://resource1.xlsx",
+                                            "format": "xlsx"},
+                                           {"id": "DEF", "description": "Resource2",
+                                            "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d", "name": "Resource2",
+                                            "url": "http://resource2.csv",
+                                            "format": "csv"}]
+        assert dataset.get_gallery() == [{'image_url': 'http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png',
+                                          'url': 'http://www.acleddata.com/visuals/maps/dynamic-maps/',
+                                          'type': 'visualization', 'title': 'Dynamic Map: Political Conflict in Africa',
+                                          'description': 'ACLED maps'}]
+
+    def test_update_json(self, configuration, static_json):
+        dataset_data = copy.deepcopy(TestDataset.dataset_data)
+        dataset = Dataset(configuration, dataset_data)
+        assert dataset['name'] == 'MyDataset1'
+        assert dataset['author'] == 'AN Other'
+        dataset.update_yaml(static_json)
+        assert dataset['name'] == 'MyDataset1'
+        assert dataset['author'] == 'Someone'
+        assert dataset.get_resources() == [{"id": "123", "description": "Resource1",
+                                            "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d", "name": "Resource1",
+                                            "url": "http://resource1.xlsx",
+                                            "format": "xlsx"},
+                                           {"id": "456", "description": "Resource2",
+                                            "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d", "name": "Resource2",
+                                            "url": "http://resource2.csv",
+                                            "format": "csv"}]
+
+        assert dataset.get_gallery() == [{'image_url': 'http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png',
+                                          'url': 'http://www.acleddata.com/visuals/maps/dynamic-maps/',
+                                          'type': 'visualization', 'title': 'A Map',
+                                          'description': 'ACLED maps'}]
+
+    def test_add_update_delete_resources(self, configuration, post_delete):
+        dataset_data = copy.deepcopy(TestDataset.dataset_data)
+        resources_data = copy.deepcopy(TestDataset.resources_data)
+        dataset = Dataset(configuration, dataset_data)
+        dataset.add_update_resources(resources_data)
+        assert len(dataset.resources) == 2
+        dataset.delete_resource('NOTEXIST')
+        assert len(dataset.resources) == 2
+        dataset.delete_resource('de6549d8-268b-4dfe-adaf-a4ae5c8510d5')
+        assert len(dataset.resources) == 1
+
+    def test_add_update_delete_gallery(self, configuration, post_delete):
+        dataset_data = copy.deepcopy(TestDataset.dataset_data)
+        gallery_data = copy.deepcopy(TestDataset.gallery_data)
+        dataset = Dataset(configuration, dataset_data)
+        dataset.add_update_gallery(gallery_data)
+        assert len(dataset.gallery) == 1
+        dataset.delete_galleryitem('NOTEXIST')
+        dataset.delete_galleryitem('d59a01d8-e52b-4337-bcda-fceb1d059bef')
+        assert len(dataset.gallery) == 0

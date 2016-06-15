@@ -47,6 +47,14 @@ class TestGalleryItem():
         'owner_id': '196196be-6037-4488-8b71-d786adf4c081'
     }
 
+    @pytest.fixture(scope='class')
+    def static_yaml(self):
+        return join('fixtures', 'config', 'hdx_galleryitem_static.yml')
+
+    @pytest.fixture(scope='class')
+    def static_json(self):
+        return join('fixtures', 'config', 'hdx_galleryitem_static.json')
+
     @pytest.fixture(scope='function')
     def get(self, monkeypatch):
         def mockreturn(url, headers, auth):
@@ -227,3 +235,21 @@ class TestGalleryItem():
         del galleryitem['id']
         with pytest.raises(HDXError):
             galleryitem.delete_from_hdx()
+
+    def test_update_yaml(self, configuration, static_yaml):
+        galleryitem_data = copy.deepcopy(TestGalleryItem.galleryitem_data)
+        galleryitem = GalleryItem(configuration, galleryitem_data)
+        assert galleryitem['title'] == 'MyGalleryItem1'
+        assert galleryitem['type'] == 'visualization'
+        galleryitem.update_yaml(static_yaml)
+        assert galleryitem['title'] == 'MyGalleryItem1'
+        assert galleryitem['type'] == 'paper'
+
+    def test_update_json(self, configuration, static_json):
+        galleryitem_data = copy.deepcopy(TestGalleryItem.galleryitem_data)
+        galleryitem = GalleryItem(configuration, galleryitem_data)
+        assert galleryitem['title'] == 'MyGalleryItem1'
+        assert galleryitem['type'] == 'visualization'
+        galleryitem.update_yaml(static_json)
+        assert galleryitem['title'] == 'MyGalleryItem1'
+        assert galleryitem['type'] == 'other'

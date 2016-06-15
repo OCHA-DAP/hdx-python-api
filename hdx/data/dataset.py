@@ -167,7 +167,7 @@ class Dataset(HDXObject):
             return
         if isinstance(galleryitem, dict):
             self._addupdate_hdxobject(self.gallery, 'title', GalleryItem, galleryitem)
-
+            return
         raise HDXError("Type %s cannot be added as a gallery item!" % type(galleryitem).__name__)
 
     def add_update_gallery(self, gallery: List[Any]):
@@ -337,7 +337,7 @@ class Dataset(HDXObject):
         if self.include_gallery and update_gallery and old_gallery:
             self.old_data['gallery'] = copy.deepcopy(self.gallery)
             galleryitem_titles = set()
-            galleryitem_dataset_id = [self.configuration['galleryitem']['dataset_id']]
+            galleryitem_dataset_id = self.configuration['galleryitem']['dataset_id']
             for i, galleryitem in enumerate(self.gallery):
                 galleryitem_title = galleryitem['title']
                 galleryitem_titles.add(galleryitem_title)
@@ -345,7 +345,7 @@ class Dataset(HDXObject):
                     if galleryitem_title == old_galleryitem['title']:
                         logger.warning('Gallery item exists. Updating %s' % galleryitem_title)
                         merge_two_dictionaries(galleryitem, old_galleryitem)
-                        galleryitem.check_required_fields(galleryitem_dataset_id)
+                        galleryitem.check_required_fields([galleryitem_dataset_id])
                         galleryitem.update_in_hdx()
             for old_galleryitem in old_gallery:
                 if not old_galleryitem['title'] in galleryitem_titles:
@@ -371,7 +371,7 @@ class Dataset(HDXObject):
             if self._dataset_load_from_hdx(self.data['id']):
                 loaded = True
             else:
-                logger.warning('Failed to load dataset with id %s.')
+                logger.warning('Failed to load dataset with id %s' % self.data['id'])
         if not loaded:
             self._check_existing_object('dataset', 'name')
             if not self._dataset_load_from_hdx(self.data['name']):
@@ -391,7 +391,7 @@ class Dataset(HDXObject):
             if self._dataset_load_from_hdx(self.data['id']):
                 loadedid = self.data['id']
             else:
-                logger.warning('Failed to load dataset with id %s.')
+                logger.warning('Failed to load dataset with id %s' % self.data['id'])
         if not loadedid:
             if self._dataset_load_from_hdx(self.data['name']):
                 loadedid = self.data['name']
@@ -411,7 +411,7 @@ class Dataset(HDXObject):
 
         if self.include_gallery:
             self.old_data['gallery'] = copy.deepcopy(self.gallery)
-            galleryitem_dataset_id = [self.configuration['galleryitem']['dataset_id']]
+            galleryitem_dataset_id = self.configuration['galleryitem']['dataset_id']
             for i, galleryitem in enumerate(self.gallery):
                 galleryitem[galleryitem_dataset_id] = self.data['id']
                 galleryitem.check_required_fields()
