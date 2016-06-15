@@ -266,7 +266,7 @@ class Dataset(HDXObject):
 
         if not self._load_from_hdx('dataset', id_or_name):
             return False
-        if self.data["resources"]:
+        if 'resources' in self.data:
             self.old_data["resources"] = copy.deepcopy(self.resources)
             self.separate_resources()
         if self.include_gallery:
@@ -307,8 +307,10 @@ class Dataset(HDXObject):
             None
         """
         merge_two_dictionaries(self.data, self.old_data)
-        del self.data['resources']
-        del self.data['gallery']
+        if 'resources' in self.data:
+            del self.data['resources']
+        if 'gallery' in self.data:
+            del self.data['gallery']
         old_resources = self.old_data.get('resources', None)
         if update_resources and old_resources:
             resource_dataset_id = [self.configuration['resource']['dataset_id']]
@@ -363,9 +365,17 @@ class Dataset(HDXObject):
             None
 
         """
-        self._check_existing_object('dataset', 'name')
-        if not self._dataset_load_from_hdx(self.data['name']):
-            raise HDXError("No existing dataset to update!")
+        loaded = False
+        if 'id' in self.data:
+            self._check_existing_object('dataset', 'id')
+            if self._dataset_load_from_hdx(self.data['id']):
+                loaded = True
+            else:
+                logger.warning('Failed to load dataset with id %s.')
+        if not loaded:
+            self._check_existing_object('dataset', 'name')
+            if not self._dataset_load_from_hdx(self.data['name']):
+                raise HDXError('No existing dataset to update!')
         self._dataset_merge_hdx_update(update_resources, update_gallery)
 
     def create_in_hdx(self) -> None:
@@ -376,8 +386,17 @@ class Dataset(HDXObject):
 
         """
         self.check_required_fields()
-        if self._dataset_load_from_hdx(self.data['name']):
-            logger.warning('Dataset exists. Updating %s' % self.data['name'])
+        loadedid = None
+        if 'id' in self.data:
+            if self._dataset_load_from_hdx(self.data['id']):
+                loadedid = self.data['id']
+            else:
+                logger.warning('Failed to load dataset with id %s.')
+        if not loadedid:
+            if self._dataset_load_from_hdx(self.data['name']):
+                loadedid = self.data['name']
+        if loadedid:
+            logger.warning('Dataset exists. Updating %s' % loadedid)
             self._dataset_merge_hdx_update(True, True)
             return
 

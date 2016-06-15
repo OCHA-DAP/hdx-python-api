@@ -10,7 +10,7 @@ from hdx.logging import setup_logging
 
 
 class TestLogging():
-    @pytest.fixture(scope="class")
+    @pytest.fixture(scope='class')
     def smtp_config_yaml(self):
         return join('fixtures', 'config', 'smtp_config.yml')
 

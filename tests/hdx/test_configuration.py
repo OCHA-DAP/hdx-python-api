@@ -9,11 +9,11 @@ from hdx.configuration import Configuration
 
 
 class TestConfiguration():
-    @pytest.fixture(scope="class")
+    @pytest.fixture(scope='class')
     def hdx_key_file(self):
         return join('fixtures', '.hdxkey')
 
-    @pytest.fixture(scope="class")
+    @pytest.fixture(scope='class')
     def collector_config_yaml(self):
         return join('fixtures', 'config', 'collector_configuration.yml')
 

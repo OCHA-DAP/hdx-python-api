@@ -24,7 +24,7 @@ class MockResponse:
 
 
 class TestGalleryItem():
-    galleryitemdata = {
+    galleryitem_data = {
         'title': 'MyGalleryItem1',
         'description': 'My GalleryItem',
         'dataset_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',
@@ -166,13 +166,13 @@ class TestGalleryItem():
         with pytest.raises(HDXError):
             galleryitem.create_in_hdx()
 
-        galleryitemdata = copy.deepcopy(TestGalleryItem.galleryitemdata)
-        galleryitem = GalleryItem(configuration, galleryitemdata)
+        galleryitem_data = copy.deepcopy(TestGalleryItem.galleryitem_data)
+        galleryitem = GalleryItem(configuration, galleryitem_data)
         galleryitem.create_in_hdx()
         assert galleryitem['id'] == '2f90d964-f980-4513-ad1b-5df6b2d044ff'
 
-        galleryitemdata['title'] = 'MyGalleryItem2'
-        galleryitem = GalleryItem(configuration, galleryitemdata)
+        galleryitem_data['title'] = 'MyGalleryItem2'
+        galleryitem = GalleryItem(configuration, galleryitem_data)
         with pytest.raises(HDXError):
             galleryitem.create_in_hdx()
 
@@ -180,8 +180,8 @@ class TestGalleryItem():
         with pytest.raises(HDXError):
             galleryitem.create_in_hdx()
 
-        galleryitemdata['title'] = 'MyGalleryItem4'
-        galleryitem = GalleryItem(configuration, galleryitemdata)
+        galleryitem_data['title'] = 'MyGalleryItem4'
+        galleryitem = GalleryItem(configuration, galleryitem_data)
         with pytest.raises(HDXError):
             galleryitem.create_in_hdx()
 
@@ -213,10 +213,10 @@ class TestGalleryItem():
         with pytest.raises(HDXError):
             galleryitem.update_in_hdx()
 
-        galleryitemdata = copy.deepcopy(TestGalleryItem.galleryitemdata)
-        galleryitemdata['title'] = 'MyGalleryItem1'
-        galleryitemdata['id'] = 'TEST1'
-        galleryitem = GalleryItem(configuration, galleryitemdata)
+        galleryitem_data = copy.deepcopy(TestGalleryItem.galleryitem_data)
+        galleryitem_data['title'] = 'MyGalleryItem1'
+        galleryitem_data['id'] = 'TEST1'
+        galleryitem = GalleryItem(configuration, galleryitem_data)
         galleryitem.create_in_hdx()
         assert galleryitem['id'] == 'TEST1'
         assert galleryitem['type'] == 'visualization'
