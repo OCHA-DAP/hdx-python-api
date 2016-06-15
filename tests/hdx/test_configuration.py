@@ -121,7 +121,7 @@ class TestConfiguration():
                 'tags',
             ]},
             'resource': {'dataset_id': 'package_id',
-                         'required_fields': ['package_id', 'name', 'description'
+                         'required_fields': ['package_id', 'name', 'format', 'url', 'description'
                                              ]},
             'galleryitem': {'dataset_id': 'dataset_id', 'required_fields': [
                 'dataset_id',
@@ -166,7 +166,7 @@ class TestConfiguration():
                 'tags',
             ]},
             'resource': {'dataset_id': 'package_id',
-                         'required_fields': ['package_id', 'name', 'description'
+                         'required_fields': ['package_id', 'name', 'format', 'url', 'description'
                                              ]},
             'galleryitem': {'dataset_id': 'dataset_id', 'required_fields': [
                 'dataset_id',
@@ -209,7 +209,7 @@ class TestConfiguration():
                 'tags',
             ]},
             'resource': {'dataset_id': 'package_id',
-                         'required_fields': ['package_id', 'name', 'description'
+                         'required_fields': ['package_id', 'name', 'format', 'url', 'description'
                                              ]},
             'galleryitem': {'dataset_id': 'dataset_id', 'required_fields': [
                 'dataset_id',
