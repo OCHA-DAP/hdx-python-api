@@ -1,4 +1,5 @@
 pytest==2.9.2
 pytest-cov==2.2.1
+pytest-pythonpath==0.7
 logging_tree==1.7
 -r requirements.txt
