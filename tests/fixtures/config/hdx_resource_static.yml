@@ -1,0 +1,5 @@
+name: "MyResource1"
+package_id: "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
+format: "csv"
+url: "http://test/spreadsheet.xlsx"
+description: "My Resource"

@@ -1,0 +1,60 @@
+{
+  "owner_org": "acled",
+  "author": "Someone",
+  "author_email": "c.raleigh@acleddata.com",
+  "maintainer": "acled",
+  "maintainer_email": "c.raleigh@acleddata.com",
+  "license_id": "cc-by-sa",
+  "subnational": 1,
+  "notes": "ACLED notes",
+  "caveats": "ACLED caveats",
+  "data_update_frequency": "7",
+  "methodology": "Other",
+  "methodology_other": "Other methodology",
+  "dataset_source": "ACLED",
+  "package_creator": "mcarans",
+  "private": false,
+  "url": null,
+  "state": "active",
+  "tags": [
+    {
+      "name": "conflict"
+    },
+    {
+      "name": "political violence"
+    },
+    {
+      "name": "protests"
+    },
+    {
+      "name": "war"
+    }
+  ],
+  "gallery": [
+    {
+      "title": "A Map",
+      "type": "visualization",
+      "description": "ACLED maps",
+      "url": "http://www.acleddata.com/visuals/maps/dynamic-maps/",
+      "image_url": "http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png"
+    }
+  ],
+  "resources": [
+    {
+      "id": "123",
+      "description": "Resource1",
+      "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d",
+      "name": "Resource1",
+      "url": "http://resource1.xlsx",
+      "format": "xlsx"
+    },
+    {
+      "id": "456",
+      "description": "Resource2",
+      "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d",
+      "name": "Resource2",
+      "url": "http://resource2.csv",
+      "format": "csv"
+    }
+  ]
+}
