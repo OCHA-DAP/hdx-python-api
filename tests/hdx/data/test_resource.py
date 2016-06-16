@@ -246,6 +246,6 @@ class TestResource():
         resource = Resource(configuration, resource_data)
         assert resource['name'] == 'MyResource1'
         assert resource['format'] == 'xlsx'
-        resource.update_yaml(static_json)
+        resource.update_json(static_json)
         assert resource['name'] == 'MyResource1'
         assert resource['format'] == 'zipped csv'

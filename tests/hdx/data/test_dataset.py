@@ -421,7 +421,7 @@ class TestDataset():
         dataset = Dataset(configuration, dataset_data)
         assert dataset['name'] == 'MyDataset1'
         assert dataset['author'] == 'AN Other'
-        dataset.update_yaml(static_json)
+        dataset.update_json(static_json)
         assert dataset['name'] == 'MyDataset1'
         assert dataset['author'] == 'Someone'
         assert dataset.get_resources() == [{"id": "123", "description": "Resource1",

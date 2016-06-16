@@ -250,6 +250,6 @@ class TestGalleryItem():
         galleryitem = GalleryItem(configuration, galleryitem_data)
         assert galleryitem['title'] == 'MyGalleryItem1'
         assert galleryitem['type'] == 'visualization'
-        galleryitem.update_yaml(static_json)
+        galleryitem.update_json(static_json)
         assert galleryitem['title'] == 'MyGalleryItem1'
         assert galleryitem['type'] == 'other'
