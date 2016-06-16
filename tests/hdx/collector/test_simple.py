@@ -16,12 +16,20 @@ from hdx.collector.simple import wrapper
 
 
 class TestSimple():
-    def test_wrapper(self):
+    @pytest.fixture(scope='class')
+    def hdx_key_file(self):
+        return join('fixtures', '.hdxkey')
+
+    @pytest.fixture(scope='class')
+    def collector_config_yaml(self):
+        return join('fixtures', 'config', 'collector_configuration.yml')
+
+    def test_wrapper(self, hdx_key_file, collector_config_yaml):
         testresult.actual_result = None
-        wrapper(my_testfn, collector_config_yaml=join('fixtures', 'config', 'collector_configuration.yml'))
+        wrapper(my_testfn, hdx_key_file=hdx_key_file, collector_config_yaml=collector_config_yaml)
         assert testresult.actual_result == 'https://test-data.humdata.org/'
 
-    def test_exception(self):
+    def test_exception(self, hdx_key_file, collector_config_yaml):
         testresult.actual_result = None
         with pytest.raises(ValueError):
-            wrapper(my_excfn, collector_config_yaml=join('fixtures', 'config', 'collector_configuration.yml'))
+            wrapper(my_excfn, hdx_key_file=hdx_key_file, collector_config_yaml=collector_config_yaml)
