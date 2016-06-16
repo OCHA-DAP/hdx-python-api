@@ -1,5 +1,5 @@
 ### HDX Python Library
-[![Build Status](https://travis-ci.org/mcarans/hdx-python-api.svg?branch=master)](https://travis-ci.org/mcarans/hdx-python-api) [![Coverage Status](https://coveralls.io/repos/github/mcarans/hdx-python-api/badge.svg?branch=master)](https://coveralls.io/github/mcarans/hdx-python-api?branch=master)
+[![Build Status](https://travis-ci.org/mcarans/hdx-python-api.svg?branch=master&ts=1)](https://travis-ci.org/mcarans/hdx-python-api) [![Coverage Status](https://coveralls.io/repos/github/mcarans/hdx-python-api/badge.svg?branch=master&ts=1)](https://coveralls.io/github/mcarans/hdx-python-api?branch=master)
 
 Library to simplify interaction with HDX.
 
