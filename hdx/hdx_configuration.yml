@@ -1,5 +1,6 @@
 # HDX configuration
-hdx_site: "https://data.humdata.org/"
+hdx_prod_site: "https://data.humdata.org/"
+hdx_test_site: "https://test-data.humdata.org/"
 dataset:
   required_fields:
     - name

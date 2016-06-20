@@ -12,7 +12,7 @@ requirements = ['colorlog',
 
 setup(
     name='hdx-python-api',
-    version='0.1.2',
+    version='0.1.3',
     packages=find_packages(exclude=['ez_setup', 'tests', 'tests.*']),
     url='http://data.humdata.org/',
     license='PSF',

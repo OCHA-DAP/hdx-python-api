@@ -22,6 +22,7 @@ class Configuration(UserDict):
 
     Args:
         **kwargs: See below
+        hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
         hdx_key_file (Optional[str]): Path to HDX key file. Defaults to ~/.hdxkey.
         hdx_config_dict (dict): HDX configuration dictionary OR
         hdx_config_json (str): Path to JSON HDX configuration OR
@@ -89,8 +90,9 @@ class Configuration(UserDict):
         hdx_key_file = kwargs.get('hdx_key_file', join('%s' % expanduser("~"), '.hdxkey'))
         self.data['api_key'] = self.load_api_key(hdx_key_file)
 
-        if 'hdx_site' not in self.data:
-            raise ConfigurationError('hdx_site not defined in configuration!')
+        self.hdx_site = 'hdx_%s_site' % kwargs.get('hdx_site', 'test')
+        if self.hdx_site not in self.data:
+            raise ConfigurationError('%s not defined in configuration!' % self.hdx_site)
 
     def get_api_key(self) -> str:
         """
@@ -108,7 +110,7 @@ class Configuration(UserDict):
             str: HDX web site url
 
         """
-        return self.data['hdx_site']
+        return self.data[self.hdx_site]
 
     @staticmethod
     def load_api_key(path: str) -> str:

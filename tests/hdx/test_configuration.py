@@ -5,7 +5,7 @@ from os.path import join
 
 import pytest
 
-from hdx.configuration import Configuration
+from hdx.configuration import Configuration, ConfigurationError
 
 
 class TestConfiguration():
@@ -38,15 +38,19 @@ class TestConfiguration():
         with pytest.raises(FileNotFoundError):
             Configuration(hdx_key_file=hdx_key_file, collector_config_json='NOT_EXIST')
 
+        with pytest.raises(ConfigurationError):
+            Configuration(hdx_site='NOT_EXIST', hdx_key_file=hdx_key_file, collector_config_yaml=collector_config_yaml)
+
     def test_hdx_configuration_dict(self, hdx_key_file, collector_config_yaml):
-        actual_configuration = Configuration(hdx_key_file=hdx_key_file, hdx_config_dict={'XYZ': {'567': 987}},
+        actual_configuration = Configuration(hdx_site='uat', hdx_key_file=hdx_key_file,
+                                             hdx_config_dict={'XYZ': {'567': 987}},
                                              collector_config_yaml=collector_config_yaml)
         expected_configuration = {
             'api_key': '12345',
-            'hdx_site': 'https://test-data.humdata.org/',
+            'hdx_uat_site': 'https://uat-data.humdata.org/',
             'XYZ': {'567': 987}
         }
-        assert expected_configuration == actual_configuration
+        assert actual_configuration == expected_configuration
 
     def test_hdx_configuration_json(self, hdx_key_file, collector_config_yaml):
         hdx_config_json = join('fixtures', 'config', 'hdx_config.json')
@@ -54,7 +58,9 @@ class TestConfiguration():
                                              collector_config_yaml=collector_config_yaml)
         expected_configuration = {
             'api_key': '12345',
-            'hdx_site': 'https://test-data.humdata.org/',
+            'hdx_prod_site': 'https://data.humdata.org/',
+            'hdx_uat_site': 'https://uat-data.humdata.org/',
+            'hdx_test_site': 'https://test-data.humdata.org/',
             'dataset': {'required_fields': [
                 'name',
                 'dataset_date',
@@ -66,7 +72,7 @@ class TestConfiguration():
                 'dataset_id',
             ],},
         }
-        assert expected_configuration == actual_configuration
+        assert actual_configuration == expected_configuration
 
     def test_hdx_configuration_yaml(self, hdx_key_file, collector_config_yaml):
         hdx_configuration_yaml = join('fixtures', 'config', 'hdx_config.yml')
@@ -74,7 +80,9 @@ class TestConfiguration():
                                              collector_config_yaml=collector_config_yaml)
         expected_configuration = {
             'api_key': '12345',
-            'hdx_site': 'https://test-data.humdata.org/',
+            'hdx_prod_site': 'https://data.humdata.org/',
+            'hdx_uat_site': 'https://uat-data.humdata.org/',
+            'hdx_test_site': 'https://test-data.humdata.org/',
             'dataset': {'required_fields': [
                 'name',
                 'title',
@@ -88,13 +96,14 @@ class TestConfiguration():
                 'title',
             ], 'ignore_on_update': ['dataset_id']},
         }
-        assert expected_configuration == actual_configuration
+        assert actual_configuration == expected_configuration
 
     def test_collector_configuration_dict(self, hdx_key_file):
         actual_configuration = Configuration(hdx_key_file=hdx_key_file, collector_config_dict={'abc': '123'})
         expected_configuration = {
             'api_key': '12345',
-            'hdx_site': 'https://data.humdata.org/',
+            'hdx_prod_site': 'https://data.humdata.org/',
+            'hdx_test_site': 'https://test-data.humdata.org/',
             'abc': '123',
             'dataset': {'required_fields': [
                 'name',
@@ -132,14 +141,15 @@ class TestConfiguration():
                 'image_url',
             ], 'ignore_on_update': ['dataset_id']},
         }
-        assert expected_configuration == actual_configuration
+        assert actual_configuration == expected_configuration
 
     def test_collector_configuration_json(self, hdx_key_file):
         collector_config_json = join('fixtures', 'config', 'collector_configuration.json')
         actual_configuration = Configuration(hdx_key_file=hdx_key_file, collector_config_json=collector_config_json)
         expected_configuration = {
             'api_key': '12345',
-            'hdx_site': 'https://data.humdata.org/',
+            'hdx_prod_site': 'https://data.humdata.org/',
+            'hdx_test_site': 'https://test-data.humdata.org/',
             'my_param': 'abc',
             'dataset': {'required_fields': [
                 'name',
@@ -177,13 +187,15 @@ class TestConfiguration():
                 'image_url',
             ], 'ignore_on_update': ['dataset_id']},
         }
-        assert expected_configuration == actual_configuration
+        assert actual_configuration == expected_configuration
 
     def test_collector_configuration_yaml(self, hdx_key_file, collector_config_yaml):
         actual_configuration = Configuration(hdx_key_file=hdx_key_file, collector_config_yaml=collector_config_yaml)
         expected_configuration = {
             'api_key': '12345',
-            'hdx_site': 'https://test-data.humdata.org/',
+            'hdx_prod_site': 'https://data.humdata.org/',
+            'hdx_uat_site': 'https://uat-data.humdata.org/',
+            'hdx_test_site': 'https://test-data.humdata.org/',
             'dataset': {'required_fields': [
                 'name',
                 'title',
@@ -220,4 +232,11 @@ class TestConfiguration():
                 'image_url',
             ], 'ignore_on_update': ['dataset_id']},
         }
-        assert expected_configuration == actual_configuration
+        assert actual_configuration == expected_configuration
+
+    def test_get_hdx_key_site(self, hdx_key_file, collector_config_yaml):
+        actual_configuration = Configuration(hdx_site='uat', hdx_key_file=hdx_key_file,
+                                             hdx_config_dict={},
+                                             collector_config_yaml=collector_config_yaml)
+        assert actual_configuration.get_api_key() == '12345'
+        assert actual_configuration.get_hdx_site() == 'https://uat-data.humdata.org/'

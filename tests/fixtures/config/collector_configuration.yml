@@ -1,2 +1,2 @@
 # Collector specific configuration
-hdx_site: "https://test-data.humdata.org/"
+hdx_uat_site: "https://uat-data.humdata.org/"
