@@ -32,9 +32,8 @@ def wrapper(collectormainfn: Callable[[Configuration], None], **kwargs) -> bool:
         #
         configuration = Configuration(**kwargs)
 
-        hdx_site = configuration['hdx_site']
         logger.info('--------------------------------------------------')
-        logger.info('> HDX Site: %s' % hdx_site)
+        logger.info('> HDX Site: %s' % configuration.get_hdx_site())
 
         collectormainfn(configuration)
 

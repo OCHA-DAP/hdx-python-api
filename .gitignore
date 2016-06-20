@@ -1,18 +1,13 @@
-venv/*
-venv/**
-
-data/*
-data/**
-
-__pycache__/*
-__pycache__/**
-
-.DS_Store
+documentation
+hdx_python_api.egg-info
 .coverage
 
 *.pyc
 *.rdb
 *.sqlite
 *.sqlite-journal
+errors.log
 
 screenlog.*
+.cache/
+
