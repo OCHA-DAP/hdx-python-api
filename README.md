@@ -31,7 +31,7 @@ The first task is to create an API key file. By default this is assumed to be ca
 
 To include the HDX Python library in your project, add the following to your requirements.txt file:
 
-git+[git://github.com/mcarans/hdx-python-api.git#egg=hdx-python-api](git://github.com/mcarans/hdx-python-api.git#egg=hdx-python-api)
+    git+[git://github.com/mcarans/hdx-python-api.git#egg=hdx-python-api](git://github.com/mcarans/hdx-python-api.git#egg=hdx-python-api)
 
 The easiest way to get started is to use the wrappers and configuration defaults. You will most likely just need the simple wrapper. If you are in the HDX team, you may need to use the ScraperWiki wrapper which reports status to that platform (in which case replace "simple" with "scraperwiki" in the code below):
 
