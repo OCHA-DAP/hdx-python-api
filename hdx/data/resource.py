@@ -19,17 +19,25 @@ class Resource(HDXObject):
             configuration (Configuration): HDX Configuration
             initial_data (Optional[dict]): Initial resource metadata dictionary. Defaults to None.
     """
-    _action_url = {
-        'show': 'resource_show?id=',
-        'update': 'resource_update',
-        'create': 'resource_create',
-        'delete': 'resource_delete'
-    }
-
     def __init__(self, configuration: Configuration, initial_data: Optional[dict] = None):
         if not initial_data:
             initial_data = dict()
-        super(Resource, self).__init__(configuration, self._action_url, initial_data)
+        super(Resource, self).__init__(configuration, initial_data)
+
+    @staticmethod
+    def actions() -> dict:
+        """Dictionary of actions that can be performed on object
+
+        Returns:
+            dict: dictionary of actions that can be performed on object
+
+        """
+        return {
+            'show': 'resource_show',
+            'update': 'resource_update',
+            'create': 'resource_create',
+            'delete': 'resource_delete'
+        }
 
     def update_yaml(self, path: str = join('config', 'hdx_resource_static.yml')) -> None:
         """Update resource metadata with static metadata from YAML file

@@ -4,7 +4,6 @@
 
 It also handles resource and gallery items.
 """
-import copy
 import logging
 from os.path import join
 
@@ -28,21 +27,29 @@ class Dataset(HDXObject):
             include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
     """
 
-    _action_url = {
-        'show': 'package_show?id=',
-        'update': 'package_update',
-        'create': 'package_create',
-        'delete': 'package_delete'
-    }
-
     def __init__(self, configuration: Configuration, initial_data: Optional[dict] = None,
                  include_gallery: Optional[bool] = True):
         if not initial_data:
             initial_data = dict()
-        super(Dataset, self).__init__(configuration, self._action_url, initial_data)
+        super(Dataset, self).__init__(configuration, initial_data)
         self.include_gallery = include_gallery
         self.init_resources()
         self.init_gallery()
+
+    @staticmethod
+    def actions() -> dict:
+        """Dictionary of actions that can be performed on object
+
+        Returns:
+            dict: dictionary of actions that can be performed on object
+
+        """
+        return {
+            'show': 'package_show',
+            'update': 'package_update',
+            'create': 'package_create',
+            'delete': 'package_delete'
+        }
 
     def __setitem__(self, key: Any, value: Any) -> None:
         """Set dictionary items but do not allow setting of resources or gallery
@@ -267,14 +274,13 @@ class Dataset(HDXObject):
         if not self._load_from_hdx('dataset', id_or_name):
             return False
         if 'resources' in self.data:
-            self.old_data["resources"] = copy.deepcopy(self.resources)
+            self.old_data['resources'] = self._copy_hdxobjects(self.resources, Resource)
             self.separate_resources()
         if self.include_gallery:
-            success, result = self._get_from_hdx('gallery', self.data['id'], '%s%s' % (self.base_url,
-                                                                                       GalleryItem._action_url['list']))
+            success, result = self._get_from_hdx('gallery', self.data['id'], GalleryItem.actions()['list'])
             if success:
                 self.data['gallery'] = result
-                self.old_data['gallery'] = copy.deepcopy(self.gallery)
+                self.old_data['gallery'] = self._copy_hdxobjects(self.gallery, GalleryItem)
                 self.separate_gallery()
         return True
 
@@ -330,12 +336,12 @@ class Dataset(HDXObject):
                     self.resources.append(old_resource)
         old_gallery = self.old_data.get('gallery', None)
         if self.resources:
-            self.data['resources'] = self.resources
+            self.data['resources'] = self._convert_hdxobjects(self.resources)
         self._save_to_hdx('update', 'id')
         self.init_resources()
         self.separate_resources()
         if self.include_gallery and update_gallery and old_gallery:
-            self.old_data['gallery'] = copy.deepcopy(self.gallery)
+            self.old_data['gallery'] = self._copy_hdxobjects(self.gallery, GalleryItem)
             galleryitem_titles = set()
             galleryitem_dataset_id = self.configuration['galleryitem']['dataset_id']
             for i, galleryitem in enumerate(self.gallery):
@@ -402,7 +408,7 @@ class Dataset(HDXObject):
 
         resource_dataset_id = [self.configuration['resource']['dataset_id']]
         if self.resources:
-            self.data['resources'] = self.resources
+            self.data['resources'] = self._convert_hdxobjects(self.resources)
             for resource in self.resources:
                 resource.check_required_fields(resource_dataset_id)
         self._save_to_hdx('create', 'name')
@@ -410,7 +416,7 @@ class Dataset(HDXObject):
         self.separate_resources()
 
         if self.include_gallery:
-            self.old_data['gallery'] = copy.deepcopy(self.gallery)
+            self.old_data['gallery'] = self._copy_hdxobjects(self.gallery, GalleryItem)
             galleryitem_dataset_id = self.configuration['galleryitem']['dataset_id']
             for i, galleryitem in enumerate(self.gallery):
                 galleryitem[galleryitem_dataset_id] = self.data['id']

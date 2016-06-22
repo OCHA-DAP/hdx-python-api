@@ -19,18 +19,26 @@ class GalleryItem(HDXObject):
             configuration (Configuration): HDX Configuration
             initial_data (Optional[dict]): Initial gallery item metadata dictionary. Defaults to None.
     """
-    _action_url = {
-        'show': 'related_show?id=',
-        'update': 'related_update',
-        'create': 'related_create',
-        'delete': 'related_delete',
-        'list': 'related_list?id='
-    }
-
     def __init__(self, configuration: Configuration, initial_data: Optional[dict] = None):
         if not initial_data:
             initial_data = dict()
-        super(GalleryItem, self).__init__(configuration, self._action_url, initial_data)
+        super(GalleryItem, self).__init__(configuration, initial_data)
+
+    @staticmethod
+    def actions() -> dict:
+        """Dictionary of actions that can be performed on object
+
+        Returns:
+            dict: dictionary of actions that can be performed on object
+
+        """
+        return {
+            'show': 'related_show',
+            'update': 'related_update',
+            'create': 'related_create',
+            'delete': 'related_delete',
+            'list': 'related_list'
+        }
 
     def update_yaml(self, path: str = join('config', 'hdx_galleryitem_static.yml')) -> None:
         """Update gallery item metadata with static metadata from YAML file

@@ -52,18 +52,15 @@ class TestResource():
 
     @pytest.fixture(scope='function')
     def get(self, monkeypatch):
-        def mockreturn(url, headers, auth):
+        def mockreturn(url, params, headers, auth):
             result = json.dumps(TestResource.resultdict)
-            if 'TEST1' in url:
+            if params['id'] == 'TEST1':
                 return MockResponse(200,
                                     '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}' % result)
-            if 'TEST2' in url:
+            if params['id'] == 'TEST2':
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
-            if 'TEST3' in url:
-                return MockResponse(404,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}' % result)
-            if 'TEST4' in url:
+            if params['id'] == 'TEST3':
                 return MockResponse(200,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
             return MockResponse(404,
@@ -73,11 +70,11 @@ class TestResource():
 
     @pytest.fixture(scope='function')
     def post_create(self, monkeypatch):
-        def mockreturn(url, data, headers, auth):
+        def mockreturn(url, data, headers, files, allow_redirects, auth):
             if 'create' not in url:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}')
-            datadict = json.loads(data)
+            datadict = json.loads(data.decode('utf-8'))
 
             result = json.dumps(TestResource.resultdict)
             if datadict['name'] == 'MyResource1':
@@ -87,9 +84,6 @@ class TestResource():
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}')
             if datadict['name'] == 'MyResource3':
-                return MockResponse(404,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}' % result)
-            if datadict['name'] == 'MyResource4':
                 return MockResponse(200,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}')
 
@@ -100,11 +94,11 @@ class TestResource():
 
     @pytest.fixture(scope='function')
     def post_update(self, monkeypatch):
-        def mockreturn(url, data, headers, auth):
+        def mockreturn(url, data, headers, files, allow_redirects, auth):
             if 'update' not in url:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "TEST ERROR: Not update", "__type": "TEST ERROR: Not Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}')
-            datadict = json.loads(data)
+            datadict = json.loads(data.decode('utf-8'))
             resultdict = copy.deepcopy(TestResource.resultdict)
             merge_two_dictionaries(resultdict, datadict)
 
@@ -116,9 +110,6 @@ class TestResource():
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}')
             if datadict['name'] == 'MyResource3':
-                return MockResponse(404,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}' % result)
-            if datadict['name'] == 'MyResource4':
                 return MockResponse(200,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}')
 
@@ -129,14 +120,15 @@ class TestResource():
 
     @pytest.fixture(scope='function')
     def post_delete(self, monkeypatch):
-        def mockreturn(url, data, headers, auth):
+        def mockreturn(url, data, headers, files, allow_redirects, auth):
             if 'delete' not in url:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "TEST ERROR: Not delete", "__type": "TEST ERROR: Not Delete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}')
-            datadict = json.loads(data)
+            decodedata = data.decode('utf-8')
+            datadict = json.loads(decodedata)
             if datadict['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5':
                 return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}' % data)
+                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}' % decodedata)
 
             return MockResponse(404,
                                 '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}')
@@ -156,9 +148,7 @@ class TestResource():
         assert resource['package_id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
         resource = Resource.read_from_hdx(configuration, 'TEST2')
         assert resource is None
-        with pytest.raises(HDXError):
-            resource = Resource.read_from_hdx(configuration, 'TEST3')
-        resource = Resource.read_from_hdx(configuration, 'TEST4')
+        resource = Resource.read_from_hdx(configuration, 'TEST3')
         assert resource is None
 
     def test_create_in_hdx(self, configuration, get, post_create):
@@ -180,11 +170,7 @@ class TestResource():
         with pytest.raises(HDXError):
             resource.create_in_hdx()
 
-        resource['name'] = 'MyResource3'
-        with pytest.raises(HDXError):
-            resource.create_in_hdx()
-
-        resource_data['name'] = 'MyResource4'
+        resource_data['name'] = 'MyResource3'
         resource = Resource(configuration, resource_data)
         with pytest.raises(HDXError):
             resource.create_in_hdx()

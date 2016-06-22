@@ -3,18 +3,17 @@
 """HDXObject abstract class containing helper functions for creating, checking, and updating HDX objects.
 New HDX objects should extend this in similar fashion to Resource for example.
 """
-
 import abc
-import json
+import copy
 import logging
 from collections import UserDict
 
-import requests
+import ckanapi
+from ckanapi.errors import NotFound
 from typing import Optional, List, Any, Tuple, TypeVar, Union
 
 from hdx.configuration import Configuration
 from hdx.utilities.dictionary import merge_two_dictionaries
-from hdx.utilities.json import EnhancedJSONEncoder
 from hdx.utilities.loader import load_yaml_into_existing_dict, load_json_into_existing_dict
 
 logger = logging.getLogger(__name__)
@@ -32,26 +31,29 @@ New HDX objects should extend this in similar fashion to Resource for example.
 
         Args:
             configuration (Configuration): HDX Configuration
-            action_url (dict): Dictionary of CKAN actions that HDX object can perform
             initial_data (dict): Initial metadata dictionary
     """
     __metaclass__ = abc.ABCMeta
 
-    _action_api_url = '/api/3/action/'
+    @staticmethod
+    @abc.abstractstaticmethod
+    def actions() -> dict:
+        """Dictionary of actions that can be performed on object
 
-    def __init__(self, configuration: Configuration, action_url: dict, initial_data: dict):
+        Returns:
+            dict: dictionary of actions that can be performed on object
+
+        """
+        pass
+
+    def __init__(self, configuration: Configuration, initial_data: dict):
         super(HDXObject, self).__init__(initial_data)
         self.configuration = configuration
         self.old_data = None
-        self.base_url = '%s%s' % (configuration.get_hdx_site(), self._action_api_url)
-        self.url = dict()
-        for key in action_url:
-            self.url[key] = '%s%s' % (self.base_url, action_url[key])
-
-        self.headers = {
-            'X-CKAN-API-Key': configuration.get_api_key(),
-            'content-type': 'application/json'
-        }
+        self.hdxgetsite = ckanapi.RemoteCKAN(configuration.get_hdx_site(),
+                                             apikey=configuration.get_api_key(), get_only=True)
+        self.hdxpostsite = ckanapi.RemoteCKAN(configuration.get_hdx_site(),
+                                              apikey=configuration.get_api_key())
 
     def get_old_data_dict(self) -> None:
         """Get previous internal dictionary
@@ -84,13 +86,13 @@ New HDX objects should extend this in similar fashion to Resource for example.
         """
         self.data = load_json_into_existing_dict(self.data, path)
 
-    def _get_from_hdx(self, object_type: str, id_field: str, url: Optional[str] = None) -> Tuple[bool, dict]:
+    def _get_from_hdx(self, object_type: str, id_field: str, action: Optional[str] = None) -> Tuple[bool, dict]:
         """Checks if the hdx object exists in HDX.
 
         Args:
             object_type (str): Description of HDX object type (for messages)
             id_field (str): HDX object identifier
-            url (Optional[str]): Replacement CKAN url to use. Defaults to None.
+            action (Optional[str]): Replacement CKAN url to use. Defaults to None.
 
         Returns:
             (bool, dict): (True/False, HDX object metadata/Error)
@@ -98,29 +100,16 @@ New HDX objects should extend this in similar fashion to Resource for example.
         """
         if not id_field:
             raise HDXError("Empty %s identifier!" % object_type)
-        if url is None:
-            url = self.url['show']
-        result = requests.get(
-            '%s%s' % (url, id_field),
-            headers=self.headers, auth=('dataproject', 'humdata'))
-
-        if result.status_code == 200:
-            json_result = result.json()
-            if json_result['success']:
-                logger.info('Read successfully %s' % id_field)
-                return True, json_result['result']
-            else:
-                logger.info('HTTP Get successful, but failed reading %s' % id_field)
-                return False, json_result['error']
-        if result.status_code == 404:
-            logger.debug('HTTP Get returned 404')
-            json_result = result.json()
-            if json_result['success']:
-                raise HDXError('HTTP Get returned 404, but Success = True for %s\n%s' % (id_field, result.text))
-            else:
-                logger.info('HTTP Get returned 404 and failed reading %s' % id_field)
-                return False, json_result['error']
-        raise HDXError('HTTP Get failed when trying to read %s\n%s' % (id_field, result.text))
+        if action is None:
+            action = self.actions()['show']
+        try:
+            result = self.hdxgetsite.call_action(action, {'id': id_field},
+                                                 requests_kwargs={'auth': ('dataproject', 'humdata')})
+            return True, result
+        except NotFound as e:
+            return False, "%s not found!" % id_field
+        except Exception as e:
+            raise HDXError('HTTP Get failed when trying to read %s' % id_field) from e
 
     def _load_from_hdx(self, object_type: str, id_field: str) -> bool:
         """Helper method to load the HDX object given by identifier from HDX
@@ -141,7 +130,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
         return False
 
     @staticmethod
-    @abc.abstractmethod
+    @abc.abstractstaticmethod
     def read_from_hdx(configuration: Configuration, id_field: str) -> Optional[HDXObjectUpperBound]:
         """Abstract method to read the HDX object given by identifier from HDX and return it
 
@@ -252,18 +241,12 @@ New HDX objects should extend this in similar fashion to Resource for example.
             (bool, dict): (True/False, HDX object metadata/Error)
 
         """
-        result = requests.post(
-            self.url[action], data=json.dumps(data, cls=EnhancedJSONEncoder),
-            headers=self.headers, auth=('dataproject', 'humdata'))
-
-        if result.status_code == 200:
-            logger.info('%sd successfully %s' % (action, data[id_field_name]))
-            json_result = result.json()
-            if json_result['success']:
-                return True, json_result['result']
-            else:
-                return False, json_result['error']
-        raise HDXError('HTTP Post failed when trying to %s %s\n%s' % (action, self.data[id_field_name], result.text))
+        try:
+            result = self.hdxpostsite.call_action(self.actions()[action], data,
+                                                  requests_kwargs={'auth': ('dataproject', 'humdata')})
+            return True, result
+        except Exception as e:
+            raise HDXError('HTTP Post failed when trying to %s %s' % (action, self.data[id_field_name])) from e
 
     def _save_to_hdx(self, action: str, id_field_name: str) -> None:
         """Creates or updates an HDX object in HDX, saving current data and replacing with returned HDX object data
@@ -374,6 +357,37 @@ New HDX objects should extend this in similar fashion to Resource for example.
                 break
         if not found:
             hdxobjects.append(hdxobjectclass(self.configuration, new_hdxobject))
+
+    def _convert_hdxobjects(self, hdxobjects: List[HDXObjectUpperBound]) -> List[HDXObjectUpperBound]:
+        """Helper function to convert supplied list of HDX objects to a list of dict
+
+        Args:
+            hdxobjects (list[T <= HDXObject]): List of HDX objects to convert
+
+        Returns:
+            list[dict]: List of HDX objects converted to simple dictionaries
+        """
+        newhdxobjects = list()
+        for hdxobject in hdxobjects:
+            newhdxobjects.append(hdxobject.data)
+        return newhdxobjects
+
+    def _copy_hdxobjects(self, hdxobjects: List[HDXObjectUpperBound], hdxobjectclass: type) -> List[
+        HDXObjectUpperBound]:
+        """Helper function to make a deep copy of a supplied list of HDX objects
+
+        Args:
+            hdxobjects (list[T <= HDXObject]): List of HDX objects to copy
+            hdxobjectclass (type): Type of the HDX Objects to be copied
+
+        Returns:
+            list[T <= HDXObject]: Deep copy of list of HDX objects
+        """
+        newhdxobjects = list()
+        for hdxobject in hdxobjects:
+            newhdxobjectdata = copy.deepcopy(hdxobject.data)
+            newhdxobjects.append(hdxobjectclass(self.configuration, newhdxobjectdata))
+        return newhdxobjects
 
     def _separate_hdxobjects(self, hdxobjects: List[HDXObjectUpperBound], hdxobjects_name: str, id_field: str,
                              hdxobjectclass: type) -> None:
