@@ -3,18 +3,14 @@
 
 The HDX Python Library is designed to enable you to easily develop code that interacts with the Humanitarian Data Exchange platform. The major goal of the library is to make interacting with HDX as simple as possible for the end user.
 
-<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
-
-		- [Usage](#usage)
-		- [Creating the API Key File](#creating-the-api-key-file)
-		- [Starting the Data Collector](#starting-the-data-collector)
-		- [Setting up the Configuration](#setting-up-the-configuration)
-		- [Configuring Logging](#configuring-logging)
-		- [Operations on HDX Objects](#operations-on-hdx-objects)
-		- [Dataset Specific Operations](#dataset-specific-operations)
-		- [Full Example](#full-example)
-
-<!-- /TOC -->
+- [Usage](#usage)
+- [Creating the API Key File](#creating-the-api-key-file)
+- [Starting the Data Collector](#starting-the-data-collector)
+- [Setting up the Configuration](#setting-up-the-configuration)
+- [Configuring Logging](#configuring-logging)
+- [Operations on HDX Objects](#operations-on-hdx-objects)
+- [Dataset Specific Operations](#dataset-specific-operations)
+- [Full Example](#full-example)
 
 ### Usage
 The API documentation can be found here: [http://mcarans.github.io/hdx-python-api/](http://mcarans.github.io/hdx-python-api/). The code for the library is here: [https://github.com/mcarans/hdx-python-api](https://github.com/mcarans/hdx-python-api).
