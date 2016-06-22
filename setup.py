@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 
-requirements = ['colorlog',
+requirements = ['ckanapi',
+                'colorlog',
                 'ndg-httpsclient',
                 'pyasn1',
                 'pyOpenSSL',
