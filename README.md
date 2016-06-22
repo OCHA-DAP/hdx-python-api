@@ -26,13 +26,13 @@ git+[git://github.com/mcarans/hdx-python-api.git#egg=hdx-python-api](git://githu
 
 The easiest way to get started is to use the wrappers and configuration defaults. You will most likely just need the simple wrapper. If you are in the HDX team, you may need to use the ScraperWiki wrapper which reports status to that platform (in which case replace "simple" with "scraperwiki" in the code below):
 
-from hdx.collector.simple import wrapper
-
-def main(configuration):  
-    ***YOUR CODE HERE***
-
-if __name__ == '__main__':  
-    wrapper(main)
+    from hdx.collector.simple import wrapper
+    
+    def main(configuration):  
+        ***YOUR CODE HERE***
+    
+    if __name__ == '__main__':  
+        wrapper(main)
 
 The wrapper sets up both logging and HDX configuration, the latter being passed to your main function in the "configuration" argument above. You can override
 
@@ -58,21 +58,16 @@ If you do not use the wrapper, you can use the Configuration class directly, pas
 
 KEYWORD ARGUMENTS can be:
 
-    hdx_site Optional[bool] HDX site to use eg. prod, test test
-    
-    hdx_key_file Optional[str] Path to HDX key file ~/.hdxkey
-    
-    One of: hdx_config_dict dict HDX configuration dictionary  
-    
-    hdx_config_json str Path to JSON HDX configuration  
-    
-    hdx_config_yaml str Path to YAML HDX configuration Library's internal hdx_configuration.yml
-    
-    One of: collector_config_dict dict Collector configuration dictionary  
-    
-    collector_config_json str Path to JSON Collector configuration  
-    
-    collector_config_yaml str Path to YAML Collector configuration config/collector_configuration.yml
+| Choose |       Argument      |     Type     |               Value                |                 Default                |
+|--------|---------------------|--------------|------------------------------------|----------------------------------------|
+|        |hdx_site             |Optional[bool]|HDX site to use eg. prod, test      |test                                    |
+|        |hdx_key_file         |Optional[str] |Path to HDX key file ~/.hdxkey      |                                        |                                  
+|One of: |hdx_config_dict      |dict          |HDX configuration dictionary        |                                        |
+|        |hdx_config_json      |str           |Path to JSON HDX configuration      |                                        |
+|        |hdx_config_yaml      |str           |Path to YAML HDX configuration      |Library's internal hdx_configuration.yml|
+|One of: |collector_config_dict|dict          |Collector configuration dictionary  |                                        |
+|        |collector_config_json|str           |Path to JSON Collector configuration|                                        |
+|        |collector_config_yaml|str           |Path to YAML Collector configuration|config/collector_configuration.yml      |
 
 ### Configuring Logging
 
