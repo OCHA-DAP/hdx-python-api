@@ -3,6 +3,19 @@
 
 The HDX Python Library is designed to enable you to easily develop code that interacts with the Humanitarian Data Exchange platform. The major goal of the library is to make interacting with HDX as simple as possible for the end user.
 
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+		- [Usage](#usage)
+		- [Creating the API Key File](#creating-the-api-key-file)
+		- [Starting the Data Collector](#starting-the-data-collector)
+		- [Setting up the Configuration](#setting-up-the-configuration)
+		- [Configuring Logging](#configuring-logging)
+		- [Operations on HDX Objects](#operations-on-hdx-objects)
+		- [Dataset Specific Operations](#dataset-specific-operations)
+		- [Full Example](#full-example)
+
+<!-- /TOC -->
+
 ### Usage
 The API documentation can be found here: [http://mcarans.github.io/hdx-python-api/](http://mcarans.github.io/hdx-python-api/). The code for the library is here: [https://github.com/mcarans/hdx-python-api](https://github.com/mcarans/hdx-python-api).
 
@@ -27,10 +40,10 @@ git+[git://github.com/mcarans/hdx-python-api.git#egg=hdx-python-api](git://githu
 The easiest way to get started is to use the wrappers and configuration defaults. You will most likely just need the simple wrapper. If you are in the HDX team, you may need to use the ScraperWiki wrapper which reports status to that platform (in which case replace "simple" with "scraperwiki" in the code below):
 
     from hdx.collector.simple import wrapper
-    
+
     def main(configuration):  
         ***YOUR CODE HERE***
-    
+
     if __name__ == '__main__':  
         wrapper(main)
 
@@ -90,7 +103,7 @@ If not using wrapper:
 If using wrapper:
 
     from hdx.collector import logging_kwargs
-    
+
     logging_kwargs.update(DICTIONARY OF KEYWORD ARGUMENTS)  
     from hdx.collector.simple import wrapper
 
@@ -139,7 +152,7 @@ You can also do so by the standard dictionary _update_ method, which takes a d
 Larger amounts of static metadata are best added from files. YAML is very human readable and recommended, while JSON is also accepted eg.
 
     dataset.update_yaml([path])
-    
+
     dataset.update_json([path])
 
 The default path if unspecified is config/hdx_TYPE_static.yml for YAML and config/hdx_TYPE_static.json for JSON where TYPE is an HDX object's type like dataset or resource eg. config/hdx_galleryitem_static.json. The YAML file takes the following form:
