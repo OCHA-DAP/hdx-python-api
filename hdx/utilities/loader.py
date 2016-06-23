@@ -85,7 +85,7 @@ def load_yaml(path: str) -> dict:
     with open(path, 'rt') as f:
         yamldict = yaml.safe_load(f.read())
     if not yamldict:
-        raise (LoadError('Configuration is empty!'))
+        raise (LoadError('YAML file: %s is empty!' % path))
     return yamldict
 
 
@@ -101,7 +101,7 @@ def load_json(path: str) -> dict:
     with open(path, 'rt') as f:
         jsondict = json.loads(f.read())
     if not jsondict:
-        raise (LoadError('Configuration is empty!'))
+        raise (LoadError('JSON file: %s is empty!' % path))
     return jsondict
 
 
