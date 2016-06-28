@@ -23,6 +23,34 @@ class MockResponse:
         return json.loads(self.text)
 
 
+resultdict = {'cache_last_updated': None, 'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',
+              'webstore_last_updated': None, 'datastore_active': None,
+              'id': 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5', 'size': None, 'state': 'active',
+              'hash': '', 'description': 'My Resource', 'format': 'XLSX',
+              'tracking_summary': {'total': 0, 'recent': 0}, 'last_modified': None, 'url_type': None,
+              'mimetype': None, 'cache_url': None, 'name': 'MyResource1',
+              'created': '2016-06-07T08:57:27.367939', 'url': 'http://test/spreadsheet.xlsx',
+              'webstore_url': None, 'mimetype_inner': None, 'position': 0,
+              'revision_id': '43765383-1fce-471f-8166-d6c8660cc8a9', 'resource_type': None}
+
+
+def mockshow(url, datadict):
+    if 'show' not in url:
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
+    result = json.dumps(resultdict)
+    if datadict['id'] == 'TEST1':
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}' % result)
+    if datadict['id'] == 'TEST2':
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
+    if datadict['id'] == 'TEST3':
+        return MockResponse(200,
+                            '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
+    return MockResponse(404,
+                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
+
 class TestResource():
     resource_data = {
         'name': 'MyResource1',
@@ -31,16 +59,6 @@ class TestResource():
         'url': 'http://test/spreadsheet.xlsx',
         'description': 'My Resource'
     }
-
-    resultdict = {'cache_last_updated': None, 'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',
-                  'webstore_last_updated': None, 'datastore_active': None,
-                  'id': 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5', 'size': None, 'state': 'active',
-                  'hash': '', 'description': 'My Resource', 'format': 'XLSX',
-                  'tracking_summary': {'total': 0, 'recent': 0}, 'last_modified': None, 'url_type': None,
-                  'mimetype': None, 'cache_url': None, 'name': 'MyResource1',
-                  'created': '2016-06-07T08:57:27.367939', 'url': 'http://test/spreadsheet.xlsx',
-                  'webstore_url': None, 'mimetype_inner': None, 'position': 0,
-                  'revision_id': '43765383-1fce-471f-8166-d6c8660cc8a9', 'resource_type': None}
 
     @pytest.fixture(scope='class')
     def static_yaml(self):
@@ -51,32 +69,23 @@ class TestResource():
         return join('fixtures', 'config', 'hdx_resource_static.json')
 
     @pytest.fixture(scope='function')
-    def get(self, monkeypatch):
-        def mockreturn(url, params, headers, auth):
-            result = json.dumps(TestResource.resultdict)
-            if params['id'] == 'TEST1':
-                return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}' % result)
-            if params['id'] == 'TEST2':
-                return MockResponse(404,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
-            if params['id'] == 'TEST3':
-                return MockResponse(200,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
-            return MockResponse(404,
-                                '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
+    def read(self, monkeypatch):
+        def mockreturn(url, data, headers, files, allow_redirects, auth):
+            datadict = json.loads(data.decode('utf-8'))
+            return mockshow(url, datadict)
 
-        monkeypatch.setattr(requests, 'get', mockreturn)
+        monkeypatch.setattr(requests, 'post', mockreturn)
 
     @pytest.fixture(scope='function')
     def post_create(self, monkeypatch):
         def mockreturn(url, data, headers, files, allow_redirects, auth):
+            datadict = json.loads(data.decode('utf-8'))
+            if 'show' in url:
+                return mockshow(url, datadict)
             if 'create' not in url:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}')
-            datadict = json.loads(data.decode('utf-8'))
-
-            result = json.dumps(TestResource.resultdict)
+            result = json.dumps(resultdict)
             if datadict['name'] == 'MyResource1':
                 return MockResponse(200,
                                     '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}' % result)
@@ -95,14 +104,16 @@ class TestResource():
     @pytest.fixture(scope='function')
     def post_update(self, monkeypatch):
         def mockreturn(url, data, headers, files, allow_redirects, auth):
+            datadict = json.loads(data.decode('utf-8'))
+            if 'show' in url:
+                return mockshow(url, datadict)
             if 'update' not in url:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "TEST ERROR: Not update", "__type": "TEST ERROR: Not Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}')
-            datadict = json.loads(data.decode('utf-8'))
-            resultdict = copy.deepcopy(TestResource.resultdict)
-            merge_two_dictionaries(resultdict, datadict)
+            resultdictcopy = copy.deepcopy(resultdict)
+            merge_two_dictionaries(resultdictcopy, datadict)
 
-            result = json.dumps(resultdict)
+            result = json.dumps(resultdictcopy)
             if datadict['name'] == 'MyResource1':
                 return MockResponse(200,
                                     '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}' % result)
@@ -121,11 +132,13 @@ class TestResource():
     @pytest.fixture(scope='function')
     def post_delete(self, monkeypatch):
         def mockreturn(url, data, headers, files, allow_redirects, auth):
+            decodedata = data.decode('utf-8')
+            datadict = json.loads(decodedata)
+            if 'show' in url:
+                return mockshow(url, datadict)
             if 'delete' not in url:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "TEST ERROR: Not delete", "__type": "TEST ERROR: Not Delete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}')
-            decodedata = data.decode('utf-8')
-            datadict = json.loads(decodedata)
             if datadict['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5':
                 return MockResponse(200,
                                     '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}' % decodedata)
@@ -141,7 +154,7 @@ class TestResource():
         collector_config_yaml = join('fixtures', 'config', 'collector_configuration.yml')
         return Configuration(hdx_key_file=hdx_key_file, collector_config_yaml=collector_config_yaml)
 
-    def test_read_from_hdx(self, configuration, get):
+    def test_read_from_hdx(self, configuration, read):
         resource = Resource.read_from_hdx(configuration, 'TEST1')
         assert resource['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
         assert resource['name'] == 'MyResource1'
@@ -151,7 +164,7 @@ class TestResource():
         resource = Resource.read_from_hdx(configuration, 'TEST3')
         assert resource is None
 
-    def test_create_in_hdx(self, configuration, get, post_create):
+    def test_create_in_hdx(self, configuration, post_create):
         resource = Resource(configuration)
         with pytest.raises(HDXError):
             resource.create_in_hdx()
@@ -175,7 +188,7 @@ class TestResource():
         with pytest.raises(HDXError):
             resource.create_in_hdx()
 
-    def test_update_in_hdx(self, configuration, get, post_update):
+    def test_update_in_hdx(self, configuration, post_update):
         resource = Resource(configuration)
         resource['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):
@@ -211,7 +224,7 @@ class TestResource():
         assert resource['id'] == 'TEST1'
         assert resource['format'] == 'xlsx'
 
-    def test_delete_from_hdx(self, configuration, get, post_delete):
+    def test_delete_from_hdx(self, configuration, post_delete):
         resource = Resource.read_from_hdx(configuration, 'TEST1')
         resource.delete_from_hdx()
         del resource['id']

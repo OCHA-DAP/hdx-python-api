@@ -50,8 +50,6 @@ New HDX objects should extend this in similar fashion to Resource for example.
         super(HDXObject, self).__init__(initial_data)
         self.configuration = configuration
         self.old_data = None
-        self.hdxgetsite = ckanapi.RemoteCKAN(configuration.get_hdx_site(),
-                                             apikey=configuration.get_api_key(), get_only=True)
         self.hdxpostsite = ckanapi.RemoteCKAN(configuration.get_hdx_site(),
                                               apikey=configuration.get_api_key())
 
@@ -103,8 +101,8 @@ New HDX objects should extend this in similar fashion to Resource for example.
         if action is None:
             action = self.actions()['show']
         try:
-            result = self.hdxgetsite.call_action(action, {'id': id_field},
-                                                 requests_kwargs={'auth': ('dataproject', 'humdata')})
+            result = self.hdxpostsite.call_action(action, {'id': id_field},
+                                                  requests_kwargs={'auth': ('dataproject', 'humdata')})
             return True, result
         except NotFound as e:
             return False, "%s not found!" % id_field

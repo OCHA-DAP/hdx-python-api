@@ -23,6 +23,39 @@ class MockResponse:
         return json.loads(self.text)
 
 
+resultdict = {
+    'description': 'My GalleryItem',
+    '__extras': {
+        'view_count': 1
+    },
+    'url': 'http://visualisation/url/',
+    'title': 'MyGalleryItem1',
+    'featured': 0,
+    'image_url': 'http://myvisual/visual.png',
+    'type': 'visualization',
+    'id': '2f90d964-f980-4513-ad1b-5df6b2d044ff',
+    'owner_id': '196196be-6037-4488-8b71-d786adf4c081'
+}
+
+
+def mockshow(url, datadict):
+    if 'show' not in url:
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
+    result = json.dumps(resultdict)
+    if datadict['id'] == 'TEST1':
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_show"}' % result)
+    if datadict['id'] == 'TEST2':
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_show"}')
+    if datadict['id'] == 'TEST3':
+        return MockResponse(200,
+                            '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_show"}')
+    return MockResponse(404,
+                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_show"}')
+
+
 class TestGalleryItem():
     galleryitem_data = {
         'title': 'MyGalleryItem1',
@@ -31,20 +64,6 @@ class TestGalleryItem():
         'image_url': 'http://myvisual/visual.png',
         'type': 'visualization',
         'url': 'http://visualisation/url/'
-    }
-
-    resultdict = {
-        'description': 'My GalleryItem',
-        '__extras': {
-            'view_count': 1
-        },
-        'url': 'http://visualisation/url/',
-        'title': 'MyGalleryItem1',
-        'featured': 0,
-        'image_url': 'http://myvisual/visual.png',
-        'type': 'visualization',
-        'id': '2f90d964-f980-4513-ad1b-5df6b2d044ff',
-        'owner_id': '196196be-6037-4488-8b71-d786adf4c081'
     }
 
     @pytest.fixture(scope='class')
@@ -56,32 +75,24 @@ class TestGalleryItem():
         return join('fixtures', 'config', 'hdx_galleryitem_static.json')
 
     @pytest.fixture(scope='function')
-    def get(self, monkeypatch):
-        def mockreturn(url, params, headers, auth):
-            result = json.dumps(TestGalleryItem.resultdict)
-            if params['id'] == 'TEST1':
-                return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_show"}' % result)
-            if params['id'] == 'TEST2':
-                return MockResponse(404,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_show"}')
-            if params['id'] == 'TEST3':
-                return MockResponse(200,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_show"}')
-            return MockResponse(404,
-                                '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_show"}')
+    def read(self, monkeypatch):
+        def mockreturn(url, data, headers, files, allow_redirects, auth):
+            datadict = json.loads(data.decode('utf-8'))
+            return mockshow(url, datadict)
 
-        monkeypatch.setattr(requests, 'get', mockreturn)
+        monkeypatch.setattr(requests, 'post', mockreturn)
 
     @pytest.fixture(scope='function')
     def post_create(self, monkeypatch):
         def mockreturn(url, data, headers, files, allow_redirects, auth):
+            datadict = json.loads(data.decode('utf-8'))
+            if 'show' in url:
+                return mockshow(url, datadict)
             if 'create' not in url:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}')
-            datadict = json.loads(data.decode('utf-8'))
 
-            result = json.dumps(TestGalleryItem.resultdict)
+            result = json.dumps(resultdict)
             if datadict['title'] == 'MyGalleryItem1':
                 return MockResponse(200,
                                     '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}' % result)
@@ -100,14 +111,16 @@ class TestGalleryItem():
     @pytest.fixture(scope='function')
     def post_update(self, monkeypatch):
         def mockreturn(url, data, headers, files, allow_redirects, auth):
+            datadict = json.loads(data.decode('utf-8'))
+            if 'show' in url:
+                return mockshow(url, datadict)
             if 'update' not in url:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "TEST ERROR: Not update", "__type": "TEST ERROR: Not Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}')
-            datadict = json.loads(data.decode('utf-8'))
-            resultdict = copy.deepcopy(TestGalleryItem.resultdict)
-            merge_two_dictionaries(resultdict, datadict)
+            resultdictcopy = copy.deepcopy(resultdict)
+            merge_two_dictionaries(resultdictcopy, datadict)
 
-            result = json.dumps(resultdict)
+            result = json.dumps(resultdictcopy)
             if datadict['title'] == 'MyGalleryItem1':
                 return MockResponse(200,
                                     '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}' % result)
@@ -126,11 +139,13 @@ class TestGalleryItem():
     @pytest.fixture(scope='function')
     def post_delete(self, monkeypatch):
         def mockreturn(url, data, headers, files, allow_redirects, auth):
+            decodedata = data.decode('utf-8')
+            datadict = json.loads(decodedata)
+            if 'show' in url:
+                return mockshow(url, datadict)
             if 'delete' not in url:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "TEST ERROR: Not delete", "__type": "TEST ERROR: Not Delete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_delete"}')
-            decodedata = data.decode('utf-8')
-            datadict = json.loads(decodedata)
             if datadict['id'] == '2f90d964-f980-4513-ad1b-5df6b2d044ff':
                 return MockResponse(200,
                                     '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_delete"}' % decodedata)
@@ -146,7 +161,7 @@ class TestGalleryItem():
         collector_config_yaml = join('fixtures', 'config', 'collector_configuration.yml')
         return Configuration(hdx_key_file=hdx_key_file, collector_config_yaml=collector_config_yaml)
 
-    def test_read_from_hdx(self, configuration, get):
+    def test_read_from_hdx(self, configuration, read):
         galleryitem = GalleryItem.read_from_hdx(configuration, 'TEST1')
         assert galleryitem['id'] == '2f90d964-f980-4513-ad1b-5df6b2d044ff'
         assert galleryitem['title'] == 'MyGalleryItem1'
@@ -155,7 +170,7 @@ class TestGalleryItem():
         galleryitem = GalleryItem.read_from_hdx(configuration, 'TEST3')
         assert galleryitem is None
 
-    def test_create_in_hdx(self, configuration, get, post_create):
+    def test_create_in_hdx(self, configuration, post_create):
         galleryitem = GalleryItem(configuration)
         with pytest.raises(HDXError):
             galleryitem.create_in_hdx()
@@ -179,7 +194,7 @@ class TestGalleryItem():
         with pytest.raises(HDXError):
             galleryitem.create_in_hdx()
 
-    def test_update_in_hdx(self, configuration, get, post_update):
+    def test_update_in_hdx(self, configuration, post_update):
         galleryitem = GalleryItem(configuration)
         galleryitem['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):
@@ -215,7 +230,7 @@ class TestGalleryItem():
         assert galleryitem['id'] == 'TEST1'
         assert galleryitem['type'] == 'visualization'
 
-    def test_delete_from_hdx(self, configuration, get, post_delete):
+    def test_delete_from_hdx(self, configuration, post_delete):
         galleryitem = GalleryItem.read_from_hdx(configuration, 'TEST1')
         galleryitem.delete_from_hdx()
         del galleryitem['id']
