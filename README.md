@@ -185,6 +185,9 @@ You can read an existing HDX object with the static _read_from_hdx_ method whi
 
 A dataset can have resources and a gallery.
 
+![](https://humanitarian.atlassian.net/wiki/download/attachments/8028192/UMLDiagram.png?api=v2)
+
+
 If you wish to add resources or a gallery, you can supply a list and call the appropriate _add_update_*_ function, for example:
 
     resources = [{  
