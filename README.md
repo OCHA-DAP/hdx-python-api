@@ -3,6 +3,8 @@
 
 The HDX Python Library is designed to enable you to easily develop code that interacts with the Humanitarian Data Exchange platform. The major goal of the library is to make interacting with HDX as simple as possible for the end user.
 
+For more about the purpose and design philosophy, please visit [HDX Python Library](https://humanitarian.atlassian.net/wiki/display/HDX/HDX+Python+Library)
+ 
 - [Usage](#usage)
 - [Creating the API Key File](#creating-the-api-key-file)
 - [Starting the Data Collector](#starting-the-data-collector)
