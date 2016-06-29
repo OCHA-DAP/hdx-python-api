@@ -84,7 +84,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
         """
         self.data = load_json_into_existing_dict(self.data, path)
 
-    def _get_from_hdx(self, object_type: str, id_field: str, action: Optional[str] = None) -> Tuple[bool, dict]:
+    def _read_from_hdx(self, object_type: str, id_field: str, action: Optional[str] = None) -> Tuple[bool, dict]:
         """Checks if the hdx object exists in HDX.
 
         Args:
@@ -120,7 +120,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
             bool: True if loaded, False if not
 
         """
-        success, result = self._get_from_hdx(object_type, id_field)
+        success, result = self._read_from_hdx(object_type, id_field)
         if success:
             self.old_data = self.data
             self.data = result
@@ -227,7 +227,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
         self._check_load_existing_object(object_type, id_field_name)
         self._merge_hdx_update(object_type, id_field_name)
 
-    def _post_to_hdx(self, action: str, data: dict, id_field_name: str) -> Union[Tuple[bool, dict], Tuple[bool, str]]:
+    def _write_to_hdx(self, action: str, data: dict, id_field_name: str) -> Union[Tuple[bool, dict], Tuple[bool, str]]:
         """Creates or updates an HDX object in HDX and return HDX object metadata dict
 
         Args:
@@ -258,7 +258,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
             None
 
         """
-        success, result = self._post_to_hdx(action, self.data, id_field_name)
+        success, result = self._write_to_hdx(action, self.data, id_field_name)
 
         if success:
             self.old_data = self.data

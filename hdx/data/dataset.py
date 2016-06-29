@@ -277,7 +277,7 @@ class Dataset(HDXObject):
             self.old_data['resources'] = self._copy_hdxobjects(self.resources, Resource)
             self.separate_resources()
         if self.include_gallery:
-            success, result = self._get_from_hdx('gallery', self.data['id'], GalleryItem.actions()['list'])
+            success, result = self._read_from_hdx('gallery', self.data['id'], GalleryItem.actions()['list'])
             if success:
                 self.data['gallery'] = result
                 self.old_data['gallery'] = self._copy_hdxobjects(self.gallery, GalleryItem)
