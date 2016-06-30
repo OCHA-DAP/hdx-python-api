@@ -7,7 +7,7 @@ For more about the purpose and design philosophy, please visit [HDX Python Libra
  
 - [Usage](#usage)
 - [Creating the API Key File](#creating-the-api-key-file)
-- [Starting the Data Collector](#starting-the-data-collector)
+- [Starting your Project](#starting-your-project)
 - [Setting up the Configuration](#setting-up-the-configuration)
 - [Configuring Logging](#configuring-logging)
 - [Operations on HDX Objects](#operations-on-hdx-objects)
@@ -29,37 +29,37 @@ The first task is to create an API key file. By default this is assumed to be ca
 6. Paste the API key into a text file
 7. Save the text file with filename ".hdxkey" in the current user's home directory
 
-### Starting the Data Collector
+### Starting your Project
 
 To include the HDX Python library in your project, pip install the line below or add the following to your requirements.txt file:
 
     git+git://github.com/mcarans/hdx-python-api.git#egg=hdx-python-api
 
-The easiest way to get started is to use the wrappers and configuration defaults. The wrappers set up both logging and HDX configuration.
+The easiest way to get started is to use the facades and configuration defaults. The facades set up both logging and HDX configuration.
 
-### Default Configuration for Wrappers
+### Default Configuration for Facades
 
-The default configuration loads an internal HDX configuration located within the library, and assumes that there is an API key file called .hdxkey in the current user's home directory and a YAML collector configuration located relative to your working directory at config/collector_configuration.yml which you must create. The collector configuration is used for any configuration specific to your collector.
+The default configuration loads an internal HDX configuration located within the library, and assumes that there is an API key file called .hdxkey in the current user's home directory and a YAML project configuration located relative to your working directory at config/project_configuration.yml which you must create. The project configuration is used for any configuration specific to your project.
 
 The default logging configuration reads a configuration file internal to the library that sets up an coloured console handler outputting at DEBUG level, a file handler writing to errors.log at ERROR level and an SMTP handler sending an email in the event of a CRITICAL error. It assumes that you have created a file relative to your working directory at config/smtp_configuration.yml which contains parameters of the form:
 
     handlers:  
         error_mail_handler:  
             toaddrs: EMAIL_ADDRESSES  
-            subject: "COLLECTOR FAILED: MY_COLLECTOR_NAME"
+            subject: "RUN FAILED: MY_PROJECT_NAME"
 
 
-### Wrappers
+### Facades
 
-You will most likely just need the simple wrapper. If you are in the HDX team, you may need to use the ScraperWiki wrapper which reports status to that platform (in which case replace "simple" with "scraperwiki" in the code below):
+You will most likely just need the simple facade. If you are in the HDX team, you may need to use the ScraperWiki facade which reports status to that platform (in which case replace "simple" with "scraperwiki" in the code below):
 
-    from hdx.collector.simple import wrapper
+    from hdx.facades.simple import facade
 
     def main(configuration):  
         ***YOUR CODE HERE***
 
     if __name__ == '__main__':  
-        wrapper(main)
+        facade(main)
 
 The configuration is passed to your main function in the "configuration" argument above.
 
@@ -67,17 +67,17 @@ The configuration is passed to your main function in the "configuration" argumen
 ### Customising the Configuration
 
 
-It is possible to pass configuration parameters in the wrapper call eg.
+It is possible to pass configuration parameters in the facade call eg.
 
-    wrapper(main, hdx_site = HDX_SITE_TO_USE, hdx_key_file = LOCATION_OF_HDX_KEY_FILE, hdx_config_yaml=PATH_TO_HDX_YAML_CONFIGURATION, 
+    facade(main, hdx_site = HDX_SITE_TO_USE, hdx_key_file = LOCATION_OF_HDX_KEY_FILE, hdx_config_yaml=PATH_TO_HDX_YAML_CONFIGURATION, 
 
-    collector_config_dict = {'MY_PARAMETER', 'MY_VALUE'})
+    project_config_dict = {'MY_PARAMETER', 'MY_VALUE'})
 
-If you did not need a collector configuration, you could simply provide an empty dictionary eg.
+If you did not need a project configuration, you could simply provide an empty dictionary eg.
 
-    wrapper(main, collector_config_dict = {})
+    facade(main, project_config_dict = {})
 
-If you do not use the wrapper, you can use the Configuration class directly, passing in appropriate keyword arguments ie.
+If you do not use the facade, you can use the Configuration class directly, passing in appropriate keyword arguments ie.
 
     from hdx.configuration import Configuration  
     ...  
@@ -92,27 +92,27 @@ KEYWORD ARGUMENTS can be:
 |One of: |hdx_config_dict      |dict          |HDX configuration dictionary        |                                        |
 |        |hdx_config_json      |str           |Path to JSON HDX configuration      |                                        |
 |        |hdx_config_yaml      |str           |Path to YAML HDX configuration      |Library's internal hdx_configuration.yml|
-|One of: |collector_config_dict|dict          |Collector configuration dictionary  |                                        |
-|        |collector_config_json|str           |Path to JSON Collector configuration|                                        |
-|        |collector_config_yaml|str           |Path to YAML Collector configuration|config/collector_configuration.yml      |
+|One of: |project_config_dict  |dict          |Project configuration dictionary    |                                        |
+|        |project_config_json  |str           |Path to JSON Project configuration  |                                        |
+|        |project_config_yaml  |str           |Path to YAML Project configuration  |config/project_configuration.yml        |
 
 ### Configuring Logging
 
-If you wish to change the logging configuration from the defaults, you will need to call _setup_logging_ with arguments unless you have used the simple or ScraperWiki wrappers, in which case you must update the hdx.collector module variable logging_kwargs before importing the wrapper.
+If you wish to change the logging configuration from the defaults, you will need to call _setup_logging_ with arguments unless you have used the simple or ScraperWiki facades, in which case you must update the hdx.facades module variable logging_kwargs before importing the facade.
 
-If not using wrapper:
+If not using facade:
 
     from hdx.logging import setup_logging  
     ...  
     logger = logging.getLogger(__name__)  
     setup_logging(KEYWORD ARGUMENTS)
 
-If using wrapper:
+If using facade:
 
-    from hdx.collector import logging_kwargs
+    from hdx.facades import logging_kwargs
 
     logging_kwargs.update(DICTIONARY OF KEYWORD ARGUMENTS)  
-    from hdx.collector.simple import wrapper
+    from hdx.facades.simple import facade
 
 KEYWORD ARGUMENTS can be:
 
@@ -149,7 +149,7 @@ You can create an HDX Object, such as a dataset, resource or gallery item by cal
         'groups': iso  
     })
 
-The dataset name should not contain special characters and hence if there is any chance of that, then it needs to be slugified. Slugifying is way of making a string valid within a URL (e.g. `ae` replaces `ä`). There are various packages that can do this e.g. [Awesome Slugify](https://pypi.python.org/pypi/awesome-slugify).
+The dataset name should not contain special characters and hence if there is any chance of that, then it needs to be slugified. Slugifying is way of making a string valid within a URL (e.g. `ae` replaces `ä`). There are various packages that can do this e.g. [awesome-slugify](https://pypi.python.org/pypi/awesome-slugify).
 
 You can add metadata using the standard Python dictionary square brackets eg.
 

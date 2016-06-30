@@ -27,9 +27,9 @@ class Configuration(UserDict):
         hdx_config_dict (dict): HDX configuration dictionary OR
         hdx_config_json (str): Path to JSON HDX configuration OR
         hdx_config_yaml (str): Path to YAML HDX configuration. Defaults to library's internal hdx_configuration.yml.
-        collector_config_dict (dict): Collector configuration dictionary OR
-        collector_config_json (str): Path to JSON Collector configuration OR
-        collector_config_yaml (str): Path to YAML Collector configuration. Defaults to config/collector_configuration.yml.
+        project_config_dict (dict): Project configuration dictionary OR
+        project_config_json (str): Path to JSON Project configuration OR
+        project_config_yaml (str): Path to YAML Project configuration. Defaults to config/project_configuration.yml.
     """
 
     def __init__(self, **kwargs):
@@ -60,32 +60,32 @@ class Configuration(UserDict):
             logger.info('Loading HDX configuration from: %s' % hdx_config_yaml)
             hdx_config_dict = load_yaml(hdx_config_yaml)
 
-        collector_config_found = False
-        collector_config_dict = kwargs.get('collector_config_dict', None)
-        if collector_config_dict is not None:
-            collector_config_found = True
-            logger.info('Loading collector configuration from dictionary')
+        project_config_found = False
+        project_config_dict = kwargs.get('project_config_dict', None)
+        if project_config_dict is not None:
+            project_config_found = True
+            logger.info('Loading project configuration from dictionary')
 
-        collector_config_json = kwargs.get('collector_config_json', '')
-        if collector_config_json:
-            if collector_config_found:
-                raise ConfigurationError('More than one collector configuration file given!')
-            collector_config_found = True
-            logger.info('Loading collector configuration from: %s' % collector_config_json)
-            collector_config_dict = load_json(collector_config_json)
+        project_config_json = kwargs.get('project_config_json', '')
+        if project_config_json:
+            if project_config_found:
+                raise ConfigurationError('More than one project configuration file given!')
+            project_config_found = True
+            logger.info('Loading project configuration from: %s' % project_config_json)
+            project_config_dict = load_json(project_config_json)
 
-        collector_config_yaml = kwargs.get('collector_config_yaml', '')
-        if collector_config_found:
-            if collector_config_yaml:
-                raise ConfigurationError('More than one collector configuration file given!')
+        project_config_yaml = kwargs.get('project_config_yaml', '')
+        if project_config_found:
+            if project_config_yaml:
+                raise ConfigurationError('More than one project configuration file given!')
         else:
-            if not collector_config_yaml:
-                logger.info('No collector configuration parameter. Using default.')
-                collector_config_yaml = join('config', 'collector_configuration.yml')
-            logger.info('Loading collector configuration from: %s' % collector_config_yaml)
-            collector_config_dict = load_yaml(collector_config_yaml)
+            if not project_config_yaml:
+                logger.info('No project configuration parameter. Using default.')
+                project_config_yaml = join('config', 'project_configuration.yml')
+            logger.info('Loading project configuration from: %s' % project_config_yaml)
+            project_config_dict = load_yaml(project_config_yaml)
 
-        self.data = merge_two_dictionaries(hdx_config_dict, collector_config_dict)
+        self.data = merge_two_dictionaries(hdx_config_dict, project_config_dict)
 
         hdx_key_file = kwargs.get('hdx_key_file', join('%s' % expanduser("~"), '.hdxkey'))
         self.data['api_key'] = self.load_api_key(hdx_key_file)

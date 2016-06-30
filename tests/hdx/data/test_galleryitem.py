@@ -158,8 +158,8 @@ class TestGalleryItem():
     @pytest.fixture(scope='class')
     def configuration(self):
         hdx_key_file = join('fixtures', '.hdxkey')
-        collector_config_yaml = join('fixtures', 'config', 'collector_configuration.yml')
-        return Configuration(hdx_key_file=hdx_key_file, collector_config_yaml=collector_config_yaml)
+        project_config_yaml = join('fixtures', 'config', 'project_configuration.yml')
+        return Configuration(hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
 
     def test_read_from_hdx(self, configuration, read):
         galleryitem = GalleryItem.read_from_hdx(configuration, 'TEST1')

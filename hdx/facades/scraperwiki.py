@@ -1,25 +1,25 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""Wrapper that handles ScraperWiki and calls collector main function"""
+"""Facade that handles ScraperWiki and calls project main function"""
 import logging
 import sys
 
 import scraperwiki
 from typing import Callable
 
-from hdx.collector import logging_kwargs
 from hdx.configuration import Configuration
+from hdx.facades import logging_kwargs
 from hdx.logging import setup_logging
 
 logger = logging.getLogger(__name__)
 setup_logging(**logging_kwargs)
 
 
-def wrapper(collectormainfn: Callable[[Configuration], None], **kwargs) -> bool:
-    """Wrapper that handles ScraperWiki and calls collector main function
+def facade(projectmainfn: Callable[[Configuration], None], **kwargs) -> bool:
+    """Facade that handles ScraperWiki and calls project main function
 
     Args:
-        collectormainfn ((configuration) -> None): main function of collector
+        projectmainfn ((configuration) -> None): main function of project
         **kwargs: configuration parameters to pass to HDX Configuration class
 
     Returns:
@@ -35,12 +35,12 @@ def wrapper(collectormainfn: Callable[[Configuration], None], **kwargs) -> bool:
         logger.info('--------------------------------------------------')
         logger.info('> HDX Site: %s' % configuration.get_hdx_site())
 
-        collectormainfn(configuration)
+        projectmainfn(configuration)
 
     except Exception as e:
         logger.critical(e, exc_info=True)
-        scraperwiki.status('error', 'Collector failed: %s' % sys.exc_info()[0])
+        scraperwiki.status('error', 'Run failed: %s' % sys.exc_info()[0])
         return False
-    logger.info('Collector completed successfully.\n')
+    logger.info('Run completed successfully.\n')
     scraperwiki.status('ok')
     return True
