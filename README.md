@@ -140,6 +140,7 @@ Then use the logger like this:
 ### Operations on HDX Objects
 
 You can create an HDX Object, such as a dataset, resource or gallery item by calling the constructor with a configuration, which is required, and an optional dictionary containing metadata. For example:
+    from hdx.data.dataset import Dataset
 
     dataset = Dataset(configuration, {  
         'name': slugified_name,  
@@ -147,6 +148,8 @@ You can create an HDX Object, such as a dataset, resource or gallery item by cal
         'dataset_date': dataset_date, # has to be MM/DD/YYYY  
         'groups': iso  
     })
+
+The dataset name should not contain special characters and hence if there is any chance of that, then it needs to be slugified. Slugifying is way of making a string valid within a URL (e.g. `ae` replaces `ä`). 
 
 You can add metadata using the standard Python dictionary square brackets eg.
 
