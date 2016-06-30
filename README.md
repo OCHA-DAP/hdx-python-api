@@ -35,7 +35,19 @@ To include the HDX Python library in your project, pip install the line below or
 
     git+git://github.com/mcarans/hdx-python-api.git#egg=hdx-python-api
 
-The easiest way to get started is to use the wrappers and configuration defaults. You will most likely just need the simple wrapper. If you are in the HDX team, you may need to use the ScraperWiki wrapper which reports status to that platform (in which case replace "simple" with "scraperwiki" in the code below):
+The easiest way to get started is to use the wrappers and configuration defaults. The wrappers set up both logging and HDX configuration, the latter being passed to your main function in the "configuration" argument above.
+
+The default configuration loads an internal HDX configuration located within the library, and assumes that there is an API key file called .hdxkey in the current user's home directory and a YAML collector configuration located at config/collector_configuration.yml which you must create. The collector configuration is used for any configuration specific to your collector.
+
+The default logging configuration reads a configuration file internal to the library that sets up an coloured console handler outputting at DEBUG level, a file handler writing to errors.log at ERROR level and an SMTP handler sending an email in the event of a CRITICAL error. It assumes that you have created a file config/smtp_configuration.yml which contains parameters of the form:
+
+    handlers:  
+        error_mail_handler:  
+            toaddrs: EMAIL_ADDRESSES  
+            subject: "COLLECTOR FAILED: MY_COLLECTOR_NAME"
+
+
+You will most likely just need the simple wrapper. If you are in the HDX team, you may need to use the ScraperWiki wrapper which reports status to that platform (in which case replace "simple" with "scraperwiki" in the code below):
 
     from hdx.collector.simple import wrapper
 
@@ -45,11 +57,11 @@ The easiest way to get started is to use the wrappers and configuration defaults
     if __name__ == '__main__':  
         wrapper(main)
 
-The wrapper sets up both logging and HDX configuration, the latter being passed to your main function in the "configuration" argument above. You can override
+
+
 
 ### Setting up the Configuration
 
-The default configuration loads an internal HDX configuration located within the library, and assumes that there is an API key file called .hdxkey in the current user's home directory and a YAML collector configuration located at config/collector_configuration.yml which you must create. The collector configuration is used for any configuration specific to your collector.
 
 It is possible to pass configuration parameters in the wrapper call eg.
 
@@ -81,13 +93,6 @@ KEYWORD ARGUMENTS can be:
 |        |collector_config_yaml|str           |Path to YAML Collector configuration|config/collector_configuration.yml      |
 
 ### Configuring Logging
-
-The default logging configuration reads a configuration file internal to the library that sets up an coloured console handler outputting at DEBUG level, a file handler writing to errors.log at ERROR level and an SMTP handler sending an email in the event of a CRITICAL error. It assumes that you have created a file config/smtp_configuration.yml which contains parameters of the form:
-
-    handlers:  
-        error_mail_handler:  
-            toaddrs: EMAIL_ADDRESSES  
-            subject: "COLLECTOR FAILED: MY_COLLECTOR_NAME"
 
 If you wish to change the logging configuration from the defaults, you will need to call _setup_logging_ with arguments unless you have used the simple or ScraperWiki wrappers, in which case you must update the hdx.collector module variable logging_kwargs before importing the wrapper.
 
