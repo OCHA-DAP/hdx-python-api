@@ -149,7 +149,7 @@ You can create an HDX Object, such as a dataset, resource or gallery item by cal
         'groups': iso  
     })
 
-The dataset name should not contain special characters and hence if there is any chance of that, then it needs to be slugified. Slugifying is way of making a string valid within a URL (e.g. `ae` replaces `ä`). 
+The dataset name should not contain special characters and hence if there is any chance of that, then it needs to be slugified. Slugifying is way of making a string valid within a URL (e.g. `ae` replaces `ä`). There are various packages that can do this e.g. [Awesome Slugify](https://pypi.python.org/pypi/awesome-slugify).
 
 You can add metadata using the standard Python dictionary square brackets eg.
 
