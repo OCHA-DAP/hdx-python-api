@@ -20,7 +20,7 @@ The API documentation can be found here: [http://mcarans.github.io/hdx-python-a
 
 ### Creating the API Key File
 
-The first task is to create an API key file. By default this is assumed to be called .hdxkey and is located in the current user's home directory (~). Assuming you are using a desktop browser, the API key is obtained by:
+The first task is to create an API key file. By default this is assumed to be called `.hdxkey` and is located in the current user's home directory `~`. Assuming you are using a desktop browser, the API key is obtained by:
 
 1. Browse to the [HDX website](https://data.humdata.org/)
 2. Left click on LOG IN in the top right of the web page if not logged in and log in
@@ -28,11 +28,11 @@ The first task is to create an API key file. By default this is assumed to be ca
 4. Scroll down to the bottom of the profile page
 5. Copy the API key which will be of the form xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 6. Paste the API key into a text file
-7. Save the text file with filename ".hdxkey" in the current user's home directory
+7. Save the text file with filename `.hdxkey` in the current user's home directory
 
 ### Starting your Project
 
-To include the HDX Python library in your project, pip install the line below or add the following to your requirements.txt file:
+To include the HDX Python library in your project, pip install the line below or add the following to your `requirements.txt` file:
 
     git+git://github.com/mcarans/hdx-python-api.git#egg=hdx-python-api
 
@@ -40,7 +40,7 @@ The easiest way to get started is to use the facades and configuration defaults.
 
 ### Default Configuration for Facades
 
-The default configuration loads an internal HDX configuration located within the library, and assumes that there is an API key file called .hdxkey in the current user's home directory and a YAML project configuration located relative to your working directory at config/project_configuration.yml which you must create. The project configuration is used for any configuration specific to your project.
+The default configuration loads an internal HDX configuration located within the library, and assumes that there is an API key file called `.hdxkey` in the current user's home directory `~` and a YAML project configuration located relative to your working directory at `config/project_configuration.yml` which you must create. The project configuration is used for any configuration specific to your project.
 
 The default logging configuration reads a configuration file internal to the library that sets up an coloured console handler outputting at DEBUG level and a file handler writing to errors.log at ERROR level. 
 
@@ -56,7 +56,7 @@ You will most likely just need the simple facade. If you are in the HDX team, yo
     if __name__ == '__main__':  
         facade(main)
 
-The configuration is passed to your main function in the "configuration" argument above.
+The configuration is passed to your main function in the `configuration` argument above.
 
 
 ### Customising the Configuration
@@ -93,7 +93,7 @@ KEYWORD ARGUMENTS can be:
 
 ### Configuring Logging
 
-If you wish to change the logging configuration from the defaults, you will need to call _setup_logging_ with arguments unless you have used the simple or ScraperWiki facades, in which case you must update the hdx.facades module variable logging_kwargs before importing the facade.
+If you wish to change the logging configuration from the defaults, you will need to call `setup_logging` with arguments unless you have used the simple or ScraperWiki facades, in which case you must update the hdx.facades module variable `logging_kwargs` before importing the facade.
 
 If not using facade:
 
@@ -120,14 +120,16 @@ KEYWORD ARGUMENTS can be:
 |(if using|smtp_config_json   |str |Path to JSON Email Logging configuration|                                            |  
 |defaults)|smtp_config_yaml   |str |Path to YAML Email Logging configuration|                                            |
 
-Do not supply smtp_config_dict, smtp_config_json or smtp_config_yaml unless you are using the default logging configuration!
+Do not supply `smtp_config_dict`, `smtp_config_json` or `smtp_config_yaml` unless you are using the default logging configuration!
 
-If you are using the default logging configuration, you have the option to have a default SMTP handler that sends an email in the event of a CRITICAL error by supplying either smtp_config_dict, smtp_config_json or smtp_config_yaml. Here is a template of a YAML file that can be passed as the smtp_config_yaml parameter:
+If you are using the default logging configuration, you have the option to have a default SMTP handler that sends an email in the event of a CRITICAL error by supplying either `smtp_config_dict`, `smtp_config_json` or `smtp_config_yaml`. Here is a template of a YAML file that can be passed as the smtp_config_yaml parameter:
 
     handlers:  
         error_mail_handler:  
             toaddrs: EMAIL_ADDRESSES  
             subject: "RUN FAILED: MY_PROJECT_NAME"
+
+Unless you override it, the mail server `mailhost` for the default SMTP handler is `localhost` and the from address `fromaddr` is `noreply@localhost`.
 
 To use logging in your files, simply add the line below to the top of each Python file:
 
@@ -153,13 +155,13 @@ You can create an HDX Object, such as a dataset, resource or gallery item by cal
         'groups': iso  
     })
 
-The dataset name should not contain special characters and hence if there is any chance of that, then it needs to be slugified. Slugifying is way of making a string valid within a URL (e.g. `ae` replaces `ä`). There are various packages that can do this e.g. [awesome-slugify](https://pypi.python.org/pypi/awesome-slugify).
+The dataset name should not contain special characters and hence if there is any chance of that, then it needs to be slugified. Slugifying is way of making a string valid within a URL (eg. `ae` replaces `ä`). There are various packages that can do this eg. [awesome-slugify](https://pypi.python.org/pypi/awesome-slugify).
 
 You can add metadata using the standard Python dictionary square brackets eg.
 
     dataset['name'] = 'My Dataset'
 
-You can also do so by the standard dictionary _update_ method, which takes a dictionary eg.
+You can also do so by the standard dictionary `update` method, which takes a dictionary eg.
 
     dataset.update({'name': 'My Dataset'})
 
@@ -169,7 +171,7 @@ Larger amounts of static metadata are best added from files. YAML is very human 
 
     dataset.update_json([path])
 
-The default path if unspecified is config/hdx_TYPE_static.yml for YAML and config/hdx_TYPE_static.json for JSON where TYPE is an HDX object's type like dataset or resource eg. config/hdx_galleryitem_static.json. The YAML file takes the following form:
+The default path if unspecified is `config/hdx_TYPE_static.yml` for YAML and `config/hdx_TYPE_static.json` for JSON where TYPE is an HDX object's type like dataset or resource eg. `config/hdx_galleryitem_static.json`. The YAML file takes the following form:
 
     owner_org: "acled"  
     maintainer: "acled"  
@@ -185,17 +187,17 @@ The default path if unspecified is config/hdx_TYPE_static.yml for YAML and conf
 
 Notice how you can define a gallery with one or more gallery items (each starting with a dash '-') within the file as shown above. You can do the same for resources.
 
-You can check if all the fields required by HDX are populated by calling _check_required_fields_ with an optional list of fields to ignore. This will throw an exception if any fields are missing. Before the library posts data to HDX, it will call this method automatically. An example usage:
+You can check if all the fields required by HDX are populated by calling `check_required_fields` with an optional list of fields to ignore. This will throw an exception if any fields are missing. Before the library posts data to HDX, it will call this method automatically. An example usage:
 
     resource.check_required_fields(['package_id'])
 
-Once the HDX object is ready ie. it has all the required metadata, you simply call _create_in_hdx_ eg.
+Once the HDX object is ready ie. it has all the required metadata, you simply call `create_in_hdx` eg.
 
     dataset.create_in_hdx()
 
-You can delete HDX objects using _delete_from_hdx_ and update an object that already exists in HDX with the method _update_in_hdx_. These do not take any parameters or return anything and throw exceptions for failures like the object to delete or update not existing.
+You can delete HDX objects using `delete_from_hdx` and update an object that already exists in HDX with the method `update_in_hdx`. These do not take any parameters or return anything and throw exceptions for failures like the object to delete or update not existing.
 
-You can read an existing HDX object with the static _read_from_hdx_ method which takes a configuration and an identifier parameter and returns the an object of the appropriate HDX object type eg. Dataset or None depending upon whether the object was read eg.
+You can read an existing HDX object with the static `read_from_hdx` method which takes a configuration and an identifier parameter and returns the an object of the appropriate HDX object type eg. `Dataset` or `None` depending upon whether the object was read eg.
 
     dataset = Dataset.read_from_hdx(configuration, 'DATASET_ID_OR_NAME')
 
@@ -206,7 +208,7 @@ A dataset can have resources and a gallery.
 ![](https://humanitarian.atlassian.net/wiki/download/attachments/8028192/UMLDiagram.png?api=v2)
 
 
-If you wish to add resources or a gallery, you can supply a list and call the appropriate _add_update_*_ function, for example:
+If you wish to add resources or a gallery, you can supply a list and call the appropriate `add_update_*` function, for example:
 
     resources = [{  
         'name': xlsx_resourcename,  
@@ -221,17 +223,17 @@ If you wish to add resources or a gallery, you can supply a list and call the ap
          resource['description'] = resource['url'].rsplit('/', 1)[-1]  
      dataset.add_update_resources(resources)
 
-Calling _add_update_resources_ creates a list of HDX Resource objects in dataset and operations can be performed on those objects.
+Calling `add_update_resources` creates a list of HDX Resource objects in dataset and operations can be performed on those objects.
 
-To see the list of resources or gallery items, you use the appropriate _get_*_ function eg.
+To see the list of resources or gallery items, you use the appropriate `get_*` function eg.
 
     resources = dataset.get_resources()
 
-If you wish to add one resource or gallery item, you can supply a dictionary or object of the correct type and call the appropriate _add_update_*_ function, for example:
+If you wish to add one resource or gallery item, you can supply a dictionary or object of the correct type and call the appropriate `add_update_*` function, for example:
 
     dataset.add_update_resource(resource)
 
-You can delete a Resource or GalleryItem object from the dataset using the appropriate _delete_*_ function, for example:
+You can delete a Resource or GalleryItem object from the dataset using the appropriate `delete_*` function, for example:
 
     dataset.delete_galleryitem('GALLERYITEM_TITLE')
 
@@ -239,6 +241,4 @@ You can delete a Resource or GalleryItem object from the dataset using the appr
 
 An example that puts all this together can be found here: [https://github.com/mcarans/hdxscraper-acled-africa](https://github.com/mcarans/hdxscraper-acled-africa)
 
-In particular, take a look at the files run.py, acled_africa.py and the config folder.
-
-HDX site to use eg. prod, test
+In particular, take a look at the files `run.py`, `acled_africa.py` and the `config` folder.
