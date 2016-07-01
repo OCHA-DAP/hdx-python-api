@@ -46,7 +46,7 @@ The default logging configuration reads a configuration file internal to the lib
 
 ### Facades
 
-You will most likely just need the simple facade. If you are in the HDX team, you may need to use the ScraperWiki facade which reports status to that platform (in which case replace "simple" with "scraperwiki" in the code below):
+You will most likely just need the simple facade. If you are in the HDX team, you may need to use the ScraperWiki facade which reports status to that platform (in which case replace `simple` with `scraperwiki` in the code below):
 
     from hdx.facades.simple import facade
 
@@ -72,13 +72,13 @@ If you did not need a project configuration, you could simply provide an empty d
 
     facade(main, project_config_dict = {})
 
-If you do not use the facade, you can use the Configuration class directly, passing in appropriate keyword arguments ie.
+If you do not use the facade, you can use the `Configuration` class directly, passing in appropriate keyword arguments ie.
 
     from hdx.configuration import Configuration  
     ...  
     cfg = Configuration(KEYWORD ARGUMENTS)
 
-KEYWORD ARGUMENTS can be:
+`KEYWORD ARGUMENTS` can be:
 
 | Choose |       Argument      |     Type     |               Value                |                 Default                |
 |--------|---------------------|--------------|------------------------------------|----------------------------------------|
@@ -93,7 +93,7 @@ KEYWORD ARGUMENTS can be:
 
 ### Configuring Logging
 
-If you wish to change the logging configuration from the defaults, you will need to call `setup_logging` with arguments unless you have used the simple or ScraperWiki facades, in which case you must update the hdx.facades module variable `logging_kwargs` before importing the facade.
+If you wish to change the logging configuration from the defaults, you will need to call `setup_logging` with arguments unless you have used the simple or ScraperWiki facades, in which case you must update the `hdx.facades` module variable `logging_kwargs` before importing the facade.
 
 If not using facade:
 
@@ -109,7 +109,7 @@ If using facade:
     logging_kwargs.update(DICTIONARY OF KEYWORD ARGUMENTS)  
     from hdx.facades.simple import facade
 
-KEYWORD ARGUMENTS can be:
+`KEYWORD ARGUMENTS` can be:
 
 |  Choose |      Argument     |Type|                 Value                  |                   Default                  |
 |---------|-------------------|----|----------------------------------------|--------------------------------------------|
@@ -122,7 +122,7 @@ KEYWORD ARGUMENTS can be:
 
 Do not supply `smtp_config_dict`, `smtp_config_json` or `smtp_config_yaml` unless you are using the default logging configuration!
 
-If you are using the default logging configuration, you have the option to have a default SMTP handler that sends an email in the event of a CRITICAL error by supplying either `smtp_config_dict`, `smtp_config_json` or `smtp_config_yaml`. Here is a template of a YAML file that can be passed as the smtp_config_yaml parameter:
+If you are using the default logging configuration, you have the option to have a default SMTP handler that sends an email in the event of a CRITICAL error by supplying either `smtp_config_dict`, `smtp_config_json` or `smtp_config_yaml`. Here is a template of a YAML file that can be passed as the `smtp_config_yaml` parameter:
 
     handlers:  
         error_mail_handler:  
@@ -146,6 +146,7 @@ Then use the logger like this:
 ### Operations on HDX Objects
 
 You can create an HDX Object, such as a dataset, resource or gallery item by calling the constructor with a configuration, which is required, and an optional dictionary containing metadata. For example:
+
     from hdx.data.dataset import Dataset
 
     dataset = Dataset(configuration, {  
