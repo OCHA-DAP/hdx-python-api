@@ -42,7 +42,7 @@ The easiest way to get started is to use the facades and configuration defaults.
 
 The default configuration loads an internal HDX configuration located within the library, and assumes that there is an API key file called .hdxkey in the current user's home directory and a YAML project configuration located relative to your working directory at config/project_configuration.yml which you must create. The project configuration is used for any configuration specific to your project.
 
-The default logging configuration reads a configuration file internal to the library that sets up an coloured console handler outputting at DEBUG level, a file handler writing to errors.log at ERROR level. 
+The default logging configuration reads a configuration file internal to the library that sets up an coloured console handler outputting at DEBUG level and a file handler writing to errors.log at ERROR level. 
 
 ### Facades
 
@@ -118,9 +118,11 @@ KEYWORD ARGUMENTS can be:
 |         |logging_config_yaml|str |Path to YAML Logging configuration      |Library's internal logging_configuration.yml|
 |One of:  |smtp_config_dict   |dict|Email Logging configuration dictionary  |                                            |
 |(if using|smtp_config_json   |str |Path to JSON Email Logging configuration|                                            |  
-|default) |smtp_config_yaml   |str |Path to YAML Email Logging configuration|                                            |
+|defaults)|smtp_config_yaml   |str |Path to YAML Email Logging configuration|                                            |
 
-Do not supply smtp_config_dict, smtp_config_json or smtp_config_yaml unless you are using the default logging configuration! In that case, they are provided as a convenience enabling you to have a default SMTP handler that sends an email in the event of a CRITICAL error. Here is a template of a YAML file that can be passed as the smtp_config_yaml parameter:
+Do not supply smtp_config_dict, smtp_config_json or smtp_config_yaml unless you are using the default logging configuration!
+
+If you are using the default logging configuration, you have the option to have a default SMTP handler that sends an email in the event of a CRITICAL error by supplying either smtp_config_dict, smtp_config_json or smtp_config_yaml. Here is a template of a YAML file that can be passed as the smtp_config_yaml parameter:
 
     handlers:  
         error_mail_handler:  
