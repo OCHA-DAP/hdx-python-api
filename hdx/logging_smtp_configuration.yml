@@ -1,0 +1,10 @@
+handlers:
+    error_mail_handler:
+        class: logging.handlers.SMTPHandler
+        level: CRITICAL
+        formatter: simple
+        mailhost: localhost
+        fromaddr: noreply@localhost
+
+root:
+    handlers: [console, error_file_handler, error_mail_handler]

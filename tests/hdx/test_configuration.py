@@ -17,7 +17,11 @@ class TestConfiguration():
     def project_config_yaml(self):
         return join('fixtures', 'config', 'project_configuration.yml')
 
-    def test_init(self, hdx_key_file, project_config_yaml):
+    @pytest.fixture(scope='class')
+    def project_config_json(self):
+        return join('fixtures', 'config', 'project_configuration.json')
+
+    def test_init(self, hdx_key_file, project_config_json, project_config_yaml):
         with pytest.raises(FileNotFoundError):
             Configuration()
 
@@ -40,6 +44,18 @@ class TestConfiguration():
 
         with pytest.raises(ConfigurationError):
             Configuration(hdx_site='NOT_EXIST', hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
+
+        with pytest.raises(ConfigurationError):
+            Configuration(hdx_key_file=hdx_key_file, project_config_json=project_config_json,
+                          project_config_yaml=project_config_yaml)
+
+        with pytest.raises(ConfigurationError):
+            Configuration(hdx_key_file=hdx_key_file, project_config_dict={'la': 'la'},
+                          project_config_yaml=project_config_yaml)
+
+        with pytest.raises(ConfigurationError):
+            Configuration(hdx_key_file=hdx_key_file, project_config_dict={'la': 'la'},
+                          project_config_json=project_config_json)
 
     def test_hdx_configuration_dict(self, hdx_key_file, project_config_yaml):
         actual_configuration = Configuration(hdx_site='uat', hdx_key_file=hdx_key_file,
@@ -143,8 +159,7 @@ class TestConfiguration():
         }
         assert actual_configuration == expected_configuration
 
-    def test_project_configuration_json(self, hdx_key_file):
-        project_config_json = join('fixtures', 'config', 'project_configuration.json')
+    def test_project_configuration_json(self, hdx_key_file, project_config_json):
         actual_configuration = Configuration(hdx_key_file=hdx_key_file, project_config_json=project_config_json)
         expected_configuration = {
             'api_key': '12345',

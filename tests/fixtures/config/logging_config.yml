@@ -21,6 +21,8 @@ handlers:
         formatter: simple
         mailhost: localhost
         fromaddr: noreply@localhost
+        toaddrs: abc@abc.com
+        subject: "SCRAPER FAILED"
 
 root:
     level: INFO
