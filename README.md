@@ -42,13 +42,7 @@ The easiest way to get started is to use the facades and configuration defaults.
 
 The default configuration loads an internal HDX configuration located within the library, and assumes that there is an API key file called .hdxkey in the current user's home directory and a YAML project configuration located relative to your working directory at config/project_configuration.yml which you must create. The project configuration is used for any configuration specific to your project.
 
-The default logging configuration reads a configuration file internal to the library that sets up an coloured console handler outputting at DEBUG level, a file handler writing to errors.log at ERROR level and an SMTP handler sending an email in the event of a CRITICAL error. It assumes that you have created a file relative to your working directory at config/smtp_configuration.yml which contains parameters of the form:
-
-    handlers:  
-        error_mail_handler:  
-            toaddrs: EMAIL_ADDRESSES  
-            subject: "RUN FAILED: MY_PROJECT_NAME"
-
+The default logging configuration reads a configuration file internal to the library that sets up an coloured console handler outputting at DEBUG level, a file handler writing to errors.log at ERROR level. 
 
 ### Facades
 
@@ -117,14 +111,21 @@ If using facade:
 
 KEYWORD ARGUMENTS can be:
 
-| Choose |      Argument     |Type|                 Value                  |                   Default                  |
-|--------|-------------------|----|----------------------------------------|--------------------------------------------|
-|One of: |logging_config_dict|dict|Logging configuration dictionary        |                                            |
-|        |logging_config_json|str |Path to JSON Logging configuration      |                                            |
-|        |logging_config_yaml|str |Path to YAML Logging configuration      |Library's internal logging_configuration.yml|
-|One of: |smtp_config_dict   |dict|Email|Logging configuration dictionary  |                                            |
-|        |smtp_config_json   |str |Path to JSON Email Logging configuration|                                            |  
-|        |smtp_config_yaml   |str |Path to YAML Email Logging configuration|config/smtp_configuration.yml               |
+|  Choose |      Argument     |Type|                 Value                  |                   Default                  |
+|---------|-------------------|----|----------------------------------------|--------------------------------------------|
+|One of:  |logging_config_dict|dict|Logging configuration dictionary        |                                            |
+|         |logging_config_json|str |Path to JSON Logging configuration      |                                            |
+|         |logging_config_yaml|str |Path to YAML Logging configuration      |Library's internal logging_configuration.yml|
+|One of:  |smtp_config_dict   |dict|Email Logging configuration dictionary  |                                            |
+|(if using|smtp_config_json   |str |Path to JSON Email Logging configuration|                                            |  
+|default) |smtp_config_yaml   |str |Path to YAML Email Logging configuration|                                            |
+
+Do not supply smtp_config_dict, smtp_config_json or smtp_config_yaml unless you are using the default logging configuration! In that case, they are provided as a convenience enabling you to have a default SMTP handler that sends an email in the event of a CRITICAL error. Here is a template of a YAML file that can be passed as the smtp_config_yaml parameter:
+
+    handlers:  
+        error_mail_handler:  
+            toaddrs: EMAIL_ADDRESSES  
+            subject: "RUN FAILED: MY_PROJECT_NAME"
 
 To use logging in your files, simply add the line below to the top of each Python file:
 
