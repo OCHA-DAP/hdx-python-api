@@ -15,9 +15,9 @@ logger = logging.getLogger(__name__)
 class GalleryItem(HDXObject):
     """GalleryItem class containing all logic for creating, checking, and updating gallery items.
 
-        Args:
-            configuration (Configuration): HDX Configuration
-            initial_data (Optional[dict]): Initial gallery item metadata dictionary. Defaults to None.
+    Args:
+        configuration (Configuration): HDX Configuration
+        initial_data (Optional[dict]): Initial gallery item metadata dictionary. Defaults to None.
     """
     def __init__(self, configuration: Configuration, initial_data: Optional[dict] = None):
         if not initial_data:
@@ -30,7 +30,6 @@ class GalleryItem(HDXObject):
 
         Returns:
             dict: dictionary of actions that can be performed on object
-
         """
         return {
             'show': 'related_show',
@@ -72,7 +71,6 @@ class GalleryItem(HDXObject):
 
         Returns:
             Optional[GalleryItem]: GalleryItem object if successful read, None if not
-
         """
 
         galleryitem = GalleryItem(configuration)
@@ -97,7 +95,6 @@ class GalleryItem(HDXObject):
 
         Returns:
             None
-
         """
         self._update_in_hdx('galleryitem', 'id')
 
@@ -106,7 +103,6 @@ class GalleryItem(HDXObject):
 
         Returns:
             None
-
         """
         self._create_in_hdx('galleryitem', 'id', 'title')
 

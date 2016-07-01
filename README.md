@@ -1,14 +1,15 @@
-### HDX Python Library
 [![Build Status](https://travis-ci.org/mcarans/hdx-python-api.svg?branch=master&ts=1)](https://travis-ci.org/mcarans/hdx-python-api) [![Coverage Status](https://coveralls.io/repos/github/mcarans/hdx-python-api/badge.svg?branch=master&ts=1)](https://coveralls.io/github/mcarans/hdx-python-api?branch=master)
 
 The HDX Python Library is designed to enable you to easily develop code that interacts with the Humanitarian Data Exchange platform. The major goal of the library is to make interacting with HDX as simple as possible for the end user.
 
 For more about the purpose and design philosophy, please visit [HDX Python Library](https://humanitarian.atlassian.net/wiki/display/HDX/HDX+Python+Library).
- 
+
 - [Usage](#usage)
 - [Creating the API Key File](#creating-the-api-key-file)
 - [Starting your Project](#starting-your-project)
-- [Setting up the Configuration](#setting-up-the-configuration)
+- [Default Configuration for Facades](#default-configuration-for-facades)
+- [Facades](#facades)
+- [Customising the Configuration](#customising-the-configuration)
 - [Configuring Logging](#configuring-logging)
 - [Operations on HDX Objects](#operations-on-hdx-objects)
 - [Dataset Specific Operations](#dataset-specific-operations)

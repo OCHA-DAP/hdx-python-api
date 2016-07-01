@@ -15,9 +15,9 @@ logger = logging.getLogger(__name__)
 class Resource(HDXObject):
     """Resource class containing all logic for creating, checking, and updating resources.
 
-        Args:
-            configuration (Configuration): HDX Configuration
-            initial_data (Optional[dict]): Initial resource metadata dictionary. Defaults to None.
+    Args:
+        configuration (Configuration): HDX Configuration
+        initial_data (Optional[dict]): Initial resource metadata dictionary. Defaults to None.
     """
     def __init__(self, configuration: Configuration, initial_data: Optional[dict] = None):
         if not initial_data:
@@ -30,7 +30,6 @@ class Resource(HDXObject):
 
         Returns:
             dict: dictionary of actions that can be performed on object
-
         """
         return {
             'show': 'resource_show',
@@ -71,7 +70,6 @@ class Resource(HDXObject):
 
         Returns:
             Optional[Resource]: Resource object if successful read, None if not
-
         """
 
         resource = Resource(configuration)
@@ -96,7 +94,6 @@ class Resource(HDXObject):
 
         Returns:
             None
-
         """
         self._update_in_hdx('resource', 'id')
 
@@ -105,7 +102,6 @@ class Resource(HDXObject):
 
         Returns:
             None
-
         """
         self._create_in_hdx('resource', 'id', 'name')
 

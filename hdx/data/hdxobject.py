@@ -27,22 +27,21 @@ class HDXError(Exception):
 
 class HDXObject(UserDict):
     """HDXObject abstract class containing helper functions for creating, checking, and updating HDX objects.
-New HDX objects should extend this in similar fashion to Resource for example.
+    New HDX objects should extend this in similar fashion to Resource for example.
 
-        Args:
-            configuration (Configuration): HDX Configuration
-            initial_data (dict): Initial metadata dictionary
+    Args:
+        configuration (Configuration): HDX Configuration
+        initial_data (dict): Initial metadata dictionary
     """
     __metaclass__ = abc.ABCMeta
 
     @staticmethod
-    @abc.abstractstaticmethod
+    @abc.abstractmethod
     def actions() -> dict:
         """Dictionary of actions that can be performed on object
 
         Returns:
             dict: dictionary of actions that can be performed on object
-
         """
         pass
 
@@ -58,7 +57,6 @@ New HDX objects should extend this in similar fashion to Resource for example.
 
         Returns:
             dict: Previous internal dictionary
-
         """
         return self.old_data
 
@@ -94,7 +92,6 @@ New HDX objects should extend this in similar fashion to Resource for example.
 
         Returns:
             (bool, dict): (True/False, HDX object metadata/Error)
-
         """
         if not id_field:
             raise HDXError("Empty %s identifier!" % object_type)
@@ -118,7 +115,6 @@ New HDX objects should extend this in similar fashion to Resource for example.
 
         Returns:
             bool: True if loaded, False if not
-
         """
         success, result = self._read_from_hdx(object_type, id_field)
         if success:
@@ -128,7 +124,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
         return False
 
     @staticmethod
-    @abc.abstractstaticmethod
+    @abc.abstractmethod
     def read_from_hdx(configuration: Configuration, id_field: str) -> Optional[HDXObjectUpperBound]:
         """Abstract method to read the HDX object given by identifier from HDX and return it
 
@@ -138,7 +134,6 @@ New HDX objects should extend this in similar fashion to Resource for example.
 
         Returns:
             Optional[T <= HDXObject]: HDX object if successful read, None if not
-
         """
         return
 
@@ -157,7 +152,6 @@ New HDX objects should extend this in similar fashion to Resource for example.
 
         Returns:
             None
-
         """
         self._check_existing_object(object_type, id_field_name)
         if not self._load_from_hdx(object_type, self.data[id_field_name]):
@@ -208,7 +202,6 @@ New HDX objects should extend this in similar fashion to Resource for example.
 
         Returns:
             None
-
         """
         return
 
@@ -221,7 +214,6 @@ New HDX objects should extend this in similar fashion to Resource for example.
 
         Returns:
             None
-
         """
 
         self._check_load_existing_object(object_type, id_field_name)
@@ -237,7 +229,6 @@ New HDX objects should extend this in similar fashion to Resource for example.
 
         Returns:
             (bool, dict): (True/False, HDX object metadata/Error)
-
         """
         try:
             result = self.hdxpostsite.call_action(self.actions()[action], data,
@@ -256,7 +247,6 @@ New HDX objects should extend this in similar fashion to Resource for example.
 
         Returns:
             None
-
         """
         success, result = self._write_to_hdx(action, self.data, id_field_name)
 
@@ -272,7 +262,6 @@ New HDX objects should extend this in similar fashion to Resource for example.
 
         Returns:
             None
-
         """
         return
 
@@ -287,7 +276,6 @@ New HDX objects should extend this in similar fashion to Resource for example.
 
         Returns:
             None
-
         """
         self.check_required_fields()
         if id_field_name in self.data and self._load_from_hdx(object_type, self.data[id_field_name]):
@@ -329,7 +317,6 @@ New HDX objects should extend this in similar fashion to Resource for example.
 
         Returns:
             Any: Return argument b
-
         """
         return b
 

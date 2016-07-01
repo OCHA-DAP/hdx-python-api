@@ -21,10 +21,10 @@ logger = logging.getLogger(__name__)
 class Dataset(HDXObject):
     """Dataset class enabling operations on datasets and associated resources and gallery items.
 
-        Args:
-            configuration (Configuration): HDX Configuration
-            initial_data (Optional[dict]): Initial dataset metadata dictionary. Defaults to None.
-            include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
+    Args:
+        configuration (Configuration): HDX Configuration
+        initial_data (Optional[dict]): Initial dataset metadata dictionary. Defaults to None.
+        include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
     """
 
     def __init__(self, configuration: Configuration, initial_data: Optional[dict] = None,
@@ -42,7 +42,6 @@ class Dataset(HDXObject):
 
         Returns:
             dict: dictionary of actions that can be performed on object
-
         """
         return {
             'show': 'package_show',
@@ -99,7 +98,6 @@ class Dataset(HDXObject):
 
         Returns:
             None
-
         """
         if isinstance(resource, Resource):
             if 'package_id' in resource:
@@ -145,7 +143,6 @@ class Dataset(HDXObject):
 
         Returns:
             List[Resource]: List of Resource objects
-
         """
         return self.resources
 
@@ -211,7 +208,6 @@ class Dataset(HDXObject):
 
         Returns:
             List[GalleryItem]: List of GalleryItem objects
-
         """
         return self.gallery
 
@@ -251,7 +247,6 @@ class Dataset(HDXObject):
 
         Returns:
             Optional[Dataset]: Dataset object if successful read, None if not
-
         """
 
         dataset = Dataset(configuration)
@@ -268,7 +263,6 @@ class Dataset(HDXObject):
 
         Returns:
             bool: True if loaded, False if not
-
         """
 
         if not self._load_from_hdx('dataset', id_or_name):
@@ -369,7 +363,6 @@ class Dataset(HDXObject):
 
         Returns:
             None
-
         """
         loaded = False
         if 'id' in self.data:
@@ -389,7 +382,6 @@ class Dataset(HDXObject):
 
         Returns:
             None
-
         """
         self.check_required_fields()
         loadedid = None
