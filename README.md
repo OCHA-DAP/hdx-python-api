@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ocha-dap/hdx-python-api.svg?branch=master&ts=1)](https://travis-ci.org/ocha-dap/hdx-python-api) [![Coverage Status](https://coveralls.io/repos/github/ocha-dap/hdx-python-api/badge.svg?branch=master&ts=1)](https://coveralls.io/github/ocha-dap/hdx-python-api?branch=master)
+[![Build Status](https://travis-ci.org/OCHA-DAP/hdx-python-api.svg?branch=master&ts=1)](https://travis-ci.org/OCHA-DAP/hdx-python-api) [![Coverage Status](https://coveralls.io/repos/github/OCHA-DAP/hdx-python-api/badge.svg?branch=master&ts=1)](https://coveralls.io/github/OCHA-DAP/hdx-python-api?branch=master)
 
 The HDX Python Library is designed to enable you to easily develop code that interacts with the Humanitarian Data Exchange platform. The major goal of the library is to make interacting with HDX as simple as possible for the end user.
 
@@ -16,7 +16,7 @@ For more about the purpose and design philosophy, please visit [HDX Python Libra
 - [Full Example](#full-example)
 
 ### Usage
-The API documentation can be found here: [http://ocha-dap.github.io/hdx-python-api/](http://ocha-dap.github.io/hdx-python-api/). The code for the library is here: [https://github.com/OCHA-DAP/hdx-python-api](https://github.com/OCHA-DAP/hdx-python-api).
+The API documentation can be found here: [http://OCHA-DAP.github.io/hdx-python-api/](http://OCHA-DAP.github.io/hdx-python-api/). The code for the library is here: [https://github.com/OCHA-DAP/hdx-python-api](https://github.com/OCHA-DAP/hdx-python-api).
 
 ### Creating the API Key File
 
@@ -34,7 +34,7 @@ The first task is to create an API key file. By default this is assumed to be ca
 
 To include the HDX Python library in your project, pip install the line below or add the following to your `requirements.txt` file:
 
-    git+git://github.com/ocha-dap/hdx-python-api.git#egg=hdx-python-api
+    git+git://github.com/OCHA-DAP/hdx-python-api.git#egg=hdx-python-api
 
 The easiest way to get started is to use the facades and configuration defaults. The facades set up both logging and HDX configuration.
 
