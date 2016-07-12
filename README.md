@@ -16,7 +16,7 @@ For more about the purpose and design philosophy, please visit [HDX Python Libra
 - [Full Example](#full-example)
 
 ### Usage
-The API documentation can be found here: [http://OCHA-DAP.github.io/hdx-python-api/](http://OCHA-DAP.github.io/hdx-python-api/). The code for the library is here: [https://github.com/OCHA-DAP/hdx-python-api](https://github.com/OCHA-DAP/hdx-python-api).
+The API documentation can be found here: [http://ocha-dap.github.io/hdx-python-api/](http://ocha-dap.github.io/hdx-python-api/). The code for the library is here: [https://github.com/ocha-dap/hdx-python-api](https://github.com/ocha-dap/hdx-python-api).
 
 ### Creating the API Key File
 
