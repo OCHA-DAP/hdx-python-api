@@ -34,7 +34,7 @@ The first task is to create an API key file. By default this is assumed to be ca
 
 To include the HDX Python library in your project, pip install the line below or add the following to your `requirements.txt` file:
 
-    git+git://github.com/OCHA-DAP/hdx-python-api.git#egg=hdx-python-api
+    git+git://github.com/ocha-dap/hdx-python-api.git#egg=hdx-python-api
 
 The easiest way to get started is to use the facades and configuration defaults. The facades set up both logging and HDX configuration.
 
