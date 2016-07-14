@@ -4,27 +4,16 @@ hdx_test_site: "https://test-data.humdata.org/"
 dataset:
   required_fields:
     - name
+    - private
     - title
+    - notes
+    - dataset_source
+    - owner_org
     - dataset_date
     - groups
-    - owner_org
-    - author
-    - author_email
-    - maintainer
-    - maintainer_email
     - license_id
-    - subnational
-    - notes
-    - caveats
-    - data_update_frequency
     - methodology
-    - methodology_other
-    - dataset_source
-    - package_creator
-    - private
-    - url
-    - state
-    - tags
+    - data_update_frequency
 resource:
   dataset_id: package_id
   required_fields:
