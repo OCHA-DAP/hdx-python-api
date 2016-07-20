@@ -15,9 +15,12 @@ For more about the purpose and design philosophy, please visit [HDX Python Libra
 - [Dataset Specific Operations](#dataset-specific-operations)
 - [Full Example](#full-example)
 
-### Usage
+## Usage
 The API documentation can be found here: [http://ocha-dap.github.io/hdx-python-api/](http://ocha-dap.github.io/hdx-python-api/). The code for the library is here: [https://github.com/ocha-dap/hdx-python-api](https://github.com/ocha-dap/hdx-python-api).
 
+Please note that the library only works on Python 3.
+
+## Getting Started
 ### Creating the API Key File
 
 The first task is to create an API key file. By default this is assumed to be called `.hdxkey` and is located in the current user's home directory `~`. Assuming you are using a desktop browser, the API key is obtained by:
@@ -30,15 +33,66 @@ The first task is to create an API key file. By default this is assumed to be ca
 6. Paste the API key into a text file
 7. Save the text file with filename `.hdxkey` in the current user's home directory
 
-### Starting your Project
+### Installing the Library
 
 To include the HDX Python library in your project, pip install the line below or add the following to your `requirements.txt` file:
 
     git+git://github.com/ocha-dap/hdx-python-api.git#egg=hdx-python-api
 
-The easiest way to get started is to use the facades and configuration defaults. The facades set up both logging and HDX configuration.
+If you get errors, it is probably the dependencies of the cryptography package that are missing eg. for Ubuntu: python-dev, libffi-dev and libssl-dev. See [cryptography dependencies](https://cryptography.io/en/latest/installation/#building-cryptography-on-linux)
 
+### A Quick Example
+
+Let's start with a simple example that also ensures that the library is working properly. This assumes you are using Linux, but you can do something similar on Windows:
+
+1. Create the API key if you haven't already. Look it up on the HDX website as mentioned above, then put it into a file in your home directory:
+
+        cd ~
+        echo xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx > .hdxkey
+2. Install virtualenv if not installed:
+
+        sudo apt-get install virtualenv
+3. Create a Python 3 virtualenv and activate it:
+
+        virtualenv -p python3 test
+        source test/bin/activate
+4. Install the HDX Python library:
+
+        pip install git+git://github.com/ocha-dap/hdx-python-api.git#egg=hdx-python-api
+5. If you get errors, it is probably the [dependencies of the cryptography package](#installing-the-library)
+6. Launch python:
+
+        python
+7. Import required classes:
+
+        from hdx.configuration import Configuration
+        from hdx.data.dataset import Dataset
+8. Use configuration defaults and test HDX site:
+
+        configuration = Configuration(hdx_site='test', project_config_dict = {})
+9. Read this dataset [ACLED Conflict Data for Africa (Realtime - 2016)](https://test-data.humdata.org/dataset/acled-conflict-data-for-africa-realtime-2016#) from HDX and view the date of the dataset:
+
+        dataset = Dataset.read_from_hdx(configuration, 'acled-conflict-data-for-africa-realtime-2016')
+        print(dataset['dataset_date'])
+10. As a test, change the dataset date:
+
+        dataset['dataset_date'] = '07/26/2015'
+        print(dataset['dataset_date'])
+        dataset.update_in_hdx()
+11. You can view it on HDX before changing it back:
+
+        dataset['dataset_date'] = '06/25/2016'
+        dataset.update_in_hdx()
+12. Exit and remove virtualenv:
+
+        exit()
+        deactivate
+        rm -rf test
+
+## Building a Project
 ### Default Configuration for Facades
+
+The easiest way to get started is to use the facades and configuration defaults. The facades set up both logging and HDX configuration.
 
 The default configuration loads an internal HDX configuration located within the library, and assumes that there is an API key file called `.hdxkey` in the current user's home directory `~` and a YAML project configuration located relative to your working directory at `config/project_configuration.yml` which you must create. The project configuration is used for any configuration specific to your project.
 
@@ -145,6 +199,10 @@ Then use the logger like this:
 
 ### Operations on HDX Objects
 
+You can read an existing HDX object with the static `read_from_hdx` method which takes a configuration and an identifier parameter and returns the an object of the appropriate HDX object type eg. `Dataset` or `None` depending upon whether the object was read eg.
+
+    dataset = Dataset.read_from_hdx(configuration, 'DATASET_ID_OR_NAME')
+
 You can create an HDX Object, such as a dataset, resource or gallery item by calling the constructor with a configuration, which is required, and an optional dictionary containing metadata. For example:
 
     from hdx.data.dataset import Dataset
@@ -198,10 +256,6 @@ Once the HDX object is ready ie. it has all the required metadata, you simply ca
 
 You can delete HDX objects using `delete_from_hdx` and update an object that already exists in HDX with the method `update_in_hdx`. These do not take any parameters or return anything and throw exceptions for failures like the object to delete or update not existing.
 
-You can read an existing HDX object with the static `read_from_hdx` method which takes a configuration and an identifier parameter and returns the an object of the appropriate HDX object type eg. `Dataset` or `None` depending upon whether the object was read eg.
-
-    dataset = Dataset.read_from_hdx(configuration, 'DATASET_ID_OR_NAME')
-
 ### Dataset Specific Operations
 
 A dataset can have resources and a gallery.
@@ -238,8 +292,59 @@ You can delete a Resource or GalleryItem object from the dataset using the appr
 
     dataset.delete_galleryitem('GALLERYITEM_TITLE')
 
-### Full Example
+## Working Example
 
-An example that puts all this together can be found here: [https://github.com/mcarans/hdxscraper-acled-africa](https://github.com/mcarans/hdxscraper-acled-africa)
+Here we will create a working example from scratch.
+
+First, pip install the library or alternatively add it to a requirements.txt file if you are comfortable with doing so as described above.
+
+Next create a file called `run.py` and copy into it the code below.
+
+    #!/usr/bin/python
+    # -*- coding: utf-8 -*-
+    '''
+    Calls a function that generates a dataset and creates it in HDX.
+
+    '''
+    import logging
+    from hdx.facades.scraperwiki import facade
+    from my_code import generate_dataset
+
+    logger = logging.getLogger(__name__)
+
+
+    def main(configuration: dict):
+        '''Generate dataset and create it in HDX'''
+
+        dataset = generate_dataset(configuration)
+        dataset.create_in_hdx()
+
+    if __name__ == '__main__':
+        facade(main, hdx_site='test')
+
+The above file will create in HDX a dataset generated by a function called `generate_dataset` that can be found in the file `my_code.py` which we will now write.
+
+Create a file `my_code.py` and copy into it the code below:
+
+    #!/usr/bin/python
+    # -*- coding: utf-8 -*-
+    '''
+    Generate a dataset
+
+    '''
+    import logging
+    from hdx.data.dataset import Dataset
+
+    logger = logging.getLogger(__name__)
+
+
+    def generate_dataset(configuration):
+        '''Create a dataset
+        '''
+        logger.debug('Generating dataset!')
+
+You can then fill out the function `generate_dataset` as required.
+
+A complete example can be found here: [https://github.com/mcarans/hdxscraper-acled-africa](https://github.com/mcarans/hdxscraper-acled-africa)
 
 In particular, take a look at the files `run.py`, `acled_africa.py` and the `config` folder.
