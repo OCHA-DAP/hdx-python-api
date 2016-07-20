@@ -4,16 +4,19 @@ The HDX Python Library is designed to enable you to easily develop code that int
 
 For more about the purpose and design philosophy, please visit [HDX Python Library](https://humanitarian.atlassian.net/wiki/display/HDX/HDX+Python+Library).
 
-- [Usage](#usage)
-- [Creating the API Key File](#creating-the-api-key-file)
-- [Starting your Project](#starting-your-project)
-- [Default Configuration for Facades](#default-configuration-for-facades)
-- [Facades](#facades)
-- [Customising the Configuration](#customising-the-configuration)
-- [Configuring Logging](#configuring-logging)
-- [Operations on HDX Objects](#operations-on-hdx-objects)
-- [Dataset Specific Operations](#dataset-specific-operations)
-- [Full Example](#full-example)
+- [Usage](#)
+- [Getting Started](#)
+	- [Creating the API Key File](#)
+	- [Installing the Library](#)
+	- [A Quick Example](#)
+- [Building a Project](#)
+	- [Default Configuration for Facades](#)
+	- [Facades](#)
+	- [Customising the Configuration](#)
+	- [Configuring Logging](#)
+	- [Operations on HDX Objects](#)
+	- [Dataset Specific Operations](#)
+- [Working Example](#)
 
 ## Usage
 The API documentation can be found here: [http://ocha-dap.github.io/hdx-python-api/](http://ocha-dap.github.io/hdx-python-api/). The code for the library is here: [https://github.com/ocha-dap/hdx-python-api](https://github.com/ocha-dap/hdx-python-api).
