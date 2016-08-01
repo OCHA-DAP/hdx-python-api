@@ -5,19 +5,10 @@
     <option name="CUSTOM_SCOPE_NAME" value="Project and Libraries" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78dced69-aba6-482d-97c8-9f71833379e5" name="Default" comment="Not necessary to have SMTP logger.">
+    <list default="true" id="78dced69-aba6-482d-97c8-9f71833379e5" name="Default" comment="Add demo server">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tests/errors.log" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hdx/configuration.py" afterPath="$PROJECT_DIR$/hdx/configuration.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hdx/data/hdxobject.py" afterPath="$PROJECT_DIR$/hdx/data/hdxobject.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hdx/facades/scraperwiki.py" afterPath="$PROJECT_DIR$/hdx/facades/scraperwiki.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hdx/facades/simple.py" afterPath="$PROJECT_DIR$/hdx/facades/simple.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hdx/hdx_configuration.yml" afterPath="$PROJECT_DIR$/hdx/hdx_configuration.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/errors.log" afterPath="$PROJECT_DIR$/tests/errors.log" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/fixtures/config/hdx_config.json" afterPath="$PROJECT_DIR$/tests/fixtures/config/hdx_config.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/fixtures/config/hdx_config.yml" afterPath="$PROJECT_DIR$/tests/fixtures/config/hdx_config.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/fixtures/config/project_configuration.yml" afterPath="$PROJECT_DIR$/tests/fixtures/config/project_configuration.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/hdx/facades/__init__.py" afterPath="$PROJECT_DIR$/tests/hdx/facades/__init__.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/hdx/test_configuration.py" afterPath="$PROJECT_DIR$/tests/hdx/test_configuration.py" />
     </list>
     <ignored path="hdx-python-api.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -66,11 +57,21 @@
       <file leaf-file-name="test_configuration.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/hdx/test_configuration.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="469">
+            <state relative-caret-position="792">
               <caret line="289" column="67" selection-start-line="289" selection-start-column="67" selection-end-line="289" selection-end-column="67" />
               <folding>
                 <element signature="e#72#96#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="312">
+              <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -125,34 +126,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="hdxobject.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/hdx/data/hdxobject.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="373">
-              <caret line="238" column="0" selection-start-line="238" selection-start-column="0" selection-end-line="238" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="scraperwiki.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/hdx/facades/scraperwiki.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="253">
-              <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="configuration.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/hdx/configuration.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="414">
-              <caret line="125" column="37" selection-start-line="125" selection-start-column="37" selection-end-line="125" selection-end-column="37" />
-              <folding>
-                <element signature="e#70#84#0" expanded="true" />
-              </folding>
+              <caret line="124" column="37" selection-start-line="124" selection-start-column="37" selection-end-line="124" selection-end-column="37" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -191,7 +170,6 @@
         <option value="$PROJECT_DIR$/requirements.txt" />
         <option value="$PROJECT_DIR$/hdx/utilities/json.py" />
         <option value="$PROJECT_DIR$/hdx/utilities/loader.py" />
-        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/tests/hdx/facades/test_scraperwiki.py" />
         <option value="$PROJECT_DIR$/tests/hdx/facades/test_simple.py" />
         <option value="$PROJECT_DIR$/tests/hdx/data/test_dataset.py" />
@@ -224,6 +202,7 @@
         <option value="$PROJECT_DIR$/hdx/hdx_configuration.yml" />
         <option value="$PROJECT_DIR$/hdx/configuration.py" />
         <option value="$PROJECT_DIR$/tests/hdx/test_configuration.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -348,46 +327,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="utilities" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hdx-python-api" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hdx-python-api" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tests" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fixtures" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hdx-python-api" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="hdx-python-api" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tests" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fixtures" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="config" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -978,13 +917,6 @@
       <option name="presentableId" value="Default" />
       <updated>1464695506411</updated>
     </task>
-    <task id="LOCAL-00055" summary="Fix tests">
-      <created>1466429732037</created>
-      <option name="number" value="00055" />
-      <option name="presentableId" value="LOCAL-00055" />
-      <option name="project" value="LOCAL" />
-      <updated>1466429732040</updated>
-    </task>
     <task id="LOCAL-00056" summary="Clean up gitignore file">
       <created>1466431145716</created>
       <option name="number" value="00056" />
@@ -1321,7 +1253,14 @@
       <option name="project" value="LOCAL" />
       <updated>1469521091850</updated>
     </task>
-    <option name="localTasksCounter" value="104" />
+    <task id="LOCAL-00104" summary="Add demo server">
+      <created>1470051268098</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
+      <option name="project" value="LOCAL" />
+      <updated>1470051268099</updated>
+    </task>
+    <option name="localTasksCounter" value="105" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1367,7 +1306,7 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32747933" sideWeight="0.4974227" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36842105" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5402893" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.42665288" sideWeight="0.49484536" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.42665288" sideWeight="0.49484536" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24984066" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3275401" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -1423,7 +1362,6 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Rename methods as we only use post not get even for reads and it was confusing" />
     <MESSAGE value="Add UML diagram" />
     <MESSAGE value="Link to Confluence" />
     <MESSAGE value="More about design philosophy" />
@@ -1448,7 +1386,8 @@
     <MESSAGE value="Update README" />
     <MESSAGE value="Update image" />
     <MESSAGE value="Add spacing" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add spacing" />
+    <MESSAGE value="Add demo server" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add demo server" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -1467,14 +1406,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../VirtualEnvs/hdx-python-api/lib/python3.4/site-packages/requests/sessions.py" />
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="6" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/hdx/facades/test_scraperwiki.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
@@ -1798,16 +1729,30 @@
     <entry file="file://$PROJECT_DIR$/hdx/configuration.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="414">
-          <caret line="125" column="37" selection-start-line="125" selection-start-column="37" selection-end-line="125" selection-end-column="37" />
-          <folding>
-            <element signature="e#70#84#0" expanded="true" />
-          </folding>
+          <caret line="124" column="37" selection-start-line="124" selection-start-column="37" selection-end-line="124" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="312">
+          <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/errors.log">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/hdx/test_configuration.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="469">
+        <state relative-caret-position="792">
           <caret line="289" column="67" selection-start-line="289" selection-start-column="67" selection-end-line="289" selection-end-column="67" />
           <folding>
             <element signature="e#72#96#0" expanded="true" />

@@ -1,7 +1,0 @@
-CRITICAL - 2016-08-01 13:34:00 - hdx.facades.scraperwiki - Some failure!
-Traceback (most recent call last):
-  File "/home/mcarans/Programming/hdx-python-api/hdx/facades/scraperwiki.py", line 38, in facade
-    projectmainfn(configuration)
-  File "/home/mcarans/Programming/hdx-python-api/tests/hdx/facades/__init__.py", line 17, in my_excfn
-    raise ValueError('Some failure!')
-ValueError: Some failure!
