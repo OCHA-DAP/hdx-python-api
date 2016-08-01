@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 """Configuration for HDX"""
 import logging
+from base64 import b64decode
 from collections import UserDict
 from os.path import expanduser, join
-
 from typing import Optional
 
-from hdx.utilities.loader import load_yaml, load_json, script_dir_plus_file
 from .utilities.dictionary import merge_two_dictionaries
+from .utilities.loader import load_yaml, load_json, script_dir_plus_file
 
 logger = logging.getLogger(__name__)
 
@@ -103,14 +103,28 @@ class Configuration(UserDict):
         """
         return self.data['api_key']
 
-    def get_hdx_site(self) -> str:
+    def get_hdx_site_url(self) -> str:
         """
 
         Returns:
             str: HDX web site url
 
         """
-        return self.data[self.hdx_site]
+        return self.data[self.hdx_site]['url']
+
+    def _get_credentials(self) -> tuple:
+        """
+
+        Returns:
+            tuple: HDX site username and password
+
+        """
+        site = self.data[self.hdx_site]
+        username = site['username']
+        if username:
+            return b64decode(username), b64decode(site['password'])
+        else:
+            return '', ''
 
     @staticmethod
     def load_api_key(path: str) -> str:

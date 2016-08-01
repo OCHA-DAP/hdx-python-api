@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """Facade to simplify project setup that calls project main function"""
 import logging
-
 from typing import Callable
 
 from hdx.configuration import Configuration
@@ -30,6 +29,6 @@ def facade(projectmainfn: Callable[[Configuration], None], **kwargs) -> None:
     configuration = Configuration(**kwargs)
 
     logger.info('--------------------------------------------------')
-    logger.info('> HDX Site: %s' % configuration.get_hdx_site())
+    logger.info('> HDX Site: %s' % configuration.get_hdx_site_url())
 
     projectmainfn(configuration)

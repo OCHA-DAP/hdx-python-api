@@ -7,10 +7,10 @@ import abc
 import copy
 import logging
 from collections import UserDict
+from typing import Optional, List, Any, Tuple, TypeVar, Union
 
 import ckanapi
 from ckanapi.errors import NotFound
-from typing import Optional, List, Any, Tuple, TypeVar, Union
 
 from hdx.configuration import Configuration
 from hdx.utilities.dictionary import merge_two_dictionaries
@@ -49,7 +49,7 @@ class HDXObject(UserDict):
         super(HDXObject, self).__init__(initial_data)
         self.configuration = configuration
         self.old_data = None
-        self.hdxpostsite = ckanapi.RemoteCKAN(configuration.get_hdx_site(),
+        self.hdxpostsite = ckanapi.RemoteCKAN(configuration.get_hdx_site_url(),
                                               apikey=configuration.get_api_key())
 
     def get_old_data_dict(self) -> None:
@@ -99,7 +99,7 @@ class HDXObject(UserDict):
             action = self.actions()['show']
         try:
             result = self.hdxpostsite.call_action(action, {'id': id_field},
-                                                  requests_kwargs={'auth': ('dataproject', 'humdata')})
+                                                  requests_kwargs={'auth': self.configuration._get_credentials()})
             return True, result
         except NotFound as e:
             return False, "%s not found!" % id_field
@@ -232,7 +232,7 @@ class HDXObject(UserDict):
         """
         try:
             result = self.hdxpostsite.call_action(self.actions()[action], data,
-                                                  requests_kwargs={'auth': ('dataproject', 'humdata')})
+                                                  requests_kwargs={'auth': self.configuration._get_credentials()})
             return True, result
         except Exception as e:
             raise HDXError('HTTP Post failed when trying to %s %s' % (action, self.data[id_field_name])) from e

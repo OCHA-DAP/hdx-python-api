@@ -7,7 +7,6 @@ import pytest
 
 from hdx.configuration import Configuration, ConfigurationError
 
-
 class TestConfiguration():
     @pytest.fixture(scope='class')
     def hdx_key_file(self):
@@ -58,12 +57,24 @@ class TestConfiguration():
                           project_config_json=project_config_json)
 
     def test_hdx_configuration_dict(self, hdx_key_file, project_config_yaml):
-        actual_configuration = Configuration(hdx_site='uat', hdx_key_file=hdx_key_file,
-                                             hdx_config_dict={'XYZ': {'567': 987}},
+        actual_configuration = Configuration(hdx_site='prod', hdx_key_file=hdx_key_file,
+                                             hdx_config_dict={
+                                                 'hdx_prod_site': {
+                                                     'url': 'https://data.humdata.org/',
+                                                     'username': None,
+                                                     'password': None
+                                                 },
+                                                 'XYZ': {'567': 987}
+                                             },
                                              project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
-            'hdx_uat_site': 'https://uat-data.humdata.org/',
+            'param_1': 'ABC',
+            'hdx_prod_site': {
+                'url': 'https://data.humdata.org/',
+                'username': None,
+                'password': None
+            },
             'XYZ': {'567': 987}
         }
         assert actual_configuration == expected_configuration
@@ -74,9 +85,17 @@ class TestConfiguration():
                                              project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
-            'hdx_prod_site': 'https://data.humdata.org/',
-            'hdx_uat_site': 'https://uat-data.humdata.org/',
-            'hdx_test_site': 'https://test-data.humdata.org/',
+            'param_1': 'ABC',
+            'hdx_prod_site': {
+                'url': 'https://data.humdata.org/',
+                'username': None,
+                'password': None
+            },
+            'hdx_test_site': {
+                'url': 'https://test-data.humdata.org/',
+                'username': 'tumteetum',
+                'password': 'tumteetumteetum'
+            },
             'dataset': {'required_fields': [
                 'name',
                 'dataset_date',
@@ -96,9 +115,17 @@ class TestConfiguration():
                                              project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
-            'hdx_prod_site': 'https://data.humdata.org/',
-            'hdx_uat_site': 'https://uat-data.humdata.org/',
-            'hdx_test_site': 'https://test-data.humdata.org/',
+            'param_1': 'ABC',
+            'hdx_prod_site': {
+                'url': 'https://data.humdata.org/',
+                'username': None,
+                'password': None
+            },
+            'hdx_test_site': {
+                'url': 'https://test-data.humdata.org/',
+                'username': 'lala',
+                'password': 'lalala'
+            },
             'dataset': {'required_fields': [
                 'name',
                 'title',
@@ -118,8 +145,21 @@ class TestConfiguration():
         actual_configuration = Configuration(hdx_key_file=hdx_key_file, project_config_dict={'abc': '123'})
         expected_configuration = {
             'api_key': '12345',
-            'hdx_prod_site': 'https://data.humdata.org/',
-            'hdx_test_site': 'https://test-data.humdata.org/',
+            'hdx_prod_site': {
+                'url': 'https://data.humdata.org/',
+                'username': None,
+                'password': None
+            },
+            'hdx_demo_site': {
+                'url': 'https://demo-data.humdata.org/',
+                'username': 'ZGVtbzE3OQ==',
+                'password': 'ZnVud2l0aGhkeA=='
+            },
+            'hdx_test_site': {
+                'url': 'https://test-data.humdata.org/',
+                'username': 'ZGF0YXByb2plY3Q=',
+                'password': 'aHVtZGF0YQ=='
+            },
             'abc': '123',
             'dataset': {'required_fields': [
                 'name',
@@ -152,8 +192,21 @@ class TestConfiguration():
         actual_configuration = Configuration(hdx_key_file=hdx_key_file, project_config_json=project_config_json)
         expected_configuration = {
             'api_key': '12345',
-            'hdx_prod_site': 'https://data.humdata.org/',
-            'hdx_test_site': 'https://test-data.humdata.org/',
+            'hdx_prod_site': {
+                'url': 'https://data.humdata.org/',
+                'username': None,
+                'password': None
+            },
+            'hdx_demo_site': {
+                'url': 'https://demo-data.humdata.org/',
+                'username': 'ZGVtbzE3OQ==',
+                'password': 'ZnVud2l0aGhkeA=='
+            },
+            'hdx_test_site': {
+                'url': 'https://test-data.humdata.org/',
+                'username': 'ZGF0YXByb2plY3Q=',
+                'password': 'aHVtZGF0YQ=='
+            },
             'my_param': 'abc',
             'dataset': {'required_fields': [
                 'name',
@@ -186,9 +239,22 @@ class TestConfiguration():
         actual_configuration = Configuration(hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
-            'hdx_prod_site': 'https://data.humdata.org/',
-            'hdx_uat_site': 'https://uat-data.humdata.org/',
-            'hdx_test_site': 'https://test-data.humdata.org/',
+            'param_1': 'ABC',
+            'hdx_prod_site': {
+                'url': 'https://data.humdata.org/',
+                'username': None,
+                'password': None
+            },
+            'hdx_demo_site': {
+                'url': 'https://demo-data.humdata.org/',
+                'username': 'ZGVtbzE3OQ==',
+                'password': 'ZnVud2l0aGhkeA=='
+            },
+            'hdx_test_site': {
+                'url': 'https://test-data.humdata.org/',
+                'username': 'ZGF0YXByb2plY3Q=',
+                'password': 'aHVtZGF0YQ=='
+            },
             'dataset': {'required_fields': [
                 'name',
                 'private',
@@ -217,8 +283,9 @@ class TestConfiguration():
         assert actual_configuration == expected_configuration
 
     def test_get_hdx_key_site(self, hdx_key_file, project_config_yaml):
-        actual_configuration = Configuration(hdx_site='uat', hdx_key_file=hdx_key_file,
+        actual_configuration = Configuration(hdx_site='prod', hdx_key_file=hdx_key_file,
                                              hdx_config_dict={},
                                              project_config_yaml=project_config_yaml)
         assert actual_configuration.get_api_key() == '12345'
-        assert actual_configuration.get_hdx_site() == 'https://uat-data.humdata.org/'
+        assert actual_configuration.get_hdx_site_url() == 'https://data.humdata.org/'
+        assert actual_configuration._get_credentials() == ('', '')

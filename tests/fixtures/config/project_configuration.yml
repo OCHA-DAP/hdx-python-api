@@ -1,2 +1,2 @@
 # Collector specific configuration
-hdx_uat_site: "https://uat-data.humdata.org/"
+param_1: "ABC"

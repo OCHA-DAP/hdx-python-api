@@ -9,9 +9,9 @@ testresult = TestResult()
 
 
 def my_testfn(configuration: Configuration):
-    testresult.actual_result = configuration.get_hdx_site()
+    testresult.actual_result = configuration.get_hdx_site_url()
 
 
 def my_excfn(configuration: Configuration):
-    testresult.actual_result = configuration.get_hdx_site()
+    testresult.actual_result = configuration.get_hdx_site_url()
     raise ValueError('Some failure!')
