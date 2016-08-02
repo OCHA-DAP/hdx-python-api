@@ -122,7 +122,7 @@ class Configuration(UserDict):
         site = self.data[self.hdx_site]
         username = site['username']
         if username:
-            return b64decode(username), b64decode(site['password'])
+            return b64decode(username).decode('utf-8'), b64decode(site['password']).decode('utf-8')
         else:
             return '', ''
 
