@@ -13,7 +13,7 @@ requirements = ['ckanapi',
 
 setup(
     name='hdx-python-api',
-    version='0.4',
+    version='0.41',
     packages=find_packages(exclude=['ez_setup', 'tests', 'tests.*']),
     url='http://data.humdata.org/',
     license='PSF',
