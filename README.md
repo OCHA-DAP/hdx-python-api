@@ -67,7 +67,7 @@ Let's start with a simple example that also ensures that the library is working 
         source test/bin/activate
 4. Install the HDX Python library:
 
-        pip install git+git://github.com/ocha-dap/hdx-python-api.git#egg=hdx-python-api
+        pip install git+git://github.com/ocha-dap/hdx-python-api.git@v0.41#egg=hdx-python-api
 5. If you get errors, it is probably the [dependencies of the cryptography package](#installing-the-library)
 6. Launch python:
 
