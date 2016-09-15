@@ -6,7 +6,6 @@ It also handles resource and gallery items.
 """
 import logging
 from os.path import join
-
 from typing import Any, List, Optional
 
 from hdx.configuration import Configuration
@@ -47,7 +46,8 @@ class Dataset(HDXObject):
             'show': 'package_show',
             'update': 'package_update',
             'create': 'package_create',
-            'delete': 'package_delete'
+            'delete': 'package_delete',
+            'search': 'package_search'
         }
 
     def __setitem__(self, key: Any, value: Any) -> None:
@@ -255,6 +255,20 @@ class Dataset(HDXObject):
             return dataset
         return None
 
+    def _dataset_create_resources_gallery(self) -> None:
+        """Creates resource and gallery item objects in dataset
+        """
+
+        if 'resources' in self.data:
+            self.old_data['resources'] = self._copy_hdxobjects(self.resources, Resource)
+            self.separate_resources()
+        if self.include_gallery:
+            success, result = self._read_from_hdx('gallery', self.data['id'], 'id', GalleryItem.actions()['list'])
+            if success:
+                self.data['gallery'] = result
+                self.old_data['gallery'] = self._copy_hdxobjects(self.gallery, GalleryItem)
+                self.separate_gallery()
+
     def _dataset_load_from_hdx(self, id_or_name: str) -> bool:
         """Loads the dataset given by either id or name from HDX
 
@@ -267,15 +281,7 @@ class Dataset(HDXObject):
 
         if not self._load_from_hdx('dataset', id_or_name):
             return False
-        if 'resources' in self.data:
-            self.old_data['resources'] = self._copy_hdxobjects(self.resources, Resource)
-            self.separate_resources()
-        if self.include_gallery:
-            success, result = self._read_from_hdx('gallery', self.data['id'], GalleryItem.actions()['list'])
-            if success:
-                self.data['gallery'] = result
-                self.old_data['gallery'] = self._copy_hdxobjects(self.gallery, GalleryItem)
-                self.separate_gallery()
+        self._dataset_create_resources_gallery()
         return True
 
     def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
@@ -422,3 +428,29 @@ class Dataset(HDXObject):
             None
         """
         self._delete_from_hdx('dataset', 'id')
+
+    @staticmethod
+    def search_in_hdx(configuration: Configuration, query: str) -> List['Dataset']:
+        """Searches for datasets in HDX
+
+        Args:
+            configuration (Configuration): HDX Configuration
+            query (str): Query
+
+        Returns:
+            List[Dataset]: List of datasets resulting from query
+        """
+
+        datasets = []
+        dataset = Dataset(configuration)
+        success, result = dataset._read_from_hdx('dataset', query, 'q')
+        if result:
+            count = result.get('count', None)
+            if count:
+                for datasetdict in result['results']:
+                    dataset = Dataset(configuration)
+                    dataset.old_data = dict()
+                    dataset.data = datasetdict
+                    dataset._dataset_create_resources_gallery()
+                    datasets.append(dataset)
+        return datasets

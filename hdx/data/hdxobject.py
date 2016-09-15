@@ -82,29 +82,34 @@ class HDXObject(UserDict):
         """
         self.data = load_json_into_existing_dict(self.data, path)
 
-    def _read_from_hdx(self, object_type: str, id_field: str, action: Optional[str] = None) -> Tuple[bool, dict]:
-        """Checks if the hdx object exists in HDX.
+    def _read_from_hdx(self, object_type: str, value: str, fieldname: Optional[str] = 'id',
+                       action: Optional[str] = None) -> Tuple[bool, dict]:
+        """Makes a read call to HDX passing in given parameter.
 
         Args:
             object_type (str): Description of HDX object type (for messages)
-            id_field (str): HDX object identifier
-            action (Optional[str]): Replacement CKAN url to use. Defaults to None.
+            value (str): Value of HDX field
+            fieldname (Optional[str]): HDX field name. Defaults to id.
+            action (Optional[str]): Replacement CKAN action url to use. Defaults to None.
 
         Returns:
             (bool, dict): (True/False, HDX object metadata/Error)
         """
-        if not id_field:
-            raise HDXError("Empty %s identifier!" % object_type)
+        if not value:
+            raise HDXError("Empty %s value!" % object_type)
         if action is None:
-            action = self.actions()['show']
+            if fieldname == 'query' or fieldname == 'q':
+                action = self.actions()['search']
+            else:
+                action = self.actions()['show']
         try:
-            result = self.hdxpostsite.call_action(action, {'id': id_field},
+            result = self.hdxpostsite.call_action(action, {fieldname: value},
                                                   requests_kwargs={'auth': self.configuration._get_credentials()})
             return True, result
         except NotFound as e:
-            return False, "%s not found!" % id_field
+            return False, "%s=%s: not found!" % (fieldname, value)
         except Exception as e:
-            raise HDXError('HTTP Get failed when trying to read %s' % id_field) from e
+            raise HDXError('HTTP Get failed when trying to read: %s=%s' % (fieldname, value)) from e
 
     def _load_from_hdx(self, object_type: str, id_field: str) -> bool:
         """Helper method to load the HDX object given by identifier from HDX

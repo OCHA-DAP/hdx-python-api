@@ -3,7 +3,6 @@
 """Resource class containing all logic for creating, checking, and updating resources."""
 import logging
 from os.path import join
-
 from typing import Optional, List
 
 from hdx.configuration import Configuration
@@ -35,7 +34,8 @@ class Resource(HDXObject):
             'show': 'resource_show',
             'update': 'resource_update',
             'create': 'resource_create',
-            'delete': 'resource_delete'
+            'delete': 'resource_delete',
+            'search': 'resource_search'
         }
 
     def update_yaml(self, path: str = join('config', 'hdx_resource_static.yml')) -> None:
@@ -112,6 +112,29 @@ class Resource(HDXObject):
             None
         """
         self._delete_from_hdx('resource', 'id')
+
+    @staticmethod
+    def search_in_hdx(configuration: Configuration, query: str) -> List['Resource']:
+        """Searches for resources in HDX
+
+        Args:
+            configuration (Configuration): HDX Configuration
+            query (str): Query
+
+        Returns:
+            List[Resource]: List of resources resulting from query
+        """
+
+        resources = []
+        resource = Resource(configuration)
+        success, result = resource._read_from_hdx('resource', query, 'query')
+        if result:
+            count = result.get('count', None)
+            if count:
+                for resourcedict in result['results']:
+                    resource = Resource(configuration, resourcedict)
+                    resources.append(resource)
+        return resources
 
     def create_datastore(self) -> None:
         """TODO"""

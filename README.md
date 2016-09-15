@@ -17,6 +17,7 @@ For more about the purpose and design philosophy, please visit [HDX Python Libra
 	- [Operations on HDX Objects](#operations-on-hdx-objects)
 	- [Dataset Specific Operations](#dataset-specific-operations)
 - [Working Example](#working-example)
+- [ACLED Example](#acled-example)
 
 ## Usage
 The library has detailed API documentation:  
@@ -44,7 +45,7 @@ The first task is to create an API key file. By default this is assumed to be ca
 
 To include the HDX Python library in your project, pip install the line below or add the following to your `requirements.txt` file:
 
-    git+git://github.com/ocha-dap/hdx-python-api.git@v0.41#egg=hdx-python-api
+    git+git://github.com/ocha-dap/hdx-python-api.git@v0.42#egg=hdx-python-api
 
 If you get errors, it is probably the dependencies of the cryptography package that are missing eg. for Ubuntu: python-dev, libffi-dev and libssl-dev. See [cryptography dependencies](https://cryptography.io/en/latest/installation/#building-cryptography-on-linux)
 
@@ -67,7 +68,7 @@ Let's start with a simple example that also ensures that the library is working 
         source test/bin/activate
 4. Install the HDX Python library:
 
-        pip install git+git://github.com/ocha-dap/hdx-python-api.git@v0.41#egg=hdx-python-api
+        pip install git+git://github.com/ocha-dap/hdx-python-api.git@v0.42#egg=hdx-python-api
 5. If you get errors, it is probably the [dependencies of the cryptography package](#installing-the-library)
 6. Launch python:
 
@@ -92,7 +93,11 @@ Let's start with a simple example that also ensures that the library is working 
 
         dataset['dataset_date'] = '06/25/2016'
         dataset.update_in_hdx()
-12. Exit and remove virtualenv:
+12. You can search for datasets on HDX:
+
+        datasets = Dataset.search_in_hdx(configuration, 'ACLED')
+        print(datasets)
+13. Exit and remove virtualenv:
 
         exit()
         deactivate
@@ -211,6 +216,12 @@ Then use the logger like this:
 You can read an existing HDX object with the static `read_from_hdx` method which takes a configuration and an identifier parameter and returns the an object of the appropriate HDX object type eg. `Dataset` or `None` depending upon whether the object was read eg.
 
     dataset = Dataset.read_from_hdx(configuration, 'DATASET_ID_OR_NAME')
+
+You can search for datasets and resources in HDX using the `search_in_hdx` method which takes a configuration and a query parameter and returns the a list of objects of the appropriate HDX object type eg. `list[Dataset]` eg.
+
+        datasets = Dataset.search_in_hdx(configuration, 'QUERY')
+
+The query parameter takes a different format depending upon whether it is for a [dataset](http://lucene.apache.org/core/3_6_0/queryparsersyntax.html) or a [resource](http://docs.ckan.org/en/ckan-2.3.4/api/index.html#ckan.logic.action.get.resource_search). 
 
 You can create an HDX Object, such as a dataset, resource or gallery item by calling the constructor with a configuration, which is required, and an optional dictionary containing metadata. For example:
 
@@ -354,6 +365,12 @@ Create a file `my_code.py` and copy into it the code below:
 
 You can then fill out the function `generate_dataset` as required.
 
+## ACLED Example
+
 A complete example can be found here: [https://github.com/mcarans/hdxscraper-acled-africa](https://github.com/mcarans/hdxscraper-acled-africa)
 
 In particular, take a look at the files `run.py`, `acled_africa.py` and the `config` folder.
+
+The ACLED scraper creates a dataset in HDX for [ACLED realtime data](https://data.humdata.org/dataset/acled-conflict-data-for-africa-realtime-2016) if it doesn't already exist, populating all the required metadata. It then creates resources that point to urls of [Excel and csv files for Realtime 2016 All Africa data](http://www.acleddata.com/data/realtime-data-2016/) (or updates the links and metadata if the resources already exist). Finally it creates a gallery item that points to these [dynamic maps and graphs](http://www.acleddata.com/visuals/maps/dynamic-maps/). 
+
+The first iteration of the ACLED scraper was written without the HDX Python library and it became clear looking at this and previous work by others that there are operations that are frequently required and which add unnecessary complexity to the task of coding against HDX. Simplifying the interface to HDX drove the development of the Python library and the second iteration of the scraper was built using it. With the interface using HDX terminology and mapping directly on to datasets, resources and gallery items, the ACLED scraper was faster to develop and is much easier to understand for someone inexperienced in how it works and what it is doing. The challenge with ACLED is that sometimes the urls that the resources point to have not been updated and hence do not work. In this situation, the extensive logging and transparent communication of errors is invaluable and enables action to be taken to resolve the issue as quickly as possible. The static metadata for ACLED is held in human readable files so if it needs to be modified, it is straightforward. This is another feature of the HDX Python library that makes putting data programmatically into HDX a breeze. 

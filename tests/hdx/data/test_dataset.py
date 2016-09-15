@@ -12,6 +12,7 @@ from hdx.configuration import Configuration
 from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
 from hdx.utilities.dictionary import merge_two_dictionaries
+from hdx.utilities.loader import load_yaml
 
 
 class MockResponse:
@@ -83,6 +84,7 @@ resultdict = {
     'solr_additions': '{"countries": ["Algeria", "Zimbabwe"]}',
     'dataset_date': '06/04/2016'}
 
+searchdict = load_yaml(join('fixtures', 'search_results.yml'))
 
 def mockshow(url, datadict):
     if 'show' not in url and 'related_list' not in url:
@@ -111,6 +113,28 @@ def mockshow(url, datadict):
 
     return MockResponse(404,
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}')
+
+
+def mocksearch(url, datadict):
+    if 'search' not in url and 'related_list' not in url:
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "TEST ERROR: Not search", "__type": "TEST ERROR: Not Search Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
+    if 'related_list' in url:
+        result = json.dumps(TestDataset.gallery_data)
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}' % result)
+    result = json.dumps(searchdict)
+    if datadict['q'] == 'ACLED':
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % result)
+    if datadict['q'] == '"':
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "Validation Error", "__type": "Validation Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
+    if datadict['q'] == 'ajyhgr':
+        return MockResponse(200,
+                            '{"success": true, "result": {"count": 0, "results": []}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
+    return MockResponse(404,
+                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
 
 
 class TestDataset():
@@ -290,6 +314,15 @@ class TestDataset():
 
         monkeypatch.setattr(requests, 'post', mockreturn)
 
+    @pytest.fixture(scope='function')
+    def search(self, monkeypatch):
+        def mockreturn(url, data, headers, files, allow_redirects, auth):
+            datadict = json.loads(data.decode('utf-8'))
+            return mocksearch(url, datadict)
+
+        monkeypatch.setattr(requests, 'post', mockreturn)
+
+
     @pytest.fixture(scope='class')
     def configuration(self):
         hdx_key_file = join('fixtures', '.hdxkey')
@@ -460,3 +493,11 @@ class TestDataset():
         dataset.delete_galleryitem('NOTEXIST')
         dataset.delete_galleryitem('d59a01d8-e52b-4337-bcda-fceb1d059bef')
         assert len(dataset.gallery) == 0
+
+    def test_search_in_hdx(self, configuration, search):
+        datasets = Dataset.search_in_hdx(configuration, 'ACLED')
+        assert len(datasets) == 10
+        datasets = Dataset.search_in_hdx(configuration, 'ajyhgr')
+        assert len(datasets) == 0
+        with pytest.raises(HDXError):
+            Dataset.search_in_hdx(configuration, '"')

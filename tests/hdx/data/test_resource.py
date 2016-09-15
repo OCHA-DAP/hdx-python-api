@@ -33,6 +33,62 @@ resultdict = {'cache_last_updated': None, 'package_id': '6f36a41c-f126-4b18-aaaf
               'webstore_url': None, 'mimetype_inner': None, 'position': 0,
               'revision_id': '43765383-1fce-471f-8166-d6c8660cc8a9', 'resource_type': None}
 
+searchdict = {'count': 4, 'results': [{'size': None, 'description': 'ACLED-All-Africa-File_20160101-to-20160903.xlsx',
+                                       'revision_id': '796b639e-f217-4d0e-bedd-4e3b35da4461',
+                                       'cache_last_updated': None,
+                                       'created': '2016-06-22T12:41:02.857171',
+                                       'name': 'ACLED-All-Africa-File_20160101-to-date.xlsx',
+                                       'last_modified': None, 'url_type': 'api', 'format': 'XLSX', 'cache_url': None,
+                                       'url': 'http://www.acleddata.com/wp-content/uploads/2016/09/ACLED.slxs',
+                                       'state': 'active',
+                                       'position': 0, 'revision_last_updated': '2016-06-28T14:17:27.150541',
+                                       'webstore_last_updated': None,
+                                       'mimetype': None, 'package_id': '45f53bde-544c-4a4a-9c6f-d609481b8719',
+                                       'resource_type': 'api',
+                                       'id': 'd6d1c367-1980-4dc7-ab20-c23f02d3b9e7', 'mimetype_inner': None, 'hash': '',
+                                       'webstore_url': None},
+                                      {'size': None, 'description': '',
+                                       'revision_id': '5259be68-e72f-4c02-be8e-61d7cd594a9b',
+                                       'cache_last_updated': None, 'created': '2016-03-23T14:17:02.272572',
+                                       'name': 'ACLED-Version-6-All-Africa-1997-2015_csv_dyadic.zip',
+                                       'last_modified': None,
+                                       'url_type': 'api', 'format': 'ZIP', 'cache_url': None,
+                                       'url': 'http://www.acleddata.com/wp-content/uploads/2016/01/ACLED.zip',
+                                       'state': 'active',
+                                       'position': 0, 'webstore_last_updated': None, 'mimetype': None,
+                                       'package_id': '71d852e4-e41e-4320-a770-9fc2bb87fb64', 'resource_type': 'api',
+                                       'id': '866b3b60-5b2a-4ca3-9b76-665870cc6d71', 'mimetype_inner': None,
+                                       'webstore_url': None,
+                                       'hash': '', 'originalHash': '97196323'},
+                                      {'size': None,
+                                       'description': 'ACLED-All-Africa-File_20160101-to-20160903_csv.zip',
+                                       'revision_id': '796b639e-f217-4d0e-bedd-4e3b35da4461',
+                                       'cache_last_updated': None,
+                                       'created': '2016-06-22T12:41:02.857194',
+                                       'name': 'ACLED-All-Africa-File_20160101-to-date_csv.zip',
+                                       'last_modified': None, 'url_type': 'api', 'format': 'zipped csv',
+                                       'cache_url': None,
+                                       'url': 'http://www.acleddata.com/wp-content/uploads/2016/09/ACLED.zip',
+                                       'state': 'active',
+                                       'position': 1, 'revision_last_updated': '2016-06-28T14:17:27.150541',
+                                       'webstore_last_updated': None,
+                                       'mimetype': None, 'package_id': '45f53bde-544c-4a4a-9c6f-d609481b8719',
+                                       'resource_type': 'api',
+                                       'id': '74b74ae1-df0c-4716-829f-4f939a046823', 'mimetype_inner': None, 'hash': '',
+                                       'webstore_url': None},
+                                      {'size': None, 'description': '',
+                                       'revision_id': '5259be68-e72f-4c02-be8e-61d7cd594a9b',
+                                       'cache_last_updated': None, 'created': '2016-03-23T14:17:08.594232',
+                                       'name': 'ACLED-Version-6-All-Africa-1997-2015_dyadic-file.xlsx',
+                                       'last_modified': None,
+                                       'url_type': 'api', 'format': 'XLSX', 'cache_url': None,
+                                       'url': 'http://www.acleddata.com/wp-content/uploads/2016/01/ACLEDxlsx',
+                                       'state': 'active',
+                                       'position': 1, 'webstore_last_updated': None, 'mimetype': None,
+                                       'package_id': '71d852e4-e41e-4320-a770-9fc2bb87fb64', 'resource_type': 'api',
+                                       'id': 'e1e16f5c-2380-4a28-87b1-f5d644f248e5', 'mimetype_inner': None,
+                                       'webstore_url': None,
+                                       'hash': '', 'originalHash': '97196323'}]}
 
 def mockshow(url, datadict):
     if 'show' not in url:
@@ -50,6 +106,24 @@ def mockshow(url, datadict):
                             '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
     return MockResponse(404,
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
+
+
+def mocksearch(url, datadict):
+    if 'search' not in url:
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "TEST ERROR: Not search", "__type": "TEST ERROR: Not Search Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_search"}')
+    result = json.dumps(searchdict)
+    if datadict['query'] == 'name:ACLED':
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_search"}' % result)
+    if datadict['query'] == 'fail':
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "Validation Error", "__type": "Validation Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_search"}')
+    if datadict['query'] == 'name:ajyhgr':
+        return MockResponse(200,
+                            '{"success": true, "result": {"count": 0, "results": []}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_search"}')
+    return MockResponse(404,
+                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_search"}')
 
 class TestResource():
     resource_data = {
@@ -145,6 +219,14 @@ class TestResource():
 
             return MockResponse(404,
                                 '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}')
+
+        monkeypatch.setattr(requests, 'post', mockreturn)
+
+    @pytest.fixture(scope='function')
+    def search(self, monkeypatch):
+        def mockreturn(url, data, headers, files, allow_redirects, auth):
+            datadict = json.loads(data.decode('utf-8'))
+            return mocksearch(url, datadict)
 
         monkeypatch.setattr(requests, 'post', mockreturn)
 
@@ -248,3 +330,11 @@ class TestResource():
         resource.update_json(static_json)
         assert resource['name'] == 'MyResource1'
         assert resource['format'] == 'zipped csv'
+
+    def test_search_in_hdx(self, configuration, search):
+        resources = Resource.search_in_hdx(configuration, 'name:ACLED')
+        assert len(resources) == 4
+        resources = Resource.search_in_hdx(configuration, 'name:ajyhgr')
+        assert len(resources) == 0
+        with pytest.raises(HDXError):
+            Resource.search_in_hdx(configuration, 'fail')
