@@ -3,7 +3,6 @@
 """GalleryItem class containing all logic for creating, checking, and updating gallery items."""
 import logging
 from os.path import join
-
 from typing import Optional, List
 
 from hdx.configuration import Configuration
@@ -39,7 +38,7 @@ class GalleryItem(HDXObject):
             'list': 'related_list'
         }
 
-    def update_yaml(self, path: str = join('config', 'hdx_galleryitem_static.yml')) -> None:
+    def update_from_yaml(self, path: str = join('config', 'hdx_galleryitem_static.yml')) -> None:
         """Update gallery item metadata with static metadata from YAML file
 
         Args:
@@ -48,9 +47,9 @@ class GalleryItem(HDXObject):
         Returns:
             None
         """
-        super(GalleryItem, self).update_yaml(path)
+        super(GalleryItem, self).update_from_yaml(path)
 
-    def update_json(self, path: str = join('config', 'hdx_galleryitem_static.json')) -> None:
+    def update_from_json(self, path: str = join('config', 'hdx_galleryitem_static.json')) -> None:
         """Update gallery item metadata with static metadata from JSON file
 
         Args:
@@ -59,7 +58,7 @@ class GalleryItem(HDXObject):
         Returns:
             None
         """
-        super(GalleryItem, self).update_json(path)
+        super(GalleryItem, self).update_from_json(path)
 
     @staticmethod
     def read_from_hdx(configuration: Configuration, identifier: str) -> Optional['GalleryItem']:

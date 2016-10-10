@@ -1,0 +1,41 @@
+{
+  "schema": [
+    {
+      "id": "code",
+      "type": "text"
+    },
+    {
+      "id": "title",
+      "type": "text"
+    },
+    {
+      "id": "value",
+      "type": "float"
+    },
+    {
+      "id": "latest_date",
+      "type": "timestamp"
+    },
+    {
+      "id": "source",
+      "type": "text"
+    },
+    {
+      "id": "source_link",
+      "type": "text"
+    },
+    {
+      "id": "notes",
+      "type": "text"
+    },
+    {
+      "id": "explore",
+      "type": "text"
+    },
+    {
+      "id": "units",
+      "type": "text"
+    }
+  ],
+  "primary_key": "code"
+}

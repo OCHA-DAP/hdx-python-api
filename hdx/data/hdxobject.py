@@ -60,7 +60,7 @@ class HDXObject(UserDict):
         """
         return self.old_data
 
-    def update_yaml(self, path: str) -> None:
+    def update_from_yaml(self, path: str) -> None:
         """Update metadata with static metadata from YAML file
 
         Args:
@@ -71,7 +71,7 @@ class HDXObject(UserDict):
         """
         self.data = load_yaml_into_existing_dict(self.data, path)
 
-    def update_json(self, path: str):
+    def update_from_json(self, path: str):
         """Update metadata with static metadata from JSON file
 
         Args:
@@ -83,7 +83,8 @@ class HDXObject(UserDict):
         self.data = load_json_into_existing_dict(self.data, path)
 
     def _read_from_hdx(self, object_type: str, value: str, fieldname: Optional[str] = 'id',
-                       action: Optional[str] = None) -> Tuple[bool, dict]:
+                       action: Optional[str] = None,
+                       other_fields: dict = {}) -> Union[Tuple[bool, dict], Tuple[bool, str]]:
         """Makes a read call to HDX passing in given parameter.
 
         Args:
@@ -91,9 +92,10 @@ class HDXObject(UserDict):
             value (str): Value of HDX field
             fieldname (Optional[str]): HDX field name. Defaults to id.
             action (Optional[str]): Replacement CKAN action url to use. Defaults to None.
+            other_fields (dict): Other fields to pass to CKAN. Defaults to empty dict.
 
         Returns:
-            (bool, dict): (True/False, HDX object metadata/Error)
+            (bool, dict/str): (True/False, HDX object metadata/Error)
         """
         if not value:
             raise HDXError("Empty %s value!" % object_type)
@@ -102,14 +104,16 @@ class HDXObject(UserDict):
                 action = self.actions()['search']
             else:
                 action = self.actions()['show']
+        data = {fieldname: value}
+        data.update(other_fields)
         try:
-            result = self.hdxpostsite.call_action(action, {fieldname: value},
+            result = self.hdxpostsite.call_action(action, data,
                                                   requests_kwargs={'auth': self.configuration._get_credentials()})
             return True, result
-        except NotFound as e:
+        except NotFound:
             return False, "%s=%s: not found!" % (fieldname, value)
         except Exception as e:
-            raise HDXError('HTTP Get failed when trying to read: %s=%s' % (fieldname, value)) from e
+            raise HDXError('HTTP Post failed when trying to read: %s=%s' % (fieldname, value)) from e
 
     def _load_from_hdx(self, object_type: str, id_field: str) -> bool:
         """Helper method to load the HDX object given by identifier from HDX
@@ -126,6 +130,7 @@ class HDXObject(UserDict):
             self.old_data = self.data
             self.data = result
             return True
+        logger.debug(result)
         return False
 
     @staticmethod
@@ -224,21 +229,20 @@ class HDXObject(UserDict):
         self._check_load_existing_object(object_type, id_field_name)
         self._merge_hdx_update(object_type, id_field_name)
 
-    def _write_to_hdx(self, action: str, data: dict, id_field_name: str) -> Union[Tuple[bool, dict], Tuple[bool, str]]:
+    def _write_to_hdx(self, action: str, data: dict, id_field_name: str) -> dict:
         """Creates or updates an HDX object in HDX and return HDX object metadata dict
 
         Args:
-            action (str): Action to perform: 'create' or 'update'
+            action (str): Action to perform eg. 'create', 'update'
             data (dict): Data to write to HDX
             id_field_name (str): Name of field containing HDX object identifier
 
         Returns:
-            (bool, dict): (True/False, HDX object metadata/Error)
+            dict: HDX object metadata
         """
         try:
-            result = self.hdxpostsite.call_action(self.actions()[action], data,
-                                                  requests_kwargs={'auth': self.configuration._get_credentials()})
-            return True, result
+            return self.hdxpostsite.call_action(self.actions()[action], data,
+                                                requests_kwargs={'auth': self.configuration._get_credentials()})
         except Exception as e:
             raise HDXError('HTTP Post failed when trying to %s %s' % (action, self.data[id_field_name])) from e
 
@@ -253,13 +257,9 @@ class HDXObject(UserDict):
         Returns:
             None
         """
-        success, result = self._write_to_hdx(action, self.data, id_field_name)
-
-        if success:
-            self.old_data = self.data
-            self.data = result
-        else:
-            raise HDXError('Failed to %s %s\n%s' % (action, self.data[id_field_name], result))
+        result = self._write_to_hdx(action, self.data, id_field_name)
+        self.old_data = self.data
+        self.data = result
 
     @abc.abstractmethod
     def create_in_hdx(self) -> None:

@@ -1,12 +1,18 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """Resource class containing all logic for creating, checking, and updating resources."""
+import csv
 import logging
+import os
 from os.path import join
+from tempfile import NamedTemporaryFile
 from typing import Optional, List
 
+import requests
+
 from hdx.configuration import Configuration
-from .hdxobject import HDXObject
+from hdx.utilities.loader import load_yaml, load_json, script_dir_plus_file
+from .hdxobject import HDXObject, HDXError
 
 logger = logging.getLogger(__name__)
 
@@ -35,10 +41,13 @@ class Resource(HDXObject):
             'update': 'resource_update',
             'create': 'resource_create',
             'delete': 'resource_delete',
-            'search': 'resource_search'
+            'search': 'resource_search',
+            'datastore_delete': 'datastore_delete',
+            'datastore_create': 'datastore_create',
+            'datastore_upsert': 'datastore_upsert'
         }
 
-    def update_yaml(self, path: str = join('config', 'hdx_resource_static.yml')) -> None:
+    def update_from_yaml(self, path: str = join('config', 'hdx_resource_static.yml')) -> None:
         """Update resource metadata with static metadata from YAML file
 
         Args:
@@ -47,9 +56,9 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        super(Resource, self).update_yaml(path)
+        super(Resource, self).update_from_yaml(path)
 
-    def update_json(self, path: str = join('config', 'hdx_resource_static.json')) -> None:
+    def update_from_json(self, path: str = join('config', 'hdx_resource_static.json')) -> None:
         """Update resource metadata with static metadata from JSON file
 
         Args:
@@ -58,7 +67,7 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        super(Resource, self).update_json(path)
+        super(Resource, self).update_from_json(path)
 
     @staticmethod
     def read_from_hdx(configuration: Configuration, identifier: str) -> Optional['Resource']:
@@ -134,8 +143,167 @@ class Resource(HDXObject):
                 for resourcedict in result['results']:
                     resource = Resource(configuration, resourcedict)
                     resources.append(resource)
+        else:
+            logger.debug(result)
         return resources
 
-    def create_datastore(self) -> None:
-        """TODO"""
-        pass
+    def delete_datastore(self) -> None:
+        """Delete a resource from the HDX datastore
+
+        Returns:
+            None
+        """
+        success, result = self._read_from_hdx('datastore', self.data['id'], 'resource_id',
+                                              self.actions()['datastore_delete'],
+                                              {'force': True})
+        if not success:
+            logger.debug(result)
+
+    def create_datastore(self, schema: List[dict], primary_key: Optional[str] = None) -> None:
+        """Create a resource in the HDX datastore
+
+        Args:
+            schema (List[dict]): List of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
+            primary_key (Optional[str]): Primary key of schema. Defaults to None.
+
+        Returns:
+            None
+        """
+        # Download the resource
+        url = self.data.get('url', None)
+        if not url:
+            raise HDXError('No URL to download!')
+        logger.debug('Downloading %s' % url)
+        try:
+            r = requests.get(url, stream=True)
+        except Exception as e:
+            raise HDXError('Download of %s failed in setup of stream!' % url) from e
+        try:
+            f = NamedTemporaryFile('wb', delete=False)
+            for chunk in r.iter_content(chunk_size=1024):
+                if chunk:  # filter out keep-alive new chunks
+                    f.write(chunk)
+                    f.flush()
+            path = f.name
+        except Exception as e:
+            raise HDXError('Download of %s failed in retrieval of stream!' % url) from e
+        finally:
+            f.close()
+
+        data = {'resource_id': self.data['id'], 'force': True, 'fields': schema, 'primary_key': primary_key}
+        self._write_to_hdx('datastore_create', data, 'id')
+        try:
+            f = open(path, 'r')
+            reader = csv.DictReader(f)
+            rows = [row for row in reader]
+            chunksize = 10000
+            offset = 0
+            logger.debug('Uploading data from %s to datastore' % url)
+            while offset < len(rows):
+                rowset = rows[offset:offset + chunksize]
+                data = {'resource_id': self.data['id'], 'force': True, 'method': 'upsert', 'records': rowset}
+                self._write_to_hdx('datastore_upsert', data, 'id')
+                offset += chunksize
+                logger.debug('Uploading: %s' % offset)
+        except Exception as e:
+            raise HDXError('Upload to datastore of %s failed!' % url) from e
+        finally:
+            f.close()
+            os.unlink(path)
+
+    def create_datastore_from_dict_schema(self, data: dict) -> None:
+        """Creates a resource in the HDX datastore from a YAML file containing a list of fields and types of
+        form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key
+
+        Args:
+            data (dict): Dictionary containing list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
+
+        Returns:
+            None
+        """
+        schema = data['schema']
+        primary_key = data.get('primary_key')
+        self.create_datastore(schema, primary_key)
+
+    def create_datastore_from_yaml_schema(self, path: str) -> None:
+        """Creates a resource in the HDX datastore from a YAML file containing a list of fields and types of
+        form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key
+
+        Args:
+            path (str): Path to YAML file containing list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
+
+        Returns:
+            None
+        """
+        data = load_yaml(path)
+        self.create_datastore_from_dict_schema(data)
+
+    def create_datastore_for_topline(self):
+        """Creates a resource in the HDX datastore using the built in YAML definition for a topline
+
+        Returns:
+            None
+        """
+        data = load_yaml(script_dir_plus_file(os.path.join('..', 'hdx_datasource_topline.yml'), Resource))
+        self.create_datastore_from_dict_schema(data)
+
+    def create_datastore_from_json_schema(self, path: str) -> None:
+        """Creates a resource in the HDX datastore from a JSON file containing a list of fields and types of
+        form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key
+
+        Args:
+            path (str): Path to JSON file containing list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
+
+        Returns:
+            None
+        """
+        data = load_json(path)
+        self.create_datastore_from_dict_schema(data)
+
+    def update_datastore(self, schema: List[dict], primary_key: Optional[str] = None) -> None:
+        """Update a resource in the HDX datastore
+
+        Args:
+            schema (List[dict]): List of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
+            primary_key (Optional[str]): Primary key of schema. Defaults to None.
+
+        Returns:
+            None
+        """
+        self.delete_datastore()
+        self.create_datastore(schema, primary_key)
+
+    def update_datastore_from_yaml_schema(self, path: str) -> None:
+        """Update a resource in the HDX datastore from a YAML file containing a list of fields and types of
+        form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key
+
+        Args:
+            path (str): Path to YAML file containing list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
+
+        Returns:
+            None
+        """
+        self.delete_datastore()
+        self.create_datastore_from_yaml_schema(path)
+
+    def update_datastore_for_topline(self) -> None:
+        """Update a resource in the HDX datastore using the built in YAML definition for a topline
+
+        Returns:
+            None
+        """
+        self.delete_datastore()
+        self.create_datastore_for_topline()
+
+    def update_datastore_from_json_schema(self, path: str) -> None:
+        """Update a resource in the HDX datastore from a JSON file containing a list of fields and types of
+        form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key
+
+        Args:
+            path (str): Path to JSON file containing list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
+
+        Returns:
+            None
+        """
+        self.delete_datastore()
+        self.create_datastore_from_json_schema(path)

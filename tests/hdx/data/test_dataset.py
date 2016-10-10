@@ -435,7 +435,7 @@ class TestDataset():
         dataset = Dataset(configuration, dataset_data)
         assert dataset['name'] == 'MyDataset1'
         assert dataset['author'] == 'AN Other'
-        dataset.update_yaml(static_yaml)
+        dataset.update_from_yaml(static_yaml)
         assert dataset['name'] == 'MyDataset1'
         assert dataset['author'] == 'acled'
         assert dataset.get_resources() == [{"id": "ABC", "description": "Resource1",
@@ -456,7 +456,7 @@ class TestDataset():
         dataset = Dataset(configuration, dataset_data)
         assert dataset['name'] == 'MyDataset1'
         assert dataset['author'] == 'AN Other'
-        dataset.update_json(static_json)
+        dataset.update_from_json(static_json)
         assert dataset['name'] == 'MyDataset1'
         assert dataset['author'] == 'Someone'
         assert dataset.get_resources() == [{"id": "123", "description": "Resource1",

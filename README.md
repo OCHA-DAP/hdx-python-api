@@ -45,7 +45,7 @@ The first task is to create an API key file. By default this is assumed to be ca
 
 To include the HDX Python library in your project, pip install the line below or add the following to your `requirements.txt` file:
 
-    git+git://github.com/ocha-dap/hdx-python-api.git@v0.42#egg=hdx-python-api
+    git+git://github.com/ocha-dap/hdx-python-api.git@v0.5#egg=hdx-python-api
 
 If you get errors, it is probably the dependencies of the cryptography package that are missing eg. for Ubuntu: python-dev, libffi-dev and libssl-dev. See [cryptography dependencies](https://cryptography.io/en/latest/installation/#building-cryptography-on-linux)
 
@@ -68,7 +68,7 @@ Let's start with a simple example that also ensures that the library is working 
         source test/bin/activate
 4. Install the HDX Python library:
 
-        pip install git+git://github.com/ocha-dap/hdx-python-api.git@v0.42#egg=hdx-python-api
+        pip install git+git://github.com/ocha-dap/hdx-python-api.git@v0.5#egg=hdx-python-api
 5. If you get errors, it is probably the [dependencies of the cryptography package](#installing-the-library)
 6. Launch python:
 
@@ -246,9 +246,9 @@ You can also do so by the standard dictionary `update` method, which takes a d
 
 Larger amounts of static metadata are best added from files. YAML is very human readable and recommended, while JSON is also accepted eg.
 
-    dataset.update_yaml([path])
+    dataset.update_from_yaml([path])
 
-    dataset.update_json([path])
+    dataset.update_from_json([path])
 
 The default path if unspecified is `config/hdx_TYPE_static.yml` for YAML and `config/hdx_TYPE_static.json` for JSON where TYPE is an HDX object's type like dataset or resource eg. `config/hdx_galleryitem_static.json`. The YAML file takes the following form:
 
@@ -328,7 +328,7 @@ Next create a file called `run.py` and copy into it the code below.
     '''
     import logging
     from hdx.facades.scraperwiki import facade
-    from my_code import generate_dataset
+    from .my_code import generate_dataset
 
     logger = logging.getLogger(__name__)
 

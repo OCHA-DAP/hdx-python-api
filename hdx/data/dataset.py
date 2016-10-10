@@ -211,7 +211,7 @@ class Dataset(HDXObject):
         """
         return self.gallery
 
-    def update_yaml(self, path: Optional[str] = join('config', 'hdx_dataset_static.yml')) -> None:
+    def update_from_yaml(self, path: Optional[str] = join('config', 'hdx_dataset_static.yml')) -> None:
         """Update dataset metadata with static metadata from YAML file
 
         Args:
@@ -220,11 +220,11 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        super(Dataset, self).update_yaml(path)
+        super(Dataset, self).update_from_yaml(path)
         self.separate_resources()
         self.separate_gallery()
 
-    def update_json(self, path: Optional[str] = join('config', 'hdx_dataset_static.json')) -> None:
+    def update_from_json(self, path: Optional[str] = join('config', 'hdx_dataset_static.json')) -> None:
         """Update dataset metadata with static metadata from JSON file
 
         Args:
@@ -233,7 +233,7 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        super(Dataset, self).update_json(path)
+        super(Dataset, self).update_from_json(path)
         self.separate_resources()
         self.separate_gallery()
 
@@ -453,4 +453,6 @@ class Dataset(HDXObject):
                     dataset.data = datasetdict
                     dataset._dataset_create_resources_gallery()
                     datasets.append(dataset)
+        else:
+            logger.debug(result)
         return datasets
