@@ -5,12 +5,10 @@ import csv
 import logging
 import os
 from os.path import join
-from tempfile import NamedTemporaryFile
 from typing import Optional, List
 
-import requests
-
 from hdx.configuration import Configuration
+from hdx.utilities.downloader import download_file
 from hdx.utilities.loader import load_yaml, load_json, script_dir_plus_file
 from .hdxobject import HDXObject, HDXError
 
@@ -174,21 +172,7 @@ class Resource(HDXObject):
         if not url:
             raise HDXError('No URL to download!')
         logger.debug('Downloading %s' % url)
-        try:
-            r = requests.get(url, stream=True)
-        except Exception as e:
-            raise HDXError('Download of %s failed in setup of stream!' % url) from e
-        try:
-            f = NamedTemporaryFile('wb', delete=False)
-            for chunk in r.iter_content(chunk_size=1024):
-                if chunk:  # filter out keep-alive new chunks
-                    f.write(chunk)
-                    f.flush()
-            path = f.name
-        except Exception as e:
-            raise HDXError('Download of %s failed in retrieval of stream!' % url) from e
-        finally:
-            f.close()
+        path = download_file(url)
 
         data = {'resource_id': self.data['id'], 'force': True, 'fields': schema, 'primary_key': primary_key}
         self._write_to_hdx('datastore_create', data, 'id')
