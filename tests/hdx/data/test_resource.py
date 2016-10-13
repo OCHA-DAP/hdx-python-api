@@ -12,6 +12,7 @@ from hdx.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
 from hdx.utilities.dictionary import merge_two_dictionaries
+from hdx.utilities.downloader import DownloadError
 
 
 class MockResponse:
@@ -394,7 +395,7 @@ class TestResource():
         resource.update_datastore_from_yaml_schema(topline_yaml)
         resource.update_datastore_from_json_schema(topline_json)
         resource = Resource.read_from_hdx(configuration, 'TEST4')
-        with pytest.raises(HDXError):
+        with pytest.raises(DownloadError):
             resource.update_datastore_for_topline()
         resource = Resource.read_from_hdx(configuration, 'TEST5')
         with pytest.raises(HDXError):
