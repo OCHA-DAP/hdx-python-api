@@ -56,7 +56,7 @@ def get_headers(url: str) -> dict:
 
     """
     try:
-        r = requests.get(url)
+        r = requests.head(url)
     except Exception as e:
         raise DownloadError('Download of %s failed!' % url) from e
     if r.status_code != 200:
