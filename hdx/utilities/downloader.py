@@ -17,7 +17,7 @@ def download_file(url: str, path: Optional[str] = None) -> str:
 
     Args:
         url (str): URL to download
-        path (Optional[str]): path to download it to. Defaults to None.
+        path (Optional[str]): Path to download it to. Defaults to None.
 
     Returns:
         str: Path of downloaded file
@@ -45,18 +45,19 @@ def download_file(url: str, path: Optional[str] = None) -> str:
         f.close()
 
 
-def get_headers(url: str) -> dict:
+def get_headers(url: str, timeout: Optional[float] = None) -> dict:
     """Download url headers
 
     Args:
         url (str): URL to download
+        timeout (Optional[float]): Timeout for connecting to URL. Defaults to None (no timeout).
 
     Returns:
         dict: Headers of url
 
     """
     try:
-        r = requests.head(url)
+        r = requests.head(url, timeout=timeout)
     except Exception as e:
         raise DownloadError('Download of %s failed!' % url) from e
     if r.status_code != 200:
