@@ -113,7 +113,7 @@ class HDXObject(UserDict):
         except NotFound:
             return False, "%s=%s: not found!" % (fieldname, value)
         except Exception as e:
-            raise HDXError('HTTP Post failed when trying to read: %s=%s' % (fieldname, value)) from e
+            raise HDXError('Failed when trying to read: %s=%s! (POST)' % (fieldname, value)) from e
 
     def _load_from_hdx(self, object_type: str, id_field: str) -> bool:
         """Helper method to load the HDX object given by identifier from HDX
@@ -244,7 +244,7 @@ class HDXObject(UserDict):
             return self.hdxpostsite.call_action(self.actions()[action], data,
                                                 requests_kwargs={'auth': self.configuration._get_credentials()})
         except Exception as e:
-            raise HDXError('HTTP Post failed when trying to %s %s' % (action, self.data[id_field_name])) from e
+            raise HDXError('Failed when trying to %s %s! (POST)' % (action, self.data[id_field_name])) from e
 
     def _save_to_hdx(self, action: str, id_field_name: str) -> None:
         """Creates or updates an HDX object in HDX, saving current data and replacing with returned HDX object data

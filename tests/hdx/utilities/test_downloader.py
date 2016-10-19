@@ -3,7 +3,7 @@ import tempfile
 
 import pytest
 
-from hdx.utilities.downloader import download_file, DownloadError, get_headers
+from hdx.utilities.downloader import download_file, DownloadError, get_headers, download
 
 
 class TestDownloader():
@@ -28,3 +28,12 @@ class TestDownloader():
         headers = get_headers(
             'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv')
         assert headers['Content-Length'] == '479'
+
+    def test_download(self):
+        with pytest.raises(DownloadError):
+            download('NOTEXIST://NOTEXIST.csv')
+        with pytest.raises(DownloadError):
+            download('https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/NOTEXIST.csv')
+        result = download(
+            'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv')
+        assert result['Content-Length'] == '479'

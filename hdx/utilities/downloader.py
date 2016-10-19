@@ -59,7 +59,27 @@ def get_headers(url: str, timeout: Optional[float] = None) -> dict:
     try:
         r = requests.head(url, timeout=timeout)
     except Exception as e:
-        raise DownloadError('Download of %s failed!' % url) from e
+        raise DownloadError('Download of %s failed! (HEAD)' % url) from e
     if r.status_code != 200:
-        raise DownloadError('Download of %s failed in setup of stream!' % url)
+        raise DownloadError('Download of %s failed with status %d! (HEAD)' % (url, r.status_code))
+    return r.headers
+
+
+def download(url: str, timeout: Optional[float] = None) -> dict:
+    """Download url
+
+    Args:
+        url (str): URL to download
+        timeout (Optional[float]): Timeout for connecting to URL. Defaults to None (no timeout).
+
+    Returns:
+        str: Response
+
+    """
+    try:
+        r = requests.get(url, timeout=timeout)
+    except Exception as e:
+        raise DownloadError('Download of %s failed! (GET)' % url) from e
+    if r.status_code != 200:
+        raise DownloadError('Download of %s failed with status %d! (GET)' % (url, r.status_code))
     return r.headers
