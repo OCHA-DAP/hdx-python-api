@@ -6,9 +6,9 @@ import inspect
 import json
 import os
 import sys
+from typing import List, Any, Optional
 
 import yaml
-from typing import List, Any, Optional
 
 from .dictionary import merge_two_dictionaries, merge_dictionaries
 

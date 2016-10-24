@@ -170,11 +170,11 @@ class TestDataset():
     }
 
     resources_data = [{"id": "de6549d8-268b-4dfe-adaf-a4ae5c8510d5", "description": "Resource1",
-                       "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d", "name": "Resource1",
+                       "name": "Resource1",
                        "url": "http://resource1.xlsx",
                        "format": "xlsx"},
                       {"id": "DEF", "description": "Resource2",
-                       "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d", "name": "Resource2",
+                       "name": "Resource2",
                        "url": "http://resource2.csv",
                        "format": "csv"}]
 

@@ -219,9 +219,11 @@ You can read an existing HDX object with the static `read_from_hdx` method whi
 
 You can search for datasets and resources in HDX using the `search_in_hdx` method which takes a configuration and a query parameter and returns the a list of objects of the appropriate HDX object type eg. `list[Dataset]` eg.
 
-        datasets = Dataset.search_in_hdx(configuration, 'QUERY')
+        datasets = Dataset.search_in_hdx(configuration, 'QUERY', **kwargs)
 
-The query parameter takes a different format depending upon whether it is for a [dataset](http://lucene.apache.org/core/3_6_0/queryparsersyntax.html) or a [resource](http://docs.ckan.org/en/ckan-2.3.4/api/index.html#ckan.logic.action.get.resource_search). 
+The query parameter takes a different format depending upon whether it is for a [dataset](http://lucene.apache.org/core/3_6_0/queryparsersyntax.html) or a [resource](http://docs.ckan.org/en/ckan-2.3.4/api/index.html#ckan.logic.action.get.resource_search).
+
+Various additional arguments (`**kwargs`) can be supplied. These are detailed in the API documentation. 
 
 You can create an HDX Object, such as a dataset, resource or gallery item by calling the constructor with a configuration, which is required, and an optional dictionary containing metadata. For example:
 

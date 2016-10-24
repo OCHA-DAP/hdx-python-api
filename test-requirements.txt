@@ -1,5 +1,5 @@
-pytest==2.9.2
-pytest-cov==2.2.1
-pytest-pythonpath==0.7
+pytest==3.0.3
+pytest-cov==2.4.0
+pytest-pythonpath==0.7.1
 logging_tree==1.7
 -r requirements.txt

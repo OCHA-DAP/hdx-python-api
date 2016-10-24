@@ -6,13 +6,14 @@ Calls a function that generates a dataset and creates it in HDX.
 '''
 import logging
 
+from hdx.configuration import Configuration
 from hdx.facades.scraperwiki import facade
 from .my_code import generate_dataset
 
 logger = logging.getLogger(__name__)
 
 
-def main(configuration: dict):
+def main(configuration: Configuration):
     '''Generate dataset and create it in HDX'''
 
     dataset = generate_dataset(configuration)

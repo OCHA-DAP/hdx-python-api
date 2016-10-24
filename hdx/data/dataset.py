@@ -89,6 +89,7 @@ class Dataset(HDXObject):
             None
         """
         self.resources = list()
+        """:type : List[Resource]"""
 
     def add_update_resource(self, resource: Any) -> None:
         """Add new or update existing resource in dataset with new metadata
@@ -99,13 +100,12 @@ class Dataset(HDXObject):
         Returns:
             None
         """
+        if isinstance(resource, dict):
+            resource = Resource(self.configuration, resource)
         if isinstance(resource, Resource):
             if 'package_id' in resource:
                 raise HDXError("Resource %s being added already has a dataset id!" % (resource['name']))
             self._addupdate_hdxobject(self.resources, 'name', self._underlying_object, resource)
-            return
-        if isinstance(resource, dict):
-            self._addupdate_hdxobject(self.resources, 'name', Resource, resource)
             return
         raise HDXError("Type %s cannot be added as a resource!" % type(resource).__name__)
 
@@ -164,13 +164,12 @@ class Dataset(HDXObject):
             None
 
         """
+        if isinstance(galleryitem, dict):
+            galleryitem = GalleryItem(self.configuration, galleryitem)
         if isinstance(galleryitem, GalleryItem):
             if 'dataset_id' in galleryitem:
                 raise HDXError("Gallery item %s being added already has a dataset id!" % (galleryitem['name']))
             self._addupdate_hdxobject(self.gallery, 'title', self._underlying_object, galleryitem)
-            return
-        if isinstance(galleryitem, dict):
-            self._addupdate_hdxobject(self.gallery, 'title', GalleryItem, galleryitem)
             return
         raise HDXError("Type %s cannot be added as a gallery item!" % type(galleryitem).__name__)
 
@@ -430,12 +429,22 @@ class Dataset(HDXObject):
         self._delete_from_hdx('dataset', 'id')
 
     @staticmethod
-    def search_in_hdx(configuration: Configuration, query: str) -> List['Dataset']:
+    def search_in_hdx(configuration: Configuration, query: str, **kwargs) -> List['Dataset']:
         """Searches for datasets in HDX
 
         Args:
             configuration (Configuration): HDX Configuration
-            query (str): Query
+            query (str): Query (in Solr format). Defaults to '*:*'.
+            **kwargs: See below
+            fq (string): Any filter queries to apply
+            sort (string): Sorting of the search results. Defaults to 'relevance asc, metadata_modified desc'.
+            rows (int): Number of matching rows to return
+            start (int): Offset in the complete result for where the set of returned datasets should begin
+            facet (string): Whether to enable faceted results. Default to True.
+            facet.mincount (int): Minimum counts for facet fields should be included in the results
+            facet.limit (int): Maximum number of values the facet fields return (- = unlimited). Defaults to 50.
+            facet.field (List[str]): Fields to facet upon. Default is empty.
+            use_default_schema (bool): Use default package schema instead of custom schema. Defaults to False.
 
         Returns:
             List[Dataset]: List of datasets resulting from query
@@ -443,7 +452,7 @@ class Dataset(HDXObject):
 
         datasets = []
         dataset = Dataset(configuration)
-        success, result = dataset._read_from_hdx('dataset', query, 'q')
+        success, result = dataset._read_from_hdx('dataset', query, 'q', **kwargs)
         if result:
             count = result.get('count', None)
             if count:

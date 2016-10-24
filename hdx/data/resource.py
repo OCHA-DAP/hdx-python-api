@@ -121,13 +121,16 @@ class Resource(HDXObject):
         self._delete_from_hdx('resource', 'id')
 
     @staticmethod
-    def search_in_hdx(configuration: Configuration, query: str) -> List['Resource']:
+    def search_in_hdx(configuration: Configuration, query: str, **kwargs) -> List['Resource']:
         """Searches for resources in HDX
 
         Args:
             configuration (Configuration): HDX Configuration
             query (str): Query
-
+            **kwargs: See below
+            order_by (str): A field on the Resource model that orders the results
+            offset (int): Apply an offset to the query
+            limit (int): Apply a limit to the query
         Returns:
             List[Resource]: List of resources resulting from query
         """
@@ -153,7 +156,7 @@ class Resource(HDXObject):
         """
         success, result = self._read_from_hdx('datastore', self.data['id'], 'resource_id',
                                               self.actions()['datastore_delete'],
-                                              {'force': True})
+                                              force=True)
         if not success:
             logger.debug(result)
 
@@ -176,6 +179,7 @@ class Resource(HDXObject):
 
         data = {'resource_id': self.data['id'], 'force': True, 'fields': schema, 'primary_key': primary_key}
         self._write_to_hdx('datastore_create', data, 'id')
+        f = None
         try:
             f = open(path, 'r')
             reader = csv.DictReader(f)
@@ -192,8 +196,9 @@ class Resource(HDXObject):
         except Exception as e:
             raise HDXError('Upload to datastore of %s failed!' % url) from e
         finally:
-            f.close()
-            os.unlink(path)
+            if f:
+                f.close()
+                os.unlink(path)
 
     def create_datastore_from_dict_schema(self, data: dict) -> None:
         """Creates a resource in the HDX datastore from a YAML file containing a list of fields and types of

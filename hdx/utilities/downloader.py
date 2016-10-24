@@ -29,6 +29,7 @@ def download_file(url: str, path: Optional[str] = None) -> str:
         raise DownloadError('Download of %s failed in setup of stream!' % url) from e
     if r.status_code != 200:
         raise DownloadError('Download of %s failed in setup of stream!' % url)
+    f = None
     try:
         if path:
             f = open(path, 'wb')
@@ -42,7 +43,8 @@ def download_file(url: str, path: Optional[str] = None) -> str:
     except Exception as e:
         raise DownloadError('Download of %s failed in retrieval of stream!' % url) from e
     finally:
-        f.close()
+        if f:
+            f.close()
 
 
 def get_headers(url: str, timeout: Optional[float] = None) -> dict:

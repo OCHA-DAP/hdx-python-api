@@ -3,20 +3,22 @@
 """Dict utilities"""
 from collections import UserDict
 
-from typing import List, Optional
+from typing import List, Optional, TypeVar
+
+DictUpperBound = TypeVar('T', bound='dict')
 
 
-def merge_two_dictionaries(a: dict, b: dict) -> dict:
+def merge_two_dictionaries(a: DictUpperBound, b: DictUpperBound) -> DictUpperBound:
     """Merges b into a and returns merged result
 
     NOTE: tuples and arbitrary objects are not handled as it is totally ambiguous what should happen
 
     Args:
-        a (dict): dictionary to merge into
-        b: (dict): dictionary to merge from
+        a (DictUpperBound): dictionary to merge into
+        b: (DictUpperBound): dictionary to merge from
 
     Returns:
-        dict: Merged dictionary
+        DictUpperBound: Merged dictionary
     """
     key = None
     # ## debug output

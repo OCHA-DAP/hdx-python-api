@@ -84,7 +84,7 @@ class HDXObject(UserDict):
 
     def _read_from_hdx(self, object_type: str, value: str, fieldname: Optional[str] = 'id',
                        action: Optional[str] = None,
-                       other_fields: dict = {}) -> Union[Tuple[bool, dict], Tuple[bool, str]]:
+                       **kwargs) -> Union[Tuple[bool, dict], Tuple[bool, str]]:
         """Makes a read call to HDX passing in given parameter.
 
         Args:
@@ -92,7 +92,7 @@ class HDXObject(UserDict):
             value (str): Value of HDX field
             fieldname (Optional[str]): HDX field name. Defaults to id.
             action (Optional[str]): Replacement CKAN action url to use. Defaults to None.
-            other_fields (dict): Other fields to pass to CKAN. Defaults to empty dict.
+            **kwargs: Other fields to pass to CKAN.
 
         Returns:
             (bool, dict/str): (True/False, HDX object metadata/Error)
@@ -105,7 +105,7 @@ class HDXObject(UserDict):
             else:
                 action = self.actions()['show']
         data = {fieldname: value}
-        data.update(other_fields)
+        data.update(kwargs)
         try:
             result = self.hdxpostsite.call_action(action, data,
                                                   requests_kwargs={'auth': self.configuration._get_credentials()})
@@ -394,7 +394,8 @@ class HDXObject(UserDict):
         Returns:
             None
         """
-        new_hdxobjects = self.data.get(hdxobjects_name, None)
+        new_hdxobjects = self.data.get(hdxobjects_name, list())
+        """:type : List[HDXObjectUpperBound]"""
         if new_hdxobjects:
             hdxobject_names = set()
             for hdxobject in hdxobjects:
