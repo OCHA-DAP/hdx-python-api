@@ -4,8 +4,8 @@
 
 import inspect
 import json
-import os
 import sys
+from os.path import abspath, realpath, dirname, join
 from typing import List, Any, Optional
 
 import yaml
@@ -105,6 +105,25 @@ def load_json(path: str) -> dict:
     return jsondict
 
 
+def script_dir(pyobject: Any, follow_symlinks: Optional[bool] = True) -> str:
+    """Get current script's directory
+
+    Args:
+        pyobject (Any): Any Python object in the script
+        follow_symlinks (Optional[bool]): Follow symlinks or not. Defaults to True.
+
+    Returns:
+        str: Current script's directory
+    """
+    if getattr(sys, 'frozen', False):  # py2exe, PyInstaller, cx_Freeze
+        path = abspath(sys.executable)
+    else:
+        path = inspect.getabsfile(pyobject)
+    if follow_symlinks:
+        path = realpath(path)
+    return dirname(path)
+
+
 def script_dir_plus_file(filename: str, pyobject: Any, follow_symlinks: Optional[bool] = True) -> str:
     """Get current script's directory and then append a filename
 
@@ -116,10 +135,4 @@ def script_dir_plus_file(filename: str, pyobject: Any, follow_symlinks: Optional
     Returns:
         str: Current script's directory and with filename appended
     """
-    if getattr(sys, 'frozen', False):  # py2exe, PyInstaller, cx_Freeze
-        path = os.path.abspath(sys.executable)
-    else:
-        path = inspect.getabsfile(pyobject)
-    if follow_symlinks:
-        path = os.path.realpath(path)
-    return os.path.join(os.path.dirname(path), filename)
+    return join(script_dir(pyobject, follow_symlinks), filename)

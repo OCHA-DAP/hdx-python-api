@@ -1,7 +1,6 @@
 [![Build Status](https://travis-ci.org/OCHA-DAP/hdx-python-api.svg?branch=master&rd=2)](https://travis-ci.org/OCHA-DAP/hdx-python-api) [![Coverage Status](https://coveralls.io/repos/github/OCHA-DAP/hdx-python-api/badge.svg?branch=master&rd=2)](https://coveralls.io/github/OCHA-DAP/hdx-python-api?branch=master)
 
 The HDX Python Library is designed to enable you to easily develop code that interacts with the Humanitarian Data Exchange platform. The major goal of the library is to make pushing and pulling data from HDX as simple as possible for the end user.
-
 For more about the purpose and design philosophy, please visit [HDX Python Library](https://humanitarian.atlassian.net/wiki/display/HDX/HDX+Python+Library).
 
 - [Usage](#usage)
@@ -46,8 +45,9 @@ The first task is to create an API key file. By default this is assumed to be ca
 
 To include the HDX Python library in your project, pip install the line below or add the following to your `requirements.txt` file:
 
-    git+git://github.com/ocha-dap/hdx-python-api.git@v0.52#egg=hdx-python-api
+    git+git://github.com/ocha-dap/hdx-python-api.git@VERSION#egg=hdx-python-api
 
+Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DAP/hdx-python-api/tags](https://github.com/OCHA-DAP/hdx-python-api/tags). 
 If you get errors, it is probably the dependencies of the cryptography package that are missing eg. for Ubuntu: python-dev, libffi-dev and libssl-dev. See [cryptography dependencies](https://cryptography.io/en/latest/installation/#building-cryptography-on-linux)
 
 ### A Quick Example
@@ -69,7 +69,8 @@ Let's start with a simple example that also ensures that the library is working 
         source test/bin/activate
 4. Install the HDX Python library:
 
-        pip install git+git://github.com/ocha-dap/hdx-python-api.git@v0.52#egg=hdx-python-api
+        pip install git+git://github.com/ocha-dap/hdx-python-api.git@VERSION#egg=hdx-python-api
+Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DAP/hdx-python-api/tags](https://github.com/OCHA-DAP/hdx-python-api/tags). 
 5. If you get errors, it is probably the [dependencies of the cryptography package](#installing-the-library)
 6. Launch python:
 
@@ -323,9 +324,9 @@ You can delete a Resource or GalleryItem object from the dataset using the appr
 
 You can download a resource using the `download` function eg.
 
-    url, path = resource.download(PATH_TO_DOWNLOAD_TO)
+    url, path = resource.download(FOLDER_TO_DOWNLOAD_TO)
     
-If you do not supply `PATH_TO_DOWNLOAD_TO`, then a named temporary file is created.
+If you do not supply `FOLDER_TO_DOWNLOAD_TO`, then a temporary folder is used.
 
 ## Working Example
 

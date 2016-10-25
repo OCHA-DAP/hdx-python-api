@@ -2,8 +2,11 @@
 # -*- coding: utf-8 -*-
 """Downloading utilities for urls"""
 
-from tempfile import NamedTemporaryFile
+from os.path import splitext, join, exists
+from posixpath import basename
+from tempfile import gettempdir
 from typing import Optional
+from urllib.parse import urlparse
 
 import requests
 
@@ -12,12 +15,36 @@ class DownloadError(Exception):
     pass
 
 
-def download_file(url: str, path: Optional[str] = None) -> str:
-    """Download file from url and store in provided path or named temporary file if no path given
+def get_path_for_url(url: str, folder: Optional[str] = None) -> str:
+    """Get filename from url and join to provided folder or temporary folder if no folder supplied, ensuring uniqueness
 
     Args:
         url (str): URL to download
-        path (Optional[str]): Path to download it to. Defaults to None.
+        folder (Optional[str]): Folder to download it to. Defaults to None.
+
+    Returns:
+        str: Path of downloaded file
+
+    """
+    urlpath = urlparse(url).path
+    filenameext = basename(urlpath)
+    filename, extension = splitext(filenameext)
+    if not folder:
+        folder = gettempdir()
+    path = join(folder, '%s%s' % (filename, extension))
+    count = 0
+    while exists(path):
+        count += 1
+        path = join(folder, '%s%d%s' % (filename, count, extension))
+    return path
+
+
+def download_file(url: str, folder: Optional[str] = None) -> str:
+    """Download file from url and store in provided folder or temporary folder if no folder supplied
+
+    Args:
+        url (str): URL to download
+        folder (Optional[str]): Folder to download it to. Defaults to None.
 
     Returns:
         str: Path of downloaded file
@@ -29,12 +56,10 @@ def download_file(url: str, path: Optional[str] = None) -> str:
         raise DownloadError('Download of %s failed in setup of stream!' % url) from e
     if r.status_code != 200:
         raise DownloadError('Download of %s failed in setup of stream!' % url)
+    path = get_path_for_url(url, folder)
     f = None
     try:
-        if path:
-            f = open(path, 'wb')
-        else:
-            f = NamedTemporaryFile('wb', delete=False)
+        f = open(path, 'wb')
         for chunk in r.iter_content(chunk_size=1024):
             if chunk:  # filter out keep-alive new chunks
                 f.write(chunk)

@@ -1,5 +1,7 @@
 from setuptools import setup, find_packages
 
+from hdx.utilities.loader import script_dir_plus_file
+
 requirements = ['ckanapi',
                 'colorlog',
                 'ndg-httpsclient',
@@ -11,9 +13,12 @@ requirements = ['ckanapi',
                 'typing'
                 ]
 
+version_file = open(script_dir_plus_file('version.txt', requirements))
+version = version_file.read().strip()
+
 setup(
     name='hdx-python-api',
-    version='0.52',
+    version=version,
     packages=find_packages(exclude=['ez_setup', 'tests', 'tests.*']),
     url='http://data.humdata.org/',
     license='PSF',

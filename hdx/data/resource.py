@@ -3,7 +3,7 @@
 """Resource class containing all logic for creating, checking, and updating resources."""
 import csv
 import logging
-import os
+from os import unlink
 from os.path import join
 from typing import Optional, List, Tuple
 
@@ -160,11 +160,11 @@ class Resource(HDXObject):
         if not success:
             logger.debug(result)
 
-    def download(self, path: Optional[str] = None) -> Tuple[str, str]:
-        """Download resource store to provided path or named temporary file if no path given
+    def download(self, folder: Optional[str] = None) -> Tuple[str, str]:
+        """Download resource store to provided folder or temporary folder if no folder supplied
 
         Args:
-            path (str): Path to download resource to. Defaults to None.
+            folder (str): Folder to download resource to. Defaults to None.
 
         Returns:
             Tuple[str, str]: (URL downloaded, Path to downloaded file)
@@ -175,7 +175,7 @@ class Resource(HDXObject):
         if not url:
             raise HDXError('No URL to download!')
         logger.debug('Downloading %s' % url)
-        return url, download_file(url, path)
+        return url, download_file(url, folder)
 
     def create_datastore(self, schema: List[dict], primary_key: Optional[str] = None) -> None:
         """Create a resource in the HDX datastore
@@ -190,10 +190,10 @@ class Resource(HDXObject):
         # Download the resource
         url, path = self.download()
 
-        data = {'resource_id': self.data['id'], 'force': True, 'fields': schema, 'primary_key': primary_key}
-        self._write_to_hdx('datastore_create', data, 'id')
         f = None
         try:
+            data = {'resource_id': self.data['id'], 'force': True, 'fields': schema, 'primary_key': primary_key}
+            self._write_to_hdx('datastore_create', data, 'id')
             f = open(path, 'r')
             reader = csv.DictReader(f)
             rows = [row for row in reader]
@@ -211,7 +211,7 @@ class Resource(HDXObject):
         finally:
             if f:
                 f.close()
-                os.unlink(path)
+            unlink(path)
 
     def create_datastore_from_dict_schema(self, data: dict) -> None:
         """Creates a resource in the HDX datastore from a YAML file containing a list of fields and types of
@@ -246,7 +246,7 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        data = load_yaml(script_dir_plus_file(os.path.join('..', 'hdx_datasource_topline.yml'), Resource))
+        data = load_yaml(script_dir_plus_file(join('..', 'hdx_datasource_topline.yml'), Resource))
         self.create_datastore_from_dict_schema(data)
 
     def create_datastore_from_json_schema(self, path: str) -> None:

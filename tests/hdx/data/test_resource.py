@@ -3,6 +3,7 @@
 """Resource Tests"""
 import copy
 import json
+from os import unlink
 from os.path import join
 
 import pytest
@@ -391,7 +392,8 @@ class TestResource():
 
     def test_download(self, configuration, read):
         resource = Resource.read_from_hdx(configuration, 'TEST1')
-        url, _ = resource.download()
+        url, path = resource.download()
+        unlink(path)
         assert url == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
         resource = Resource.read_from_hdx(configuration, 'TEST4')
         with pytest.raises(DownloadError):

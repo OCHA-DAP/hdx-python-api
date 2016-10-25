@@ -7,6 +7,7 @@ import abc
 import copy
 import logging
 from collections import UserDict
+from os.path import join
 from typing import Optional, List, Any, Tuple, TypeVar, Union
 
 import ckanapi
@@ -14,7 +15,7 @@ from ckanapi.errors import NotFound
 
 from hdx.configuration import Configuration
 from hdx.utilities.dictionary import merge_two_dictionaries
-from hdx.utilities.loader import load_yaml_into_existing_dict, load_json_into_existing_dict
+from hdx.utilities.loader import load_yaml_into_existing_dict, load_json_into_existing_dict, script_dir_plus_file
 
 logger = logging.getLogger(__name__)
 
@@ -49,8 +50,11 @@ class HDXObject(UserDict):
         super(HDXObject, self).__init__(initial_data)
         self.configuration = configuration
         self.old_data = None
+        version_file = open(script_dir_plus_file(join('..', '..', 'version.txt'), HDXObject))
+        version = version_file.read().strip()
         self.hdxpostsite = ckanapi.RemoteCKAN(configuration.get_hdx_site_url(),
-                                              apikey=configuration.get_api_key())
+                                              apikey=configuration.get_api_key(),
+                                              user_agent='HDXPythonLibrary/%s' % version)
 
     def get_old_data_dict(self) -> None:
         """Get previous internal dictionary

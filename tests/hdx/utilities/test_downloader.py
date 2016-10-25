@@ -1,24 +1,37 @@
-import os
 import tempfile
+from os import unlink
+from os.path import join, abspath
 
 import pytest
 
-from hdx.utilities.downloader import download_file, DownloadError, get_headers, download
+from hdx.utilities.downloader import download_file, DownloadError, get_headers, download, get_path_for_url
+from hdx.utilities.loader import script_dir
 
 
 class TestDownloader():
+    def test_get_path_for_url(self):
+        scriptdir = script_dir(TestDownloader)
+        path = get_path_for_url(
+            'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv', scriptdir)
+        assert abspath(path) == abspath(join(scriptdir, 'test_data.csv'))
+        downloader_folder = join(scriptdir, '..', '..', 'fixtures', 'downloader')
+        path = get_path_for_url(
+            'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv',
+            downloader_folder)
+        assert abspath(path) == abspath(join(downloader_folder, 'test_data3.csv'))
+
     def test_download_file(self):
         tmpdir = tempfile.gettempdir()
-        tmpfile = os.path.join(tmpdir, 'HDXTempFile.tmp')
         with pytest.raises(DownloadError):
-            download_file('NOTEXIST://NOTEXIST.csv', tmpfile)
+            download_file('NOTEXIST://NOTEXIST.csv', tmpdir)
         with pytest.raises(DownloadError):
             download_file(
-                'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/NOTEXIST.csv', tmpfile)
+                'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/NOTEXIST.csv')
         f = download_file(
-            'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv', tmpfile)
-        assert f == tmpfile
-        os.unlink(f)
+            'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv', tmpdir)
+        fpath = abspath(f)
+        unlink(f)
+        assert fpath == abspath(join(tmpdir, 'test_data.csv'))
 
     def test_get_headers(self):
         with pytest.raises(DownloadError):
