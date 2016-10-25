@@ -160,6 +160,23 @@ class Resource(HDXObject):
         if not success:
             logger.debug(result)
 
+    def download(self, path: Optional[str] = None) -> (str, str):
+        """Download resource store in provided path or named temporary file if no path given
+
+        Args:
+            path (str): Path to download resource to. Defaults to None.
+
+        Returns:
+            (str, str): (URL downloaded, Path of downloaded file)
+
+        """
+        # Download the resource
+        url = self.data.get('url', None)
+        if not url:
+            raise HDXError('No URL to download!')
+        logger.debug('Downloading %s' % url)
+        return url, download_file(url, path)
+
     def create_datastore(self, schema: List[dict], primary_key: Optional[str] = None) -> None:
         """Create a resource in the HDX datastore
 
@@ -171,11 +188,7 @@ class Resource(HDXObject):
             None
         """
         # Download the resource
-        url = self.data.get('url', None)
-        if not url:
-            raise HDXError('No URL to download!')
-        logger.debug('Downloading %s' % url)
-        path = download_file(url)
+        url, path = self.download()
 
         data = {'resource_id': self.data['id'], 'force': True, 'fields': schema, 'primary_key': primary_key}
         self._write_to_hdx('datastore_create', data, 'id')

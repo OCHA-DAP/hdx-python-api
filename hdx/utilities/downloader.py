@@ -13,7 +13,7 @@ class DownloadError(Exception):
 
 
 def download_file(url: str, path: Optional[str] = None) -> str:
-    """Download file from url and store in path
+    """Download file from url and store in provided path or named temporary file if no path given
 
     Args:
         url (str): URL to download

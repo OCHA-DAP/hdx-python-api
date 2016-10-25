@@ -389,14 +389,19 @@ class TestResource():
         with pytest.raises(HDXError):
             Resource.search_in_hdx(configuration, 'fail')
 
+    def test_download(self, configuration, read):
+        resource = Resource.read_from_hdx(configuration, 'TEST1')
+        url, _ = resource.download()
+        assert url == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
+        resource = Resource.read_from_hdx(configuration, 'TEST4')
+        with pytest.raises(DownloadError):
+            resource.download()
+
     def test_datastore(self, configuration, post_datastore, topline_yaml, topline_json):
         resource = Resource.read_from_hdx(configuration, 'TEST1')
         resource.update_datastore_for_topline()
         resource.update_datastore_from_yaml_schema(topline_yaml)
         resource.update_datastore_from_json_schema(topline_json)
-        resource = Resource.read_from_hdx(configuration, 'TEST4')
-        with pytest.raises(DownloadError):
-            resource.update_datastore_for_topline()
         resource = Resource.read_from_hdx(configuration, 'TEST5')
         with pytest.raises(HDXError):
             resource.update_datastore_from_json_schema(topline_json)

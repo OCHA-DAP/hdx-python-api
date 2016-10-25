@@ -16,6 +16,7 @@ For more about the purpose and design philosophy, please visit [HDX Python Libra
 	- [Configuring Logging](#configuring-logging)
 	- [Operations on HDX Objects](#operations-on-hdx-objects)
 	- [Dataset Specific Operations](#dataset-specific-operations)
+	- [Resource Specific Operations](#resource-specific-operations)
 - [Working Example](#working-example)
 - [ACLED Example](#acled-example)
 
@@ -93,11 +94,15 @@ Let's start with a simple example that also ensures that the library is working 
 
         dataset['dataset_date'] = '06/25/2016'
         dataset.update_in_hdx()
-12. You can search for datasets on HDX:
+12. You can download a resource in the dataset:
+
+        url, path = dataset.get_resources()[0].download()
+        print('Resource URL %s downloaded to %s' % (url, path))
+13. You can search for datasets on HDX:
 
         datasets = Dataset.search_in_hdx(configuration, 'ACLED')
         print(datasets)
-13. Exit and remove virtualenv:
+14. Exit and remove virtualenv:
 
         exit()
         deactivate
@@ -313,6 +318,14 @@ If you wish to add one resource or gallery item, you can supply a dictionary or 
 You can delete a Resource or GalleryItem object from the dataset using the appropriate `delete_*` function, for example:
 
     dataset.delete_galleryitem('GALLERYITEM_TITLE')
+
+### Resource Specific Operations
+
+You can download a resource using the `download` function eg.
+
+    url, path = resource.download(PATH_TO_DOWNLOAD_TO)
+    
+If you do not supply `PATH_TO_DOWNLOAD_TO`, then a named temporary file is created.
 
 ## Working Example
 
