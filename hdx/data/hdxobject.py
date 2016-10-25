@@ -84,7 +84,7 @@ class HDXObject(UserDict):
 
     def _read_from_hdx(self, object_type: str, value: str, fieldname: Optional[str] = 'id',
                        action: Optional[str] = None,
-                       **kwargs) -> Union[Tuple[bool, dict], Tuple[bool, str]]:
+                       **kwargs) -> Tuple[bool, Union[dict, str]]:
         """Makes a read call to HDX passing in given parameter.
 
         Args:
@@ -95,7 +95,7 @@ class HDXObject(UserDict):
             **kwargs: Other fields to pass to CKAN.
 
         Returns:
-            (bool, dict/str): (True/False, HDX object metadata/Error)
+            Tuple[bool, Union[dict, str]]: (True/False, HDX object metadata/Error)
         """
         if not value:
             raise HDXError("Empty %s value!" % object_type)

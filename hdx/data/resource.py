@@ -5,7 +5,7 @@ import csv
 import logging
 import os
 from os.path import join
-from typing import Optional, List
+from typing import Optional, List, Tuple
 
 from hdx.configuration import Configuration
 from hdx.utilities.downloader import download_file
@@ -160,14 +160,14 @@ class Resource(HDXObject):
         if not success:
             logger.debug(result)
 
-    def download(self, path: Optional[str] = None) -> (str, str):
-        """Download resource store in provided path or named temporary file if no path given
+    def download(self, path: Optional[str] = None) -> Tuple[str, str]:
+        """Download resource store to provided path or named temporary file if no path given
 
         Args:
             path (str): Path to download resource to. Defaults to None.
 
         Returns:
-            (str, str): (URL downloaded, Path of downloaded file)
+            Tuple[str, str]: (URL downloaded, Path to downloaded file)
 
         """
         # Download the resource
