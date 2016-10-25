@@ -46,7 +46,7 @@ The first task is to create an API key file. By default this is assumed to be ca
 
 To include the HDX Python library in your project, pip install the line below or add the following to your `requirements.txt` file:
 
-    git+git://github.com/ocha-dap/hdx-python-api.git@v0.51#egg=hdx-python-api
+    git+git://github.com/ocha-dap/hdx-python-api.git@v0.52#egg=hdx-python-api
 
 If you get errors, it is probably the dependencies of the cryptography package that are missing eg. for Ubuntu: python-dev, libffi-dev and libssl-dev. See [cryptography dependencies](https://cryptography.io/en/latest/installation/#building-cryptography-on-linux)
 
@@ -69,7 +69,7 @@ Let's start with a simple example that also ensures that the library is working 
         source test/bin/activate
 4. Install the HDX Python library:
 
-        pip install git+git://github.com/ocha-dap/hdx-python-api.git@v0.51#egg=hdx-python-api
+        pip install git+git://github.com/ocha-dap/hdx-python-api.git@v0.52#egg=hdx-python-api
 5. If you get errors, it is probably the [dependencies of the cryptography package](#installing-the-library)
 6. Launch python:
 
