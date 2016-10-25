@@ -40,7 +40,7 @@ class Dataset(HDXObject):
         """Dictionary of actions that can be performed on object
 
         Returns:
-            dict: dictionary of actions that can be performed on object
+            dict: Dictionary of actions that can be performed on object
         """
         return {
             'show': 'package_show',

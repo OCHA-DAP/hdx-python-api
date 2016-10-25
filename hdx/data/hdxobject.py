@@ -41,7 +41,7 @@ class HDXObject(UserDict):
         """Dictionary of actions that can be performed on object
 
         Returns:
-            dict: dictionary of actions that can be performed on object
+            dict: Dictionary of actions that can be performed on object
         """
         pass
 
