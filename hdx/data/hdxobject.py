@@ -15,7 +15,8 @@ from ckanapi.errors import NotFound
 
 from hdx.configuration import Configuration
 from hdx.utilities.dictionary import merge_two_dictionaries
-from hdx.utilities.loader import load_yaml_into_existing_dict, load_json_into_existing_dict, script_dir_plus_file
+from hdx.utilities.loader import load_yaml_into_existing_dict, load_json_into_existing_dict
+from hdx.utilities.path import script_dir_plus_file
 
 logger = logging.getLogger(__name__)
 

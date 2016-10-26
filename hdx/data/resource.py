@@ -9,7 +9,8 @@ from typing import Optional, List, Tuple
 
 from hdx.configuration import Configuration
 from hdx.utilities.downloader import download_file
-from hdx.utilities.loader import load_yaml, load_json, script_dir_plus_file
+from hdx.utilities.loader import load_yaml, load_json
+from hdx.utilities.path import script_dir_plus_file
 from .hdxobject import HDXObject, HDXError
 
 logger = logging.getLogger(__name__)

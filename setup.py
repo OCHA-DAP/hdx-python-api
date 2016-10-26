@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-from hdx.utilities.loader import script_dir_plus_file
+from hdx.utilities.path import script_dir_plus_file
 
 requirements = ['ckanapi',
                 'colorlog',

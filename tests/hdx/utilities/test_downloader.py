@@ -5,7 +5,7 @@ from os.path import join, abspath
 import pytest
 
 from hdx.utilities.downloader import download_file, DownloadError, get_headers, download, get_path_for_url
-from hdx.utilities.loader import script_dir
+from hdx.utilities.path import script_dir
 
 
 class TestDownloader():
