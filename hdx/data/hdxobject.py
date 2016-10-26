@@ -51,7 +51,7 @@ class HDXObject(UserDict):
         super(HDXObject, self).__init__(initial_data)
         self.configuration = configuration
         self.old_data = None
-        version_file = open(script_dir_plus_file(join('..', '..', 'version.txt'), HDXObject))
+        version_file = open(script_dir_plus_file(join('..', 'version.txt'), HDXObject))
         version = version_file.read().strip()
         self.hdxpostsite = ckanapi.RemoteCKAN(configuration.get_hdx_site_url(),
                                               apikey=configuration.get_api_key(),

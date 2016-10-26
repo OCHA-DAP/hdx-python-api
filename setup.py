@@ -1,10 +1,12 @@
+from os.path import join
+
 from setuptools import setup, find_packages
 
 from hdx.utilities.path import script_dir_plus_file
 
 
 def get_version():
-    version_file = open(script_dir_plus_file('version.txt', get_version))
+    version_file = open(script_dir_plus_file(join('hdx', 'version.txt'), get_version))
     return version_file.read().strip()
 
 requirements = ['ckanapi',
@@ -33,4 +35,5 @@ setup(
         # Include version.txt and if any package contains *.yml files, include them:
         '': ['version.txt', '*.yml'],
     },
+    include_package_data=True,
 )
