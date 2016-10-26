@@ -30,7 +30,7 @@ setup(
 
     install_requires=requirements,
     package_data={
-        # If any package contains *.yml files, include them:
-        '': ['*.yml'],
+        # Include version.txt and if any package contains *.yml files, include them:
+        '': ['version.txt', '*.yml'],
     },
 )
