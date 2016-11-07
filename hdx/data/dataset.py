@@ -465,3 +465,19 @@ class Dataset(HDXObject):
         else:
             logger.debug(result)
         return datasets
+
+    @staticmethod
+    def get_all_resources(datasets: List['Dataset']) -> List['Resource']:
+        """Get all resources from a list of datasets (such as returned by search)
+
+        Args:
+            datasets (List[Dataset]): List of datasets
+
+        Returns:
+            List[Resource]: List of resources within those datasets
+        """
+        resources = []
+        for dataset in datasets:
+            for resource in dataset.get_resources():
+                resources.append(resource)
+        return resources

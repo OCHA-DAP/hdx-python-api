@@ -396,6 +396,30 @@
     revision_id: 4757b7bd-9cfc-4ca5-8f26-dee27b2d688c
     num_resources: 1
     data_update_frequency: '30'
+    resources:
+      - revision_id: '43765383-1fce-471f-8166-d6c8660cc8a9'
+        cache_url: ~,
+        datastore_active: False,
+        format: 'XLSX'
+        webstore_url: None
+        last_modified: None
+        tracking_summary: None,
+        id: 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
+        webstore_last_updated: None,
+        mimetype: None
+        state: 'active'
+        created: '2016-06-07T08:57:27.367939'
+        description': 'Resource1'
+        position: 0
+        hash: ''
+        package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
+        name: 'Resource1'
+        url: 'http://resource1.xlsx'
+        resource_type: None
+        url_type: None
+        size: None
+        mimetype_inner: None
+        cache_last_updated: None
   - subnational: '1'
     license_id: cc-by-sa
     name: acled-conflict-data-for-ghana
@@ -789,5 +813,52 @@
     metadata_created: '2016-03-29T17:32:39.047356'
     methodology_other: Methodology Other
     revision_id: e7598b16-1bfa-45a1-8019-5b2f1b76f84c
-    num_resources: 1
+    num_resources: 2
     data_update_frequency: '30'
+    resources:
+      - revision_id: '43765383-1fce-471f-8166-d6c8660cc8a9'
+        cache_url: ~,
+        datastore_active: False,
+        format: 'XLSX'
+        webstore_url: None
+        last_modified: None
+        tracking_summary: None,
+        id: 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
+        webstore_last_updated: None,
+        mimetype: None
+        state: 'active'
+        created: '2016-06-07T08:57:27.367939'
+        description': 'Resource1'
+        position: 0
+        hash: ''
+        package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
+        name: 'Resource1'
+        url: 'http://resource1.xlsx'
+        resource_type: None
+        url_type: None
+        size: None
+        mimetype_inner: None
+        cache_last_updated: None
+      - revision_id: '43765383-1fce-471f-8166-d6c8660cc8a9'
+        cache_url: ~,
+        datastore_active: False,
+        format: 'XLSX'
+        webstore_url: None
+        last_modified: None
+        tracking_summary: None,
+        id: 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
+        webstore_last_updated: None,
+        mimetype: None
+        state: 'active'
+        created: '2016-06-07T08:57:27.367939'
+        description': 'Resource1'
+        position: 1
+        hash: ''
+        package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
+        name: 'Resource1'
+        url: 'http://resource1.xlsx'
+        resource_type: None
+        url_type: None
+        size: None
+        mimetype_inner: None
+        cache_last_updated: None

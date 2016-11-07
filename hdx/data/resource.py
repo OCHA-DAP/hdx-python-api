@@ -123,7 +123,7 @@ class Resource(HDXObject):
 
     @staticmethod
     def search_in_hdx(configuration: Configuration, query: str, **kwargs) -> List['Resource']:
-        """Searches for resources in HDX
+        """Searches for resources in HDX. NOTE: Does not search dataset metadata!
 
         Args:
             configuration (Configuration): HDX Configuration
@@ -178,11 +178,11 @@ class Resource(HDXObject):
         logger.debug('Downloading %s' % url)
         return url, download_file(url, folder)
 
-    def create_datastore(self, schema: List[dict], primary_key: Optional[str] = None) -> None:
-        """Create a resource in the HDX datastore
+    def create_datastore(self, schema: List[dict] = None, primary_key: Optional[str] = None) -> None:
+        """Create a resource in the HDX datastore. If no schema is provided all fields are assumed to be text.
 
         Args:
-            schema (List[dict]): List of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
+            schema (List[dict]): List of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}. Defaults to None.
             primary_key (Optional[str]): Primary key of schema. Defaults to None.
 
         Returns:
@@ -193,10 +193,14 @@ class Resource(HDXObject):
 
         f = None
         try:
-            data = {'resource_id': self.data['id'], 'force': True, 'fields': schema, 'primary_key': primary_key}
-            self._write_to_hdx('datastore_create', data, 'id')
             f = open(path, 'r')
             reader = csv.DictReader(f)
+            if schema is None:
+                schema = list()
+                for fieldname in reader.fieldnames:
+                    schema.append({'id': fieldname, 'type': 'text'})
+            data = {'resource_id': self.data['id'], 'force': True, 'fields': schema, 'primary_key': primary_key}
+            self._write_to_hdx('datastore_create', data, 'id')
             rows = [row for row in reader]
             chunksize = 10000
             offset = 0
@@ -263,11 +267,11 @@ class Resource(HDXObject):
         data = load_json(path)
         self.create_datastore_from_dict_schema(data)
 
-    def update_datastore(self, schema: List[dict], primary_key: Optional[str] = None) -> None:
-        """Update a resource in the HDX datastore
+    def update_datastore(self, schema: List[dict] = None, primary_key: Optional[str] = None) -> None:
+        """Update a resource in the HDX datastore. If no schema is provided all fields are assumed to be text.
 
         Args:
-            schema (List[dict]): List of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
+            schema (List[dict]): List of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}. Defaults to None.
             primary_key (Optional[str]): Primary key of schema. Defaults to None.
 
         Returns:

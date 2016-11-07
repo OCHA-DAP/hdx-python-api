@@ -52,10 +52,9 @@ def download_file(url: str, folder: Optional[str] = None) -> str:
     """
     try:
         r = requests.get(url, stream=True)
+        r.raise_for_status()
     except Exception as e:
         raise DownloadError('Download of %s failed in setup of stream!' % url) from e
-    if r.status_code != 200:
-        raise DownloadError('Download of %s failed in setup of stream!' % url)
     path = get_path_for_url(url, folder)
     f = None
     try:
@@ -85,10 +84,9 @@ def get_headers(url: str, timeout: Optional[float] = None) -> dict:
     """
     try:
         r = requests.head(url, timeout=timeout)
+        r.raise_for_status()
     except Exception as e:
         raise DownloadError('Download of %s failed! (HEAD)' % url) from e
-    if r.status_code != 200:
-        raise DownloadError('Download of %s failed with status %d! (HEAD)' % (url, r.status_code))
     return r.headers
 
 
@@ -105,8 +103,7 @@ def download(url: str, timeout: Optional[float] = None) -> dict:
     """
     try:
         r = requests.get(url, timeout=timeout)
+        r.raise_for_status()
     except Exception as e:
         raise DownloadError('Download of %s failed! (GET)' % url) from e
-    if r.status_code != 200:
-        raise DownloadError('Download of %s failed with status %d! (GET)' % (url, r.status_code))
     return r.headers

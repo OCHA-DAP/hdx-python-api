@@ -501,3 +501,8 @@ class TestDataset():
         assert len(datasets) == 0
         with pytest.raises(HDXError):
             Dataset.search_in_hdx(configuration, '"')
+
+    def test_get_all_resources(self, configuration, search):
+        datasets = Dataset.search_in_hdx(configuration, 'ACLED')
+        resources = Dataset.get_all_resources(datasets)
+        assert len(resources) == 3

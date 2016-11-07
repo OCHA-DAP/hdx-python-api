@@ -88,7 +88,7 @@ class Configuration(UserDict):
 
         self.data = merge_two_dictionaries(hdx_config_dict, project_config_dict)
 
-        hdx_key_file = kwargs.get('hdx_key_file', join('%s' % expanduser("~"), '.hdxkey'))
+        hdx_key_file = kwargs.get('hdx_key_file', join(expanduser("~"), '.hdxkey'))
         self.data['api_key'] = self.load_api_key(hdx_key_file)
 
         self.hdx_site = 'hdx_%s_site' % kwargs.get('hdx_site', 'test')
@@ -130,7 +130,7 @@ class Configuration(UserDict):
     @staticmethod
     def load_api_key(path: str) -> str:
         """
-        Load configuration parameters.
+        Load HDX api key
 
         Args:
             path (str): Path to HDX key

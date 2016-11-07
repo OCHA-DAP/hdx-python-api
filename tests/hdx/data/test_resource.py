@@ -401,6 +401,7 @@ class TestResource():
 
     def test_datastore(self, configuration, post_datastore, topline_yaml, topline_json):
         resource = Resource.read_from_hdx(configuration, 'TEST1')
+        resource.update_datastore()
         resource.update_datastore_for_topline()
         resource.update_datastore_from_yaml_schema(topline_yaml)
         resource.update_datastore_from_json_schema(topline_json)
