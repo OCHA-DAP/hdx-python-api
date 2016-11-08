@@ -229,10 +229,9 @@ You can search for datasets and resources in HDX using the `search_in_hdx` metho
 
     datasets = Dataset.search_in_hdx(configuration, 'QUERY', **kwargs)
 
-The query parameter takes a different format depending upon whether it is for a [dataset](http://lucene.apache.org/core/3_6_0/queryparsersyntax.html) or a [resource](http://docs.ckan.org/en/ckan-2.3.4/api/index.html#ckan.logic.action.get.resource_search). The resource level search is limited to fields in the resource, so in most cases, it is preferable to search for datasets and then get their resources. The rows parameter for datasets (limit for resources) is the maximum number of matches returned and is by default 10.
+The query parameter takes a different format depending upon whether it is for a [dataset](http://docs.ckan.org/en/ckan-2.3.4/api/index.html#ckan.logic.action.get.package_search) or a [resource](http://docs.ckan.org/en/ckan-2.3.4/api/index.html#ckan.logic.action.get.resource_search). The resource level search is limited to fields in the resource, so in most cases, it is preferable to search for datasets and then get their resources.
 
-
-Various additional arguments (`**kwargs`) can be supplied. These are detailed in the API documentation. 
+Various additional arguments (`**kwargs`) can be supplied. These are detailed in the API documentation. The rows parameter for datasets (limit for resources) is the maximum number of matches returned and is by default 10.
 
 You can create an HDX Object, such as a dataset, resource or gallery item by calling the constructor with a configuration, which is required, and an optional dictionary containing metadata. For example:
 
