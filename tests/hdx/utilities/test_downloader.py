@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+"""Downloader Tests"""
 import tempfile
 from os import unlink
 from os.path import join, abspath

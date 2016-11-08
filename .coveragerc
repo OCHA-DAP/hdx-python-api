@@ -1,11 +1,2 @@
-[report]
-omit =
-    */python?.?/*
-    */venv/*
-    */site-packages/nose/*
-    */tests/*
-    *__init__*
-    setup.py
-
-exclude_lines =
-    if __name__ == '__main__':
+[run]
+source = hdx
