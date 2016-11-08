@@ -252,7 +252,7 @@ class TestResource():
             datadict = json.loads(decodedata)
             if 'show' in url:
                 return mockshow(url, datadict)
-            if 'create' not in url and 'upsert' not in url and 'delete' not in url:
+            if 'create' not in url and 'insert' not in url and 'upsert' not in url and 'delete' not in url:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "TEST ERROR: Not create or delete", "__type": "TEST ERROR: Not Create or Delete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_action"}')
             if 'delete' in url and datadict['resource_id'] == 'datastore_unknown_resource':
@@ -264,7 +264,7 @@ class TestResource():
             if 'create' in url and datadict['resource_id'] == 'datastore_unknown_resource':
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}')
-            if ('create' in url or 'upsert' in url) and datadict[
+            if ('create' in url or 'insert' in url or 'upsert' in url) and datadict[
                 'resource_id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5':
                 return MockResponse(200,
                                     '{"success": true, "result": {"fields": [{"type": "text", "id": "code"}, {"type": "text", "id": "title"}, {"type": "float", "id": "value"}, {"type": "timestamp", "id": "latest_date"}, {"type": "text", "id": "source"}, {"type": "text", "id": "source_link"}, {"type": "text", "id": "notes"}, {"type": "text", "id": "explore"}, {"type": "text", "id": "units"}], "method": "insert", "primary_key": "code", "resource_id": "bfa6b55f-10b6-4ba2-8470-33bb9a5194a5"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}')
