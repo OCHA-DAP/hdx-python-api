@@ -95,14 +95,16 @@ Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DA
 
         dataset['dataset_date'] = '06/25/2016'
         dataset.update_in_hdx()
-12. You can download a resource in the dataset:
-
-        url, path = dataset.get_resources()[0].download()
-        print('Resource URL %s downloaded to %s' % (url, path))
-13. You can search for datasets on HDX:
+12. You can search for datasets on HDX and get their resources:
 
         datasets = Dataset.search_in_hdx(configuration, 'ACLED')
         print(datasets)
+        resources = Dataset.get_all_resources(datasets)
+        print(resources)
+13. You can download a resource in the dataset:
+
+        url, path = resources[0].download()
+        print('Resource URL %s downloaded to %s' % (url, path))
 14. Exit and remove virtualenv:
 
         exit()
@@ -227,7 +229,7 @@ You can search for datasets and resources in HDX using the `search_in_hdx` metho
 
         datasets = Dataset.search_in_hdx(configuration, 'QUERY', **kwargs)
 
-The query parameter takes a different format depending upon whether it is for a [dataset](http://lucene.apache.org/core/3_6_0/queryparsersyntax.html) or a [resource](http://docs.ckan.org/en/ckan-2.3.4/api/index.html#ckan.logic.action.get.resource_search).
+The query parameter takes a different format depending upon whether it is for a [dataset](http://lucene.apache.org/core/3_6_0/queryparsersyntax.html) or a [resource](http://docs.ckan.org/en/ckan-2.3.4/api/index.html#ckan.logic.action.get.resource_search). The resource level search is limited to fields in the resource, so in most cases, it is preferable to search for datasets and then get their resources.
 
 Various additional arguments (`**kwargs`) can be supplied. These are detailed in the API documentation. 
 
@@ -319,6 +321,10 @@ If you wish to add one resource or gallery item, you can supply a dictionary or 
 You can delete a Resource or GalleryItem object from the dataset using the appropriate `delete_*` function, for example:
 
     dataset.delete_galleryitem('GALLERYITEM_TITLE')
+    
+You can get all the resources from a list of datasets as follows:
+
+    resources = Dataset.get_all_resources(datasets)
 
 ### Resource Specific Operations
 
