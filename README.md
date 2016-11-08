@@ -227,7 +227,7 @@ You can read an existing HDX object with the static `read_from_hdx` method whi
 
 You can search for datasets and resources in HDX using the `search_in_hdx` method which takes a configuration and a query parameter and returns the a list of objects of the appropriate HDX object type eg. `list[Dataset]` eg.
 
-        datasets = Dataset.search_in_hdx(configuration, 'QUERY', **kwargs)
+    datasets = Dataset.search_in_hdx(configuration, 'QUERY', **kwargs)
 
 The query parameter takes a different format depending upon whether it is for a [dataset](http://lucene.apache.org/core/3_6_0/queryparsersyntax.html) or a [resource](http://docs.ckan.org/en/ckan-2.3.4/api/index.html#ckan.logic.action.get.resource_search). The resource level search is limited to fields in the resource, so in most cases, it is preferable to search for datasets and then get their resources. The rows parameter for datasets (limit for resources) is the maximum number of matches returned and is by default 10.
 
