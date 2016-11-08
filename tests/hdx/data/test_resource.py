@@ -401,6 +401,11 @@ class TestResource():
 
     def test_datastore(self, configuration, post_datastore, topline_yaml, topline_json):
         resource = Resource.read_from_hdx(configuration, 'TEST1')
+        resource.create_datastore(delete_first=0)
+        resource.create_datastore(delete_first=1)
+        resource.create_datastore(delete_first=2)
+        with pytest.raises(HDXError):
+            resource.create_datastore(delete_first=3)
         resource.update_datastore()
         resource.update_datastore_for_topline()
         resource.update_datastore_from_yaml_schema(topline_yaml)
