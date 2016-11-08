@@ -6,7 +6,7 @@ from os.path import join
 import pytest
 
 from hdx.utilities.loader import load_yaml, load_json, load_and_merge_yaml, load_and_merge_json, LoadError
-from utilities.path import script_dir
+from hdx.utilities.path import script_dir
 
 
 class TestLoader():
