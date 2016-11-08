@@ -217,14 +217,14 @@ class Resource(HDXObject):
             chunksize = 10000
             offset = 0
             if primary_key is None:
-                datastore_function = 'datastore_insert'
+                method = 'insert'
             else:
-                datastore_function = 'datastore_upsert'
+                method = 'upsert'
             logger.debug('Uploading data from %s to datastore' % url)
             while offset < len(rows):
                 rowset = rows[offset:offset + chunksize]
-                data = {'resource_id': self.data['id'], 'force': True, 'method': 'upsert', 'records': rowset}
-                self._write_to_hdx(datastore_function, data, 'id')
+                data = {'resource_id': self.data['id'], 'force': True, 'method': method, 'records': rowset}
+                self._write_to_hdx('datastore_upsert', data, 'id')
                 offset += chunksize
                 logger.debug('Uploading: %s' % offset)
         except Exception as e:
