@@ -7,9 +7,9 @@ from collections import UserDict
 from os.path import expanduser, join
 from typing import Optional
 
-from .utilities.dictionary import merge_two_dictionaries
-from .utilities.loader import load_yaml, load_json
-from .utilities.path import script_dir_plus_file
+from hdx.utilities.dictionary import merge_two_dictionaries
+from hdx.utilities.loader import load_yaml, load_json
+from hdx.utilities.path import script_dir_plus_file
 
 logger = logging.getLogger(__name__)
 

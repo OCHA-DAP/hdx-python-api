@@ -15,6 +15,7 @@ For more about the purpose and design philosophy, please visit [HDX Python Libra
 	- [Configuring Logging](#configuring-logging)
 	- [Operations on HDX Objects](#operations-on-hdx-objects)
 	- [Dataset Specific Operations](#dataset-specific-operations)
+    	- [Update Frequency](#update-frequency)
 	- [Resource Specific Operations](#resource-specific-operations)
 - [Working Example](#working-example)
 - [ACLED Example](#acled-example)
@@ -325,6 +326,72 @@ You can delete a Resource or GalleryItem object from the dataset using the appr
 You can get all the resources from a list of datasets as follows:
 
     resources = Dataset.get_all_resources(datasets)
+
+#### Update Frequency
+
+HDX datasets have a mandatory field, the expected update frequency. This is your best guess of how often the dataset will be updated. 
+
+The HDX web interface uses set frequencies: 
+    
+    Every day
+    Every week
+    Every two weeks
+    Every month
+    Every three months
+    Every six months
+    Every year
+    Never
+    
+Although the API allows much greater granularity (a number of days), you are encouraged to use the options above (avoiding using `Never` if possible). To assist with this, you can use methods that allow this.
+
+The following method will return a textual update frequency corresponding to what would be shown in the HDX web interface.
+
+    update_frequency = dataset.get_update_frequency()
+    
+The method below allows you to set the dataset update frequency using one of the set frequencies above. (It also allows you to pass a number of days cast to a string, but this is discouraged.)
+
+    dataset.set_update_frequency('UPDATE_FREQUENCY')
+    
+Transforming backwards and forwards between representations can be achieved with this function:
+    
+    update_frequency = Dataset.transform_update_frequency('UPDATE_FREQUENCY')
+
+#### Location
+
+Each HDX dataset must have at least one location associated with it.
+
+If you wish to get the current location (ISO 3 country codes), you can call the method below:
+ 
+    locations = dataset.get_location()
+     
+If you want to add a country, you do as shown below. If you don't provide an ISO 3 country code, the text you give will be parsed and converted to an ISO 3 code if possible.
+    
+    dataset.add_country_location('ISO 3 COUNTRY CODE')
+    
+If you want to add a list of countries, the following method enables you to do it. If you don't provide ISO 3 country codes, conversion will take place if possible.
+
+    dataset.add_country_locations(['ISO 3','ISO 3','ISO 3'...])
+    
+If you want to add a continent, you do it as follows. If you don't provide a two letter continent code, then parsing and conversion will occur if possible.
+
+    dataset.add_continent_location('TWO LETTER CONTINENT CODE')
+
+#### Tags
+
+HDX datasets can have tags which help people to find them eg. "COD", "PROTESTS".
+
+If you wish to get the current tags, you can use this method:
+ 
+    tags = dataset.get_tags()
+     
+If you want to add a tag, you do it like this:
+    
+    dataset.add_tag('TAG')
+    
+If you want to add a list of tags, you do it as follows:
+
+    dataset.add_tags(['TAG','TAG','TAG'...])
+
 
 ### Resource Specific Operations
 

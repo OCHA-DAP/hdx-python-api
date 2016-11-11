@@ -9,10 +9,11 @@ from os.path import join
 from typing import Any, List, Optional
 
 from hdx.configuration import Configuration
+from hdx.data.galleryitem import GalleryItem
+from hdx.data.hdxobject import HDXObject, HDXError
+from hdx.data.resource import Resource
 from hdx.utilities.dictionary import merge_two_dictionaries
-from .galleryitem import GalleryItem
-from .hdxobject import HDXObject, HDXError
-from .resource import Resource
+from hdx.utilities.location import Location
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +26,25 @@ class Dataset(HDXObject):
         initial_data (Optional[dict]): Initial dataset metadata dictionary. Defaults to None.
         include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
     """
+
+    update_frequencies = {
+        '0': 'Never',
+        '1': 'Every day',
+        '7': 'Every week',
+        '14': 'Every two weeks',
+        '30': 'Every month',
+        '90': 'Every three months',
+        '180': 'Every six months',
+        '365': 'Every year',
+        'never': '0',
+        'every day': '1',
+        'every week': '7',
+        'every two weeks': '14',
+        'every month': '30',
+        'every three months': '90',
+        'every six months': '180',
+        'every year': '365'
+    }
 
     def __init__(self, configuration: Configuration, initial_data: Optional[dict] = None,
                  include_gallery: Optional[bool] = True):
@@ -481,3 +501,142 @@ class Dataset(HDXObject):
             for resource in dataset.get_resources():
                 resources.append(resource)
         return resources
+
+    @staticmethod
+    def transform_update_frequency(frequency: str) -> str:
+        """Get numeric update frequency (as string since that is required field format) from textual representation or
+        vice versa (eg. 'Every month' = '30', '30' = 'Every month')
+
+        Args:
+            frequency (str): Update frequency in one format
+
+        Returns:
+            str: Update frequency in alternative format
+        """
+        return Dataset.update_frequencies[frequency.lower()]
+
+    def get_update_frequency(self) -> Optional[str]:
+        """Get textual representation of numeric update frequency as stored in HDX (as string)
+        vice versa (eg. '30' = 'Every month')
+
+        Returns:
+            Optional[str]: Update frequency in textual form or None if the update frequency doesn't exist or is blank.
+        """
+        days = self.data.get('data_update_frequency', None)
+        if days:
+            return Dataset.update_frequencies[days]
+        else:
+            return None
+
+    def set_update_frequency(self, update_frequency: str) -> None:
+        """Set update frequency
+
+        Args:
+            update_frequency (str): Update frequency
+
+        Returns:
+            None
+        """
+        try:
+            int(update_frequency)
+        except ValueError:
+            update_frequency = Dataset.update_frequencies.get(update_frequency)
+        if not update_frequency:
+            raise HDXError('Invalid update frequency supplied!')
+        self.data['data_update_frequency'] = update_frequency
+
+    def get_tags(self) -> List[str]:
+        """Return the dataset's list of tags
+
+        Returns:
+            List[str]: List of tags or [] if there are none
+        """
+        tags = self.data.get('tags', None)
+        if not tags:
+            return list()
+        return [x['name'] for x in tags]
+
+    def add_tag(self, tag: str) -> None:
+        """Add a tag
+
+        Args:
+            tag (str): Tag to add
+
+        Returns:
+            None
+        """
+        tags = self.data.get('tags', None)
+        if tags:
+            if tag in [x['name'] for x in tags]:
+                return
+        else:
+            tags = list()
+        tags.append({'name': tag})
+        self.data['tags'] = tags
+
+    def add_tags(self, tags: List[str]) -> None:
+        """Add a list of tag
+
+        Args:
+            tags (List[str]): List of tags to add
+
+        Returns:
+            None
+        """
+        for tag in tags:
+            self.add_tag(tag)
+
+    def get_location(self) -> List[str]:
+        """Return the dataset's location
+
+        Returns:
+            List[str]: List of locations or [] if there are none
+        """
+        countries = self.data.get('groups', None)
+        if not countries:
+            return list()
+        return [Location.get_country_name_from_iso3(x['id']) for x in countries]
+
+    def add_country_location(self, country: str) -> None:
+        """Add a country. If iso 3 code not provided, tries to parse value and convert to iso 3 code.
+
+        Args:
+            country (str): Country to add
+
+        Returns:
+            None
+        """
+        iso3, match = Location.get_iso3_country_code(country)
+        if iso3 is None:
+            raise HDXError('Country: %s could not be found!')
+        countries = self.data.get('groups', None)
+        if countries:
+            if country in [x['id'] for x in countries]:
+                return
+        else:
+            countries = list()
+        countries.append({'id': iso3})
+        self.data['groups'] = countries
+
+    def add_country_locations(self, countries: List[str]) -> None:
+        """Add a list of countries. If iso 3 codes are not provided, tries to parse values and convert to iso 3 code.
+
+        Args:
+            countries (List[str]): List of countries to add
+
+        Returns:
+            None
+        """
+        for country in countries:
+            self.add_country_location(country)
+
+    def add_continent_location(self, continent: str) -> None:
+        """Add a continent. If a 2 letter continent code is not provided, tries to parse value and convert to 2 letter code.
+
+        Args:
+            continent (str): Continent to add
+
+        Returns:
+            None
+        """
+        self.add_country_locations(Location.get_countries_in_continent(continent))

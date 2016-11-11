@@ -24,6 +24,16 @@ class MockResponse:
         return json.loads(self.text)
 
 
+resulttags = [{'state': 'active', 'display_name': 'conflict', 'vocabulary_id': None,
+               'id': '1dae41e5-eacd-4fa5-91df-8d80cf579e53', 'name': 'conflict'},
+              {'state': 'active', 'display_name': 'political violence', 'vocabulary_id': None,
+               'id': 'aaafc63b-2234-48e3-8ccc-198d7cf0f3f3', 'name': 'political violence'}]
+
+resultgroups = [{'description': '', 'name': 'dza', 'image_display_url': '', 'display_name': 'Algeria', 'id': 'dza',
+                 'title': 'Algeria'},
+                {'description': '', 'name': 'zwe', 'image_display_url': '', 'display_name': 'Zimbabwe', 'id': 'zwe',
+                 'title': 'Zimbabwe'}]
+
 resultdict = {
     'resources': [{'revision_id': '43765383-1fce-471f-8166-d6c8660cc8a9', 'cache_url': None,
                    'datastore_active': False, 'format': 'XLSX', 'webstore_url': None,
@@ -71,15 +81,9 @@ resultdict = {
     'state': 'active', 'author_email': 'me@me.com', 'package_creator': 'someone',
     'num_resources': 2, 'total_res_downloads': 4, 'name': 'MyDataset1',
     'metadata_modified': '2016-06-09T12:49:33.854367',
-    'groups': [{'description': '', 'name': 'dza', 'image_display_url': '', 'display_name': 'Algeria', 'id': 'dza',
-                'title': 'Algeria'},
-               {'description': '', 'name': 'zwe', 'image_display_url': '', 'display_name': 'Zimbabwe', 'id': 'zwe',
-                'title': 'Zimbabwe'}],
+    'groups': resultgroups,
     'data_update_frequency': '7',
-    'tags': [{'state': 'active', 'display_name': 'conflict', 'vocabulary_id': None,
-              'id': '1dae41e5-eacd-4fa5-91df-8d80cf579e53', 'name': 'conflict'},
-             {'state': 'active', 'display_name': 'political violence', 'vocabulary_id': None,
-              'id': 'aaafc63b-2234-48e3-8ccc-198d7cf0f3f3', 'name': 'political violence'}],
+    'tags': resulttags,
     'version': None,
     'solr_additions': '{"countries": ["Algeria", "Zimbabwe"]}',
     'dataset_date': '06/04/2016'}
@@ -506,3 +510,74 @@ class TestDataset():
         datasets = Dataset.search_in_hdx(configuration, 'ACLED')
         resources = Dataset.get_all_resources(datasets)
         assert len(resources) == 3
+
+    def test_transform_update_frequency(self):
+        assert Dataset.transform_update_frequency('0') == 'Never'
+        assert Dataset.transform_update_frequency('1') == 'Every day'
+        assert Dataset.transform_update_frequency('Every day') == '1'
+        assert Dataset.transform_update_frequency('EVERY WEEK') == '7'
+        assert Dataset.transform_update_frequency('every month') == '30'
+
+    def test_get_set_update_frequency(self, configuration, read):
+        dataset = Dataset.read_from_hdx(configuration, 'TEST1')
+        assert dataset['data_update_frequency'] == '7'
+        assert dataset.get_update_frequency() == 'Every week'
+        dataset.set_update_frequency('every two weeks')
+        assert dataset['data_update_frequency'] == '14'
+        assert dataset.get_update_frequency() == 'Every two weeks'
+        dataset.set_update_frequency('90')
+        assert dataset['data_update_frequency'] == '90'
+        assert dataset.get_update_frequency() == 'Every three months'
+        with pytest.raises(HDXError):
+            dataset.set_update_frequency('lalala')
+        del dataset['data_update_frequency']
+        assert dataset.get_update_frequency() is None
+
+    def test_get_add_tags(self, configuration, read):
+        dataset = Dataset.read_from_hdx(configuration, 'TEST1')
+        assert dataset['tags'] == resulttags
+        assert dataset.get_tags() == ['conflict', 'political violence']
+        dataset.add_tag('LALA')
+        expected = copy.deepcopy(resulttags)
+        expected.append({'name': 'LALA'})
+        assert dataset['tags'] == expected
+        assert dataset.get_tags() == ['conflict', 'political violence', 'LALA']
+        dataset.add_tag('conflict')
+        assert dataset['tags'] == expected
+        assert dataset.get_tags() == ['conflict', 'political violence', 'LALA']
+        dataset.add_tags(['ABC', 'DEF', 'ABC'])
+        expected.extend([{'name': 'ABC'}, {'name': 'DEF'}])
+        assert dataset['tags'] == expected
+        assert dataset.get_tags() == ['conflict', 'political violence', 'LALA', 'ABC', 'DEF']
+        del dataset['tags']
+        assert dataset.get_tags() == []
+        dataset.add_tag('LALA')
+        assert dataset['tags'] == [{'name': 'LALA'}]
+        assert dataset.get_tags() == ['LALA']
+
+    def test_get_add_location(self, configuration, read):
+        dataset = Dataset.read_from_hdx(configuration, 'TEST1')
+        assert dataset['groups'] == resultgroups
+        assert dataset.get_location() == ['Algeria', 'Zimbabwe']
+        dataset.add_country_location('sdn')
+        expected = copy.deepcopy(resultgroups)
+        expected.append({'id': 'sdn'})
+        assert dataset['groups'] == expected
+        assert dataset.get_location() == ['Algeria', 'Zimbabwe', 'Sudan']
+        dataset.add_country_location('dza')
+        assert dataset['groups'] == expected
+        assert dataset.get_location() == ['Algeria', 'Zimbabwe', 'Sudan']
+        dataset.add_country_locations(['KEN', 'moz', 'ken'])
+        expected.extend([{'id': 'ken'}, {'id': 'moz'}])
+        assert dataset['groups'] == expected
+        assert dataset.get_location() == ['Algeria', 'Zimbabwe', 'Sudan', 'Kenya', 'Mozambique']
+        dataset.add_continent_location('af')
+        assert len(dataset['groups']) == 58
+        assert len(dataset.get_location()) == 58
+        del dataset['groups']
+        assert dataset.get_location() == []
+        with pytest.raises(HDXError):
+            dataset.add_country_location('lala')
+        dataset.add_country_location('ukr')
+        assert dataset['groups'] == [{'id': 'ukr'}]
+        assert dataset.get_location() == ['Ukraine']

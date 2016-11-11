@@ -6,7 +6,7 @@ from os.path import join
 from typing import Optional, List
 
 from hdx.configuration import Configuration
-from .hdxobject import HDXObject
+from hdx.data.hdxobject import HDXObject
 
 logger = logging.getLogger(__name__)
 

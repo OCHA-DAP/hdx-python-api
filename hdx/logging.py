@@ -3,9 +3,9 @@
 """Configuration of logging"""
 import logging.config
 
-from .utilities.dictionary import merge_dictionaries
-from .utilities.loader import load_yaml, load_json
-from .utilities.path import script_dir_plus_file
+from hdx.utilities.dictionary import merge_dictionaries
+from hdx.utilities.loader import load_yaml, load_json
+from hdx.utilities.path import script_dir_plus_file
 
 
 class LoggingError(Exception):
