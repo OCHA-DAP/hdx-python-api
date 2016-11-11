@@ -16,6 +16,8 @@ For more about the purpose and design philosophy, please visit [HDX Python Libra
 	- [Operations on HDX Objects](#operations-on-hdx-objects)
 	- [Dataset Specific Operations](#dataset-specific-operations)
     	- [Update Frequency](#update-frequency)
+    	- [Location](#location)
+    	- [Tags](#tags)
 	- [Resource Specific Operations](#resource-specific-operations)
 - [Working Example](#working-example)
 - [ACLED Example](#acled-example)
