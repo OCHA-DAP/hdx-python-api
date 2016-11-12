@@ -517,6 +517,7 @@ class TestDataset():
         assert Dataset.transform_update_frequency('Every day') == '1'
         assert Dataset.transform_update_frequency('EVERY WEEK') == '7'
         assert Dataset.transform_update_frequency('every month') == '30'
+        assert Dataset.transform_update_frequency('LALA') is None
 
     def test_get_set_update_frequency(self, configuration, read):
         dataset = Dataset.read_from_hdx(configuration, 'TEST1')
@@ -525,6 +526,9 @@ class TestDataset():
         dataset.set_update_frequency('every two weeks')
         assert dataset['data_update_frequency'] == '14'
         assert dataset.get_update_frequency() == 'Every two weeks'
+        dataset.set_update_frequency('EVERY SIX MONTHS')
+        assert dataset['data_update_frequency'] == '180'
+        assert dataset.get_update_frequency() == 'Every six months'
         dataset.set_update_frequency('90')
         assert dataset['data_update_frequency'] == '90'
         assert dataset.get_update_frequency() == 'Every three months'

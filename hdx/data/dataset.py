@@ -513,7 +513,7 @@ class Dataset(HDXObject):
         Returns:
             str: Update frequency in alternative format
         """
-        return Dataset.update_frequencies[frequency.lower()]
+        return Dataset.update_frequencies.get(frequency.lower())
 
     def get_update_frequency(self) -> Optional[str]:
         """Get textual representation of numeric update frequency as stored in HDX (as string)
@@ -524,7 +524,7 @@ class Dataset(HDXObject):
         """
         days = self.data.get('data_update_frequency', None)
         if days:
-            return Dataset.update_frequencies[days]
+            return Dataset.transform_update_frequency(days)
         else:
             return None
 
@@ -540,7 +540,7 @@ class Dataset(HDXObject):
         try:
             int(update_frequency)
         except ValueError:
-            update_frequency = Dataset.update_frequencies.get(update_frequency)
+            update_frequency = Dataset.transform_update_frequency(update_frequency)
         if not update_frequency:
             raise HDXError('Invalid update frequency supplied!')
         self.data['data_update_frequency'] = update_frequency
