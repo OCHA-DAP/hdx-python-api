@@ -342,7 +342,7 @@ The method below allows you to set the dataset's date using a `datetime.datetime
 
     dataset.set_dataset_date(DATETIME.DATETIME OBJECT)
 
-As a convenience, there are methods that allow getting and setting the dataset date as/from a string. You can supply a [date format](https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior). If you don't, the format is assumed to be [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) eg. 2007-01-25T12:00:00Z for getting the dataset date. For setting, the date format will be guessed with unambiguous ones handled without error. 
+As a convenience, there are methods that allow getting and setting the dataset date as/from a string. You can supply a [date format](https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior). If you don't, the format is assumed to be [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) eg. 2007-01-25T12:00:00 for getting the dataset date. For setting, the date format will be guessed with unambiguous ones handled without error. 
 
     dataset.get_dataset_date_as_string('FORMAT')
     dataset.set_dataset_date_from_string('DATE', 'FORMAT')
