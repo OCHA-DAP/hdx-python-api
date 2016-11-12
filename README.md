@@ -334,11 +334,11 @@ You can get all the resources from a list of datasets as follows:
 
 Dataset date is a mandatory field in HDX. This date is the date of the data in the dataset, not to be confused with when data was last added/changed in the dataset.
 
-To retrieve the dataset date as a datetime.datetime object, you can do:
+To retrieve the dataset date as a `datetime.datetime` object, you can do:
 
     dataset_date = dataset.get_dataset_date()
     
-The method below allows you to set the dataset's date using a datetime.datetime object:
+The method below allows you to set the dataset's date using a `datetime.datetime` object:
 
     dataset.set_dataset_date(DATETIME.DATETIME OBJECT)
 
