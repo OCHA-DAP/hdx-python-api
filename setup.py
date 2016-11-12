@@ -45,6 +45,7 @@ def get_version():
 
 requirements = ['ckanapi',
                 'colorlog',
+                'geonamescache',
                 'ndg-httpsclient',
                 'pyasn1',
                 'pyOpenSSL',
