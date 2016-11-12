@@ -92,12 +92,12 @@ Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DA
         print(dataset.get_dataset_date())
 10. As a test, change the dataset date:
 
-        dataset.set_dataset_date('2015-07-26', 'YYYY-MM-DD')
+        dataset.set_dataset_date('2015-07-26', '%Y-%m-%d')
         print(dataset.get_dataset_date())
         dataset.update_in_hdx()
 11. You can view it on HDX before changing it back:
 
-        dataset.set_dataset_date('2016-06-25', 'YYYY-MM-DD')
+        dataset.set_dataset_date('2016-06-25', '%Y-%m-%d')
         dataset.update_in_hdx()
 12. You can search for datasets on HDX and get their resources:
 
