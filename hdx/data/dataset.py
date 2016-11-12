@@ -518,7 +518,7 @@ class Dataset(HDXObject):
             return None
 
     def get_dataset_date(self, date_format: Optional[str] = None) -> Optional[datetime.datetime]:
-        """Get dataset date as string in specified format. If no format is supplied an ISO 8601 string is returned.
+        """Get dataset date as string in specified format. If no format is supplied, an ISO 8601 string is returned.
 
         Args:
             date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
@@ -547,7 +547,8 @@ class Dataset(HDXObject):
         self.data['dataset_date'] = dataset_date.strftime('%m/%d/%Y')
 
     def set_dataset_date(self, dataset_date: str, date_format: Optional[str] = None) -> None:
-        """Set dataset date from string.
+        """Set dataset date from string using specified format. If no format is supplied, the function will guess.
+        For unambiguous formats, this should be fine.
 
         Args:
             dataset_date (str): Dataset date string
