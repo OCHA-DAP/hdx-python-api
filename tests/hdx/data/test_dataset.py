@@ -519,23 +519,23 @@ class TestDataset():
         assert Dataset.transform_update_frequency('every month') == '30'
         assert Dataset.transform_update_frequency('LALA') is None
 
-    def test_get_set_update_frequency(self, configuration, read):
+    def test_get_set_expected_update_frequency(self, configuration, read):
         dataset = Dataset.read_from_hdx(configuration, 'TEST1')
         assert dataset['data_update_frequency'] == '7'
-        assert dataset.get_update_frequency() == 'Every week'
-        dataset.set_update_frequency('every two weeks')
+        assert dataset.get_expected_update_frequency() == 'Every week'
+        dataset.set_expected_update_frequency('every two weeks')
         assert dataset['data_update_frequency'] == '14'
-        assert dataset.get_update_frequency() == 'Every two weeks'
-        dataset.set_update_frequency('EVERY SIX MONTHS')
+        assert dataset.get_expected_update_frequency() == 'Every two weeks'
+        dataset.set_expected_update_frequency('EVERY SIX MONTHS')
         assert dataset['data_update_frequency'] == '180'
-        assert dataset.get_update_frequency() == 'Every six months'
-        dataset.set_update_frequency('90')
+        assert dataset.get_expected_update_frequency() == 'Every six months'
+        dataset.set_expected_update_frequency('90')
         assert dataset['data_update_frequency'] == '90'
-        assert dataset.get_update_frequency() == 'Every three months'
+        assert dataset.get_expected_update_frequency() == 'Every three months'
         with pytest.raises(HDXError):
-            dataset.set_update_frequency('lalala')
+            dataset.set_expected_update_frequency('lalala')
         del dataset['data_update_frequency']
-        assert dataset.get_update_frequency() is None
+        assert dataset.get_expected_update_frequency() is None
 
     def test_get_add_tags(self, configuration, read):
         dataset = Dataset.read_from_hdx(configuration, 'TEST1')

@@ -515,8 +515,8 @@ class Dataset(HDXObject):
         """
         return Dataset.update_frequencies.get(frequency.lower())
 
-    def get_update_frequency(self) -> Optional[str]:
-        """Get textual representation of numeric update frequency as stored in HDX (as string)
+    def get_expected_update_frequency(self) -> Optional[str]:
+        """Get expected update frequency (in textual rather than numeric form)
         vice versa (eg. '30' = 'Every month')
 
         Returns:
@@ -528,8 +528,8 @@ class Dataset(HDXObject):
         else:
             return None
 
-    def set_update_frequency(self, update_frequency: str) -> None:
-        """Set update frequency
+    def set_expected_update_frequency(self, update_frequency: str) -> None:
+        """Set expected update frequency
 
         Args:
             update_frequency (str): Update frequency

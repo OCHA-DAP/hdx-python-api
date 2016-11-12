@@ -15,7 +15,7 @@ For more about the purpose and design philosophy, please visit [HDX Python Libra
 	- [Configuring Logging](#configuring-logging)
 	- [Operations on HDX Objects](#operations-on-hdx-objects)
 	- [Dataset Specific Operations](#dataset-specific-operations)
-    	- [Update Frequency](#update-frequency)
+    	- [Expected Update Frequency](#expected-update-frequency)
     	- [Location](#location)
     	- [Tags](#tags)
 	- [Resource Specific Operations](#resource-specific-operations)
@@ -329,7 +329,7 @@ You can get all the resources from a list of datasets as follows:
 
     resources = Dataset.get_all_resources(datasets)
 
-#### Update Frequency
+#### Expected Update Frequency
 
 HDX datasets have a mandatory field, the expected update frequency. This is your best guess of how often the dataset will be updated. 
 
@@ -346,13 +346,13 @@ The HDX web interface uses set frequencies:
     
 Although the API allows much greater granularity (a number of days), you are encouraged to use the options above (avoiding using `Never` if possible). To assist with this, you can use methods that allow this.
 
-The following method will return a textual update frequency corresponding to what would be shown in the HDX web interface.
+The following method will return a textual expected update frequency corresponding to what would be shown in the HDX web interface.
 
-    update_frequency = dataset.get_update_frequency()
+    update_frequency = dataset.get_expected_update_frequency()
     
-The method below allows you to set the dataset update frequency using one of the set frequencies above. (It also allows you to pass a number of days cast to a string, but this is discouraged.)
+The method below allows you to set the dataset's expected update frequency using one of the set frequencies above. (It also allows you to pass a number of days cast to a string, but this is discouraged.)
 
-    dataset.set_update_frequency('UPDATE_FREQUENCY')
+    dataset.set_expected_update_frequency('UPDATE_FREQUENCY')
     
 Transforming backwards and forwards between representations can be achieved with this function:
     
