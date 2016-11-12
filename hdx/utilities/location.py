@@ -81,4 +81,4 @@ class Location(object):
         for country in Location.countries:
             if country.get('continentcode') == continentcode:
                 countries.append(function(country.get('iso3').lower()))
-        return countries
+        return sorted(countries)
