@@ -505,7 +505,7 @@ class Dataset(HDXObject):
                 resources.append(resource)
         return resources
 
-    def get_dataset_date(self) -> Optional[datetime.datetime]:
+    def get_dataset_date_as_datetime(self) -> Optional[datetime.datetime]:
         """Get dataset date as datetime.datetime object.
 
         Returns:
@@ -517,7 +517,7 @@ class Dataset(HDXObject):
         else:
             return None
 
-    def get_dataset_date_as_string(self, date_format: Optional[str] = None) -> Optional[datetime.datetime]:
+    def get_dataset_date(self, date_format: Optional[str] = None) -> Optional[datetime.datetime]:
         """Get dataset date as string in specified format. If no format is supplied an ISO 8601 string is returned.
 
         Args:
@@ -526,16 +526,16 @@ class Dataset(HDXObject):
         Returns:
             Optional[str]: Dataset date string or None if no date is set
         """
-        dataset_date = self.get_dataset_date()
+        dataset_date = self.get_dataset_date_as_datetime()
         if dataset_date:
             if date_format:
                 return dataset_date.strftime(date_format)
             else:
-                return dataset_date.isoformat()
+                return dataset_date.date().isoformat()
         else:
             return None
 
-    def set_dataset_date(self, dataset_date: datetime.datetime) -> None:
+    def set_dataset_date_from_datetime(self, dataset_date: datetime.datetime) -> None:
         """Set dataset date from datetime.datetime object
 
         Args:
@@ -544,9 +544,9 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        self.data['dataset_date'] = dataset_date.date().strftime('%m/%d/%Y')
+        self.data['dataset_date'] = dataset_date.strftime('%m/%d/%Y')
 
-    def set_dataset_date_from_string(self, dataset_date: str, date_format: Optional[str] = None) -> None:
+    def set_dataset_date(self, dataset_date: str, date_format: Optional[str] = None) -> None:
         """Set dataset date from string.
 
         Args:
@@ -566,7 +566,7 @@ class Dataset(HDXObject):
                 parsed_date = datetime.datetime.strptime(dataset_date, date_format)
             except ValueError as e:
                 raise HDXError('Invalid dataset date!') from e
-        self.set_dataset_date(parsed_date)
+        self.set_dataset_date_from_datetime(parsed_date)
 
     @staticmethod
     def transform_update_frequency(frequency: str) -> str:
