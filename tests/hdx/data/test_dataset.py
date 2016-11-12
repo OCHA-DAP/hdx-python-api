@@ -2,6 +2,7 @@
 # -*- coding: UTF-8 -*-
 """Dataset Tests"""
 import copy
+import datetime
 import json
 from os.path import join
 
@@ -510,6 +511,43 @@ class TestDataset():
         datasets = Dataset.search_in_hdx(configuration, 'ACLED')
         resources = Dataset.get_all_resources(datasets)
         assert len(resources) == 3
+
+    def test_get_set_dataset_date(self, configuration, read):
+        dataset = Dataset.read_from_hdx(configuration, 'TEST1')
+        assert dataset['dataset_date'] == '06/04/2016'
+        assert dataset.get_dataset_date() == datetime.datetime(2016, 6, 4, 0, 0)
+        assert dataset.get_dataset_date_as_string() == '2016-06-04T00:00:00'
+        assert dataset.get_dataset_date_as_string('%Y/%m/%d') == '2016/06/04'
+        testdate = datetime.datetime(2013, 12, 25, 0, 0)
+        dataset.set_dataset_date(testdate)
+        assert dataset['dataset_date'] == '12/25/2013'
+        assert dataset.get_dataset_date() == testdate
+        assert dataset.get_dataset_date_as_string() == '2013-12-25T00:00:00'
+        assert dataset.get_dataset_date_as_string('%y-%m-%d %H:%M:%S%Z') == '13-12-25 00:00:00'
+        dataset.set_dataset_date_from_string('2007-01-25T12:00:00Z')
+        assert dataset['dataset_date'] == '01/25/2007'
+        assert dataset.get_dataset_date() == datetime.datetime(2007, 1, 25, 0, 0)
+        assert dataset.get_dataset_date_as_string() == '2007-01-25T00:00:00'
+        assert dataset.get_dataset_date_as_string('%Y-%m-%dT%H:%M:%S%Z') == '2007-01-25T00:00:00'
+        dataset.set_dataset_date_from_string('2013-09-11')
+        assert dataset['dataset_date'] == '09/11/2013'
+        assert dataset.get_dataset_date() == datetime.datetime(2013, 9, 11, 0, 0)
+        assert dataset.get_dataset_date_as_string() == '2013-09-11T00:00:00'
+        assert dataset.get_dataset_date_as_string('%Y/%m/%d') == '2013/09/11'
+        test_date = '2021/05/06'
+        dataset.set_dataset_date_from_string(test_date, '%Y/%m/%d')
+        assert dataset['dataset_date'] == '05/06/2021'
+        assert dataset.get_dataset_date() == datetime.datetime(2021, 5, 6, 0, 0)
+        assert dataset.get_dataset_date_as_string() == '2021-05-06T00:00:00'
+        assert dataset.get_dataset_date_as_string('%Y/%m/%d') == test_date
+        with pytest.raises(HDXError):
+            dataset.set_dataset_date_from_string('lalala')
+        with pytest.raises(HDXError):
+            dataset.set_dataset_date_from_string('lalala', '%Y/%m/%d')
+        del dataset['dataset_date']
+        assert dataset.get_dataset_date() is None
+        assert dataset.get_dataset_date_as_string() is None
+        assert dataset.get_dataset_date_as_string('YYYY/MM/DD') is None
 
     def test_transform_update_frequency(self):
         assert Dataset.transform_update_frequency('0') == 'Never'

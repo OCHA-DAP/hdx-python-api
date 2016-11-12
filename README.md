@@ -15,6 +15,7 @@ For more about the purpose and design philosophy, please visit [HDX Python Libra
 	- [Configuring Logging](#configuring-logging)
 	- [Operations on HDX Objects](#operations-on-hdx-objects)
 	- [Dataset Specific Operations](#dataset-specific-operations)
+    	- [Dataset Date](#dataset-date)
     	- [Expected Update Frequency](#expected-update-frequency)
     	- [Location](#location)
     	- [Tags](#tags)
@@ -88,15 +89,15 @@ Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DA
 9. Read this dataset [ACLED Conflict Data for Africa (Realtime - 2016)](https://test-data.humdata.org/dataset/acled-conflict-data-for-africa-realtime-2016#) from HDX and view the date of the dataset:
 
         dataset = Dataset.read_from_hdx(configuration, 'acled-conflict-data-for-africa-realtime-2016')
-        print(dataset['dataset_date'])
+        print(dataset.get_dataset_date_as_string())
 10. As a test, change the dataset date:
 
-        dataset['dataset_date'] = '07/26/2015'
-        print(dataset['dataset_date'])
+        dataset.set_dataset_date_from_string('2015-07-26', 'YYYY-MM-DD')
+        print(dataset.get_dataset_date_as_string())
         dataset.update_in_hdx()
 11. You can view it on HDX before changing it back:
 
-        dataset['dataset_date'] = '06/25/2016'
+        dataset.set_dataset_date_from_string('2016-06-25', 'YYYY-MM-DD')
         dataset.update_in_hdx()
 12. You can search for datasets on HDX and get their resources:
 
@@ -328,6 +329,23 @@ You can delete a Resource or GalleryItem object from the dataset using the appr
 You can get all the resources from a list of datasets as follows:
 
     resources = Dataset.get_all_resources(datasets)
+
+#### Dataset Date
+
+Dataset date is a mandatory field in HDX. This date is the date of the data in the dataset, not to be confused with when data was last added/changed in the dataset.
+
+To retrieve the dataset date as a datetime.datetime object, you can do:
+
+    dataset_date = dataset.get_dataset_date()
+    
+The method below allows you to set the dataset's date using a datetime.datetime object:
+
+    dataset.set_dataset_date(DATETIME.DATETIME OBJECT)
+
+As a convenience, there are methods that allow getting and setting the dataset date as/from a string. You can supply a [date format](https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior). If you don't, the format is assumed to be [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) eg. 2007-01-25T12:00:00Z. 
+
+    dataset.get_dataset_date_as_string('FORMAT')
+    dataset.set_dataset_date_from_string('DATE', 'FORMAT')
 
 #### Expected Update Frequency
 

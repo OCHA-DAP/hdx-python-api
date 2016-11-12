@@ -2,9 +2,10 @@ ckanapi==3.6
 colorlog==2.7.0
 geonamescache==0.3.1
 ndg-httpsclient==0.4.2
+pyaml == 16.9.0
 pyasn1==0.1.9
 pyOpenSSL==16.2.0
-pyaml == 16.9.0
+python-dateutil==2.6.0
 requests==2.11.1
 scraperwiki==0.5.1
 typing==3.5.2.2

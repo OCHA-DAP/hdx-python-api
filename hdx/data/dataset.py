@@ -4,9 +4,12 @@
 
 It also handles resource and gallery items.
 """
+import datetime
 import logging
 from os.path import join
 from typing import Any, List, Optional
+
+from dateutil import parser
 
 from hdx.configuration import Configuration
 from hdx.data.galleryitem import GalleryItem
@@ -502,6 +505,69 @@ class Dataset(HDXObject):
                 resources.append(resource)
         return resources
 
+    def get_dataset_date(self) -> Optional[datetime.datetime]:
+        """Get dataset date
+
+        Returns:
+            Optional[datetime.datetime]: Dataset date in datetime object or None if no date is set
+        """
+        dataset_date = self.data.get('dataset_date', None)
+        if dataset_date:
+            return datetime.datetime.strptime(dataset_date, '%m/%d/%Y')
+        else:
+            return None
+
+    def get_dataset_date_as_string(self, date_format: Optional[str] = None) -> Optional[datetime.datetime]:
+        """Get dataset date as string in specified format. If no format is supplied an ISO 8601 string is returned.
+
+        Args:
+            date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
+
+        Returns:
+            Optional[str]: Dataset date string or None if no date is set
+        """
+        dataset_date = self.get_dataset_date()
+        if dataset_date:
+            if date_format:
+                return dataset_date.strftime(date_format)
+            else:
+                return dataset_date.isoformat()
+        else:
+            return None
+
+    def set_dataset_date(self, dataset_date: datetime.datetime) -> None:
+        """Set dataset date from datetime.datetime object
+
+        Args:
+            dataset_date (datetime.datetime): Dataset date string
+
+        Returns:
+            None
+        """
+        self.data['dataset_date'] = dataset_date.date().strftime('%m/%d/%Y')
+
+    def set_dataset_date_from_string(self, dataset_date: str, date_format: Optional[str] = None) -> None:
+        """Set dataset date from string.
+
+        Args:
+            dataset_date (str): Dataset date string
+            date_format (Optional[str]): Date format. If None is given, will attempt to guess. Defaults to None.
+
+        Returns:
+            None
+        """
+        if date_format is None:
+            try:
+                parsed_date = parser.parse(dataset_date)
+            except (ValueError, OverflowError) as e:
+                raise HDXError('Invalid dataset date!') from e
+        else:
+            try:
+                parsed_date = datetime.datetime.strptime(dataset_date, date_format)
+            except ValueError as e:
+                raise HDXError('Invalid dataset date!') from e
+        self.set_dataset_date(parsed_date)
+
     @staticmethod
     def transform_update_frequency(frequency: str) -> str:
         """Get numeric update frequency (as string since that is required field format) from textual representation or
@@ -517,7 +583,6 @@ class Dataset(HDXObject):
 
     def get_expected_update_frequency(self) -> Optional[str]:
         """Get expected update frequency (in textual rather than numeric form)
-        vice versa (eg. '30' = 'Every month')
 
         Returns:
             Optional[str]: Update frequency in textual form or None if the update frequency doesn't exist or is blank.
