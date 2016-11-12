@@ -506,7 +506,7 @@ class Dataset(HDXObject):
         return resources
 
     def get_dataset_date(self) -> Optional[datetime.datetime]:
-        """Get dataset date
+        """Get dataset date as datetime.datetime object.
 
         Returns:
             Optional[datetime.datetime]: Dataset date in datetime object or None if no date is set
