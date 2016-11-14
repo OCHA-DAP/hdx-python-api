@@ -671,7 +671,7 @@ class Dataset(HDXObject):
         countries = self.data.get('groups', None)
         if not countries:
             return list()
-        return [Location.get_country_name_from_iso3(x['id']) for x in countries]
+        return [Location.get_country_name_from_iso3(x['name']) for x in countries]
 
     def add_country_location(self, country: str) -> None:
         """Add a country. If iso 3 code not provided, tries to parse value and convert to iso 3 code.
@@ -687,11 +687,11 @@ class Dataset(HDXObject):
             raise HDXError('Country: %s could not be found!')
         countries = self.data.get('groups', None)
         if countries:
-            if country in [x['id'] for x in countries]:
+            if country in [x['name'] for x in countries]:
                 return
         else:
             countries = list()
-        countries.append({'id': iso3})
+        countries.append({'name': iso3})
         self.data['groups'] = countries
 
     def add_country_locations(self, countries: List[str]) -> None:

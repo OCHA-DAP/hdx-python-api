@@ -603,14 +603,14 @@ class TestDataset():
         assert dataset.get_location() == ['Algeria', 'Zimbabwe']
         dataset.add_country_location('sdn')
         expected = copy.deepcopy(resultgroups)
-        expected.append({'id': 'sdn'})
+        expected.append({'name': 'sdn'})
         assert dataset['groups'] == expected
         assert dataset.get_location() == ['Algeria', 'Zimbabwe', 'Sudan']
         dataset.add_country_location('dza')
         assert dataset['groups'] == expected
         assert dataset.get_location() == ['Algeria', 'Zimbabwe', 'Sudan']
         dataset.add_country_locations(['KEN', 'moz', 'ken'])
-        expected.extend([{'id': 'ken'}, {'id': 'moz'}])
+        expected.extend([{'name': 'ken'}, {'name': 'moz'}])
         assert dataset['groups'] == expected
         assert dataset.get_location() == ['Algeria', 'Zimbabwe', 'Sudan', 'Kenya', 'Mozambique']
         dataset.add_continent_location('af')
@@ -621,5 +621,5 @@ class TestDataset():
         with pytest.raises(HDXError):
             dataset.add_country_location('lala')
         dataset.add_country_location('ukr')
-        assert dataset['groups'] == [{'id': 'ukr'}]
+        assert dataset['groups'] == [{'name': 'ukr'}]
         assert dataset.get_location() == ['Ukraine']
