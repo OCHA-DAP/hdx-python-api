@@ -46,7 +46,17 @@ class Dataset(HDXObject):
         'every month': '30',
         'every three months': '90',
         'every six months': '180',
-        'every year': '365'
+        'every year': '365',
+        'daily': '1',
+        'weekly': '7',
+        'fortnightly': '14',
+        'every other week': '14',
+        'monthly': '30',
+        'quarterly': '90',
+        'semiannually': '180',
+        'semiyearly': '180',
+        'annually': '365',
+        'yearly': '365'
     }
 
     def __init__(self, configuration: Configuration, initial_data: Optional[dict] = None,
