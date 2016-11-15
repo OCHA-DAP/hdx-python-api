@@ -479,7 +479,7 @@ You can then fill out the function `generate_dataset` as required.
 
 A complete example can be found here: [https://github.com/mcarans/hdxscraper-acled-africa](https://github.com/mcarans/hdxscraper-acled-africa)
 
-In particular, take a look at the files `run.py`, `acled_africa.py` and the `config` folder.
+In particular, take a look at the files `run.py`, `acled_africa.py` and the `config` folder. To adapt it, you will need to modify the dataset `name` in `acled_africa.py` and the organisation information such as `owner_org` in `config/hdx_dataset_static.yml`. 
 
 The ACLED scraper creates a dataset in HDX for [ACLED realtime data](https://data.humdata.org/dataset/acled-conflict-data-for-africa-realtime-2016) if it doesn't already exist, populating all the required metadata. It then creates resources that point to urls of [Excel and csv files for Realtime 2016 All Africa data](http://www.acleddata.com/data/realtime-data-2016/) (or updates the links and metadata if the resources already exist). Finally it creates a gallery item that points to these [dynamic maps and graphs](http://www.acleddata.com/visuals/maps/dynamic-maps/). 
 
