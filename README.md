@@ -66,10 +66,21 @@ Let's start with a simple example that also ensures that the library is working 
         echo xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx > .hdxkey
 2. Install virtualenv if not installed:
 
+        pip install virtualenv
+        
+   On some Linux distributions, you can do the following instead to install from the distribution's official repository:
+   
         sudo apt-get install virtualenv
 3. Create a Python 3 virtualenv and activate it:
 
         virtualenv -p python3 test
+        
+   On Windows:
+   
+        test\Scripts\activate
+   
+   On other OSs:
+   
         source test/bin/activate
 4. Install the HDX Python library:
 
