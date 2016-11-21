@@ -11,6 +11,10 @@ hdx_test_site:
   url: "https://test-data.humdata.org/"
   username: "ZGF0YXByb2plY3Q="
   password: "aHVtZGF0YQ=="
+hdx_feature_site:
+  url: "https://feature-data.humdata.org/"
+  username: "ZGF0YXByb2plY3Q="
+  password: "aHVtZGF0YQ=="
 dataset:
   required_fields:
     - name

@@ -7,49 +7,60 @@ from os.path import join, abspath
 
 import pytest
 
-from hdx.utilities.downloader import download_file, DownloadError, get_headers, download, get_path_for_url
+from hdx.utilities.downloader import Download, DownloadError
 from hdx.utilities.path import script_dir
 
 
 class TestDownloader():
-    def test_get_path_for_url(self):
+    @pytest.fixture
+    def fixtureurl(self):
+        return 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
+
+    @pytest.fixture
+    def fixturenotexistsurl(self):
+        return 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/NOTEXIST.csv'
+
+    def test_get_path_for_url(self, fixtureurl):
         scriptdir = script_dir(TestDownloader)
-        path = get_path_for_url(
-            'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv', scriptdir)
+        path = Download.get_path_for_url(fixtureurl, scriptdir)
         assert abspath(path) == abspath(join(scriptdir, 'test_data.csv'))
         downloader_folder = join(scriptdir, '..', '..', 'fixtures', 'downloader')
-        path = get_path_for_url(
-            'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv',
-            downloader_folder)
+        path = Download.get_path_for_url(fixtureurl, downloader_folder)
         assert abspath(path) == abspath(join(downloader_folder, 'test_data3.csv'))
 
-    def test_download_file(self):
+    def test_setup_stream(self, fixtureurl, fixturenotexistsurl):
+        with pytest.raises(DownloadError), Download() as download:
+            download.setup_stream('NOTEXIST://NOTEXIST.csv')
+        with pytest.raises(DownloadError), Download() as download:
+            download.setup_stream(fixturenotexistsurl)
+        with Download() as download:
+            download.setup_stream(fixtureurl)
+            headers = download.response.headers
+            assert headers['Content-Length'] == '479'
+
+    def test_hash_stream(self, fixtureurl):
+        with Download() as download:
+            download.setup_stream(fixtureurl)
+            md5hash = download.hash_stream(fixtureurl)
+            assert md5hash == '012c59e583a693d56fff10f061ebd5d0'
+
+    def test_download_file(self, fixtureurl, fixturenotexistsurl):
         tmpdir = tempfile.gettempdir()
-        with pytest.raises(DownloadError):
-            download_file('NOTEXIST://NOTEXIST.csv', tmpdir)
-        with pytest.raises(DownloadError):
-            download_file(
-                'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/NOTEXIST.csv')
-        f = download_file(
-            'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv', tmpdir)
-        fpath = abspath(f)
-        unlink(f)
-        assert fpath == abspath(join(tmpdir, 'test_data.csv'))
+        with pytest.raises(DownloadError), Download() as download:
+            download.download_file('NOTEXIST://NOTEXIST.csv', tmpdir)
+        with pytest.raises(DownloadError), Download() as download:
+            download.download_file(fixturenotexistsurl)
+        with Download() as download:
+            f = download.download_file(fixtureurl, tmpdir)
+            fpath = abspath(f)
+            unlink(f)
+            assert fpath == abspath(join(tmpdir, 'test_data.csv'))
 
-    def test_get_headers(self):
-        with pytest.raises(DownloadError):
-            get_headers('NOTEXIST://NOTEXIST.csv')
-        with pytest.raises(DownloadError):
-            get_headers('https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/NOTEXIST.csv')
-        headers = get_headers(
-            'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv')
-        assert headers['Content-Length'] == '479'
-
-    def test_download(self):
-        with pytest.raises(DownloadError):
-            download('NOTEXIST://NOTEXIST.csv')
-        with pytest.raises(DownloadError):
-            download('https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/NOTEXIST.csv')
-        result = download(
-            'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv')
-        assert result['Content-Length'] == '479'
+    def test_download(self, fixtureurl, fixturenotexistsurl):
+        with pytest.raises(DownloadError), Download() as download:
+            download.download('NOTEXIST://NOTEXIST.csv')
+        with pytest.raises(DownloadError), Download() as download:
+            download.download(fixturenotexistsurl)
+        with Download() as download:
+            result = download.download(fixtureurl)
+            assert result.headers['Content-Length'] == '479'

@@ -395,6 +395,9 @@ class TestResource():
         url, path = resource.download()
         unlink(path)
         assert url == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
+        resource['url'] = ''
+        with pytest.raises(HDXError):
+            resource.download()
         resource = Resource.read_from_hdx(configuration, 'TEST4')
         with pytest.raises(DownloadError):
             resource.download()

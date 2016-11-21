@@ -8,7 +8,7 @@ from os.path import join
 from typing import Optional, List, Tuple
 
 from hdx.configuration import Configuration
-from hdx.utilities.downloader import download_file
+from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_yaml, load_json
 from hdx.utilities.path import script_dir_plus_file
 from .hdxobject import HDXObject, HDXError
@@ -177,7 +177,9 @@ class Resource(HDXObject):
         if not url:
             raise HDXError('No URL to download!')
         logger.debug('Downloading %s' % url)
-        return url, download_file(url, folder)
+        with Download() as download:
+            path = download.download_file(url, folder)
+            return url, path
 
     def create_datastore(self, schema: List[dict] = None, primary_key: Optional[str] = None,
                          delete_first: int = 0) -> None:
@@ -214,7 +216,7 @@ class Resource(HDXObject):
             data = {'resource_id': self.data['id'], 'force': True, 'fields': schema, 'primary_key': primary_key}
             self._write_to_hdx('datastore_create', data, 'id')
             rows = [row for row in reader]
-            chunksize = 10000
+            chunksize = 1024
             offset = 0
             if primary_key is None:
                 method = 'insert'

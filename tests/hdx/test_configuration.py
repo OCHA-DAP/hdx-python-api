@@ -160,6 +160,11 @@ class TestConfiguration():
                 'username': 'ZGF0YXByb2plY3Q=',
                 'password': 'aHVtZGF0YQ=='
             },
+            'hdx_feature_site': {
+                'url': 'https://feature-data.humdata.org/',
+                'username': 'ZGF0YXByb2plY3Q=',
+                'password': 'aHVtZGF0YQ=='
+            },
             'abc': '123',
             'dataset': {'required_fields': [
                 'name',
@@ -204,6 +209,11 @@ class TestConfiguration():
             },
             'hdx_test_site': {
                 'url': 'https://test-data.humdata.org/',
+                'username': 'ZGF0YXByb2plY3Q=',
+                'password': 'aHVtZGF0YQ=='
+            },
+            'hdx_feature_site': {
+                'url': 'https://feature-data.humdata.org/',
                 'username': 'ZGF0YXByb2plY3Q=',
                 'password': 'aHVtZGF0YQ=='
             },
@@ -252,6 +262,11 @@ class TestConfiguration():
             },
             'hdx_test_site': {
                 'url': 'https://test-data.humdata.org/',
+                'username': 'ZGF0YXByb2plY3Q=',
+                'password': 'aHVtZGF0YQ=='
+            },
+            'hdx_feature_site': {
+                'url': 'https://feature-data.humdata.org/',
                 'username': 'ZGF0YXByb2plY3Q=',
                 'password': 'aHVtZGF0YQ=='
             },
