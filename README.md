@@ -35,7 +35,7 @@ Please note that the library only works on Python 3.
 ## Getting Started
 ### Creating the API Key File
 
-The first task is to create an API key file. By default this is assumed to be called `.hdxkey` and is located in the current user's home directory `~`. Assuming you are using a desktop browser, the API key is obtained by:
+If you just want to read data from HDX, then an API key is not necessary and you can ignore the 7 steps below. However, if you want to write data to HDX, then you need to register on the website to obtain an API key and then create an API key file. By default this is assumed to be called `.hdxkey` and is located in the current user's home directory `~`. Assuming you are using a desktop browser, the API key is obtained by:
 
 1. Browse to the [HDX website](https://data.humdata.org/)
 2. Left click on LOG IN in the top right of the web page if not logged in and log in
@@ -60,7 +60,7 @@ If you get errors, it is probably the dependencies of the cryptography package t
 
 Let's start with a simple example that also ensures that the library is working properly. This assumes you are using Linux, but you can do something similar on Windows:
 
-1. Create the API key if you haven't already. Look it up on the HDX website as mentioned above, then put it into a file in your home directory:
+1. If you just want to read data from HDX, then an API key is not necessary. However, if you want to write data to HDX, then you need to register on the website to obtain an API key. Please see above about where to find it on the website. Once you have it, then put it into a file in your home directory:
 
         cd ~
         echo xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx > .hdxkey
@@ -94,19 +94,24 @@ Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DA
 
         from hdx.configuration import Configuration
         from hdx.data.dataset import Dataset
-8. Use configuration defaults and test HDX site:
+8. Use configuration defaults and test HDX site. 
 
-        configuration = Configuration(hdx_site='test', project_config_dict = {})
+    If you only want to read data:
+
+        configuration = Configuration(hdx_site='test', hdx_read_only=True, project_config_dict={})
+    If you want to write data and you have an API key stored in a file `.hdxkey` in the current user's home directory:
+
+        configuration = Configuration(hdx_site='test', project_config_dict={})
 9. Read this dataset [ACLED Conflict Data for Africa (Realtime - 2016)](https://test-data.humdata.org/dataset/acled-conflict-data-for-africa-realtime-2016#) from HDX and view the date of the dataset:
 
         dataset = Dataset.read_from_hdx(configuration, 'acled-conflict-data-for-africa-realtime-2016')
         print(dataset.get_dataset_date())
-10. As a test, change the dataset date:
+10. If you have an API key, as a test, change the dataset date:
 
         dataset.set_dataset_date('2015-07-26', '%Y-%m-%d')
         print(dataset.get_dataset_date())
         dataset.update_in_hdx()
-11. You can view it on HDX before changing it back:
+11. You can view it on HDX before changing it back (if you have an API key):
 
         dataset.set_dataset_date('2016-06-25', '%Y-%m-%d')
         dataset.update_in_hdx()
@@ -155,7 +160,7 @@ The configuration is passed to your main function in the `configuration` argumen
 
 It is possible to pass configuration parameters in the facade call eg.
 
-    facade(main, hdx_site = HDX_SITE_TO_USE, hdx_key_file = LOCATION_OF_HDX_KEY_FILE, hdx_config_yaml=PATH_TO_HDX_YAML_CONFIGURATION, 
+    facade(main, hdx_site = HDX_SITE_TO_USE, hdx_read_only = ONLY_READ_NOT_WRITE, hdx_key_file = LOCATION_OF_HDX_KEY_FILE, hdx_config_yaml=PATH_TO_HDX_YAML_CONFIGURATION, 
 
     project_config_dict = {'MY_PARAMETER', 'MY_VALUE'})
 
@@ -171,16 +176,17 @@ If you do not use the facade, you can use the `Configuration` class directly, pa
 
 `KEYWORD ARGUMENTS` can be:
 
-| Choose |       Argument      |     Type     |               Value                |                 Default                |
-|--------|---------------------|--------------|------------------------------------|----------------------------------------|
-|        |hdx_site             |Optional[bool]|HDX site to use eg. prod, test      |test                                    |
-|        |hdx_key_file         |Optional[str] |Path to HDX key file ~/.hdxkey      |                                        |                                  
-|One of: |hdx_config_dict      |dict          |HDX configuration dictionary        |                                        |
-|        |hdx_config_json      |str           |Path to JSON HDX configuration      |                                        |
-|        |hdx_config_yaml      |str           |Path to YAML HDX configuration      |Library's internal hdx_configuration.yml|
-|One of: |project_config_dict  |dict          |Project configuration dictionary    |                                        |
-|        |project_config_json  |str           |Path to JSON Project configuration  |                                        |
-|        |project_config_yaml  |str           |Path to YAML Project configuration  |config/project_configuration.yml        |
+| Choose |       Argument      |     Type     |               Value                 |                 Default                |
+|--------|---------------------|--------------|-------------------------------------|----------------------------------------|
+|        |hdx_site             |Optional[bool]|HDX site to use eg. prod, test       |test                                    |
+|        |hdx_read_only        |bool          |Read only or read/write access to HDX|False                                   |                                  
+|        |hdx_key_file         |Optional[str] |Path to HDX key file ~/.hdxkey       |                                        |                                  
+|One of: |hdx_config_dict      |dict          |HDX configuration dictionary         |                                        |
+|        |hdx_config_json      |str           |Path to JSON HDX configuration       |                                        |
+|        |hdx_config_yaml      |str           |Path to YAML HDX configuration       |Library's internal hdx_configuration.yml|
+|One of: |project_config_dict  |dict          |Project configuration dictionary     |                                        |
+|        |project_config_json  |str           |Path to JSON Project configuration   |                                        |
+|        |project_config_yaml  |str           |Path to YAML Project configuration   |config/project_configuration.yml        |
 
 ### Configuring Logging
 
