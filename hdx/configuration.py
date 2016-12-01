@@ -99,13 +99,15 @@ class Configuration(UserDict):
         if self.hdx_site not in self.data:
             raise ConfigurationError('%s not defined in configuration!' % self.hdx_site)
 
-    def get_api_key(self) -> str:
+    def get_api_key(self) -> Optional[str]:
         """
 
         Returns:
-            str: HDX api key
+            Optional[str]: HDX api key or None if read only
 
         """
+        if self.hdx_read_only:
+            return None
         return self.data['api_key']
 
     def get_hdx_site_url(self) -> str:
