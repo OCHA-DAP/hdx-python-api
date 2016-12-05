@@ -143,7 +143,7 @@ def mocksearch(url, datadict):
 
 
 def mockall(url, datadict):
-    if 'all' not in url and 'related_list' not in url:
+    if 'current_package_list' not in url and 'related_list' not in url:
         return MockResponse(404,
                             '{"success": false, "error": {"message": "TEST ERROR: Not all", "__type": "TEST ERROR: Not Search Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=current_package_list_with_resources"}')
     if 'related_list' in url:
