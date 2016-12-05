@@ -6,6 +6,7 @@ It also handles resource and gallery items.
 """
 import datetime
 import logging
+import sys
 from os.path import join
 from typing import Any, List, Optional
 
@@ -510,12 +511,14 @@ class Dataset(HDXObject):
             configuration (Configuration): HDX Configuration
             include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
             **kwargs: See below
-            limit (int): Number of datasets per page with only one page will be returned at a time
-            offset (int): When limit is given, the offset to start returning packages from
+            rows (int): Number of matching rows to return. Defaults to all datasets (sys.maxsize).
+            start (int): Offset in the complete result for where the set of returned datasets should begin
 
         Returns:
             List[Dataset]: List of all datasets in HDX
         """
+        if not 'rows' in kwargs:
+            kwargs['rows'] = sys.maxsize
         return Dataset.search_in_hdx(configuration, '', include_gallery, **kwargs)
 
     @staticmethod
