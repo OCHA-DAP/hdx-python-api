@@ -129,7 +129,7 @@ def mocksearch(url, datadict):
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}' % result)
     result = json.dumps(searchdict)
-    if datadict['q'] == 'ACLED':
+    if datadict['q'] == 'ACLED' or datadict['q'] == '':
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % result)
     if datadict['q'] == '"':
@@ -140,19 +140,6 @@ def mocksearch(url, datadict):
                             '{"success": true, "result": {"count": 0, "results": []}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
     return MockResponse(404,
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
-
-
-def mockall(url, datadict):
-    if 'current_package_list' not in url and 'related_list' not in url:
-        return MockResponse(404,
-                            '{"success": false, "error": {"message": "TEST ERROR: Not all", "__type": "TEST ERROR: Not Search Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=current_package_list_with_resources"}')
-    if 'related_list' in url:
-        result = json.dumps(TestDataset.gallery_data)
-        return MockResponse(200,
-                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}' % result)
-    result = json.dumps(searchdict)
-    return MockResponse(200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=current_package_list_with_resources"}' % result)
 
 
 class TestDataset():
@@ -340,15 +327,6 @@ class TestDataset():
 
         monkeypatch.setattr(requests, 'post', mockreturn)
 
-    @pytest.fixture(scope='function')
-    def all(self, monkeypatch):
-        def mockreturn(url, data, headers, files, allow_redirects, auth):
-            datadict = json.loads(data.decode('utf-8'))
-            return mockall(url, datadict)
-
-        monkeypatch.setattr(requests, 'post', mockreturn)
-
-
     @pytest.fixture(scope='class')
     def configuration(self):
         hdx_key_file = join('fixtures', '.hdxkey')
@@ -528,7 +506,7 @@ class TestDataset():
         with pytest.raises(HDXError):
             Dataset.search_in_hdx(configuration, '"')
 
-    def test_get_all_datasets(self, configuration, all):
+    def test_get_all_datasets(self, configuration, search):
         datasets = Dataset.get_all_datasets(configuration)
         assert len(datasets) == 10
 

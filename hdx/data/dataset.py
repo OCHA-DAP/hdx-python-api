@@ -80,8 +80,7 @@ class Dataset(HDXObject):
             'update': 'package_update',
             'create': 'package_create',
             'delete': 'package_delete',
-            'search': 'package_search',
-            'get all datasets': 'current_package_list_with_resources'
+            'search': 'package_search'
         }
 
     def __setitem__(self, key: Any, value: Any) -> None:
