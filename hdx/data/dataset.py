@@ -486,7 +486,7 @@ class Dataset(HDXObject):
         """
 
         dataset = Dataset(configuration)
-        _, result = dataset._read_from_hdx('dataset', query, 'q', 'search', **kwargs)
+        _, result = dataset._read_from_hdx('dataset', query, 'q', Dataset.actions()['search'], **kwargs)
         datasets = []
         if result:
             count = result.get('count', None)
