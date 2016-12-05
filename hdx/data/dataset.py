@@ -80,7 +80,8 @@ class Dataset(HDXObject):
             'update': 'package_update',
             'create': 'package_create',
             'delete': 'package_delete',
-            'search': 'package_search'
+            'search': 'package_search',
+            'all': 'current_package_list_with_resources'
         }
 
     def __setitem__(self, key: Any, value: Any) -> None:
@@ -462,16 +463,50 @@ class Dataset(HDXObject):
         self._delete_from_hdx('dataset', 'id')
 
     @staticmethod
-    def search_in_hdx(configuration: Configuration, query: str, **kwargs) -> List['Dataset']:
+    def _read_multiple_datasets(configuration: Configuration, include_gallery: bool, action: str,
+                                value: Optional[str] = None, field: Optional[str] = None, **kwargs):
+        """Read multiple datasets from HDX
+
+        Args:
+            configuration (Configuration): HDX Configuration
+            include_gallery (bool): Whether to include gallery items in dataset.
+            action (str): Action to perform
+            value (Optional[str]): Value to pass to _read_from_hdx function. Defaults to None.
+            field (Optional[str]): Field name to pass to _read_from_hdx function. Defaults to None.
+            **kwargs: Passed from calling function
+
+        Returns:
+            List[Dataset]: List of datasets resulting from query
+        """
+        datasets = []
+        dataset = Dataset(configuration)
+        success, result = dataset._read_from_hdx('dataset', value, field, action, **kwargs)
+        if result:
+            count = result.get('count', None)
+            if count:
+                for datasetdict in result['results']:
+                    dataset = Dataset(configuration, include_gallery=include_gallery)
+                    dataset.old_data = dict()
+                    dataset.data = datasetdict
+                    dataset._dataset_create_resources_gallery()
+                    datasets.append(dataset)
+        else:
+            logger.debug(result)
+        return datasets
+
+    @staticmethod
+    def search_in_hdx(configuration: Configuration, query: str, include_gallery: Optional[bool] = True, **kwargs) -> \
+            List['Dataset']:
         """Searches for datasets in HDX
 
         Args:
             configuration (Configuration): HDX Configuration
             query (str): Query (in Solr format). Defaults to '*:*'.
+            include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
             **kwargs: See below
             fq (string): Any filter queries to apply
             sort (string): Sorting of the search results. Defaults to 'relevance asc, metadata_modified desc'.
-            rows (int): Number of matching rows to return
+            rows (int): Number of matching rows to return. Defaults to 10.
             start (int): Offset in the complete result for where the set of returned datasets should begin
             facet (string): Whether to enable faceted results. Default to True.
             facet.mincount (int): Minimum counts for facet fields should be included in the results
@@ -483,21 +518,24 @@ class Dataset(HDXObject):
             List[Dataset]: List of datasets resulting from query
         """
 
-        datasets = []
-        dataset = Dataset(configuration)
-        success, result = dataset._read_from_hdx('dataset', query, 'q', **kwargs)
-        if result:
-            count = result.get('count', None)
-            if count:
-                for datasetdict in result['results']:
-                    dataset = Dataset(configuration)
-                    dataset.old_data = dict()
-                    dataset.data = datasetdict
-                    dataset._dataset_create_resources_gallery()
-                    datasets.append(dataset)
-        else:
-            logger.debug(result)
-        return datasets
+        return Dataset._read_multiple_datasets(configuration, include_gallery, 'search', query, 'q', **kwargs)
+
+    @staticmethod
+    def get_all_datasets(configuration: Configuration, include_gallery: Optional[bool] = True, **kwargs) -> List[
+        'Dataset']:
+        """Get all datasets in HDX
+
+        Args:
+            configuration (Configuration): HDX Configuration
+            include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
+            **kwargs: See below
+            limit (int): Number of datasets per page with only one page will be returned at a time
+            offset (int): When limit is given, the offset to start returning packages from
+
+        Returns:
+            List[Dataset]: List of all datasets in HDX
+        """
+        return Dataset._read_multiple_datasets(configuration, include_gallery, 'all', **kwargs)
 
     @staticmethod
     def get_all_resources(datasets: List['Dataset']) -> List['Resource']:
@@ -527,7 +565,7 @@ class Dataset(HDXObject):
         else:
             return None
 
-    def get_dataset_date(self, date_format: Optional[str] = None) -> Optional[datetime.datetime]:
+    def get_dataset_date(self, date_format: Optional[str] = None) -> Optional[str]:
         """Get dataset date as string in specified format. If no format is supplied, an ISO 8601 string is returned.
 
         Args:

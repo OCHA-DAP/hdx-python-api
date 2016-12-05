@@ -87,29 +87,29 @@ class HDXObject(UserDict):
         """
         self.data = load_json_into_existing_dict(self.data, path)
 
-    def _read_from_hdx(self, object_type: str, value: str, fieldname: Optional[str] = 'id',
+    def _read_from_hdx(self, object_type: str, value: Optional[str], fieldname: Optional[str] = 'id',
                        action: Optional[str] = None,
                        **kwargs) -> Tuple[bool, Union[dict, str]]:
         """Makes a read call to HDX passing in given parameter.
 
         Args:
             object_type (str): Description of HDX object type (for messages)
-            value (str): Value of HDX field
-            fieldname (Optional[str]): HDX field name. Defaults to id.
+            value (Optional[str]): Value of HDX field or None
+            fieldname (Optional[str]): HDX field name or None. Defaults to id.
             action (Optional[str]): Replacement CKAN action url to use. Defaults to None.
             **kwargs: Other fields to pass to CKAN.
 
         Returns:
             Tuple[bool, Union[dict, str]]: (True/False, HDX object metadata/Error)
         """
-        if not value:
-            raise HDXError("Empty %s value!" % object_type)
         if action is None:
-            if fieldname == 'query' or fieldname == 'q':
-                action = self.actions()['search']
-            else:
-                action = self.actions()['show']
-        data = {fieldname: value}
+            action = self.actions()['show']
+        if fieldname is None:
+            data = dict()
+        else:
+            if not value:
+                raise HDXError("Empty %s value!" % object_type)
+            data = {fieldname: value}
         data.update(kwargs)
         try:
             result = self.hdxpostsite.call_action(action, data,

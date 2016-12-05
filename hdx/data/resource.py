@@ -139,7 +139,7 @@ class Resource(HDXObject):
 
         resources = []
         resource = Resource(configuration)
-        success, result = resource._read_from_hdx('resource', query, 'query')
+        success, result = resource._read_from_hdx('resource', query, 'query', 'search')
         if result:
             count = result.get('count', None)
             if count:
