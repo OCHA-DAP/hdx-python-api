@@ -102,8 +102,8 @@ class HDXObject(UserDict):
         Returns:
             Tuple[bool, Union[dict, str]]: (True/False, HDX object metadata/Error)
         """
-        if not value:
-            raise HDXError("Empty %s value!" % object_type)
+        if not fieldname:
+            raise HDXError("Empty %s field name!" % object_type)
         if action is None:
             action = self.actions()['show']
         data = {fieldname: value}
