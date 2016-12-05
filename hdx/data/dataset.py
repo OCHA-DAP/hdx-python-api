@@ -81,7 +81,7 @@ class Dataset(HDXObject):
             'create': 'package_create',
             'delete': 'package_delete',
             'search': 'package_search',
-            'all': 'current_package_list_with_resources'
+            'get all datasets': 'current_package_list_with_resources'
         }
 
     def __setitem__(self, key: Any, value: Any) -> None:
@@ -463,32 +463,6 @@ class Dataset(HDXObject):
         self._delete_from_hdx('dataset', 'id')
 
     @staticmethod
-    def _convert_result_to_datasets(configuration: Configuration, include_gallery: bool, post_result: dict):
-        """Convert result from post operation to HDX to multiple datasets
-
-        Args:
-            configuration (Configuration): HDX Configuration
-            include_gallery (bool): Whether to include gallery items in dataset
-            post_result: HDX object metadata
-
-        Returns:
-            List[Dataset]: List of datasets resulting from query
-        """
-        datasets = []
-        if post_result:
-            count = post_result.get('count', None)
-            if count:
-                for datasetdict in post_result['results']:
-                    dataset = Dataset(configuration, include_gallery=include_gallery)
-                    dataset.old_data = dict()
-                    dataset.data = datasetdict
-                    dataset._dataset_create_resources_gallery()
-                    datasets.append(dataset)
-        else:
-            logger.debug(post_result)
-        return datasets
-
-    @staticmethod
     def search_in_hdx(configuration: Configuration, query: str, include_gallery: Optional[bool] = True, **kwargs) -> \
             List['Dataset']:
         """Searches for datasets in HDX
@@ -514,7 +488,19 @@ class Dataset(HDXObject):
 
         dataset = Dataset(configuration)
         _, result = dataset._read_from_hdx('dataset', query, 'q', 'search', **kwargs)
-        return Dataset._convert_result_to_datasets(configuration, include_gallery, result)
+        datasets = []
+        if result:
+            count = result.get('count', None)
+            if count:
+                for datasetdict in result['results']:
+                    dataset = Dataset(configuration, include_gallery=include_gallery)
+                    dataset.old_data = dict()
+                    dataset.data = datasetdict
+                    dataset._dataset_create_resources_gallery()
+                    datasets.append(dataset)
+        else:
+            logger.debug(result)
+        return datasets
 
     @staticmethod
     def get_all_datasets(configuration: Configuration, include_gallery: Optional[bool] = True, **kwargs) -> List[
@@ -531,9 +517,7 @@ class Dataset(HDXObject):
         Returns:
             List[Dataset]: List of all datasets in HDX
         """
-        dataset = Dataset(configuration)
-        result = dataset._write_to_hdx('all', kwargs)
-        return Dataset._convert_result_to_datasets(configuration, include_gallery, result)
+        return Dataset.search_in_hdx(configuration, '', include_gallery, **kwargs)
 
     @staticmethod
     def get_all_resources(datasets: List['Dataset']) -> List['Resource']:

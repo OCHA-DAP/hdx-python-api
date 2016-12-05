@@ -231,13 +231,13 @@ class HDXObject(UserDict):
         self._check_load_existing_object(object_type, id_field_name)
         self._merge_hdx_update(object_type, id_field_name)
 
-    def _write_to_hdx(self, action: str, data: dict, id_field_name: Optional[str] = None) -> dict:
+    def _write_to_hdx(self, action: str, data: dict, id_field_name: str) -> dict:
         """Creates or updates an HDX object in HDX and return HDX object metadata dict
 
         Args:
             action (str): Action to perform eg. 'create', 'update'
             data (dict): Data to write to HDX
-            id_field_name (str): Name of field containing HDX object identifier or None. Defaults to None.
+            id_field_name (str): Name of field containing HDX object identifier or None
 
         Returns:
             dict: HDX object metadata
@@ -246,11 +246,7 @@ class HDXObject(UserDict):
             return self.hdxpostsite.call_action(self.actions()[action], data,
                                                 requests_kwargs={'auth': self.configuration._get_credentials()})
         except Exception as e:
-            if id_field_name:
-                err = 'Failed when trying to %s %s! (POST)' % (action, self.data[id_field_name])
-            else:
-                err = 'Failed when trying to %s! (POST)' % action
-            raise HDXError(err) from e
+            raise HDXError('Failed when trying to %s %s! (POST)' % (action, self.data[id_field_name])) from e
 
     def _save_to_hdx(self, action: str, id_field_name: str) -> None:
         """Creates or updates an HDX object in HDX, saving current data and replacing with returned HDX object data
