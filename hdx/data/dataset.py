@@ -474,7 +474,7 @@ class Dataset(HDXObject):
             **kwargs: See below
             fq (string): Any filter queries to apply
             sort (string): Sorting of the search results. Defaults to 'relevance asc, metadata_modified desc'.
-            rows (int): Number of matching rows to return. Defaults to 10.
+            rows (int): Number of matching rows to return. Defaults to all datasets (sys.maxsize).
             start (int): Offset in the complete result for where the set of returned datasets should begin
             facet (string): Whether to enable faceted results. Default to True.
             facet.mincount (int): Minimum counts for facet fields should be included in the results
@@ -486,21 +486,36 @@ class Dataset(HDXObject):
             List[Dataset]: List of datasets resulting from query
         """
 
+        all_datasets = list()
         dataset = Dataset(configuration)
-        _, result = dataset._read_from_hdx('dataset', query, 'q', Dataset.actions()['search'], **kwargs)
-        datasets = []
-        if result:
-            count = result.get('count', None)
-            if count:
-                for datasetdict in result['results']:
-                    dataset = Dataset(configuration, include_gallery=include_gallery)
-                    dataset.old_data = dict()
-                    dataset.data = datasetdict
-                    dataset._dataset_create_resources_gallery()
-                    datasets.append(dataset)
-        else:
-            logger.debug(result)
-        return datasets
+        total_rows = kwargs.get('rows', sys.maxsize)
+        start = kwargs.get('start', 0)
+        for page in range(total_rows // 1000 + 1):
+            pagetimes1000 = page * 1000
+            kwargs['start'] = start + pagetimes1000
+            rows_left = total_rows - pagetimes1000
+            rows = min(rows_left, 1000)
+            kwargs['rows'] = rows
+            _, result = dataset._read_from_hdx('dataset', query, 'q', Dataset.actions()['search'], **kwargs)
+            datasets = list()
+            if result:
+                count = result.get('count', None)
+                if count:
+                    no_results = len(result['results'])
+                    for datasetdict in result['results']:
+                        dataset = Dataset(configuration, include_gallery=include_gallery)
+                        dataset.old_data = dict()
+                        dataset.data = datasetdict
+                        dataset._dataset_create_resources_gallery()
+                        datasets.append(dataset)
+                    all_datasets += datasets
+                    if no_results < rows:
+                        break
+                else:
+                    break
+            else:
+                logger.debug(result)
+        return all_datasets
 
     @staticmethod
     def get_all_datasets(configuration: Configuration, include_gallery: Optional[bool] = True, **kwargs) -> List[
@@ -511,14 +526,12 @@ class Dataset(HDXObject):
             configuration (Configuration): HDX Configuration
             include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
             **kwargs: See below
-            rows (int): Number of matching rows to return. Defaults to all datasets (sys.maxsize).
+            rows (int): Number of rows to return. Defaults to all datasets (sys.maxsize).
             start (int): Offset in the complete result for where the set of returned datasets should begin
 
         Returns:
             List[Dataset]: List of all datasets in HDX
         """
-        if not 'rows' in kwargs:
-            kwargs['rows'] = sys.maxsize
         return Dataset.search_in_hdx(configuration, '', include_gallery, **kwargs)
 
     @staticmethod
