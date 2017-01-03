@@ -43,7 +43,8 @@ def get_version():
     version_file = open(script_dir_plus_file(join('hdx', 'version.txt'), get_version))
     return version_file.read().strip()
 
-requirements = ['ckanapi',
+
+requirements = ['ckanapi==3.7.dev0',
                 'colorlog',
                 'geonamescache',
                 'ndg-httpsclient',
@@ -67,6 +68,9 @@ setup(
     description='HDX Python Library',
 
     install_requires=requirements,
+    dependency_links=[
+        "git+git://github.com/ckan/ckanapi.git@master#egg=ckanapi"
+    ],
     package_data={
         # Include version.txt and if any package contains *.yml files, include them:
         '': ['version.txt', '*.yml'],
