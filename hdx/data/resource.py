@@ -143,7 +143,7 @@ class Resource(HDXObject):
 
         self._check_required_fields('resource', ignore_fields)
 
-    def update_in_hdx(self, update_datastore: bool = False) -> None:
+    def update_in_hdx(self) -> None:
         """Check if resource exists in HDX and if so, update it
 
         Returns:
