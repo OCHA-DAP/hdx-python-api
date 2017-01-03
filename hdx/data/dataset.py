@@ -380,7 +380,7 @@ class Dataset(HDXObject):
                     if galleryitem_title == old_galleryitem['title']:
                         logger.warning('Gallery item exists. Updating %s' % galleryitem_title)
                         merge_two_dictionaries(galleryitem, old_galleryitem)
-                        galleryitem.check_required_fields()
+                        galleryitem.check_required_fields(ignore_dataset_id=True)
                         galleryitem.update_in_hdx()
             for old_galleryitem in old_gallery:
                 if not old_galleryitem['title'] in galleryitem_titles:
