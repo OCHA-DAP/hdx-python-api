@@ -44,7 +44,7 @@ def get_version():
     return version_file.read().strip()
 
 
-requirements = ['ckanapi==3.7.dev0',
+requirements = [  # 'ckanapi==3.7.dev0', - have to get from GitHub
                 'colorlog',
                 'geonamescache',
                 'ndg-httpsclient',
