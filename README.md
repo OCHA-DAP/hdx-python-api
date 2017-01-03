@@ -47,8 +47,9 @@ If you just want to read data from HDX, then an API key is not necessary and you
 
 ### Installing the Library
 
-To include the HDX Python library in your project, pip install the line below or add the following to your `requirements.txt` file:
+To include the HDX Python library in your project, you must pip install or add to your `requirements.txt` file the following lines:
 
+    git+git://github.com/ckan/ckanapi.git@master#egg=ckanapi
     git+git://github.com/ocha-dap/hdx-python-api.git@VERSION#egg=hdx-python-api
 
 Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DAP/hdx-python-api/tags](https://github.com/OCHA-DAP/hdx-python-api/tags). 
