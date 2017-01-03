@@ -44,7 +44,7 @@ def get_version():
     return version_file.read().strip()
 
 
-requirements = ['http://github.com/ckan/ckanapi/tarball/master#egg=ckanapi',
+requirements = ['ckanapi==3.7.dev0',
                 'colorlog',
                 'geonamescache',
                 'ndg-httpsclient',
@@ -67,10 +67,10 @@ setup(
     author_email='rans@email.com',
     description='HDX Python Library',
 
-    install_requires=requirements,
     dependency_links=[
-        'http://github.com/ckan/ckanapi/tarball/master#egg=ckanapi'
+        'https://github.com/ckan/ckanapi/commit/feedf1bced59c10af1a2835fca48d8cfc8b5a3cb/archive/master.zip#egg=ckanapi-3.7.dev0'
     ],
+    install_requires=requirements,
     package_data={
         # Include version.txt and if any package contains *.yml files, include them:
         '': ['version.txt', '*.yml'],
