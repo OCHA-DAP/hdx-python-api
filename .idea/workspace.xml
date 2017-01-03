@@ -71,8 +71,8 @@
       <file leaf-file-name="setup.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/setup.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="71" column="61" lean-forward="false" selection-start-line="71" selection-start-column="61" selection-end-line="71" selection-end-column="61" />
+            <state relative-caret-position="90">
+              <caret line="46" column="66" lean-forward="true" selection-start-line="46" selection-start-column="40" selection-end-line="46" selection-end-column="66" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -1083,13 +1083,6 @@
       <option name="presentableId" value="Default" />
       <updated>1464695506411</updated>
     </task>
-    <task id="LOCAL-00148" summary="Update README">
-      <created>1478612846501</created>
-      <option name="number" value="00148" />
-      <option name="presentableId" value="LOCAL-00148" />
-      <option name="project" value="LOCAL" />
-      <updated>1478612846501</updated>
-    </task>
     <task id="LOCAL-00149" summary="Update README">
       <created>1478613072192</created>
       <option name="number" value="00149" />
@@ -1426,7 +1419,14 @@
       <option name="project" value="LOCAL" />
       <updated>1483454188272</updated>
     </task>
-    <option name="localTasksCounter" value="197" />
+    <task id="LOCAL-00197" summary="Version 0.70 - try to pull in correct dependency">
+      <created>1483454338035</created>
+      <option name="number" value="00197" />
+      <option name="presentableId" value="LOCAL-00197" />
+      <option name="project" value="LOCAL" />
+      <updated>1483454338035</updated>
+    </task>
+    <option name="localTasksCounter" value="198" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2163,8 +2163,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/setup.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="71" column="61" lean-forward="false" selection-start-line="71" selection-start-column="61" selection-end-line="71" selection-end-column="61" />
+        <state relative-caret-position="90">
+          <caret line="46" column="66" lean-forward="true" selection-start-line="46" selection-start-column="40" selection-end-line="46" selection-end-column="66" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
