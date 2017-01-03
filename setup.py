@@ -68,7 +68,7 @@ setup(
     description='HDX Python Library',
 
     dependency_links=[
-        'https://github.com/ckan/ckanapi/commit/feedf1bced59c10af1a2835fca48d8cfc8b5a3cb/archive/master.zip#egg=ckanapi-3.7.dev0+git.feedf1b'
+        'https://github.com/ckan/ckanapi/archive/feedf1bced59c10af1a2835fca48d8cfc8b5a3cb/archive/master.zip#egg=ckanapi-3.7.dev0+git.feedf1b'
     ],
     install_requires=requirements,
     package_data={
