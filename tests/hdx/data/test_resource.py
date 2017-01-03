@@ -3,6 +3,7 @@
 """Resource Tests"""
 import copy
 import json
+import os
 from os import unlink
 from os.path import join
 
@@ -28,12 +29,11 @@ class MockResponse:
 resultdict = {'cache_last_updated': None, 'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',
               'webstore_last_updated': None, 'datastore_active': None,
               'id': 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5', 'size': None, 'state': 'active',
-              'hash': '', 'description': 'My Resource', 'format': 'XLSX',
-              'tracking_summary': {'total': 0, 'recent': 0}, 'last_modified': None, 'url_type': None,
+              'hash': '', 'description': 'My Resource', 'format': 'XLSX', 'last_modified': None, 'url_type': 'api',
               'mimetype': None, 'cache_url': None, 'name': 'MyResource1', 'created': '2016-06-07T08:57:27.367939',
               'url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv',
               'webstore_url': None, 'mimetype_inner': None, 'position': 0,
-              'revision_id': '43765383-1fce-471f-8166-d6c8660cc8a9', 'resource_type': None}
+              'revision_id': '43765383-1fce-471f-8166-d6c8660cc8a9', 'resource_type': 'api'}
 
 searchdict = {'count': 4, 'results': [{'size': None, 'description': 'ACLED-All-Africa-File_20160101-to-20160903.xlsx',
                                        'revision_id': '796b639e-f217-4d0e-bedd-4e3b35da4461',
@@ -146,7 +146,9 @@ class TestResource():
         'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',
         'format': 'xlsx',
         'url': 'http://test/spreadsheet.xlsx',
-        'description': 'My Resource'
+        'description': 'My Resource',
+        'api_type': 'api',
+        'resource_type': 'api'
     }
 
     @pytest.fixture(scope='class')
@@ -167,119 +169,157 @@ class TestResource():
 
     @pytest.fixture(scope='function')
     def read(self, monkeypatch):
-        def mockreturn(url, data, headers, files, allow_redirects, auth):
-            datadict = json.loads(data.decode('utf-8'))
-            return mockshow(url, datadict)
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                datadict = json.loads(data.decode('utf-8'))
+                return mockshow(url, datadict)
 
-        monkeypatch.setattr(requests, 'post', mockreturn)
+        monkeypatch.setattr(requests, 'Session', MockSession)
 
     @pytest.fixture(scope='function')
     def post_create(self, monkeypatch):
-        def mockreturn(url, data, headers, files, allow_redirects, auth):
-            datadict = json.loads(data.decode('utf-8'))
-            if 'show' in url:
-                return mockshow(url, datadict)
-            if 'create' not in url:
-                return MockResponse(404,
-                                    '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}')
-            result = json.dumps(resultdict)
-            if datadict['name'] == 'MyResource1':
-                return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}' % result)
-            if datadict['name'] == 'MyResource2':
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                if isinstance(data, dict):
+                    datadict = {k.decode('utf8'): v.decode('utf8') for k, v in data.items()}
+                else:
+                    datadict = json.loads(data.decode('utf-8'))
+                if 'show' in url:
+                    return mockshow(url, datadict)
+                if 'resource_id' in datadict:
+                    if datadict['resource_id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5':
+                        return MockResponse(200,
+                                            '{"success": true, "result": {"fields": [{"type": "text", "id": "code"}, {"type": "text", "id": "title"}, {"type": "float", "id": "value"}, {"type": "timestamp", "id": "latest_date"}, {"type": "text", "id": "source"}, {"type": "text", "id": "source_link"}, {"type": "text", "id": "notes"}, {"type": "text", "id": "explore"}, {"type": "text", "id": "units"}], "method": "insert", "primary_key": "code", "resource_id": "bfa6b55f-10b6-4ba2-8470-33bb9a5194a5"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}')
+                if 'create' not in url:
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}')
+                if datadict['name'] == 'MyResource1':
+                    resultdictcopy = copy.deepcopy(resultdict)
+                    if files is not None:
+                        resultdictcopy['url_type'] = 'upload'
+                        resultdictcopy['resource_type'] = 'file.upload'
+                        filename = os.path.basename(files[0][1].name)
+                        resultdictcopy[
+                            'url'] = 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/%s' % filename
+
+                    result = json.dumps(resultdictcopy)
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}' % result)
+                if datadict['name'] == 'MyResource2':
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}')
+                if datadict['name'] == 'MyResource3':
+                    return MockResponse(200,
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}')
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}')
-            if datadict['name'] == 'MyResource3':
-                return MockResponse(200,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}')
 
-            return MockResponse(404,
-                                '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}')
-
-        monkeypatch.setattr(requests, 'post', mockreturn)
+        monkeypatch.setattr(requests, 'Session', MockSession)
 
     @pytest.fixture(scope='function')
     def post_update(self, monkeypatch):
-        def mockreturn(url, data, headers, files, allow_redirects, auth):
-            datadict = json.loads(data.decode('utf-8'))
-            if 'show' in url:
-                return mockshow(url, datadict)
-            if 'update' not in url:
-                return MockResponse(404,
-                                    '{"success": false, "error": {"message": "TEST ERROR: Not update", "__type": "TEST ERROR: Not Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}')
-            resultdictcopy = copy.deepcopy(resultdict)
-            merge_two_dictionaries(resultdictcopy, datadict)
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                if isinstance(data, dict):
+                    datadict = {k.decode('utf8'): v.decode('utf8') for k, v in data.items()}
+                else:
+                    datadict = json.loads(data.decode('utf-8'))
+                if 'show' in url:
+                    return mockshow(url, datadict)
+                if 'resource_id' in datadict:
+                    if datadict['resource_id'] == 'TEST1':
+                        return MockResponse(200,
+                                            '{"success": true, "result": {"fields": [{"type": "text", "id": "code"}, {"type": "text", "id": "title"}, {"type": "float", "id": "value"}, {"type": "timestamp", "id": "latest_date"}, {"type": "text", "id": "source"}, {"type": "text", "id": "source_link"}, {"type": "text", "id": "notes"}, {"type": "text", "id": "explore"}, {"type": "text", "id": "units"}], "method": "insert", "primary_key": "code", "resource_id": "bfa6b55f-10b6-4ba2-8470-33bb9a5194a5"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}')
+                if 'update' not in url:
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "TEST ERROR: Not update", "__type": "TEST ERROR: Not Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}')
+                if datadict['name'] == 'MyResource1':
+                    resultdictcopy = copy.deepcopy(resultdict)
+                    merge_two_dictionaries(resultdictcopy, datadict)
+                    if files is not None:
+                        resultdictcopy['url_type'] = 'upload'
+                        resultdictcopy['resource_type'] = 'file.upload'
+                        filename = os.path.basename(files[0][1].name)
+                        resultdictcopy[
+                            'url'] = 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/%s' % filename
+                    result = json.dumps(resultdictcopy)
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}' % result)
+                if datadict['name'] == 'MyResource2':
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}')
+                if datadict['name'] == 'MyResource3':
+                    return MockResponse(200,
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}')
 
-            result = json.dumps(resultdictcopy)
-            if datadict['name'] == 'MyResource1':
-                return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}' % result)
-            if datadict['name'] == 'MyResource2':
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}')
-            if datadict['name'] == 'MyResource3':
-                return MockResponse(200,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}')
 
-            return MockResponse(404,
-                                '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}')
-
-        monkeypatch.setattr(requests, 'post', mockreturn)
+        monkeypatch.setattr(requests, 'Session', MockSession)
 
     @pytest.fixture(scope='function')
     def post_delete(self, monkeypatch):
-        def mockreturn(url, data, headers, files, allow_redirects, auth):
-            decodedata = data.decode('utf-8')
-            datadict = json.loads(decodedata)
-            if 'show' in url:
-                return mockshow(url, datadict)
-            if 'delete' not in url:
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                decodedata = data.decode('utf-8')
+                datadict = json.loads(decodedata)
+                if 'show' in url:
+                    return mockshow(url, datadict)
+                if 'delete' not in url:
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "TEST ERROR: Not delete", "__type": "TEST ERROR: Not Delete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}')
+                if datadict['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5':
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}' % decodedata)
+
                 return MockResponse(404,
-                                    '{"success": false, "error": {"message": "TEST ERROR: Not delete", "__type": "TEST ERROR: Not Delete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}')
-            if datadict['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5':
-                return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}' % decodedata)
+                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}')
 
-            return MockResponse(404,
-                                '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}')
-
-        monkeypatch.setattr(requests, 'post', mockreturn)
+        monkeypatch.setattr(requests, 'Session', MockSession)
 
     @pytest.fixture(scope='function')
     def post_datastore(self, monkeypatch):
-        def mockreturn(url, data, headers, files, allow_redirects, auth):
-            decodedata = data.decode('utf-8')
-            datadict = json.loads(decodedata)
-            if 'show' in url:
-                return mockshow(url, datadict)
-            if 'create' not in url and 'insert' not in url and 'upsert' not in url and 'delete' not in url:
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                decodedata = data.decode('utf-8')
+                datadict = json.loads(decodedata)
+                if 'show' in url:
+                    return mockshow(url, datadict)
+                if 'create' not in url and 'insert' not in url and 'upsert' not in url and 'delete' not in url:
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "TEST ERROR: Not create or delete", "__type": "TEST ERROR: Not Create or Delete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_action"}')
+                if 'delete' in url and datadict['resource_id'] == 'datastore_unknown_resource':
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_delete"}')
+                if 'delete' in url and datadict['resource_id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5':
+                    return MockResponse(200,
+                                        '{"success": true, "result": {"resource_id": "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}')
+                if 'create' in url and datadict['resource_id'] == 'datastore_unknown_resource':
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}')
+                if ('create' in url or 'insert' in url or 'upsert' in url) and datadict[
+                    'resource_id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5':
+                    return MockResponse(200,
+                                        '{"success": true, "result": {"fields": [{"type": "text", "id": "code"}, {"type": "text", "id": "title"}, {"type": "float", "id": "value"}, {"type": "timestamp", "id": "latest_date"}, {"type": "text", "id": "source"}, {"type": "text", "id": "source_link"}, {"type": "text", "id": "notes"}, {"type": "text", "id": "explore"}, {"type": "text", "id": "units"}], "method": "insert", "primary_key": "code", "resource_id": "bfa6b55f-10b6-4ba2-8470-33bb9a5194a5"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}')
                 return MockResponse(404,
-                                    '{"success": false, "error": {"message": "TEST ERROR: Not create or delete", "__type": "TEST ERROR: Not Create or Delete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_action"}')
-            if 'delete' in url and datadict['resource_id'] == 'datastore_unknown_resource':
-                return MockResponse(404,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_delete"}')
-            if 'delete' in url and datadict['resource_id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5':
-                return MockResponse(200,
-                                    '{"success": true, "result": {"resource_id": "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}')
-            if 'create' in url and datadict['resource_id'] == 'datastore_unknown_resource':
-                return MockResponse(404,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}')
-            if ('create' in url or 'insert' in url or 'upsert' in url) and datadict[
-                'resource_id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5':
-                return MockResponse(200,
-                                    '{"success": true, "result": {"fields": [{"type": "text", "id": "code"}, {"type": "text", "id": "title"}, {"type": "float", "id": "value"}, {"type": "timestamp", "id": "latest_date"}, {"type": "text", "id": "source"}, {"type": "text", "id": "source_link"}, {"type": "text", "id": "notes"}, {"type": "text", "id": "explore"}, {"type": "text", "id": "units"}], "method": "insert", "primary_key": "code", "resource_id": "bfa6b55f-10b6-4ba2-8470-33bb9a5194a5"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}')
-            return MockResponse(404,
-                                '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}')
+                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}')
 
-        monkeypatch.setattr(requests, 'post', mockreturn)
+        monkeypatch.setattr(requests, 'Session', MockSession)
 
     @pytest.fixture(scope='function')
     def search(self, monkeypatch):
-        def mockreturn(url, data, headers, files, allow_redirects, auth):
-            datadict = json.loads(data.decode('utf-8'))
-            return mocksearch(url, datadict)
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                datadict = json.loads(data.decode('utf-8'))
+                return mocksearch(url, datadict)
 
-        monkeypatch.setattr(requests, 'post', mockreturn)
+        monkeypatch.setattr(requests, 'Session', MockSession)
 
     @pytest.fixture(scope='class')
     def configuration(self):
@@ -310,6 +350,29 @@ class TestResource():
         resource = Resource(configuration, resource_data)
         resource.create_in_hdx()
         assert resource['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
+        assert resource['url_type'] == 'api'
+        assert resource['resource_type'] == 'api'
+        assert resource[
+                   'url'] == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
+
+        resource_data = copy.deepcopy(TestResource.resource_data)
+        resource = Resource(configuration, resource_data)
+        resource.set_file_to_upload('fixtures/test_data.csv')
+        assert resource.get_file_to_upload() == 'fixtures/test_data.csv'
+        resource.create_in_hdx()
+        assert resource['url_type'] == 'upload'
+        assert resource['resource_type'] == 'file.upload'
+        assert resource[
+                   'url'] == 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv'
+
+        resource_data = copy.deepcopy(TestResource.resource_data)
+        resource = Resource(configuration, resource_data)
+        resource.set_file_to_upload('fixtures/test_data.csv')
+        resource.create_in_hdx(create_datastore=True)
+        assert resource['url_type'] == 'upload'
+        assert resource['resource_type'] == 'file.upload'
+        assert resource[
+                   'url'] == 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv'
 
         resource_data['name'] = 'MyResource2'
         resource = Resource(configuration, resource_data)
@@ -340,6 +403,24 @@ class TestResource():
         resource.update_in_hdx()
         assert resource['id'] == 'TEST1'
         assert resource['format'] == 'CSV'
+        assert resource['url_type'] == 'api'
+        assert resource['resource_type'] == 'api'
+        assert resource[
+                   'url'] == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
+
+        resource.set_file_to_upload('fixtures/test_data.csv')
+        resource.update_in_hdx()
+        assert resource['url_type'] == 'upload'
+        assert resource['resource_type'] == 'file.upload'
+        assert resource[
+                   'url'] == 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv'
+
+        resource.set_file_to_upload('fixtures/test_data.csv')
+        resource.update_in_hdx(update_datastore=True)
+        assert resource['url_type'] == 'upload'
+        assert resource['resource_type'] == 'file.upload'
+        assert resource[
+                   'url'] == 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv'
 
         resource['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):
@@ -390,20 +471,23 @@ class TestResource():
         with pytest.raises(HDXError):
             Resource.search_in_hdx(configuration, 'fail')
 
-    def test_download(self, configuration, read):
+    def test_download(self, configuration, read, monkeypatch):
         resource = Resource.read_from_hdx(configuration, 'TEST1')
+        resource2 = Resource.read_from_hdx(configuration, 'TEST4')
+        monkeypatch.undo()
         url, path = resource.download()
         unlink(path)
         assert url == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
         resource['url'] = ''
         with pytest.raises(HDXError):
             resource.download()
-        resource = Resource.read_from_hdx(configuration, 'TEST4')
         with pytest.raises(DownloadError):
-            resource.download()
+            resource2.download()
 
-    def test_datastore(self, configuration, post_datastore, topline_yaml, topline_json):
+    def test_datastore(self, configuration, post_datastore, topline_yaml, topline_json, monkeypatch):
         resource = Resource.read_from_hdx(configuration, 'TEST1')
+        resource2 = Resource.read_from_hdx(configuration, 'TEST5')
+        monkeypatch.undo()
         resource.create_datastore(delete_first=0)
         resource.create_datastore(delete_first=1)
         resource.create_datastore(delete_first=2)
@@ -412,7 +496,6 @@ class TestResource():
         resource.update_datastore()
         resource.update_datastore_for_topline()
         resource.update_datastore_from_yaml_schema(topline_yaml)
-        resource.update_datastore_from_json_schema(topline_json)
-        resource = Resource.read_from_hdx(configuration, 'TEST5')
+        resource.update_datastore_from_json_schema(topline_json, path='fixtures/downloader/test_data.csv')
         with pytest.raises(HDXError):
-            resource.update_datastore_from_json_schema(topline_json)
+            resource2.update_datastore_from_json_schema(topline_json)

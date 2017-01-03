@@ -1,4 +1,4 @@
-ckanapi==3.6
+git+git://github.com/ckan/ckanapi.git@master#egg=ckanapi
 colorlog==2.7.0
 geonamescache==0.3.1
 ndg-httpsclient==0.4.2

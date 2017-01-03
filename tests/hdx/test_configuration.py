@@ -180,7 +180,8 @@ class TestConfiguration():
                 'data_update_frequency'
             ]},
             'resource': {'dataset_id': 'package_id',
-                         'required_fields': ['package_id', 'name', 'format', 'url', 'description'
+                         'required_fields': ['package_id', 'name', 'format', 'url', 'description',
+                                             'url_type', 'resource_type'
                                              ]},
             'galleryitem': {'dataset_id': 'dataset_id', 'required_fields': [
                 'dataset_id',
@@ -189,7 +190,7 @@ class TestConfiguration():
                 'description',
                 'url',
                 'image_url',
-            ], 'ignore_on_update': ['dataset_id']},
+            ], 'ignore_dataset_id_on_update': True},
         }
         assert actual_configuration == expected_configuration
 
@@ -232,7 +233,8 @@ class TestConfiguration():
                 'data_update_frequency'
             ]},
             'resource': {'dataset_id': 'package_id',
-                         'required_fields': ['package_id', 'name', 'format', 'url', 'description'
+                         'required_fields': ['package_id', 'name', 'format', 'url', 'description',
+                                             'url_type', 'resource_type'
                                              ]},
             'galleryitem': {'dataset_id': 'dataset_id', 'required_fields': [
                 'dataset_id',
@@ -241,7 +243,7 @@ class TestConfiguration():
                 'description',
                 'url',
                 'image_url',
-            ], 'ignore_on_update': ['dataset_id']},
+            ], 'ignore_dataset_id_on_update': True},
         }
         assert actual_configuration == expected_configuration
 
@@ -284,7 +286,8 @@ class TestConfiguration():
                 'data_update_frequency'
             ]},
             'resource': {'dataset_id': 'package_id',
-                         'required_fields': ['package_id', 'name', 'format', 'url', 'description'
+                         'required_fields': ['package_id', 'name', 'format', 'url', 'description',
+                                             'url_type', 'resource_type'
                                              ]},
             'galleryitem': {'dataset_id': 'dataset_id', 'required_fields': [
                 'dataset_id',
@@ -293,7 +296,7 @@ class TestConfiguration():
                 'description',
                 'url',
                 'image_url',
-            ], 'ignore_on_update': ['dataset_id']},
+            ], 'ignore_dataset_id_on_update': True},
         }
         assert actual_configuration == expected_configuration
 

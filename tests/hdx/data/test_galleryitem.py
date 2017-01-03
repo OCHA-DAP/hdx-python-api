@@ -76,84 +76,92 @@ class TestGalleryItem():
 
     @pytest.fixture(scope='function')
     def read(self, monkeypatch):
-        def mockreturn(url, data, headers, files, allow_redirects, auth):
-            datadict = json.loads(data.decode('utf-8'))
-            return mockshow(url, datadict)
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                datadict = json.loads(data.decode('utf-8'))
+                return mockshow(url, datadict)
 
-        monkeypatch.setattr(requests, 'post', mockreturn)
+        monkeypatch.setattr(requests, 'Session', MockSession)
 
     @pytest.fixture(scope='function')
     def post_create(self, monkeypatch):
-        def mockreturn(url, data, headers, files, allow_redirects, auth):
-            datadict = json.loads(data.decode('utf-8'))
-            if 'show' in url:
-                return mockshow(url, datadict)
-            if 'create' not in url:
-                return MockResponse(404,
-                                    '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}')
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                datadict = json.loads(data.decode('utf-8'))
+                if 'show' in url:
+                    return mockshow(url, datadict)
+                if 'create' not in url:
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}')
 
-            result = json.dumps(resultdict)
-            if datadict['title'] == 'MyGalleryItem1':
-                return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}' % result)
-            if datadict['title'] == 'MyGalleryItem2':
+                result = json.dumps(resultdict)
+                if datadict['title'] == 'MyGalleryItem1':
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}' % result)
+                if datadict['title'] == 'MyGalleryItem2':
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}')
+                if datadict['title'] == 'MyGalleryItem3':
+                    return MockResponse(200,
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}')
+
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}')
-            if datadict['title'] == 'MyGalleryItem3':
-                return MockResponse(200,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}')
 
-            return MockResponse(404,
-                                '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}')
-
-        monkeypatch.setattr(requests, 'post', mockreturn)
+        monkeypatch.setattr(requests, 'Session', MockSession)
 
     @pytest.fixture(scope='function')
     def post_update(self, monkeypatch):
-        def mockreturn(url, data, headers, files, allow_redirects, auth):
-            datadict = json.loads(data.decode('utf-8'))
-            if 'show' in url:
-                return mockshow(url, datadict)
-            if 'update' not in url:
-                return MockResponse(404,
-                                    '{"success": false, "error": {"message": "TEST ERROR: Not update", "__type": "TEST ERROR: Not Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}')
-            resultdictcopy = copy.deepcopy(resultdict)
-            merge_two_dictionaries(resultdictcopy, datadict)
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                datadict = json.loads(data.decode('utf-8'))
+                if 'show' in url:
+                    return mockshow(url, datadict)
+                if 'update' not in url:
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "TEST ERROR: Not update", "__type": "TEST ERROR: Not Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}')
+                resultdictcopy = copy.deepcopy(resultdict)
+                merge_two_dictionaries(resultdictcopy, datadict)
 
-            result = json.dumps(resultdictcopy)
-            if datadict['title'] == 'MyGalleryItem1':
-                return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}' % result)
-            if datadict['title'] == 'MyGalleryItem2':
+                result = json.dumps(resultdictcopy)
+                if datadict['title'] == 'MyGalleryItem1':
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}' % result)
+                if datadict['title'] == 'MyGalleryItem2':
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}')
+                if datadict['title'] == 'MyGalleryItem3':
+                    return MockResponse(200,
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}')
+
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}')
-            if datadict['title'] == 'MyGalleryItem3':
-                return MockResponse(200,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}')
 
-            return MockResponse(404,
-                                '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}')
-
-        monkeypatch.setattr(requests, 'post', mockreturn)
+        monkeypatch.setattr(requests, 'Session', MockSession)
 
     @pytest.fixture(scope='function')
     def post_delete(self, monkeypatch):
-        def mockreturn(url, data, headers, files, allow_redirects, auth):
-            decodedata = data.decode('utf-8')
-            datadict = json.loads(decodedata)
-            if 'show' in url:
-                return mockshow(url, datadict)
-            if 'delete' not in url:
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                decodedata = data.decode('utf-8')
+                datadict = json.loads(decodedata)
+                if 'show' in url:
+                    return mockshow(url, datadict)
+                if 'delete' not in url:
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "TEST ERROR: Not delete", "__type": "TEST ERROR: Not Delete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_delete"}')
+                if datadict['id'] == '2f90d964-f980-4513-ad1b-5df6b2d044ff':
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_delete"}' % decodedata)
+
                 return MockResponse(404,
-                                    '{"success": false, "error": {"message": "TEST ERROR: Not delete", "__type": "TEST ERROR: Not Delete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_delete"}')
-            if datadict['id'] == '2f90d964-f980-4513-ad1b-5df6b2d044ff':
-                return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_delete"}' % decodedata)
+                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_delete"}')
 
-            return MockResponse(404,
-                                '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_delete"}')
-
-        monkeypatch.setattr(requests, 'post', mockreturn)
+        monkeypatch.setattr(requests, 'Session', MockSession)
 
     @pytest.fixture(scope='class')
     def configuration(self):

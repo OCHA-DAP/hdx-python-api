@@ -36,6 +36,8 @@ resource:
     - format
     - url
     - description
+    - url_type
+    - resource_type
 galleryitem:
   dataset_id: dataset_id
   required_fields:
@@ -45,5 +47,4 @@ galleryitem:
     - description
     - url
     - image_url
-  ignore_on_update:
-    - dataset_id
+  ignore_dataset_id_on_update: True

@@ -27,6 +27,7 @@ class Resource(HDXObject):
         if not initial_data:
             initial_data = dict()
         super(Resource, self).__init__(configuration, initial_data)
+        self.file_to_upload = None
 
     @staticmethod
     def actions() -> dict:
@@ -87,32 +88,90 @@ class Resource(HDXObject):
             return resource
         return None
 
-    def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
-        """Check that metadata for resource is complete
+    def get_file_to_upload(self) -> Optional[str]:
+        """Get the file uploaded
+
+        Returns:
+            Optional[str]: The file that will be or has been uploaded or None if there isn't one
+        """
+        return self.file_to_upload
+
+    def set_file_to_upload(self, file_to_upload: str) -> None:
+        """Set the file uploaded to the local path provided
 
         Args:
-            ignore_fields (List[str]): Any fields to ignore in the check. Default is empty list.
+            file_to_upload (str): Local path to file to upload
 
         Returns:
             None
         """
+        self.file_to_upload = file_to_upload
+
+    def check_required_fields(self, ignore_dataset_id=False) -> None:
+        """Check that metadata for resource is complete and add resource_type and url_type if not supplied.
+        The parameter ignore_dataset_id should
+        be set to True if you intend to add the object to a Dataset object (where it will be created during dataset
+        creation).
+
+        Args:
+            ignore_dataset_id (bool): Whether to ignore the dataset id. Default is False.
+
+        Returns:
+            None
+        """
+        if self.file_to_upload is None:
+            if 'url' in self.data:
+                if 'resource_type' not in self.data:
+                    self.data['resource_type'] = 'api'
+                if 'url_type' not in self.data:
+                    self.data['url_type'] = 'api'
+            else:
+                raise HDXError('Either a url or a file to upload must be supplied!')
+        else:
+            if 'url' in self.data:
+                logger.warning('File to upload supplied so url will be changed to uploaded file path!')
+            else:
+                self.data['url'] = 'ignore'  # must be set even though overwritten
+            if 'resource_type' not in self.data:
+                self.data['resource_type'] = 'file.upload'
+            if 'url_type' not in self.data:
+                self.data['url_type'] = 'upload'
+        if ignore_dataset_id:
+            ignore_fields = [self.configuration['resource']['dataset_id']]
+        else:
+            ignore_fields = list()
+
         self._check_required_fields('resource', ignore_fields)
 
-    def update_in_hdx(self) -> None:
-        """Check if resource exists in HDX and if so, update it
+    def update_in_hdx(self, update_datastore: bool = False) -> None:
+        """Check if resource exists in HDX and if so, update it. update_datastore can be set True
+         for csvs enabling data preview in HDX. All fields in the csv will be assumed to be text. For more datastore
+         update options, set to False and use the update_datastore method.
+
+        Args:
+            update_datastore (bool): Whether to update a datastore (only for csv). Defaults to False.
 
         Returns:
             None
         """
-        self._update_in_hdx('resource', 'id')
+        self._update_in_hdx('resource', 'id', self.file_to_upload)
+        if update_datastore:
+            self.update_datastore(path=self.file_to_upload)
 
-    def create_in_hdx(self) -> None:
-        """Check if resource exists in HDX and if so, update it, otherwise create it
+    def create_in_hdx(self, create_datastore: bool = False) -> None:
+        """Check if resource exists in HDX and if so, update it, otherwise create it. create_datastore can be set True
+         for csvs enabling data preview in HDX. All fields in the csv will be assumed to be text. For more datastore
+         creation options, set to False and use the create_datastore method.
+
+        Args:
+            create_datastore (bool): Whether to create a datastore (only for csv). Defaults to False.
 
         Returns:
             None
         """
-        self._create_in_hdx('resource', 'id', 'name')
+        self._create_in_hdx('resource', 'id', 'name', self.file_to_upload)
+        if create_datastore:
+            self.create_datastore(path=self.file_to_upload)
 
     def delete_from_hdx(self) -> None:
         """Deletes a resource from HDX
@@ -150,23 +209,11 @@ class Resource(HDXObject):
             logger.debug(result)
         return resources
 
-    def delete_datastore(self) -> None:
-        """Delete a resource from the HDX datastore
-
-        Returns:
-            None
-        """
-        success, result = self._read_from_hdx('datastore', self.data['id'], 'resource_id',
-                                              self.actions()['datastore_delete'],
-                                              force=True)
-        if not success:
-            logger.debug(result)
-
     def download(self, folder: Optional[str] = None) -> Tuple[str, str]:
         """Download resource store to provided folder or temporary folder if no folder supplied
 
         Args:
-            folder (str): Folder to download resource to. Defaults to None.
+            folder (Optional[str]): Folder to download resource to. Defaults to None.
 
         Returns:
             Tuple[str, str]: (URL downloaded, Path to downloaded file)
@@ -181,14 +228,28 @@ class Resource(HDXObject):
             path = download.download_file(url, folder)
             return url, path
 
+    def delete_datastore(self) -> None:
+        """Delete a resource from the HDX datastore
+
+        Returns:
+            None
+        """
+        success, result = self._read_from_hdx('datastore', self.data['id'], 'resource_id',
+                                              self.actions()['datastore_delete'],
+                                              force=True)
+        if not success:
+            logger.debug(result)
+
     def create_datastore(self, schema: List[dict] = None, primary_key: Optional[str] = None,
-                         delete_first: int = 0) -> None:
-        """Create a resource in the HDX datastore. If no schema is provided all fields are assumed to be text.
+                         delete_first: int = 0, path: Optional[str] = None) -> None:
+        """For csvs, create a resource in the HDX datastore which enables data preview in HDX. If no schema is provided
+        all fields are assumed to be text. If path is not supplied, the file is first downloaded from HDX.
 
         Args:
             schema (List[dict]): List of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}. Defaults to None.
             primary_key (Optional[str]): Primary key of schema. Defaults to None.
             delete_first (int): Delete datastore before creation. 0 = No, 1 = Yes, 2 = If no primary key. Defaults to 0.
+            path (Optional[str]): Local path to file that was uploaded. Defaults to None.
 
         Returns:
             None
@@ -202,8 +263,15 @@ class Resource(HDXObject):
                 self.delete_datastore()
         else:
             raise HDXError('delete_first must be 0, 1 or 2! (0 = No, 1 = Yes, 2 = Delete if no primary key)')
-        # Download the resource
-        url, path = self.download()
+        if path is None:
+            # Download the resource
+            url, path = self.download()
+            delete_after_download = True
+        else:
+            url = self.data.get('url', None)
+            if not url:
+                raise HDXError('No URL to download!')
+            delete_after_download = False
 
         f = None
         try:
@@ -216,7 +284,7 @@ class Resource(HDXObject):
             data = {'resource_id': self.data['id'], 'force': True, 'fields': schema, 'primary_key': primary_key}
             self._write_to_hdx('datastore_create', data, 'id')
             rows = [row for row in reader]
-            chunksize = 1024
+            chunksize = 10240
             offset = 0
             if primary_key is None:
                 method = 'insert'
@@ -234,103 +302,139 @@ class Resource(HDXObject):
         finally:
             if f:
                 f.close()
-            unlink(path)
+            if delete_after_download:
+                unlink(path)
 
-    def create_datastore_from_dict_schema(self, data: dict, delete_first: int = 0) -> None:
-        """Creates a resource in the HDX datastore from a YAML file containing a list of fields and types of
-        form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key
+    def create_datastore_from_dict_schema(self, data: dict, delete_first: int = 0, path: Optional[str] = None) -> None:
+        """For csvs, create a resource in the HDX datastore which enables data preview in HDX from a dictionary
+        containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
+        If path is not supplied, the file is first downloaded from HDX.
 
         Args:
             data (dict): Dictionary containing list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
             delete_first (int): Delete datastore before creation. 0 = No, 1 = Yes, 2 = If no primary key. Defaults to 0.
+            path (Optional[str]): Local path to file that was uploaded. Defaults to None.
 
         Returns:
             None
         """
         schema = data['schema']
         primary_key = data.get('primary_key')
-        self.create_datastore(schema, primary_key, delete_first)
+        self.create_datastore(schema, primary_key, delete_first, path=path)
 
-    def create_datastore_from_yaml_schema(self, path: str, delete_first: int = 0) -> None:
-        """Creates a resource in the HDX datastore from a YAML file containing a list of fields and types of
-        form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key
+    def create_datastore_from_yaml_schema(self, yaml_path: str, delete_first: int = 0,
+                                          path: Optional[str] = None) -> None:
+        """For csvs, create a resource in the HDX datastore which enables data preview in HDX from a YAML file
+        containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
+        If path is not supplied, the file is first downloaded from HDX.
 
         Args:
-            path (str): Path to YAML file containing list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
+            yaml_path (str): Path to YAML file containing list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
             delete_first (int): Delete datastore before creation. 0 = No, 1 = Yes, 2 = If no primary key. Defaults to 0.
+            path (Optional[str]): Local path to file that was uploaded. Defaults to None.
 
         Returns:
             None
         """
-        data = load_yaml(path)
-        self.create_datastore_from_dict_schema(data, delete_first)
+        data = load_yaml(yaml_path)
+        self.create_datastore_from_dict_schema(data, delete_first, path=path)
 
-    def create_datastore_from_json_schema(self, path: str, delete_first: int = 0) -> None:
-        """Creates a resource in the HDX datastore from a JSON file containing a list of fields and types of
-        form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key
+    def create_datastore_from_json_schema(self, json_path: str, delete_first: int = 0,
+                                          path: Optional[str] = None) -> None:
+        """For csvs, create a resource in the HDX datastore which enables data preview in HDX from a JSON file
+        containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
+        If path is not supplied, the file is first downloaded from HDX.
 
         Args:
-            path (str): Path to JSON file containing list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
+            json_path (str): Path to JSON file containing list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
             delete_first (int): Delete datastore before creation. 0 = No, 1 = Yes, 2 = If no primary key. Defaults to 0.
+            path (Optional[str]): Local path to file that was uploaded. Defaults to None.
 
         Returns:
             None
         """
-        data = load_json(path)
-        self.create_datastore_from_dict_schema(data, delete_first)
+        data = load_json(json_path)
+        self.create_datastore_from_dict_schema(data, delete_first, path=path)
 
-    def create_datastore_for_topline(self, delete_first: int = 0):
-        """Creates a resource in the HDX datastore using the built in YAML definition for a topline
+    def create_datastore_for_topline(self, delete_first: int = 0, path: Optional[str] = None):
+        """For csvs, create a resource in the HDX datastore which enables data preview in HDX using the built in
+        YAML definition for a topline. If path is not supplied, the file is first downloaded from HDX.
 
         Args:
             delete_first (int): Delete datastore before creation. 0 = No, 1 = Yes, 2 = If no primary key. Defaults to 0.
+            path (Optional[str]): Local path to file that was uploaded. Defaults to None.
 
         Returns:
             None
         """
         data = load_yaml(script_dir_plus_file(join('..', 'hdx_datasource_topline.yml'), Resource))
-        self.create_datastore_from_dict_schema(data, delete_first)
+        self.create_datastore_from_dict_schema(data, delete_first, path=path)
 
-    def update_datastore(self, schema: List[dict] = None, primary_key: Optional[str] = None) -> None:
-        """Update a resource in the HDX datastore. If no schema is provided all fields are assumed to be text.
+    def update_datastore(self, schema: List[dict] = None, primary_key: Optional[str] = None,
+                         path: Optional[str] = None) -> None:
+        """For csvs, update a resource in the HDX datastore which enables data preview in HDX. If no schema is provided
+        all fields are assumed to be text. If path is not supplied, the file is first downloaded from HDX.
 
         Args:
             schema (List[dict]): List of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}. Defaults to None.
             primary_key (Optional[str]): Primary key of schema. Defaults to None.
+            path (Optional[str]): Local path to file that was uploaded. Defaults to None.
 
         Returns:
             None
         """
-        self.create_datastore(schema, primary_key, 2)
+        self.create_datastore(schema, primary_key, 2, path=path)
 
-    def update_datastore_from_yaml_schema(self, path: str) -> None:
-        """Update a resource in the HDX datastore from a YAML file containing a list of fields and types of
-        form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key
+    def update_datastore_from_dict_schema(self, data: dict, path: Optional[str] = None) -> None:
+        """For csvs, update a resource in the HDX datastore which enables data preview in HDX from a dictionary
+        containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
+        If path is not supplied, the file is first downloaded from HDX.
 
         Args:
-            path (str): Path to YAML file containing list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
+            data (dict): Dictionary containing list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
+            path (Optional[str]): Local path to file that was uploaded. Defaults to None.
 
         Returns:
             None
         """
-        self.create_datastore_from_yaml_schema(path, 2)
+        self.create_datastore_from_dict_schema(data, 2, path=path)
 
-    def update_datastore_from_json_schema(self, path: str) -> None:
-        """Update a resource in the HDX datastore from a JSON file containing a list of fields and types of
-        form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key
+    def update_datastore_from_yaml_schema(self, yaml_path: str, path: Optional[str] = None) -> None:
+        """For csvs, update a resource in the HDX datastore which enables data preview in HDX from a YAML file
+        containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
+        If path is not supplied, the file is first downloaded from HDX.
 
         Args:
-            path (str): Path to JSON file containing list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
+            yaml_path (str): Path to YAML file containing list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
+            path (Optional[str]): Local path to file that was uploaded. Defaults to None.
 
         Returns:
             None
         """
-        self.create_datastore_from_json_schema(path, 2)
+        self.create_datastore_from_yaml_schema(yaml_path, 2, path=path)
 
-    def update_datastore_for_topline(self) -> None:
-        """Update a resource in the HDX datastore using the built in YAML definition for a topline
+    def update_datastore_from_json_schema(self, json_path: str, path: Optional[str] = None) -> None:
+        """For csvs, update a resource in the HDX datastore which enables data preview in HDX from a JSON file
+        containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
+        If path is not supplied, the file is first downloaded from HDX.
+
+        Args:
+            json_path (str): Path to JSON file containing list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}
+            path (Optional[str]): Local path to file that was uploaded. Defaults to None.
 
         Returns:
             None
         """
-        self.create_datastore_for_topline(2)
+        self.create_datastore_from_json_schema(json_path, 2, path=path)
+
+    def update_datastore_for_topline(self, path: Optional[str] = None) -> None:
+        """For csvs, update a resource in the HDX datastore which enables data preview in HDX using the built in YAML
+        definition for a topline. If path is not supplied, the file is first downloaded from HDX.
+
+        Args:
+            path (Optional[str]): Local path to file that was uploaded. Defaults to None.
+
+        Returns:
+            None
+        """
+        self.create_datastore_for_topline(2, path=path)

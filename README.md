@@ -303,6 +303,10 @@ Once the HDX object is ready ie. it has all the required metadata, you simply ca
 
     dataset.create_in_hdx()
 
+Existing HDX objects can be updated by calling `update_in_hdx` eg.
+
+    dataset.update_in_hdx()
+
 You can delete HDX objects using `delete_from_hdx` and update an object that already exists in HDX with the method `update_in_hdx`. These do not take any parameters or return anything and throw exceptions for failures like the object to delete or update not existing.
 
 ### Dataset Specific Operations
@@ -402,15 +406,15 @@ If you wish to get the current location (ISO 3 country codes), you can call the 
  
     locations = dataset.get_location()
      
-If you want to add a country, you do as shown below. If you don't provide an ISO 3 country code, the text you give will be parsed and converted to an ISO 3 code if possible.
+If you want to add a country, you do as shown below. If you don't provide an ISO 3 country code, the text you give will be parsed and converted to an ISO 3 code if it is a valid country name.
     
     dataset.add_country_location('ISO 3 COUNTRY CODE')
     
-If you want to add a list of countries, the following method enables you to do it. If you don't provide ISO 3 country codes, conversion will take place if possible.
+If you want to add a list of countries, the following method enables you to do it. If you don't provide ISO 3 country codes, conversion will take place where valid country names are found.
 
     dataset.add_country_locations(['ISO 3','ISO 3','ISO 3'...])
     
-If you want to add a continent, you do it as follows. If you don't provide a two letter continent code, then parsing and conversion will occur if possible.
+If you want to add a continent, you do it as follows. If you don't provide a two letter continent code, then parsing and conversion will occur if a valid continent name is supplied.
 
     dataset.add_continent_location('TWO LETTER CONTINENT CODE')
 
@@ -435,9 +439,22 @@ If you want to add a list of tags, you do it as follows:
 
 You can download a resource using the `download` function eg.
 
-    url, path = resource.download(FOLDER_TO_DOWNLOAD_TO)
+    url, path = resource.download('FOLDER_TO_DOWNLOAD_TO')
     
 If you do not supply `FOLDER_TO_DOWNLOAD_TO`, then a temporary folder is used.
+
+When creating or updating a resource, it is possible to specify the path to a local file to upload to the HDX filestore. Rather than the url of the resource pointing to your server or api, in this case the url will point to a location in the HDX filestore containing a copy of your file. If the file is a csv, then it is possible to set up the data preview feature in HDX by setting the `create_datastore` or `update_datastore` parameter to `True`. All fields in the csv will be assumed to be text. For more datastore creation or update options, then set `create_datastore` or `update_datastore` to False and use the `create_datastore` or `update_datastore` method.
+
+    resource.create_in_hdx(file_to_upload='PATH_TO_FILE', create_datastore=False/True)
+    resource.update_in_hdx(file_to_upload='PATH_TO_FILE', update_datastore=False/True)
+
+There are standalone methods as mentioned above for creating and updating datastores specified in the API documentation, a selection of which follow:
+
+    resource.create_datastore(schema={'id': 'FIELD', 'type': 'TYPE'}, primary_key='PRIMARY_KEY_OF_SCHEMA', delete_first=0 (No) / 1 (Yes) / 2 (If no primary key), path='LOCAL_PATH_OF_UPLOADED_FILE') -> None:
+    resource.create_datastore_from_yaml_schema(yaml_path='PATH_TO_YAML_SCHEMA', delete_first=0 (No) / 1 (Yes) / 2 (If no primary key), path='LOCAL_PATH_OF_UPLOADED_FILE')                     
+    resource.update_datastore(schema={'id': 'FIELD', 'type': 'TYPE'}, primary_key='PRIMARY_KEY_OF_SCHEMA', path='LOCAL_PATH_OF_UPLOADED_FILE') -> None:
+    resource.update_datastore_from_json_schema(json_path='PATH_TO_JSON_SCHEMA', path='LOCAL_PATH_OF_UPLOADED_FILE')                     
+
 
 ## Working Example
 

@@ -87,7 +87,7 @@ class Download(object):
         """
         md5hash = hashlib.md5()
         try:
-            for chunk in self.response.iter_content(chunk_size=1024):
+            for chunk in self.response.iter_content(chunk_size=10240):
                 if chunk:  # filter out keep-alive new chunks
                     md5hash.update(chunk)
             return md5hash.hexdigest()
@@ -110,7 +110,7 @@ class Download(object):
         f = None
         try:
             f = open(path, 'wb')
-            for chunk in self.response.iter_content(chunk_size=1024):
+            for chunk in self.response.iter_content(chunk_size=10240):
                 if chunk:  # filter out keep-alive new chunks
                     f.write(chunk)
                     f.flush()

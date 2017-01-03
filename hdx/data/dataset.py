@@ -317,23 +317,20 @@ class Dataset(HDXObject):
         self._dataset_create_resources_gallery()
         return True
 
-    def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
-        """Check that metadata for dataset and its resources and gallery is complete
-
-        Args:
-            ignore_fields (List[str]): Any fields to ignore in the check. Default is empty list.
+    def check_required_fields(self, ignore_dataset_id=False) -> None:
+        """Check that metadata for dataset and its resources and gallery is complete. (ignore_dataset_id is not used.)
 
         Returns:
             None
         """
         for field in self.configuration['dataset']['required_fields']:
-            if field not in ignore_fields and field not in self.data:
+            if field not in self.data:
                 raise HDXError("Field %s is missing in dataset!" % field)
 
         for resource in self.resources:
-            resource.check_required_fields([self.configuration['resource']['dataset_id']])
+            resource.check_required_fields(ignore_dataset_id=True)
         for galleryitem in self.gallery:
-            galleryitem.check_required_fields([self.configuration['galleryitem']['dataset_id']])
+            galleryitem.check_required_fields(ignore_dataset_id=True)
 
     def _dataset_merge_hdx_update(self, update_resources: bool, update_gallery: bool) -> None:
         """Helper method to check if dataset or its resources or gallery items exist and update them
@@ -352,7 +349,6 @@ class Dataset(HDXObject):
             del self.data['gallery']
         old_resources = self.old_data.get('resources', None)
         if update_resources and old_resources:
-            resource_dataset_id = [self.configuration['resource']['dataset_id']]
             resource_names = set()
             for resource in self.resources:
                 resource_name = resource['name']
@@ -361,11 +357,11 @@ class Dataset(HDXObject):
                     if resource_name == old_resource['name']:
                         logger.warning('Resource exists. Updating %s' % resource_name)
                         merge_two_dictionaries(resource, old_resource)
-                        resource.check_required_fields(resource_dataset_id)
+                        resource.check_required_fields(ignore_dataset_id=True)
                         break
             for old_resource in old_resources:
                 if not old_resource['name'] in resource_names:
-                    old_resource.check_required_fields(resource_dataset_id)
+                    old_resource.check_required_fields(ignore_dataset_id=True)
                     self.resources.append(old_resource)
         old_gallery = self.old_data.get('gallery', None)
         if self.resources:
@@ -437,11 +433,10 @@ class Dataset(HDXObject):
             self._dataset_merge_hdx_update(True, True)
             return
 
-        resource_dataset_id = [self.configuration['resource']['dataset_id']]
         if self.resources:
             self.data['resources'] = self._convert_hdxobjects(self.resources)
             for resource in self.resources:
-                resource.check_required_fields(resource_dataset_id)
+                resource.check_required_fields(ignore_dataset_id=True)
         self._save_to_hdx('create', 'name')
         self.init_resources()
         self.separate_resources()
@@ -709,7 +704,8 @@ class Dataset(HDXObject):
         return [Location.get_country_name_from_iso3(x['name']) for x in countries]
 
     def add_country_location(self, country: str) -> None:
-        """Add a country. If iso 3 code not provided, tries to parse value and convert to iso 3 code.
+        """Add a country. If an iso 3 code is not provided, value is parsed and if it is a valid country name,
+        converted to an iso 3 code.
 
         Args:
             country (str): Country to add
@@ -730,7 +726,8 @@ class Dataset(HDXObject):
         self.data['groups'] = countries
 
     def add_country_locations(self, countries: List[str]) -> None:
-        """Add a list of countries. If iso 3 codes are not provided, tries to parse values and convert to iso 3 code.
+        """Add a list of countries. If iso 3 codes are not provided, values are parsed and where they are valid country
+        names, converted to iso 3 codes.
 
         Args:
             countries (List[str]): List of countries to add
@@ -742,7 +739,8 @@ class Dataset(HDXObject):
             self.add_country_location(country)
 
     def add_continent_location(self, continent: str) -> None:
-        """Add a continent. If a 2 letter continent code is not provided, tries to parse value and convert to 2 letter code.
+        """Add a continent. If a 2 letter continent code is not provided, value is parsed and if it is a valid
+        continent name, converted to a 2 letter code.
 
         Args:
             continent (str): Continent to add

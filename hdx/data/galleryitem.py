@@ -3,7 +3,7 @@
 """GalleryItem class containing all logic for creating, checking, and updating gallery items."""
 import logging
 from os.path import join
-from typing import Optional, List
+from typing import Optional
 
 from hdx.configuration import Configuration
 from hdx.data.hdxobject import HDXObject
@@ -78,15 +78,21 @@ class GalleryItem(HDXObject):
             return galleryitem
         return None
 
-    def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
-        """Check that metadata for gallery item is complete
+    def check_required_fields(self, ignore_dataset_id=False) -> None:
+        """Check that metadata for gallery item is complete. The parameter ignore_dataset_id should
+        be set to True if you intend to add the object to a Dataset object (where it will be created during dataset
+        creation).
 
         Args:
-            ignore_fields (List[str]): Any fields to ignore in the check. Default is empty list.
+            ignore_dataset_id (bool): Whether to ignore the dataset id. Default is False.
 
         Returns:
             None
         """
+        if ignore_dataset_id:
+            ignore_fields = [self.configuration['galleryitem']['dataset_id']]
+        else:
+            ignore_fields = list()
         self._check_required_fields('galleryitem', ignore_fields)
 
     def update_in_hdx(self) -> None:
