@@ -297,7 +297,7 @@ class Dataset(HDXObject):
             self.separate_resources()
         if self.include_gallery:
             success, result = self._read_from_hdx('gallery', self.data['id'], 'id', GalleryItem.actions()['list'])
-            if success:
+            if success and result:
                 self.data['gallery'] = result
                 self.old_data['gallery'] = self._copy_hdxobjects(self.gallery, GalleryItem)
                 self.separate_gallery()
@@ -380,7 +380,7 @@ class Dataset(HDXObject):
                     if galleryitem_title == old_galleryitem['title']:
                         logger.warning('Gallery item exists. Updating %s' % galleryitem_title)
                         merge_two_dictionaries(galleryitem, old_galleryitem)
-                        galleryitem.check_required_fields([galleryitem_dataset_id])
+                        galleryitem.check_required_fields()
                         galleryitem.update_in_hdx()
             for old_galleryitem in old_gallery:
                 if not old_galleryitem['title'] in galleryitem_titles:
@@ -705,7 +705,7 @@ class Dataset(HDXObject):
 
     def add_country_location(self, country: str) -> None:
         """Add a country. If an iso 3 code is not provided, value is parsed and if it is a valid country name,
-        converted to an iso 3 code.
+        converted to an iso 3 code. If the country is already added, it is ignored.
 
         Args:
             country (str): Country to add
@@ -727,7 +727,7 @@ class Dataset(HDXObject):
 
     def add_country_locations(self, countries: List[str]) -> None:
         """Add a list of countries. If iso 3 codes are not provided, values are parsed and where they are valid country
-        names, converted to iso 3 codes.
+        names, converted to iso 3 codes. If any country is already added, it is ignored.
 
         Args:
             countries (List[str]): List of countries to add
@@ -739,8 +739,8 @@ class Dataset(HDXObject):
             self.add_country_location(country)
 
     def add_continent_location(self, continent: str) -> None:
-        """Add a continent. If a 2 letter continent code is not provided, value is parsed and if it is a valid
-        continent name, converted to a 2 letter code.
+        """Add all countries in a  continent. If a 2 letter continent code is not provided, value is parsed and if it
+        is a valid continent name, converted to a 2 letter code. If any country is already added, it is ignored.
 
         Args:
             continent (str): Continent to add
