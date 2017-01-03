@@ -144,34 +144,20 @@ class Resource(HDXObject):
         self._check_required_fields('resource', ignore_fields)
 
     def update_in_hdx(self, update_datastore: bool = False) -> None:
-        """Check if resource exists in HDX and if so, update it. update_datastore can be set True
-         for csvs enabling data preview in HDX. All fields in the csv will be assumed to be text. For more datastore
-         update options, set to False and use the update_datastore method.
-
-        Args:
-            update_datastore (bool): Whether to update a datastore (only for csv). Defaults to False.
+        """Check if resource exists in HDX and if so, update it
 
         Returns:
             None
         """
         self._update_in_hdx('resource', 'id', self.file_to_upload)
-        if update_datastore:
-            self.update_datastore(path=self.file_to_upload)
 
-    def create_in_hdx(self, create_datastore: bool = False) -> None:
-        """Check if resource exists in HDX and if so, update it, otherwise create it. create_datastore can be set True
-         for csvs enabling data preview in HDX. All fields in the csv will be assumed to be text. For more datastore
-         creation options, set to False and use the create_datastore method.
-
-        Args:
-            create_datastore (bool): Whether to create a datastore (only for csv). Defaults to False.
+    def create_in_hdx(self) -> None:
+        """Check if resource exists in HDX and if so, update it, otherwise create it
 
         Returns:
             None
         """
         self._create_in_hdx('resource', 'id', 'name', self.file_to_upload)
-        if create_datastore:
-            self.create_datastore(path=self.file_to_upload)
 
     def delete_from_hdx(self) -> None:
         """Deletes a resource from HDX

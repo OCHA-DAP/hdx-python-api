@@ -443,12 +443,20 @@ You can download a resource using the `download` function eg.
     
 If you do not supply `FOLDER_TO_DOWNLOAD_TO`, then a temporary folder is used.
 
-When creating or updating a resource, it is possible to specify the path to a local file to upload to the HDX filestore. Rather than the url of the resource pointing to your server or api, in this case the url will point to a location in the HDX filestore containing a copy of your file. If the file is a csv, then it is possible to set up the data preview feature in HDX by setting the `create_datastore` or `update_datastore` parameter to `True`. All fields in the csv will be assumed to be text. For more datastore creation or update options, then set `create_datastore` or `update_datastore` to False and use the `create_datastore` or `update_datastore` method.
+Before creating or updating a resource, it is possible to specify the path to a local file to upload to the HDX filestore if that is preferred over hosting the file externally to HDX. Rather than the url of the resource pointing to your server or api, in this case the url will point to a location in the HDX filestore containing a copy of your file.
 
-    resource.create_in_hdx(file_to_upload='PATH_TO_FILE', create_datastore=False/True)
-    resource.update_in_hdx(file_to_upload='PATH_TO_FILE', update_datastore=False/True)
+    resource.set_file_to_upload(file_to_upload='PATH_TO_FILE')
+    
+There is a getter to read the value back:
 
-There are standalone methods as mentioned above for creating and updating datastores specified in the API documentation, a selection of which follow:
+    file_to_upload = resource.get_file_to_upload()
+
+If you wish to set up the data preview feature in HDX and your file (HDX or externally hosted) is a csv, then you can call the `create_datastore` or `update_datastore` methods. If you do not pass any parameters, all fields in the csv will be assumed to be text. 
+
+    resource.create_datastore()
+    resource.update_datastore()
+    
+More fine grained control is possible by passing certain parameters and using other related methods eg.
 
     resource.create_datastore(schema={'id': 'FIELD', 'type': 'TYPE'}, primary_key='PRIMARY_KEY_OF_SCHEMA', delete_first=0 (No) / 1 (Yes) / 2 (If no primary key), path='LOCAL_PATH_OF_UPLOADED_FILE') -> None:
     resource.create_datastore_from_yaml_schema(yaml_path='PATH_TO_YAML_SCHEMA', delete_first=0 (No) / 1 (Yes) / 2 (If no primary key), path='LOCAL_PATH_OF_UPLOADED_FILE')                     
