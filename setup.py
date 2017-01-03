@@ -44,7 +44,7 @@ def get_version():
     return version_file.read().strip()
 
 
-requirements = [  # 'ckanapi==3.7.dev0', - have to get from GitHub
+requirements = ['ckanapi==3.7.dev0',
                 'colorlog',
                 'geonamescache',
                 'ndg-httpsclient',
@@ -69,7 +69,7 @@ setup(
 
     install_requires=requirements,
     dependency_links=[
-        'http://github.com/ckan/ckanapi/tarball/master#egg=ckanapi'
+        'http://github.com/ckan/ckanapi/tarball/master#egg=ckanapi-3.7.dev0'
     ],
     package_data={
         # Include version.txt and if any package contains *.yml files, include them:
