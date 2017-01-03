@@ -53,7 +53,7 @@ To include the HDX Python library in your project, you must pip install or add t
     git+git://github.com/ocha-dap/hdx-python-api.git@VERSION#egg=hdx-python-api
 
 Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DAP/hdx-python-api/tags](https://github.com/OCHA-DAP/hdx-python-api/tags). 
-If you get errors, it is probably the dependencies of the cryptography package that are missing eg. for Ubuntu: python-dev, libffi-dev and libssl-dev. See [cryptography dependencies](https://cryptography.io/en/latest/installation/#building-cryptography-on-linux)
+If you get errors, it is probably the dependencies of the cryptography package that are missing eg. for Ubuntu: python-dev, libffi-dev and libssl-dev. See [cryptography dependencies](https://cryptography.io/en/latest/installation/#building-cryptography-on-linux). It may be possible to avoid the ugly ckanapi dependency line if your pip version supports `--process-dependency-links`.
 
 ### A Quick Example
 
