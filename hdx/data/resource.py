@@ -136,6 +136,8 @@ class Resource(HDXObject):
                 self.data['resource_type'] = 'file.upload'
             if 'url_type' not in self.data:
                 self.data['url_type'] = 'upload'
+            if 'tracking_summary' in self.data:
+                del self.data['tracking_summary']
         if ignore_dataset_id:
             ignore_fields = [self.configuration['resource']['dataset_id']]
         else:
