@@ -294,12 +294,14 @@ class Dataset(HDXObject):
 
         if 'resources' in self.data:
             self.old_data['resources'] = self._copy_hdxobjects(self.resources, Resource)
+            self.init_resources()
             self.separate_resources()
         if self.include_gallery:
             success, result = self._read_from_hdx('gallery', self.data['id'], 'id', GalleryItem.actions()['list'])
             if success:
                 self.data['gallery'] = result
                 self.old_data['gallery'] = self._copy_hdxobjects(self.gallery, GalleryItem)
+                self.init_gallery()
                 self.separate_gallery()
 
     def _dataset_load_from_hdx(self, id_or_name: str) -> bool:
