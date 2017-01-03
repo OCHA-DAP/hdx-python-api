@@ -97,16 +97,20 @@ def mockshow(url, datadict):
                             '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
     result = json.dumps(resultdict)
     if 'related_list' in url:
-        result = json.dumps(TestDataset.gallery_data)
-        return MockResponse(200,
-                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}' % result)
+        if datadict['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d':
+            result = json.dumps(TestDataset.gallery_data)
+            return MockResponse(200,
+                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}' % result)
+        elif datadict['id'] == 'TEST4':
+            return MockResponse(200,
+                                '{"success": true, "result": [], "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}')
     elif 'related_show' in url:
         result = json.dumps(TestDataset.gallerydict)
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}' % result)
     else:
-        result = json.dumps(resultdict)
         if datadict['id'] == 'TEST1':
+            result = json.dumps(resultdict)
             return MockResponse(200,
                                 '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}' % result)
         if datadict['id'] == 'TEST2':
@@ -115,6 +119,12 @@ def mockshow(url, datadict):
         if datadict['id'] == 'TEST3':
             return MockResponse(200,
                                 '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}')
+        if datadict['id'] == 'TEST4':
+            resultdictcopy = copy.deepcopy(resultdict)
+            resultdictcopy['id'] = 'TEST4'
+            result = json.dumps(resultdictcopy)
+            return MockResponse(200,
+                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}' % result)
 
     return MockResponse(404,
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}')
@@ -269,14 +279,14 @@ class TestDataset():
                 datadict = json.loads(data.decode('utf-8'))
                 if 'show' in url or 'related_list' in url:
                     return mockshow(url, datadict)
-                if 'update' not in url:
-                    return MockResponse(404,
-                                        '{"success": false, "error": {"message": "TEST ERROR: Not update", "__type": "TEST ERROR: Not Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}')
                 if 'related' in url:
                     result = json.dumps(TestDataset.gallerydict)
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}' % result)
                 else:
+                    if 'update' not in url:
+                        return MockResponse(404,
+                                            '{"success": false, "error": {"message": "TEST ERROR: Not update", "__type": "TEST ERROR: Not Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}')
                     resultdictcopy = copy.deepcopy(resultdict)
                     merge_two_dictionaries(resultdictcopy, datadict)
                     for i, resource in enumerate(resultdictcopy['resources']):
@@ -388,6 +398,7 @@ class TestDataset():
             dataset = Dataset(configuration, dataset_data)
         del dataset_data["gallery"]
         dataset = Dataset(configuration, dataset_data)
+        del gallery_data[0]['id']
         dataset.add_update_gallery(gallery_data)
         dataset.create_in_hdx()
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
@@ -433,6 +444,13 @@ class TestDataset():
         assert dataset['dataset_date'] == '03/23/2016'
         assert len(dataset.resources) == 2
         assert len(dataset.gallery) == 1
+        dataset.update_in_hdx()
+        assert len(dataset.resources) == 2
+        assert len(dataset.gallery) == 1
+        dataset = Dataset.read_from_hdx(configuration, 'TEST4')
+        del gallery_data[0]['id']
+        dataset.add_update_gallery(gallery_data)
+        dataset['id'] = 'TEST4'
         dataset.update_in_hdx()
         assert len(dataset.resources) == 2
         assert len(dataset.gallery) == 1
