@@ -69,7 +69,7 @@ setup(
 
     install_requires=requirements,
     dependency_links=[
-        'git+git://github.com/ckan/ckanapi.git@master#egg=ckanapi'
+        'git+git://github.com/ckan/ckanapi/tarball/master#egg=ckanapi'
     ],
     package_data={
         # Include version.txt and if any package contains *.yml files, include them:
