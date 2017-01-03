@@ -295,9 +295,9 @@ The default path if unspecified is `config/hdx_TYPE_static.yml` for YAML and `c
 
 Notice how you can define a gallery with one or more gallery items (each starting with a dash '-') within the file as shown above. You can do the same for resources.
 
-You can check if all the fields required by HDX are populated by calling `check_required_fields` with an optional list of fields to ignore. This will throw an exception if any fields are missing. Before the library posts data to HDX, it will call this method automatically. An example usage:
+You can check if all the fields required by HDX are populated by calling `check_required_fields`. This will throw an exception if any fields are missing. Before the library posts data to HDX, it will call this method automatically. If you are creating or updating resources or gallery items through a dataset object rather than directly through resource or gallery item objects, then you should set the parameter `ignore_dataset_id` to `True` (because the dataset object already has a dataset id). An example usage:
 
-    resource.check_required_fields(['package_id'])
+    resource.check_required_fields(ignore_dataset_id=False/True)
 
 Once the HDX object is ready ie. it has all the required metadata, you simply call `create_in_hdx` eg.
 
