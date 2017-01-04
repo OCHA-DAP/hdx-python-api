@@ -49,11 +49,11 @@ If you just want to read data from HDX, then an API key is not necessary and you
 
 To include the HDX Python library in your project, you must pip install or add to your `requirements.txt` file the following lines:
 
-    git+git://github.com/ckan/ckanapi.git@master#egg=ckanapi
+    git+git://github.com/ckan/ckanapi.git@feedf1bced59c10af1a2835fca48d8cfc8b5a3cb#egg=ckanapi
     git+git://github.com/ocha-dap/hdx-python-api.git@VERSION#egg=hdx-python-api
 
 Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DAP/hdx-python-api/tags](https://github.com/OCHA-DAP/hdx-python-api/tags). 
-If you get errors, it is probably the dependencies of the cryptography package that are missing eg. for Ubuntu: python-dev, libffi-dev and libssl-dev. See [cryptography dependencies](https://cryptography.io/en/latest/installation/#building-cryptography-on-linux). It may be possible to avoid the extra ckanapi dependency line if your pip version supports `--process-dependency-links` (which is needed for non-PyPI dependencies).
+If you get errors, it is probably the dependencies of the cryptography package that are missing eg. for Ubuntu: python-dev, libffi-dev and libssl-dev. See [cryptography dependencies](https://cryptography.io/en/latest/installation/#building-cryptography-on-linux).
 
 ### A Quick Example
 

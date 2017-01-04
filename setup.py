@@ -44,7 +44,7 @@ def get_version():
     return version_file.read().strip()
 
 
-requirements = ['ckanapi==3.7.dev0+git.feedf1b',
+requirements = [  # 'ckanapi==3.7.dev0+git.feedf1b', # supported in pip > 8 but breaks PyCharm import
                 'colorlog',
                 'geonamescache',
                 'ndg-httpsclient',
@@ -67,9 +67,9 @@ setup(
     author_email='rans@email.com',
     description='HDX Python Library',
 
-    dependency_links=[
-        'https://github.com/ckan/ckanapi/archive/feedf1bced59c10af1a2835fca48d8cfc8b5a3cb/archive/master.zip#egg=ckanapi-3.7.dev0+git.feedf1b'
-    ],
+    # dependency_links=[
+    #     'https://github.com/ckan/ckanapi/archive/feedf1bced59c10af1a2835fca48d8cfc8b5a3cb/archive/master.zip#egg=ckanapi-3.7.dev0+git.feedf1b'
+    # ],
     install_requires=requirements,
     package_data={
         # Include version.txt and if any package contains *.yml files, include them:
