@@ -380,8 +380,8 @@ class Dataset(HDXObject):
         for resource in filestore_resources:
             for created_resource in self.data['resources']:
                 if resource['name'] == created_resource['name']:
-                    created_resource.set_file_to_upload(resource.get_file_to_upload())
-                    created_resource.update_in_hdx()
+                    merge_two_dictionaries(resource.data, created_resource)
+                    resource.update_in_hdx()
                     break
 
         if self.include_gallery and update_gallery and old_gallery:
