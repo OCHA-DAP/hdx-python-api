@@ -365,15 +365,6 @@ class TestResource():
         assert resource[
                    'url'] == 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv'
 
-        resource_data = copy.deepcopy(TestResource.resource_data)
-        resource = Resource(configuration, resource_data)
-        resource.set_file_to_upload('fixtures/test_data.csv')
-        resource.create_in_hdx(create_datastore=True)
-        assert resource['url_type'] == 'upload'
-        assert resource['resource_type'] == 'file.upload'
-        assert resource[
-                   'url'] == 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv'
-
         resource_data['name'] = 'MyResource2'
         resource = Resource(configuration, resource_data)
         with pytest.raises(HDXError):
@@ -410,13 +401,6 @@ class TestResource():
 
         resource.set_file_to_upload('fixtures/test_data.csv')
         resource.update_in_hdx()
-        assert resource['url_type'] == 'upload'
-        assert resource['resource_type'] == 'file.upload'
-        assert resource[
-                   'url'] == 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv'
-
-        resource.set_file_to_upload('fixtures/test_data.csv')
-        resource.update_in_hdx(update_datastore=True)
         assert resource['url_type'] == 'upload'
         assert resource['resource_type'] == 'file.upload'
         assert resource[
