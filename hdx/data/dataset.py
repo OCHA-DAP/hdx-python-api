@@ -378,7 +378,11 @@ class Dataset(HDXObject):
         self._save_to_hdx('update', 'id')
 
         for resource in filestore_resources:
-            resource.update_in_hdx()
+            for created_resource in self.data['resources']:
+                if resource['name'] == created_resource['name']:
+                    created_resource.set_file_to_upload(resource.get_file_to_upload())
+                    created_resource.update_in_hdx()
+                    break
 
         if self.include_gallery and update_gallery and old_gallery:
             self.old_data['gallery'] = self._copy_hdxobjects(self.gallery, GalleryItem)
