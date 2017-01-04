@@ -4,6 +4,8 @@
 import copy
 import datetime
 import json
+import os
+import tempfile
 from os.path import join
 
 import pytest
@@ -249,7 +251,10 @@ class TestDataset():
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
-                datadict = json.loads(data.decode('utf-8'))
+                if isinstance(data, dict):
+                    datadict = {k.decode('utf8'): v.decode('utf8') for k, v in data.items()}
+                else:
+                    datadict = json.loads(data.decode('utf-8'))
                 if 'show' in url or 'related_list' in url:
                     return mockshow(url, datadict)
                 if 'related' in url:
@@ -285,7 +290,10 @@ class TestDataset():
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
-                datadict = json.loads(data.decode('utf-8'))
+                if isinstance(data, dict):
+                    datadict = {k.decode('utf8'): v.decode('utf8') for k, v in data.items()}
+                else:
+                    datadict = json.loads(data.decode('utf-8'))
                 if 'show' in url or 'related_list' in url:
                     return mockshow(url, datadict)
                 if 'related' in url:
@@ -432,6 +440,16 @@ class TestDataset():
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
         assert len(dataset.resources) == 2
         assert len(dataset.gallery) == 0
+        dataset_data = copy.deepcopy(TestDataset.dataset_data)
+        dataset = Dataset(configuration, dataset_data)
+        resource = Resource(configuration, resources_data[0])
+        file = tempfile.NamedTemporaryFile(delete=False)
+        resource.set_file_to_upload(file.name)
+        dataset.add_update_resource(resource)
+        dataset.create_in_hdx()
+        os.unlink(file.name)
+        assert len(dataset.resources) == 2
+        assert len(dataset.gallery) == 0
 
     def test_update_in_hdx(self, configuration, post_update):
         dataset = Dataset(configuration)
@@ -482,6 +500,16 @@ class TestDataset():
         dataset.update_in_hdx()
         assert len(dataset.resources) == 2
         assert len(dataset.gallery) == 1
+        dataset = Dataset.read_from_hdx(configuration, 'TEST4')
+        resources_data = copy.deepcopy(TestDataset.resources_data)
+        resource = Resource(configuration, resources_data[0])
+        file = tempfile.NamedTemporaryFile(delete=False)
+        resource.set_file_to_upload(file.name)
+        dataset.add_update_resource(resource)
+        dataset.update_in_hdx()
+        os.unlink(file.name)
+        assert len(dataset.resources) == 2
+        assert len(dataset.gallery) == 0
 
     def test_delete_from_hdx(self, configuration, post_delete):
         dataset = Dataset.read_from_hdx(configuration, 'TEST1')
