@@ -361,9 +361,10 @@ class Dataset(HDXObject):
                     if resource_name == old_resource['name']:
                         logger.warning('Resource exists. Updating %s' % resource_name)
                         merge_two_dictionaries(resource, old_resource)
-                        resource.check_required_fields(ignore_dataset_id=True)
-                        if resource.get_file_to_upload():
+                        if old_resource.get_file_to_upload():
+                            resource.set_file_to_upload(old_resource.get_file_to_upload())
                             filestore_resources.append(resource)
+                        resource.check_required_fields(ignore_dataset_id=True)
                         break
             for old_resource in old_resources:
                 if not old_resource['name'] in resource_names:
