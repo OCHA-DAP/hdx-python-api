@@ -345,8 +345,6 @@ class Dataset(HDXObject):
             None
         """
         merge_two_dictionaries(self.data, self.old_data)
-        if 'resources' in self.data:
-            del self.data['resources']
         if 'gallery' in self.data:
             del self.data['gallery']
         old_resources = self.old_data.get('resources', None)
