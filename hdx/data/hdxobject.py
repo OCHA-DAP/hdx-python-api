@@ -333,7 +333,7 @@ class HDXObject(UserDict):
         self._save_to_hdx('delete', id_field_name)
 
     def _addupdate_hdxobject(self, hdxobjects: List[HDXObjectUpperBound], id_field: str,
-                             new_hdxobject: HDXObjectUpperBound) -> None:
+                             new_hdxobject: HDXObjectUpperBound) -> HDXObjectUpperBound:
         """Helper function to add a new HDX object to a supplied list of HDX objects or update existing metadata if the object
         already exists in the list
 
@@ -343,16 +343,14 @@ class HDXObject(UserDict):
             new_hdxobject (T <= HDXObject): The HDX object to be added/updated
 
         Returns:
-            None
+            T <= HDXObject: The HDX object which was added or updated
         """
-        found = False
         for hdxobject in hdxobjects:
             if hdxobject[id_field] == new_hdxobject[id_field]:
                 merge_two_dictionaries(hdxobject, new_hdxobject)
-                found = True
-                break
-        if not found:
-            hdxobjects.append(new_hdxobject)
+                return hdxobject
+        hdxobjects.append(new_hdxobject)
+        return new_hdxobject
 
     def _convert_hdxobjects(self, hdxobjects: List[HDXObjectUpperBound]) -> List[HDXObjectUpperBound]:
         """Helper function to convert supplied list of HDX objects to a list of dict

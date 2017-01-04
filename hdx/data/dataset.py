@@ -139,7 +139,8 @@ class Dataset(HDXObject):
         if isinstance(resource, Resource):
             if 'package_id' in resource:
                 raise HDXError("Resource %s being added already has a dataset id!" % (resource['name']))
-            self._addupdate_hdxobject(self.resources, 'name', resource)
+            resource_updated = self._addupdate_hdxobject(self.resources, 'name', resource)
+            resource_updated.set_file_to_upload(resource.get_file_to_upload())
             return
         raise HDXError("Type %s cannot be added as a resource!" % type(resource).__name__)
 

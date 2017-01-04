@@ -12,6 +12,7 @@ import requests
 from hdx.configuration import Configuration
 from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
+from hdx.data.resource import Resource
 from hdx.utilities.dictionary import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
 
@@ -542,6 +543,11 @@ class TestDataset():
         assert len(dataset.resources) == 2
         dataset.delete_resource('de6549d8-268b-4dfe-adaf-a4ae5c8510d5')
         assert len(dataset.resources) == 1
+        resources_data = copy.deepcopy(TestDataset.resources_data)
+        resource = Resource(configuration, resources_data[0])
+        resource.set_file_to_upload('lala')
+        dataset.add_update_resource(resource)
+        assert dataset.resources[1].get_file_to_upload() == 'lala'
 
     def test_add_update_delete_gallery(self, configuration, post_delete):
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
