@@ -294,7 +294,7 @@ class Dataset(HDXObject):
         """
 
         if 'resources' in self.data:
-            self.old_data['resources'] = self._copy_hdxobjects(self.resources, Resource)
+            self.old_data['resources'] = self._copy_hdxobjects(self.resources, Resource, 'file_to_upload')
             self.init_resources()
             self.separate_resources()
         if self.include_gallery:

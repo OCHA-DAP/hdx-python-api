@@ -366,13 +366,14 @@ class HDXObject(UserDict):
             newhdxobjects.append(hdxobject.data)
         return newhdxobjects
 
-    def _copy_hdxobjects(self, hdxobjects: List[HDXObjectUpperBound], hdxobjectclass: type) -> List[
-        HDXObjectUpperBound]:
+    def _copy_hdxobjects(self, hdxobjects: List[HDXObjectUpperBound], hdxobjectclass: type,
+                         attribute_to_copy: Optional[str] = None) -> List[HDXObjectUpperBound]:
         """Helper function to make a deep copy of a supplied list of HDX objects
 
         Args:
             hdxobjects (list[T <= HDXObject]): List of HDX objects to copy
             hdxobjectclass (type): Type of the HDX Objects to be copied
+            attribute_to_copy (Optional[str]): An attribute to copy over from the HDX object. Defaults to None.
 
         Returns:
             list[T <= HDXObject]: Deep copy of list of HDX objects
@@ -380,7 +381,11 @@ class HDXObject(UserDict):
         newhdxobjects = list()
         for hdxobject in hdxobjects:
             newhdxobjectdata = copy.deepcopy(hdxobject.data)
-            newhdxobjects.append(hdxobjectclass(self.configuration, newhdxobjectdata))
+            newhdxobject = hdxobjectclass(self.configuration, newhdxobjectdata)
+            if attribute_to_copy:
+                value = getattr(hdxobject, attribute_to_copy)
+                setattr(newhdxobject, attribute_to_copy, value)
+            newhdxobjects.append(newhdxobject)
         return newhdxobjects
 
     def _separate_hdxobjects(self, hdxobjects: List[HDXObjectUpperBound], hdxobjects_name: str, id_field: str,
