@@ -390,7 +390,7 @@ class TestDataset():
         dataset = Dataset(configuration, dataset_data)
         dataset.create_in_hdx()
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
-        assert len(dataset.resources) == 0
+        assert len(dataset.resources) == 2
         assert len(dataset.gallery) == 0
 
         dataset_data['name'] = 'MyDataset2'
@@ -414,7 +414,7 @@ class TestDataset():
         dataset.add_update_gallery(gallery_data)
         dataset.create_in_hdx()
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
-        assert len(dataset.resources) == 0
+        assert len(dataset.resources) == 2
         assert len(dataset.gallery) == 1
 
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
