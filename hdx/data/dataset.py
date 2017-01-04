@@ -95,9 +95,9 @@ class Dataset(HDXObject):
             None
         """
         if key == 'resources':
-            raise HDXError('Add resource using add_resource or resources using add_resources!')
+            raise HDXError('Add resource using add_update_resource or resources using add_update_resources!')
         if key == 'gallery':
-            raise HDXError('Add gallery item using add_galleryitem or gallery using add_gallery!')
+            raise HDXError('Add gallery item using add_update_galleryitem or gallery using add_update_gallery!')
         super(Dataset, self).__setitem__(key, value)
 
     def separate_resources(self) -> None:
@@ -139,7 +139,7 @@ class Dataset(HDXObject):
         if isinstance(resource, Resource):
             if 'package_id' in resource:
                 raise HDXError("Resource %s being added already has a dataset id!" % (resource['name']))
-            self._addupdate_hdxobject(self.resources, 'name', self._underlying_object, resource)
+            self._addupdate_hdxobject(self.resources, 'name', resource)
             return
         raise HDXError("Type %s cannot be added as a resource!" % type(resource).__name__)
 
@@ -203,7 +203,7 @@ class Dataset(HDXObject):
         if isinstance(galleryitem, GalleryItem):
             if 'dataset_id' in galleryitem:
                 raise HDXError("Gallery item %s being added already has a dataset id!" % (galleryitem['name']))
-            self._addupdate_hdxobject(self.gallery, 'title', self._underlying_object, galleryitem)
+            self._addupdate_hdxobject(self.gallery, 'title', galleryitem)
             return
         raise HDXError("Type %s cannot be added as a gallery item!" % type(galleryitem).__name__)
 
@@ -350,9 +350,14 @@ class Dataset(HDXObject):
         if 'gallery' in self.data:
             del self.data['gallery']
         old_resources = self.old_data.get('resources', None)
+        old_gallery = self.old_data.get('gallery', None)
+        self._save_to_hdx('update', 'id')
+
         if update_resources and old_resources:
+            self.old_data['resources'] = self._copy_hdxobjects(self.resources, Resource)
             resource_names = set()
-            for resource in self.resources:
+            resource_dataset_id = self.configuration['resource']['dataset_id']
+            for i, resource in enumerate(self.resources):
                 resource_name = resource['name']
                 resource_names.add(resource_name)
                 for old_resource in old_resources:
@@ -360,17 +365,14 @@ class Dataset(HDXObject):
                         logger.warning('Resource exists. Updating %s' % resource_name)
                         merge_two_dictionaries(resource, old_resource)
                         resource.check_required_fields(ignore_dataset_id=True)
-                        break
+                        resource.update_in_hdx()
             for old_resource in old_resources:
                 if not old_resource['name'] in resource_names:
-                    old_resource.check_required_fields(ignore_dataset_id=True)
+                    old_resource[resource_dataset_id] = self.data['id']
+                    old_resource.check_required_fields()
+                    old_resource.create_in_hdx()
                     self.resources.append(old_resource)
-        old_gallery = self.old_data.get('gallery', None)
-        if self.resources:
-            self.data['resources'] = self._convert_hdxobjects(self.resources)
-        self._save_to_hdx('update', 'id')
-        self.init_resources()
-        self.separate_resources()
+
         if self.include_gallery and update_gallery and old_gallery:
             self.old_data['gallery'] = self._copy_hdxobjects(self.gallery, GalleryItem)
             galleryitem_titles = set()
@@ -435,14 +437,14 @@ class Dataset(HDXObject):
             self._dataset_merge_hdx_update(True, True)
             return
 
-        if self.resources:
-            self.data['resources'] = self._convert_hdxobjects(self.resources)
-            for resource in self.resources:
-                resource.check_required_fields(ignore_dataset_id=True)
         self._save_to_hdx('create', 'name')
-        self.init_resources()
-        self.separate_resources()
 
+        self.old_data['resources'] = self._copy_hdxobjects(self.resources, Resource)
+        resource_dataset_id = self.configuration['resource']['dataset_id']
+        for i, resource in enumerate(self.resources):
+            resource[resource_dataset_id] = self.data['id']
+            resource.check_required_fields()
+            resource.create_in_hdx()
         if self.include_gallery:
             self.old_data['gallery'] = self._copy_hdxobjects(self.gallery, GalleryItem)
             galleryitem_dataset_id = self.configuration['galleryitem']['dataset_id']

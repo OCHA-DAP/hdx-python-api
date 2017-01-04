@@ -107,7 +107,11 @@ def mockshow(url, datadict):
     elif 'related_show' in url:
         result = json.dumps(TestDataset.gallerydict)
         return MockResponse(200,
-                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}' % result)
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_show"}' % result)
+    elif 'resource_show' in url:
+        result = json.dumps(TestDataset.resources_data[0])
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}' % result)
     else:
         if datadict['id'] == 'TEST1':
             result = json.dumps(resultdict)
@@ -251,6 +255,10 @@ class TestDataset():
                     result = json.dumps(TestDataset.gallerydict)
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}' % result)
+                if 'resource' in url:
+                    result = json.dumps(TestDataset.resources_data[0])
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}' % result)
                 if 'create' not in url:
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_create"}')
@@ -283,6 +291,10 @@ class TestDataset():
                     result = json.dumps(TestDataset.gallerydict)
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}' % result)
+                if 'resource' in url:
+                    result = json.dumps(TestDataset.resources_data[0])
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}' % result)
                 else:
                     if 'update' not in url:
                         return MockResponse(404,
@@ -378,7 +390,7 @@ class TestDataset():
         dataset = Dataset(configuration, dataset_data)
         dataset.create_in_hdx()
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
-        assert len(dataset.resources) == 2
+        assert len(dataset.resources) == 0
         assert len(dataset.gallery) == 0
 
         dataset_data['name'] = 'MyDataset2'
@@ -393,17 +405,32 @@ class TestDataset():
 
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
         gallery_data = copy.deepcopy(TestDataset.gallery_data)
-        dataset_data["gallery"] = gallery_data
+        dataset_data['gallery'] = gallery_data
         with pytest.raises(HDXError):
             dataset = Dataset(configuration, dataset_data)
-        del dataset_data["gallery"]
+        del dataset_data['gallery']
         dataset = Dataset(configuration, dataset_data)
         del gallery_data[0]['id']
         dataset.add_update_gallery(gallery_data)
         dataset.create_in_hdx()
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
-        assert len(dataset.resources) == 2
+        assert len(dataset.resources) == 0
         assert len(dataset.gallery) == 1
+
+        dataset_data = copy.deepcopy(TestDataset.dataset_data)
+        resources_data = copy.deepcopy(TestDataset.resources_data)
+        dataset_data['resources'] = resources_data
+        with pytest.raises(HDXError):
+            dataset = Dataset(configuration, dataset_data)
+        del dataset_data['resources']
+        dataset = Dataset(configuration, dataset_data)
+        del resources_data[0]['id']
+        del resources_data[1]['id']
+        dataset.add_update_resources(resources_data)
+        dataset.create_in_hdx()
+        assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
+        assert len(dataset.resources) == 2
+        assert len(dataset.gallery) == 0
 
     def test_update_in_hdx(self, configuration, post_update):
         dataset = Dataset(configuration)

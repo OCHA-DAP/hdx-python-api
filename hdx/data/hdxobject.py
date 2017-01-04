@@ -8,7 +8,7 @@ import copy
 import logging
 from collections import UserDict
 from os.path import join
-from typing import Optional, List, Any, Tuple, TypeVar, Union
+from typing import Optional, List, Tuple, TypeVar, Union
 
 import ckanapi
 from ckanapi.errors import NotFound
@@ -332,20 +332,7 @@ class HDXObject(UserDict):
             raise HDXError("No %s field (mandatory) in %s!" % (id_field_name, object_type))
         self._save_to_hdx('delete', id_field_name)
 
-    @staticmethod
-    def _underlying_object(_: Any, b: Any) -> Any:
-        """Function to return second argument passed in
-
-        Args:
-            _ (Any): Argument to ignore
-            b (Any): Argument to return
-
-        Returns:
-            Any: Return argument b
-        """
-        return b
-
-    def _addupdate_hdxobject(self, hdxobjects: List[HDXObjectUpperBound], id_field: str, hdxobjectclass: type,
+    def _addupdate_hdxobject(self, hdxobjects: List[HDXObjectUpperBound], id_field: str,
                              new_hdxobject: HDXObjectUpperBound) -> None:
         """Helper function to add a new HDX object to a supplied list of HDX objects or update existing metadata if the object
         already exists in the list
@@ -353,7 +340,6 @@ class HDXObject(UserDict):
         Args:
             hdxobjects (list[T <= HDXObject]): List of HDX objects to which to add new objects or update existing ones
             id_field (str): Field on which to match to determine if object already exists in list
-            hdxobjectclass (type): Type of the HDX Object to be added/updated
             new_hdxobject (T <= HDXObject): The HDX object to be added/updated
 
         Returns:
@@ -366,7 +352,7 @@ class HDXObject(UserDict):
                 found = True
                 break
         if not found:
-            hdxobjects.append(hdxobjectclass(self.configuration, new_hdxobject))
+            hdxobjects.append(new_hdxobject)
 
     def _convert_hdxobjects(self, hdxobjects: List[HDXObjectUpperBound]) -> List[HDXObjectUpperBound]:
         """Helper function to convert supplied list of HDX objects to a list of dict
