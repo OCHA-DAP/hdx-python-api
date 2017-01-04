@@ -128,9 +128,7 @@ class Resource(HDXObject):
             else:
                 raise HDXError('Either a url or a file to upload must be supplied!')
         else:
-            if 'url' in self.data:
-                logger.warning('File to upload supplied so url will be changed to uploaded file path!')
-            else:
+            if 'url' not in self.data:
                 self.data['url'] = 'ignore'  # must be set even though overwritten
             if 'resource_type' not in self.data:
                 self.data['resource_type'] = 'file.upload'
