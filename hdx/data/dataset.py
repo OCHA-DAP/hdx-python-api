@@ -382,6 +382,7 @@ class Dataset(HDXObject):
                 if resource['name'] == created_resource['name']:
                     merge_two_dictionaries(resource.data, created_resource)
                     resource.update_in_hdx()
+                    merge_two_dictionaries(created_resource, resource.data)
                     break
 
         if self.include_gallery and update_gallery and old_gallery:
@@ -456,11 +457,16 @@ class Dataset(HDXObject):
                     filestore_resources.append(resource)
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         self._save_to_hdx('create', 'name')
+        for resource in filestore_resources:
+            for created_resource in self.data['resources']:
+                if resource['name'] == created_resource['name']:
+                    merge_two_dictionaries(resource.data, created_resource)
+                    resource.update_in_hdx()
+                    merge_two_dictionaries(created_resource, resource.data)
+                    break
         self.init_resources()
         self.separate_resources()
 
-        for resource in filestore_resources:
-            resource.update_in_hdx()
         if self.include_gallery:
             self.old_data['gallery'] = self._copy_hdxobjects(self.gallery, GalleryItem)
             galleryitem_dataset_id = self.configuration['galleryitem']['dataset_id']
