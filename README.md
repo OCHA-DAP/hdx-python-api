@@ -24,11 +24,7 @@ For more about the purpose and design philosophy, please visit [HDX Python Libra
 - [ACLED Example](#acled-example)
 
 ## Usage
-The library has detailed API documentation:  
-
-[![HDX Python API](https://humanitarian.atlassian.net/wiki/download/attachments/6356996/HDXPythonAPI.png?version=1&modificationDate=1469520100446&api=v2)](http://ocha-dap.github.io/hdx-python-api/)
-
-The API documentation can be found here: [http://ocha-dap.github.io/hdx-python-api/](http://ocha-dap.github.io/hdx-python-api/). The code for the library is here: [https://github.com/ocha-dap/hdx-python-api](https://github.com/ocha-dap/hdx-python-api).
+The library has detailed API documentation which can be found here: [http://ocha-dap.github.io/hdx-python-api/](http://ocha-dap.github.io/hdx-python-api/). The code for the library is here: [https://github.com/ocha-dap/hdx-python-api](https://github.com/ocha-dap/hdx-python-api).
 
 Please note that the library only works on Python 3.
 
