@@ -187,6 +187,11 @@ If you do not use the facade, you can use the `create` method of the `Configurat
 |        |project_config_json  |str           |Path to JSON Project configuration   |                                        |
 |        |project_config_yaml  |str           |Path to YAML Project configuration   |config/project_configuration.yml        |
 
+To access the configuration, you use the `read` method of the `Configuration` class as follows:
+
+    Configuration.read()
+
+
 ### Configuring Logging
 
 If you wish to change the logging configuration from the defaults, you will need to call `setup_logging` with arguments unless you have used the simple or ScraperWiki facades, in which case you must update the `hdx.facades` module variable `logging_kwargs` before importing the facade.
