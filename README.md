@@ -99,13 +99,13 @@ Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DA
 
     If you only want to read data:
 
-        configuration = Configuration(hdx_site='test', hdx_read_only=True, project_config_dict={})
+        Configuration.create(hdx_site='test', hdx_read_only=True, project_config_dict={})
     If you want to write data and you have an API key stored in a file `.hdxkey` in the current user's home directory:
 
-        configuration = Configuration(hdx_site='test', project_config_dict={})
+        Configuration.create(hdx_site='test', project_config_dict={})
 9. Read this dataset [ACLED Conflict Data for Africa (Realtime - 2016)](https://test-data.humdata.org/dataset/acled-conflict-data-for-africa-realtime-2016#) from HDX and view the date of the dataset:
 
-        dataset = Dataset.read_from_hdx(configuration, 'acled-conflict-data-for-africa-realtime-2016')
+        dataset = Dataset.read_from_hdx('acled-conflict-data-for-africa-realtime-2016')
         print(dataset.get_dataset_date())
 10. If you have an API key, as a test, change the dataset date:
 
@@ -118,7 +118,7 @@ Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DA
         dataset.update_in_hdx()
 12. You can search for datasets on HDX and get their resources:
 
-        datasets = Dataset.search_in_hdx(configuration, 'ACLED', rows=10)
+        datasets = Dataset.search_in_hdx('ACLED', rows=10)
         print(datasets)
         resources = Dataset.get_all_resources(datasets)
         print(resources)
@@ -147,13 +147,11 @@ You will most likely just need the simple facade. If you are in the HDX team, yo
 
     from hdx.facades.simple import facade
 
-    def main(configuration):  
+    def main():  
         ***YOUR CODE HERE***
 
     if __name__ == '__main__':  
         facade(main)
-
-The configuration is passed to your main function in the `configuration` argument above.
 
 
 ### Customising the Configuration
@@ -169,11 +167,11 @@ If you did not need a project configuration, you could simply provide an empty d
 
     facade(main, project_config_dict = {})
 
-If you do not use the facade, you can use the `Configuration` class directly, passing in appropriate keyword arguments ie.
+If you do not use the facade, you can use the `create` method of the `Configuration` class directly, passing in appropriate keyword arguments ie.
 
     from hdx.configuration import Configuration  
     ...  
-    cfg = Configuration(KEYWORD ARGUMENTS)
+    Configuration.create(KEYWORD ARGUMENTS)
 
 `KEYWORD ARGUMENTS` can be:
 
@@ -243,23 +241,23 @@ Then use the logger like this:
 
 ### Operations on HDX Objects
 
-You can read an existing HDX object with the static `read_from_hdx` method which takes a configuration and an identifier parameter and returns the an object of the appropriate HDX object type eg. `Dataset` or `None` depending upon whether the object was read eg.
+You can read an existing HDX object with the static `read_from_hdx` method which takes an identifier parameter and returns the an object of the appropriate HDX object type eg. `Dataset` or `None` depending upon whether the object was read eg.
 
-    dataset = Dataset.read_from_hdx(configuration, 'DATASET_ID_OR_NAME')
+    dataset = Dataset.read_from_hdx('DATASET_ID_OR_NAME')
 
-You can search for datasets and resources in HDX using the `search_in_hdx` method which takes a configuration and a query parameter and returns the a list of objects of the appropriate HDX object type eg. `list[Dataset]` eg.
+You can search for datasets and resources in HDX using the `search_in_hdx` method which takes a query parameter and returns the a list of objects of the appropriate HDX object type eg. `list[Dataset]` eg.
 
-    datasets = Dataset.search_in_hdx(configuration, 'QUERY', **kwargs)
+    datasets = Dataset.search_in_hdx('QUERY', **kwargs)
 
 The query parameter takes a different format depending upon whether it is for a [dataset](http://docs.ckan.org/en/ckan-2.3.4/api/index.html#ckan.logic.action.get.package_search) or a [resource](http://docs.ckan.org/en/ckan-2.3.4/api/index.html#ckan.logic.action.get.resource_search). The resource level search is limited to fields in the resource, so in most cases, it is preferable to search for datasets and then get their resources.
 
 Various additional arguments (`**kwargs`) can be supplied. These are detailed in the API documentation. The rows parameter for datasets (limit for resources) is the maximum number of matches returned and is by default 10.
 
-You can create an HDX Object, such as a dataset, resource or gallery item by calling the constructor with a configuration, which is required, and an optional dictionary containing metadata. For example:
+You can create an HDX Object, such as a dataset, resource or gallery item by calling the constructor with an optional dictionary containing metadata. For example:
 
     from hdx.data.dataset import Dataset
 
-    dataset = Dataset(configuration, {  
+    dataset = Dataset({  
         'name': slugified_name,  
         'title': title
     })
@@ -486,10 +484,10 @@ Next create a file called `run.py` and copy into it the code below.
     logger = logging.getLogger(__name__)
 
 
-    def main(configuration: dict):
+    def main():
         '''Generate dataset and create it in HDX'''
 
-        dataset = generate_dataset(configuration)
+        dataset = generate_dataset()
         dataset.create_in_hdx()
 
     if __name__ == '__main__':
@@ -511,7 +509,7 @@ Create a file `my_code.py` and copy into it the code below:
     logger = logging.getLogger(__name__)
 
 
-    def generate_dataset(configuration):
+    def generate_dataset():
         '''Create a dataset
         '''
         logger.debug('Generating dataset!')

@@ -7,6 +7,9 @@ from collections import UserDict
 from os.path import expanduser, join
 from typing import Optional
 
+import ckanapi
+
+import hdx
 from hdx.utilities.dictionary import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml, load_json
 from hdx.utilities.path import script_dir_plus_file
@@ -151,3 +154,51 @@ class Configuration(UserDict):
             raise (ValueError('HDX api key is empty!'))
         logger.info('Loaded HDX api key from: %s' % path)
         return apikey
+
+    @staticmethod
+    def read() -> 'Configuration':
+        """
+        Read the HDX configuration
+
+        Returns:
+            Configuration: The HDX configuration
+
+        """
+        if hdx.configuration is None:
+            raise ConfigurationError('There is no HDX configuration! Use Configuration.create(**kwargs)')
+        return hdx.configuration
+
+    @staticmethod
+    def remoteckan() -> ckanapi.RemoteCKAN:
+        """
+        Return the remote CKAN object (see ckanapi library)
+
+        Returns:
+            ckanapi.RemoteCKAN: The remote CKAN object
+
+        """
+        if hdx.remoteckan is None:
+            if hdx.configuration is None:
+                raise ConfigurationError('There is no HDX configuration! Use Configuration.create(**kwargs)')
+            raise ConfigurationError('There is no remote CKAN set up! Use Configuration.create(**kwargs)')
+        return hdx.remoteckan
+
+    @staticmethod
+    def create(**kwargs) -> 'Configuration':
+        """
+        Create
+
+        Args:
+            path (str): Path to HDX key
+
+        Returns:
+            str: HDX api key
+
+        """
+        hdx.configuration = Configuration(**kwargs)
+        version_file = open(script_dir_plus_file('version.txt', Configuration))
+        version = version_file.read().strip()
+        hdx.remoteckan = ckanapi.RemoteCKAN(hdx.configuration.get_hdx_site_url(),
+                                            apikey=hdx.configuration.get_api_key(),
+                                            user_agent='HDXPythonLibrary/%s' % version)
+        return hdx.configuration

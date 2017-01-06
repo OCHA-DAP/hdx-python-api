@@ -15,13 +15,13 @@ class GalleryItem(HDXObject):
     """GalleryItem class containing all logic for creating, checking, and updating gallery items.
 
     Args:
-        configuration (Configuration): HDX Configuration
         initial_data (Optional[dict]): Initial gallery item metadata dictionary. Defaults to None.
     """
-    def __init__(self, configuration: Configuration, initial_data: Optional[dict] = None):
+
+    def __init__(self, initial_data: Optional[dict] = None):
         if not initial_data:
             initial_data = dict()
-        super(GalleryItem, self).__init__(configuration, initial_data)
+        super(GalleryItem, self).__init__(initial_data)
 
     @staticmethod
     def actions() -> dict:
@@ -61,18 +61,17 @@ class GalleryItem(HDXObject):
         super(GalleryItem, self).update_from_json(path)
 
     @staticmethod
-    def read_from_hdx(configuration: Configuration, identifier: str) -> Optional['GalleryItem']:
+    def read_from_hdx(identifier: str) -> Optional['GalleryItem']:
         """Reads the gallery item given by identifier from HDX and returns GalleryItem object
 
         Args:
-            configuration (Configuration): HDX Configuration
             identifier (str): Identifier of gallery item
 
         Returns:
             Optional[GalleryItem]: GalleryItem object if successful read, None if not
         """
 
-        galleryitem = GalleryItem(configuration)
+        galleryitem = GalleryItem()
         result = galleryitem._load_from_hdx('galleryitem', identifier)
         if result:
             return galleryitem
@@ -90,7 +89,7 @@ class GalleryItem(HDXObject):
             None
         """
         if ignore_dataset_id:
-            ignore_fields = [self.configuration['galleryitem']['dataset_id']]
+            ignore_fields = [Configuration.read()['galleryitem']['dataset_id']]
         else:
             ignore_fields = list()
         self._check_required_fields('galleryitem', ignore_fields)

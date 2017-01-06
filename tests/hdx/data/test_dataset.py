@@ -368,26 +368,26 @@ class TestDataset():
 
         monkeypatch.setattr(requests, 'Session', MockSession)
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope='function')
     def configuration(self):
         hdx_key_file = join('fixtures', '.hdxkey')
         project_config_yaml = join('fixtures', 'config', 'project_configuration.yml')
-        return Configuration(hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
+        Configuration.create(hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
 
     def test_read_from_hdx(self, configuration, read):
-        dataset = Dataset.read_from_hdx(configuration, 'TEST1')
+        dataset = Dataset.read_from_hdx('TEST1')
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
         assert dataset['name'] == 'MyDataset1'
         assert dataset['dataset_date'] == '06/04/2016'
         assert len(dataset.resources) == 2
         assert len(dataset.gallery) == 1
-        dataset = Dataset.read_from_hdx(configuration, 'TEST2')
+        dataset = Dataset.read_from_hdx('TEST2')
         assert dataset is None
-        dataset = Dataset.read_from_hdx(configuration, 'TEST3')
+        dataset = Dataset.read_from_hdx('TEST3')
         assert dataset is None
 
     def test_create_in_hdx(self, configuration, post_create):
-        dataset = Dataset(configuration)
+        dataset = Dataset()
         with pytest.raises(HDXError):
             dataset.create_in_hdx()
         dataset['id'] = 'TEST1'
@@ -396,19 +396,19 @@ class TestDataset():
             dataset.create_in_hdx()
 
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
-        dataset = Dataset(configuration, dataset_data)
+        dataset = Dataset(dataset_data)
         dataset.create_in_hdx()
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
         assert len(dataset.resources) == 2
         assert len(dataset.gallery) == 0
 
         dataset_data['name'] = 'MyDataset2'
-        dataset = Dataset(configuration, dataset_data)
+        dataset = Dataset(dataset_data)
         with pytest.raises(HDXError):
             dataset.create_in_hdx()
 
         dataset_data['name'] = 'MyDataset3'
-        dataset = Dataset(configuration, dataset_data)
+        dataset = Dataset(dataset_data)
         with pytest.raises(HDXError):
             dataset.create_in_hdx()
 
@@ -416,9 +416,9 @@ class TestDataset():
         gallery_data = copy.deepcopy(TestDataset.gallery_data)
         dataset_data['gallery'] = gallery_data
         with pytest.raises(HDXError):
-            dataset = Dataset(configuration, dataset_data)
+            dataset = Dataset(dataset_data)
         del dataset_data['gallery']
-        dataset = Dataset(configuration, dataset_data)
+        dataset = Dataset(dataset_data)
         del gallery_data[0]['id']
         dataset.add_update_gallery(gallery_data)
         dataset.create_in_hdx()
@@ -430,9 +430,9 @@ class TestDataset():
         resources_data = copy.deepcopy(TestDataset.resources_data)
         dataset_data['resources'] = resources_data
         with pytest.raises(HDXError):
-            dataset = Dataset(configuration, dataset_data)
+            dataset = Dataset(dataset_data)
         del dataset_data['resources']
-        dataset = Dataset(configuration, dataset_data)
+        dataset = Dataset(dataset_data)
         del resources_data[0]['id']
         del resources_data[1]['id']
         dataset.add_update_resources(resources_data)
@@ -441,8 +441,8 @@ class TestDataset():
         assert len(dataset.resources) == 2
         assert len(dataset.gallery) == 0
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
-        dataset = Dataset(configuration, dataset_data)
-        resource = Resource(configuration, resources_data[0])
+        dataset = Dataset(dataset_data)
+        resource = Resource(resources_data[0])
         file = tempfile.NamedTemporaryFile(delete=False)
         resource.set_file_to_upload(file.name)
         dataset.add_update_resource(resource)
@@ -452,7 +452,7 @@ class TestDataset():
         assert len(dataset.gallery) == 0
 
     def test_update_in_hdx(self, configuration, post_update):
-        dataset = Dataset(configuration)
+        dataset = Dataset()
         dataset['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):
             dataset.update_in_hdx()
@@ -460,7 +460,7 @@ class TestDataset():
         with pytest.raises(HDXError):
             dataset.update_in_hdx()
 
-        dataset = Dataset.read_from_hdx(configuration, 'TEST1')
+        dataset = Dataset.read_from_hdx('TEST1')
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
         assert dataset['dataset_date'] == '06/04/2016'
 
@@ -483,7 +483,7 @@ class TestDataset():
         gallery_data = copy.deepcopy(TestDataset.gallery_data)
         dataset_data['name'] = 'MyDataset1'
         dataset_data['id'] = 'TEST1'
-        dataset = Dataset(configuration, dataset_data)
+        dataset = Dataset(dataset_data)
         dataset.add_update_gallery(gallery_data)
         dataset.create_in_hdx()
         assert dataset['id'] == 'TEST1'
@@ -493,16 +493,16 @@ class TestDataset():
         dataset.update_in_hdx()
         assert len(dataset.resources) == 2
         assert len(dataset.gallery) == 1
-        dataset = Dataset.read_from_hdx(configuration, 'TEST4')
+        dataset = Dataset.read_from_hdx('TEST4')
         del gallery_data[0]['id']
         dataset.add_update_gallery(gallery_data)
         dataset['id'] = 'TEST4'
         dataset.update_in_hdx()
         assert len(dataset.resources) == 2
         assert len(dataset.gallery) == 1
-        dataset = Dataset.read_from_hdx(configuration, 'TEST4')
+        dataset = Dataset.read_from_hdx('TEST4')
         resources_data = copy.deepcopy(TestDataset.resources_data)
-        resource = Resource(configuration, resources_data[0])
+        resource = Resource(resources_data[0])
         file = tempfile.NamedTemporaryFile(delete=False)
         resource.set_file_to_upload(file.name)
         dataset.add_update_resource(resource)
@@ -512,7 +512,7 @@ class TestDataset():
         assert len(dataset.gallery) == 0
 
     def test_delete_from_hdx(self, configuration, post_delete):
-        dataset = Dataset.read_from_hdx(configuration, 'TEST1')
+        dataset = Dataset.read_from_hdx('TEST1')
         dataset.delete_from_hdx()
         del dataset['id']
         with pytest.raises(HDXError):
@@ -520,7 +520,7 @@ class TestDataset():
 
     def test_update_yaml(self, configuration, static_yaml):
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
-        dataset = Dataset(configuration, dataset_data)
+        dataset = Dataset(dataset_data)
         assert dataset['name'] == 'MyDataset1'
         assert dataset['author'] == 'AN Other'
         dataset.update_from_yaml(static_yaml)
@@ -541,7 +541,7 @@ class TestDataset():
 
     def test_update_json(self, configuration, static_json):
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
-        dataset = Dataset(configuration, dataset_data)
+        dataset = Dataset(dataset_data)
         assert dataset['name'] == 'MyDataset1'
         assert dataset['author'] == 'AN Other'
         dataset.update_from_json(static_json)
@@ -564,7 +564,7 @@ class TestDataset():
     def test_add_update_delete_resources(self, configuration, post_delete):
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
         resources_data = copy.deepcopy(TestDataset.resources_data)
-        dataset = Dataset(configuration, dataset_data)
+        dataset = Dataset(dataset_data)
         dataset.add_update_resources(resources_data)
         assert len(dataset.resources) == 2
         dataset.delete_resource('NOTEXIST')
@@ -572,7 +572,7 @@ class TestDataset():
         dataset.delete_resource('de6549d8-268b-4dfe-adaf-a4ae5c8510d5')
         assert len(dataset.resources) == 1
         resources_data = copy.deepcopy(TestDataset.resources_data)
-        resource = Resource(configuration, resources_data[0])
+        resource = Resource(resources_data[0])
         resource.set_file_to_upload('lala')
         dataset.add_update_resource(resource)
         assert dataset.resources[1].get_file_to_upload() == 'lala'
@@ -580,7 +580,7 @@ class TestDataset():
     def test_add_update_delete_gallery(self, configuration, post_delete):
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
         gallery_data = copy.deepcopy(TestDataset.gallery_data)
-        dataset = Dataset(configuration, dataset_data)
+        dataset = Dataset(dataset_data)
         dataset.add_update_gallery(gallery_data)
         assert len(dataset.gallery) == 1
         dataset.delete_galleryitem('NOTEXIST')
@@ -588,24 +588,24 @@ class TestDataset():
         assert len(dataset.gallery) == 0
 
     def test_search_in_hdx(self, configuration, search):
-        datasets = Dataset.search_in_hdx(configuration, 'ACLED')
+        datasets = Dataset.search_in_hdx('ACLED')
         assert len(datasets) == 10
-        datasets = Dataset.search_in_hdx(configuration, 'ajyhgr')
+        datasets = Dataset.search_in_hdx('ajyhgr')
         assert len(datasets) == 0
         with pytest.raises(HDXError):
-            Dataset.search_in_hdx(configuration, '"')
+            Dataset.search_in_hdx('"')
 
     def test_get_all_datasets(self, configuration, search):
         datasets = Dataset.get_all_datasets(configuration)
         assert len(datasets) == 10
 
     def test_get_all_resources(self, configuration, search):
-        datasets = Dataset.search_in_hdx(configuration, 'ACLED')
+        datasets = Dataset.search_in_hdx('ACLED')
         resources = Dataset.get_all_resources(datasets)
         assert len(resources) == 3
 
     def test_get_set_dataset_date(self, configuration, read):
-        dataset = Dataset.read_from_hdx(configuration, 'TEST1')
+        dataset = Dataset.read_from_hdx('TEST1')
         assert dataset['dataset_date'] == '06/04/2016'
         assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2016, 6, 4, 0, 0)
         assert dataset.get_dataset_date() == '2016-06-04'
@@ -650,7 +650,7 @@ class TestDataset():
         assert Dataset.transform_update_frequency('LALA') is None
 
     def test_get_set_expected_update_frequency(self, configuration, read):
-        dataset = Dataset.read_from_hdx(configuration, 'TEST1')
+        dataset = Dataset.read_from_hdx('TEST1')
         assert dataset['data_update_frequency'] == '7'
         assert dataset.get_expected_update_frequency() == 'Every week'
         dataset.set_expected_update_frequency('every two weeks')
@@ -668,7 +668,7 @@ class TestDataset():
         assert dataset.get_expected_update_frequency() is None
 
     def test_get_add_tags(self, configuration, read):
-        dataset = Dataset.read_from_hdx(configuration, 'TEST1')
+        dataset = Dataset.read_from_hdx('TEST1')
         assert dataset['tags'] == resulttags
         assert dataset.get_tags() == ['conflict', 'political violence']
         dataset.add_tag('LALA')
@@ -690,7 +690,7 @@ class TestDataset():
         assert dataset.get_tags() == ['LALA']
 
     def test_get_add_location(self, configuration, read):
-        dataset = Dataset.read_from_hdx(configuration, 'TEST1')
+        dataset = Dataset.read_from_hdx('TEST1')
         assert dataset['groups'] == resultgroups
         assert dataset.get_location() == ['Algeria', 'Zimbabwe']
         dataset.add_country_location('sdn')

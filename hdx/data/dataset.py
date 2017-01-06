@@ -26,7 +26,6 @@ class Dataset(HDXObject):
     """Dataset class enabling operations on datasets and associated resources and gallery items.
 
     Args:
-        configuration (Configuration): HDX Configuration
         initial_data (Optional[dict]): Initial dataset metadata dictionary. Defaults to None.
         include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
     """
@@ -60,11 +59,11 @@ class Dataset(HDXObject):
         'yearly': '365'
     }
 
-    def __init__(self, configuration: Configuration, initial_data: Optional[dict] = None,
+    def __init__(self, initial_data: Optional[dict] = None,
                  include_gallery: Optional[bool] = True):
         if not initial_data:
             initial_data = dict()
-        super(Dataset, self).__init__(configuration, initial_data)
+        super(Dataset, self).__init__(initial_data)
         self.include_gallery = include_gallery
         self.init_resources()
         self.init_gallery()
@@ -135,7 +134,7 @@ class Dataset(HDXObject):
             None
         """
         if isinstance(resource, dict):
-            resource = Resource(self.configuration, resource)
+            resource = Resource(resource)
         if isinstance(resource, Resource):
             if 'package_id' in resource:
                 raise HDXError("Resource %s being added already has a dataset id!" % (resource['name']))
@@ -200,7 +199,7 @@ class Dataset(HDXObject):
 
         """
         if isinstance(galleryitem, dict):
-            galleryitem = GalleryItem(self.configuration, galleryitem)
+            galleryitem = GalleryItem(galleryitem)
         if isinstance(galleryitem, GalleryItem):
             if 'dataset_id' in galleryitem:
                 raise HDXError("Gallery item %s being added already has a dataset id!" % (galleryitem['name']))
@@ -272,18 +271,17 @@ class Dataset(HDXObject):
         self.separate_gallery()
 
     @staticmethod
-    def read_from_hdx(configuration: Configuration, identifier: str) -> Optional['Dataset']:
+    def read_from_hdx(identifier: str) -> Optional['Dataset']:
         """Reads the dataset given by identifier from HDX and returns Dataset object
 
         Args:
-            configuration (Configuration): HDX Configuration
             identifier (str): Identifier of dataset
 
         Returns:
             Optional[Dataset]: Dataset object if successful read, None if not
         """
 
-        dataset = Dataset(configuration)
+        dataset = Dataset()
         result = dataset._dataset_load_from_hdx(identifier)
         if result:
             return dataset
@@ -326,7 +324,7 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        for field in self.configuration['dataset']['required_fields']:
+        for field in Configuration.read()['dataset']['required_fields']:
             if field not in self.data:
                 raise HDXError("Field %s is missing in dataset!" % field)
 
@@ -388,7 +386,7 @@ class Dataset(HDXObject):
         if self.include_gallery and update_gallery and old_gallery:
             self.old_data['gallery'] = self._copy_hdxobjects(self.gallery, GalleryItem)
             galleryitem_titles = set()
-            galleryitem_dataset_id = self.configuration['galleryitem']['dataset_id']
+            galleryitem_dataset_id = Configuration.read()['galleryitem']['dataset_id']
             for i, galleryitem in enumerate(self.gallery):
                 galleryitem_title = galleryitem['title']
                 galleryitem_titles.add(galleryitem_title)
@@ -469,7 +467,7 @@ class Dataset(HDXObject):
 
         if self.include_gallery:
             self.old_data['gallery'] = self._copy_hdxobjects(self.gallery, GalleryItem)
-            galleryitem_dataset_id = self.configuration['galleryitem']['dataset_id']
+            galleryitem_dataset_id = Configuration.read()['galleryitem']['dataset_id']
             for i, galleryitem in enumerate(self.gallery):
                 galleryitem[galleryitem_dataset_id] = self.data['id']
                 galleryitem.check_required_fields()
@@ -484,12 +482,11 @@ class Dataset(HDXObject):
         self._delete_from_hdx('dataset', 'id')
 
     @staticmethod
-    def search_in_hdx(configuration: Configuration, query: str, include_gallery: Optional[bool] = True, **kwargs) -> \
+    def search_in_hdx(query: str, include_gallery: Optional[bool] = True, **kwargs) -> \
             List['Dataset']:
         """Searches for datasets in HDX
 
         Args:
-            configuration (Configuration): HDX Configuration
             query (str): Query (in Solr format). Defaults to '*:*'.
             include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
             **kwargs: See below
@@ -508,7 +505,7 @@ class Dataset(HDXObject):
         """
 
         all_datasets = list()
-        dataset = Dataset(configuration)
+        dataset = Dataset()
         total_rows = kwargs.get('rows', sys.maxsize)
         start = kwargs.get('start', 0)
         for page in range(total_rows // 1000 + 1):
@@ -524,7 +521,7 @@ class Dataset(HDXObject):
                 if count:
                     no_results = len(result['results'])
                     for datasetdict in result['results']:
-                        dataset = Dataset(configuration, include_gallery=include_gallery)
+                        dataset = Dataset(include_gallery=include_gallery)
                         dataset.old_data = dict()
                         dataset.data = datasetdict
                         dataset._dataset_create_resources_gallery()
@@ -539,12 +536,11 @@ class Dataset(HDXObject):
         return all_datasets
 
     @staticmethod
-    def get_all_datasets(configuration: Configuration, include_gallery: Optional[bool] = True, **kwargs) -> List[
+    def get_all_datasets(include_gallery: Optional[bool] = True, **kwargs) -> List[
         'Dataset']:
         """Get all datasets in HDX
 
         Args:
-            configuration (Configuration): HDX Configuration
             include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
             **kwargs: See below
             rows (int): Number of rows to return. Defaults to all datasets (sys.maxsize).
@@ -553,7 +549,7 @@ class Dataset(HDXObject):
         Returns:
             List[Dataset]: List of all datasets in HDX
         """
-        return Dataset.search_in_hdx(configuration, '', include_gallery, **kwargs)
+        return Dataset.search_in_hdx('', include_gallery, **kwargs)
 
     @staticmethod
     def get_all_resources(datasets: List['Dataset']) -> List['Resource']:

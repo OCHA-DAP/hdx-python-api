@@ -8,10 +8,10 @@ class TestResult:
 testresult = TestResult()
 
 
-def my_testfn(configuration: Configuration):
-    testresult.actual_result = configuration.get_hdx_site_url()
+def my_testfn():
+    testresult.actual_result = Configuration.read().get_hdx_site_url()
 
 
-def my_excfn(configuration: Configuration):
-    testresult.actual_result = configuration.get_hdx_site_url()
+def my_excfn():
+    testresult.actual_result = Configuration.read().get_hdx_site_url()
     raise ValueError('Some failure!')

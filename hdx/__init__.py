@@ -1,0 +1,2 @@
+configuration = None
+remoteckan = None

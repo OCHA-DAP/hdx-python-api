@@ -7,16 +7,13 @@ import abc
 import copy
 import logging
 from collections import UserDict
-from os.path import join
 from typing import Optional, List, Tuple, TypeVar, Union
 
-import ckanapi
 from ckanapi.errors import NotFound
 
 from hdx.configuration import Configuration
 from hdx.utilities.dictionary import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml_into_existing_dict, load_json_into_existing_dict
-from hdx.utilities.path import script_dir_plus_file
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +29,6 @@ class HDXObject(UserDict):
     New HDX objects should extend this in similar fashion to Resource for example.
 
     Args:
-        configuration (Configuration): HDX Configuration
         initial_data (dict): Initial metadata dictionary
     """
     __metaclass__ = abc.ABCMeta
@@ -47,15 +43,9 @@ class HDXObject(UserDict):
         """
         pass
 
-    def __init__(self, configuration: Configuration, initial_data: dict):
+    def __init__(self, initial_data: dict):
         super(HDXObject, self).__init__(initial_data)
-        self.configuration = configuration
         self.old_data = None
-        version_file = open(script_dir_plus_file(join('..', 'version.txt'), HDXObject))
-        version = version_file.read().strip()
-        self.hdxpostsite = ckanapi.RemoteCKAN(configuration.get_hdx_site_url(),
-                                              apikey=configuration.get_api_key(),
-                                              user_agent='HDXPythonLibrary/%s' % version)
 
     def get_old_data_dict(self) -> None:
         """Get previous internal dictionary
@@ -109,8 +99,9 @@ class HDXObject(UserDict):
         data = {fieldname: value}
         data.update(kwargs)
         try:
-            result = self.hdxpostsite.call_action(action, data,
-                                                  requests_kwargs={'auth': self.configuration._get_credentials()})
+            result = Configuration.remoteckan().call_action(action, data,
+                                                            requests_kwargs={
+                                                                'auth': Configuration.read()._get_credentials()})
             return True, result
         except NotFound:
             return False, "%s=%s: not found!" % (fieldname, value)
@@ -137,11 +128,10 @@ class HDXObject(UserDict):
 
     @staticmethod
     @abc.abstractmethod
-    def read_from_hdx(configuration: Configuration, id_field: str) -> Optional[HDXObjectUpperBound]:
+    def read_from_hdx(id_field: str) -> Optional[HDXObjectUpperBound]:
         """Abstract method to read the HDX object given by identifier from HDX and return it
 
         Args:
-            configuration (Configuration): HDX Configuration
             id_field (str): HDX object identifier
 
         Returns:
@@ -192,7 +182,7 @@ class HDXObject(UserDict):
         Returns:
             None
         """
-        for field in self.configuration['%s' % object_type]['required_fields']:
+        for field in Configuration.read()['%s' % object_type]['required_fields']:
             if field not in self.data and field not in ignore_fields:
                 raise HDXError("Field %s is missing in %s!" % (field, object_type))
 
@@ -208,7 +198,7 @@ class HDXObject(UserDict):
             None
         """
         merge_two_dictionaries(self.data, self.old_data)
-        ignore_dataset_id = self.configuration['%s' % object_type].get('ignore_dataset_id_on_update', False)
+        ignore_dataset_id = Configuration.read()['%s' % object_type].get('ignore_dataset_id_on_update', False)
         self.check_required_fields(ignore_dataset_id=ignore_dataset_id)
         self._save_to_hdx('update', id_field_name, file_to_upload)
 
@@ -255,8 +245,9 @@ class HDXObject(UserDict):
                 files = [('upload', file)]
             else:
                 files = None
-            return self.hdxpostsite.call_action(self.actions()[action], data, files=files,
-                                                requests_kwargs={'auth': self.configuration._get_credentials()})
+            return Configuration.remoteckan().call_action(self.actions()[action], data, files=files,
+                                                          requests_kwargs={
+                                                              'auth': Configuration.read()._get_credentials()})
         except Exception as e:
             raise HDXError('Failed when trying to %s %s! (POST)' % (action, self.data[id_field_name])) from e
         finally:
@@ -381,7 +372,7 @@ class HDXObject(UserDict):
         newhdxobjects = list()
         for hdxobject in hdxobjects:
             newhdxobjectdata = copy.deepcopy(hdxobject.data)
-            newhdxobject = hdxobjectclass(self.configuration, newhdxobjectdata)
+            newhdxobject = hdxobjectclass(newhdxobjectdata)
             if attribute_to_copy:
                 value = getattr(hdxobject, attribute_to_copy)
                 setattr(newhdxobject, attribute_to_copy, value)
@@ -416,5 +407,5 @@ class HDXObject(UserDict):
                         break
             for new_hdxobject in new_hdxobjects:
                 if not new_hdxobject[id_field] in hdxobject_names:
-                    hdxobjects.append(hdxobjectclass(self.configuration, new_hdxobject))
+                    hdxobjects.append(hdxobjectclass(new_hdxobject))
             del self.data[hdxobjects_name]
