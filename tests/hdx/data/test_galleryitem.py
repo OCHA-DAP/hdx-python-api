@@ -163,23 +163,23 @@ class TestGalleryItem():
 
         monkeypatch.setattr(requests, 'Session', MockSession)
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope='function')
     def configuration(self):
         hdx_key_file = join('fixtures', '.hdxkey')
         project_config_yaml = join('fixtures', 'config', 'project_configuration.yml')
-        return Configuration(hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
+        Configuration.create(hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
 
     def test_read_from_hdx(self, configuration, read):
-        galleryitem = GalleryItem.read_from_hdx(configuration, 'TEST1')
+        galleryitem = GalleryItem.read_from_hdx('TEST1')
         assert galleryitem['id'] == '2f90d964-f980-4513-ad1b-5df6b2d044ff'
         assert galleryitem['title'] == 'MyGalleryItem1'
-        galleryitem = GalleryItem.read_from_hdx(configuration, 'TEST2')
+        galleryitem = GalleryItem.read_from_hdx('TEST2')
         assert galleryitem is None
-        galleryitem = GalleryItem.read_from_hdx(configuration, 'TEST3')
+        galleryitem = GalleryItem.read_from_hdx('TEST3')
         assert galleryitem is None
 
     def test_create_in_hdx(self, configuration, post_create):
-        galleryitem = GalleryItem(configuration)
+        galleryitem = GalleryItem()
         with pytest.raises(HDXError):
             galleryitem.create_in_hdx()
         galleryitem['id'] = 'TEST1'
@@ -188,22 +188,22 @@ class TestGalleryItem():
             galleryitem.create_in_hdx()
 
         galleryitem_data = copy.deepcopy(TestGalleryItem.galleryitem_data)
-        galleryitem = GalleryItem(configuration, galleryitem_data)
+        galleryitem = GalleryItem(galleryitem_data)
         galleryitem.create_in_hdx()
         assert galleryitem['id'] == '2f90d964-f980-4513-ad1b-5df6b2d044ff'
 
         galleryitem_data['title'] = 'MyGalleryItem2'
-        galleryitem = GalleryItem(configuration, galleryitem_data)
+        galleryitem = GalleryItem(galleryitem_data)
         with pytest.raises(HDXError):
             galleryitem.create_in_hdx()
 
         galleryitem_data['title'] = 'MyGalleryItem3'
-        galleryitem = GalleryItem(configuration, galleryitem_data)
+        galleryitem = GalleryItem(galleryitem_data)
         with pytest.raises(HDXError):
             galleryitem.create_in_hdx()
 
     def test_update_in_hdx(self, configuration, post_update):
-        galleryitem = GalleryItem(configuration)
+        galleryitem = GalleryItem()
         galleryitem['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):
             galleryitem.update_in_hdx()
@@ -211,7 +211,7 @@ class TestGalleryItem():
         with pytest.raises(HDXError):
             galleryitem.update_in_hdx()
 
-        galleryitem = GalleryItem.read_from_hdx(configuration, 'TEST1')
+        galleryitem = GalleryItem.read_from_hdx('TEST1')
         assert galleryitem['id'] == '2f90d964-f980-4513-ad1b-5df6b2d044ff'
         assert galleryitem['type'] == 'visualization'
 
@@ -233,13 +233,13 @@ class TestGalleryItem():
         galleryitem_data = copy.deepcopy(TestGalleryItem.galleryitem_data)
         galleryitem_data['title'] = 'MyGalleryItem1'
         galleryitem_data['id'] = 'TEST1'
-        galleryitem = GalleryItem(configuration, galleryitem_data)
+        galleryitem = GalleryItem(galleryitem_data)
         galleryitem.create_in_hdx()
         assert galleryitem['id'] == 'TEST1'
         assert galleryitem['type'] == 'visualization'
 
     def test_delete_from_hdx(self, configuration, post_delete):
-        galleryitem = GalleryItem.read_from_hdx(configuration, 'TEST1')
+        galleryitem = GalleryItem.read_from_hdx('TEST1')
         galleryitem.delete_from_hdx()
         del galleryitem['id']
         with pytest.raises(HDXError):
@@ -247,7 +247,7 @@ class TestGalleryItem():
 
     def test_update_yaml(self, configuration, static_yaml):
         galleryitem_data = copy.deepcopy(TestGalleryItem.galleryitem_data)
-        galleryitem = GalleryItem(configuration, galleryitem_data)
+        galleryitem = GalleryItem(galleryitem_data)
         assert galleryitem['title'] == 'MyGalleryItem1'
         assert galleryitem['type'] == 'visualization'
         galleryitem.update_from_yaml(static_yaml)
@@ -256,7 +256,7 @@ class TestGalleryItem():
 
     def test_update_json(self, configuration, static_json):
         galleryitem_data = copy.deepcopy(TestGalleryItem.galleryitem_data)
-        galleryitem = GalleryItem(configuration, galleryitem_data)
+        galleryitem = GalleryItem(galleryitem_data)
         assert galleryitem['title'] == 'MyGalleryItem1'
         assert galleryitem['type'] == 'visualization'
         galleryitem.update_from_json(static_json)

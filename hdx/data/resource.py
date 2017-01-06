@@ -20,13 +20,13 @@ class Resource(HDXObject):
     """Resource class containing all logic for creating, checking, and updating resources.
 
     Args:
-        configuration (Configuration): HDX Configuration
         initial_data (Optional[dict]): Initial resource metadata dictionary. Defaults to None.
     """
-    def __init__(self, configuration: Configuration, initial_data: Optional[dict] = None):
+
+    def __init__(self, initial_data: Optional[dict] = None):
         if not initial_data:
             initial_data = dict()
-        super(Resource, self).__init__(configuration, initial_data)
+        super(Resource, self).__init__(initial_data)
         self.file_to_upload = None
 
     @staticmethod
@@ -71,18 +71,17 @@ class Resource(HDXObject):
         super(Resource, self).update_from_json(path)
 
     @staticmethod
-    def read_from_hdx(configuration: Configuration, identifier: str) -> Optional['Resource']:
+    def read_from_hdx(identifier: str) -> Optional['Resource']:
         """Reads the resource given by identifier from HDX and returns Resource object
 
         Args:
-            configuration (Configuration): HDX Configuration
             identifier (str): Identifier of resource
 
         Returns:
             Optional[Resource]: Resource object if successful read, None if not
         """
 
-        resource = Resource(configuration)
+        resource = Resource()
         result = resource._load_from_hdx('resource', identifier)
         if result:
             return resource
@@ -137,7 +136,7 @@ class Resource(HDXObject):
             if 'tracking_summary' in self.data:
                 del self.data['tracking_summary']
         if ignore_dataset_id:
-            ignore_fields = [self.configuration['resource']['dataset_id']]
+            ignore_fields = [Configuration.read()['resource']['dataset_id']]
         else:
             ignore_fields = list()
 
@@ -168,11 +167,10 @@ class Resource(HDXObject):
         self._delete_from_hdx('resource', 'id')
 
     @staticmethod
-    def search_in_hdx(configuration: Configuration, query: str, **kwargs) -> List['Resource']:
+    def search_in_hdx(query: str, **kwargs) -> List['Resource']:
         """Searches for resources in HDX. NOTE: Does not search dataset metadata!
 
         Args:
-            configuration (Configuration): HDX Configuration
             query (str): Query
             **kwargs: See below
             order_by (str): A field on the Resource model that orders the results
@@ -183,13 +181,13 @@ class Resource(HDXObject):
         """
 
         resources = []
-        resource = Resource(configuration)
+        resource = Resource()
         success, result = resource._read_from_hdx('resource', query, 'query', Resource.actions()['search'])
         if result:
             count = result.get('count', None)
             if count:
                 for resourcedict in result['results']:
-                    resource = Resource(configuration, resourcedict)
+                    resource = Resource(resourcedict)
                     resources.append(resource)
         else:
             logger.debug(result)

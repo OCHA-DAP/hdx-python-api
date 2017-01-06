@@ -321,24 +321,24 @@ class TestResource():
 
         monkeypatch.setattr(requests, 'Session', MockSession)
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope='function')
     def configuration(self):
         hdx_key_file = join('fixtures', '.hdxkey')
         project_config_yaml = join('fixtures', 'config', 'project_configuration.yml')
-        return Configuration(hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
+        Configuration.create(hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
 
     def test_read_from_hdx(self, configuration, read):
-        resource = Resource.read_from_hdx(configuration, 'TEST1')
+        resource = Resource.read_from_hdx('TEST1')
         assert resource['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
         assert resource['name'] == 'MyResource1'
         assert resource['package_id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
-        resource = Resource.read_from_hdx(configuration, 'TEST2')
+        resource = Resource.read_from_hdx('TEST2')
         assert resource is None
-        resource = Resource.read_from_hdx(configuration, 'TEST3')
+        resource = Resource.read_from_hdx('TEST3')
         assert resource is None
 
     def test_create_in_hdx(self, configuration, post_create):
-        resource = Resource(configuration)
+        resource = Resource()
         with pytest.raises(HDXError):
             resource.create_in_hdx()
         resource['id'] = 'TEST1'
@@ -347,7 +347,7 @@ class TestResource():
             resource.create_in_hdx()
 
         resource_data = copy.deepcopy(TestResource.resource_data)
-        resource = Resource(configuration, resource_data)
+        resource = Resource(resource_data)
         resource.create_in_hdx()
         assert resource['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
         assert resource['url_type'] == 'api'
@@ -356,7 +356,7 @@ class TestResource():
                    'url'] == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
 
         resource_data = copy.deepcopy(TestResource.resource_data)
-        resource = Resource(configuration, resource_data)
+        resource = Resource(resource_data)
         resource.set_file_to_upload('fixtures/test_data.csv')
         assert resource.get_file_to_upload() == 'fixtures/test_data.csv'
         resource.create_in_hdx()
@@ -366,17 +366,17 @@ class TestResource():
                    'url'] == 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv'
 
         resource_data['name'] = 'MyResource2'
-        resource = Resource(configuration, resource_data)
+        resource = Resource(resource_data)
         with pytest.raises(HDXError):
             resource.create_in_hdx()
 
         resource_data['name'] = 'MyResource3'
-        resource = Resource(configuration, resource_data)
+        resource = Resource(resource_data)
         with pytest.raises(HDXError):
             resource.create_in_hdx()
 
     def test_update_in_hdx(self, configuration, post_update):
-        resource = Resource(configuration)
+        resource = Resource()
         resource['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):
             resource.update_in_hdx()
@@ -384,7 +384,7 @@ class TestResource():
         with pytest.raises(HDXError):
             resource.update_in_hdx()
 
-        resource = Resource.read_from_hdx(configuration, 'TEST1')
+        resource = Resource.read_from_hdx('TEST1')
         assert resource['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
         assert resource['format'] == 'XLSX'
 
@@ -417,13 +417,13 @@ class TestResource():
         resource_data = copy.deepcopy(TestResource.resource_data)
         resource_data['name'] = 'MyResource1'
         resource_data['id'] = 'TEST1'
-        resource = Resource(configuration, resource_data)
+        resource = Resource(resource_data)
         resource.create_in_hdx()
         assert resource['id'] == 'TEST1'
         assert resource['format'] == 'xlsx'
 
     def test_delete_from_hdx(self, configuration, post_delete):
-        resource = Resource.read_from_hdx(configuration, 'TEST1')
+        resource = Resource.read_from_hdx('TEST1')
         resource.delete_from_hdx()
         del resource['id']
         with pytest.raises(HDXError):
@@ -431,7 +431,7 @@ class TestResource():
 
     def test_update_yaml(self, configuration, static_yaml):
         resource_data = copy.deepcopy(TestResource.resource_data)
-        resource = Resource(configuration, resource_data)
+        resource = Resource(resource_data)
         assert resource['name'] == 'MyResource1'
         assert resource['format'] == 'xlsx'
         resource.update_from_yaml(static_yaml)
@@ -440,7 +440,7 @@ class TestResource():
 
     def test_update_json(self, configuration, static_json):
         resource_data = copy.deepcopy(TestResource.resource_data)
-        resource = Resource(configuration, resource_data)
+        resource = Resource(resource_data)
         assert resource['name'] == 'MyResource1'
         assert resource['format'] == 'xlsx'
         resource.update_from_json(static_json)
@@ -448,16 +448,16 @@ class TestResource():
         assert resource['format'] == 'zipped csv'
 
     def test_search_in_hdx(self, configuration, search):
-        resources = Resource.search_in_hdx(configuration, 'name:ACLED')
+        resources = Resource.search_in_hdx('name:ACLED')
         assert len(resources) == 4
-        resources = Resource.search_in_hdx(configuration, 'name:ajyhgr')
+        resources = Resource.search_in_hdx('name:ajyhgr')
         assert len(resources) == 0
         with pytest.raises(HDXError):
-            Resource.search_in_hdx(configuration, 'fail')
+            Resource.search_in_hdx('fail')
 
     def test_download(self, configuration, read, monkeypatch):
-        resource = Resource.read_from_hdx(configuration, 'TEST1')
-        resource2 = Resource.read_from_hdx(configuration, 'TEST4')
+        resource = Resource.read_from_hdx('TEST1')
+        resource2 = Resource.read_from_hdx('TEST4')
         monkeypatch.undo()
         url, path = resource.download()
         unlink(path)
@@ -469,8 +469,8 @@ class TestResource():
             resource2.download()
 
     def test_datastore(self, configuration, post_datastore, topline_yaml, topline_json, monkeypatch):
-        resource = Resource.read_from_hdx(configuration, 'TEST1')
-        resource2 = Resource.read_from_hdx(configuration, 'TEST5')
+        resource = Resource.read_from_hdx('TEST1')
+        resource2 = Resource.read_from_hdx('TEST5')
         monkeypatch.undo()
         resource.create_datastore(delete_first=0)
         resource.create_datastore(delete_first=1)

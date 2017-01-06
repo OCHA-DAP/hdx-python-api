@@ -4,9 +4,23 @@
     <option name="CUSTOM_SCOPE_NAME" value="Project and Libraries" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78dced69-aba6-482d-97c8-9f71833379e5" name="Default" comment="Version 0.70 - Yet another fix">
+    <list default="true" id="78dced69-aba6-482d-97c8-9f71833379e5" name="Default" comment="Version 0.70 - Make configuration and ckan object module level">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hdx/__init__.py" afterPath="$PROJECT_DIR$/hdx/__init__.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hdx/configuration.py" afterPath="$PROJECT_DIR$/hdx/configuration.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hdx/data/dataset.py" afterPath="$PROJECT_DIR$/hdx/data/dataset.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hdx/data/galleryitem.py" afterPath="$PROJECT_DIR$/hdx/data/galleryitem.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hdx/data/hdxobject.py" afterPath="$PROJECT_DIR$/hdx/data/hdxobject.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hdx/data/resource.py" afterPath="$PROJECT_DIR$/hdx/data/resource.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hdx/facades/scraperwiki.py" afterPath="$PROJECT_DIR$/hdx/facades/scraperwiki.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hdx/facades/simple.py" afterPath="$PROJECT_DIR$/hdx/facades/simple.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hdx/version.txt" afterPath="$PROJECT_DIR$/hdx/version.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/hdx/data/test_dataset.py" afterPath="$PROJECT_DIR$/tests/hdx/data/test_dataset.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/hdx/data/test_galleryitem.py" afterPath="$PROJECT_DIR$/tests/hdx/data/test_galleryitem.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/hdx/data/test_resource.py" afterPath="$PROJECT_DIR$/tests/hdx/data/test_resource.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/hdx/facades/__init__.py" afterPath="$PROJECT_DIR$/tests/hdx/facades/__init__.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/hdx/test_configuration.py" afterPath="$PROJECT_DIR$/tests/hdx/test_configuration.py" />
     </list>
     <ignored path="hdx-python-api.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -21,16 +35,16 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/hdx-python-api$py_test_in_test_loader_py.coverage" NAME="py.test in test_loader.py Coverage Results" MODIFIED="1478596651650" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/hdx-python-api$py_test_in_TestResource_and_test_search_in_hdx.coverage" NAME="py.test in TestResource and test_search_in_hdx Coverage Results" MODIFIED="1476080312164" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/hdx-python-api$Generate_Documentation.coverage" NAME="Generate Documentation Coverage Results" MODIFIED="1483514782236" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/documentation" />
+    <SUITE FILE_PATH="coverage/hdx-python-api$Generate_Documentation.coverage" NAME="Generate Documentation Coverage Results" MODIFIED="1483540727361" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/documentation" />
     <SUITE FILE_PATH="coverage/hdx-python-api$py_test_in_test_logging_py.coverage" NAME="py.test in test_logging.py Coverage Results" MODIFIED="1467379999387" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/hdx-python-api$py_test_in_test_configuration_py.coverage" NAME="py.test in test_configuration.py Coverage Results" MODIFIED="1470050996687" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/hdx-python-api$py_test_in_test_galleryitem_py.coverage" NAME="py.test in test_galleryitem.py Coverage Results" MODIFIED="1483435798156" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/hdx-python-api$py_test_in_test_galleryitem_py.coverage" NAME="py.test in test_galleryitem.py Coverage Results" MODIFIED="1483704846027" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/hdx-python-api$py_test_in_test_dataset_py.coverage" NAME="py.test in test_dataset.py Coverage Results" MODIFIED="1483526733056" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/hdx-python-api$py_test_in_TestResource_and_test_datastore.coverage" NAME="py.test in TestResource and test_datastore Coverage Results" MODIFIED="1476341972650" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/hdx-python-api$py_test_in_test_resource_py__1_.coverage" NAME="py.test in test_resource.py (1) Coverage Results" MODIFIED="1473937381813" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/hdx-python-api$py_test_in_test_location_py.coverage" NAME="py.test in test_location.py Coverage Results" MODIFIED="1478867853612" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/hdx-python-api$py_test_in_test_dictionary_py.coverage" NAME="py.test in test_dictionary.py Coverage Results" MODIFIED="1466061591836" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/hdx-python-api$All_Tests.coverage" NAME="All Tests Coverage Results" MODIFIED="1483540487735" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/hdx-python-api$All_Tests.coverage" NAME="All Tests Coverage Results" MODIFIED="1483704943544" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/hdx-python-api$py_test_in_test_simple_py.coverage" NAME="py.test in test_simple.py Coverage Results" MODIFIED="1466429076178" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/hdx-python-api$py_test_in_test_downloader_py.coverage" NAME="py.test in test_downloader.py Coverage Results" MODIFIED="1479726680108" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/hdx-python-api$py_test_in_test_resource_py.coverage" NAME="py.test in test_resource.py Coverage Results" MODIFIED="1483435943874" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
@@ -48,21 +62,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="resource.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/hdx/data/resource.py">
+      <file leaf-file-name="test_galleryitem.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/hdx/data/test_galleryitem.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="335">
-              <caret line="151" column="22" lean-forward="false" selection-start-line="151" selection-start-column="22" selection-end-line="151" selection-end-column="22" />
+            <state relative-caret-position="416">
+              <caret line="165" column="35" lean-forward="false" selection-start-line="165" selection-start-column="35" selection-end-line="165" selection-end-column="35" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="requirements.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/requirements.txt">
+      <file leaf-file-name="test_dataset.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/hdx/data/test_dataset.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="90" lean-forward="false" selection-start-line="0" selection-start-column="90" selection-end-line="0" selection-end-column="90" />
+            <state relative-caret-position="450">
+              <caret line="370" column="35" lean-forward="false" selection-start-line="370" selection-start-column="35" selection-end-line="370" selection-end-column="35" />
               <folding />
             </state>
           </provider>
@@ -71,28 +85,28 @@
       <file leaf-file-name="setup.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/setup.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="756">
+            <state relative-caret-position="679">
               <caret line="46" column="101" lean-forward="false" selection-start-line="46" selection-start-column="101" selection-end-line="46" selection-end-column="101" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test_dataset.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/tests/hdx/data/test_dataset.py">
+      <file leaf-file-name="test_resource.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/hdx/data/test_resource.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="569">
-              <caret line="510" column="40" lean-forward="false" selection-start-line="510" selection-start-column="40" selection-end-line="510" selection-end-column="40" />
+            <state relative-caret-position="504">
+              <caret line="323" column="35" lean-forward="false" selection-start-line="323" selection-start-column="35" selection-end-line="323" selection-end-column="35" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="downloader.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/hdx/utilities/downloader.py">
+      <file leaf-file-name="test_scraperwiki.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/hdx/facades/test_scraperwiki.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="108">
-              <caret line="6" column="1" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="21" />
+            <state relative-caret-position="396">
+              <caret line="26" column="4" lean-forward="false" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="4" />
               <folding />
             </state>
           </provider>
@@ -101,72 +115,49 @@
       <file leaf-file-name="dataset.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/hdx/data/dataset.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="538">
-              <caret line="466" column="0" lean-forward="false" selection-start-line="466" selection-start-column="0" selection-end-line="466" selection-end-column="0" />
+            <state relative-caret-position="265">
+              <caret line="326" column="23" lean-forward="false" selection-start-line="326" selection-start-column="23" selection-end-line="326" selection-end-column="23" />
               <folding>
-                <marker date="1483538428445" expanded="true" signature="660:2195" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="1850:1878" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="1897:1935" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="2233:2235" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="2662:2673" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="3295:3297" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="3789:3791" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="4000:4004" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="4861:4871" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="5360:5364" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="5808:5810" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="6003:6005" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="6180:6182" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="6985:6995" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="7485:7489" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="7953:7955" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="8162:8219" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="8626:8684" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="9110:9136" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="9705:9707" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="10442:10446" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="11525:11546" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="15239:15277" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="16243:16245" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="18308:18310" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="18505:18526" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="21286:21317" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="22052:22068" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="22562:22564" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="23018:23039" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="23736:23754" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="24066:24083" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="25069:25073" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="25541:25543" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="26024:26028" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="26537:26539" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="26844:26848" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="27245:27255" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="27490:27492" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="27869:27873" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="28658:28668" ph="..." />
-                <marker date="1483538428445" expanded="true" signature="29139:29143" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="660:2093" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="1779:1791" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="1810:1848" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="2131:2133" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="2560:2571" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="3193:3195" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="3687:3689" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="3898:3902" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="4739:4749" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="5238:5242" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="5686:5688" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="5881:5883" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="6058:6060" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="6843:6853" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="7343:7347" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="7811:7813" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="8020:8077" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="8484:8542" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="8954:8964" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="9459:9461" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="10196:10200" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="18068:18070" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="18251:18256" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="20913:20928" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="21587:21603" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="22097:22099" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="22553:22574" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="23271:23289" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="23601:23618" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="24604:24608" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="25076:25078" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="25559:25563" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="26072:26074" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="26379:26383" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="26780:26790" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="27025:27027" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="27404:27408" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="28193:28203" ph="..." />
+                <marker date="1483705758771" expanded="true" signature="28674:28678" ph="..." />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="hdxobject.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/hdx/data/hdxobject.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="258" column="0" lean-forward="false" selection-start-line="258" selection-start-column="0" selection-end-line="258" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="remoteckan.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../VirtualEnvs/hdx-python-api/lib/python3.5/site-packages/ckanapi/remoteckan.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="84" column="0" lean-forward="false" selection-start-line="84" selection-start-column="0" selection-end-line="84" selection-end-column="0" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -175,8 +166,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="918">
-                <caret line="51" column="94" lean-forward="false" selection-start-line="51" selection-start-column="94" selection-end-line="51" selection-end-column="94" />
+              <first_editor relative-caret-position="198">
+                <caret line="11" column="28" lean-forward="false" selection-start-line="11" selection-start-column="15" selection-end-line="11" selection-end-column="28" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -184,11 +175,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test_resource.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/hdx/data/test_resource.py">
+      <file leaf-file-name="version.txt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/hdx/version.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="324">
-              <caret line="188" column="0" lean-forward="false" selection-start-line="184" selection-start-column="0" selection-end-line="188" selection-end-column="0" />
+            <state relative-caret-position="0">
+              <caret line="0" column="3" lean-forward="false" selection-start-line="0" selection-start-column="3" selection-end-line="0" selection-end-column="3" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="configuration.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/hdx/configuration.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="198">
+              <caret line="160" column="12" lean-forward="false" selection-start-line="160" selection-start-column="12" selection-end-line="160" selection-end-column="12" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/hdx/facades/__init__.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="198">
+              <caret line="11" column="51" lean-forward="false" selection-start-line="11" selection-start-column="51" selection-end-line="11" selection-end-column="51" />
               <folding />
             </state>
           </provider>
@@ -206,17 +217,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>ignore</find>
-      <find>gallery_da</find>
-      <find>6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d</find>
-      <find>TEST1</find>
-      <find>deepcop</find>
-      <find>_dataset_c</find>
-      <find>check_required_fields</find>
-      <find>gallery_data</find>
-      <find>init_ga</find>
-      <find>check_r</find>
-      <find>chec</find>
       <find>create</find>
       <find>gallery</find>
       <find>GalleryItem</find>
@@ -225,7 +225,6 @@
       <find>add_res</find>
       <find>add_upd</find>
       <find>update_datast</find>
-      <find>read_fro</find>
       <find>_underlying_object</find>
       <find>resources_data</find>
       <find>update_in</find>
@@ -234,8 +233,20 @@
       <find>copy</find>
       <find>file_to</find>
       <find>del</find>
-      <find>del</find>
       <find>Resource</find>
+      <find>create_data</find>
+      <find>read_fro</find>
+      <find>configurati</find>
+      <find>search_in_hdx(configuration,</find>
+      <find>read_from_hdx(configuration,</find>
+      <find>GalleryItem(configuration,</find>
+      <find>Resource(configuration,</find>
+      <find>Dataset(configuration)</find>
+      <find>Resource(configuration)</find>
+      <find>self.configuration</find>
+      <find>GalleryItem(configuration)</find>
+      <find>undo</find>
+      <find>configuration</find>
     </findStrings>
     <replaceStrings>
       <replace>requests.sessions.Session, '</replace>
@@ -250,6 +261,14 @@
       <replace>Resource</replace>
       <replace>resource</replace>
       <replace>resource['name']</replace>
+      <replace>search_in_hdx(</replace>
+      <replace>read_from_hdx(</replace>
+      <replace>GalleryItem(</replace>
+      <replace>Resource(</replace>
+      <replace>Dataset()</replace>
+      <replace>Configuration.get()</replace>
+      <replace>GalleryItem()</replace>
+      <replace>Resource()</replace>
     </replaceStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$</dir>
@@ -264,9 +283,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/hdx/logging_configuration.yml" />
-        <option value="$PROJECT_DIR$/tests/fixtures/config/logging_config.yml" />
-        <option value="$PROJECT_DIR$/tests/hdx/test_logging.py" />
         <option value="$PROJECT_DIR$/tests/fixtures/config/hdx_config.yml" />
         <option value="$PROJECT_DIR$/tests/fixtures/config/hdx_config.json" />
         <option value="$PROJECT_DIR$/tests/fixtures/config/project_configuration.yml" />
@@ -292,29 +308,32 @@
         <option value="$PROJECT_DIR$/hdx/utilities/__init__.py" />
         <option value="$PROJECT_DIR$/hdx/utilities/continent.py" />
         <option value="$PROJECT_DIR$/hdx/utilities/country.py" />
-        <option value="$PROJECT_DIR$/hdx/facades/simple.py" />
-        <option value="$PROJECT_DIR$/hdx/facades/scraperwiki.py" />
         <option value="$PROJECT_DIR$/hdx/utilities/loader.py" />
         <option value="$PROJECT_DIR$/hdx/logging.py" />
         <option value="$PROJECT_DIR$/hdx/utilities/geolocation.py" />
         <option value="$PROJECT_DIR$/tests/hdx/utilities/test_location.py" />
         <option value="$PROJECT_DIR$/hdx/utilities/location.py" />
         <option value="$PROJECT_DIR$/tests/hdx/utilities/test_downloader.py" />
-        <option value="$PROJECT_DIR$/hdx/configuration.py" />
-        <option value="$PROJECT_DIR$/tests/hdx/data/test_galleryitem.py" />
         <option value="$PROJECT_DIR$/hdx/utilities/downloader.py" />
-        <option value="$PROJECT_DIR$/hdx/data/galleryitem.py" />
         <option value="$PROJECT_DIR$/hdx/hdx_configuration.yml" />
-        <option value="$PROJECT_DIR$/tests/hdx/test_configuration.py" />
-        <option value="$PROJECT_DIR$/hdx/version.txt" />
-        <option value="$PROJECT_DIR$/tests/hdx/data/test_resource.py" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/setup.py" />
         <option value="$PROJECT_DIR$/requirements.txt" />
-        <option value="$PROJECT_DIR$/hdx/data/hdxobject.py" />
-        <option value="$PROJECT_DIR$/hdx/data/resource.py" />
+        <option value="$PROJECT_DIR$/hdx/data/__init__.py" />
+        <option value="$PROJECT_DIR$/hdx/__init__.py" />
+        <option value="$PROJECT_DIR$/hdx/facades/scraperwiki.py" />
+        <option value="$PROJECT_DIR$/hdx/facades/simple.py" />
+        <option value="$PROJECT_DIR$/hdx/data/galleryitem.py" />
         <option value="$PROJECT_DIR$/hdx/data/dataset.py" />
+        <option value="$PROJECT_DIR$/hdx/data/resource.py" />
+        <option value="$PROJECT_DIR$/hdx/data/hdxobject.py" />
+        <option value="$PROJECT_DIR$/tests/hdx/facades/__init__.py" />
+        <option value="$PROJECT_DIR$/tests/hdx/data/test_galleryitem.py" />
         <option value="$PROJECT_DIR$/tests/hdx/data/test_dataset.py" />
+        <option value="$PROJECT_DIR$/tests/hdx/data/test_resource.py" />
+        <option value="$PROJECT_DIR$/tests/hdx/test_configuration.py" />
+        <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/hdx/configuration.py" />
+        <option value="$PROJECT_DIR$/hdx/version.txt" />
       </list>
     </option>
   </component>
@@ -325,6 +344,7 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
+    <option name="y" value="-1" />
     <option name="width" value="2560" />
     <option name="height" value="1413" />
   </component>
@@ -346,7 +366,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -388,6 +408,28 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="hdx" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hdx-python-api" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hdx-python-api" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tests" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hdx" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="facades" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -523,7 +565,7 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -1083,13 +1125,6 @@
       <option name="presentableId" value="Default" />
       <updated>1464695506411</updated>
     </task>
-    <task id="LOCAL-00171" summary="Update README">
-      <created>1479208161443</created>
-      <option name="number" value="00171" />
-      <option name="presentableId" value="LOCAL-00171" />
-      <option name="project" value="LOCAL" />
-      <updated>1479208161443</updated>
-    </task>
     <task id="LOCAL-00172" summary="Add read only option to configuration">
       <created>1480595248793</created>
       <option name="number" value="00172" />
@@ -1426,67 +1461,74 @@
       <option name="project" value="LOCAL" />
       <updated>1483538430182</updated>
     </task>
-    <option name="localTasksCounter" value="220" />
+    <task id="LOCAL-00220" summary="Version 0.70 - Increase coverage">
+      <created>1483540512157</created>
+      <option name="number" value="00220" />
+      <option name="presentableId" value="LOCAL-00220" />
+      <option name="project" value="LOCAL" />
+      <updated>1483540512157</updated>
+    </task>
+    <option name="localTasksCounter" value="221" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="All_Tests - 2017.01.04 at 14h 39m 00s.xml">
+    <history-entry file="All_Tests - 2017.01.06 at 13h 14m 52s.xml">
       <configuration name="All Tests" configurationId="tests" />
     </history-entry>
-    <history-entry file="All_Tests - 2017.01.04 at 15h 02m 23s.xml">
+    <history-entry file="All_Tests - 2017.01.06 at 13h 15m 47s.xml">
       <configuration name="All Tests" configurationId="tests" />
     </history-entry>
-    <history-entry file="All_Tests - 2017.01.04 at 15h 21m 31s.xml">
-      <configuration name="All Tests" configurationId="tests" />
+    <history-entry file="py_test_in_test_galleryitem_py - 2017.01.06 at 11h 17m 23s.xml">
+      <configuration name="py.test in test_galleryitem.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="All_Tests - 2017.01.04 at 15h 28m 57s.xml">
-      <configuration name="All Tests" configurationId="tests" />
+    <history-entry file="py_test_in_test_galleryitem_py - 2017.01.06 at 13h 09m 20s.xml">
+      <configuration name="py.test in test_galleryitem.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="All_Tests - 2017.01.04 at 15h 31m 34s.xml">
-      <configuration name="All Tests" configurationId="tests" />
+    <history-entry file="py_test_in_test_galleryitem_py - 2017.01.06 at 13h 11m 05s.xml">
+      <configuration name="py.test in test_galleryitem.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="All_Tests - 2017.01.04 at 15h 33m 56s.xml">
-      <configuration name="All Tests" configurationId="tests" />
+    <history-entry file="py_test_in_test_galleryitem_py - 2017.01.06 at 13h 11m 35s.xml">
+      <configuration name="py.test in test_galleryitem.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="All_Tests - 2017.01.04 at 15h 34m 27s.xml">
-      <configuration name="All Tests" configurationId="tests" />
+    <history-entry file="py_test_in_test_galleryitem_py - 2017.01.06 at 13h 12m 33s.xml">
+      <configuration name="py.test in test_galleryitem.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="All_Tests - 2017.01.04 at 15h 34m 51s.xml">
-      <configuration name="All Tests" configurationId="tests" />
+    <history-entry file="py_test_in_test_galleryitem_py - 2017.01.06 at 13h 12m 40s.xml">
+      <configuration name="py.test in test_galleryitem.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_dataset_py - 2017.01.04 at 11h 29m 15s.xml">
-      <configuration name="py.test in test_dataset.py" configurationId="tests" />
+    <history-entry file="py_test_in_test_galleryitem_py - 2017.01.06 at 13h 13m 39s.xml">
+      <configuration name="py.test in test_galleryitem.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_dataset_py - 2017.01.04 at 11h 45m 33s.xml">
-      <configuration name="py.test in test_dataset.py" configurationId="tests" />
+    <history-entry file="py_test_in_test_galleryitem_py - 2017.01.06 at 13h 14m 06s.xml">
+      <configuration name="py.test in test_galleryitem.py" configurationId="tests" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="2560" height="1413" extended-state="0" />
+    <frame x="0" y="-1" width="2560" height="1413" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3272293" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.41503525" sideWeight="0.6313694" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32654658" sideWeight="0.49203822" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3257635" sideWeight="0.5398089" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3673313" sideWeight="0.49044585" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3535276" sideWeight="0.45859873" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.41503525" sideWeight="0.3686306" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24984066" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.41503525" sideWeight="0.36265925" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32838982" sideWeight="0.49412394" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24960192" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32654658" sideWeight="0.46019107" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24984066" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40030676" sideWeight="0.41799363" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40015662" sideWeight="0.41321656" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32668713" sideWeight="0.4936306" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24838293" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="99" y="100" width="1402" height="675" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3986577" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27760416" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27746814" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32954547" sideWeight="0.49583334" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32668713" sideWeight="0.46178344" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -1550,8 +1592,6 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Update date format in doc" />
-    <MESSAGE value="Add some common frequency synonyms" />
     <MESSAGE value="Fix README" />
     <MESSAGE value="Use name not id for groups (location)" />
     <MESSAGE value="Update README" />
@@ -1575,7 +1615,9 @@
     <MESSAGE value="Version 0.70 - Fix filestore upload" />
     <MESSAGE value="Version 0.70 - Remove warning" />
     <MESSAGE value="Version 0.70 - Yet another fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="Version 0.70 - Yet another fix" />
+    <MESSAGE value="Version 0.70 - Increase coverage" />
+    <MESSAGE value="Version 0.70 - Make configuration and ckan object module level" />
+    <option name="LAST_COMMIT_MESSAGE" value="Version 0.70 - Make configuration and ckan object module level" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -1589,7 +1631,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="194" />
+      <option name="time" value="200" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Python Console Debugger">
@@ -1598,117 +1640,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file:///usr/lib/python3.5/json/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5562">
-          <caret line="309" column="0" lean-forward="false" selection-start-line="309" selection-start-column="0" selection-end-line="309" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hdx/configuration.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2070">
-          <caret line="123" column="0" lean-forward="false" selection-start-line="123" selection-start-column="0" selection-end-line="123" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/requirements.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="10" column="1" lean-forward="true" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hdx/facades/simple.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="26" column="30" lean-forward="true" selection-start-line="26" selection-start-column="30" selection-end-line="26" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hdx/facades/scraperwiki.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hdx/data/hdxobject.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hdx/data/dataset.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="846">
-          <caret line="60" column="5" lean-forward="false" selection-start-line="60" selection-start-column="5" selection-end-line="60" selection-end-column="5" />
-          <folding>
-            <marker date="1483538428445" expanded="true" signature="660:2195" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="1850:1878" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="1897:1935" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="2233:2235" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="2662:2673" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="3295:3297" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="3789:3791" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="4000:4004" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="4861:4871" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="5360:5364" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="5808:5810" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="6003:6005" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="6180:6182" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="6985:6995" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="7485:7489" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="7953:7955" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="8162:8219" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="8626:8684" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="9110:9136" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="9705:9707" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="10442:10446" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="11525:11546" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="15239:15277" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="16243:16245" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="18308:18310" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="18505:18526" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="21286:21317" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="22052:22068" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="22562:22564" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="23018:23039" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="23736:23754" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="24066:24083" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="25069:25073" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="25541:25543" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="26024:26028" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="26537:26539" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="26844:26848" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="27245:27255" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="27490:27492" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="27869:27873" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="28658:28668" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="29139:29143" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/setup.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="468">
-          <caret line="30" column="9" lean-forward="false" selection-start-line="30" selection-start-column="9" selection-end-line="30" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="6174">
-            <caret line="343" column="0" lean-forward="false" selection-start-line="343" selection-start-column="0" selection-end-line="343" selection-end-column="0" />
-            <folding />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/hdx/utilities/downloader.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="936">
@@ -1797,20 +1728,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/hdx/facades/simple.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="26" column="30" lean-forward="false" selection-start-line="26" selection-start-column="30" selection-end-line="26" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hdx/facades/scraperwiki.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.coveragerc">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1853,13 +1770,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/hdx/data/test_galleryitem.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
-          <caret line="220" column="0" lean-forward="false" selection-start-line="220" selection-start-column="0" selection-end-line="220" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/hdx/hdx_datasource_topline.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1881,53 +1791,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/hdx/test_configuration.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="676">
-          <caret line="299" column="0" lean-forward="false" selection-start-line="299" selection-start-column="0" selection-end-line="299" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../VirtualEnvs/hdx-python-api/lib/python3.5/site-packages/_pytest/python.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
-          <caret line="148" column="0" lean-forward="false" selection-start-line="148" selection-start-column="0" selection-end-line="148" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../VirtualEnvs/hdx-python-api/lib/python3.5/site-packages/_pytest/vendored_packages/pluggy.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="613" column="0" lean-forward="false" selection-start-line="613" selection-start-column="0" selection-end-line="613" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hdx/configuration.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="714">
-          <caret line="128" column="0" lean-forward="false" selection-start-line="128" selection-start-column="0" selection-end-line="128" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hdx/data/galleryitem.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1350">
-          <caret line="80" column="53" lean-forward="false" selection-start-line="80" selection-start-column="36" selection-end-line="80" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hdx/version.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="4" lean-forward="false" selection-start-line="0" selection-start-column="4" selection-end-line="0" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pytest.ini">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1935,18 +1802,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
           <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="918">
-            <caret line="51" column="94" lean-forward="false" selection-start-line="51" selection-start-column="94" selection-end-line="51" selection-end-column="94" />
-            <folding />
-          </first_editor>
-          <second_editor />
         </state>
       </provider>
     </entry>
@@ -1958,73 +1813,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/setup.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="756">
-          <caret line="46" column="101" lean-forward="false" selection-start-line="46" selection-start-column="101" selection-end-line="46" selection-end-column="101" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hdx/data/resource.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="335">
-          <caret line="151" column="22" lean-forward="false" selection-start-line="151" selection-start-column="22" selection-end-line="151" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hdx/data/dataset.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="538">
-          <caret line="466" column="0" lean-forward="false" selection-start-line="466" selection-start-column="0" selection-end-line="466" selection-end-column="0" />
-          <folding>
-            <marker date="1483538428445" expanded="true" signature="660:2195" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="1850:1878" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="1897:1935" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="2233:2235" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="2662:2673" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="3295:3297" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="3789:3791" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="4000:4004" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="4861:4871" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="5360:5364" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="5808:5810" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="6003:6005" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="6180:6182" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="6985:6995" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="7485:7489" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="7953:7955" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="8162:8219" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="8626:8684" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="9110:9136" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="9705:9707" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="10442:10446" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="11525:11546" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="15239:15277" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="16243:16245" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="18308:18310" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="18505:18526" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="21286:21317" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="22052:22068" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="22562:22564" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="23018:23039" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="23736:23754" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="24066:24083" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="25069:25073" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="25541:25543" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="26024:26028" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="26537:26539" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="26844:26848" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="27245:27255" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="27490:27492" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="27869:27873" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="28658:28668" ph="..." />
-            <marker date="1483538428445" expanded="true" signature="29139:29143" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/hdx/utilities/downloader.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="108">
@@ -2033,34 +1821,253 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/hdx/data/hdxobject.py">
+    <entry file="file://$PROJECT_DIR$/hdx/data/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="258" column="0" lean-forward="false" selection-start-line="258" selection-start-column="0" selection-end-line="258" selection-end-column="0" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hdx/logging.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hdx/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="1" column="10" lean-forward="false" selection-start-line="1" selection-start-column="10" selection-end-line="1" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hdx/facades/scraperwiki.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="502">
+          <caret line="33" column="44" lean-forward="false" selection-start-line="33" selection-start-column="44" selection-end-line="33" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hdx/facades/simple.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="522">
+          <caret line="29" column="40" lean-forward="false" selection-start-line="29" selection-start-column="40" selection-end-line="29" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hdx/data/resource.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="20" column="0" lean-forward="true" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../VirtualEnvs/hdx-python-api/lib/python3.5/site-packages/_pytest/python.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="178">
+          <caret line="148" column="0" lean-forward="false" selection-start-line="148" selection-start-column="0" selection-end-line="148" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hdx/data/galleryitem.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="464">
+          <caret line="109" column="0" lean-forward="false" selection-start-line="109" selection-start-column="0" selection-end-line="109" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../VirtualEnvs/hdx-python-api/lib/python3.5/site-packages/_pytest/vendored_packages/pluggy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="244">
+          <caret line="744" column="0" lean-forward="false" selection-start-line="744" selection-start-column="0" selection-end-line="744" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../VirtualEnvs/hdx-python-api/lib/python3.5/site-packages/_pytest/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="244">
+          <caret line="124" column="0" lean-forward="false" selection-start-line="124" selection-start-column="0" selection-end-line="124" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../VirtualEnvs/hdx-python-api/lib/python3.5/site-packages/_pytest/runner.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="244">
+          <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../VirtualEnvs/hdx-python-api/lib/python3.5/site-packages/ckanapi/remoteckan.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="84" column="0" lean-forward="false" selection-start-line="84" selection-start-column="0" selection-end-line="84" selection-end-column="0" />
+        <state relative-caret-position="172">
+          <caret line="85" column="0" lean-forward="false" selection-start-line="85" selection-start-column="0" selection-end-line="85" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/hdx/data/test_resource.py">
+    <entry file="file://$PROJECT_DIR$/hdx/data/hdxobject.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="188" column="0" lean-forward="false" selection-start-line="184" selection-start-column="0" selection-end-line="188" selection-end-column="0" />
+        <state relative-caret-position="259">
+          <caret line="249" column="0" lean-forward="false" selection-start-line="249" selection-start-column="0" selection-end-line="249" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/hdx/test_logging.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/hdx/test_configuration.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="265">
+          <caret line="59" column="51" lean-forward="false" selection-start-line="59" selection-start-column="51" selection-end-line="59" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/hdx/facades/test_simple.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/hdx/facades/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="51" lean-forward="false" selection-start-line="11" selection-start-column="51" selection-end-line="11" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/hdx/facades/test_scraperwiki.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="396">
+          <caret line="26" column="4" lean-forward="false" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/hdx/data/test_galleryitem.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="416">
+          <caret line="165" column="35" lean-forward="false" selection-start-line="165" selection-start-column="35" selection-end-line="165" selection-end-column="35" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/hdx/data/test_dataset.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="569">
-          <caret line="510" column="40" lean-forward="false" selection-start-line="510" selection-start-column="40" selection-end-line="510" selection-end-column="40" />
+        <state relative-caret-position="450">
+          <caret line="370" column="35" lean-forward="false" selection-start-line="370" selection-start-column="35" selection-end-line="370" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/hdx/data/test_resource.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="323" column="35" lean-forward="false" selection-start-line="323" selection-start-column="35" selection-end-line="323" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hdx/data/dataset.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="265">
+          <caret line="326" column="23" lean-forward="false" selection-start-line="326" selection-start-column="23" selection-end-line="326" selection-end-column="23" />
+          <folding>
+            <marker date="1483705758771" expanded="true" signature="660:2093" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="1779:1791" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="1810:1848" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="2131:2133" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="2560:2571" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="3193:3195" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="3687:3689" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="3898:3902" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="4739:4749" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="5238:5242" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="5686:5688" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="5881:5883" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="6058:6060" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="6843:6853" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="7343:7347" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="7811:7813" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="8020:8077" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="8484:8542" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="8954:8964" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="9459:9461" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="10196:10200" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="18068:18070" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="18251:18256" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="20913:20928" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="21587:21603" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="22097:22099" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="22553:22574" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="23271:23289" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="23601:23618" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="24604:24608" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="25076:25078" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="25559:25563" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="26072:26074" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="26379:26383" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="26780:26790" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="27025:27027" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="27404:27408" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="28193:28203" ph="..." />
+            <marker date="1483705758771" expanded="true" signature="28674:28678" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/setup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="679">
+          <caret line="46" column="101" lean-forward="false" selection-start-line="46" selection-start-column="101" selection-end-line="46" selection-end-column="101" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="198">
+            <caret line="11" column="28" lean-forward="false" selection-start-line="11" selection-start-column="15" selection-end-line="11" selection-end-column="28" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hdx/configuration.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="160" column="12" lean-forward="false" selection-start-line="160" selection-start-column="12" selection-end-line="160" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hdx/version.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="3" lean-forward="false" selection-start-line="0" selection-start-column="3" selection-end-line="0" selection-end-column="3" />
           <folding />
         </state>
       </provider>
