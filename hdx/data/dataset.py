@@ -79,7 +79,7 @@ class Dataset(HDXObject):
             'show': 'package_show',
             'update': 'package_update',
             'create': 'package_create',
-            'delete': 'dataset_purge',
+            'delete': 'package_delete',
             'search': 'package_search'
         }
 
