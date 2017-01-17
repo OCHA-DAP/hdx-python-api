@@ -43,13 +43,20 @@ If you just want to read data from HDX, then an API key is not necessary and you
 
 ### Installing the Library
 
-To include the HDX Python library in your project, you must pip install or add to your `requirements.txt` file the following lines:
+To include the HDX Python library in your project, you must `pip install` or add to your `requirements.txt` file the following lines:
 
     git+git://github.com/ckan/ckanapi.git@feedf1bced59c10af1a2835fca48d8cfc8b5a3cb#egg=ckanapi
     git+git://github.com/ocha-dap/hdx-python-api.git@VERSION#egg=hdx-python-api
 
+or alternately:
+
+    https://github.com/ckan/ckanapi/zipball/feedf1bced59c10af1a2835fca48d8cfc8b5a3cb#egg=ckanapi
+    https://github.com/ocha-dap/hdx-python-api/zipball/VERSION#egg=hdx-python-api
+
 Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DAP/hdx-python-api/tags](https://github.com/OCHA-DAP/hdx-python-api/tags). 
-If you get errors, it is probably the dependencies of the cryptography package that are missing eg. for Ubuntu: python-dev, libffi-dev and libssl-dev. See [cryptography dependencies](https://cryptography.io/en/latest/installation/#building-cryptography-on-linux).
+If you get dependency errors, it is probably the dependencies of the cryptography package that are missing eg. for Ubuntu: python-dev, libffi-dev and libssl-dev. See [cryptography dependencies](https://cryptography.io/en/latest/installation/#building-cryptography-on-linux).
+
+
 
 ### A Quick Example
 
@@ -82,6 +89,8 @@ Let's start with a simple example that also ensures that the library is working 
 4. Install the HDX Python library:
 
         pip install git+git://github.com/ocha-dap/hdx-python-api.git@VERSION#egg=hdx-python-api
+        or
+        pip install https://github.com/ocha-dap/hdx-python-api/zipball/VERSION#egg=hdx-python-api
 Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DAP/hdx-python-api/tags](https://github.com/OCHA-DAP/hdx-python-api/tags). 
 5. If you get errors, it is probably the [dependencies of the cryptography package](#installing-the-library)
 6. Launch python:
