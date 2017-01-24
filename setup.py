@@ -44,7 +44,7 @@ def get_version():
     return version_file.read().strip()
 
 
-requirements = [  # 'ckanapi==3.7.dev0+git.feedf1b', # supported in pip > 8 but breaks PyCharm import
+requirements = ['ckanapi',
                 'colorlog',
                 'geonamescache',
                 'ndg-httpsclient',
