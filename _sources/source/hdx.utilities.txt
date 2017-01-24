@@ -1,0 +1,54 @@
+hdx.utilities package
+=====================
+
+Submodules
+----------
+
+hdx.utilities.dictionary module
+-------------------------------
+
+.. automodule:: hdx.utilities.dictionary
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+hdx.utilities.downloader module
+-------------------------------
+
+.. automodule:: hdx.utilities.downloader
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+hdx.utilities.loader module
+---------------------------
+
+.. automodule:: hdx.utilities.loader
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+hdx.utilities.location module
+-----------------------------
+
+.. automodule:: hdx.utilities.location
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+hdx.utilities.path module
+-------------------------
+
+.. automodule:: hdx.utilities.path
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: hdx.utilities
+    :members:
+    :undoc-members:
+    :show-inheritance:
