@@ -49,6 +49,9 @@ class TestDictAndList:
         input_list = [3, 1, 1, 1, 2, 2]
         result = list_distribute_contents(input_list)
         assert result == [1, 2, 3, 1, 2, 1]
+        input_list = [('f', 1), ('d', 7), ('d', 2), ('c', 2), ('c', 5), ('c', 4), ('f', 2)]
+        result = list_distribute_contents(input_list, lambda x: x[0])
+        assert result == [('c', 2), ('d', 7), ('f', 1), ('c', 5), ('d', 2), ('f', 2), ('c', 4)]
         input_list = [{'key': 'd', 'data': 5}, {'key': 'd', 'data': 1}, {'key': 'g', 'data': 2},
                       {'key': 'a', 'data': 2}, {'key': 'a', 'data': 3}, {'key': 'b', 'data': 5}]
         result = list_distribute_contents(input_list, lambda x: x['key'])
