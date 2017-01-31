@@ -13,7 +13,7 @@ import requests
 from hdx.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
-from hdx.utilities.dictionary import merge_two_dictionaries
+from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.downloader import DownloadError
 
 
@@ -140,7 +140,7 @@ def mocksearch(url, datadict):
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_search"}')
 
 
-class TestResource():
+class TestResource:
     resource_data = {
         'name': 'MyResource1',
         'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',

@@ -10,7 +10,7 @@ from typing import Optional
 import ckanapi
 
 import hdx
-from hdx.utilities.dictionary import merge_two_dictionaries
+from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml, load_json
 from hdx.utilities.path import script_dir_plus_file
 

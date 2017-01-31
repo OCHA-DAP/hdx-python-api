@@ -15,7 +15,7 @@ from hdx.configuration import Configuration
 from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
-from hdx.utilities.dictionary import merge_two_dictionaries
+from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
 
 
@@ -159,7 +159,7 @@ def mocksearch(url, datadict):
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
 
 
-class TestDataset():
+class TestDataset:
     dataset_data = {
         'name': 'MyDataset1',
         'title': 'MyDataset1',

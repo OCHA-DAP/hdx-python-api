@@ -3,7 +3,7 @@
 """Configuration of logging"""
 import logging.config
 
-from hdx.utilities.dictionary import merge_dictionaries
+from hdx.utilities.dictandlist import merge_dictionaries
 from hdx.utilities.loader import load_yaml, load_json
 from hdx.utilities.path import script_dir_plus_file
 

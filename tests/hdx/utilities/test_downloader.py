@@ -11,7 +11,7 @@ from hdx.utilities.downloader import Download, DownloadError
 from hdx.utilities.path import script_dir
 
 
-class TestDownloader():
+class TestDownloader:
     @pytest.fixture
     def fixtureurl(self):
         return 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'

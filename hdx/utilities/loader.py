@@ -7,7 +7,7 @@ from typing import List
 
 import yaml
 
-from hdx.utilities.dictionary import merge_two_dictionaries, merge_dictionaries
+from hdx.utilities.dictandlist import merge_two_dictionaries, merge_dictionaries
 
 
 class LoadError(Exception):

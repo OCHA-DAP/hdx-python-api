@@ -12,7 +12,7 @@ from typing import Optional, List, Tuple, TypeVar, Union
 from ckanapi.errors import NotFound
 
 from hdx.configuration import Configuration
-from hdx.utilities.dictionary import merge_two_dictionaries
+from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml_into_existing_dict, load_json_into_existing_dict
 
 logger = logging.getLogger(__name__)
@@ -139,13 +139,13 @@ class HDXObject(UserDict):
         """
         return
 
-    def _check_existing_object(self, object_type: str, id_field_name: str):
+    def _check_existing_object(self, object_type: str, id_field_name: str) -> None:
         if not self.data:
             raise HDXError("No data in %s!" % object_type)
         if id_field_name not in self.data:
             raise HDXError("No %s field (mandatory) in %s!" % (id_field_name, object_type))
 
-    def _check_load_existing_object(self, object_type, id_field_name):
+    def _check_load_existing_object(self, object_type: str, id_field_name: str) -> None:
         """Check metadata exists and contains HDX object identifier, and if so load HDX object
 
         Args:

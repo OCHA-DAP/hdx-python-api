@@ -15,7 +15,7 @@ from . import my_testfn, my_excfn, testresult
 from hdx.facades.simple import facade
 
 
-class TestSimple():
+class TestSimple:
     @pytest.fixture(scope='class')
     def hdx_key_file(self):
         return join('fixtures', '.hdxkey')

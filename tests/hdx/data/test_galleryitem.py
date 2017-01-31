@@ -11,7 +11,7 @@ import requests
 from hdx.configuration import Configuration
 from hdx.data.galleryitem import GalleryItem
 from hdx.data.hdxobject import HDXError
-from hdx.utilities.dictionary import merge_two_dictionaries
+from hdx.utilities.dictandlist import merge_two_dictionaries
 
 
 class MockResponse:
@@ -56,7 +56,7 @@ def mockshow(url, datadict):
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_show"}')
 
 
-class TestGalleryItem():
+class TestGalleryItem:
     galleryitem_data = {
         'title': 'MyGalleryItem1',
         'description': 'My GalleryItem',

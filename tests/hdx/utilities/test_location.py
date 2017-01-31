@@ -5,7 +5,7 @@
 from hdx.utilities.location import Location
 
 
-class TestLocation():
+class TestLocation:
     def test_get_country_name_from_iso3(self):
         assert Location.get_country_name_from_iso3('jpn') == 'Japan'
         assert Location.get_country_name_from_iso3('awe') is None

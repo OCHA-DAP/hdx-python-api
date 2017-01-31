@@ -7,7 +7,8 @@ import pytest
 
 from hdx.configuration import Configuration, ConfigurationError
 
-class TestConfiguration():
+
+class TestConfiguration:
     @pytest.fixture(scope='class')
     def hdx_key_file(self):
         return join('fixtures', '.hdxkey')

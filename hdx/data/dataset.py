@@ -16,7 +16,7 @@ from hdx.configuration import Configuration
 from hdx.data.galleryitem import GalleryItem
 from hdx.data.hdxobject import HDXObject, HDXError
 from hdx.data.resource import Resource
-from hdx.utilities.dictionary import merge_two_dictionaries
+from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.location import Location
 
 logger = logging.getLogger(__name__)

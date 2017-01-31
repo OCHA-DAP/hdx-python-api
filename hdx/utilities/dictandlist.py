@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""Dict utilities"""
+"""Dict and List utilities"""
 from collections import UserDict
 
-from typing import List, Optional, TypeVar
+from typing import List, Optional, TypeVar, Any, Callable
 
 DictUpperBound = TypeVar('T', bound='dict')
 
@@ -53,14 +53,14 @@ def merge_two_dictionaries(a: DictUpperBound, b: DictUpperBound) -> DictUpperBou
     return a
 
 
-def merge_dictionaries(dicts: List[dict]) -> dict:
+def merge_dictionaries(dicts: List[DictUpperBound]) -> DictUpperBound:
     """Merges all dictionaries in dicts into a single dictionary and returns result
 
     Args:
-        dicts (List[dict]): Dictionaries to merge into the first one in the list
+        dicts (List[DictUpperBound]): Dictionaries to merge into the first one in the list
 
     Returns:
-        dict: Merged dictionary
+        DictUpperBound: Merged dictionary
 
     """
     dict1 = dicts[0]
@@ -69,12 +69,12 @@ def merge_dictionaries(dicts: List[dict]) -> dict:
     return dict1
 
 
-def dict_diff(d1: dict, d2: dict, no_key: Optional[str] = '<KEYNOTFOUND>') -> dict:
+def dict_diff(d1: DictUpperBound, d2: DictUpperBound, no_key: Optional[str] = '<KEYNOTFOUND>') -> dict:
     """Compares two dictionaries
 
     Args:
-        d1 (dict): First dictionary to compare
-        d2 (dict): Second dictionary to compare
+        d1 (DictUpperBound): First dictionary to compare
+        d2 (DictUpperBound): Second dictionary to compare
         no_key (Optional[str]): What value to use if key is not found Defaults to '<KEYNOTFOUND>'.
 
     Returns:
@@ -88,3 +88,51 @@ def dict_diff(d1: dict, d2: dict, no_key: Optional[str] = '<KEYNOTFOUND>') -> di
     diff.update({k: (d1[k], no_key) for k in d1keys - both})
     diff.update({k: (no_key, d2[k]) for k in d2keys - both})
     return diff
+
+
+def dict_of_lists_add(dictionary: DictUpperBound, key: Any, value: Any) -> None:
+    """Add value to a list in a dictionary by key
+
+    Args:
+        dictionary (DictUpperBound): Dictionary to which to add values
+        key (Any): Key within dictionary
+        value (Any): Value to add to list in dictionary
+
+    Returns:
+        None
+
+    """
+    list_objs = dictionary.get(key, list())
+    list_objs.append(value)
+    dictionary[key] = list_objs
+
+
+def list_distribute_contents(input_list: List[Any], function: Callable[[Any], Any] = lambda x: x) -> List[Any]:
+    """Distribute the contents of a list eg. [1, 1, 1, 2, 2, 3] -> [1, 2, 3, 1, 2, 1]. List can contain complex types
+    like dictionaries in which case the function can return the appropriate value eg.  lambda x: x[KEY]
+
+    Args:
+        input_list (List[Any]): Dictionary to which to add values
+        function (Callable[[Any], Any]): Return value to use for distributing. Defaults to lambda x: x.
+
+    Returns:
+        List[Any]: Distributed list
+
+    """
+    dictionary = dict()
+    for obj in input_list:
+        dict_of_lists_add(dictionary, function(obj), obj)
+    output_list = list()
+    i = 0
+    done = False
+    while not done:
+        found = False
+        for key in sorted(dictionary):
+            if i < len(dictionary[key]):
+                output_list.append(dictionary[key][i])
+                found = True
+        if found:
+            i += 1
+        else:
+            done = True
+    return output_list

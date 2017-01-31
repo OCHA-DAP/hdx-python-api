@@ -9,7 +9,7 @@ from logging_tree import format
 from hdx.logging import setup_logging, LoggingError
 
 
-class TestLogging():
+class TestLogging:
     @pytest.fixture(scope='class')
     def logging_config_yaml(self):
         return join('fixtures', 'config', 'logging_config.yml')
