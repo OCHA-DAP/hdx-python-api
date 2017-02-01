@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """Dict and List utilities"""
+import itertools
 from collections import UserDict
-
 from typing import List, Optional, TypeVar, Any, Callable
 
 DictUpperBound = TypeVar('T', bound='dict')
@@ -107,7 +107,7 @@ def dict_of_lists_add(dictionary: DictUpperBound, key: Any, value: Any) -> None:
     dictionary[key] = list_objs
 
 
-def list_distribute_contents(input_list: List[Any], function: Callable[[Any], Any] = lambda x: x) -> List[Any]:
+def list_distribute_contents_simple(input_list: List[Any], function: Callable[[Any], Any] = lambda x: x) -> List[Any]:
     """Distribute the contents of a list eg. [1, 1, 1, 2, 2, 3] -> [1, 2, 3, 1, 2, 1]. List can contain complex types
     like dictionaries in which case the function can return the appropriate value eg.  lambda x: x[KEY]
 
@@ -136,3 +136,42 @@ def list_distribute_contents(input_list: List[Any], function: Callable[[Any], An
         else:
             done = True
     return output_list
+
+
+def list_distribute_contents(input_list: List[Any], function: Callable[[Any], Any] = lambda x: x) -> List[Any]:
+    """Distribute the contents of a list eg. [1, 1, 1, 2, 2, 3] -> [1, 2, 1, 2, 1, 3]. List can contain complex types
+    like dictionaries in which case the function can return the appropriate value eg.  lambda x: x[KEY]
+
+    Args:
+        input_list (List[Any]): Dictionary to which to add values
+        function (Callable[[Any], Any]): Return value to use for distributing. Defaults to lambda x: x.
+
+    Returns:
+        List[Any]: Distributed list
+
+    """
+
+    def riffle_shuffle(piles_list):
+        def grouper(n, iterable, fillvalue=None):
+            args = [iter(iterable)] * n
+            return itertools.zip_longest(fillvalue=fillvalue, *args)
+
+        if not piles_list:
+            return []
+        piles_list.sort(key=len, reverse=True)
+        width = len(piles_list[0])
+        pile_iters_list = [iter(pile) for pile in piles_list]
+        pile_sizes_list = [[pile_position] * len(pile) for pile_position, pile in enumerate(piles_list)]
+        grouped_rows = grouper(width, itertools.chain.from_iterable(pile_sizes_list))
+        grouped_columns = itertools.zip_longest(*grouped_rows)
+        shuffled_pile = [next(pile_iters_list[position]) for position in itertools.chain.from_iterable(grouped_columns)
+                         if position is not None]
+        return shuffled_pile
+
+    dictionary = dict()
+    for obj in input_list:
+        dict_of_lists_add(dictionary, function(obj), obj)
+    intermediate_list = list()
+    for key in sorted(dictionary):
+        intermediate_list.append(dictionary[key])
+    return riffle_shuffle(intermediate_list)

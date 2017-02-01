@@ -3,7 +3,8 @@
 """Dictionary Tests"""
 import pytest
 
-from hdx.utilities.dictandlist import merge_dictionaries, dict_diff, dict_of_lists_add, list_distribute_contents
+from hdx.utilities.dictandlist import merge_dictionaries, dict_diff, dict_of_lists_add, list_distribute_contents, \
+    list_distribute_contents_simple
 
 
 class TestDictAndList:
@@ -45,15 +46,28 @@ class TestDictAndList:
         dict_of_lists_add(d, 2, 'c')
         assert d == {'a': [1, 2], 2: ['b', 'c']}
 
-    def test_list_distribute_contents(self):
+    def test_list_distribute_contents_simple(self):
         input_list = [3, 1, 1, 1, 2, 2]
-        result = list_distribute_contents(input_list)
+        result = list_distribute_contents_simple(input_list)
         assert result == [1, 2, 3, 1, 2, 1]
         input_list = [('f', 1), ('d', 7), ('d', 2), ('c', 2), ('c', 5), ('c', 4), ('f', 2)]
-        result = list_distribute_contents(input_list, lambda x: x[0])
+        result = list_distribute_contents_simple(input_list, lambda x: x[0])
         assert result == [('c', 2), ('d', 7), ('f', 1), ('c', 5), ('d', 2), ('f', 2), ('c', 4)]
         input_list = [{'key': 'd', 'data': 5}, {'key': 'd', 'data': 1}, {'key': 'g', 'data': 2},
                       {'key': 'a', 'data': 2}, {'key': 'a', 'data': 3}, {'key': 'b', 'data': 5}]
-        result = list_distribute_contents(input_list, lambda x: x['key'])
+        result = list_distribute_contents_simple(input_list, lambda x: x['key'])
         assert result == [{'key': 'a', 'data': 2}, {'key': 'b', 'data': 5}, {'key': 'd', 'data': 5},
                           {'key': 'g', 'data': 2}, {'key': 'a', 'data': 3}, {'key': 'd', 'data': 1}]
+
+    def test_list_distribute_contents(self):
+        input_list = [3, 1, 1, 1, 2, 2]
+        result = list_distribute_contents(input_list)
+        assert result == [1, 2, 1, 2, 1, 3]
+        input_list = [('f', 1), ('d', 7), ('d', 2), ('c', 2), ('c', 5), ('c', 4), ('f', 2)]
+        result = list_distribute_contents(input_list, lambda x: x[0])
+        assert result == [('c', 2), ('d', 7), ('f', 1), ('c', 5), ('d', 2), ('c', 4), ('f', 2)]
+        input_list = [{'key': 'd', 'data': 5}, {'key': 'd', 'data': 1}, {'key': 'g', 'data': 2},
+                      {'key': 'a', 'data': 2}, {'key': 'a', 'data': 3}, {'key': 'b', 'data': 5}]
+        result = list_distribute_contents(input_list, lambda x: x['key'])
+        assert result == [{'key': 'a', 'data': 2}, {'key': 'd', 'data': 5}, {'key': 'b', 'data': 5},
+                          {'key': 'a', 'data': 3}, {'key': 'd', 'data': 1}, {'key': 'g', 'data': 2}]
