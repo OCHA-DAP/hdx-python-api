@@ -106,7 +106,7 @@ Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DA
     If you want to write data and you have an API key stored in a file `.hdxkey` in the current user's home directory:
 
         Configuration.create(hdx_site='feature', project_config_dict={})
-9. Read this dataset [ACLED Conflict Data for Africa (Realtime - 2016)](https://test-data.humdata.org/dataset/acled-conflict-data-for-africa-realtime-2016#) from HDX and view the date of the dataset:
+9. Read this dataset [ACLED Conflict Data for Africa (Realtime - 2016)](https://feature-data.humdata.org/dataset/acled-conflict-data-for-africa-realtime-2016#) from HDX and view the date of the dataset:
 
         dataset = Dataset.read_from_hdx('acled-conflict-data-for-africa-realtime-2016')
         print(dataset.get_dataset_date())
