@@ -102,10 +102,10 @@ Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DA
 
     If you only want to read data:
 
-        Configuration.create(hdx_site='test', hdx_read_only=True, project_config_dict={})
+        Configuration.create(hdx_site='feature', hdx_read_only=True, project_config_dict={})
     If you want to write data and you have an API key stored in a file `.hdxkey` in the current user's home directory:
 
-        Configuration.create(hdx_site='test', project_config_dict={})
+        Configuration.create(hdx_site='feature', project_config_dict={})
 9. Read this dataset [ACLED Conflict Data for Africa (Realtime - 2016)](https://test-data.humdata.org/dataset/acled-conflict-data-for-africa-realtime-2016#) from HDX and view the date of the dataset:
 
         dataset = Dataset.read_from_hdx('acled-conflict-data-for-africa-realtime-2016')
