@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 '''
 Calls a function that generates a dataset and creates it in HDX.
@@ -6,17 +5,16 @@ Calls a function that generates a dataset and creates it in HDX.
 '''
 import logging
 
-from hdx.configuration import Configuration
-from hdx.facades.scraperwiki import facade
+from hdx.facades.simple import facade
 from .my_code import generate_dataset
 
 logger = logging.getLogger(__name__)
 
 
-def main(configuration: Configuration):
+def main():
     '''Generate dataset and create it in HDX'''
 
-    dataset = generate_dataset(configuration)
+    dataset = generate_dataset()
     dataset.create_in_hdx()
 
 
