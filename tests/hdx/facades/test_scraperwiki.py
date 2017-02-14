@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 """ScraperWiki Facade Tests"""
 from os.path import join

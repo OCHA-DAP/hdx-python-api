@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """Facade that handles ScraperWiki and calls project main function"""
 import logging

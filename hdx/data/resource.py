@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """Resource class containing all logic for creating, checking, and updating resources."""
 import csv

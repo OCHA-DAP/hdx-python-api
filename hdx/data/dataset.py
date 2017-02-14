@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """Dataset class containing all logic for creating, checking, and updating datasets.
 

@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """Facade to simplify project setup that calls project main function"""
 import logging

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import inspect
 import sys
 from os.path import join, abspath, realpath, dirname

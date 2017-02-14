@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """GalleryItem class containing all logic for creating, checking, and updating gallery items."""
 import logging
