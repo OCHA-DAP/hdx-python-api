@@ -6,5 +6,4 @@ RUN apk update && \
     apk upgrade python3 && \
     apk add build-base musl-dev python3-dev libffi-dev openssl-dev && \
     pip install https://github.com/ocha-dap/hdx-python-api/zipball/master#egg=hdx-python-api && \
-    apk del build-base && \
     rm -rf /var/cache/apk/*
