@@ -4,7 +4,9 @@
     <option name="CUSTOM_SCOPE_NAME" value="Project and Libraries" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78dced69-aba6-482d-97c8-9f71833379e5" name="Default" comment="Remove shebangs">
+    <list default="true" id="78dced69-aba6-482d-97c8-9f71833379e5" name="Default" comment="Remove incorrectly added files">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/documentation/conf.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/documentation/config/smtp_configuration.yml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="hdx-python-api.iws" />
@@ -1108,13 +1110,6 @@
       <option name="presentableId" value="Default" />
       <updated>1464695506411</updated>
     </task>
-    <task id="LOCAL-00190" summary="Version 0.70">
-      <created>1483451883840</created>
-      <option name="number" value="00190" />
-      <option name="presentableId" value="LOCAL-00190" />
-      <option name="project" value="LOCAL" />
-      <updated>1483451883840</updated>
-    </task>
     <task id="LOCAL-00191" summary="Version 0.70 - fix doc">
       <created>1483452261846</created>
       <option name="number" value="00191" />
@@ -1451,7 +1446,14 @@
       <option name="project" value="LOCAL" />
       <updated>1487084708377</updated>
     </task>
-    <option name="localTasksCounter" value="239" />
+    <task id="LOCAL-00239" summary="Remove incorrectly added files">
+      <created>1487148820144</created>
+      <option name="number" value="00239" />
+      <option name="presentableId" value="LOCAL-00239" />
+      <option name="project" value="LOCAL" />
+      <updated>1487148820145</updated>
+    </task>
+    <option name="localTasksCounter" value="240" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1575,7 +1577,6 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Version 0.70 - fix doc" />
     <MESSAGE value="Version 0.70 - remove tracking summary when updating" />
     <MESSAGE value="Version 0.70 - try to pull in correct dependency" />
     <MESSAGE value="Version 0.70 - fix tests" />
@@ -1600,7 +1601,8 @@
     <MESSAGE value="Update README" />
     <MESSAGE value="Change test to feature in docs" />
     <MESSAGE value="Remove shebangs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Remove shebangs" />
+    <MESSAGE value="Remove incorrectly added files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Remove incorrectly added files" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
