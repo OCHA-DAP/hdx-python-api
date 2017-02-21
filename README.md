@@ -54,7 +54,11 @@ or alternatively:
 Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DAP/hdx-python-api/tags](https://github.com/OCHA-DAP/hdx-python-api/tags). 
 If you get dependency errors, it is probably the dependencies of the cryptography package that are missing eg. for Ubuntu: python-dev, libffi-dev and libssl-dev. See [cryptography dependencies](https://cryptography.io/en/latest/installation/#building-cryptography-on-linux).
 
+### Docker
 
+The library is also available set up and ready to go within a Docker image:
+
+    docker pull mcarans/hdx-python-api
 
 ### A Quick Example
 
