@@ -7,6 +7,7 @@ For more about the purpose and design philosophy, please visit [HDX Python Libra
 - [Getting Started](#getting-started)
 	- [Creating the API Key File](#creating-the-api-key-file)
 	- [Installing the Library](#installing-the-library)
+	- [Docker](#docker)
 	- [A Quick Example](#a-quick-example)
 - [Building a Project](#building-a-project)
 	- [Default Configuration for Facades](#default-configuration-for-facades)
