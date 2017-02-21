@@ -139,7 +139,7 @@ class TestConfiguration:
         assert actual_configuration == expected_configuration
 
     def test_project_configuration_dict(self, hdx_key_file):
-        actual_configuration = Configuration.create(hdx_key_file=hdx_key_file, project_config_dict={'abc': '123'})
+        actual_configuration = Configuration.create(hdx_key_file=hdx_key_file)
         expected_configuration = {
             'api_key': '12345',
             'hdx_prod_site': {
@@ -162,7 +162,6 @@ class TestConfiguration:
                 'username': 'ZGF0YXByb2plY3Q=',
                 'password': 'aHVtZGF0YQ=='
             },
-            'abc': '123',
             'dataset': {'required_fields': [
                 'name',
                 'private',
@@ -189,6 +188,9 @@ class TestConfiguration:
                 'image_url',
             ], 'ignore_dataset_id_on_update': True},
         }
+        assert actual_configuration == expected_configuration
+        actual_configuration = Configuration.create(hdx_key_file=hdx_key_file, project_config_dict={'abc': '123'})
+        expected_configuration['abc'] = '123'
         assert actual_configuration == expected_configuration
 
     def test_project_configuration_json(self, hdx_key_file, project_config_json):
