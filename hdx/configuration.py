@@ -33,7 +33,7 @@ class Configuration(UserDict):
         hdx_config_yaml (str): Path to YAML HDX configuration. Defaults to library's internal hdx_configuration.yml.
         project_config_dict (dict): Project configuration dictionary OR
         project_config_json (str): Path to JSON Project configuration OR
-        project_config_yaml (str): Path to YAML Project configuration. Defaults to config/project_configuration.yml.
+        project_config_yaml (str): Path to YAML Project configuration
     """
 
     def __init__(self, **kwargs):
@@ -83,11 +83,11 @@ class Configuration(UserDict):
             if project_config_yaml:
                 raise ConfigurationError('More than one project configuration file given!')
         else:
-            if not project_config_yaml:
-                logger.info('No project configuration parameter. Using default.')
-                project_config_yaml = join('config', 'project_configuration.yml')
-            logger.info('Loading project configuration from: %s' % project_config_yaml)
-            project_config_dict = load_yaml(project_config_yaml)
+            if project_config_yaml:
+                logger.info('Loading project configuration from: %s' % project_config_yaml)
+                project_config_dict = load_yaml(project_config_yaml)
+            else:
+                project_config_dict = dict()
 
         self.data = merge_two_dictionaries(hdx_config_dict, project_config_dict)
 

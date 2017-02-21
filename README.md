@@ -102,10 +102,10 @@ Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DA
 
     If you only want to read data:
 
-        Configuration.create(hdx_site='feature', hdx_read_only=True, project_config_dict={})
+        Configuration.create(hdx_site='feature', hdx_read_only=True)
     If you want to write data and you have an API key stored in a file `.hdxkey` in the current user's home directory:
 
-        Configuration.create(hdx_site='feature', project_config_dict={})
+        Configuration.create(hdx_site='feature')
 9. Read this dataset [ACLED Conflict Data for Africa (Realtime - 2016)](https://feature-data.humdata.org/dataset/acled-conflict-data-for-africa-realtime-2016#) from HDX and view the date of the dataset:
 
         dataset = Dataset.read_from_hdx('acled-conflict-data-for-africa-realtime-2016')
@@ -162,13 +162,7 @@ You will most likely just need the simple facade. If you are in the HDX team, yo
 
 It is possible to pass configuration parameters in the facade call eg.
 
-    facade(main, hdx_site = HDX_SITE_TO_USE, hdx_read_only = ONLY_READ_NOT_WRITE, hdx_key_file = LOCATION_OF_HDX_KEY_FILE, hdx_config_yaml=PATH_TO_HDX_YAML_CONFIGURATION, 
-
-    project_config_dict = {'MY_PARAMETER', 'MY_VALUE'})
-
-If you did not need a project configuration, you could simply provide an empty dictionary eg.
-
-    facade(main, project_config_dict = {})
+    facade(main, hdx_site = HDX_SITE_TO_USE, hdx_read_only = ONLY_READ_NOT_WRITE, hdx_key_file = LOCATION_OF_HDX_KEY_FILE, hdx_config_yaml=PATH_TO_HDX_YAML_CONFIGURATION, project_config_dict = {'MY_PARAMETER', 'MY_VALUE'})
 
 If you do not use the facade, you can use the `create` method of the `Configuration` class directly, passing in appropriate keyword arguments ie.
 
@@ -188,7 +182,7 @@ If you do not use the facade, you can use the `create` method of the `Configurat
 |        |hdx_config_yaml      |str           |Path to YAML HDX configuration       |Library's internal hdx_configuration.yml|
 |One of: |project_config_dict  |dict          |Project configuration dictionary     |                                        |
 |        |project_config_json  |str           |Path to JSON Project configuration   |                                        |
-|        |project_config_yaml  |str           |Path to YAML Project configuration   |config/project_configuration.yml        |
+|        |project_config_yaml  |str           |Path to YAML Project configuration   |                                        |
 
 To access the configuration, you use the `read` method of the `Configuration` class as follows:
 

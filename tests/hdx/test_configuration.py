@@ -22,9 +22,6 @@ class TestConfiguration:
 
     def test_init(self, hdx_key_file, project_config_json, project_config_yaml):
         with pytest.raises(FileNotFoundError):
-            Configuration()
-
-        with pytest.raises(FileNotFoundError):
             Configuration(hdx_key_file='NOT_EXIST', project_config_yaml=project_config_yaml)
 
         with pytest.raises(FileNotFoundError):
