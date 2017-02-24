@@ -57,7 +57,7 @@ If you get dependency errors, it is probably the dependencies of the cryptograph
 
 ### Docker
 
-The library is also available set up and ready to go within a Docker image:
+The library is also available set up and ready to go in a Docker image:
 
     docker pull mcarans/hdx-python-api
     docker run -i -t mcarans/hdx-python-api:latest python3
@@ -72,7 +72,7 @@ Let's start with a simple example that also ensures that the library is working 
 
         cd ~
         echo xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx > .hdxkey
-2. Install virtualenv if not installed:
+2. If you are using the Docker image, you can jump to step 7, otherwise install virtualenv if not installed:
 
         pip install virtualenv
         
