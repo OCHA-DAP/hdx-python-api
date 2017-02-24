@@ -60,6 +60,7 @@ If you get dependency errors, it is probably the dependencies of the cryptograph
 The library is also available set up and ready to go within a Docker image:
 
     docker pull mcarans/hdx-python-api
+    docker run -i -t mcarans/hdx-python-api:latest python3
 
 ### A Quick Example
 
