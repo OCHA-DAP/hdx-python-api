@@ -80,15 +80,15 @@ Let's start with a simple example that also ensures that the library is working 
    
         sudo apt-get install virtualenv
 3. Create a Python 3 virtualenv and activate it:
-
-        virtualenv -p python3 test
         
-   On Windows:
+   On Windows (assuming the Python 3 executable is in your path):
    
+        virtualenv test
         test\Scripts\activate
    
    On other OSs:
    
+        virtualenv -p python3 test
         source test/bin/activate
 4. Install the HDX Python library:
 
