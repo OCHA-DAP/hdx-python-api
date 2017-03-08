@@ -139,6 +139,11 @@ Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DA
 
         exit()
         deactivate
+    On Windows:
+    
+        rd /s /q test
+    On other OSs:
+    
         rm -rf test
 
 ## Building a Project
