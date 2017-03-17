@@ -95,7 +95,7 @@ Let's start with a simple example that also ensures that the library is working 
         pip install git+git://github.com/ocha-dap/hdx-python-api.git@VERSION#egg=hdx-python-api
         or
         pip install https://github.com/ocha-dap/hdx-python-api/zipball/VERSION#egg=hdx-python-api
-Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DAP/hdx-python-api/tags](https://github.com/OCHA-DAP/hdx-python-api/tags).
+    Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DAP/hdx-python-api/tags](https://github.com/OCHA-DAP/hdx-python-api/tags).
  
 5. If you get errors, it is probably the [dependencies of the cryptography package](#installing-the-library)
 
