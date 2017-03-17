@@ -66,7 +66,7 @@ The library is also available set up and ready to go in a Docker image:
 
 ![A Quick Example](https://humanitarian.atlassian.net/wiki/download/attachments/6356996/HDXPythonLibrary.gif?version=1&modificationDate=1469520811486&api=v2)
 
-Let's start with a simple example that also ensures that the library is working properly. This assumes you are using Linux, but you can do something similar on Windows:
+Let's start with a simple example that also ensures that the library is working properly. In this tutorial, we use virtualenv, a sandbox, so that your Python install is not modified. 
 
 1. If you just want to read data from HDX, then an API key is not necessary. However, if you want to write data to HDX, then you need to register on the website to obtain an API key. Please see above about where to find it on the website. Once you have it, then put it into a file in your home directory:
 
