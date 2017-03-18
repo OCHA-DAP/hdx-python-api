@@ -57,21 +57,22 @@ If you get dependency errors, it is probably the dependencies of the cryptograph
 
 ### Docker
 
-The library is also available set up and ready to go within a Docker image:
+The library is also available set up and ready to go in a Docker image:
 
     docker pull mcarans/hdx-python-api
+    docker run -i -t mcarans/hdx-python-api:latest python3
 
 ### A Quick Example
 
 ![A Quick Example](https://humanitarian.atlassian.net/wiki/download/attachments/6356996/HDXPythonLibrary.gif?version=1&modificationDate=1469520811486&api=v2)
 
-Let's start with a simple example that also ensures that the library is working properly. This assumes you are using Linux, but you can do something similar on Windows:
+Let's start with a simple example that also ensures that the library is working properly. In this tutorial, we use virtualenv, a sandbox, so that your Python install is not modified. 
 
 1. If you just want to read data from HDX, then an API key is not necessary. However, if you want to write data to HDX, then you need to register on the website to obtain an API key. Please see above about where to find it on the website. Once you have it, then put it into a file in your home directory:
 
         cd ~
         echo xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx > .hdxkey
-2. Install virtualenv if not installed:
+2. If you are using the Docker image, you can jump to step 7, otherwise install virtualenv if not installed:
 
         pip install virtualenv
         
@@ -79,23 +80,25 @@ Let's start with a simple example that also ensures that the library is working 
    
         sudo apt-get install virtualenv
 3. Create a Python 3 virtualenv and activate it:
-
-        virtualenv -p python3 test
         
-   On Windows:
+   On Windows (assuming the Python 3 executable is in your path):
    
+        virtualenv test
         test\Scripts\activate
    
    On other OSs:
    
+        virtualenv -p python3 test
         source test/bin/activate
 4. Install the HDX Python library:
 
         pip install git+git://github.com/ocha-dap/hdx-python-api.git@VERSION#egg=hdx-python-api
         or
         pip install https://github.com/ocha-dap/hdx-python-api/zipball/VERSION#egg=hdx-python-api
-Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DAP/hdx-python-api/tags](https://github.com/OCHA-DAP/hdx-python-api/tags). 
+    Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DAP/hdx-python-api/tags](https://github.com/OCHA-DAP/hdx-python-api/tags).
+ 
 5. If you get errors, it is probably the [dependencies of the cryptography package](#installing-the-library)
+
 6. Launch python:
 
         python
@@ -138,6 +141,11 @@ Replace `VERSION` with the latest tag available from [https://github.com/OCHA-DA
 
         exit()
         deactivate
+    On Windows:
+    
+        rd /s /q test
+    On other OSs:
+    
         rm -rf test
 
 ## Building a Project
