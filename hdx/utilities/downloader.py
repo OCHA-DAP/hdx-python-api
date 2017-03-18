@@ -18,6 +18,7 @@ class DownloadError(Exception):
 
 class Download(object):
     def __init__(self):
+        # type: () -> None
         s = requests.Session()
         retries = Retry(total=5, backoff_factor=0.4, status_forcelist=[429, 500, 502, 503, 504], raise_on_redirect=True,
                         raise_on_status=True)
@@ -35,7 +36,8 @@ class Download(object):
         self.session.close()
 
     @staticmethod
-    def get_path_for_url(url: str, folder: Optional[str] = None) -> str:
+    def get_path_for_url(url, folder = None):
+        # type: (str, Optional[str]) -> str
         """Get filename from url and join to provided folder or temporary folder if no folder supplied, ensuring uniqueness
 
         Args:
@@ -58,7 +60,8 @@ class Download(object):
             path = join(folder, '%s%d%s' % (filename, count, extension))
         return path
 
-    def setup_stream(self, url: str, timeout: Optional[float] = None):
+    def setup_stream(self, url, timeout = None):
+        # type: (str, Optional[float]) -> None
         """Setup streaming download from provided url
 
         Args:
@@ -74,7 +77,8 @@ class Download(object):
         except Exception as e:
             raise DownloadError('Setup of Streaming Download of %s failed!' % url) from e
 
-    def hash_stream(self, url: str) -> str:
+    def hash_stream(self, url):
+        # type: (str) -> str
         """Stream file from url and hash it using MD5. Must call setup_streaming_download method first.
 
         Args:
@@ -93,7 +97,8 @@ class Download(object):
         except Exception as e:
             raise DownloadError('Download of %s failed in retrieval of stream!' % url) from e
 
-    def stream_file(self, url: str, folder: Optional[str] = None) -> str:
+    def stream_file(self, url, folder = None):
+        # type: (str, Optional[str]) -> str
         """Stream file from url and store in provided folder or temporary folder if no folder supplied.
         Must call setup_streaming_download method first.
 
@@ -120,7 +125,8 @@ class Download(object):
             if f:
                 f.close()
 
-    def download_file(self, url: str, folder: Optional[str] = None, timeout: Optional[float] = None) -> str:
+    def download_file(self, url, folder = None, timeout = None):
+        # type: (str, Optional[str], Optional[float]) -> str
         """Download file from url and store in provided folder or temporary folder if no folder supplied
 
         Args:
@@ -135,7 +141,8 @@ class Download(object):
         self.setup_stream(url, timeout)
         return self.stream_file(url, folder)
 
-    def download(self, url: str, timeout: Optional[float] = None) -> requests.Response:
+    def download(self, url, timeout = None):
+        # type: (str, Optional[float]) -> requests.Response
         """Download url
 
         Args:

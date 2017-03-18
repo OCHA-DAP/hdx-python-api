@@ -58,8 +58,9 @@ class Dataset(HDXObject):
         'yearly': '365'
     }
 
-    def __init__(self, initial_data: Optional[dict] = None,
-                 include_gallery: Optional[bool] = True):
+    def __init__(self, initial_data = None,
+                 include_gallery = True):
+        # type: (Optional[dict], Optional[bool]) -> None
         if not initial_data:
             initial_data = dict()
         super(Dataset, self).__init__(initial_data)
@@ -68,7 +69,8 @@ class Dataset(HDXObject):
         self.init_gallery()
 
     @staticmethod
-    def actions() -> dict:
+    def actions():
+        # type: () -> dict
         """Dictionary of actions that can be performed on object
 
         Returns:
@@ -82,7 +84,8 @@ class Dataset(HDXObject):
             'search': 'package_search'
         }
 
-    def __setitem__(self, key: Any, value: Any) -> None:
+    def __setitem__(self, key, value):
+        # type: (Any, Any) -> None
         """Set dictionary items but do not allow setting of resources or gallery
 
         Args:
@@ -98,7 +101,8 @@ class Dataset(HDXObject):
             raise HDXError('Add gallery item using add_update_galleryitem or gallery using add_update_gallery!')
         super(Dataset, self).__setitem__(key, value)
 
-    def separate_resources(self) -> None:
+    def separate_resources(self):
+        # type: () -> None
         """Move contents of resources key in internal dictionary into self.resources
 
         Returns:
@@ -114,7 +118,8 @@ class Dataset(HDXObject):
         """
         self._separate_hdxobjects(self.gallery, 'gallery', 'title', GalleryItem)
 
-    def init_resources(self) -> None:
+    def init_resources(self):
+        # type: () -> None
         """Initialise self.resources list
 
         Returns:
@@ -123,7 +128,8 @@ class Dataset(HDXObject):
         self.resources = list()
         """:type : List[Resource]"""
 
-    def add_update_resource(self, resource: Any) -> None:
+    def add_update_resource(self, resource):
+        # type: (Any) -> None
         """Add new or update existing resource in dataset with new metadata
 
         Args:
@@ -142,7 +148,8 @@ class Dataset(HDXObject):
             return
         raise HDXError("Type %s cannot be added as a resource!" % type(resource).__name__)
 
-    def add_update_resources(self, resources: List[Any]) -> None:
+    def add_update_resources(self, resources):
+        # type: (List[Any]) -> None
         """Add new or update existing resources with new metadata to the dataset
 
         Args:
@@ -156,7 +163,8 @@ class Dataset(HDXObject):
         for resource in resources:
             self.add_update_resource(resource)
 
-    def delete_resource(self, identifier: str) -> None:
+    def delete_resource(self, identifier):
+        # type: (str) -> None
         """Delete a resource from the dataset
 
         Args:
@@ -171,7 +179,8 @@ class Dataset(HDXObject):
                 resource.delete_from_hdx()
                 del self.resources[i]
 
-    def get_resources(self) -> List[Resource]:
+    def get_resources(self):
+        # type: () -> List[Resource]
         """Get dataset's resources
 
         Returns:
@@ -179,7 +188,8 @@ class Dataset(HDXObject):
         """
         return self.resources
 
-    def init_gallery(self) -> None:
+    def init_gallery(self):
+        # type: () -> None
         """Initialise self.gallery list
 
         Returns:
@@ -187,7 +197,8 @@ class Dataset(HDXObject):
         """
         self.gallery = list()
 
-    def add_update_galleryitem(self, galleryitem) -> None:
+    def add_update_galleryitem(self, galleryitem):
+        # type: (...) -> None
         """Add new or update existing gallery item in dataset with new metadata
 
         Args:
@@ -220,7 +231,8 @@ class Dataset(HDXObject):
         for galleryitem in gallery:
             self.add_update_galleryitem(galleryitem)
 
-    def delete_galleryitem(self, identifier: str) -> None:
+    def delete_galleryitem(self, identifier):
+        # type: (str) -> None
         """Delete a gallery item from the dataset
 
         Args:
@@ -235,7 +247,8 @@ class Dataset(HDXObject):
                 galleryitem.delete_from_hdx()
                 del self.gallery[i]
 
-    def get_gallery(self) -> List[GalleryItem]:
+    def get_gallery(self):
+        # type: () -> List[GalleryItem]
         """Get dataset's gallery
 
         Returns:
@@ -243,7 +256,8 @@ class Dataset(HDXObject):
         """
         return self.gallery
 
-    def update_from_yaml(self, path: Optional[str] = join('config', 'hdx_dataset_static.yml')) -> None:
+    def update_from_yaml(self, path = join('config', 'hdx_dataset_static.yml')):
+        # type: (Optional[str]) -> None
         """Update dataset metadata with static metadata from YAML file
 
         Args:
@@ -256,7 +270,8 @@ class Dataset(HDXObject):
         self.separate_resources()
         self.separate_gallery()
 
-    def update_from_json(self, path: Optional[str] = join('config', 'hdx_dataset_static.json')) -> None:
+    def update_from_json(self, path= join('config', 'hdx_dataset_static.json')):
+        # type: (Optional[str]) -> None
         """Update dataset metadata with static metadata from JSON file
 
         Args:
@@ -270,7 +285,8 @@ class Dataset(HDXObject):
         self.separate_gallery()
 
     @staticmethod
-    def read_from_hdx(identifier: str) -> Optional['Dataset']:
+    def read_from_hdx(identifier):
+        # type: (str) -> Optional['Dataset']
         """Reads the dataset given by identifier from HDX and returns Dataset object
 
         Args:
@@ -286,7 +302,8 @@ class Dataset(HDXObject):
             return dataset
         return None
 
-    def _dataset_create_resources_gallery(self) -> None:
+    def _dataset_create_resources_gallery(self):
+        # type: () -> None
         """Creates resource and gallery item objects in dataset
         """
 
@@ -302,7 +319,8 @@ class Dataset(HDXObject):
                 self.init_gallery()
                 self.separate_gallery()
 
-    def _dataset_load_from_hdx(self, id_or_name: str) -> bool:
+    def _dataset_load_from_hdx(self, id_or_name):
+        # type: (str) -> bool
         """Loads the dataset given by either id or name from HDX
 
         Args:
@@ -317,7 +335,8 @@ class Dataset(HDXObject):
         self._dataset_create_resources_gallery()
         return True
 
-    def check_required_fields(self, ignore_dataset_id=False) -> None:
+    def check_required_fields(self, ignore_dataset_id=False):
+        #type: (...) -> None
         """Check that metadata for dataset and its resources and gallery is complete. (ignore_dataset_id is not used.)
 
         Returns:
@@ -332,7 +351,8 @@ class Dataset(HDXObject):
         for galleryitem in self.gallery:
             galleryitem.check_required_fields(ignore_dataset_id=True)
 
-    def _dataset_merge_hdx_update(self, update_resources: bool, update_gallery: bool) -> None:
+    def _dataset_merge_hdx_update(self, update_resources, update_gallery):
+        # type: (bool, bool) -> None
         """Helper method to check if dataset or its resources or gallery items exist and update them
 
         Args:
@@ -402,7 +422,8 @@ class Dataset(HDXObject):
                     old_galleryitem.create_in_hdx()
                     self.gallery.append(old_galleryitem)
 
-    def update_in_hdx(self, update_resources: Optional[bool] = True, update_gallery: Optional[bool] = True) -> None:
+    def update_in_hdx(self, update_resources = True, update_gallery = True):
+        # type: (Optional[bool], Optional[bool]) -> None
         """Check if dataset exists in HDX and if so, update it
 
         Args:
@@ -425,7 +446,8 @@ class Dataset(HDXObject):
                 raise HDXError('No existing dataset to update!')
         self._dataset_merge_hdx_update(update_resources, update_gallery)
 
-    def create_in_hdx(self) -> None:
+    def create_in_hdx(self):
+        # type: () -> None
         """Check if dataset exists in HDX and if so, update it, otherwise create it
 
         Returns:
@@ -472,7 +494,8 @@ class Dataset(HDXObject):
                 galleryitem.check_required_fields()
                 galleryitem.create_in_hdx()
 
-    def delete_from_hdx(self) -> None:
+    def delete_from_hdx(self):
+        # type: () -> None
         """Deletes a dataset from HDX.
 
         Returns:
@@ -481,8 +504,8 @@ class Dataset(HDXObject):
         self._delete_from_hdx('dataset', 'id')
 
     @staticmethod
-    def search_in_hdx(query: str, include_gallery: Optional[bool] = True, **kwargs) -> \
-            List['Dataset']:
+    def search_in_hdx(query, include_gallery = True, **kwargs):
+        # type: (str, Optional[bool], Any) -> List['Dataset']
         """Searches for datasets in HDX
 
         Args:
@@ -535,8 +558,8 @@ class Dataset(HDXObject):
         return all_datasets
 
     @staticmethod
-    def get_all_datasets(include_gallery: Optional[bool] = True, **kwargs) -> List[
-        'Dataset']:
+    def get_all_datasets(include_gallery = True, **kwargs):
+        # type: (Optional[bool]) -> List['Dataset']
         """Get all datasets in HDX
 
         Args:
@@ -551,7 +574,8 @@ class Dataset(HDXObject):
         return Dataset.search_in_hdx('', include_gallery, **kwargs)
 
     @staticmethod
-    def get_all_resources(datasets: List['Dataset']) -> List['Resource']:
+    def get_all_resources(datasets):
+        # type: (List['Dataset']) -> List['Resource']
         """Get all resources from a list of datasets (such as returned by search)
 
         Args:
@@ -566,7 +590,8 @@ class Dataset(HDXObject):
                 resources.append(resource)
         return resources
 
-    def get_dataset_date_as_datetime(self) -> Optional[datetime.datetime]:
+    def get_dataset_date_as_datetime(self):
+        # type: () -> Optional[datetime.datetime]
         """Get dataset date as datetime.datetime object.
 
         Returns:
@@ -578,7 +603,8 @@ class Dataset(HDXObject):
         else:
             return None
 
-    def get_dataset_date(self, date_format: Optional[str] = None) -> Optional[str]:
+    def get_dataset_date(self, date_format = None):
+        # type: (Optional[str]) -> Optional[str]
         """Get dataset date as string in specified format. If no format is supplied, an ISO 8601 string is returned.
 
         Args:
@@ -596,7 +622,8 @@ class Dataset(HDXObject):
         else:
             return None
 
-    def set_dataset_date_from_datetime(self, dataset_date: datetime.datetime) -> None:
+    def set_dataset_date_from_datetime(self, dataset_date):
+        # type: (datetime.datetime) -> None
         """Set dataset date from datetime.datetime object
 
         Args:
@@ -607,7 +634,8 @@ class Dataset(HDXObject):
         """
         self.data['dataset_date'] = dataset_date.strftime('%m/%d/%Y')
 
-    def set_dataset_date(self, dataset_date: str, date_format: Optional[str] = None) -> None:
+    def set_dataset_date(self, dataset_date, date_format = None):
+        # type: (str, Optional[str]) -> None
         """Set dataset date from string using specified format. If no format is supplied, the function will guess.
         For unambiguous formats, this should be fine.
 
@@ -631,7 +659,8 @@ class Dataset(HDXObject):
         self.set_dataset_date_from_datetime(parsed_date)
 
     @staticmethod
-    def transform_update_frequency(frequency: str) -> str:
+    def transform_update_frequency(frequency):
+        # type: (str) -> str
         """Get numeric update frequency (as string since that is required field format) from textual representation or
         vice versa (eg. 'Every month' = '30', '30' = 'Every month')
 
@@ -643,7 +672,8 @@ class Dataset(HDXObject):
         """
         return Dataset.update_frequencies.get(frequency.lower())
 
-    def get_expected_update_frequency(self) -> Optional[str]:
+    def get_expected_update_frequency(self):
+        # type: () -> Optional[str]
         """Get expected update frequency (in textual rather than numeric form)
 
         Returns:
@@ -655,7 +685,8 @@ class Dataset(HDXObject):
         else:
             return None
 
-    def set_expected_update_frequency(self, update_frequency: str) -> None:
+    def set_expected_update_frequency(self, update_frequency):
+        # type: (str) -> None
         """Set expected update frequency
 
         Args:
@@ -672,7 +703,8 @@ class Dataset(HDXObject):
             raise HDXError('Invalid update frequency supplied!')
         self.data['data_update_frequency'] = update_frequency
 
-    def get_tags(self) -> List[str]:
+    def get_tags(self):
+        # type: () -> List[str]
         """Return the dataset's list of tags
 
         Returns:
@@ -683,7 +715,8 @@ class Dataset(HDXObject):
             return list()
         return [x['name'] for x in tags]
 
-    def add_tag(self, tag: str) -> None:
+    def add_tag(self, tag):
+        # type: (str) -> None
         """Add a tag
 
         Args:
@@ -701,7 +734,8 @@ class Dataset(HDXObject):
         tags.append({'name': tag})
         self.data['tags'] = tags
 
-    def add_tags(self, tags: List[str]) -> None:
+    def add_tags(self, tags):
+        # type: (List[str]) -> None
         """Add a list of tag
 
         Args:
@@ -713,7 +747,8 @@ class Dataset(HDXObject):
         for tag in tags:
             self.add_tag(tag)
 
-    def get_location(self) -> List[str]:
+    def get_location(self):
+        # type: () -> List[str]
         """Return the dataset's location
 
         Returns:
@@ -724,7 +759,8 @@ class Dataset(HDXObject):
             return list()
         return [Location.get_country_name_from_iso3(x['name']) for x in countries]
 
-    def add_country_location(self, country: str) -> None:
+    def add_country_location(self, country):
+        # type: (str) -> None
         """Add a country. If an iso 3 code is not provided, value is parsed and if it is a valid country name,
         converted to an iso 3 code. If the country is already added, it is ignored.
 
@@ -746,7 +782,8 @@ class Dataset(HDXObject):
         countries.append({'name': iso3})
         self.data['groups'] = countries
 
-    def add_country_locations(self, countries: List[str]) -> None:
+    def add_country_locations(self, countries):
+        # type: (List[str]) -> None
         """Add a list of countries. If iso 3 codes are not provided, values are parsed and where they are valid country
         names, converted to iso 3 codes. If any country is already added, it is ignored.
 
@@ -759,7 +796,8 @@ class Dataset(HDXObject):
         for country in countries:
             self.add_country_location(country)
 
-    def add_continent_location(self, continent: str) -> None:
+    def add_continent_location(self, continent):
+        # type: (str) -> None
         """Add all countries in a  continent. If a 2 letter continent code is not provided, value is parsed and if it
         is a valid continent name, converted to a 2 letter code. If any country is already added, it is ignored.
 

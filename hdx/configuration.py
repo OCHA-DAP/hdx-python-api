@@ -101,7 +101,8 @@ class Configuration(UserDict):
         if self.hdx_site not in self.data:
             raise ConfigurationError('%s not defined in configuration!' % self.hdx_site)
 
-    def get_api_key(self) -> Optional[str]:
+    def get_api_key(self):
+        # type: () -> Optional[str]
         """
 
         Returns:
@@ -112,7 +113,8 @@ class Configuration(UserDict):
             return None
         return self.data['api_key']
 
-    def get_hdx_site_url(self) -> str:
+    def get_hdx_site_url(self):
+        # type: () -> str
         """
 
         Returns:
@@ -121,7 +123,8 @@ class Configuration(UserDict):
         """
         return self.data[self.hdx_site]['url']
 
-    def _get_credentials(self) -> tuple:
+    def _get_credentials(self):
+        # type: () -> tuple
         """
 
         Returns:
@@ -136,7 +139,8 @@ class Configuration(UserDict):
             return '', ''
 
     @staticmethod
-    def load_api_key(path: str) -> str:
+    def load_api_key(path):
+        # type: (str) -> str
         """
         Load HDX api key
 
@@ -155,7 +159,8 @@ class Configuration(UserDict):
         return apikey
 
     @staticmethod
-    def read() -> 'Configuration':
+    def read():
+        # type: () -> 'Configuration'
         """
         Read the HDX configuration
 
@@ -168,7 +173,8 @@ class Configuration(UserDict):
         return hdx.configuration
 
     @staticmethod
-    def remoteckan() -> ckanapi.RemoteCKAN:
+    def remoteckan():
+        # type: () -> ckanapi.RemoteCKAN
         """
         Return the remote CKAN object (see ckanapi library)
 
@@ -183,7 +189,8 @@ class Configuration(UserDict):
         return hdx.remoteckan
 
     @staticmethod
-    def create(**kwargs) -> 'Configuration':
+    def create(**kwargs):
+        # type: (...) -> 'Configuration'
         """
         Create
 

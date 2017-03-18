@@ -11,7 +11,8 @@ class LoggingError(Exception):
     pass
 
 
-def setup_logging(**kwargs) -> None:
+def setup_logging(**kwargs):
+    # type: (...) -> None
     """Setup logging configuration
 
     Args:

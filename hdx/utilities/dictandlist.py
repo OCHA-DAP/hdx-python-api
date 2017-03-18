@@ -7,7 +7,8 @@ from typing import List, Optional, TypeVar, Any, Callable
 DictUpperBound = TypeVar('T', bound='dict')
 
 
-def merge_two_dictionaries(a: DictUpperBound, b: DictUpperBound) -> DictUpperBound:
+def merge_two_dictionaries(a, b):
+    # type: (DictUpperBound, DictUpperBound) -> DictUpperBound
     """Merges b into a and returns merged result
 
     NOTE: tuples and arbitrary objects are not handled as it is totally ambiguous what should happen
@@ -52,7 +53,8 @@ def merge_two_dictionaries(a: DictUpperBound, b: DictUpperBound) -> DictUpperBou
     return a
 
 
-def merge_dictionaries(dicts: List[DictUpperBound]) -> DictUpperBound:
+def merge_dictionaries(dicts):
+    # type: (List[DictUpperBound]) -> DictUpperBound
     """Merges all dictionaries in dicts into a single dictionary and returns result
 
     Args:
@@ -68,7 +70,8 @@ def merge_dictionaries(dicts: List[DictUpperBound]) -> DictUpperBound:
     return dict1
 
 
-def dict_diff(d1: DictUpperBound, d2: DictUpperBound, no_key: Optional[str] = '<KEYNOTFOUND>') -> dict:
+def dict_diff(d1, d2, no_key = '<KEYNOTFOUND>'):
+    # type: (DictUpperBound, DictUpperBound, Optional[str]) -> dict
     """Compares two dictionaries
 
     Args:
@@ -89,7 +92,8 @@ def dict_diff(d1: DictUpperBound, d2: DictUpperBound, no_key: Optional[str] = '<
     return diff
 
 
-def dict_of_lists_add(dictionary: DictUpperBound, key: Any, value: Any) -> None:
+def dict_of_lists_add(dictionary, key, value):
+    # type: (DictUpperBound, Any, Any) -> None
     """Add value to a list in a dictionary by key
 
     Args:
@@ -106,7 +110,8 @@ def dict_of_lists_add(dictionary: DictUpperBound, key: Any, value: Any) -> None:
     dictionary[key] = list_objs
 
 
-def list_distribute_contents_simple(input_list: List[Any], function: Callable[[Any], Any] = lambda x: x) -> List[Any]:
+def list_distribute_contents_simple(input_list, function = lambda x: x):
+    # type: (List[Any], Callable[[Any], Any]) -> List[Any]
     """Distribute the contents of a list eg. [1, 1, 1, 2, 2, 3] -> [1, 2, 3, 1, 2, 1]. List can contain complex types
     like dictionaries in which case the function can return the appropriate value eg.  lambda x: x[KEY]
 
@@ -137,7 +142,8 @@ def list_distribute_contents_simple(input_list: List[Any], function: Callable[[A
     return output_list
 
 
-def list_distribute_contents(input_list: List[Any], function: Callable[[Any], Any] = lambda x: x) -> List[Any]:
+def list_distribute_contents(input_list, function = lambda x: x):
+    # type: (List[Any], Callable[[Any], Any]) -> List[Any]
     """Distribute the contents of a list eg. [1, 1, 1, 2, 2, 3] -> [1, 2, 1, 2, 1, 3]. List can contain complex types
     like dictionaries in which case the function can return the appropriate value eg.  lambda x: x[KEY]
 
