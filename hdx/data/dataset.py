@@ -10,6 +10,8 @@ from os.path import join
 from typing import Any, List, Optional
 
 from dateutil import parser
+import six
+import six.moves
 
 from hdx.configuration import Configuration
 from hdx.data.galleryitem import GalleryItem
@@ -507,7 +509,7 @@ class Dataset(HDXObject):
         dataset = Dataset()
         total_rows = kwargs.get('rows', sys.maxsize)
         start = kwargs.get('start', 0)
-        for page in range(total_rows // 1000 + 1):
+        for page in six.moves.range(total_rows // 1000 + 1):
             pagetimes1000 = page * 1000
             kwargs['start'] = start + pagetimes1000
             rows_left = total_rows - pagetimes1000
@@ -622,12 +624,12 @@ class Dataset(HDXObject):
             try:
                 parsed_date = parser.parse(dataset_date)
             except (ValueError, OverflowError) as e:
-                raise HDXError('Invalid dataset date!') from e
+                six.raise_from(HDXError('Invalid dataset date!'),e)
         else:
             try:
                 parsed_date = datetime.datetime.strptime(dataset_date, date_format)
             except ValueError as e:
-                raise HDXError('Invalid dataset date!') from e
+                six.raise_from(HDXError('Invalid dataset date!'),e)
         self.set_dataset_date_from_datetime(parsed_date)
 
     @staticmethod

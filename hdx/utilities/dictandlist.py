@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Dict and List utilities"""
 import itertools
-from collections import UserDict
+import six
+from six.moves import UserDict
 from typing import List, Optional, TypeVar, Any, Callable
 
 DictUpperBound = TypeVar('T', bound='dict')
@@ -23,7 +24,7 @@ def merge_two_dictionaries(a: DictUpperBound, b: DictUpperBound) -> DictUpperBou
     # ## debug output
     # sys.stderr.write("DEBUG: %s to %s\n" %(b,a))
     try:
-        if a is None or isinstance(a, str) or isinstance(a, str) or isinstance(a, int) or isinstance(a, int) \
+        if a is None or isinstance(a, six.text_type) or isinstance(a, str) or isinstance(a, int) \
                 or isinstance(a, float):
             # border case for first run or if a is a primitive
             a = b

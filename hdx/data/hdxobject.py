@@ -5,7 +5,8 @@ New HDX objects should extend this in similar fashion to Resource for example.
 import abc
 import copy
 import logging
-from collections import UserDict
+import six
+from six.moves import UserDict
 from typing import Optional, List, Tuple, TypeVar, Union
 
 from ckanapi.errors import NotFound
@@ -23,7 +24,7 @@ class HDXError(Exception):
     pass
 
 
-class HDXObject(UserDict):
+class HDXObject(UserDict,object):
     """HDXObject abstract class containing helper functions for creating, checking, and updating HDX objects.
     New HDX objects should extend this in similar fashion to Resource for example.
 
@@ -105,7 +106,7 @@ class HDXObject(UserDict):
         except NotFound:
             return False, "%s=%s: not found!" % (fieldname, value)
         except Exception as e:
-            raise HDXError('Failed when trying to read: %s=%s! (POST)' % (fieldname, value)) from e
+            six.raise_from(HDXError('Failed when trying to read: %s=%s! (POST)' % (fieldname, value)),e)
 
     def _load_from_hdx(self, object_type: str, id_field: str) -> bool:
         """Helper method to load the HDX object given by identifier from HDX
@@ -248,7 +249,7 @@ class HDXObject(UserDict):
                                                           requests_kwargs={
                                                               'auth': Configuration.read()._get_credentials()})
         except Exception as e:
-            raise HDXError('Failed when trying to %s %s! (POST)' % (action, self.data[id_field_name])) from e
+            six.raise_from(HDXError('Failed when trying to %s %s! (POST)' % (action, self.data[id_field_name])),e)
         finally:
             if file_to_upload and file:
                 file.close()

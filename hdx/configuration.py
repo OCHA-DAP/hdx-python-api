@@ -2,7 +2,7 @@
 """Configuration for HDX"""
 import logging
 from base64 import b64decode
-from collections import UserDict
+from six.moves import UserDict
 from os.path import expanduser, join
 from typing import Optional
 
@@ -20,7 +20,7 @@ class ConfigurationError(Exception):
     pass
 
 
-class Configuration(UserDict):
+class Configuration(UserDict,object):
     """Configuration for HDX
 
     Args:
