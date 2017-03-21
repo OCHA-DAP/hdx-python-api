@@ -64,7 +64,11 @@ class Dataset(HDXObject):
                  include_gallery: Optional[bool] = True):
         if not initial_data:
             initial_data = dict()
-        super(Dataset, self).__init__(initial_data)
+        super(Dataset,self).__init__({})
+        # workaround: python2 IterableUserDict does not call __setitem__ in __init__,
+        # while python3 collections.UserDict does
+        for d in initial_data:
+            self[d] = initial_data[d]
         self.include_gallery = include_gallery
         self.init_resources()
         self.init_gallery()

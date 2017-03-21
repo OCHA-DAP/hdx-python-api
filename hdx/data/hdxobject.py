@@ -6,7 +6,6 @@ import abc
 import copy
 import logging
 import six
-from six.moves import UserDict
 from typing import Optional, List, Tuple, TypeVar, Union
 
 from ckanapi.errors import NotFound
@@ -14,6 +13,11 @@ from ckanapi.errors import NotFound
 from hdx.configuration import Configuration
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml_into_existing_dict, load_json_into_existing_dict
+
+try:
+    from UserDict import IterableUserDict as dict_class
+except:
+    from collections import UserDict as dict_class
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +28,7 @@ class HDXError(Exception):
     pass
 
 
-class HDXObject(UserDict,object):
+class HDXObject(dict_class,object):
     """HDXObject abstract class containing helper functions for creating, checking, and updating HDX objects.
     New HDX objects should extend this in similar fashion to Resource for example.
 
