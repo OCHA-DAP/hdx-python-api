@@ -2,7 +2,7 @@
 """Dict and List utilities"""
 import itertools
 import six
-from six.moves import UserDict
+from six.moves import UserDict, zip_longest
 from typing import List, Optional, TypeVar, Any, Callable
 
 DictUpperBound = TypeVar('T', bound='dict')
@@ -154,7 +154,7 @@ def list_distribute_contents(input_list: List[Any], function: Callable[[Any], An
     def riffle_shuffle(piles_list):
         def grouper(n, iterable, fillvalue=None):
             args = [iter(iterable)] * n
-            return itertools.zip_longest(fillvalue=fillvalue, *args)
+            return zip_longest(fillvalue=fillvalue, *args)
 
         if not piles_list:
             return []
@@ -163,7 +163,7 @@ def list_distribute_contents(input_list: List[Any], function: Callable[[Any], An
         pile_iters_list = [iter(pile) for pile in piles_list]
         pile_sizes_list = [[pile_position] * len(pile) for pile_position, pile in enumerate(piles_list)]
         grouped_rows = grouper(width, itertools.chain.from_iterable(pile_sizes_list))
-        grouped_columns = itertools.zip_longest(*grouped_rows)
+        grouped_columns = zip_longest(*grouped_rows)
         shuffled_pile = [next(pile_iters_list[position]) for position in itertools.chain.from_iterable(grouped_columns)
                          if position is not None]
         return shuffled_pile
