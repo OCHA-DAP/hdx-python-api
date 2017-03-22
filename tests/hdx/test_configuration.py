@@ -310,3 +310,9 @@ class TestConfiguration:
         assert actual_configuration.get_api_key() == '12345'
         assert actual_configuration.get_hdx_site_url() == 'https://data.humdata.org/'
         assert actual_configuration._get_credentials() == ('', '')
+
+    def test_set_hdx_key_value(self, project_config_yaml):
+        actual_configuration = Configuration.create(hdx_site='prod', hdx_key="TEST_HDX_KEY",
+                                                    hdx_config_dict={},
+                                                    project_config_yaml=project_config_yaml)
+        assert actual_configuration.get_api_key() == 'TEST_HDX_KEY'
