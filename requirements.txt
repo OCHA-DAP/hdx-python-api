@@ -9,3 +9,4 @@ python-dateutil==2.6.0
 requests==2.11.1
 scraperwiki==0.5.1
 typing==3.5.2.2
+six==1.10.0

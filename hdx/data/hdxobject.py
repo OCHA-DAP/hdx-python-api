@@ -5,14 +5,19 @@ New HDX objects should extend this in similar fashion to Resource for example.
 import abc
 import copy
 import logging
-from collections import UserDict
 from typing import Optional, List, Tuple, TypeVar, Union, Any
+import six
 
 from ckanapi.errors import NotFound
 
 from hdx.configuration import Configuration
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml_into_existing_dict, load_json_into_existing_dict
+
+try:
+    from UserDict import IterableUserDict as dict_class
+except:
+    from collections import UserDict as dict_class
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +28,7 @@ class HDXError(Exception):
     pass
 
 
-class HDXObject(UserDict):
+class HDXObject(dict_class,object):
     """HDXObject abstract class containing helper functions for creating, checking, and updating HDX objects.
     New HDX objects should extend this in similar fashion to Resource for example.
 
@@ -109,7 +114,7 @@ class HDXObject(UserDict):
         except NotFound:
             return False, "%s=%s: not found!" % (fieldname, value)
         except Exception as e:
-            raise HDXError('Failed when trying to read: %s=%s! (POST)' % (fieldname, value)) from e
+            six.raise_from(HDXError('Failed when trying to read: %s=%s! (POST)' % (fieldname, value)),e)
 
     def _load_from_hdx(self, object_type, id_field):
         # type: (str, str) -> bool
@@ -262,7 +267,7 @@ class HDXObject(UserDict):
                                                           requests_kwargs={
                                                               'auth': Configuration.read()._get_credentials()})
         except Exception as e:
-            raise HDXError('Failed when trying to %s %s! (POST)' % (action, self.data[id_field_name])) from e
+            six.raise_from(HDXError('Failed when trying to %s %s! (POST)' % (action, self.data[id_field_name])),e)
         finally:
             if file_to_upload and file:
                 file.close()

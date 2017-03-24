@@ -11,7 +11,7 @@ logging_kwargs.update({
 })
 
 from . import my_testfn, my_excfn, testresult
-from hdx.facades.scraperwiki import facade
+from hdx.facades.hdx_scraperwiki import facade
 
 
 class TestScraperWiki:

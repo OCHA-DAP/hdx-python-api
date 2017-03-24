@@ -5,7 +5,7 @@ from typing import Callable, Any
 
 from hdx.configuration import Configuration
 from hdx.facades import logging_kwargs
-from hdx.logging import setup_logging
+from hdx.hdx_logging import setup_logging
 
 logger = logging.getLogger(__name__)
 setup_logging(**logging_kwargs)

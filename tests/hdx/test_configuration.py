@@ -6,6 +6,10 @@ import pytest
 
 from hdx.configuration import Configuration, ConfigurationError
 
+try:
+    FILENOTFOUND_EXCTYPE = FileNotFoundError
+except:
+    FILENOTFOUND_EXCTYPE = IOError
 
 class TestConfiguration:
     @pytest.fixture(scope='class')
@@ -21,21 +25,21 @@ class TestConfiguration:
         return join('fixtures', 'config', 'project_configuration.json')
 
     def test_init(self, hdx_key_file, project_config_json, project_config_yaml):
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(FILENOTFOUND_EXCTYPE):
             Configuration(hdx_key_file='NOT_EXIST', project_config_yaml=project_config_yaml)
 
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(FILENOTFOUND_EXCTYPE):
             Configuration(hdx_key_file=hdx_key_file, hdx_config_yaml='NOT_EXIST',
                           project_config_yaml=project_config_yaml)
 
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(FILENOTFOUND_EXCTYPE):
             Configuration(hdx_key_file=hdx_key_file, hdx_config_json='NOT_EXIST',
                           project_config_yaml=project_config_yaml)
 
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(FILENOTFOUND_EXCTYPE):
             Configuration(hdx_key_file=hdx_key_file, project_config_yaml='NOT_EXIST')
 
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(FILENOTFOUND_EXCTYPE):
             Configuration(hdx_key_file=hdx_key_file, project_config_json='NOT_EXIST')
 
         with pytest.raises(ConfigurationError):

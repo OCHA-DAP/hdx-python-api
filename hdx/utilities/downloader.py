@@ -5,7 +5,8 @@ from os.path import splitext, join, exists
 from posixpath import basename
 from tempfile import gettempdir
 from typing import Optional
-from urllib.parse import urlparse
+import six
+from six.moves.urllib.parse import urlparse
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -75,7 +76,7 @@ class Download(object):
             self.response = self.session.get(url, stream=True, timeout=timeout)
             self.response.raise_for_status()
         except Exception as e:
-            raise DownloadError('Setup of Streaming Download of %s failed!' % url) from e
+            six.raise_from(DownloadError('Setup of Streaming Download of %s failed!' % url),e)
 
     def hash_stream(self, url):
         # type: (str) -> str
@@ -95,7 +96,7 @@ class Download(object):
                     md5hash.update(chunk)
             return md5hash.hexdigest()
         except Exception as e:
-            raise DownloadError('Download of %s failed in retrieval of stream!' % url) from e
+            six.raise_from(DownloadError('Download of %s failed in retrieval of stream!' % url),e)
 
     def stream_file(self, url, folder = None):
         # type: (str, Optional[str]) -> str
@@ -120,7 +121,7 @@ class Download(object):
                     f.flush()
             return f.name
         except Exception as e:
-            raise DownloadError('Download of %s failed in retrieval of stream!' % url) from e
+            six.raise_from(DownloadError('Download of %s failed in retrieval of stream!' % url),e)
         finally:
             if f:
                 f.close()
@@ -157,5 +158,5 @@ class Download(object):
             self.response = self.session.get(url, timeout=timeout)
             self.response.raise_for_status()
         except Exception as e:
-            raise DownloadError('Download of %s failed!' % url) from e
+            six.raise_from(DownloadError('Download of %s failed!' % url),e)
         return self.response

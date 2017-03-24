@@ -208,7 +208,7 @@ If you wish to change the logging configuration from the defaults, you will need
 
 If not using facade:
 
-    from hdx.logging import setup_logging  
+    from hdx.hdx_logging import setup_logging
     ...  
     logger = logging.getLogger(__name__)  
     setup_logging(KEYWORD ARGUMENTS)

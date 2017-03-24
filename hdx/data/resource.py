@@ -5,6 +5,7 @@ import logging
 from os import unlink
 from os.path import join
 from typing import Optional, List, Tuple, Any
+import six
 
 from hdx.configuration import Configuration
 from hdx.utilities.downloader import Download
@@ -296,7 +297,7 @@ class Resource(HDXObject):
                 offset += chunksize
                 logger.debug('Uploading: %s' % offset)
         except Exception as e:
-            raise HDXError('Upload to datastore of %s failed!' % url) from e
+            six.raise_from(HDXError('Upload to datastore of %s failed!' % url),e)
         finally:
             if f:
                 f.close()
