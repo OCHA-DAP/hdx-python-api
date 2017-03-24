@@ -74,7 +74,8 @@ class HDXObject(dict_class,object):
         """
         self.data = load_yaml_into_existing_dict(self.data, path)
 
-    def update_from_json(self, path: str):
+    def update_from_json(self, path):
+        # type: (str) -> Any
         """Update metadata with static metadata from JSON file
 
         Args:

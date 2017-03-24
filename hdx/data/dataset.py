@@ -223,7 +223,7 @@ class Dataset(HDXObject):
             return
         raise HDXError("Type %s cannot be added as a gallery item!" % type(galleryitem).__name__)
 
-    def add_update_gallery(self, gallery: List[Any]):
+    def add_update_gallery(self, gallery):
         """Add new or update existing gallery items with new metadata to the dataset
 
         Args:

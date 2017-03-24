@@ -3,7 +3,7 @@
 import logging
 from base64 import b64decode
 from os.path import expanduser, join
-from typing import Optional
+from typing import Optional, Any
 
 import ckanapi
 
@@ -41,6 +41,7 @@ class Configuration(dict_class,object):
     """
 
     def __init__(self, **kwargs):
+        # type: (Any) -> None
         super(Configuration, self).__init__()
 
         hdx_config_found = False
