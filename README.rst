@@ -929,11 +929,13 @@ straightforward. This is another feature of the HDX Python library that
 makes putting data programmatically into HDX a breeze.
 
 .. |Build_Status| image:: https://travis-ci.org/OCHA-DAP/hdx-python-api.svg?branch=master
-:alt: Travis-CI Build Status
-        :target: https://travis-ci.org/OCHA-DAP/hdx-python-api
+
+    :alt: Travis-CI Build Status
+    :target: https://travis-ci.org/OCHA-DAP/hdx-python-api
 .. |Coverage_Status| image:: https://coveralls.io/repos/github/OCHA-DAP/hdx-python-api/badge.svg?branch=master
-:alt: Coveralls Build Status
-        :target: https://coveralls.io/github/OCHA-DAP/hdx-python-api?branch=master
+
+    :alt: Coveralls Build Status
+    :target: https://coveralls.io/github/OCHA-DAP/hdx-python-api?branch=master
 .. |A_Quick_Example| image:: https://humanitarian.atlassian.net/wiki/download/attachments/6356996/HDXPythonLibrary.gif?version=1&modificationDate=1469520811486&api=v2
 .. |UML_Diagram| image:: https://humanitarian.atlassian.net/wiki/download/attachments/8028192/UMLDiagram.png?api=v2
 
