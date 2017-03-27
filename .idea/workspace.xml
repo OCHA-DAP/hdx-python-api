@@ -4,12 +4,9 @@
     <option name="CUSTOM_SCOPE_NAME" value="Project and Libraries" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78dced69-aba6-482d-97c8-9f71833379e5" name="Default" comment="Remove ignored git files&#10;Add documentation files">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+    <list default="true" id="78dced69-aba6-482d-97c8-9f71833379e5" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/README.md" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hdx/version.txt" afterPath="$PROJECT_DIR$/hdx/version.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/setup.py" afterPath="$PROJECT_DIR$/setup.py" />
     </list>
     <ignored path="hdx-python-api.iws" />
@@ -64,11 +61,33 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="setup.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.travis.yml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="450">
+              <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="setup.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/setup.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="550">
-              <caret line="57" column="22" lean-forward="false" selection-start-line="57" selection-start-column="22" selection-end-line="57" selection-end-column="22" />
+            <state relative-caret-position="568">
+              <caret line="69" column="35" lean-forward="false" selection-start-line="69" selection-start-column="35" selection-end-line="69" selection-end-column="35" />
+              <folding>
+                <element signature="e#24#38#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LICENSE" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/LICENSE">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -84,7 +103,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="version.txt" pinned="false" current-in-tab="true">
+      <file leaf-file-name="version.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/hdx/version.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
@@ -104,99 +123,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="-1204">
-                <caret line="29" column="0" lean-forward="false" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
-                <folding />
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test_configuration.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/hdx/test_configuration.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3456">
-              <caret line="200" column="77" lean-forward="false" selection-start-line="200" selection-start-column="65" selection-end-line="200" selection-end-column="77" />
-              <folding>
-                <marker date="1490606346884" expanded="true" signature="1778:1939" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="1988:2142" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="2191:2345" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="2424:3516" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="2590:3055" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="2658:2938" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="3185:3453" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="3278:3410" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="3595:4806" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="3907:4743" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="4000:4132" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="4165:4322" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="4349:4439" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="4369:4438" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="4467:4608" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="4540:4607" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="4639:4732" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="4687:4730" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="4885:6194" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="5210:6131" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="5303:5435" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="5468:5611" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="5638:5753" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="5658:5752" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="5781:5936" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="5854:5935" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="5967:6120" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="6015:6083" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="6256:8400" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="6370:8114" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="6433:6565" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="6598:6759" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="6792:6953" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="6989:7153" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="7180:7537" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="7200:7536" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="7565:7811" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="7638:7810" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="7842:8103" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="7890:8065" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="8483:10476" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="8638:10413" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="8701:8833" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="8866:9027" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="9060:9221" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="9257:9421" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="9479:9836" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="9499:9835" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="9864:10110" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="9937:10109" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="10141:10402" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="10189:10364" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="10559:12551" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="10714:12488" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="10807:10939" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="10972:11133" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="11166:11327" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="11363:11527" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="11554:11911" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="11574:11910" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="11939:12185" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="12012:12184" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="12216:12477" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="12264:12439" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test_dataset.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/hdx/data/test_dataset.py">
+      <file leaf-file-name="README.rst" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/README.rst">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -208,20 +139,6 @@
             <state relative-caret-position="198">
               <caret line="14" column="52" lean-forward="false" selection-start-line="14" selection-start-column="40" selection-end-line="14" selection-end-column="52" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test_scraperwiki.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/hdx/facades/test_scraperwiki.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <marker date="1490606346884" expanded="true" signature="415:458" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="529:600" ph="..." />
-                <marker date="1490606346884" expanded="true" signature="663:873" ph="..." />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -352,9 +269,9 @@
         <option value="$PROJECT_DIR$/tests/hdx/test_configuration.py" />
         <option value="$PROJECT_DIR$/tests/hdx/utilities/test_dictandlist.py" />
         <option value="$PROJECT_DIR$/hdx/data/dataset.py" />
-        <option value="$PROJECT_DIR$/setup.py" />
         <option value="$PROJECT_DIR$/hdx/version.txt" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/setup.py" />
       </list>
     </option>
   </component>
@@ -556,7 +473,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../VirtualEnvs" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.build" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="prop_add_unversioned_files" value="true" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="158" />
@@ -1249,13 +1166,6 @@
       <option name="presentableId" value="Default" />
       <updated>1464695506411</updated>
     </task>
-    <task id="LOCAL-00206" summary="Version 0.70 - fix tests">
-      <created>1483513812489</created>
-      <option name="number" value="00206" />
-      <option name="presentableId" value="LOCAL-00206" />
-      <option name="project" value="LOCAL" />
-      <updated>1483513812490</updated>
-    </task>
     <task id="LOCAL-00207" summary="Version 0.70 - have to force explicit separate dependency on CKAN">
       <created>1483515499942</created>
       <option name="number" value="00207" />
@@ -1592,7 +1502,14 @@
       <option name="project" value="LOCAL" />
       <updated>1489757047331</updated>
     </task>
-    <option name="localTasksCounter" value="255" />
+    <task id="LOCAL-00255" summary="Update version, add six and remove Python 3 only from README">
+      <created>1490606560279</created>
+      <option name="number" value="00255" />
+      <option name="presentableId" value="LOCAL-00255" />
+      <option name="project" value="LOCAL" />
+      <updated>1490606560280</updated>
+    </task>
+    <option name="localTasksCounter" value="256" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1631,12 +1548,12 @@
     <frame x="0" y="-1" width="2560" height="1440" extended-state="6" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37653375" sideWeight="0.54578024" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32822084" sideWeight="0.5075637" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4141949" sideWeight="0.35202992" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37653375" sideWeight="0.45421976" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36314985" sideWeight="0.39808917" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32838982" sideWeight="0.49412394" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2714968" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.37653375" sideWeight="0.45421976" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36273006" sideWeight="0.3968949" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32822084" sideWeight="0.49243632" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2714968" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24984066" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1716,7 +1633,6 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Version 0.70 - Increase coverage" />
     <MESSAGE value="Version 0.70 - Make configuration and ckan object module level" />
     <MESSAGE value="Version 0.80 - Make configuration and ckan object module level" />
     <MESSAGE value="Replace package_delete with dataset_purge" />
@@ -1741,7 +1657,8 @@
     <MESSAGE value="Windows uses rd for rm" />
     <MESSAGE value="Update instructions" />
     <MESSAGE value="Update README" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update README" />
+    <MESSAGE value="Update version, add six and remove Python 3 only from README" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update version, add six and remove Python 3 only from README" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -1764,27 +1681,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/.travis.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test-requirements.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.coveragerc">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/hdx/logging_smtp_configuration.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -2149,14 +2045,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/hdx/data/dataset.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2015">
-          <caret line="551" column="0" lean-forward="false" selection-start-line="551" selection-start-column="0" selection-end-line="551" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/requirements.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -2173,10 +2061,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/setup.py">
+    <entry file="file://$PROJECT_DIR$/hdx/version.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="550">
-          <caret line="57" column="22" lean-forward="false" selection-start-line="57" selection-start-column="22" selection-end-line="57" selection-end-column="22" />
+        <state relative-caret-position="0">
+          <caret line="0" column="3" lean-forward="false" selection-start-line="0" selection-start-column="3" selection-end-line="0" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hdx/data/dataset.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2015">
+          <caret line="551" column="0" lean-forward="false" selection-start-line="551" selection-start-column="0" selection-end-line="551" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.travis.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LICENSE">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -2184,19 +2096,29 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="-1204">
-            <caret line="29" column="0" lean-forward="false" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+          <first_editor relative-caret-position="434">
+            <caret line="120" column="20" lean-forward="true" selection-start-line="120" selection-start-column="20" selection-end-line="120" selection-end-column="20" />
             <folding />
           </first_editor>
           <second_editor />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/hdx/version.txt">
+    <entry file="file://$PROJECT_DIR$/README.rst">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="0" column="3" lean-forward="false" selection-start-line="0" selection-start-column="3" selection-end-line="0" selection-end-column="3" />
+          <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/setup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="568">
+          <caret line="69" column="35" lean-forward="false" selection-start-line="69" selection-start-column="35" selection-end-line="69" selection-end-column="35" />
+          <folding>
+            <element signature="e#24#38#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
