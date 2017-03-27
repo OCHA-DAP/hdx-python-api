@@ -286,10 +286,10 @@ the code below):
 
     from hdx.facades.simple import facade
 
-    def main():  
+    def main():
         ***YOUR CODE HERE***
 
-    if __name__ == '__main__':  
+    if __name__ == '__main__':
         facade(main)
 
 Customising the Configuration
@@ -307,8 +307,8 @@ arguments ie.
 
 ::
 
-    from hdx.configuration import Configuration  
-    ...  
+    from hdx.configuration import Configuration
+    ...
     Configuration.create(KEYWORD ARGUMENTS)
 
 ``KEYWORD ARGUMENTS`` can be:
@@ -367,8 +367,8 @@ If not using facade:
 ::
 
     from hdx.hdx_logging import setup_logging
-    ...  
-    logger = logging.getLogger(__name__)  
+    ...
+    logger = logging.getLogger(__name__)
     setup_logging(KEYWORD ARGUMENTS)
 
 If using facade:
@@ -377,7 +377,7 @@ If using facade:
 
     from hdx.facades import logging_kwargs
 
-    logging_kwargs.update(DICTIONARY OF KEYWORD ARGUMENTS)  
+    logging_kwargs.update(DICTIONARY OF KEYWORD ARGUMENTS)
     from hdx.facades.simple import facade
 
 ``KEYWORD ARGUMENTS`` can be:
@@ -417,9 +417,9 @@ YAML file that can be passed as the ``smtp_config_yaml`` parameter:
 
 ::
 
-    handlers:  
-        error_mail_handler:  
-            toaddrs: EMAIL_ADDRESSES  
+    handlers:
+        error_mail_handler:
+            toaddrs: EMAIL_ADDRESSES
             subject: "RUN FAILED: MY_PROJECT_NAME"
 
 Unless you override it, the mail server ``mailhost`` for the default
@@ -437,10 +437,10 @@ Then use the logger like this:
 
 ::
 
-    logger.debug('DEBUG message')  
-    logger.info('INFORMATION message')  
-    logger.warning('WARNING message')  
-    logger.error('ERROR message')  
+    logger.debug('DEBUG message')
+    logger.info('INFORMATION message')
+    logger.warning('WARNING message')
+    logger.error('ERROR message')
     logger.critical('CRITICAL error message')
 
 Operations on HDX Objects
@@ -486,8 +486,8 @@ metadata. For example:
 
     from hdx.data.dataset import Dataset
 
-    dataset = Dataset({  
-        'name': slugified_name,  
+    dataset = Dataset({
+        'name': slugified_name,
         'title': title
     })
 
@@ -528,16 +528,16 @@ following form:
 
 ::
 
-    owner_org: "acled"  
-    maintainer: "acled"  
-    ...  
-    tags:  
-        - name: "conflict"  
-        - name: "political violence"  
-    gallery:  
-        - title: "Dynamic Map: Political Conflict in Africa"  
-          type: "visualization"  
-          description: "The dynamic maps below have been drawn from ACLED Version 6."  
+    owner_org: "acled"
+    maintainer: "acled"
+    ...
+    tags:
+        - name: "conflict"
+        - name: "political violence"
+    gallery:
+        - title: "Dynamic Map: Political Conflict in Africa"
+          type: "visualization"
+          description: "The dynamic maps below have been drawn from ACLED Version 6."
     ...
 
 Notice how you can define a gallery with one or more gallery items (each
@@ -587,17 +587,17 @@ call the appropriate \ ``add_update_*`` function, for example:
 
 ::
 
-    resources = [{  
-        'name': xlsx_resourcename,  
-        'format': 'xlsx',  
-        'url': xlsx_url  
-     }, {  
-        'name': csv_resourcename,  
-        'format': 'zipped csv',  
-        'url': csv_url  
-     }]  
-     for resource in resources:  
-         resource['description'] = resource['url'].rsplit('/', 1)[-1]  
+    resources = [{
+        'name': xlsx_resourcename,
+        'format': 'xlsx',
+        'url': xlsx_url
+     }, {
+        'name': csv_resourcename,
+        'format': 'zipped csv',
+        'url': csv_url
+     }]
+     for resource in resources:
+         resource['description'] = resource['url'].rsplit('/', 1)[-1]
      dataset.add_update_resources(resources)
 
 Calling \ ``add_update_resources`` creates a list of HDX Resource
@@ -726,7 +726,7 @@ call the method below:
 ::
 
     locations = dataset.get_location()
-     
+
 
 If you want to add a country, you do as shown below. If you don't
 provide an ISO 3 country code, the text you give will be parsed and
@@ -763,7 +763,7 @@ If you wish to get the current tags, you can use this method:
 ::
 
     tags = dataset.get_tags()
-     
+
 
 If you want to add a tag, you do it like this:
 
@@ -821,9 +821,9 @@ using other related methods eg.
 ::
 
     resource.create_datastore(schema={'id': 'FIELD', 'type': 'TYPE'}, primary_key='PRIMARY_KEY_OF_SCHEMA', delete_first=0 (No) / 1 (Yes) / 2 (If no primary key), path='LOCAL_PATH_OF_UPLOADED_FILE') -> None:
-    resource.create_datastore_from_yaml_schema(yaml_path='PATH_TO_YAML_SCHEMA', delete_first=0 (No) / 1 (Yes) / 2 (If no primary key), path='LOCAL_PATH_OF_UPLOADED_FILE')                     
+    resource.create_datastore_from_yaml_schema(yaml_path='PATH_TO_YAML_SCHEMA', delete_first=0 (No) / 1 (Yes) / 2 (If no primary key), path='LOCAL_PATH_OF_UPLOADED_FILE')
     resource.update_datastore(schema={'id': 'FIELD', 'type': 'TYPE'}, primary_key='PRIMARY_KEY_OF_SCHEMA', path='LOCAL_PATH_OF_UPLOADED_FILE') -> None:
-    resource.update_datastore_from_json_schema(json_path='PATH_TO_JSON_SCHEMA', path='LOCAL_PATH_OF_UPLOADED_FILE')                     
+    resource.update_datastore_from_json_schema(json_path='PATH_TO_JSON_SCHEMA', path='LOCAL_PATH_OF_UPLOADED_FILE')
 
 Working Example
 ---------------
