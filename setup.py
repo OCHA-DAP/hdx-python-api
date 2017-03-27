@@ -55,6 +55,7 @@ requirements = ['ckanapi',
                 'python-dateutil',
                 'requests',
                 'scraperwiki',
+                'six',
                 'typing'
                 ]
 

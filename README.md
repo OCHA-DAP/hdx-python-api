@@ -27,8 +27,6 @@ For more about the purpose and design philosophy, please visit [HDX Python Libra
 ## Usage
 The library has detailed API documentation which can be found here: [http://ocha-dap.github.io/hdx-python-api/](http://ocha-dap.github.io/hdx-python-api/). The code for the library is here: [https://github.com/ocha-dap/hdx-python-api](https://github.com/ocha-dap/hdx-python-api).
 
-Please note that the library only works on Python 3.
-
 ## Getting Started
 ### Creating the API Key File
 
