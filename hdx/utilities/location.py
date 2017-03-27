@@ -13,7 +13,8 @@ class Location(object):
     countries = gc.get_countries().values()
 
     @staticmethod
-    def get_country_name_from_iso3(iso3: str) -> Optional[str]:
+    def get_country_name_from_iso3(iso3):
+        # type: (str) -> Optional[str]
         """Get iso 3 code for country
 
         Args:
@@ -29,7 +30,8 @@ class Location(object):
         return None
 
     @staticmethod
-    def get_iso3_country_code(country: str) -> Tuple[Optional[str], bool]:
+    def get_iso3_country_code(country):
+        # type: (str) -> Tuple[Optional[str], bool]
         """Get iso 3 code for country
 
         Args:
@@ -55,7 +57,8 @@ class Location(object):
         return None, False
 
     @staticmethod
-    def get_countries_in_continent(continent: str, function: Callable[[str], Any] = lambda x: x) -> List[str]:
+    def get_countries_in_continent(continent, function = lambda x: x):
+        # type: (str, Callable[[str], Any]) -> List[str]
         """Get countries (iso 3 codes) in continent
 
         Args:
@@ -74,7 +77,7 @@ class Location(object):
             if continent.lower() == continentdetails['name'].lower():
                 continentcode = code
                 break
-        countries = list()
+        countries = list() # type: List[str]
         if continentcode is None:
             return countries
         for country in Location.countries:

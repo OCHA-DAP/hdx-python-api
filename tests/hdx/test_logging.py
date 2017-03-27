@@ -5,8 +5,12 @@ from os.path import join
 import pytest
 from logging_tree import format
 
-from hdx.logging import setup_logging, LoggingError
+from hdx.hdx_logging import setup_logging, LoggingError
 
+try:
+    FILENOTFOUND_EXCTYPE = FileNotFoundError
+except:
+    FILENOTFOUND_EXCTYPE = IOError
 
 class TestLogging:
     @pytest.fixture(scope='class')
@@ -26,13 +30,13 @@ class TestLogging:
         return join('fixtures', 'config', 'smtp_config.json')
 
     def test_setup_logging(self, logging_config_json, logging_config_yaml, smtp_config_json, smtp_config_yaml):
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(FILENOTFOUND_EXCTYPE):
             setup_logging(smtp_config_json='NOT_EXIST')
 
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(FILENOTFOUND_EXCTYPE):
             setup_logging(logging_config_json='NOT_EXIST', smtp_config_yaml=smtp_config_yaml)
 
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(FILENOTFOUND_EXCTYPE):
             setup_logging(logging_config_yaml='NOT_EXIST', smtp_config_yaml=smtp_config_yaml)
 
         with pytest.raises(LoggingError):

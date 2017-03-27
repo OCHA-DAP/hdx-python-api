@@ -13,7 +13,8 @@ class LoadError(Exception):
     pass
 
 
-def load_and_merge_yaml(paths: List[str]) -> dict:
+def load_and_merge_yaml(paths):
+    # type: (List[str]) -> dict
     """Load multiple YAML files and merge into one dictionary
 
     Args:
@@ -27,7 +28,8 @@ def load_and_merge_yaml(paths: List[str]) -> dict:
     return merge_dictionaries(configs)
 
 
-def load_and_merge_json(paths: List[str]) -> dict:
+def load_and_merge_json(paths):
+    # type: (List[str]) -> dict
     """Load multiple JSON files and merge into one dictionary
 
     Args:
@@ -41,7 +43,8 @@ def load_and_merge_json(paths: List[str]) -> dict:
     return merge_dictionaries(configs)
 
 
-def load_yaml_into_existing_dict(data: dict, path: str) -> dict:
+def load_yaml_into_existing_dict(data, path):
+    # type: (dict, str) -> dict
     """Merge YAML file into existing dictionary
 
     Args:
@@ -55,7 +58,8 @@ def load_yaml_into_existing_dict(data: dict, path: str) -> dict:
     return merge_two_dictionaries(data, yamldict)
 
 
-def load_json_into_existing_dict(data: dict, path: str) -> dict:
+def load_json_into_existing_dict(data, path):
+    # type: (dict, str) -> dict
     """Merge JSON file into existing dictionary
 
     Args:
@@ -69,7 +73,8 @@ def load_json_into_existing_dict(data: dict, path: str) -> dict:
     return merge_two_dictionaries(data, jsondict)
 
 
-def load_yaml(path: str) -> dict:
+def load_yaml(path):
+    # type: (str) -> dict
     """Load YAML file into dictionary
 
     Args:
@@ -85,7 +90,8 @@ def load_yaml(path: str) -> dict:
     return yamldict
 
 
-def load_json(path: str) -> dict:
+def load_json(path):
+    # type: (str) -> dict
     """Load JSON file into dictionary
 
     Args:

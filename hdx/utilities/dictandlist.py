@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 """Dict and List utilities"""
 import itertools
-from collections import UserDict
+import six
+from six.moves import UserDict, zip_longest
 from typing import List, Optional, TypeVar, Any, Callable
 
 DictUpperBound = TypeVar('T', bound='dict')
 
 
-def merge_two_dictionaries(a: DictUpperBound, b: DictUpperBound) -> DictUpperBound:
+def merge_two_dictionaries(a, b):
+    # type: (DictUpperBound, DictUpperBound) -> DictUpperBound
     """Merges b into a and returns merged result
 
     NOTE: tuples and arbitrary objects are not handled as it is totally ambiguous what should happen
@@ -23,7 +25,7 @@ def merge_two_dictionaries(a: DictUpperBound, b: DictUpperBound) -> DictUpperBou
     # ## debug output
     # sys.stderr.write("DEBUG: %s to %s\n" %(b,a))
     try:
-        if a is None or isinstance(a, str) or isinstance(a, str) or isinstance(a, int) or isinstance(a, int) \
+        if a is None or isinstance(a, six.text_type) or isinstance(a, str) or isinstance(a, int) \
                 or isinstance(a, float):
             # border case for first run or if a is a primitive
             a = b
@@ -52,7 +54,8 @@ def merge_two_dictionaries(a: DictUpperBound, b: DictUpperBound) -> DictUpperBou
     return a
 
 
-def merge_dictionaries(dicts: List[DictUpperBound]) -> DictUpperBound:
+def merge_dictionaries(dicts):
+    # type: (List[DictUpperBound]) -> DictUpperBound
     """Merges all dictionaries in dicts into a single dictionary and returns result
 
     Args:
@@ -68,7 +71,8 @@ def merge_dictionaries(dicts: List[DictUpperBound]) -> DictUpperBound:
     return dict1
 
 
-def dict_diff(d1: DictUpperBound, d2: DictUpperBound, no_key: Optional[str] = '<KEYNOTFOUND>') -> dict:
+def dict_diff(d1, d2, no_key = '<KEYNOTFOUND>'):
+    # type: (DictUpperBound, DictUpperBound, Optional[str]) -> dict
     """Compares two dictionaries
 
     Args:
@@ -89,7 +93,8 @@ def dict_diff(d1: DictUpperBound, d2: DictUpperBound, no_key: Optional[str] = '<
     return diff
 
 
-def dict_of_lists_add(dictionary: DictUpperBound, key: Any, value: Any) -> None:
+def dict_of_lists_add(dictionary, key, value):
+    # type: (DictUpperBound, Any, Any) -> None
     """Add value to a list in a dictionary by key
 
     Args:
@@ -106,7 +111,8 @@ def dict_of_lists_add(dictionary: DictUpperBound, key: Any, value: Any) -> None:
     dictionary[key] = list_objs
 
 
-def list_distribute_contents_simple(input_list: List[Any], function: Callable[[Any], Any] = lambda x: x) -> List[Any]:
+def list_distribute_contents_simple(input_list, function = lambda x: x):
+    # type: (List[Any], Callable[[Any], Any]) -> List[Any]
     """Distribute the contents of a list eg. [1, 1, 1, 2, 2, 3] -> [1, 2, 3, 1, 2, 1]. List can contain complex types
     like dictionaries in which case the function can return the appropriate value eg.  lambda x: x[KEY]
 
@@ -137,7 +143,8 @@ def list_distribute_contents_simple(input_list: List[Any], function: Callable[[A
     return output_list
 
 
-def list_distribute_contents(input_list: List[Any], function: Callable[[Any], Any] = lambda x: x) -> List[Any]:
+def list_distribute_contents(input_list, function = lambda x: x):
+    # type: (List[Any], Callable[[Any], Any]) -> List[Any]
     """Distribute the contents of a list eg. [1, 1, 1, 2, 2, 3] -> [1, 2, 1, 2, 1, 3]. List can contain complex types
     like dictionaries in which case the function can return the appropriate value eg.  lambda x: x[KEY]
 
@@ -153,7 +160,7 @@ def list_distribute_contents(input_list: List[Any], function: Callable[[Any], An
     def riffle_shuffle(piles_list):
         def grouper(n, iterable, fillvalue=None):
             args = [iter(iterable)] * n
-            return itertools.zip_longest(fillvalue=fillvalue, *args)
+            return zip_longest(fillvalue=fillvalue, *args)
 
         if not piles_list:
             return []
@@ -162,7 +169,7 @@ def list_distribute_contents(input_list: List[Any], function: Callable[[Any], An
         pile_iters_list = [iter(pile) for pile in piles_list]
         pile_sizes_list = [[pile_position] * len(pile) for pile_position, pile in enumerate(piles_list)]
         grouped_rows = grouper(width, itertools.chain.from_iterable(pile_sizes_list))
-        grouped_columns = itertools.zip_longest(*grouped_rows)
+        grouped_columns = zip_longest(*grouped_rows)
         shuffled_pile = [next(pile_iters_list[position]) for position in itertools.chain.from_iterable(grouped_columns)
                          if position is not None]
         return shuffled_pile

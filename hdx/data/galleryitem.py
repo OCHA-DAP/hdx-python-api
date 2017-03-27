@@ -17,13 +17,15 @@ class GalleryItem(HDXObject):
         initial_data (Optional[dict]): Initial gallery item metadata dictionary. Defaults to None.
     """
 
-    def __init__(self, initial_data: Optional[dict] = None):
+    def __init__(self, initial_data = None):
+        # type: (Optional[dict]) -> None
         if not initial_data:
             initial_data = dict()
         super(GalleryItem, self).__init__(initial_data)
 
     @staticmethod
-    def actions() -> dict:
+    def actions():
+        # type: () -> dict
         """Dictionary of actions that can be performed on object
 
         Returns:
@@ -37,7 +39,8 @@ class GalleryItem(HDXObject):
             'list': 'related_list'
         }
 
-    def update_from_yaml(self, path: str = join('config', 'hdx_galleryitem_static.yml')) -> None:
+    def update_from_yaml(self, path = join('config', 'hdx_galleryitem_static.yml')):
+        # type: (str) -> None
         """Update gallery item metadata with static metadata from YAML file
 
         Args:
@@ -48,7 +51,8 @@ class GalleryItem(HDXObject):
         """
         super(GalleryItem, self).update_from_yaml(path)
 
-    def update_from_json(self, path: str = join('config', 'hdx_galleryitem_static.json')) -> None:
+    def update_from_json(self, path = join('config', 'hdx_galleryitem_static.json')):
+        # type: (str) -> None
         """Update gallery item metadata with static metadata from JSON file
 
         Args:
@@ -60,7 +64,8 @@ class GalleryItem(HDXObject):
         super(GalleryItem, self).update_from_json(path)
 
     @staticmethod
-    def read_from_hdx(identifier: str) -> Optional['GalleryItem']:
+    def read_from_hdx(identifier):
+        # type: (str) -> Optional['GalleryItem']
         """Reads the gallery item given by identifier from HDX and returns GalleryItem object
 
         Args:
@@ -76,7 +81,8 @@ class GalleryItem(HDXObject):
             return galleryitem
         return None
 
-    def check_required_fields(self, ignore_dataset_id=False) -> None:
+    def check_required_fields(self, ignore_dataset_id=False):
+        # type: (Optional[bool]) -> None
         """Check that metadata for gallery item is complete. The parameter ignore_dataset_id should
         be set to True if you intend to add the object to a Dataset object (where it will be created during dataset
         creation).
@@ -93,7 +99,8 @@ class GalleryItem(HDXObject):
             ignore_fields = list()
         self._check_required_fields('galleryitem', ignore_fields)
 
-    def update_in_hdx(self) -> None:
+    def update_in_hdx(self):
+        # type: () -> None
         """Check if gallery item exists in HDX and if so, update it
 
         Returns:
@@ -101,7 +108,8 @@ class GalleryItem(HDXObject):
         """
         self._update_in_hdx('galleryitem', 'id')
 
-    def create_in_hdx(self) -> None:
+    def create_in_hdx(self):
+        # type: () -> None
         """Check if gallery item exists in HDX and if so, update it, otherwise create it
 
         Returns:
@@ -109,7 +117,8 @@ class GalleryItem(HDXObject):
         """
         self._create_in_hdx('galleryitem', 'id', 'title')
 
-    def delete_from_hdx(self) -> None:
+    def delete_from_hdx(self):
+        # type: () -> None
         """Deletes a gallery item from HDX.
 
         Returns:
