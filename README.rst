@@ -1,4 +1,4 @@
-|Build Status| |Coverage Status|
+|Build_Status| |Coverage_Status|
 
 | The HDX Python Library is designed to enable you to easily develop
   code that interacts with the Humanitarian Data Exchange platform. The
@@ -105,7 +105,7 @@ The library is also available set up and ready to go in a Docker image:
 A Quick Example
 ~~~~~~~~~~~~~~~
 
-|A Quick Example|
+|A_Quick_Example|
 
 Let's start with a simple example that also ensures that the library is
 working properly. In this tutorial, we use virtualenv, a sandbox, so
@@ -580,7 +580,7 @@ Dataset Specific Operations
 
 A dataset can have resources and a gallery.
 
-|image3|
+|UML_Diagram|
 
 If you wish to add resources or a gallery, you can supply a list and
 call the appropriate \ ``add_update_*`` function, for example:
@@ -928,10 +928,10 @@ is held in human readable files so if it needs to be modified, it is
 straightforward. This is another feature of the HDX Python library that
 makes putting data programmatically into HDX a breeze.
 
-.. |Build Status| image:: https://travis-ci.org/OCHA-DAP/hdx-python-api.svg?branch=master&rd=2
+.. |Build_Status| image:: https://travis-ci.org/OCHA-DAP/hdx-python-api.svg?branch=master
 :target: https://travis-ci.org/OCHA-DAP/hdx-python-api
-.. |Coverage Status| image:: https://coveralls.io/repos/github/OCHA-DAP/hdx-python-api/badge.svg?branch=master&rd=2
+.. |Coverage_Status| image:: https://coveralls.io/repos/github/OCHA-DAP/hdx-python-api/badge.svg?branch=master
 :target: https://coveralls.io/github/OCHA-DAP/hdx-python-api?branch=master
-.. |A Quick Example| image:: https://humanitarian.atlassian.net/wiki/download/attachments/6356996/HDXPythonLibrary.gif?version=1&modificationDate=1469520811486&api=v2
-.. |image3| image:: https://humanitarian.atlassian.net/wiki/download/attachments/8028192/UMLDiagram.png?api=v2
+.. |A_Quick_Example| image:: https://humanitarian.atlassian.net/wiki/download/attachments/6356996/HDXPythonLibrary.gif?version=1&modificationDate=1469520811486&api=v2
+.. |UML_Diagram| image:: https://humanitarian.atlassian.net/wiki/download/attachments/8028192/UMLDiagram.png?api=v2
 
