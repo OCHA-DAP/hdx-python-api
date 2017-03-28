@@ -98,9 +98,12 @@ class Configuration(dict_class,object):
 
         self.hdx_read_only = kwargs.get('hdx_read_only', False)
         if not self.hdx_read_only:
-            hdx_key_file = kwargs.get('hdx_key_file', join(expanduser('~'), '.hdxkey'))
-            """ :type : str"""
-            self.data['api_key'] = self.load_api_key(hdx_key_file)
+            if 'hdx_key' in kwargs:
+                self.data['api_key'] = kwargs.get('hdx_key')
+            else:
+                hdx_key_file = kwargs.get('hdx_key_file', join(expanduser('~'), '.hdxkey'))
+                """ :type : str"""
+                self.data['api_key'] = self.load_api_key(hdx_key_file)
 
         self.hdx_site = 'hdx_%s_site' % kwargs.get('hdx_site', 'test')
         if self.hdx_site not in self.data:
