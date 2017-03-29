@@ -3,9 +3,9 @@
 import logging
 from base64 import b64decode
 from os.path import expanduser, join
-from typing import Optional, Any
 
 import ckanapi
+from typing import Optional, Any
 
 import hdx
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -24,7 +24,7 @@ class ConfigurationError(Exception):
     pass
 
 
-class Configuration(dict_class,object):
+class Configuration(dict_class, object):
     """Configuration for HDX
 
     Args:

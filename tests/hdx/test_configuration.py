@@ -14,15 +14,15 @@ except:
 class TestConfiguration:
     @pytest.fixture(scope='class')
     def hdx_key_file(self):
-        return join('fixtures', '.hdxkey')
+        return join('tests', 'fixtures', '.hdxkey')
 
     @pytest.fixture(scope='class')
     def project_config_yaml(self):
-        return join('fixtures', 'config', 'project_configuration.yml')
+        return join('tests', 'fixtures', 'config', 'project_configuration.yml')
 
     @pytest.fixture(scope='class')
     def project_config_json(self):
-        return join('fixtures', 'config', 'project_configuration.json')
+        return join('tests', 'fixtures', 'config', 'project_configuration.json')
 
     def test_init(self, hdx_key_file, project_config_json, project_config_yaml):
         with pytest.raises(FILENOTFOUND_EXCTYPE):
@@ -81,7 +81,7 @@ class TestConfiguration:
         assert actual_configuration == expected_configuration
 
     def test_hdx_configuration_json(self, hdx_key_file, project_config_yaml):
-        hdx_config_json = join('fixtures', 'config', 'hdx_config.json')
+        hdx_config_json = join('tests', 'fixtures', 'config', 'hdx_config.json')
         actual_configuration = Configuration.create(hdx_key_file=hdx_key_file, hdx_config_json=hdx_config_json,
                                                     project_config_yaml=project_config_yaml)
         expected_configuration = {
@@ -111,7 +111,7 @@ class TestConfiguration:
         assert actual_configuration == expected_configuration
 
     def test_hdx_configuration_yaml(self, hdx_key_file, project_config_yaml):
-        hdx_configuration_yaml = join('fixtures', 'config', 'hdx_config.yml')
+        hdx_configuration_yaml = join('tests', 'fixtures', 'config', 'hdx_config.yml')
         actual_configuration = Configuration.create(hdx_key_file=hdx_key_file, hdx_config_yaml=hdx_configuration_yaml,
                                                     project_config_yaml=project_config_yaml)
         expected_configuration = {

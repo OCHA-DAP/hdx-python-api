@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Facade to simplify project setup that calls project main function"""
 import logging
-from typing import Callable, Any
 
 from hdx.configuration import Configuration
 from hdx.facades import logging_kwargs

@@ -53,7 +53,7 @@ If you just want to read data from HDX, then an API key is not necessary
 and you can ignore the 7 steps below. However, if you want to write data
 to HDX, then you need to register on the website to obtain an API key
 and then create an API key file. By default this is assumed to be called
-``.hdxkey`` and is located in the current user's home directory ``~``.
+**.hdxkey** and is located in the current user's home directory **~**.
 Assuming you are using a desktop browser, the API key is obtained by:
 
 #. Browse to the \ `HDX website <https://data.humdata.org/>`__
@@ -65,27 +65,21 @@ Assuming you are using a desktop browser, the API key is obtained by:
 #. Copy the API key which will be of the
    form xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 #. Paste the API key into a text file
-#. Save the text file with filename ``.hdxkey`` in the current user's
+#. Save the text file with filename **.hdxkey** in the current user's
    home directory
 
 Installing the Library
 ~~~~~~~~~~~~~~~~~~~~~~
 
 To include the HDX Python library in your project, you must
-``pip install`` or add to your ``requirements.txt`` file the following
+**pip install** or add to your **requirements.txt** file the following
 line:
 
 ::
 
-    git+git://github.com/ocha-dap/hdx-python-api.git@VERSION#egg=hdx-python-api
+    hdx-python-api==VERSION
 
-or alternatively:
-
-::
-
-    https://github.com/ocha-dap/hdx-python-api/zipball/VERSION#egg=hdx-python-api
-
-| Replace ``VERSION`` with the latest tag available from
+| Replace **VERSION** with the latest tag available from
   https://github.com/OCHA-DAP/hdx-python-api/tags.
 | If you get dependency errors, it is probably the dependencies of the
   cryptography package that are missing eg. for Ubuntu: python-dev,
@@ -156,12 +150,7 @@ On other OSs:
 
    ::
 
-       pip install git+git://github.com/ocha-dap/hdx-python-api.git@VERSION#egg=hdx-python-api
-       or
-       pip install https://github.com/ocha-dap/hdx-python-api/zipball/VERSION#egg=hdx-python-api
-
-   Replace ``VERSION`` with the latest tag available from
-   https://github.com/OCHA-DAP/hdx-python-api/tags.
+       pip install hdx-python-api
 
 #. If you get errors, it is probably the `dependencies of the
    cryptography package <#installing-the-library>`__
@@ -188,7 +177,7 @@ On other OSs:
        Configuration.create(hdx_site='feature', hdx_read_only=True)
 
    If you want to write data and you have an API key stored in a file
-   ``.hdxkey`` in the current user's home directory:
+   **.hdxkey** in the current user's home directory:
 
    ::
 
@@ -265,9 +254,9 @@ defaults. The facades set up both logging and HDX configuration.
 
 The default configuration loads an internal HDX configuration located
 within the library, and assumes that there is an API key file called
-``.hdxkey`` in the current user's home directory ``~`` and a YAML
+**.hdxkey** in the current user's home directory **~** and a YAML
 project configuration located relative to your working directory at
-``config/project_configuration.yml`` which you must create. The project
+**config/project_configuration.yml** which you must create. The project
 configuration is used for any configuration specific to your project.
 
 The default logging configuration reads a configuration file internal to
@@ -279,7 +268,7 @@ Facades
 
 You will most likely just need the simple facade. If you are in the HDX
 team, you may need to use the ScraperWiki facade which reports status to
-that platform (in which case replace ``simple`` with ``scraperwiki`` in
+that platform (in which case replace **simple** with **scraperwiki** in
 the code below):
 
 ::
@@ -301,8 +290,8 @@ It is possible to pass configuration parameters in the facade call eg.
 
     facade(main, hdx_site = HDX_SITE_TO_USE, hdx_read_only = ONLY_READ_NOT_WRITE, hdx_key_file = LOCATION_OF_HDX_KEY_FILE, hdx_config_yaml=PATH_TO_HDX_YAML_CONFIGURATION, project_config_dict = {'MY_PARAMETER', 'MY_VALUE'})
 
-If you do not use the facade, you can use the ``create`` method of the
-``Configuration`` class directly, passing in appropriate keyword
+If you do not use the facade, you can use the **create** method of the
+**Configuration** class directly, passing in appropriate keyword
 arguments ie.
 
 ::
@@ -311,43 +300,42 @@ arguments ie.
     ...
     Configuration.create(KEYWORD ARGUMENTS)
 
-``KEYWORD ARGUMENTS`` can be:
+**KEYWORD ARGUMENTS** can be:
 
-+-------+--------------+----------+-----------------------+-------------------------+
-| Choos | Argument     | Type     | Value                 | Default                 |
-| e     |              |          |                       |                         |
-+=======+==============+==========+=======================+=========================+
-|       | hdx\_site    | Optional | HDX site to use eg.   | test                    |
-|       |              | [bool]   | prod, feature         |                         |
-+-------+--------------+----------+-----------------------+-------------------------+
-|       | hdx\_read\_o | bool     | Read only or          | False                   |
-|       | nly          |          | read/write access to  |                         |
-|       |              |          | HDX                   |                         |
-+-------+--------------+----------+-----------------------+-------------------------+
-|       | hdx\_key\_fi | Optional | Path to HDX key file  |                         |
-|       | le           | [str]    | ~/.hdxkey             |                         |
-+-------+--------------+----------+-----------------------+-------------------------+
-| One   | hdx\_config\ | dict     | HDX configuration     |                         |
-| of:   | _dict        |          | dictionary            |                         |
-+-------+--------------+----------+-----------------------+-------------------------+
-|       | hdx\_config\ | str      | Path to JSON HDX      |                         |
-|       | _json        |          | configuration         |                         |
-+-------+--------------+----------+-----------------------+-------------------------+
-|       | hdx\_config\ | str      | Path to YAML HDX      | Library's internal      |
-|       | _yaml        |          | configuration         | hdx\_configuration.yml  |
-+-------+--------------+----------+-----------------------+-------------------------+
-| One   | project\_con | dict     | Project configuration |                         |
-| of:   | fig\_dict    |          | dictionary            |                         |
-+-------+--------------+----------+-----------------------+-------------------------+
-|       | project\_con | str      | Path to JSON Project  |                         |
-|       | fig\_json    |          | configuration         |                         |
-+-------+--------------+----------+-----------------------+-------------------------+
-|       | project\_con | str      | Path to YAML Project  |                         |
-|       | fig\_yaml    |          | configuration         |                         |
-+-------+--------------+----------+-----------------------+-------------------------+
++---------+-----------------------+----------+-------------------------+-------------------------+
+| Choose  | Argument              | Type     | Value                   | Default                 |
+|         |                       |          |                         |                         |
++=========+=======================+==========+=========================+=========================+
+|         | hdx\_site             | Optional | HDX site to use eg.     | test                    |
+|         |                       | (bool)   | prod, feature           |                         |
++---------+-----------------------+----------+-------------------------+-------------------------+
+|         | hdx\_read\_only       | bool     | Read only or read/write | False                   |
+|         |                       |          | access to HDX           |                         |
++---------+-----------------------+----------+-------------------------+-------------------------+
+|         | hdx\_key\_file        | Optional | Path to HDX key file    |                         |
+|         |                       | (str)    | ~/.hdxkey               |                         |
++---------+-----------------------+----------+-------------------------+-------------------------+
+| One of: | hdx\_config\_dict     | dict     | HDX configuration       |                         |
+|         |                       |          | dictionary              |                         |
++---------+-----------------------+----------+-------------------------+-------------------------+
+|         | hdx\_config\_json     | str      | Path to JSON HDX        |                         |
+|         |                       |          | configuration           |                         |
++---------+-----------------------+----------+-------------------------+-------------------------+
+|         | hdx\_config\_yaml     | str      | Path to YAML HDX        | Library's internal      |
+|         |                       |          | configuration           | hdx\_configuration.yml  |
++---------+-----------------------+----------+-------------------------+-------------------------+
+| One of: | project\_config\_dict | dict     | Project configuration   |                         |
+|         |                       |          | dictionary              |                         |
++---------+-----------------------+----------+-------------------------+-------------------------+
+|         | project\_config\_json | str      | Path to JSON Project    |                         |
+|         |                       |          | configuration           |                         |
++---------+-----------------------+----------+-------------------------+-------------------------+
+|         | project\_config\_yaml | str      | Path to YAML Project    |                         |
+|         |                       |          | configuration           |                         |
++---------+-----------------------+----------+-------------------------+-------------------------+
 
-To access the configuration, you use the ``read`` method of the
-``Configuration`` class as follows:
+To access the configuration, you use the **read** method of the
+**Configuration** class as follows:
 
 ::
 
@@ -357,9 +345,9 @@ Configuring Logging
 ~~~~~~~~~~~~~~~~~~~
 
 If you wish to change the logging configuration from the defaults, you
-will need to call \ ``setup_logging`` with arguments unless you have
+will need to call \ **setup_logging** with arguments unless you have
 used the simple or ScraperWiki facades, in which case you must update
-the ``hdx.facades`` module variable \ ``logging_kwargs`` before
+the **hdx.facades** module variable \ **logging_kwargs** before
 importing the facade.
 
 If not using facade:
@@ -380,40 +368,40 @@ If using facade:
     logging_kwargs.update(DICTIONARY OF KEYWORD ARGUMENTS)
     from hdx.facades.simple import facade
 
-``KEYWORD ARGUMENTS`` can be:
+**KEYWORD ARGUMENTS** can be:
 
-+-------+-------------+----+--------------------------+----------------------------+
-| Choos | Argument    | Ty | Value                    | Default                    |
-| e     |             | pe |                          |                            |
-+=======+=============+====+==========================+============================+
-| One   | logging\_co | di | Logging configuration    |                            |
-| of:   | nfig\_dict  | ct | dictionary               |                            |
-+-------+-------------+----+--------------------------+----------------------------+
-|       | logging\_co | st | Path to JSON Logging     |                            |
-|       | nfig\_json  | r  | configuration            |                            |
-+-------+-------------+----+--------------------------+----------------------------+
-|       | logging\_co | st | Path to YAML Logging     | Library's internal         |
-|       | nfig\_yaml  | r  | configuration            | logging\_configuration.yml |
-+-------+-------------+----+--------------------------+----------------------------+
-| One   | smtp\_confi | di | Email Logging            |                            |
-| of:   | g\_dict     | ct | configuration dictionary |                            |
-+-------+-------------+----+--------------------------+----------------------------+
-| (if   | smtp\_confi | st | Path to JSON Email       |                            |
-| using | g\_json     | r  | Logging configuration    |                            |
-+-------+-------------+----+--------------------------+----------------------------+
-| defau | smtp\_confi | st | Path to YAML Email       |                            |
-| lts)  | g\_yaml     | r  | Logging configuration    |                            |
-+-------+-------------+----+--------------------------+----------------------------+
++-----------+-----------------------+------+--------------------------+----------------------------+
+| Choose    | Argument              | Type | Value                    | Default                    |
+|           |                       |      |                          |                            |
++===========+=======================+======+==========================+============================+
+| One of:   | logging\_config\_dict | dict | Logging configuration    |                            |
+|           |                       |      | dictionary               |                            |
++-----------+-----------------------+------+--------------------------+----------------------------+
+|           | logging\_config\_json | str  | Path to JSON Logging     |                            |
+|           |                       |      | configuration            |                            |
++-----------+-----------------------+------+--------------------------+----------------------------+
+|           | logging\_config\_yaml | str  | Path to YAML Logging     | Library's internal         |
+|           |                       |      | configuration            | logging\_configuration.yml |
++-----------+-----------------------+------+--------------------------+----------------------------+
+| One of:   | smtp\_config\_dict    | dict | Email Logging            |                            |
+|           |                       |      | configuration dictionary |                            |
++-----------+-----------------------+------+--------------------------+----------------------------+
+| (if using | smtp\_config\_json    | str  | Path to JSON Email       |                            |
+|           |                       |      | Logging configuration    |                            |
++-----------+-----------------------+------+--------------------------+----------------------------+
+| defaults) | smtp\_config\_yaml    | str  | Path to YAML Email       |                            |
+|           |                       |      | Logging configuration    |                            |
++-----------+-----------------------+------+--------------------------+----------------------------+
 
-Do not supply ``smtp_config_dict``, ``smtp_config_json`` or
-``smtp_config_yaml`` unless you are using the default logging
+Do not supply **smtp_config_dict**, **smtp_config_json** or
+**smtp_config_yaml** unless you are using the default logging
 configuration!
 
 If you are using the default logging configuration, you have the option
 to have a default SMTP handler that sends an email in the event of a
-CRITICAL error by supplying either ``smtp_config_dict``,
-``smtp_config_json`` or ``smtp_config_yaml``. Here is a template of a
-YAML file that can be passed as the ``smtp_config_yaml`` parameter:
+CRITICAL error by supplying either **smtp_config_dict**,
+**smtp_config_json** or **smtp_config_yaml**. Here is a template of a
+YAML file that can be passed as the **smtp_config_yaml** parameter:
 
 ::
 
@@ -422,9 +410,9 @@ YAML file that can be passed as the ``smtp_config_yaml`` parameter:
             toaddrs: EMAIL_ADDRESSES
             subject: "RUN FAILED: MY_PROJECT_NAME"
 
-Unless you override it, the mail server ``mailhost`` for the default
-SMTP handler is ``localhost`` and the from address ``fromaddr`` is
-``noreply@localhost``.
+Unless you override it, the mail server **mailhost** for the default
+SMTP handler is **localhost** and the from address **fromaddr** is
+**noreply@localhost**.
 
 To use logging in your files, simply add the line below to the top of
 each Python file:
@@ -447,17 +435,17 @@ Operations on HDX Objects
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can read an existing HDX object with the
-static \ ``read_from_hdx`` method which takes an identifier parameter
+static \ **read_from_hdx** method which takes an identifier parameter
 and returns the an object of the appropriate HDX object type eg.
-``Dataset`` or ``None`` depending upon whether the object was read eg.
+**Dataset** or **None** depending upon whether the object was read eg.
 
 ::
 
     dataset = Dataset.read_from_hdx('DATASET_ID_OR_NAME')
 
 You can search for datasets and resources in HDX using the
-``search_in_hdx`` method which takes a query parameter and returns the a
-list of objects of the appropriate HDX object type eg. ``list[Dataset]``
+**search_in_hdx** method which takes a query parameter and returns the a
+list of objects of the appropriate HDX object type eg. **list[Dataset]**
 eg.
 
 ::
@@ -493,8 +481,8 @@ metadata. For example:
 
 The dataset name should not contain special characters and hence if
 there is any chance of that, then it needs to be slugified. Slugifying
-is way of making a string valid within a URL (eg. ``ae`` replaces
-``ä``). There are various packages that can do this eg.
+is way of making a string valid within a URL (eg. **ae** replaces
+**ä**). There are various packages that can do this eg.
 `awesome-slugify <https://pypi.python.org/pypi/awesome-slugify>`__.
 
 You can add metadata using the standard Python dictionary square
@@ -504,7 +492,7 @@ brackets eg.
 
     dataset['name'] = 'My Dataset'
 
-You can also do so by the standard dictionary \ ``update`` method, which
+You can also do so by the standard dictionary \ **update** method, which
 takes a dictionary eg.
 
 ::
@@ -520,10 +508,10 @@ very human readable and recommended, while JSON is also accepted eg.
 
     dataset.update_from_json([path])
 
-The default path if unspecified is ``config/hdx_TYPE_static.yml`` for
-YAML and ``config/hdx_TYPE_static.json`` for JSON where TYPE is an HDX
+The default path if unspecified is **config/hdx_TYPE_static.yml** for
+YAML and **config/hdx_TYPE_static.json** for JSON where TYPE is an HDX
 object's type like dataset or resource eg.
-``config/hdx_galleryitem_static.json``. The YAML file takes the
+**config/hdx_galleryitem_static.json**. The YAML file takes the
 following form:
 
 ::
@@ -545,12 +533,12 @@ starting with a dash '-') within the file as shown above. You can do the
 same for resources.
 
 You can check if all the fields required by HDX are populated by
-calling \ ``check_required_fields``. This will throw an exception if any
+calling \ **check_required_fields**. This will throw an exception if any
 fields are missing. Before the library posts data to HDX, it will call
 this method automatically. If you are creating or updating resources or
 gallery items through a dataset object rather than directly through
 resource or gallery item objects, then you should set the parameter
-``ignore_dataset_id`` to ``True`` (because the dataset object already
+**ignore_dataset_id** to **True** (because the dataset object already
 has a dataset id). An example usage:
 
 ::
@@ -558,20 +546,20 @@ has a dataset id). An example usage:
     resource.check_required_fields(ignore_dataset_id=False/True)
 
 Once the HDX object is ready ie. it has all the required metadata, you
-simply call \ ``create_in_hdx`` eg.
+simply call \ **create_in_hdx** eg.
 
 ::
 
     dataset.create_in_hdx()
 
-Existing HDX objects can be updated by calling \ ``update_in_hdx`` eg.
+Existing HDX objects can be updated by calling \ **update_in_hdx** eg.
 
 ::
 
     dataset.update_in_hdx()
 
-You can delete HDX objects using \ ``delete_from_hdx`` and update an
-object that already exists in HDX with the method \ ``update_in_hdx``.
+You can delete HDX objects using \ **delete_from_hdx** and update an
+object that already exists in HDX with the method \ **update_in_hdx**.
 These do not take any parameters or return anything and throw exceptions
 for failures like the object to delete or update not existing.
 
@@ -583,7 +571,7 @@ A dataset can have resources and a gallery.
 |UML_Diagram|
 
 If you wish to add resources or a gallery, you can supply a list and
-call the appropriate \ ``add_update_*`` function, for example:
+call the appropriate \ **add_update_*** function, for example:
 
 ::
 
@@ -600,11 +588,11 @@ call the appropriate \ ``add_update_*`` function, for example:
          resource['description'] = resource['url'].rsplit('/', 1)[-1]
      dataset.add_update_resources(resources)
 
-Calling \ ``add_update_resources`` creates a list of HDX Resource
+Calling \ **add_update_resources** creates a list of HDX Resource
 objects in dataset and operations can be performed on those objects.
 
 To see the list of resources or gallery items, you use the
-appropriate \ ``get_*`` function eg.
+appropriate \ **get_*** function eg.
 
 ::
 
@@ -612,14 +600,14 @@ appropriate \ ``get_*`` function eg.
 
 If you wish to add one resource or gallery item, you can supply a
 dictionary or object of the correct type and call the
-appropriate \ ``add_update_*`` function, for example:
+appropriate \ **add_update_*** function, for example:
 
 ::
 
     dataset.add_update_resource(resource)
 
 You can delete a Resource or GalleryItem object from the dataset
-using the appropriate \ ``delete_*`` function, for example:
+using the appropriate \ **delete_*** function, for example:
 
 ::
 
@@ -656,7 +644,7 @@ should be fine.
 
     dataset.set_dataset('DATE', 'FORMAT')
 
-To retrieve the dataset date as a ``datetime.datetime`` object, you can
+To retrieve the dataset date as a **datetime.datetime** object, you can
 do:
 
 ::
@@ -664,7 +652,7 @@ do:
     dataset_date = dataset.get_dataset_date_as_datetime()
 
 The method below allows you to set the dataset's date using a
-``datetime.datetime`` object:
+**datetime.datetime** object:
 
 ::
 
@@ -690,7 +678,7 @@ The HDX web interface uses set frequencies:
     Never
 
 Although the API allows much greater granularity (a number of days), you
-are encouraged to use the options above (avoiding using ``Never`` if
+are encouraged to use the options above (avoiding using **Never** if
 possible). To assist with this, you can use methods that allow this.
 
 The following method will return a textual expected update frequency
@@ -780,13 +768,13 @@ If you want to add a list of tags, you do it as follows:
 Resource Specific Operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can download a resource using the ``download`` function eg.
+You can download a resource using the **download** function eg.
 
 ::
 
     url, path = resource.download('FOLDER_TO_DOWNLOAD_TO')
 
-If you do not supply ``FOLDER_TO_DOWNLOAD_TO``, then a temporary folder
+If you do not supply **FOLDER_TO_DOWNLOAD_TO**, then a temporary folder
 is used.
 
 Before creating or updating a resource, it is possible to specify the
@@ -807,7 +795,7 @@ There is a getter to read the value back:
 
 If you wish to set up the data preview feature in HDX and your file (HDX
 or externally hosted) is a csv, then you can call the
-``create_datastore`` or ``update_datastore`` methods. If you do not pass
+**create_datastore** or **update_datastore** methods. If you do not pass
 any parameters, all fields in the csv will be assumed to be text.
 
 ::
@@ -834,7 +822,7 @@ First, pip install the library or alternatively add it to a
 requirements.txt file if you are comfortable with doing so as described
 above.
 
-Next create a file called ``run.py`` and copy into it the code below.
+Next create a file called **run.py** and copy into it the code below.
 
 ::
 
@@ -861,10 +849,10 @@ Next create a file called ``run.py`` and copy into it the code below.
         facade(main, hdx_site='feature')
 
 The above file will create in HDX a dataset generated by a function
-called ``generate_dataset`` that can be found in the file ``my_code.py``
+called **generate_dataset** that can be found in the file **my_code.py**
 which we will now write.
 
-Create a file ``my_code.py`` and copy into it the code below:
+Create a file **my_code.py** and copy into it the code below:
 
 ::
 
@@ -885,7 +873,7 @@ Create a file ``my_code.py`` and copy into it the code below:
         '''
         logger.debug('Generating dataset!')
 
-You can then fill out the function ``generate_dataset`` as required.
+You can then fill out the function **generate_dataset** as required.
 
 ACLED Example
 -------------
@@ -893,12 +881,12 @@ ACLED Example
 A complete example can be found
 here: \ https://github.com/mcarans/hdxscraper-acled-africa
 
-In particular, take a look at the files ``run.py``, ``acled_africa.py``
-and the ``config`` folder. If you run it unchanged, it will conflict
+In particular, take a look at the files **run.py**, **acled_africa.py**
+and the **config** folder. If you run it unchanged, it will conflict
 with the existing dataset in the ACLED organisation! Therefore, you will
-need to modify the dataset ``name`` in ``acled_africa.py`` and change
-the organisation information such as ``owner_org`` to your organisation
-in ``config/hdx_dataset_static.yml``.
+need to modify the dataset **name** in **acled_africa.py** and change
+the organisation information such as **owner_org** to your organisation
+in **config/hdx_dataset_static.yml**.
 
 The ACLED scraper creates a dataset in HDX for `ACLED realtime
 data <https://data.humdata.org/dataset/acled-conflict-data-for-africa-realtime-2016>`__

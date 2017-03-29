@@ -67,11 +67,11 @@ class TestGalleryItem:
 
     @pytest.fixture(scope='class')
     def static_yaml(self):
-        return join('fixtures', 'config', 'hdx_galleryitem_static.yml')
+        return join('tests', 'fixtures', 'config', 'hdx_galleryitem_static.yml')
 
     @pytest.fixture(scope='class')
     def static_json(self):
-        return join('fixtures', 'config', 'hdx_galleryitem_static.json')
+        return join('tests', 'fixtures', 'config', 'hdx_galleryitem_static.json')
 
     @pytest.fixture(scope='function')
     def read(self, monkeypatch):
@@ -164,8 +164,8 @@ class TestGalleryItem:
 
     @pytest.fixture(scope='function')
     def configuration(self):
-        hdx_key_file = join('fixtures', '.hdxkey')
-        project_config_yaml = join('fixtures', 'config', 'project_configuration.yml')
+        hdx_key_file = join('tests', 'fixtures', '.hdxkey')
+        project_config_yaml = join('tests', 'fixtures', 'config', 'project_configuration.yml')
         Configuration.create(hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
 
     def test_read_from_hdx(self, configuration, read):

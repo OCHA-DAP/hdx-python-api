@@ -1,0 +1,20 @@
+include *.txt
+include .coveragerc
+include Dockerfile
+include LICENSE
+include pytest.ini
+recursive-include documentation *.py
+recursive-include documentation *.rst
+recursive-include documentation *.sh
+recursive-include documentation Makefile
+recursive-include src *.txt
+recursive-include src *.yml
+recursive-include tests *.csv
+recursive-include tests *.hdxkey
+recursive-include tests *.json
+recursive-include tests *.py
+recursive-include tests *.txt
+recursive-include tests *.yml
+recursive-include workingexample *.csv
+recursive-include workingexample *.py
+recursive-include workingexample *.xlsx

@@ -2,6 +2,7 @@
 """GalleryItem class containing all logic for creating, checking, and updating gallery items."""
 import logging
 from os.path import join
+
 from typing import Optional
 
 from hdx.configuration import Configuration
@@ -17,7 +18,7 @@ class GalleryItem(HDXObject):
         initial_data (Optional[dict]): Initial gallery item metadata dictionary. Defaults to None.
     """
 
-    def __init__(self, initial_data = None):
+    def __init__(self, initial_data=None):
         # type: (Optional[dict]) -> None
         if not initial_data:
             initial_data = dict()
@@ -39,7 +40,7 @@ class GalleryItem(HDXObject):
             'list': 'related_list'
         }
 
-    def update_from_yaml(self, path = join('config', 'hdx_galleryitem_static.yml')):
+    def update_from_yaml(self, path=join('config', 'hdx_galleryitem_static.yml')):
         # type: (str) -> None
         """Update gallery item metadata with static metadata from YAML file
 
@@ -51,7 +52,7 @@ class GalleryItem(HDXObject):
         """
         super(GalleryItem, self).update_from_yaml(path)
 
-    def update_from_json(self, path = join('config', 'hdx_galleryitem_static.json')):
+    def update_from_json(self, path=join('config', 'hdx_galleryitem_static.json')):
         # type: (str) -> None
         """Update gallery item metadata with static metadata from JSON file
 

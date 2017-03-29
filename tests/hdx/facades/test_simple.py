@@ -5,7 +5,7 @@ from os.path import join
 from hdx.facades import logging_kwargs
 
 logging_kwargs.update({
-    'smtp_config_yaml': join('fixtures', 'config', 'smtp_config.yml'),
+    'smtp_config_yaml': join('tests', 'fixtures', 'config', 'smtp_config.yml'),
 })
 
 import pytest
@@ -17,11 +17,11 @@ from hdx.facades.simple import facade
 class TestSimple:
     @pytest.fixture(scope='class')
     def hdx_key_file(self):
-        return join('fixtures', '.hdxkey')
+        return join('tests', 'fixtures', '.hdxkey')
 
     @pytest.fixture(scope='class')
     def project_config_yaml(self):
-        return join('fixtures', 'config', 'project_configuration.yml')
+        return join('tests', 'fixtures', 'config', 'project_configuration.yml')
 
     def test_facade(self, hdx_key_file, project_config_yaml):
         testresult.actual_result = None

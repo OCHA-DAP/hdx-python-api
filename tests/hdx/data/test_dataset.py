@@ -1,3 +1,4 @@
+
 # -*- coding: UTF-8 -*-
 """Dataset Tests"""
 import copy
@@ -91,7 +92,7 @@ resultdict = {
     'solr_additions': '{"countries": ["Algeria", "Zimbabwe"]}',
     'dataset_date': '06/04/2016'}
 
-searchdict = load_yaml(join('fixtures', 'search_results.yml'))
+searchdict = load_yaml(join('tests', 'fixtures', 'search_results.yml'))
 
 def mockshow(url, datadict):
     if 'show' not in url and 'related_list' not in url:
@@ -229,11 +230,11 @@ class TestDataset:
 
     @pytest.fixture(scope='class')
     def static_yaml(self):
-        return join('fixtures', 'config', 'hdx_dataset_static.yml')
+        return join('tests', 'fixtures', 'config', 'hdx_dataset_static.yml')
 
     @pytest.fixture(scope='class')
     def static_json(self):
-        return join('fixtures', 'config', 'hdx_dataset_static.json')
+        return join('tests', 'fixtures', 'config', 'hdx_dataset_static.json')
 
     @pytest.fixture(scope='function')
     def read(self, monkeypatch):
@@ -369,8 +370,8 @@ class TestDataset:
 
     @pytest.fixture(scope='function')
     def configuration(self):
-        hdx_key_file = join('fixtures', '.hdxkey')
-        project_config_yaml = join('fixtures', 'config', 'project_configuration.yml')
+        hdx_key_file = join('tests', 'fixtures', '.hdxkey')
+        project_config_yaml = join('tests', 'fixtures', 'config', 'project_configuration.yml')
         Configuration.create(hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
 
     def test_read_from_hdx(self, configuration, read):

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import inspect
 import sys
+from codecs import open
 from os.path import join, abspath, realpath, dirname
 
 from setuptools import setup, find_packages
@@ -41,9 +42,13 @@ def script_dir_plus_file(filename, pyobject, follow_symlinks=True):
 
 
 def get_version():
-    version_file = open(script_dir_plus_file(join('hdx', 'version.txt'), get_version))
+    version_file = open(script_dir_plus_file(join('src', 'hdx', 'version.txt'), get_version), encoding='utf-8')
     return version_file.read().strip()
 
+
+def get_readme():
+    readme_file = open(script_dir_plus_file('README.rst', get_readme), encoding='utf-8')
+    return readme_file.read()
 
 requirements = ['ckanapi',
                 'colorlog',
@@ -59,19 +64,34 @@ requirements = ['ckanapi',
                 'typing'
                 ]
 
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
 setup(
     name='hdx-python-api',
-    version=get_version(),
-    packages=find_packages(exclude=['ez_setup', 'tests', 'tests.*']),
-    url='https://github.com/OCHA-DAP/hdx-python-api',
+    description='HDX Python Library',
     license='MIT',
+    url='https://github.com/OCHA-DAP/hdx-python-api',
+    version=get_version(),
     author='Michael Rans',
     author_email='rans@email.com',
-    description='HDX Python Library',
-    install_requires=requirements,
-    package_data={
-        # Include version.txt and if any package contains *.yml files, include them:
-        '': ['version.txt', '*.yml'],
-    },
+    keywords=['HDX', 'API', 'library'],
+    long_description=get_readme(),
+    packages=find_packages(where='src'),
+    package_dir={'': 'src'},
     include_package_data=True,
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
+    zip_safe=True,
+    classifiers=classifiers,
+    install_requires=requirements,
 )

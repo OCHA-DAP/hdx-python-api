@@ -152,19 +152,19 @@ class TestResource:
 
     @pytest.fixture(scope='class')
     def static_yaml(self):
-        return join('fixtures', 'config', 'hdx_resource_static.yml')
+        return join('tests', 'fixtures', 'config', 'hdx_resource_static.yml')
 
     @pytest.fixture(scope='class')
     def static_json(self):
-        return join('fixtures', 'config', 'hdx_resource_static.json')
+        return join('tests', 'fixtures', 'config', 'hdx_resource_static.json')
 
     @pytest.fixture(scope='class')
     def topline_yaml(self):
-        return join('fixtures', 'config', 'hdx_datasource_topline.yml')
+        return join('tests', 'fixtures', 'config', 'hdx_datasource_topline.yml')
 
     @pytest.fixture(scope='class')
     def topline_json(self):
-        return join('fixtures', 'config', 'hdx_datasource_topline.json')
+        return join('tests', 'fixtures', 'config', 'hdx_datasource_topline.json')
 
     @pytest.fixture(scope='function')
     def read(self, monkeypatch):
@@ -322,8 +322,8 @@ class TestResource:
 
     @pytest.fixture(scope='function')
     def configuration(self):
-        hdx_key_file = join('fixtures', '.hdxkey')
-        project_config_yaml = join('fixtures', 'config', 'project_configuration.yml')
+        hdx_key_file = join('tests', 'fixtures', '.hdxkey')
+        project_config_yaml = join('tests', 'fixtures', 'config', 'project_configuration.yml')
         Configuration.create(hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
 
     def test_read_from_hdx(self, configuration, read):
@@ -356,8 +356,9 @@ class TestResource:
 
         resource_data = copy.deepcopy(TestResource.resource_data)
         resource = Resource(resource_data)
-        resource.set_file_to_upload('fixtures/test_data.csv')
-        assert resource.get_file_to_upload() == 'fixtures/test_data.csv'
+        filetoupload = join('tests', 'fixtures', 'test_data.csv')
+        resource.set_file_to_upload(filetoupload)
+        assert resource.get_file_to_upload() == filetoupload
         resource.create_in_hdx()
         assert resource['url_type'] == 'upload'
         assert resource['resource_type'] == 'file.upload'
@@ -398,7 +399,8 @@ class TestResource:
         assert resource[
                    'url'] == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
 
-        resource.set_file_to_upload('fixtures/test_data.csv')
+        filetoupload = join('tests', 'fixtures', 'test_data.csv')
+        resource.set_file_to_upload(filetoupload)
         resource.update_in_hdx()
         assert resource['url_type'] == 'upload'
         assert resource['resource_type'] == 'file.upload'
@@ -479,6 +481,7 @@ class TestResource:
         resource.update_datastore()
         resource.update_datastore_for_topline()
         resource.update_datastore_from_yaml_schema(topline_yaml)
-        resource.update_datastore_from_json_schema(topline_json, path='fixtures/downloader/test_data.csv')
+        filefordatastore = join('tests', 'fixtures', 'downloader', 'test_data.csv')
+        resource.update_datastore_from_json_schema(topline_json, path=filefordatastore)
         with pytest.raises(HDXError):
             resource2.update_datastore_from_json_schema(topline_json)

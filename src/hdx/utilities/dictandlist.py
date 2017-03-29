@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Dict and List utilities"""
 import itertools
+
 import six
 from six.moves import UserDict, zip_longest
 from typing import List, Optional, TypeVar, Any, Callable
@@ -71,7 +72,7 @@ def merge_dictionaries(dicts):
     return dict1
 
 
-def dict_diff(d1, d2, no_key = '<KEYNOTFOUND>'):
+def dict_diff(d1, d2, no_key='<KEYNOTFOUND>'):
     # type: (DictUpperBound, DictUpperBound, Optional[str]) -> dict
     """Compares two dictionaries
 
@@ -111,7 +112,7 @@ def dict_of_lists_add(dictionary, key, value):
     dictionary[key] = list_objs
 
 
-def list_distribute_contents_simple(input_list, function = lambda x: x):
+def list_distribute_contents_simple(input_list, function=lambda x: x):
     # type: (List[Any], Callable[[Any], Any]) -> List[Any]
     """Distribute the contents of a list eg. [1, 1, 1, 2, 2, 3] -> [1, 2, 3, 1, 2, 1]. List can contain complex types
     like dictionaries in which case the function can return the appropriate value eg.  lambda x: x[KEY]
@@ -143,7 +144,7 @@ def list_distribute_contents_simple(input_list, function = lambda x: x):
     return output_list
 
 
-def list_distribute_contents(input_list, function = lambda x: x):
+def list_distribute_contents(input_list, function=lambda x: x):
     # type: (List[Any], Callable[[Any], Any]) -> List[Any]
     """Distribute the contents of a list eg. [1, 1, 1, 2, 2, 3] -> [1, 2, 1, 2, 1, 3]. List can contain complex types
     like dictionaries in which case the function can return the appropriate value eg.  lambda x: x[KEY]

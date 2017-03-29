@@ -7,11 +7,11 @@ import datetime
 import logging
 import sys
 from os.path import join
-from typing import Any, List, Optional
 
-from dateutil import parser
 import six
 import six.moves
+from dateutil import parser
+from typing import Any, List, Optional
 
 from hdx.configuration import Configuration
 from hdx.data.galleryitem import GalleryItem
@@ -60,12 +60,12 @@ class Dataset(HDXObject):
         'yearly': '365'
     }
 
-    def __init__(self, initial_data = None,
-                 include_gallery = True):
+    def __init__(self, initial_data=None,
+                 include_gallery=True):
         # type: (Optional[dict], Optional[bool]) -> None
         if not initial_data:
             initial_data = dict()
-        super(Dataset,self).__init__({})
+        super(Dataset, self).__init__({})
         # workaround: python2 IterableUserDict does not call __setitem__ in __init__,
         # while python3 collections.UserDict does
         for d in initial_data:
@@ -262,7 +262,7 @@ class Dataset(HDXObject):
         """
         return self.gallery
 
-    def update_from_yaml(self, path = join('config', 'hdx_dataset_static.yml')):
+    def update_from_yaml(self, path=join('config', 'hdx_dataset_static.yml')):
         # type: (Optional[str]) -> None
         """Update dataset metadata with static metadata from YAML file
 
@@ -276,7 +276,7 @@ class Dataset(HDXObject):
         self.separate_resources()
         self.separate_gallery()
 
-    def update_from_json(self, path= join('config', 'hdx_dataset_static.json')):
+    def update_from_json(self, path=join('config', 'hdx_dataset_static.json')):
         # type: (Optional[str]) -> None
         """Update dataset metadata with static metadata from JSON file
 
@@ -342,7 +342,7 @@ class Dataset(HDXObject):
         return True
 
     def check_required_fields(self, ignore_dataset_id=False):
-        #type: (...) -> None
+        # type: (...) -> None
         """Check that metadata for dataset and its resources and gallery is complete. (ignore_dataset_id is not used.)
 
         Returns:
@@ -428,7 +428,7 @@ class Dataset(HDXObject):
                     old_galleryitem.create_in_hdx()
                     self.gallery.append(old_galleryitem)
 
-    def update_in_hdx(self, update_resources = True, update_gallery = True):
+    def update_in_hdx(self, update_resources=True, update_gallery=True):
         # type: (Optional[bool], Optional[bool]) -> None
         """Check if dataset exists in HDX and if so, update it
 
@@ -510,7 +510,7 @@ class Dataset(HDXObject):
         self._delete_from_hdx('dataset', 'id')
 
     @staticmethod
-    def search_in_hdx(query, include_gallery = True, **kwargs):
+    def search_in_hdx(query, include_gallery=True, **kwargs):
         # type: (str, Optional[bool], Any) -> List['Dataset']
         """Searches for datasets in HDX
 
@@ -564,7 +564,7 @@ class Dataset(HDXObject):
         return all_datasets
 
     @staticmethod
-    def get_all_datasets(include_gallery = True, **kwargs):
+    def get_all_datasets(include_gallery=True, **kwargs):
         # type: (Optional[bool]) -> List['Dataset']
         """Get all datasets in HDX
 
@@ -609,7 +609,7 @@ class Dataset(HDXObject):
         else:
             return None
 
-    def get_dataset_date(self, date_format = None):
+    def get_dataset_date(self, date_format=None):
         # type: (Optional[str]) -> Optional[str]
         """Get dataset date as string in specified format. If no format is supplied, an ISO 8601 string is returned.
 
@@ -640,7 +640,7 @@ class Dataset(HDXObject):
         """
         self.data['dataset_date'] = dataset_date.strftime('%m/%d/%Y')
 
-    def set_dataset_date(self, dataset_date, date_format = None):
+    def set_dataset_date(self, dataset_date, date_format=None):
         # type: (str, Optional[str]) -> None
         """Set dataset date from string using specified format. If no format is supplied, the function will guess.
         For unambiguous formats, this should be fine.
@@ -656,12 +656,12 @@ class Dataset(HDXObject):
             try:
                 parsed_date = parser.parse(dataset_date)
             except (ValueError, OverflowError) as e:
-                six.raise_from(HDXError('Invalid dataset date!'),e)
+                six.raise_from(HDXError('Invalid dataset date!'), e)
         else:
             try:
                 parsed_date = datetime.datetime.strptime(dataset_date, date_format)
             except ValueError as e:
-                six.raise_from(HDXError('Invalid dataset date!'),e)
+                six.raise_from(HDXError('Invalid dataset date!'), e)
         self.set_dataset_date_from_datetime(parsed_date)
 
     @staticmethod
