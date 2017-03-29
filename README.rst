@@ -77,13 +77,7 @@ line:
 
 ::
 
-    git+git://github.com/ocha-dap/hdx-python-api.git@VERSION#egg=hdx-python-api
-
-or alternatively:
-
-::
-
-    https://github.com/ocha-dap/hdx-python-api/zipball/VERSION#egg=hdx-python-api
+    hdx-python-api==VERSION
 
 | Replace ``VERSION`` with the latest tag available from
   https://github.com/OCHA-DAP/hdx-python-api/tags.
@@ -156,12 +150,7 @@ On other OSs:
 
    ::
 
-       pip install git+git://github.com/ocha-dap/hdx-python-api.git@VERSION#egg=hdx-python-api
-       or
-       pip install https://github.com/ocha-dap/hdx-python-api/zipball/VERSION#egg=hdx-python-api
-
-   Replace ``VERSION`` with the latest tag available from
-   https://github.com/OCHA-DAP/hdx-python-api/tags.
+       pip install hdx-python-api
 
 #. If you get errors, it is probably the `dependencies of the
    cryptography package <#installing-the-library>`__
