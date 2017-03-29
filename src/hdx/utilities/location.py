@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from typing import List, Callable, Any, Tuple, Optional
-
 import geonamescache
+from typing import List, Callable, Any, Tuple, Optional
 
 
 class Location(object):
@@ -57,7 +56,7 @@ class Location(object):
         return None, False
 
     @staticmethod
-    def get_countries_in_continent(continent, function = lambda x: x):
+    def get_countries_in_continent(continent, function=lambda x: x):
         # type: (str, Callable[[str], Any]) -> List[str]
         """Get countries (iso 3 codes) in continent
 
@@ -77,7 +76,7 @@ class Location(object):
             if continent.lower() == continentdetails['name'].lower():
                 continentcode = code
                 break
-        countries = list() # type: List[str]
+        countries = list()  # type: List[str]
         if continentcode is None:
             return countries
         for country in Location.countries:

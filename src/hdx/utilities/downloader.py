@@ -4,13 +4,13 @@ import hashlib
 from os.path import splitext, join, exists
 from posixpath import basename
 from tempfile import gettempdir
-from typing import Optional
-import six
-from six.moves.urllib.parse import urlparse
 
 import requests
+import six
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3 import Retry
+from six.moves.urllib.parse import urlparse
+from typing import Optional
 
 
 class DownloadError(Exception):
@@ -37,7 +37,7 @@ class Download(object):
         self.session.close()
 
     @staticmethod
-    def get_path_for_url(url, folder = None):
+    def get_path_for_url(url, folder=None):
         # type: (str, Optional[str]) -> str
         """Get filename from url and join to provided folder or temporary folder if no folder supplied, ensuring uniqueness
 
@@ -61,7 +61,7 @@ class Download(object):
             path = join(folder, '%s%d%s' % (filename, count, extension))
         return path
 
-    def setup_stream(self, url, timeout = None):
+    def setup_stream(self, url, timeout=None):
         # type: (str, Optional[float]) -> None
         """Setup streaming download from provided url
 
@@ -76,7 +76,7 @@ class Download(object):
             self.response = self.session.get(url, stream=True, timeout=timeout)
             self.response.raise_for_status()
         except Exception as e:
-            six.raise_from(DownloadError('Setup of Streaming Download of %s failed!' % url),e)
+            six.raise_from(DownloadError('Setup of Streaming Download of %s failed!' % url), e)
 
     def hash_stream(self, url):
         # type: (str) -> str
@@ -96,9 +96,9 @@ class Download(object):
                     md5hash.update(chunk)
             return md5hash.hexdigest()
         except Exception as e:
-            six.raise_from(DownloadError('Download of %s failed in retrieval of stream!' % url),e)
+            six.raise_from(DownloadError('Download of %s failed in retrieval of stream!' % url), e)
 
-    def stream_file(self, url, folder = None):
+    def stream_file(self, url, folder=None):
         # type: (str, Optional[str]) -> str
         """Stream file from url and store in provided folder or temporary folder if no folder supplied.
         Must call setup_streaming_download method first.
@@ -121,12 +121,12 @@ class Download(object):
                     f.flush()
             return f.name
         except Exception as e:
-            six.raise_from(DownloadError('Download of %s failed in retrieval of stream!' % url),e)
+            six.raise_from(DownloadError('Download of %s failed in retrieval of stream!' % url), e)
         finally:
             if f:
                 f.close()
 
-    def download_file(self, url, folder = None, timeout = None):
+    def download_file(self, url, folder=None, timeout=None):
         # type: (str, Optional[str], Optional[float]) -> str
         """Download file from url and store in provided folder or temporary folder if no folder supplied
 
@@ -142,7 +142,7 @@ class Download(object):
         self.setup_stream(url, timeout)
         return self.stream_file(url, folder)
 
-    def download(self, url, timeout = None):
+    def download(self, url, timeout=None):
         # type: (str, Optional[float]) -> requests.Response
         """Download url
 
@@ -158,5 +158,5 @@ class Download(object):
             self.response = self.session.get(url, timeout=timeout)
             self.response.raise_for_status()
         except Exception as e:
-            six.raise_from(DownloadError('Download of %s failed!' % url),e)
+            six.raise_from(DownloadError('Download of %s failed!' % url), e)
         return self.response

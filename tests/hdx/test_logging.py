@@ -15,19 +15,19 @@ except:
 class TestLogging:
     @pytest.fixture(scope='class')
     def logging_config_yaml(self):
-        return join('fixtures', 'config', 'logging_config.yml')
+        return join('tests', 'fixtures', 'config', 'logging_config.yml')
 
     @pytest.fixture(scope='class')
     def logging_config_json(self):
-        return join('fixtures', 'config', 'logging_config.json')
+        return join('tests', 'fixtures', 'config', 'logging_config.json')
 
     @pytest.fixture(scope='class')
     def smtp_config_yaml(self):
-        return join('fixtures', 'config', 'smtp_config.yml')
+        return join('tests', 'fixtures', 'config', 'smtp_config.yml')
 
     @pytest.fixture(scope='class')
     def smtp_config_json(self):
-        return join('fixtures', 'config', 'smtp_config.json')
+        return join('tests', 'fixtures', 'config', 'smtp_config.json')
 
     def test_setup_logging(self, logging_config_json, logging_config_yaml, smtp_config_json, smtp_config_yaml):
         with pytest.raises(FILENOTFOUND_EXCTYPE):

@@ -10,11 +10,10 @@ install:
   - pip install coveralls
   - pip install -r test-requirements.txt
 
-before_script: cd tests
 #
 # Run tests + coverage.
 #
-script: py.test --cov-config ../.coveragerc --cov-report= --cov=..
+script: py.test --cov-config .coveragerc --cov-report= --cov=.
 
 #
 # Send coverage report to coveralls.io

@@ -1,0 +1,4 @@
+include *.rst *.txt *.yml LICENSE documentation/Makefile .coveragerc
+recursive-include tests *.py
+recursive-include documentation *.rst
+recursive-include documentation *.py

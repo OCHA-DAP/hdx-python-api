@@ -4,10 +4,11 @@
 import inspect
 import sys
 from os.path import abspath, realpath, dirname, join
+
 from typing import Any, Optional
 
 
-def script_dir(pyobject, follow_symlinks = True):
+def script_dir(pyobject, follow_symlinks=True):
     # type: (Any, Optional[bool]) -> str
     """Get current script's directory
 
@@ -27,7 +28,7 @@ def script_dir(pyobject, follow_symlinks = True):
     return dirname(path)
 
 
-def script_dir_plus_file(filename, pyobject, follow_symlinks = True):
+def script_dir_plus_file(filename, pyobject, follow_symlinks=True):
     # type: (str, Any, Optional[bool]) -> str
     """Get current script's directory and then append a filename
 

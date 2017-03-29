@@ -5,10 +5,10 @@ New HDX objects should extend this in similar fashion to Resource for example.
 import abc
 import copy
 import logging
-from typing import Optional, List, Tuple, TypeVar, Union, Any
-import six
 
+import six
 from ckanapi.errors import NotFound
+from typing import Optional, List, Tuple, TypeVar, Union, Any
 
 from hdx.configuration import Configuration
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -28,7 +28,7 @@ class HDXError(Exception):
     pass
 
 
-class HDXObject(dict_class,object):
+class HDXObject(dict_class, object):
     """HDXObject abstract class containing helper functions for creating, checking, and updating HDX objects.
     New HDX objects should extend this in similar fashion to Resource for example.
 
@@ -86,8 +86,8 @@ class HDXObject(dict_class,object):
         """
         self.data = load_json_into_existing_dict(self.data, path)
 
-    def _read_from_hdx(self, object_type, value, fieldname = 'id',
-                       action = None, **kwargs):
+    def _read_from_hdx(self, object_type, value, fieldname='id',
+                       action=None, **kwargs):
         # type: (str, str, str, Optional[str], Any) -> Tuple[bool, Union[dict, str]]
         """Makes a read call to HDX passing in given parameter.
 
@@ -115,7 +115,7 @@ class HDXObject(dict_class,object):
         except NotFound:
             return False, "%s=%s: not found!" % (fieldname, value)
         except Exception as e:
-            six.raise_from(HDXError('Failed when trying to read: %s=%s! (POST)' % (fieldname, value)),e)
+            six.raise_from(HDXError('Failed when trying to read: %s=%s! (POST)' % (fieldname, value)), e)
 
     def _load_from_hdx(self, object_type, id_field):
         # type: (str, str) -> bool
@@ -201,7 +201,7 @@ class HDXObject(dict_class,object):
             if field not in self.data and field not in ignore_fields:
                 raise HDXError("Field %s is missing in %s!" % (field, object_type))
 
-    def _merge_hdx_update(self, object_type, id_field_name, file_to_upload = None):
+    def _merge_hdx_update(self, object_type, id_field_name, file_to_upload=None):
         # type: (str, str, Optional[str]) -> None
         """Helper method to check if HDX object exists and update it
 
@@ -228,7 +228,7 @@ class HDXObject(dict_class,object):
         """
         return
 
-    def _update_in_hdx(self, object_type, id_field_name, file_to_upload = None):
+    def _update_in_hdx(self, object_type, id_field_name, file_to_upload=None):
         # type: (str, str, Optional[str]) -> None
         """Helper method to check if HDX object exists in HDX and if so, update it
 
@@ -244,7 +244,7 @@ class HDXObject(dict_class,object):
         self._check_load_existing_object(object_type, id_field_name)
         self._merge_hdx_update(object_type, id_field_name, file_to_upload)
 
-    def _write_to_hdx(self, action, data, id_field_name, file_to_upload = None):
+    def _write_to_hdx(self, action, data, id_field_name, file_to_upload=None):
         # type: (str, dict, str, Optional[str]) -> dict
         """Creates or updates an HDX object in HDX and return HDX object metadata dict
 
@@ -268,12 +268,12 @@ class HDXObject(dict_class,object):
                                                           requests_kwargs={
                                                               'auth': Configuration.read()._get_credentials()})
         except Exception as e:
-            six.raise_from(HDXError('Failed when trying to %s %s! (POST)' % (action, self.data[id_field_name])),e)
+            six.raise_from(HDXError('Failed when trying to %s %s! (POST)' % (action, self.data[id_field_name])), e)
         finally:
             if file_to_upload and file:
                 file.close()
 
-    def _save_to_hdx(self, action, id_field_name, file_to_upload = None):
+    def _save_to_hdx(self, action, id_field_name, file_to_upload=None):
         # type: (str, str, Optional[str]) -> None
         """Creates or updates an HDX object in HDX, saving current data and replacing with returned HDX object data
         from HDX
@@ -301,7 +301,7 @@ class HDXObject(dict_class,object):
         return
 
     def _create_in_hdx(self, object_type, id_field_name, name_field_name,
-                       file_to_upload = None):
+                       file_to_upload=None):
         # type: (str, str, str, Optional[str]) -> None
         """Helper method to check if resource exists in HDX and if so, update it, otherwise create it
 
@@ -382,7 +382,7 @@ class HDXObject(dict_class,object):
             newhdxobjects.append(hdxobject.data)
         return newhdxobjects
 
-    def _copy_hdxobjects(self, hdxobjects, hdxobjectclass, attribute_to_copy = None):
+    def _copy_hdxobjects(self, hdxobjects, hdxobjectclass, attribute_to_copy=None):
         # type: (List[HDXObjectUpperBound], type, Optional[str]) -> List[HDXObjectUpperBound]
         """Helper function to make a deep copy of a supplied list of HDX objects
 

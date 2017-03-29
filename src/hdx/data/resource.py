@@ -4,8 +4,9 @@ import csv
 import logging
 from os import unlink
 from os.path import join
-from typing import Optional, List, Tuple, Any
+
 import six
+from typing import Optional, List, Tuple, Any
 
 from hdx.configuration import Configuration
 from hdx.utilities.downloader import Download
@@ -23,7 +24,7 @@ class Resource(HDXObject):
         initial_data (Optional[dict]): Initial resource metadata dictionary. Defaults to None.
     """
 
-    def __init__(self, initial_data = None):
+    def __init__(self, initial_data=None):
         # type: (Optional[dict]) -> None
         if not initial_data:
             initial_data = dict()
@@ -50,7 +51,7 @@ class Resource(HDXObject):
             'datastore_upsert': 'datastore_upsert'
         }
 
-    def update_from_yaml(self, path = join('config', 'hdx_resource_static.yml')):
+    def update_from_yaml(self, path=join('config', 'hdx_resource_static.yml')):
         # type: (str) -> None
         """Update resource metadata with static metadata from YAML file
 
@@ -62,7 +63,7 @@ class Resource(HDXObject):
         """
         super(Resource, self).update_from_yaml(path)
 
-    def update_from_json(self, path = join('config', 'hdx_resource_static.json')):
+    def update_from_json(self, path=join('config', 'hdx_resource_static.json')):
         # type: (str) -> None
         """Update resource metadata with static metadata from JSON file
 
@@ -205,7 +206,7 @@ class Resource(HDXObject):
             logger.debug(result)
         return resources
 
-    def download(self, folder = None):
+    def download(self, folder=None):
         # type: (Optional[str]) -> Tuple[str, str]
         """Download resource store to provided folder or temporary folder if no folder supplied
 
@@ -238,8 +239,8 @@ class Resource(HDXObject):
         if not success:
             logger.debug(result)
 
-    def create_datastore(self, schema = None, primary_key = None,
-                         delete_first = 0, path = None):
+    def create_datastore(self, schema=None, primary_key=None,
+                         delete_first=0, path=None):
         # type: (Optional[List[dict]], Optional[str], Optional[int], Optional[str]) -> None
         """For csvs, create a resource in the HDX datastore which enables data preview in HDX. If no schema is provided
         all fields are assumed to be text. If path is not supplied, the file is first downloaded from HDX.
@@ -297,14 +298,14 @@ class Resource(HDXObject):
                 offset += chunksize
                 logger.debug('Uploading: %s' % offset)
         except Exception as e:
-            six.raise_from(HDXError('Upload to datastore of %s failed!' % url),e)
+            six.raise_from(HDXError('Upload to datastore of %s failed!' % url), e)
         finally:
             if f:
                 f.close()
             if delete_after_download:
                 unlink(path)
 
-    def create_datastore_from_dict_schema(self, data, delete_first = 0, path = None):
+    def create_datastore_from_dict_schema(self, data, delete_first=0, path=None):
         # type: (dict, Optional[int], Optional[str]) -> None
         """For csvs, create a resource in the HDX datastore which enables data preview in HDX from a dictionary
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
@@ -322,8 +323,8 @@ class Resource(HDXObject):
         primary_key = data.get('primary_key')
         self.create_datastore(schema, primary_key, delete_first, path=path)
 
-    def create_datastore_from_yaml_schema(self, yaml_path, delete_first = 0,
-                                          path = None):
+    def create_datastore_from_yaml_schema(self, yaml_path, delete_first=0,
+                                          path=None):
         # type: (str, Optional[int], Optional[str]) -> None
         """For csvs, create a resource in the HDX datastore which enables data preview in HDX from a YAML file
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
@@ -340,7 +341,7 @@ class Resource(HDXObject):
         data = load_yaml(yaml_path)
         self.create_datastore_from_dict_schema(data, delete_first, path=path)
 
-    def create_datastore_from_json_schema(self, json_path, delete_first = 0, path = None):
+    def create_datastore_from_json_schema(self, json_path, delete_first=0, path=None):
         # type: (str, Optional[int], Optional[str]) -> None
         """For csvs, create a resource in the HDX datastore which enables data preview in HDX from a JSON file
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
@@ -357,7 +358,7 @@ class Resource(HDXObject):
         data = load_json(json_path)
         self.create_datastore_from_dict_schema(data, delete_first, path=path)
 
-    def create_datastore_for_topline(self, delete_first = 0, path = None):
+    def create_datastore_for_topline(self, delete_first=0, path=None):
         # type: (Optional[int], Optional[str]) -> None
         """For csvs, create a resource in the HDX datastore which enables data preview in HDX using the built in
         YAML definition for a topline. If path is not supplied, the file is first downloaded from HDX.
@@ -372,8 +373,8 @@ class Resource(HDXObject):
         data = load_yaml(script_dir_plus_file(join('..', 'hdx_datasource_topline.yml'), Resource))
         self.create_datastore_from_dict_schema(data, delete_first, path=path)
 
-    def update_datastore(self, schema = None, primary_key = None,
-                         path = None):
+    def update_datastore(self, schema=None, primary_key=None,
+                         path=None):
         # type: (Optional[List[dict]], Optional[str], Optional[str]) -> None
         """For csvs, update a resource in the HDX datastore which enables data preview in HDX. If no schema is provided
         all fields are assumed to be text. If path is not supplied, the file is first downloaded from HDX.
@@ -388,7 +389,7 @@ class Resource(HDXObject):
         """
         self.create_datastore(schema, primary_key, 2, path=path)
 
-    def update_datastore_from_dict_schema(self, data, path = None):
+    def update_datastore_from_dict_schema(self, data, path=None):
         # type: (dict, Optional[str]) -> None
         """For csvs, update a resource in the HDX datastore which enables data preview in HDX from a dictionary
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
@@ -403,7 +404,7 @@ class Resource(HDXObject):
         """
         self.create_datastore_from_dict_schema(data, 2, path=path)
 
-    def update_datastore_from_yaml_schema(self, yaml_path, path = None):
+    def update_datastore_from_yaml_schema(self, yaml_path, path=None):
         # type: (str, Optional[str]) -> None
         """For csvs, update a resource in the HDX datastore which enables data preview in HDX from a YAML file
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
@@ -418,7 +419,7 @@ class Resource(HDXObject):
         """
         self.create_datastore_from_yaml_schema(yaml_path, 2, path=path)
 
-    def update_datastore_from_json_schema(self, json_path, path = None):
+    def update_datastore_from_json_schema(self, json_path, path=None):
         # type: (str, Optional[str]) -> None
         """For csvs, update a resource in the HDX datastore which enables data preview in HDX from a JSON file
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
@@ -433,7 +434,7 @@ class Resource(HDXObject):
         """
         self.create_datastore_from_json_schema(json_path, 2, path=path)
 
-    def update_datastore_for_topline(self, path = None):
+    def update_datastore_for_topline(self, path=None):
         # type: (Optional[str]) -> None
         """For csvs, update a resource in the HDX datastore which enables data preview in HDX using the built in YAML
         definition for a topline. If path is not supplied, the file is first downloaded from HDX.
