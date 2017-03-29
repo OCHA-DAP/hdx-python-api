@@ -302,38 +302,37 @@ arguments ie.
 
 ``KEYWORD ARGUMENTS`` can be:
 
-+-------+--------------+----------+-----------------------+-------------------------+
-| Choos | Argument     | Type     | Value                 | Default                 |
-| e     |              |          |                       |                         |
-+=======+==============+==========+=======================+=========================+
-|       | hdx\_site    | Optional | HDX site to use eg.   | test                    |
-|       |              | [bool]   | prod, feature         |                         |
-+-------+--------------+----------+-----------------------+-------------------------+
-|       | hdx\_read\_o | bool     | Read only or          | False                   |
-|       | nly          |          | read/write access to  |                         |
-|       |              |          | HDX                   |                         |
-+-------+--------------+----------+-----------------------+-------------------------+
-|       | hdx\_key\_fi | Optional | Path to HDX key file  |                         |
-|       | le           | [str]    | ~/.hdxkey             |                         |
-+-------+--------------+----------+-----------------------+-------------------------+
-| One   | hdx\_config\ | dict     | HDX configuration     |                         |
-| of:   | _dict        |          | dictionary            |                         |
-+-------+--------------+----------+-----------------------+-------------------------+
-|       | hdx\_config\ | str      | Path to JSON HDX      |                         |
-|       | _json        |          | configuration         |                         |
-+-------+--------------+----------+-----------------------+-------------------------+
-|       | hdx\_config\ | str      | Path to YAML HDX      | Library's internal      |
-|       | _yaml        |          | configuration         | hdx\_configuration.yml  |
-+-------+--------------+----------+-----------------------+-------------------------+
-| One   | project\_con | dict     | Project configuration |                         |
-| of:   | fig\_dict    |          | dictionary            |                         |
-+-------+--------------+----------+-----------------------+-------------------------+
-|       | project\_con | str      | Path to JSON Project  |                         |
-|       | fig\_json    |          | configuration         |                         |
-+-------+--------------+----------+-----------------------+-------------------------+
-|       | project\_con | str      | Path to YAML Project  |                         |
-|       | fig\_yaml    |          | configuration         |                         |
-+-------+--------------+----------+-----------------------+-------------------------+
++---------+-----------------------+----------+-------------------------+-------------------------+
+| Choose  | Argument              | Type     | Value                   | Default                 |
+|         |                       |          |                         |                         |
++=========+=======================+==========+=========================+=========================+
+|         | hdx\_site             | Optional | HDX site to use eg.     | test                    |
+|         |                       | (bool)   | prod, feature           |                         |
++---------+-----------------------+----------+-------------------------+-------------------------+
+|         | hdx\_read\_only       | bool     | Read only or read/write | False                   |
+|         |                       |          | access to HDX           |                         |
++---------+-----------------------+----------+-------------------------+-------------------------+
+|         | hdx\_key\_file        | Optional | Path to HDX key file    |                         |
+|         |                       | (str)    | ~/.hdxkey               |                         |
++---------+-----------------------+----------+-------------------------+-------------------------+
+| One of: | hdx\_config\_dict     | dict     | HDX configuration       |                         |
+|         |                       |          | dictionary              |                         |
++---------+-----------------------+----------+-------------------------+-------------------------+
+|         | hdx\_config\_json     | str      | Path to JSON HDX        |                         |
+|         |                       |          | configuration           |                         |
++---------+-----------------------+----------+-------------------------+-------------------------+
+|         | hdx\_config\_yaml     | str      | Path to YAML HDX        | Library's internal      |
+|         |                       |          | configuration           | hdx\_configuration.yml  |
++---------+-----------------------+----------+-------------------------+-------------------------+
+| One of: | project\_config\_dict | dict     | Project configuration   |                         |
+|         |                       |          | dictionary              |                         |
++---------+-----------------------+----------+-------------------------+-------------------------+
+|         | project\_config\_json | str      | Path to JSON Project    |                         |
+|         |                       |          | configuration           |                         |
++---------+-----------------------+----------+-------------------------+-------------------------+
+|         | project\_config\_yaml | str      | Path to YAML Project    |                         |
+|         |                       |          | configuration           |                         |
++---------+-----------------------+----------+-------------------------+-------------------------+
 
 To access the configuration, you use the ``read`` method of the
 ``Configuration`` class as follows:
@@ -371,28 +370,28 @@ If using facade:
 
 ``KEYWORD ARGUMENTS`` can be:
 
-+-------+-------------+----+--------------------------+----------------------------+
-| Choos | Argument    | Ty | Value                    | Default                    |
-| e     |             | pe |                          |                            |
-+=======+=============+====+==========================+============================+
-| One   | logging\_co | di | Logging configuration    |                            |
-| of:   | nfig\_dict  | ct | dictionary               |                            |
-+-------+-------------+----+--------------------------+----------------------------+
-|       | logging\_co | st | Path to JSON Logging     |                            |
-|       | nfig\_json  | r  | configuration            |                            |
-+-------+-------------+----+--------------------------+----------------------------+
-|       | logging\_co | st | Path to YAML Logging     | Library's internal         |
-|       | nfig\_yaml  | r  | configuration            | logging\_configuration.yml |
-+-------+-------------+----+--------------------------+----------------------------+
-| One   | smtp\_confi | di | Email Logging            |                            |
-| of:   | g\_dict     | ct | configuration dictionary |                            |
-+-------+-------------+----+--------------------------+----------------------------+
-| (if   | smtp\_confi | st | Path to JSON Email       |                            |
-| using | g\_json     | r  | Logging configuration    |                            |
-+-------+-------------+----+--------------------------+----------------------------+
-| defau | smtp\_confi | st | Path to YAML Email       |                            |
-| lts)  | g\_yaml     | r  | Logging configuration    |                            |
-+-------+-------------+----+--------------------------+----------------------------+
++-----------+-----------------------+------+--------------------------+----------------------------+
+| Choose    | Argument              | Type | Value                    | Default                    |
+|           |                       |      |                          |                            |
++===========+=======================+======+==========================+============================+
+| One of:   | logging\_config\_dict | dict | Logging configuration    |                            |
+|           |                       |      | dictionary               |                            |
++-----------+-----------------------+------+--------------------------+----------------------------+
+|           | logging\_config\_json | str  | Path to JSON Logging     |                            |
+|           |                       |      | configuration            |                            |
++-----------+-----------------------+------+--------------------------+----------------------------+
+|           | logging\_config\_yaml | str  | Path to YAML Logging     | Library's internal         |
+|           |                       |      | configuration            | logging\_configuration.yml |
++-----------+-----------------------+------+--------------------------+----------------------------+
+| One of:   | smtp\_config\_dict    | dict | Email Logging            |                            |
+|           |                       |      | configuration dictionary |                            |
++-----------+-----------------------+------+--------------------------+----------------------------+
+| (if using | smtp\_config\_json    | str  | Path to JSON Email       |                            |
+|           |                       |      | Logging configuration    |                            |
++-----------+-----------------------+------+--------------------------+----------------------------+
+| defaults) | smtp\_config\_yaml    | str  | Path to YAML Email       |                            |
+|           |                       |      | Logging configuration    |                            |
++-----------+-----------------------+------+--------------------------+----------------------------+
 
 Do not supply ``smtp_config_dict``, ``smtp_config_json`` or
 ``smtp_config_yaml`` unless you are using the default logging
