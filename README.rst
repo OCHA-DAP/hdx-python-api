@@ -11,7 +11,7 @@
 -  `Usage <#usage>`__
 -  `Getting Started <#getting-started>`__
 
-   -  `Creating the API Key File <#obtaining-an-api-key>`__
+   -  `Obtaining your API Key <#obtaining-your-api-key>`__
    -  `Installing the Library <#installing-the-library>`__
    -  `Docker <#docker>`__
    -  `A Quick Example <#a-quick-example>`__
@@ -46,8 +46,8 @@ library is here: \ https://github.com/ocha-dap/hdx-python-api.
 Getting Started
 ---------------
 
-Obtaining an API Key
-~~~~~~~~~~~~~~~~~~~~
+Obtaining your API Key
+~~~~~~~~~~~~~~~~~~~~~~
 
 If you just want to read data from HDX, then an API key is not necessary
 and you can ignore the 7 steps below. However, if you want to write data
