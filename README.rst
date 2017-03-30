@@ -11,7 +11,7 @@
 -  `Usage <#usage>`__
 -  `Getting Started <#getting-started>`__
 
-   -  `Creating the API Key File <#creating-the-api-key-file>`__
+   -  `Creating the API Key File <#obtaining-an-api-key>`__
    -  `Installing the Library <#installing-the-library>`__
    -  `Docker <#docker>`__
    -  `A Quick Example <#a-quick-example>`__
@@ -21,7 +21,7 @@
    -  `Default Configuration for
       Facades <#default-configuration-for-facades>`__
    -  `Facades <#facades>`__
-   -  `Customising the Configuration <#customising-the-onfiguration>`__
+   -  `Customising the Configuration <#customising-the-configuration>`__
    -  `Configuring Logging <#configuring-logging>`__
    -  `Operations on HDX Objects <#operations-on-hdx-objects>`__
    -  `Dataset Specific Operations <#dataset-specific-operations>`__
@@ -46,13 +46,14 @@ library is here: \ https://github.com/ocha-dap/hdx-python-api.
 Getting Started
 ---------------
 
-Creating the API Key File
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Obtaining an API Key
+~~~~~~~~~~~~~~~~~~~~
 
 If you just want to read data from HDX, then an API key is not necessary
 and you can ignore the 7 steps below. However, if you want to write data
-to HDX, then you need to register on the website to obtain an API key
-and then create an API key file. By default this is assumed to be called
+to HDX, then you need to register on the website to obtain an API key.
+You can supply this key as an argument or create an API key file. If
+you create an API key file, by default this is assumed to be called
 **.hdxkey** and is located in the current user's home directory **~**.
 Assuming you are using a desktop browser, the API key is obtained by:
 
@@ -62,9 +63,9 @@ Assuming you are using a desktop browser, the API key is obtained by:
 #. Left click on your username in the top right of the web page and
    select PROFILE from the drop down menu
 #. Scroll down to the bottom of the profile page
-#. Copy the API key which will be of the
-   form xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-#. Paste the API key into a text file
+#. Copy the API key which will be of the form:
+   xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+#. To make an API key file, paste the API key into a text file
 #. Save the text file with filename **.hdxkey** in the current user's
    home directory
 
