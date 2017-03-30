@@ -302,37 +302,38 @@ arguments ie.
 
 **KEYWORD ARGUMENTS** can be:
 
-+---------+-----------------------+----------+-------------------------+-------------------------+
-| Choose  | Argument              | Type     | Value                   | Default                 |
-|         |                       |          |                         |                         |
-+=========+=======================+==========+=========================+=========================+
-|         | hdx\_site             | Optional | HDX site to use eg.     | test                    |
-|         |                       | (bool)   | prod, feature           |                         |
-+---------+-----------------------+----------+-------------------------+-------------------------+
-|         | hdx\_read\_only       | bool     | Read only or read/write | False                   |
-|         |                       |          | access to HDX           |                         |
-+---------+-----------------------+----------+-------------------------+-------------------------+
-|         | hdx\_key\_file        | Optional | Path to HDX key file    |                         |
-|         |                       | (str)    | ~/.hdxkey               |                         |
-+---------+-----------------------+----------+-------------------------+-------------------------+
-| One of: | hdx\_config\_dict     | dict     | HDX configuration       |                         |
-|         |                       |          | dictionary              |                         |
-+---------+-----------------------+----------+-------------------------+-------------------------+
-|         | hdx\_config\_json     | str      | Path to JSON HDX        |                         |
-|         |                       |          | configuration           |                         |
-+---------+-----------------------+----------+-------------------------+-------------------------+
-|         | hdx\_config\_yaml     | str      | Path to YAML HDX        | Library's internal      |
-|         |                       |          | configuration           | hdx\_configuration.yml  |
-+---------+-----------------------+----------+-------------------------+-------------------------+
-| One of: | project\_config\_dict | dict     | Project configuration   |                         |
-|         |                       |          | dictionary              |                         |
-+---------+-----------------------+----------+-------------------------+-------------------------+
-|         | project\_config\_json | str      | Path to JSON Project    |                         |
-|         |                       |          | configuration           |                         |
-+---------+-----------------------+----------+-------------------------+-------------------------+
-|         | project\_config\_yaml | str      | Path to YAML Project    |                         |
-|         |                       |          | configuration           |                         |
-+---------+-----------------------+----------+-------------------------+-------------------------+
++---------+-----------------------+----------------+---------------------------+-------------------------+
+| Choose  | Argument              | Type           | Value                     | Default                 |
+|         |                       |                |                           |                         |
++=========+=======================+================+===========================+=========================+
+|         | hdx\_site             | Optional[bool] | HDX site to use eg.       | test                    |
+|         |                       |                | prod, feature             |                         |
++---------+-----------------------+----------------+---------------------------+-------------------------+
+| One of: | hdx\_read\_only       | bool           | Read only or read/write   | False                   |
+|         |                       |                | access to HDX             |                         |
++---------+-----------------------+----------------+---------------------------+-------------------------+
+| or      | hdx\_key              | Optional[str]  | HDX key                   |                         |
++---------+-----------------------+----------------+---------------------------+-------------------------+
+| or      | hdx\_key\_file        | Optional[str]  | Path to HDX key file.     | ~/.hdxkey               |
++---------+-----------------------+----------------+---------------------------+-------------------------+
+| One of: | hdx\_config\_dict     | dict           | HDX configuration         |                         |
+|         |                       |                | dictionary                |                         |
++---------+-----------------------+----------------+---------------------------+-------------------------+
+| or      | hdx\_config\_json     | str            | Path to JSON HDX          |                         |
+|         |                       |                | configuration             |                         |
++---------+-----------------------+----------------+---------------------------+-------------------------+
+| or      | hdx\_config\_yaml     | str            | Path to YAML HDX          | Library's internal      |
+|         |                       |                | configuration             | hdx\_configuration.yml  |
++---------+-----------------------+----------------+---------------------------+-------------------------+
+| One of: | project\_config\_dict | dict           | Project configuration     |                         |
+|         |                       |                | dictionary                |                         |
++---------+-----------------------+----------------+---------------------------+-------------------------+
+| or      | project\_config\_json | str            | Path to JSON Project      |                         |
+|         |                       |                | configuration             |                         |
++---------+-----------------------+----------------+---------------------------+-------------------------+
+| or      | project\_config\_yaml | str            | Path to YAML Project      |                         |
+|         |                       |                | configuration             |                         |
++---------+-----------------------+----------------+---------------------------+-------------------------+
 
 To access the configuration, you use the **read** method of the
 **Configuration** class as follows:
@@ -377,19 +378,19 @@ If using facade:
 | One of:   | logging\_config\_dict | dict | Logging configuration    |                            |
 |           |                       |      | dictionary               |                            |
 +-----------+-----------------------+------+--------------------------+----------------------------+
-|           | logging\_config\_json | str  | Path to JSON Logging     |                            |
+| or        | logging\_config\_json | str  | Path to JSON Logging     |                            |
 |           |                       |      | configuration            |                            |
 +-----------+-----------------------+------+--------------------------+----------------------------+
-|           | logging\_config\_yaml | str  | Path to YAML Logging     | Library's internal         |
+| or        | logging\_config\_yaml | str  | Path to YAML Logging     | Library's internal         |
 |           |                       |      | configuration            | logging\_configuration.yml |
 +-----------+-----------------------+------+--------------------------+----------------------------+
 | One of:   | smtp\_config\_dict    | dict | Email Logging            |                            |
 |           |                       |      | configuration dictionary |                            |
 +-----------+-----------------------+------+--------------------------+----------------------------+
-| (if using | smtp\_config\_json    | str  | Path to JSON Email       |                            |
+| or        | smtp\_config\_json    | str  | Path to JSON Email       |                            |
 |           |                       |      | Logging configuration    |                            |
 +-----------+-----------------------+------+--------------------------+----------------------------+
-| defaults) | smtp\_config\_yaml    | str  | Path to YAML Email       |                            |
+| or        | smtp\_config\_yaml    | str  | Path to YAML Email       |                            |
 |           |                       |      | Logging configuration    |                            |
 +-----------+-----------------------+------+--------------------------+----------------------------+
 

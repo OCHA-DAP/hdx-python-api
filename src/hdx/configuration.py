@@ -31,7 +31,8 @@ class Configuration(dict_class, object):
         **kwargs: See below
         hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
         hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
-        hdx_key_file (Optional[str]): Path to HDX key file. Ignored if hdx_read_only = True. Defaults to ~/.hdxkey.
+        hdx_key (Optional[str]): Your HDX key. Ignored if hdx_read_only = True.
+        hdx_key_file (Optional[str]): Path to HDX key file. Ignored if hdx_read_only = True or hdx_key supplied. Defaults to ~/.hdxkey.
         hdx_config_dict (dict): HDX configuration dictionary OR
         hdx_config_json (str): Path to JSON HDX configuration OR
         hdx_config_yaml (str): Path to YAML HDX configuration. Defaults to library's internal hdx_configuration.yml.
