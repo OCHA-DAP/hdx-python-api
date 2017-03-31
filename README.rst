@@ -171,13 +171,14 @@ On other OSs:
 
 #. Use configuration defaults and the "feature" HDX site.
 
-   If you only want to read data:
+   If you only want to read data, then connect to the production HDX server:
 
    ::
 
-       Configuration.create(hdx_site='feature', hdx_read_only=True)
+       Configuration.create(hdx_site='prod', hdx_read_only=True)
 
-   If you want to write data and you have an API key stored in a file
+   If you want to write data, then for experimentation, do not use the production HDX server.
+   Instead you can use one of the test servers. Assuming you have an API key stored in a file
    **.hdxkey** in the current user's home directory:
 
    ::
@@ -185,7 +186,7 @@ On other OSs:
        Configuration.create(hdx_site='feature')
 
 #. Read this dataset `ACLED Conflict Data for Africa (Realtime -
-   2016) <https://feature-data.humdata.org/dataset/acled-conflict-data-for-africa-realtime-2016#>`__
+   2016) <https://feature-data.humdata.org/dataset/acled-conflict-data-for-africa-realtime-2016>`__
    from HDX and view the date of the dataset:
 
    ::
