@@ -4,7 +4,7 @@ import logging
 from os import unlink
 from os.path import join, splitext
 
-import chardet
+import cchardet
 import six
 from pyheaderfile import guess_type
 from typing import Optional, List, Tuple, Any
@@ -281,7 +281,7 @@ class Resource(HDXObject):
             if extension.lower() == '.csv':
                 f = open(path, 'rb')
                 file_content = f.read()
-                encoding = chardet.detect(file_content)['encoding']
+                encoding = cchardet.detect(file_content)['encoding']
                 if not encoding:
                     raise HDXError('File %s does not have a valid encoding!' % path)
             f = guess_type(path, encode=encoding, strip=True)
