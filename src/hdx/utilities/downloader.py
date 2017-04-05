@@ -43,7 +43,7 @@ class Download(object):
 
         Args:
             url (str): URL to download
-            folder (Optional[str]): Folder to download it to. Defaults to None.
+            folder (Optional[str]): Folder to download it to. Defaults to None (temporary folder).
 
         Returns:
             str: Path of downloaded file
@@ -105,7 +105,7 @@ class Download(object):
 
         Args:
             url (str): URL to download
-            folder (Optional[str]): Folder to download it to. Defaults to None.
+            folder (Optional[str]): Folder to download it to. Defaults to None (temporary folder).
 
         Returns:
             str: Path of downloaded file

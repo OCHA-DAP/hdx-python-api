@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """Resource class containing all logic for creating, checking, and updating resources."""
-import csv
 import logging
 from os import unlink
 from os.path import join
 
 import six
+from agate import csv
 from typing import Optional, List, Tuple, Any
 
 from hdx.configuration import Configuration
