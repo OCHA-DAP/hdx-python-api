@@ -58,7 +58,7 @@ requirements = ['cchardet',
                 'ndg-httpsclient',
                 'pyaml',
                 'pyasn1',
-                'pyheaderfile'
+                'pyheaderfile',
                 'pyOpenSSL',
                 'python-dateutil',
                 'requests',
