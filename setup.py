@@ -51,13 +51,14 @@ def get_readme():
     return readme_file.read()
 
 
-requirements = ['agate',
+requirements = ['cchardet',
                 'ckanapi',
                 'colorlog',
                 'geonamescache',
                 'ndg-httpsclient',
                 'pyaml',
                 'pyasn1',
+                'pyheaderfile'
                 'pyOpenSSL',
                 'python-dateutil',
                 'requests',

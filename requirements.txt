@@ -1,10 +1,11 @@
-agate==1.6.0
+chardet==2.3.0
 ckanapi==4.0
 colorlog==2.10.0
 geonamescache==0.3.1
 ndg-httpsclient==0.4.2
 pyaml==16.12.2
 pyasn1==0.2.3
+pyheaderfile==0.4.0
 pyOpenSSL==16.2.0
 python-dateutil==2.6.0
 requests==2.13.0

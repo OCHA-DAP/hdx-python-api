@@ -481,7 +481,7 @@ class TestResource:
         resource.update_datastore()
         resource.update_datastore_for_topline()
         resource.update_datastore_from_yaml_schema(topline_yaml)
-        filefordatastore = join('tests', 'fixtures', 'downloader', 'test_data.csv')
+        filefordatastore = join('tests', 'fixtures', 'test_data.csv')
         resource.update_datastore_from_json_schema(topline_json, path=filefordatastore)
         with pytest.raises(HDXError):
             resource2.update_datastore_from_json_schema(topline_json)

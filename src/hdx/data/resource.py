@@ -2,10 +2,11 @@
 """Resource class containing all logic for creating, checking, and updating resources."""
 import logging
 from os import unlink
-from os.path import join
+from os.path import join, splitext
 
+import chardet
 import six
-from agate import csv
+from pyheaderfile import guess_type
 from typing import Optional, List, Tuple, Any
 
 from hdx.configuration import Configuration
@@ -275,15 +276,22 @@ class Resource(HDXObject):
 
         f = None
         try:
-            f = open(path, 'r')
-            reader = csv.DictReader(f)
+            extension = splitext(path)[1]
+            encoding = 'utf-8'
+            if extension.lower() == '.csv':
+                f = open(path, 'rb')
+                file_content = f.read()
+                encoding = chardet.detect(file_content)['encoding']
+                if not encoding:
+                    raise HDXError('File %s does not have a valid encoding!' % path)
+            f = guess_type(path, encode=encoding, strip=True)
+            rows = [row for row in f.read()]
             if schema is None:
                 schema = list()
-                for fieldname in reader.fieldnames:
+                for fieldname in rows[0].keys():
                     schema.append({'id': fieldname, 'type': 'text'})
             data = {'resource_id': self.data['id'], 'force': True, 'fields': schema, 'primary_key': primary_key}
             self._write_to_hdx('datastore_create', data, 'id')
-            rows = [row for row in reader]
             chunksize = 10240
             offset = 0
             if primary_key is None:
