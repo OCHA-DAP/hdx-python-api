@@ -50,7 +50,9 @@ def get_readme():
     readme_file = open(script_dir_plus_file('README.rst', get_readme), encoding='utf-8')
     return readme_file.read()
 
-requirements = ['ckanapi',
+
+requirements = ['agate',
+                'ckanapi',
                 'colorlog',
                 'geonamescache',
                 'ndg-httpsclient',
