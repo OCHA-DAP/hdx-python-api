@@ -51,7 +51,7 @@ def get_readme():
     return readme_file.read()
 
 
-requirements = ['cchardet',
+requirements = ['chardet',
                 'ckanapi',
                 'colorlog',
                 'geonamescache',
