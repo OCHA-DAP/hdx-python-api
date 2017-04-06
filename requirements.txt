@@ -6,6 +6,8 @@ ndg-httpsclient==0.4.2
 pyaml==16.12.2
 pyasn1==0.2.3
 pyexcel==0.4.5
+pyexcel-ods3==0.3.1
+pyexcel-xls==0.3.1
 pyOpenSSL==16.2.0
 python-dateutil==2.6.0
 requests==2.13.0
