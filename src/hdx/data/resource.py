@@ -5,8 +5,8 @@ from os import unlink
 from os.path import join, splitext
 
 import cchardet
+import pyexcel
 import six
-from pyheaderfile import guess_type
 from typing import Optional, List, Tuple, Any
 
 from hdx.configuration import Configuration
@@ -284,8 +284,7 @@ class Resource(HDXObject):
                 encoding = cchardet.detect(file_content)['encoding']
                 if not encoding:
                     raise HDXError('File %s does not have a valid encoding!' % path)
-            f = guess_type(path, encode=encoding, strip=True)
-            rows = [row for row in f.read()]
+            rows = pyexcel.get_records(file_name=path, encoding=encoding)
             if schema is None:
                 schema = list()
                 for fieldname in rows[0].keys():

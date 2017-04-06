@@ -1,32 +1,6 @@
-Question,Location Name,Answer,Count
-Daughters Married or Pregnant before 18,Kasese,N/A,16
-Daughters Married or Pregnant before 18,Kasese,No,109
-Daughters Married or Pregnant before 18,Kasese,Yes,25
-Either Spouse below 18 when had First Child,Kasese,1,36
-Either Spouse below 18 when had First Child,Kasese,2,105
-Either Spouse below 18 when had First Child,Kasese,3,2
-Main Occupation of Head of Household,Kasese,Formal/Salaried Employment,12
-Main Occupation of Head of Household,Kasese,Others,3
-Main Occupation of Head of Household,Kasese,Piece/Casual Work/Wage Labour,2
-Main Occupation of Head of Household,Kasese,Self Employed (Non-Farming),6
-Main Occupation of Head of Household,Kasese,Subsistence Farmer/Pastoralist,126
-Main Occupation of Head of Household,Kasese,Unemployed,1
-Main Source of Income for the Household,Kasese,Formal/Salaried Employment,8
-Main Source of Income for the Household,Kasese,Livestock and Crop Farming,108
-Main Source of Income for the Household,Kasese,Others,1
-Main Source of Income for the Household,Kasese,Piece/Casual Work/Wage Labour,1
-Main Source of Income for the Household,Kasese,Sale of own Crops,23
-Main Source of Income for the Household,Kasese,Self-Employed,9
-No of Times Abused by Husband,Kasese,Cannot Remember,3
-No of Times Abused by Husband,Kasese,N/A,117
-No of Times Abused by Husband,Kasese,N/R,7
-No of Times Abused by Husband,Kasese,N/R,18
-No of Times Abused by Husband,Kasese,Once,3
-No of Times Abused by Husband,Kasese,Twice,2
-Number of Child Rights Known,Kasese,0,5
-Number of Child Rights Known,Kasese,1,4
-Number of Child Rights Known,Kasese,2,24
-Number of Child Rights Known,Kasese,3,42
-Number of Child Rights Known,Kasese,4,59
-Number of Child Rights Known,Kasese,5+,15
-Number of Child Rights Known,Kasese,N/R,1
+GWNO,EVENT_ID_CNTY,EVENT_ID_NO_CNTY,EVENT_DATE,YEAR,TIME_PRECISION,EVENT_TYPE,ACTOR1,ALLY_ACTOR_1,INTER1,ACTOR2,ALLY_ACTOR_2,INTER2,INTERACTION,COUNTRY,ADMIN1,ADMIN2,ADMIN3,LOCATION,LATITUDE,LONGITUDE,GEO_PRECISION,SOURCE,NOTES,FATALITIES
+615,1416RTA,,18/04/2001,2001,1,Violence against civilians,Police Forces of Algeria (1999-),,1,Civilians (Algeria),Berber Ethnic Group (Algeria),7,17,Algeria,Tizi Ouzou,Beni-Douala,,Beni Douala,36.61954,4.08282,1,Associated Press Online,A Berber student was shot while in police custody at a police station in Beni Douala. He later died on Apr.21.,1
+615,2229RTA,,19/04/2001,2001,1,Riots/Protests,Rioters (Algeria),Berber Ethnic Group (Algeria),5,Police Forces of Algeria (1999-),,1,15,Algeria,Tizi Ouzou,Tizi Ouzou,,Tizi Ouzou,36.71183,4.04591,3,Kabylie report,"Riots were reported in numerous villages in Kabylie, resulting in dozens wounded in clashes between protesters and police and significant material damage.",0
+615,2230RTA,,20/04/2001,2001,1,Riots/Protests,Protesters (Algeria),Students (Algeria),6,,,0,60,Algeria,Bejaia,Amizour,,Amizour,36.64022,4.90131,1,Crisis Group,Students protested in the Amizour area. At least 3 were later arrested for allegedly insulting gendarmes.,0
+615,2231RTA,,21/04/2001,2001,1,Riots/Protests,Rioters (Algeria),Berber Ethnic Group (Algeria),5,Police Forces of Algeria (1999-),,1,15,Algeria,Bejaia,Amizour,,Amizour,36.64022,4.90131,1,Kabylie report,"Rioters threw molotov cocktails, rocks and burning tires at gendarmerie stations in Beni Douala, El-Kseur and Amizour.",0
+
