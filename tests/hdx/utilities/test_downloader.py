@@ -35,13 +35,13 @@ class TestDownloader:
         with Download() as download:
             download.setup_stream(fixtureurl)
             headers = download.response.headers
-            assert headers['Content-Length'] == '479'
+            assert headers['Content-Length'] == '728'
 
     def test_hash_stream(self, fixtureurl):
         with Download() as download:
             download.setup_stream(fixtureurl)
             md5hash = download.hash_stream(fixtureurl)
-            assert md5hash == '012c59e583a693d56fff10f061ebd5d0'
+            assert md5hash == 'da9db35a396cca10c618f6795bdb9ff2'
 
     def test_download_file(self, fixtureurl, fixturenotexistsurl):
         tmpdir = tempfile.gettempdir()
@@ -62,4 +62,4 @@ class TestDownloader:
             download.download(fixturenotexistsurl)
         with Download() as download:
             result = download.download(fixtureurl)
-            assert result.headers['Content-Length'] == '479'
+            assert result.headers['Content-Length'] == '728'

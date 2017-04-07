@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 """Resource class containing all logic for creating, checking, and updating resources."""
 import logging
+import zipfile
 from os import unlink
-from os.path import join, splitext
+from os.path import join, splitext, dirname, abspath
 
-import cchardet
-import pyexcel
 import six
+import tabulator
+from tabulator import Stream
 from typing import Optional, List, Tuple, Any
 
 from hdx.configuration import Configuration
@@ -274,43 +275,59 @@ class Resource(HDXObject):
                 raise HDXError('No URL to download!')
             delete_after_download = False
 
-        f = None
+        zip_path = None
+        stream = None
         try:
             extension = splitext(path)[1]
-            encoding = 'utf-8'
-            if extension.lower() == '.csv':
-                f = open(path, 'rb')
-                file_content = f.read()
-                encoding = cchardet.detect(file_content)['encoding']
-                if not encoding:
-                    raise HDXError('File %s does not have a valid encoding!' % path)
-            rows = pyexcel.get_records(file_name=path, encoding=encoding)
+            if extension.lower() == '.zip':
+                zip_file = zipfile.ZipFile(path)
+                filename = zip_file.namelist()[0]
+                tempdir = dirname(abspath(path))
+                zip_file.extract(filename, tempdir)
+                zip_path = path
+                path = join(tempdir, filename)
+
+            def convert_to_text(extended_rows):
+                for number, headers, row in extended_rows:
+                    for i, val in enumerate(row):
+                        row[i] = str(val)
+                    yield (number, headers, row)
+
+            tabulator.config.BYTES_SAMPLE_SIZE = 1000000
+            stream = Stream(path, headers=1, post_parse=[convert_to_text])
+            stream.open()
             if schema is None:
                 schema = list()
-                for fieldname in rows[0].keys():
+                for fieldname in stream.headers:
                     schema.append({'id': fieldname, 'type': 'text'})
             data = {'resource_id': self.data['id'], 'force': True, 'fields': schema, 'primary_key': primary_key}
             self._write_to_hdx('datastore_create', data, 'id')
-            chunksize = 10240
-            offset = 0
             if primary_key is None:
                 method = 'insert'
             else:
                 method = 'upsert'
             logger.debug('Uploading data from %s to datastore' % url)
-            while offset < len(rows):
-                rowset = rows[offset:offset + chunksize]
+            offset = 0
+            chunksize = 100
+            rowset = stream.read(keyed=True, limit=chunksize)
+            while len(rowset) != 0:
                 data = {'resource_id': self.data['id'], 'force': True, 'method': method, 'records': rowset}
                 self._write_to_hdx('datastore_upsert', data, 'id')
-                offset += chunksize
+                rowset = stream.read(keyed=True, limit=chunksize)
                 logger.debug('Uploading: %s' % offset)
+                offset += chunksize
         except Exception as e:
             six.raise_from(HDXError('Upload to datastore of %s failed!' % url), e)
         finally:
-            if f:
-                f.close()
+            if stream:
+                stream.close()
             if delete_after_download:
                 unlink(path)
+                if zip_path:
+                    unlink(zip_path)
+            else:
+                if zip_path:
+                    unlink(path)  # ie. we keep the zip but remove the extracted file
 
     def create_datastore_from_dict_schema(self, data, delete_first=0, path=None):
         # type: (dict, Optional[int], Optional[str]) -> None
