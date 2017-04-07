@@ -51,21 +51,18 @@ def get_readme():
     return readme_file.read()
 
 
-requirements = ['cchardet',
-                'ckanapi',
+requirements = ['ckanapi',
                 'colorlog',
                 'geonamescache',
                 'ndg-httpsclient',
                 'pyaml',
                 'pyasn1',
-                'pyexcel',
-                'pyexcel-ods3',
-                'pyexcel-xls',
                 'pyOpenSSL',
                 'python-dateutil',
                 'requests',
                 'scraperwiki',
                 'six',
+                'tabulator',
                 'typing'
                 ]
 
