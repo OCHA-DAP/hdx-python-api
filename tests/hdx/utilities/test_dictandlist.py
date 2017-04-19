@@ -17,6 +17,14 @@ class TestDictAndList:
         result = merge_dictionaries([d1, d2, d3])
         assert result == {1: 1, 2: 6, 3: 3, 4: {8: '8', 'g': 3, 'b': 'c', 'a': 1}, 5: 7, 6: 9, 8: {'k': 'b', 3: 12},
                           9: {'e': 'h', 'c': 12}}
+        d1 = {1: 1, 2: 2, 3: 3, 4: ['a', 'b', 'c']}
+        d2 = {2: 6, 4: 8, 6: 9, 4: ['d', 'e']}
+        result = merge_dictionaries([d1, d2])
+        assert result == {1: 1, 2: 6, 3: 3, 4: ['d', 'e'], 6: 9}
+        d1 = {1: 1, 2: 2, 3: 3, 4: ['a', 'b', 'c']}
+        result = merge_dictionaries([d1, d2], merge_lists=True)
+        assert result == {1: 1, 2: 6, 3: 3, 4: ['a', 'b', 'c', 'd', 'e'], 6: 9}
+
 
     def test_dict_diff(self):
         d1 = {1: 1, 2: 2, 3: 3, 4: {'a': 1, 'b': 'c'}}

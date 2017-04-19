@@ -58,8 +58,8 @@ class TestConfiguration:
                           project_config_json=project_config_json)
 
     def test_hdx_configuration_dict(self, hdx_key_file, project_config_yaml):
-        actual_configuration = Configuration.create(hdx_site='prod', hdx_key_file=hdx_key_file,
-                                                    hdx_config_dict={
+        Configuration.create(hdx_site='prod', hdx_key_file=hdx_key_file,
+                             hdx_config_dict={
                                                  'hdx_prod_site': {
                                                      'url': 'https://data.humdata.org/',
                                                      'username': None,
@@ -67,7 +67,7 @@ class TestConfiguration:
                                                  },
                                                  'XYZ': {'567': 987}
                                              },
-                                                    project_config_yaml=project_config_yaml)
+                             project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
             'param_1': 'ABC',
@@ -78,12 +78,12 @@ class TestConfiguration:
             },
             'XYZ': {'567': 987}
         }
-        assert actual_configuration == expected_configuration
+        assert Configuration.read() == expected_configuration
 
     def test_hdx_configuration_json(self, hdx_key_file, project_config_yaml):
         hdx_config_json = join('tests', 'fixtures', 'config', 'hdx_config.json')
-        actual_configuration = Configuration.create(hdx_key_file=hdx_key_file, hdx_config_json=hdx_config_json,
-                                                    project_config_yaml=project_config_yaml)
+        Configuration.create(hdx_key_file=hdx_key_file, hdx_config_json=hdx_config_json,
+                             project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
             'param_1': 'ABC',
@@ -108,12 +108,12 @@ class TestConfiguration:
                 'dataset_id',
             ],},
         }
-        assert actual_configuration == expected_configuration
+        assert Configuration.read() == expected_configuration
 
     def test_hdx_configuration_yaml(self, hdx_key_file, project_config_yaml):
         hdx_configuration_yaml = join('tests', 'fixtures', 'config', 'hdx_config.yml')
-        actual_configuration = Configuration.create(hdx_key_file=hdx_key_file, hdx_config_yaml=hdx_configuration_yaml,
-                                                    project_config_yaml=project_config_yaml)
+        Configuration.create(hdx_key_file=hdx_key_file, hdx_config_yaml=hdx_configuration_yaml,
+                             project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
             'param_1': 'ABC',
@@ -140,10 +140,10 @@ class TestConfiguration:
                 'title',
             ], 'ignore_on_update': ['dataset_id']},
         }
-        assert actual_configuration == expected_configuration
+        assert Configuration.read() == expected_configuration
 
     def test_project_configuration_dict(self, hdx_key_file):
-        actual_configuration = Configuration.create(hdx_key_file=hdx_key_file)
+        Configuration.create(hdx_key_file=hdx_key_file)
         expected_configuration = {
             'api_key': '12345',
             'hdx_prod_site': {
@@ -192,13 +192,13 @@ class TestConfiguration:
                 'image_url',
             ], 'ignore_dataset_id_on_update': True},
         }
-        assert actual_configuration == expected_configuration
-        actual_configuration = Configuration.create(hdx_key_file=hdx_key_file, project_config_dict={'abc': '123'})
+        assert Configuration.read() == expected_configuration
+        Configuration.create(hdx_key_file=hdx_key_file, project_config_dict={'abc': '123'})
         expected_configuration['abc'] = '123'
-        assert actual_configuration == expected_configuration
+        assert Configuration.read() == expected_configuration
 
     def test_project_configuration_json(self, hdx_key_file, project_config_json):
-        actual_configuration = Configuration.create(hdx_key_file=hdx_key_file, project_config_json=project_config_json)
+        Configuration.create(hdx_key_file=hdx_key_file, project_config_json=project_config_json)
         expected_configuration = {
             'api_key': '12345',
             'hdx_prod_site': {
@@ -248,10 +248,10 @@ class TestConfiguration:
                 'image_url',
             ], 'ignore_dataset_id_on_update': True},
         }
-        assert actual_configuration == expected_configuration
+        assert Configuration.read() == expected_configuration
 
     def test_project_configuration_yaml(self, hdx_key_file, project_config_yaml):
-        actual_configuration = Configuration.create(hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
+        Configuration.create(hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
             'param_1': 'ABC',
@@ -301,18 +301,19 @@ class TestConfiguration:
                 'image_url',
             ], 'ignore_dataset_id_on_update': True},
         }
-        assert actual_configuration == expected_configuration
+        assert Configuration.read() == expected_configuration
 
     def test_get_hdx_key_site(self, hdx_key_file, project_config_yaml):
-        actual_configuration = Configuration.create(hdx_site='prod', hdx_key_file=hdx_key_file,
-                                                    hdx_config_dict={},
-                                                    project_config_yaml=project_config_yaml)
+        Configuration.create(hdx_site='prod', hdx_key_file=hdx_key_file,
+                             hdx_config_dict={},
+                             project_config_yaml=project_config_yaml)
+        actual_configuration = Configuration.read()
         assert actual_configuration.get_api_key() == '12345'
         assert actual_configuration.get_hdx_site_url() == 'https://data.humdata.org/'
         assert actual_configuration._get_credentials() == ('', '')
 
     def test_set_hdx_key_value(self, project_config_yaml):
-        actual_configuration = Configuration.create(hdx_site='prod', hdx_key="TEST_HDX_KEY",
-                                                    hdx_config_dict={},
-                                                    project_config_yaml=project_config_yaml)
-        assert actual_configuration.get_api_key() == 'TEST_HDX_KEY'
+        Configuration.create(hdx_site='prod', hdx_key="TEST_HDX_KEY",
+                             hdx_config_dict={},
+                             project_config_yaml=project_config_yaml)
+        assert Configuration.read().get_api_key() == 'TEST_HDX_KEY'

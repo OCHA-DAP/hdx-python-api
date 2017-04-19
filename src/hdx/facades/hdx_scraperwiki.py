@@ -2,9 +2,9 @@
 """Facade that handles ScraperWiki and calls project main function"""
 import logging
 import sys
+from typing import Callable, Any
 
 import scraperwiki
-from typing import Callable, Any
 
 from hdx.configuration import Configuration
 from hdx.facades import logging_kwargs
@@ -30,10 +30,10 @@ def facade(projectmainfn, **kwargs):
         #
         # Setting up configuration
         #
-        configuration = Configuration.create(**kwargs)
+        site_url = Configuration.create(**kwargs)
 
         logger.info('--------------------------------------------------')
-        logger.info('> HDX Site: %s' % configuration.get_hdx_site_url())
+        logger.info('> HDX Site: %s' % site_url)
 
         projectmainfn()
 

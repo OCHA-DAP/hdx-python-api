@@ -25,9 +25,9 @@ def facade(projectmainfn, **kwargs):
     #
     # Setting up configuration
     #
-    configuration = Configuration.create(**kwargs)
+    site_url = Configuration.create(**kwargs)
 
     logger.info('--------------------------------------------------')
-    logger.info('> HDX Site: %s' % configuration.get_hdx_site_url())
+    logger.info('> HDX Site: %s' % site_url)
 
     projectmainfn()

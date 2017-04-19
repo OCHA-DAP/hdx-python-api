@@ -3,9 +3,9 @@
 import logging
 from base64 import b64decode
 from os.path import expanduser, join
+from typing import Optional, Any
 
 import ckanapi
-from typing import Optional, Any
 
 import hdx
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -201,13 +201,23 @@ class Configuration(dict_class, object):
     def create(**kwargs):
         # type: (...) -> 'Configuration'
         """
-        Create
+        Create HDX configuration
 
         Args:
-            path (str): Path to HDX key
+            **kwargs: See below
+            hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
+            hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
+            hdx_key (Optional[str]): Your HDX key. Ignored if hdx_read_only = True.
+            hdx_key_file (Optional[str]): Path to HDX key file. Ignored if hdx_read_only = True or hdx_key supplied. Defaults to ~/.hdxkey.
+            hdx_config_dict (dict): HDX configuration dictionary OR
+            hdx_config_json (str): Path to JSON HDX configuration OR
+            hdx_config_yaml (str): Path to YAML HDX configuration. Defaults to library's internal hdx_configuration.yml.
+            project_config_dict (dict): Project configuration dictionary OR
+            project_config_json (str): Path to JSON Project configuration OR
+            project_config_yaml (str): Path to YAML Project configuration
 
         Returns:
-            str: HDX api key
+            str: HDX site url
 
         """
         hdx.configuration = Configuration(**kwargs)
@@ -216,4 +226,4 @@ class Configuration(dict_class, object):
         hdx.remoteckan = ckanapi.RemoteCKAN(hdx.configuration.get_hdx_site_url(),
                                             apikey=hdx.configuration.get_api_key(),
                                             user_agent='HDXPythonLibrary/%s' % version)
-        return hdx.configuration
+        return hdx.configuration.get_hdx_site_url()

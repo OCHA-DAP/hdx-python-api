@@ -1,23 +1,24 @@
 # -*- coding: utf-8 -*-
 """Dict and List utilities"""
 import itertools
+from typing import List, Optional, TypeVar, Any, Callable
 
 import six
 from six.moves import UserDict, zip_longest
-from typing import List, Optional, TypeVar, Any, Callable
 
 DictUpperBound = TypeVar('T', bound='dict')
 
 
-def merge_two_dictionaries(a, b):
-    # type: (DictUpperBound, DictUpperBound) -> DictUpperBound
+def merge_two_dictionaries(a, b, merge_lists=False):
+    # type: (DictUpperBound, DictUpperBound, bool) -> DictUpperBound
     """Merges b into a and returns merged result
 
     NOTE: tuples and arbitrary objects are not handled as it is totally ambiguous what should happen
 
     Args:
         a (DictUpperBound): dictionary to merge into
-        b: (DictUpperBound): dictionary to merge from
+        b (DictUpperBound): dictionary to merge from
+        merge_lists (bool): Whether to merge lists (True) or replace lists (False). Default is False.
 
     Returns:
         DictUpperBound: Merged dictionary
@@ -31,10 +32,14 @@ def merge_two_dictionaries(a, b):
             # border case for first run or if a is a primitive
             a = b
         elif isinstance(a, list):
-            # lists can be only appended
+            # lists can be appended or replaced
             if isinstance(b, list):
-                # merge lists
-                a.extend(b)
+                if merge_lists:
+                    # merge lists
+                    a.extend(b)
+                else:
+                    # replace list
+                    a = b
             else:
                 # append to list
                 a.append(b)
@@ -43,7 +48,7 @@ def merge_two_dictionaries(a, b):
             if isinstance(b, dict) or isinstance(b, UserDict):
                 for key in b:
                     if key in a:
-                        a[key] = merge_two_dictionaries(a[key], b[key])
+                        a[key] = merge_two_dictionaries(a[key], b[key], merge_lists=merge_lists)
                     else:
                         a[key] = b[key]
             else:
@@ -55,20 +60,21 @@ def merge_two_dictionaries(a, b):
     return a
 
 
-def merge_dictionaries(dicts):
-    # type: (List[DictUpperBound]) -> DictUpperBound
+def merge_dictionaries(dicts, merge_lists=False):
+    # type: (List[DictUpperBound], bool) -> DictUpperBound
     """Merges all dictionaries in dicts into a single dictionary and returns result
 
     Args:
         dicts (List[DictUpperBound]): Dictionaries to merge into the first one in the list
+        merge_lists (bool): Whether to merge lists (True) or replace lists (False). Default is False.
 
     Returns:
         DictUpperBound: Merged dictionary
 
     """
     dict1 = dicts[0]
-    for otherconfig in dicts[1:]:
-        merge_two_dictionaries(dict1, otherconfig)
+    for other_dict in dicts[1:]:
+        merge_two_dictionaries(dict1, other_dict, merge_lists=merge_lists)
     return dict1
 
 
