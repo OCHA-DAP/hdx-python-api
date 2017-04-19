@@ -3,12 +3,13 @@
 import logging
 import zipfile
 from os import unlink
-from os.path import join, splitext, dirname, abspath
+from os.path import join, splitext
+from tempfile import gettempdir
+from typing import Optional, List, Tuple, Any
 
 import six
 import tabulator
 from tabulator import Stream
-from typing import Optional, List, Tuple, Any
 
 from hdx.configuration import Configuration
 from hdx.utilities.downloader import Download
@@ -282,7 +283,7 @@ class Resource(HDXObject):
             if extension.lower() == '.zip':
                 zip_file = zipfile.ZipFile(path)
                 filename = zip_file.namelist()[0]
-                tempdir = dirname(abspath(path))
+                tempdir = gettempdir()
                 zip_file.extract(filename, tempdir)
                 zip_path = path
                 path = join(tempdir, filename)
