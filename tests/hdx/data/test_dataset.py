@@ -627,11 +627,23 @@ class TestDataset:
         assert dataset.get_dataset_date() == '2013-09-11'
         assert dataset.get_dataset_date('%Y/%m/%d') == '2013/09/11'
         test_date = '2021/05/06'
-        dataset.set_dataset_date(test_date, '%Y/%m/%d')
+        dataset.set_dataset_date(test_date, date_format='%Y/%m/%d')
         assert dataset['dataset_date'] == '05/06/2021'
         assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2021, 5, 6, 0, 0)
         assert dataset.get_dataset_date() == '2021-05-06'
         assert dataset.get_dataset_date('%Y/%m/%d') == test_date
+        assert dataset.get_dataset_date_type() == 'date'
+        test_date = '2021/05/06'
+        test_end_date = '2021/07/08'
+        dataset.set_dataset_date(test_date, test_end_date, '%Y/%m/%d')
+        assert dataset['dataset_date'] == '05/06/2021-07/08/2021'
+        assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2021, 5, 6, 0, 0)
+        assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2021, 7, 8, 0, 0)
+        assert dataset.get_dataset_date() == '2021-05-06'
+        assert dataset.get_dataset_end_date() == '2021-07-08'
+        assert dataset.get_dataset_date('%Y/%m/%d') == test_date
+        assert dataset.get_dataset_end_date('%Y/%m/%d') == test_end_date
+        assert dataset.get_dataset_date_type() == 'range'
         with pytest.raises(HDXError):
             dataset.set_dataset_date('lalala')
         with pytest.raises(HDXError):
@@ -640,6 +652,7 @@ class TestDataset:
         assert dataset.get_dataset_date_as_datetime() is None
         assert dataset.get_dataset_date() is None
         assert dataset.get_dataset_date('YYYY/MM/DD') is None
+        assert dataset.get_dataset_date_type() is None
 
     def test_transform_update_frequency(self):
         assert Dataset.transform_update_frequency('0') == 'Never'
