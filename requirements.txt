@@ -8,6 +8,6 @@ pyOpenSSL==16.2.0
 python-dateutil==2.6.0
 requests==2.13.0
 scraperwiki==0.5.1
+six==1.10.0
 tabulator==0.14.2
 typing==3.6.1
-six==1.10.0

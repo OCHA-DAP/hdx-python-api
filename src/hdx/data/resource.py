@@ -7,11 +7,11 @@ from os.path import join, splitext
 from tempfile import gettempdir
 from typing import Optional, List, Tuple, Any
 
-import six
 import tabulator
 from tabulator import Stream
 
 from hdx.configuration import Configuration
+from hdx.utilities import raisefrom
 from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_yaml, load_json
 from hdx.utilities.path import script_dir_plus_file
@@ -318,7 +318,7 @@ class Resource(HDXObject):
                 logger.debug('Uploading: %s' % offset)
                 offset += chunksize
         except Exception as e:
-            six.raise_from(HDXError('Upload to datastore of %s failed!' % url), e)
+            raisefrom(HDXError, 'Upload to datastore of %s failed!' % url, e)
         finally:
             if stream:
                 stream.close()

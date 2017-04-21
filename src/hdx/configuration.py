@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 """Configuration for HDX"""
+import six
+
+if six.PY2:
+    from UserDict import IterableUserDict as UserDict
+else:
+    from collections import UserDict
+
+
 import logging
 from base64 import b64decode
 from os.path import expanduser, join
@@ -12,11 +20,6 @@ from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml, load_json
 from hdx.utilities.path import script_dir_plus_file
 
-try:
-    from UserDict import IterableUserDict as dict_class
-except:
-    from collections import UserDict as dict_class
-
 logger = logging.getLogger(__name__)
 
 
@@ -24,7 +27,7 @@ class ConfigurationError(Exception):
     pass
 
 
-class Configuration(dict_class, object):
+class Configuration(UserDict, object):
     """Configuration for HDX
 
     Args:

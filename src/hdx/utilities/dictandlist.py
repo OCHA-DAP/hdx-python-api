@@ -27,8 +27,7 @@ def merge_two_dictionaries(a, b, merge_lists=False):
     # ## debug output
     # sys.stderr.write("DEBUG: %s to %s\n" %(b,a))
     try:
-        if a is None or isinstance(a, six.text_type) or isinstance(a, str) or isinstance(a, int) \
-                or isinstance(a, float):
+        if a is None or isinstance(a, (six.string_types, six.text_type, six.integer_types, float)):
             # border case for first run or if a is a primitive
             a = b
         elif isinstance(a, list):
@@ -43,9 +42,9 @@ def merge_two_dictionaries(a, b, merge_lists=False):
             else:
                 # append to list
                 a.append(b)
-        elif isinstance(a, dict) or isinstance(a, UserDict):
+        elif isinstance(a, (dict, UserDict)):
             # dicts must be merged
-            if isinstance(b, dict) or isinstance(b, UserDict):
+            if isinstance(b, (dict, UserDict)):
                 for key in b:
                     if key in a:
                         a[key] = merge_two_dictionaries(a[key], b[key], merge_lists=merge_lists)
