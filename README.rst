@@ -627,9 +627,17 @@ Dataset Date
 
 Dataset date is a mandatory field in HDX. This date is the date of the
 data in the dataset, not to be confused with when data was last
-added/changed in the dataset.
+added/changed in the dataset. It can be a single date or a range.
 
-To get the dataset date as a string, you can do as shown below. You can
+To determine if a dataset date is a single date or range you can call:
+
+::
+
+    dataset.get_dataset_type()
+
+It returns 'date' for a single date or 'range' for a date range.
+
+To get the dataset start date of a range or single date as a string, you can do as shown below. You can
 supply a `date
 format <https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior>`__.
 If you don't, the output format will be an `ISO 8601
@@ -637,29 +645,38 @@ date <https://en.wikipedia.org/wiki/ISO_8601>`__ eg. 2007-01-25.
 
 ::
 
-    dataset.get_dataset_date('FORMAT')
+    dataset_date = dataset.get_dataset_date('FORMAT')
 
-To set the dataset date, you do as follows. If you do not supply a date
-format, the method will try to guess, which for unambiguous formats
+
+To get the dataset end date of a range, you call:
+
+::
+
+    dataset_date = dataset.get_dataset_end_date('FORMAT')
+
+
+To set the dataset date, you pass a start date and end date for a range or just a start date for a single date. If you
+do not supply any dates format, the method will try to guess, which for unambiguous formats
 should be fine.
 
 ::
 
-    dataset.set_dataset('DATE', 'FORMAT')
+    dataset.set_dataset_date('START DATE', 'END DATE', 'FORMAT')
 
-To retrieve the dataset date as a **datetime.datetime** object, you can
+To retrieve the dataset date or range as a **datetime.datetime** object, you can
 do:
 
 ::
 
     dataset_date = dataset.get_dataset_date_as_datetime()
+    dataset_date = dataset.get_dataset_end_date_as_datetime()
 
 The method below allows you to set the dataset's date using a
 **datetime.datetime** object:
 
 ::
 
-    dataset.set_dataset_date_from_datetime(DATETIME.DATETIME OBJECT)
+    dataset.set_dataset_date_from_datetime(START DATETIME.DATETIME OBJECT, END DATETIME.DATETIME OBJECT)
 
 Expected Update Frequency
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -742,6 +759,13 @@ occur if a valid continent name is supplied.
 ::
 
     dataset.add_continent_location('TWO LETTER CONTINENT CODE')
+
+If you want to add any other kind of location (which must be in this
+\ `list of valid locations <https://data.humdata.org/api/action/group_list?all_fields=true>`), you do as shown below.
+
+::
+
+    dataset.add_other_location('LOCATION')
 
 Tags
 ^^^^
