@@ -761,7 +761,7 @@ occur if a valid continent name is supplied.
     dataset.add_continent_location('TWO LETTER CONTINENT CODE')
 
 If you want to add any other kind of location (which must be in this
-\ `list of valid locations <https://data.humdata.org/api/action/group_list?all_fields=true>`), you do as shown below.
+\ `list of valid locations <https://data.humdata.org/api/action/group_list?all_fields=true>`__), you do as shown below.
 
 ::
 
