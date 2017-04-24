@@ -229,4 +229,5 @@ class Configuration(UserDict, object):
         hdx.remoteckan = ckanapi.RemoteCKAN(hdx.configuration.get_hdx_site_url(),
                                             apikey=hdx.configuration.get_api_key(),
                                             user_agent='HDXPythonLibrary/%s' % version)
+        hdx.validlocations = hdx.get_validlocations()
         return hdx.configuration.get_hdx_site_url()

@@ -11,7 +11,6 @@ from os.path import join
 import pytest
 import requests
 
-from hdx.configuration import Configuration
 from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
@@ -368,12 +367,6 @@ class TestDataset:
 
         monkeypatch.setattr(requests, 'Session', MockSession)
 
-    @pytest.fixture(scope='function')
-    def configuration(self):
-        hdx_key_file = join('tests', 'fixtures', '.hdxkey')
-        project_config_yaml = join('tests', 'fixtures', 'config', 'project_configuration.yml')
-        Configuration.create(hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
-
     def test_read_from_hdx(self, configuration, read):
         dataset = Dataset.read_from_hdx('TEST1')
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
@@ -728,3 +721,7 @@ class TestDataset:
         dataset.add_country_location('ukr')
         assert dataset['groups'] == [{'name': 'ukr'}]
         assert dataset.get_location() == ['Ukraine']
+        dataset.add_country_location('ukr')
+        dataset.add_other_location('Nepal E')
+        assert dataset['groups'] == [{'name': 'ukr'}, {'name': 'nepal-earthquake'}]
+        assert dataset.get_location() == ['Ukraine', 'Nepal Earthquake']

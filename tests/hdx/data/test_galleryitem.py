@@ -7,7 +7,6 @@ from os.path import join
 import pytest
 import requests
 
-from hdx.configuration import Configuration
 from hdx.data.galleryitem import GalleryItem
 from hdx.data.hdxobject import HDXError
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -161,12 +160,6 @@ class TestGalleryItem:
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_delete"}')
 
         monkeypatch.setattr(requests, 'Session', MockSession)
-
-    @pytest.fixture(scope='function')
-    def configuration(self):
-        hdx_key_file = join('tests', 'fixtures', '.hdxkey')
-        project_config_yaml = join('tests', 'fixtures', 'config', 'project_configuration.yml')
-        Configuration.create(hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
 
     def test_read_from_hdx(self, configuration, read):
         galleryitem = GalleryItem.read_from_hdx('TEST1')

@@ -6,10 +6,6 @@ import pytest
 
 from hdx.configuration import Configuration, ConfigurationError
 
-try:
-    FILENOTFOUND_EXCTYPE = FileNotFoundError
-except:
-    FILENOTFOUND_EXCTYPE = IOError
 
 class TestConfiguration:
     @pytest.fixture(scope='class')
@@ -25,21 +21,21 @@ class TestConfiguration:
         return join('tests', 'fixtures', 'config', 'project_configuration.json')
 
     def test_init(self, hdx_key_file, project_config_json, project_config_yaml):
-        with pytest.raises(FILENOTFOUND_EXCTYPE):
+        with pytest.raises(IOError):
             Configuration(hdx_key_file='NOT_EXIST', project_config_yaml=project_config_yaml)
 
-        with pytest.raises(FILENOTFOUND_EXCTYPE):
+        with pytest.raises(IOError):
             Configuration(hdx_key_file=hdx_key_file, hdx_config_yaml='NOT_EXIST',
                           project_config_yaml=project_config_yaml)
 
-        with pytest.raises(FILENOTFOUND_EXCTYPE):
+        with pytest.raises(IOError):
             Configuration(hdx_key_file=hdx_key_file, hdx_config_json='NOT_EXIST',
                           project_config_yaml=project_config_yaml)
 
-        with pytest.raises(FILENOTFOUND_EXCTYPE):
+        with pytest.raises(IOError):
             Configuration(hdx_key_file=hdx_key_file, project_config_yaml='NOT_EXIST')
 
-        with pytest.raises(FILENOTFOUND_EXCTYPE):
+        with pytest.raises(IOError):
             Configuration(hdx_key_file=hdx_key_file, project_config_json='NOT_EXIST')
 
         with pytest.raises(ConfigurationError):
@@ -80,7 +76,7 @@ class TestConfiguration:
         }
         assert Configuration.read() == expected_configuration
 
-    def test_hdx_configuration_json(self, hdx_key_file, project_config_yaml):
+    def test_hdx_configuration_json(self, hdx_key_file, project_config_yaml, locations):
         hdx_config_json = join('tests', 'fixtures', 'config', 'hdx_config.json')
         Configuration.create(hdx_key_file=hdx_key_file, hdx_config_json=hdx_config_json,
                              project_config_yaml=project_config_yaml)
@@ -110,7 +106,7 @@ class TestConfiguration:
         }
         assert Configuration.read() == expected_configuration
 
-    def test_hdx_configuration_yaml(self, hdx_key_file, project_config_yaml):
+    def test_hdx_configuration_yaml(self, hdx_key_file, project_config_yaml, locations):
         hdx_configuration_yaml = join('tests', 'fixtures', 'config', 'hdx_config.yml')
         Configuration.create(hdx_key_file=hdx_key_file, hdx_config_yaml=hdx_configuration_yaml,
                              project_config_yaml=project_config_yaml)

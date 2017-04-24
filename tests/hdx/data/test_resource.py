@@ -9,7 +9,6 @@ from os.path import join
 import pytest
 import requests
 
-from hdx.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -319,12 +318,6 @@ class TestResource:
                 return mocksearch(url, datadict)
 
         monkeypatch.setattr(requests, 'Session', MockSession)
-
-    @pytest.fixture(scope='function')
-    def configuration(self):
-        hdx_key_file = join('tests', 'fixtures', '.hdxkey')
-        project_config_yaml = join('tests', 'fixtures', 'config', 'project_configuration.yml')
-        Configuration.create(hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
 
     def test_read_from_hdx(self, configuration, read):
         resource = Resource.read_from_hdx('TEST1')

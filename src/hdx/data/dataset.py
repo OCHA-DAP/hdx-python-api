@@ -851,7 +851,7 @@ class Dataset(HDXObject):
         countries = self.data.get('groups', None)
         if not countries:
             return list()
-        return [Location.get_country_name_from_iso3(x['name']) for x in countries]
+        return [Location.get_location_from_HDX_code(x['name']) for x in countries]
 
     def add_country_location(self, country):
         # type: (str) -> None
@@ -866,15 +866,18 @@ class Dataset(HDXObject):
         """
         iso3, match = Location.get_iso3_country_code(country)
         if iso3 is None:
-            raise HDXError('Country: %s could not be found!')
-        countries = self.data.get('groups', None)
-        if countries:
-            if country in [x['name'] for x in countries]:
+            raise HDXError('Country: %s - cannot find iso3 code!' % country)
+        hdx_code, match = Location.get_HDX_code_from_location(iso3)
+        if hdx_code is None:
+            raise HDXError('Country: %s with iso3: %s could not be found in HDX list!' % (country, iso3))
+        groups = self.data.get('groups', None)
+        if groups:
+            if hdx_code in [x['name'] for x in groups]:
                 return
         else:
-            countries = list()
-        countries.append({'name': iso3})
-        self.data['groups'] = countries
+            groups = list()
+        groups.append({'name': hdx_code})
+        self.data['groups'] = groups
 
     def add_country_locations(self, countries):
         # type: (List[str]) -> None
@@ -902,3 +905,26 @@ class Dataset(HDXObject):
             None
         """
         self.add_country_locations(Location.get_countries_in_continent(continent))
+
+    def add_other_location(self, location):
+        # type: (str) -> None
+        """Add a location which is not a country or continent. Value is parsed and compared to existing locations in 
+        HDX. If the location is already added, it is ignored.
+
+        Args:
+            location (str): Location to add
+
+        Returns:
+            None
+        """
+        hdx_code, match = Location.get_HDX_code_from_location(location)
+        if hdx_code is None:
+            raise HDXError('Location: %s - cannot find in HDX!' % location)
+        groups = self.data.get('groups', None)
+        if groups:
+            if hdx_code in [x['name'] for x in groups]:
+                return
+        else:
+            groups = list()
+        groups.append({'name': hdx_code})
+        self.data['groups'] = groups

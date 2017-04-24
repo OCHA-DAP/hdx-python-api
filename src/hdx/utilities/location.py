@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
-import geonamescache
 from typing import List, Callable, Any, Tuple, Optional
+
+import geonamescache
+
+import hdx
 
 
 class Location(object):
@@ -14,7 +17,7 @@ class Location(object):
     @staticmethod
     def get_country_name_from_iso3(iso3):
         # type: (str) -> Optional[str]
-        """Get iso 3 code for country
+        """Get country name from iso3 code
 
         Args:
             iso3 (str): Iso 3 code for which to get country name
@@ -27,6 +30,21 @@ class Location(object):
             if iso3lower == countrydetails.get('iso3').lower():
                 return countrydetails.get('name')
         return None
+
+    @staticmethod
+    def get_location_from_HDX_code(code):
+        # type: (str) -> Optional[str]
+        """Get location from HDX location code
+
+        Args:
+            code (str): code for which to get location name
+
+        Returns:
+            Optional[str]: location name
+        """
+        for locdict in hdx.validlocations:
+            if code.lower() == locdict['name'].lower():
+                return locdict['title']
 
     @staticmethod
     def get_iso3_country_code(country):
@@ -53,6 +71,33 @@ class Location(object):
             countryname = countrydetails.get('name').lower()
             if countrylower in countryname or countryname in countrylower:
                 return countrydetails.get('iso3').lower(), False
+        return None, False
+
+    @staticmethod
+    def get_HDX_code_from_location(location):
+        # type: (str) -> Tuple[Optional[str], bool]
+        """Get HDX code for location
+
+        Args:
+            location (str): Location for which to get HDX code
+
+        Returns:
+            Tuple[Optional[str], bool]: HDX code and if the match is strong or (None, False) for no match
+        """
+        locationlower = location.lower()
+        for locdict in hdx.validlocations:
+            locationcode = locdict['name']
+            if locationlower == locationcode.lower():
+                return locationcode, True
+
+        for locdict in hdx.validlocations:
+            if locationlower == locdict['title'].lower():
+                return locdict['name'], True
+
+        for locdict in hdx.validlocations:
+            locationname = locdict['title'].lower()
+            if locationlower in locationname or locationname in locationlower:
+                return locdict['name'], False
         return None, False
 
     @staticmethod

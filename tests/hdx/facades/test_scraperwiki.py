@@ -2,8 +2,6 @@
 """ScraperWiki Facade Tests"""
 from os.path import join
 
-import pytest
-
 from hdx.facades import logging_kwargs
 
 logging_kwargs.update({
@@ -15,14 +13,6 @@ from hdx.facades.hdx_scraperwiki import facade
 
 
 class TestScraperWiki:
-    @pytest.fixture(scope='class')
-    def hdx_key_file(self):
-        return join('tests', 'fixtures', '.hdxkey')
-
-    @pytest.fixture(scope='class')
-    def project_config_yaml(self):
-        return join('tests', 'fixtures', 'config', 'project_configuration.yml')
-
     def test_facade(self, hdx_key_file, project_config_yaml):
         testresult.actual_result = None
         facade(my_testfn, hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
