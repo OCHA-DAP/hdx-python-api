@@ -640,7 +640,9 @@ class TestDataset:
         with pytest.raises(HDXError):
             dataset.set_dataset_date('lalala')
         with pytest.raises(HDXError):
-            dataset.set_dataset_date('lalala', '%Y/%m/%d')
+            dataset.set_dataset_date('lalala', 'lalala')
+        with pytest.raises(HDXError):
+            dataset.set_dataset_date('lalala', 'lalala', date_format='%Y/%m/%d')
         del dataset['dataset_date']
         assert dataset.get_dataset_date_as_datetime() is None
         assert dataset.get_dataset_date() is None
