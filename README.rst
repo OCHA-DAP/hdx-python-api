@@ -633,7 +633,7 @@ To determine if a dataset date is a single date or range you can call:
 
 ::
 
-    dataset.get_dataset_type()
+    dataset.get_dataset_date_type()
 
 It returns 'date' for a single date or 'range' for a date range.
 
