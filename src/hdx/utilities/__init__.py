@@ -14,7 +14,7 @@ def raisefrom(exc_type, message, exc):
         exc (BaseException): original exception
 
     Returns:
-        str: Path of downloaded file
+        None
 
     """
     if sys.version_info[:2] >= (3, 2):
