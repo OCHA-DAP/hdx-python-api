@@ -22,6 +22,7 @@ from hdx.utilities.location import Location
 
 logger = logging.getLogger(__name__)
 
+max_attempts = 5
 
 class Dataset(HDXObject):
     """Dataset class enabling operations on datasets and associated resources and gallery items.
@@ -538,7 +539,8 @@ class Dataset(HDXObject):
         total_rows = kwargs.get('rows', sys.maxsize)
         start = kwargs.get('start', 0)
         all_datasets = None
-        while all_datasets is None:  # if the count values vary for multiple calls, then must redo query
+        attempts = 0
+        while attempts < max_attempts and all_datasets is None:  # if the count values vary for multiple calls, then must redo query
             all_datasets = list()
             counts = set()
             for page in range(total_rows // 1000 + 1):
@@ -569,10 +571,14 @@ class Dataset(HDXObject):
                     logger.debug(result)
             if all_datasets and len(counts) != 1:  # Make sure counts are all same for multiple calls to HDX
                 all_datasets = None
+                attempts += 1
             else:
                 ids = [dataset['id'] for dataset in all_datasets]  # check for duplicates (shouldn't happen)
                 if len(ids) != len(set(ids)):
                     all_datasets = None
+                    attempts += 1
+        if attempts == max_attempts and all_datasets is None:
+            raise HDXError('Maximum attempts reached for searching for datasets!')
         return all_datasets
 
     @staticmethod
@@ -612,7 +618,8 @@ class Dataset(HDXObject):
         total_rows = kwargs.get('limit', sys.maxsize)
         start = kwargs.get('offset', 0)
         all_datasets = None
-        while all_datasets is None:  # if the dataset names vary for multiple calls, then must redo query
+        attempts = 0
+        while attempts < max_attempts and all_datasets is None:  # if the dataset names vary for multiple calls, then must redo query
             all_datasets = list()
             for page in range(total_rows // 1000 + 1):
                 pagetimes1000 = page * 1000
@@ -639,10 +646,14 @@ class Dataset(HDXObject):
             names = set(names_list)
             if len(names_list) != len(names):  # check for duplicates (shouldn't happen)
                 all_datasets = None
+                attempts += 1
             else:
                 all_names = set(Dataset.get_all_dataset_names())  # check dataset names match package_list
                 if names != all_names:
                     all_datasets = None
+                    attempts += 1
+        if attempts == max_attempts and all_datasets is None:
+            raise HDXError('Maximum attempts reached for getting all datasets!')
         return all_datasets
 
     @staticmethod
