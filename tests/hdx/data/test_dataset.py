@@ -188,6 +188,15 @@ def mocksearch(url, datadict):
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
 
 
+def mocklist(url):
+    if 'list' not in url:
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "TEST ERROR: Not search", "__type": "TEST ERROR: Not All Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}')
+    return MockResponse(200,
+                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}' % json.dumps(
+                            dataset_list))
+
+
 def mockall(url, datadict):
     if 'current' not in url and 'list' not in url:
         return MockResponse(404,
@@ -197,19 +206,25 @@ def mockall(url, datadict):
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}' % result)
     if 'current' in url:
+        newalldict = copy.deepcopy(alldict)
         if datadict['limit'] == 11:
-            newalldict = copy.deepcopy(alldict)
-            newalldict['results'].append(newalldict['results'][0])
-            result = json.dumps(alldict)
+            newalldict.append(newalldict[0])
+            result = json.dumps(newalldict)
             return MockResponse(200,
                                 '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=current_package_list_with_resources"}' % result)
         else:
             result = json.dumps(alldict)
             return MockResponse(200,
                                 '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=current_package_list_with_resources"}' % result)
-    result = json.dumps(dataset_list)
-    return MockResponse(200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}' % result)
+    if dataset.page_size == 1001:
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}' % json.dumps(
+                                dataset_list[1:]))
+    else:
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}' % json.dumps(
+                                dataset_list))
+
 
 
 class TestDataset:
@@ -418,6 +433,16 @@ class TestDataset:
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
                 return mocksearch(url, datadict)
+
+        monkeypatch.setattr(requests, 'Session', MockSession)
+
+    @pytest.fixture(scope='function')
+    def post_list(self, monkeypatch):
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                datadict = json.loads(data.decode('utf-8'))
+                return mocklist(url)
 
         monkeypatch.setattr(requests, 'Session', MockSession)
 
@@ -658,7 +683,7 @@ class TestDataset:
         with pytest.raises(HDXError):
             Dataset.search_in_hdx('ACLED')
 
-    def test_get_all_dataset_names(self, configuration, all):
+    def test_get_all_dataset_names(self, configuration, post_list):
         dataset_names = Dataset.get_all_dataset_names()
         assert dataset_names == dataset_list
 
@@ -668,6 +693,9 @@ class TestDataset:
         assert len(datasets) == 10
         with pytest.raises(HDXError):
             Dataset.get_all_datasets(limit=11)
+        dataset.page_size = 1001
+        with pytest.raises(HDXError):
+            Dataset.get_all_datasets()
 
     def test_get_all_resources(self, configuration, search):
         datasets = Dataset.search_in_hdx('ACLED')

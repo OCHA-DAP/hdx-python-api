@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 max_attempts = 5
 page_size = 1000
+max_int = sys.maxsize
 
 class Dataset(HDXObject):
     """Dataset class enabling operations on datasets and associated resources and gallery items.
@@ -537,7 +538,7 @@ class Dataset(HDXObject):
         """
 
         dataset = Dataset()
-        total_rows = kwargs.get('rows', sys.maxsize)
+        total_rows = kwargs.get('rows', max_int)
         start = kwargs.get('start', 0)
         all_datasets = None
         attempts = 0
@@ -616,7 +617,7 @@ class Dataset(HDXObject):
 
         dataset = Dataset()
         dataset['id'] = 'all datasets'  # only for error message if produced
-        total_rows = kwargs.get('limit', sys.maxsize)
+        total_rows = kwargs.get('limit', max_int)
         start = kwargs.get('offset', 0)
         all_datasets = None
         attempts = 0
@@ -648,7 +649,7 @@ class Dataset(HDXObject):
             if len(names_list) != len(names):  # check for duplicates (shouldn't happen)
                 all_datasets = None
                 attempts += 1
-            elif total_rows == sys.maxsize:
+            elif total_rows == max_int:
                 all_names = set(Dataset.get_all_dataset_names())  # check dataset names match package_list
                 if names != all_names:
                     all_datasets = None
