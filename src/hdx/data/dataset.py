@@ -7,7 +7,7 @@ import logging
 import sys
 from datetime import datetime
 from os.path import join
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from dateutil import parser
 from six.moves import range
@@ -87,7 +87,9 @@ class Dataset(HDXObject):
             'update': 'package_update',
             'create': 'package_create',
             'delete': 'package_delete',
-            'search': 'package_search'
+            'search': 'package_search',
+            'list': 'package_list',
+            'all': 'current_package_list_with_resources'
         }
 
     def __setitem__(self, key, value):
@@ -532,36 +534,63 @@ class Dataset(HDXObject):
             List[Dataset]: List of datasets resulting from query
         """
 
-        all_datasets = list()
         dataset = Dataset()
         total_rows = kwargs.get('rows', sys.maxsize)
         start = kwargs.get('start', 0)
-        for page in range(total_rows // 1000 + 1):
-            pagetimes1000 = page * 1000
-            kwargs['start'] = start + pagetimes1000
-            rows_left = total_rows - pagetimes1000
-            rows = min(rows_left, 1000)
-            kwargs['rows'] = rows
-            _, result = dataset._read_from_hdx('dataset', query, 'q', Dataset.actions()['search'], **kwargs)
-            datasets = list()
-            if result:
-                count = result.get('count', None)
-                if count:
-                    no_results = len(result['results'])
-                    for datasetdict in result['results']:
-                        dataset = Dataset(include_gallery=include_gallery)
-                        dataset.old_data = dict()
-                        dataset.data = datasetdict
-                        dataset._dataset_create_resources_gallery()
-                        datasets.append(dataset)
-                    all_datasets += datasets
-                    if no_results < rows:
+        all_datasets = None
+        while all_datasets is None:  # if the count values vary for multiple calls, then must redo query
+            all_datasets = list()
+            counts = set()
+            for page in range(total_rows // 1000 + 1):
+                pagetimes1000 = page * 1000
+                kwargs['start'] = start + pagetimes1000
+                rows_left = total_rows - pagetimes1000
+                rows = min(rows_left, 1000)
+                kwargs['rows'] = rows
+                _, result = dataset._read_from_hdx('dataset', query, 'q', Dataset.actions()['search'], **kwargs)
+                datasets = list()
+                if result:
+                    count = result.get('count', None)
+                    if count:
+                        counts.add(count)
+                        no_results = len(result['results'])
+                        for datasetdict in result['results']:
+                            dataset = Dataset(include_gallery=include_gallery)
+                            dataset.old_data = dict()
+                            dataset.data = datasetdict
+                            dataset._dataset_create_resources_gallery()
+                            datasets.append(dataset)
+                        all_datasets += datasets
+                        if no_results < rows:
+                            break
+                    else:
                         break
                 else:
-                    break
+                    logger.debug(result)
+            if all_datasets and len(counts) != 1:  # Make sure counts are all same for multiple calls to HDX
+                all_datasets = None
             else:
-                logger.debug(result)
+                ids = [dataset['id'] for dataset in all_datasets]  # check for duplicates (shouldn't happen)
+                if len(ids) != len(set(ids)):
+                    all_datasets = None
         return all_datasets
+
+    @staticmethod
+    def get_all_dataset_names(**kwargs):
+        # type: (Optional[bool]) -> List['Dataset']
+        """Get all dataset names in HDX
+
+        Args:
+            **kwargs: See below
+            limit (int): Number of rows to return. Defaults to all dataset names.
+            offset (int): Offset in the complete result for where the set of returned dataset names should begin
+
+        Returns:
+            List[str]: List of all dataset names in HDX
+        """
+        dataset = Dataset()
+        dataset['id'] = 'all dataset names'  # only for error message if produced
+        return dataset._write_to_hdx('list', kwargs, 'id')
 
     @staticmethod
     def get_all_datasets(include_gallery=True, **kwargs):
@@ -571,13 +600,50 @@ class Dataset(HDXObject):
         Args:
             include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
             **kwargs: See below
-            rows (int): Number of rows to return. Defaults to all datasets (sys.maxsize).
-            start (int): Offset in the complete result for where the set of returned datasets should begin
+            limit (int): Number of rows to return. Defaults to all datasets (sys.maxsize).
+            offset (int): Offset in the complete result for where the set of returned datasets should begin
 
         Returns:
             List[Dataset]: List of all datasets in HDX
         """
-        return Dataset.search_in_hdx('', include_gallery, **kwargs)
+
+        dataset = Dataset()
+        dataset['id'] = 'all datasets'  # only for error message if produced
+        total_rows = kwargs.get('limit', sys.maxsize)
+        start = kwargs.get('offset', 0)
+        all_datasets = None
+        while all_datasets is None:  # if the dataset names vary for multiple calls, then must redo query
+            all_datasets = list()
+            for page in range(total_rows // 1000 + 1):
+                pagetimes1000 = page * 1000
+                kwargs['offset'] = start + pagetimes1000
+                rows_left = total_rows - pagetimes1000
+                rows = min(rows_left, 1000)
+                kwargs['limit'] = rows
+                result = dataset._write_to_hdx('all', kwargs, 'id')
+                datasets = list()
+                if result:
+                    no_results = len(result)
+                    for datasetdict in result:
+                        dataset = Dataset(include_gallery=include_gallery)
+                        dataset.old_data = dict()
+                        dataset.data = datasetdict
+                        dataset._dataset_create_resources_gallery()
+                        datasets.append(dataset)
+                    all_datasets += datasets
+                    if no_results < rows:
+                        break
+                else:
+                    logger.debug(result)
+            names_list = [dataset['name'] for dataset in all_datasets]
+            names = set(names_list)
+            if len(names_list) != len(names):  # check for duplicates (shouldn't happen)
+                all_datasets = None
+            else:
+                all_names = set(Dataset.get_all_dataset_names())  # check dataset names match package_list
+                if names != all_names:
+                    all_datasets = None
+        return all_datasets
 
     @staticmethod
     def get_all_resources(datasets):

@@ -92,6 +92,11 @@ resultdict = {
     'dataset_date': '06/04/2016'}
 
 searchdict = load_yaml(join('tests', 'fixtures', 'search_results.yml'))
+alldict = load_yaml(join('tests', 'fixtures', 'all_results.yml'))
+dataset_list = ['acled-conflict-data-for-libya', 'acled-conflict-data-for-liberia', 'acled-conflict-data-for-lesotho',
+                'acled-conflict-data-for-kenya', 'acled-conflict-data-for-guinea', 'acled-conflict-data-for-ghana',
+                'acled-conflict-data-for-gambia', 'acled-conflict-data-for-gabon', 'acled-conflict-data-for-ethiopia',
+                'acled-conflict-data-for-eritrea']
 
 def mockshow(url, datadict):
     if 'show' not in url and 'related_list' not in url:
@@ -145,7 +150,7 @@ def mocksearch(url, datadict):
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}' % result)
     result = json.dumps(searchdict)
-    if datadict['q'] == 'ACLED' or datadict['q'] == '':
+    if datadict['q'] == 'ACLED':
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % result)
     if datadict['q'] == '"':
@@ -156,6 +161,23 @@ def mocksearch(url, datadict):
                             '{"success": true, "result": {"count": 0, "results": []}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
     return MockResponse(404,
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
+
+
+def mockall(url):
+    if 'current' not in url and 'list' not in url:
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "TEST ERROR: Not search", "__type": "TEST ERROR: Not All Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}')
+    if 'related_list' in url:
+        result = json.dumps(TestDataset.gallery_data)
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}' % result)
+    if 'current' in url:
+        result = json.dumps(alldict)
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=current_package_list_with_resources"}' % result)
+    result = json.dumps(dataset_list)
+    return MockResponse(200,
+                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}' % result)
 
 
 class TestDataset:
@@ -364,6 +386,15 @@ class TestDataset:
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
                 return mocksearch(url, datadict)
+
+        monkeypatch.setattr(requests, 'Session', MockSession)
+
+    @pytest.fixture(scope='function')
+    def all(self, monkeypatch):
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                return mockall(url)
 
         monkeypatch.setattr(requests, 'Session', MockSession)
 
@@ -588,8 +619,12 @@ class TestDataset:
         with pytest.raises(HDXError):
             Dataset.search_in_hdx('"')
 
-    def test_get_all_datasets(self, configuration, search):
-        datasets = Dataset.get_all_datasets(configuration)
+    def test_get_all_dataset_names(self, configuration, all):
+        dataset_names = Dataset.get_all_dataset_names()
+        assert dataset_names == dataset_list
+
+    def test_get_all_datasets(self, configuration, all):
+        datasets = Dataset.get_all_datasets()
         assert len(datasets) == 10
 
     def test_get_all_resources(self, configuration, search):

@@ -1,0 +1,862 @@
+---
+- subnational: '1'
+  license_id: cc-by-sa
+  name: acled-conflict-data-for-libya
+  private: false
+  methodology: Other
+  owner_org: b67e6c74-c185-4f43-b561-0e114a736f19
+  notes: Notes
+  dataset_date: 01/01/1997-12/31/2015
+  dataset_source: ACLED
+  groups:
+  - image_display_url: ''
+    title: Libya
+    display_name: Libya
+    description: ''
+    name: lby
+    id: lby
+  organization:
+    type: organization
+    title: ACLED Conflict Data Project
+    image_url: ''
+    approval_status: approved
+    state: active
+    description: ACLED
+    id: b67e6c74-c185-4f43-b561-0e114a736f19
+    name: acled
+    revision_id: 684f3eee-b708-4f91-bd22-7860d4eca423
+    created: '2015-01-09T14:44:54.006612'
+    is_organization: true
+  type: dataset
+  title: ACLED Conflict Data for Libya
+  relationships_as_object: []
+  author_email: c.raleigh@acleddata.com
+  solr_additions: "{'countries': ['Libya']}"
+  license_url: http://www.opendefinition.org/licenses/cc-by-sa
+  url:
+  metadata_modified: '2016-03-29T17:33:22.912275'
+  num_tags: 4
+  id: 6a5aebc1-f5a9-4842-8183-b8118228e71e
+  isopen: true
+  relationships_as_subject: []
+  creator_user_id: 154de241-38d6-47d3-a77f-0a9848a61df3
+  caveats: caveats
+  tracking_summary:
+    recent: 5
+    total: 29
+  version:
+  state: active
+  description: ACLED
+  license_title: Creative Commons Attribution Share-Alike
+  maintainer_email: c.raleigh@acleddata.com
+  tags:
+  - name: conflict
+    state: active
+    id: 1dae41e5-eacd-4fa5-91df-8d80cf579e53
+    display_name: conflict
+    vocabulary_id:
+  - name: political violence
+    state: active
+    id: aaafc63b-2234-48e3-8ccc-198d7cf0f3f3
+    display_name: political violence
+    vocabulary_id:
+  - name: protests
+    state: active
+    id: 1916519d-45cd-49aa-92bc-bd96c4898960
+    display_name: protests
+    vocabulary_id:
+  - name: war
+    state: active
+    id: 00e72ca1-a06c-40e6-aff3-a56a1b2349f7
+    display_name: war
+    vocabulary_id:
+  author: acled
+  package_creator: luiscape
+  maintainer: acled
+  metadata_created: '2016-03-29T17:32:53.319895'
+  methodology_other: Methodology Other
+  revision_id: ad633110-c11a-42e2-9031-3d4dd4d89552
+  num_resources: 1
+  data_update_frequency: '30'
+- subnational: '1'
+  license_id: cc-by-sa
+  name: acled-conflict-data-for-liberia
+  private: false
+  methodology: Other
+  owner_org: b67e6c74-c185-4f43-b561-0e114a736f19
+  notes: Notes
+  dataset_date: 01/01/1997-12/31/2015
+  dataset_source: ACLED
+  groups:
+  - image_display_url: ''
+    title: Liberia
+    display_name: Liberia
+    description: ''
+    name: lbr
+    id: lbr
+  organization:
+    type: organization
+    title: ACLED Conflict Data Project
+    image_url: ''
+    approval_status: approved
+    state: active
+    description: ACLED
+    id: b67e6c74-c185-4f43-b561-0e114a736f19
+    name: acled
+    revision_id: 684f3eee-b708-4f91-bd22-7860d4eca423
+    created: '2015-01-09T14:44:54.006612'
+    is_organization: true
+  type: dataset
+  title: ACLED Conflict Data for Liberia
+  relationships_as_object: []
+  author_email: c.raleigh@acleddata.com
+  solr_additions: "{'countries': ['Liberia']}"
+  license_url: http://www.opendefinition.org/licenses/cc-by-sa
+  url:
+  metadata_modified: '2016-03-29T17:33:21.618480'
+  num_tags: 4
+  id: b2f32edd-bac2-4940-aa58-49e565041056
+  isopen: true
+  relationships_as_subject: []
+  creator_user_id: 154de241-38d6-47d3-a77f-0a9848a61df3
+  caveats: caveats
+  tracking_summary:
+    recent: 6
+    total: 13
+  version:
+  state: active
+  description: ACLED
+  license_title: Creative Commons Attribution Share-Alike
+  maintainer_email: c.raleigh@acleddata.com
+  tags:
+  - name: conflict
+    state: active
+    id: 1dae41e5-eacd-4fa5-91df-8d80cf579e53
+    display_name: conflict
+    vocabulary_id:
+  - name: political violence
+    state: active
+    id: aaafc63b-2234-48e3-8ccc-198d7cf0f3f3
+    display_name: political violence
+    vocabulary_id:
+  - name: protests
+    state: active
+    id: 1916519d-45cd-49aa-92bc-bd96c4898960
+    display_name: protests
+    vocabulary_id:
+  - name: war
+    state: active
+    id: 00e72ca1-a06c-40e6-aff3-a56a1b2349f7
+    display_name: war
+    vocabulary_id:
+  author: acled
+  package_creator: luiscape
+  maintainer: acled
+  metadata_created: '2016-03-29T17:32:52.218766'
+  methodology_other: Methodology Other
+  revision_id: fca04f5b-c23f-4283-8273-9f7f9e590c5c
+  num_resources: 1
+  data_update_frequency: '30'
+- subnational: '1'
+  license_id: cc-by-sa
+  name: acled-conflict-data-for-lesotho
+  private: false
+  methodology: Other
+  owner_org: b67e6c74-c185-4f43-b561-0e114a736f19
+  notes: Notes
+  dataset_date: 01/01/1997-12/31/2015
+  dataset_source: ACLED
+  groups:
+  - image_display_url: ''
+    title: Lesotho
+    display_name: Lesotho
+    description: ''
+    name: lso
+    id: lso
+  organization:
+    type: organization
+    title: ACLED Conflict Data Project
+    image_url: ''
+    approval_status: approved
+    state: active
+    description: ACLED
+    id: b67e6c74-c185-4f43-b561-0e114a736f19
+    name: acled
+    revision_id: 684f3eee-b708-4f91-bd22-7860d4eca423
+    created: '2015-01-09T14:44:54.006612'
+    is_organization: true
+  type: dataset
+  title: ACLED Conflict Data for Lesotho
+  relationships_as_object: []
+  author_email: c.raleigh@acleddata.com
+  solr_additions: "{'countries': ['Lesotho']}"
+  license_url: http://www.opendefinition.org/licenses/cc-by-sa
+  url:
+  metadata_modified: '2016-03-29T17:33:20.496527'
+  num_tags: 4
+  id: 86e6d416-d2e8-499d-b2aa-6c75ea931f19
+  isopen: true
+  relationships_as_subject: []
+  creator_user_id: 154de241-38d6-47d3-a77f-0a9848a61df3
+  caveats: caveats
+  tracking_summary:
+    recent: 9
+    total: 14
+  version:
+  state: active
+  description: ACLED
+  license_title: Creative Commons Attribution Share-Alike
+  maintainer_email: c.raleigh@acleddata.com
+  tags:
+  - name: conflict
+    state: active
+    id: 1dae41e5-eacd-4fa5-91df-8d80cf579e53
+    display_name: conflict
+    vocabulary_id:
+  - name: political violence
+    state: active
+    id: aaafc63b-2234-48e3-8ccc-198d7cf0f3f3
+    display_name: political violence
+    vocabulary_id:
+  - name: protests
+    state: active
+    id: 1916519d-45cd-49aa-92bc-bd96c4898960
+    display_name: protests
+    vocabulary_id:
+  - name: war
+    state: active
+    id: 00e72ca1-a06c-40e6-aff3-a56a1b2349f7
+    display_name: war
+    vocabulary_id:
+  author: acled
+  package_creator: luiscape
+  maintainer: acled
+  metadata_created: '2016-03-29T17:32:51.075232'
+  methodology_other: Methodology Other
+  revision_id: 65f796be-e4cd-494a-843c-f118b5dfe1f1
+  num_resources: 1
+  data_update_frequency: '30'
+- subnational: '1'
+  license_id: cc-by-sa
+  name: acled-conflict-data-for-kenya
+  private: false
+  methodology: Other
+  owner_org: b67e6c74-c185-4f43-b561-0e114a736f19
+  notes: Notes
+  dataset_date: 01/01/1997-12/31/2015
+  dataset_source: ACLED
+  groups:
+  - image_display_url: ''
+    title: Kenya
+    display_name: Kenya
+    description: ''
+    name: ken
+    id: ken
+  organization:
+    type: organization
+    title: ACLED Conflict Data Project
+    image_url: ''
+    approval_status: approved
+    state: active
+    description: ACLED
+    id: b67e6c74-c185-4f43-b561-0e114a736f19
+    name: acled
+    revision_id: 684f3eee-b708-4f91-bd22-7860d4eca423
+    created: '2015-01-09T14:44:54.006612'
+    is_organization: true
+  type: dataset
+  title: ACLED Conflict Data for Kenya
+  relationships_as_object: []
+  author_email: c.raleigh@acleddata.com
+  solr_additions: "{'countries': ['Kenya']}"
+  license_url: http://www.opendefinition.org/licenses/cc-by-sa
+  url:
+  metadata_modified: '2016-03-29T17:33:19.275636'
+  num_tags: 4
+  id: 8fc7bcd9-5daa-44a8-b219-e707af2cd4a8
+  isopen: true
+  relationships_as_subject: []
+  creator_user_id: 154de241-38d6-47d3-a77f-0a9848a61df3
+  caveats: caveats
+  tracking_summary:
+    recent: 10
+    total: 24
+  version:
+  state: active
+  description: ACLED
+  license_title: Creative Commons Attribution Share-Alike
+  maintainer_email: c.raleigh@acleddata.com
+  tags:
+  - name: conflict
+    state: active
+    id: 1dae41e5-eacd-4fa5-91df-8d80cf579e53
+    display_name: conflict
+    vocabulary_id:
+  - name: political violence
+    state: active
+    id: aaafc63b-2234-48e3-8ccc-198d7cf0f3f3
+    display_name: political violence
+    vocabulary_id:
+  - name: protests
+    state: active
+    id: 1916519d-45cd-49aa-92bc-bd96c4898960
+    display_name: protests
+    vocabulary_id:
+  - name: war
+    state: active
+    id: 00e72ca1-a06c-40e6-aff3-a56a1b2349f7
+    display_name: war
+    vocabulary_id:
+  author: acled
+  package_creator: luiscape
+  maintainer: acled
+  metadata_created: '2016-03-29T17:32:49.862829'
+  methodology_other: Methodology Other
+  revision_id: 6667cd6a-08b4-40c8-be38-0beb8f0e1808
+  num_resources: 1
+  data_update_frequency: '30'
+- subnational: '1'
+  license_id: cc-by-sa
+  name: acled-conflict-data-for-guinea
+  private: false
+  methodology: Other
+  owner_org: b67e6c74-c185-4f43-b561-0e114a736f19
+  notes: Notes
+  dataset_date: 01/01/1997-12/31/2015
+  dataset_source: ACLED
+  groups:
+  - image_display_url: ''
+    title: Guinea
+    display_name: Guinea
+    description: ''
+    name: gin
+    id: gin
+  organization:
+    type: organization
+    title: ACLED Conflict Data Project
+    image_url: ''
+    approval_status: approved
+    state: active
+    description: ACLED
+    id: b67e6c74-c185-4f43-b561-0e114a736f19
+    name: acled
+    revision_id: 684f3eee-b708-4f91-bd22-7860d4eca423
+    created: '2015-01-09T14:44:54.006612'
+    is_organization: true
+  type: dataset
+  title: ACLED Conflict Data for Guinea
+  relationships_as_object: []
+  author_email: c.raleigh@acleddata.com
+  solr_additions: "{'countries': ['Guinea']}"
+  license_url: http://www.opendefinition.org/licenses/cc-by-sa
+  url:
+  metadata_modified: '2016-03-29T17:33:15.753883'
+  num_tags: 4
+  id: 87a5dbbc-db76-4a0f-a20f-5210a20a3bc9
+  isopen: true
+  relationships_as_subject: []
+  creator_user_id: 154de241-38d6-47d3-a77f-0a9848a61df3
+  caveats: caveats
+  tracking_summary:
+    recent: 7
+    total: 14
+  version:
+  state: active
+  description: ACLED
+  license_title: Creative Commons Attribution Share-Alike
+  maintainer_email: c.raleigh@acleddata.com
+  tags:
+  - name: conflict
+    state: active
+    id: 1dae41e5-eacd-4fa5-91df-8d80cf579e53
+    display_name: conflict
+    vocabulary_id:
+  - name: political violence
+    state: active
+    id: aaafc63b-2234-48e3-8ccc-198d7cf0f3f3
+    display_name: political violence
+    vocabulary_id:
+  - name: protests
+    state: active
+    id: 1916519d-45cd-49aa-92bc-bd96c4898960
+    display_name: protests
+    vocabulary_id:
+  - name: war
+    state: active
+    id: 00e72ca1-a06c-40e6-aff3-a56a1b2349f7
+    display_name: war
+    vocabulary_id:
+  author: acled
+  package_creator: luiscape
+  maintainer: acled
+  metadata_created: '2016-03-29T17:32:45.863030'
+  methodology_other: Methodology Other
+  revision_id: 4757b7bd-9cfc-4ca5-8f26-dee27b2d688c
+  num_resources: 1
+  data_update_frequency: '30'
+  resources:
+    - revision_id: '43765383-1fce-471f-8166-d6c8660cc8a9'
+      cache_url: ~,
+      datastore_active: False,
+      format: 'XLSX'
+      webstore_url: None
+      last_modified: None
+      tracking_summary: None,
+      id: 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
+      webstore_last_updated: None,
+      mimetype: None
+      state: 'active'
+      created: '2016-06-07T08:57:27.367939'
+      description': 'Resource1'
+      position: 0
+      hash: ''
+      package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
+      name: 'Resource1'
+      url: 'http://resource1.xlsx'
+      resource_type: None
+      url_type: None
+      size: None
+      mimetype_inner: None
+      cache_last_updated: None
+- subnational: '1'
+  license_id: cc-by-sa
+  name: acled-conflict-data-for-ghana
+  private: false
+  methodology: Other
+  owner_org: b67e6c74-c185-4f43-b561-0e114a736f19
+  notes: Notes
+  dataset_date: 01/01/1997-12/31/2015
+  dataset_source: ACLED
+  groups:
+  - image_display_url: ''
+    title: Ghana
+    display_name: Ghana
+    description: ''
+    name: gha
+    id: gha
+  organization:
+    type: organization
+    title: ACLED Conflict Data Project
+    image_url: ''
+    approval_status: approved
+    state: active
+    description: ACLED
+    id: b67e6c74-c185-4f43-b561-0e114a736f19
+    name: acled
+    revision_id: 684f3eee-b708-4f91-bd22-7860d4eca423
+    created: '2015-01-09T14:44:54.006612'
+    is_organization: true
+  type: dataset
+  title: ACLED Conflict Data for Ghana
+  relationships_as_object: []
+  author_email: c.raleigh@acleddata.com
+  solr_additions: "{'countries': ['Ghana']}"
+  license_url: http://www.opendefinition.org/licenses/cc-by-sa
+  url:
+  metadata_modified: '2016-03-29T17:33:14.525168'
+  num_tags: 4
+  id: 7ba76fc6-22aa-4295-be20-39ccaa1d0c0c
+  isopen: true
+  relationships_as_subject: []
+  creator_user_id: 154de241-38d6-47d3-a77f-0a9848a61df3
+  caveats: caveats
+  tracking_summary:
+    recent: 5
+    total: 14
+  version:
+  state: active
+  description: ACLED
+  license_title: Creative Commons Attribution Share-Alike
+  maintainer_email: c.raleigh@acleddata.com
+  tags:
+  - name: conflict
+    state: active
+    id: 1dae41e5-eacd-4fa5-91df-8d80cf579e53
+    display_name: conflict
+    vocabulary_id:
+  - name: political violence
+    state: active
+    id: aaafc63b-2234-48e3-8ccc-198d7cf0f3f3
+    display_name: political violence
+    vocabulary_id:
+  - name: protests
+    state: active
+    id: 1916519d-45cd-49aa-92bc-bd96c4898960
+    display_name: protests
+    vocabulary_id:
+  - name: war
+    state: active
+    id: 00e72ca1-a06c-40e6-aff3-a56a1b2349f7
+    display_name: war
+    vocabulary_id:
+  author: acled
+  package_creator: luiscape
+  maintainer: acled
+  metadata_created: '2016-03-29T17:32:44.257891'
+  methodology_other: Methodology Other
+  revision_id: 1b27a584-30bd-426e-922e-5562381c1a36
+  num_resources: 1
+  data_update_frequency: '30'
+- subnational: '1'
+  license_id: cc-by-sa
+  name: acled-conflict-data-for-gambia
+  private: false
+  methodology: Other
+  owner_org: b67e6c74-c185-4f43-b561-0e114a736f19
+  notes: Notes
+  dataset_date: 01/01/1997-12/31/2015
+  dataset_source: ACLED
+  groups:
+  - image_display_url: ''
+    title: Gambia
+    display_name: Gambia
+    description: ''
+    name: gmb
+    id: gmb
+  organization:
+    type: organization
+    title: ACLED Conflict Data Project
+    image_url: ''
+    approval_status: approved
+    state: active
+    description: ACLED
+    id: b67e6c74-c185-4f43-b561-0e114a736f19
+    name: acled
+    revision_id: 684f3eee-b708-4f91-bd22-7860d4eca423
+    created: '2015-01-09T14:44:54.006612'
+    is_organization: true
+  type: dataset
+  title: ACLED Conflict Data for Gambia
+  relationships_as_object: []
+  author_email: c.raleigh@acleddata.com
+  solr_additions: "{'countries': ['Gambia']}"
+  license_url: http://www.opendefinition.org/licenses/cc-by-sa
+  url:
+  metadata_modified: '2016-03-29T17:33:13.369356'
+  num_tags: 4
+  id: 13398455-5826-4420-b7e4-af22ff9b4061
+  isopen: true
+  relationships_as_subject: []
+  creator_user_id: 154de241-38d6-47d3-a77f-0a9848a61df3
+  caveats: caveats
+  tracking_summary:
+    recent: 15
+    total: 33
+  version:
+  state: active
+  description: ACLED
+  license_title: Creative Commons Attribution Share-Alike
+  maintainer_email: c.raleigh@acleddata.com
+  tags:
+  - name: conflict
+    state: active
+    id: 1dae41e5-eacd-4fa5-91df-8d80cf579e53
+    display_name: conflict
+    vocabulary_id:
+  - name: political violence
+    state: active
+    id: aaafc63b-2234-48e3-8ccc-198d7cf0f3f3
+    display_name: political violence
+    vocabulary_id:
+  - name: protests
+    state: active
+    id: 1916519d-45cd-49aa-92bc-bd96c4898960
+    display_name: protests
+    vocabulary_id:
+  - name: war
+    state: active
+    id: 00e72ca1-a06c-40e6-aff3-a56a1b2349f7
+    display_name: war
+    vocabulary_id:
+  author: acled
+  package_creator: luiscape
+  maintainer: acled
+  metadata_created: '2016-03-29T17:32:42.911881'
+  methodology_other: Methodology Other
+  revision_id: d7795564-83c5-457f-ab37-28a2266a5c63
+  num_resources: 1
+  data_update_frequency: '30'
+- subnational: '1'
+  license_id: cc-by-sa
+  name: acled-conflict-data-for-gabon
+  private: false
+  methodology: Other
+  owner_org: b67e6c74-c185-4f43-b561-0e114a736f19
+  notes: Notes
+  dataset_date: 01/01/1997-12/31/2015
+  dataset_source: ACLED
+  groups:
+  - image_display_url: ''
+    title: Gabon
+    display_name: Gabon
+    description: ''
+    name: gab
+    id: gab
+  organization:
+    type: organization
+    title: ACLED Conflict Data Project
+    image_url: ''
+    approval_status: approved
+    state: active
+    description: ACLED
+    id: b67e6c74-c185-4f43-b561-0e114a736f19
+    name: acled
+    revision_id: 684f3eee-b708-4f91-bd22-7860d4eca423
+    created: '2015-01-09T14:44:54.006612'
+    is_organization: true
+  type: dataset
+  title: ACLED Conflict Data for Gabon
+  relationships_as_object: []
+  author_email: c.raleigh@acleddata.com
+  solr_additions: "{'countries': ['Gabon']}"
+  license_url: http://www.opendefinition.org/licenses/cc-by-sa
+  url:
+  metadata_modified: '2016-03-29T17:33:12.189666'
+  num_tags: 4
+  id: a89c6260-6392-416e-bcbc-eb2c5f1d7add
+  isopen: true
+  relationships_as_subject: []
+  creator_user_id: 154de241-38d6-47d3-a77f-0a9848a61df3
+  caveats: caveats
+  tracking_summary:
+    recent: 5
+    total: 15
+  version:
+  state: active
+  description: ACLED
+  license_title: Creative Commons Attribution Share-Alike
+  maintainer_email: c.raleigh@acleddata.com
+  tags:
+  - name: conflict
+    state: active
+    id: 1dae41e5-eacd-4fa5-91df-8d80cf579e53
+    display_name: conflict
+    vocabulary_id:
+  - name: political violence
+    state: active
+    id: aaafc63b-2234-48e3-8ccc-198d7cf0f3f3
+    display_name: political violence
+    vocabulary_id:
+  - name: protests
+    state: active
+    id: 1916519d-45cd-49aa-92bc-bd96c4898960
+    display_name: protests
+    vocabulary_id:
+  - name: war
+    state: active
+    id: 00e72ca1-a06c-40e6-aff3-a56a1b2349f7
+    display_name: war
+    vocabulary_id:
+  author: acled
+  package_creator: luiscape
+  maintainer: acled
+  metadata_created: '2016-03-29T17:32:41.612882'
+  methodology_other: Methodology Other
+  revision_id: 3ce16328-688d-4054-b36c-f36c7325bfd2
+  num_resources: 1
+  data_update_frequency: '30'
+- subnational: '1'
+  license_id: cc-by-sa
+  name: acled-conflict-data-for-ethiopia
+  private: false
+  methodology: Other
+  owner_org: b67e6c74-c185-4f43-b561-0e114a736f19
+  notes: Notes
+  dataset_date: 01/01/1997-12/31/2015
+  dataset_source: ACLED
+  groups:
+  - image_display_url: ''
+    title: Ethiopia
+    display_name: Ethiopia
+    description: ''
+    name: eth
+    id: eth
+  organization:
+    type: organization
+    title: ACLED Conflict Data Project
+    image_url: ''
+    approval_status: approved
+    state: active
+    description: ACLED
+    id: b67e6c74-c185-4f43-b561-0e114a736f19
+    name: acled
+    revision_id: 684f3eee-b708-4f91-bd22-7860d4eca423
+    created: '2015-01-09T14:44:54.006612'
+    is_organization: true
+  type: dataset
+  title: ACLED Conflict Data for Ethiopia
+  relationships_as_object: []
+  author_email: c.raleigh@acleddata.com
+  solr_additions: "{'countries': ['Ethiopia']}"
+  license_url: http://www.opendefinition.org/licenses/cc-by-sa
+  url:
+  metadata_modified: '2016-03-29T17:33:11.000331'
+  num_tags: 4
+  id: 5ea80d40-ef69-43b7-9baf-4bd4cafb5965
+  isopen: true
+  relationships_as_subject: []
+  creator_user_id: 154de241-38d6-47d3-a77f-0a9848a61df3
+  caveats: caveats
+  tracking_summary:
+    recent: 4
+    total: 21
+  version:
+  state: active
+  description: ACLED
+  license_title: Creative Commons Attribution Share-Alike
+  maintainer_email: c.raleigh@acleddata.com
+  tags:
+  - name: conflict
+    state: active
+    id: 1dae41e5-eacd-4fa5-91df-8d80cf579e53
+    display_name: conflict
+    vocabulary_id:
+  - name: political violence
+    state: active
+    id: aaafc63b-2234-48e3-8ccc-198d7cf0f3f3
+    display_name: political violence
+    vocabulary_id:
+  - name: protests
+    state: active
+    id: 1916519d-45cd-49aa-92bc-bd96c4898960
+    display_name: protests
+    vocabulary_id:
+  - name: war
+    state: active
+    id: 00e72ca1-a06c-40e6-aff3-a56a1b2349f7
+    display_name: war
+    vocabulary_id:
+  author: acled
+  package_creator: luiscape
+  maintainer: acled
+  metadata_created: '2016-03-29T17:32:40.337761'
+  methodology_other: Methodology Other
+  revision_id: 1c246cc4-92c0-4d70-bf83-affd665d7f4a
+  num_resources: 1
+  data_update_frequency: '30'
+- subnational: '1'
+  license_id: cc-by-sa
+  name: acled-conflict-data-for-eritrea
+  private: false
+  methodology: Other
+  owner_org: b67e6c74-c185-4f43-b561-0e114a736f19
+  notes: Notes
+  dataset_date: 01/01/1997-12/31/2015
+  dataset_source: ACLED
+  groups:
+  - image_display_url: ''
+    title: Eritrea
+    display_name: Eritrea
+    description: ''
+    name: eri
+    id: eri
+  organization:
+    type: organization
+    title: ACLED Conflict Data Project
+    image_url: ''
+    approval_status: approved
+    state: active
+    description: ACLED
+    id: b67e6c74-c185-4f43-b561-0e114a736f19
+    name: acled
+    revision_id: 684f3eee-b708-4f91-bd22-7860d4eca423
+    created: '2015-01-09T14:44:54.006612'
+    is_organization: true
+  type: dataset
+  title: ACLED Conflict Data for Eritrea
+  relationships_as_object: []
+  author_email: c.raleigh@acleddata.com
+  solr_additions: "{'countries': ['Eritrea']}"
+  license_url: http://www.opendefinition.org/licenses/cc-by-sa
+  url:
+  metadata_modified: '2016-03-29T17:33:09.823677'
+  num_tags: 4
+  id: d80ef63d-6b5e-4188-9e33-654155e03013
+  isopen: true
+  relationships_as_subject: []
+  creator_user_id: 154de241-38d6-47d3-a77f-0a9848a61df3
+  caveats: caveats
+  tracking_summary:
+    recent: 3
+    total: 18
+  version:
+  state: active
+  description: ACLED
+  license_title: Creative Commons Attribution Share-Alike
+  maintainer_email: c.raleigh@acleddata.com
+  tags:
+  - name: conflict
+    state: active
+    id: 1dae41e5-eacd-4fa5-91df-8d80cf579e53
+    display_name: conflict
+    vocabulary_id:
+  - name: political violence
+    state: active
+    id: aaafc63b-2234-48e3-8ccc-198d7cf0f3f3
+    display_name: political violence
+    vocabulary_id:
+  - name: protests
+    state: active
+    id: 1916519d-45cd-49aa-92bc-bd96c4898960
+    display_name: protests
+    vocabulary_id:
+  - name: war
+    state: active
+    id: 00e72ca1-a06c-40e6-aff3-a56a1b2349f7
+    display_name: war
+    vocabulary_id:
+  author: acled
+  package_creator: luiscape
+  maintainer: acled
+  metadata_created: '2016-03-29T17:32:39.047356'
+  methodology_other: Methodology Other
+  revision_id: e7598b16-1bfa-45a1-8019-5b2f1b76f84c
+  num_resources: 2
+  data_update_frequency: '30'
+  resources:
+    - revision_id: '43765383-1fce-471f-8166-d6c8660cc8a9'
+      cache_url: ~,
+      datastore_active: False,
+      format: 'XLSX'
+      webstore_url: None
+      last_modified: None
+      tracking_summary: None,
+      id: 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
+      webstore_last_updated: None,
+      mimetype: None
+      state: 'active'
+      created: '2016-06-07T08:57:27.367939'
+      description': 'Resource1'
+      position: 0
+      hash: ''
+      package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
+      name: 'Resource1'
+      url: 'http://resource1.xlsx'
+      resource_type: None
+      url_type: None
+      size: None
+      mimetype_inner: None
+      cache_last_updated: None
+    - revision_id: '43765383-1fce-471f-8166-d6c8660cc8a9'
+      cache_url: ~,
+      datastore_active: False,
+      format: 'XLSX'
+      webstore_url: None
+      last_modified: None
+      tracking_summary: None,
+      id: 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
+      webstore_last_updated: None,
+      mimetype: None
+      state: 'active'
+      created: '2016-06-07T08:57:27.367939'
+      description': 'Resource1'
+      position: 1
+      hash: ''
+      package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
+      name: 'Resource1'
+      url: 'http://resource1.xlsx'
+      resource_type: None
+      url_type: None
+      size: None
+      mimetype_inner: None
+      cache_last_updated: None
