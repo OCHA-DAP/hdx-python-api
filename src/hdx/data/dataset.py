@@ -647,7 +647,7 @@ class Dataset(HDXObject):
             if len(names_list) != len(names):  # check for duplicates (shouldn't happen)
                 all_datasets = None
                 attempts += 1
-            else:
+            elif total_rows == sys.maxsize:
                 all_names = set(Dataset.get_all_dataset_names())  # check dataset names match package_list
                 if names != all_names:
                     all_datasets = None
