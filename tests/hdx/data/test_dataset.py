@@ -11,6 +11,7 @@ from os.path import join
 import pytest
 import requests
 
+from hdx.data import dataset
 from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
@@ -150,15 +151,33 @@ def mocksearch(url, datadict):
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}' % result)
     if datadict['q'] == 'ACLED':
-        return MockResponse(200,
-                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
-                                searchdict))
-    if datadict['q'] == 'ACLED1':
         newsearchdict = copy.deepcopy(searchdict)
-        newsearchdict['results'].append(newsearchdict['results'][0])
-        return MockResponse(200,
-                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
-                                newsearchdict))
+        if datadict['rows'] == 11:
+            newsearchdict['results'].append(newsearchdict['results'][0])
+            return MockResponse(200,
+                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
+                                    newsearchdict))
+        elif datadict['rows'] == 5:
+            if datadict['start'] == 0:
+                newsearchdict['count'] = 5
+                return MockResponse(200,
+                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
+                                        newsearchdict))
+            elif datadict['start'] == 5:
+                newsearchdict['count'] = 6
+                return MockResponse(200,
+                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
+                                        newsearchdict))
+            else:
+                newsearchdict['count'] = 0
+                newsearchdict['results'] = list()
+                return MockResponse(200,
+                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
+                                        newsearchdict))
+        else:
+            return MockResponse(200,
+                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
+                                    searchdict))
     if datadict['q'] == '"':
         return MockResponse(404,
                             '{"success": false, "error": {"message": "Validation Error", "__type": "Validation Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
@@ -178,7 +197,7 @@ def mockall(url, datadict):
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}' % result)
     if 'current' in url:
-        if datadict['limit'] == 10:
+        if datadict['limit'] == 11:
             newalldict = copy.deepcopy(alldict)
             newalldict['results'].append(newalldict['results'][0])
             result = json.dumps(alldict)
@@ -626,6 +645,7 @@ class TestDataset:
         assert len(dataset.gallery) == 0
 
     def test_search_in_hdx(self, configuration, search):
+        dataset.page_size = 1000
         datasets = Dataset.search_in_hdx('ACLED')
         assert len(datasets) == 10
         datasets = Dataset.search_in_hdx('ajyhgr')
@@ -633,17 +653,21 @@ class TestDataset:
         with pytest.raises(HDXError):
             Dataset.search_in_hdx('"')
         with pytest.raises(HDXError):
-            Dataset.search_in_hdx('ACLED1')
+            Dataset.search_in_hdx('ACLED', rows=11)
+        dataset.page_size = 5
+        with pytest.raises(HDXError):
+            Dataset.search_in_hdx('ACLED')
 
     def test_get_all_dataset_names(self, configuration, all):
         dataset_names = Dataset.get_all_dataset_names()
         assert dataset_names == dataset_list
 
     def test_get_all_datasets(self, configuration, all):
+        dataset.page_size = 1000
         datasets = Dataset.get_all_datasets()
         assert len(datasets) == 10
         with pytest.raises(HDXError):
-            Dataset.get_all_datasets(limit=10)
+            Dataset.get_all_datasets(limit=11)
 
     def test_get_all_resources(self, configuration, search):
         datasets = Dataset.search_in_hdx('ACLED')

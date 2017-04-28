@@ -23,6 +23,7 @@ from hdx.utilities.location import Location
 logger = logging.getLogger(__name__)
 
 max_attempts = 5
+page_size = 1000
 
 class Dataset(HDXObject):
     """Dataset class enabling operations on datasets and associated resources and gallery items.
@@ -543,11 +544,11 @@ class Dataset(HDXObject):
         while attempts < max_attempts and all_datasets is None:  # if the count values vary for multiple calls, then must redo query
             all_datasets = list()
             counts = set()
-            for page in range(total_rows // 1000 + 1):
-                pagetimes1000 = page * 1000
-                kwargs['start'] = start + pagetimes1000
-                rows_left = total_rows - pagetimes1000
-                rows = min(rows_left, 1000)
+            for page in range(total_rows // page_size + 1):
+                pagetimespagesize = page * page_size
+                kwargs['start'] = start + pagetimespagesize
+                rows_left = total_rows - pagetimespagesize
+                rows = min(rows_left, page_size)
                 kwargs['rows'] = rows
                 _, result = dataset._read_from_hdx('dataset', query, 'q', Dataset.actions()['search'], **kwargs)
                 datasets = list()
@@ -621,11 +622,11 @@ class Dataset(HDXObject):
         attempts = 0
         while attempts < max_attempts and all_datasets is None:  # if the dataset names vary for multiple calls, then must redo query
             all_datasets = list()
-            for page in range(total_rows // 1000 + 1):
-                pagetimes1000 = page * 1000
-                kwargs['offset'] = start + pagetimes1000
-                rows_left = total_rows - pagetimes1000
-                rows = min(rows_left, 1000)
+            for page in range(total_rows // page_size + 1):
+                pagetimespagesize = page * page_size
+                kwargs['offset'] = start + pagetimespagesize
+                rows_left = total_rows - pagetimespagesize
+                rows = min(rows_left, page_size)
                 kwargs['limit'] = rows
                 result = dataset._write_to_hdx('all', kwargs, 'id')
                 datasets = list()
