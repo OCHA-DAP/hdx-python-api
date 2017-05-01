@@ -365,6 +365,7 @@ class TestConfiguration:
         Configuration._validlocations = None
         with pytest.raises(ConfigurationError):
             Configuration.validlocations()
+        Configuration._configuration = None
         with pytest.raises(ConfigurationError):
             Configuration.remoteckan()
         with pytest.raises(ConfigurationError):
