@@ -14,6 +14,10 @@ class TestConfiguration:
         return join('tests', 'fixtures', '.hdxkey')
 
     @pytest.fixture(scope='class')
+    def empty_hdx_key_file(self):
+        return join('tests', 'fixtures', '.emptyhdxkey')
+
+    @pytest.fixture(scope='class')
     def project_config_yaml(self):
         return join('tests', 'fixtures', 'config', 'project_configuration.yml')
 
@@ -317,12 +321,14 @@ class TestConfiguration:
         assert actual_configuration.get_hdx_site_url() == 'https://data.humdata.org/'
         assert actual_configuration._get_credentials() == ('', '')
 
-    def test_set_hdx_key_value(self, project_config_yaml):
+    def test_set_hdx_key_value(self, empty_hdx_key_file, project_config_yaml):
         Configuration._configuration = None
         Configuration.create(hdx_site='prod', hdx_key="TEST_HDX_KEY",
                              hdx_config_dict={},
                              project_config_yaml=project_config_yaml)
         assert Configuration.read().get_api_key() == 'TEST_HDX_KEY'
+        with pytest.raises(ConfigurationError):
+            Configuration.load_api_key(empty_hdx_key_file)
 
     def test_create_set_configuration(self, project_config_yaml):
         Configuration._configuration = None
@@ -336,8 +342,11 @@ class TestConfiguration:
         configuration = Configuration(hdx_site='test', hdx_key="TEST_HDX_KEY",
                                       hdx_config_dict={},
                                       project_config_yaml=project_config_yaml)
-        Configuration.set(configuration)
+        Configuration.setup(configuration)
         assert Configuration.read() == configuration
+        Configuration._configuration = None
+        with pytest.raises(ConfigurationError):
+            Configuration.read()
 
     def test_remoteckan_validlocations(self, project_config_yaml):
         Configuration._configuration = None
@@ -362,3 +371,14 @@ class TestConfiguration:
                              project_config_yaml=project_config_yaml)
         assert Configuration.remoteckan() == remoteckan
         assert Configuration.validlocations() == validlocations
+        Configuration._remoteckan = None
+        with pytest.raises(ConfigurationError):
+            Configuration.remoteckan()
+        Configuration._validlocations = None
+        with pytest.raises(ConfigurationError):
+            Configuration.validlocations()
+        Configuration._configuration = None
+        with pytest.raises(ConfigurationError):
+            Configuration.remoteckan()
+        with pytest.raises(ConfigurationError):
+            Configuration.validlocations()

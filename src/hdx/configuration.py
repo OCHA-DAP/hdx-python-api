@@ -169,7 +169,7 @@ class Configuration(UserDict, object):
         with open(path, 'rt') as f:
             apikey = f.read().replace('\n', '')
         if not apikey:
-            raise (ValueError('HDX api key is empty!'))
+            raise ConfigurationError('HDX api key is empty!')
         logger.info('Loaded HDX api key from: %s' % path)
         return apikey
 
@@ -188,16 +188,33 @@ class Configuration(UserDict, object):
         return cls._configuration
 
     @classmethod
-    def set(cls, configuration):
-        # type: ('Configuration') -> None
+    def setup(cls, configuration=None, **kwargs):
+        # type: ('Configuration', ...) -> None
         """
-        Set the HDX configuration
+        Set up the HDX configuration
+
+        Args:
+            configuration (Configuration): Configuration instance. Defaults to setting one up from passed arguments.
+            **kwargs: See below
+            hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
+            hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
+            hdx_key (Optional[str]): Your HDX key. Ignored if hdx_read_only = True.
+            hdx_key_file (Optional[str]): Path to HDX key file. Ignored if hdx_read_only = True or hdx_key supplied. Defaults to ~/.hdxkey.
+            hdx_config_dict (dict): HDX configuration dictionary OR
+            hdx_config_json (str): Path to JSON HDX configuration OR
+            hdx_config_yaml (str): Path to YAML HDX configuration. Defaults to library's internal hdx_configuration.yml.
+            project_config_dict (dict): Project configuration dictionary OR
+            project_config_json (str): Path to JSON Project configuration OR
+            project_config_yaml (str): Path to YAML Project configuration
 
         Returns:
             None
 
         """
-        cls._configuration = configuration
+        if configuration is None:
+            cls._configuration = Configuration(**kwargs)
+        else:
+            cls._configuration = configuration
 
     @classmethod
     def remoteckan(cls):
@@ -217,12 +234,12 @@ class Configuration(UserDict, object):
 
     @classmethod
     def validlocations(cls):
-        # type: () -> List[dict]
+        # type: () -> List[Dict]
         """
         Return valid locations
 
         Returns:
-            List[dict]: Valid locations
+            List[Dict]: Valid locations
 
         """
         if cls._validlocations is None:
@@ -233,6 +250,14 @@ class Configuration(UserDict, object):
 
     @classmethod
     def create_remoteckan(cls):
+        # type: () -> ckanapi.RemoteCKAN
+        """
+        Create remote CKAN instance from configuration
+
+        Returns:
+            ckanapi.RemoteCKAN: Remote CKAN instance
+
+        """
         version_file = open(script_dir_plus_file('version.txt', cls))
         version = version_file.read().strip()
         return ckanapi.RemoteCKAN(cls._configuration.get_hdx_site_url(), apikey=cls._configuration.get_api_key(),
@@ -242,10 +267,13 @@ class Configuration(UserDict, object):
     def setup_remoteckan(cls, remoteckan=None):
         # type: (ckanapi.RemoteCKAN) -> None
         """
-        Set up remote CKAN from provided CKAN or by creating from configuration.
+        Set up remote CKAN from provided CKAN or by creating from configuration
 
         Args:
             remoteckan (ckanapi.RemoteCKAN): CKAN instance. Defaults to setting one up from configuration.
+
+        Returns:
+            None
 
         """
         if remoteckan is None:
@@ -255,18 +283,27 @@ class Configuration(UserDict, object):
 
     @classmethod
     def read_validlocations(cls):
+        # type: () -> List[Dict]
+        """
+        Read valid locations from HDX (default)
+
+        Returns:
+            List[Dict]: A list of valid locations
+        """
         return cls._remoteckan.call_action('group_list', {'all_fields': True},
                                            requests_kwargs={'auth': cls._configuration._get_credentials()})
 
     @classmethod
     def setup_validlocations(cls, validlocations=None):
-        # type: (List[dict]) -> None
+        # type: (List[Dict]) -> None
         """
         Set up valid locations from provided list or by reading from HDX (default).
 
         Args:
-            validlocations (List[dict]): A list of valid locations. Defaults to reading list from HDX.
+            validlocations (List[Dict]): A list of valid locations. Defaults to reading list from HDX.
 
+        Returns:
+            None
         """
         if validlocations is None:
             cls._validlocations = cls.read_validlocations()
@@ -274,14 +311,15 @@ class Configuration(UserDict, object):
             cls._validlocations = validlocations
 
     @classmethod
-    def create(cls, remoteckan=None, validlocations=None, **kwargs):
-        # type: (ckanapi.RemoteCKAN, List[dict], ...) -> str
+    def create(cls, configuration=None, remoteckan=None, validlocations=None, **kwargs):
+        # type: ('Configuration', ckanapi.RemoteCKAN, List[Dict], ...) -> str
         """
         Create HDX configuration. Can only be called once (will raise an error if called more than once).
 
         Args:
+            configuration (Configuration): Configuration instance. Defaults to setting one up from passed arguments.
             remoteckan (ckanapi.RemoteCKAN): CKAN instance. Defaults to setting one up from configuration.
-            validlocations (List[dict]): A list of valid locations. Defaults to reading list from HDX.
+            validlocations (List[Dict]): A list of valid locations. Defaults to reading list from HDX.
             **kwargs: See below
             hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
             hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
@@ -300,7 +338,7 @@ class Configuration(UserDict, object):
         """
         if cls._configuration is not None:
             raise ConfigurationError('Configuration already created!')
-        cls._configuration = Configuration(**kwargs)
+        cls.setup(configuration, **kwargs)
         cls.setup_remoteckan(remoteckan)
         cls.setup_validlocations(validlocations)
         return cls._configuration.get_hdx_site_url()
