@@ -344,6 +344,10 @@ To access the configuration, you use the **read** method of the
 
     Configuration.read()
 
+For more advanced users, there are methods to allow you to pass in
+your own configuration object, remote CKAN object and list of valid
+locations. See the API documentation for more information.
+
 Configuring Logging
 ~~~~~~~~~~~~~~~~~~~
 
