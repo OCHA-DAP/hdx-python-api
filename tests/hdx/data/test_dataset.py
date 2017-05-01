@@ -620,6 +620,24 @@ class TestDataset:
                                           'url': 'http://www.acleddata.com/visuals/maps/dynamic-maps/',
                                           'type': 'visualization', 'title': 'Dynamic Map: Political Conflict in Africa',
                                           'description': 'ACLED maps'}]
+        dataset.get_resources()[0]['url'] = 'http://lalala.xlsx'
+        assert dataset.get_resources() == [{"id": "ABC", "description": "Resource1",
+                                            "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d", "name": "Resource1",
+                                            "url": "http://lalala.xlsx",
+                                            "format": "xlsx"},
+                                           {"id": "DEF", "description": "Resource2",
+                                            "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d", "name": "Resource2",
+                                            "url": "http://resource2.csv",
+                                            "format": "csv"}]
+        dataset.update_from_yaml(static_yaml)
+        assert dataset.get_resources() == [{"id": "ABC", "description": "Resource1",
+                                            "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d", "name": "Resource1",
+                                            "url": "http://resource1.xlsx",
+                                            "format": "xlsx"},
+                                           {"id": "DEF", "description": "Resource2",
+                                            "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d", "name": "Resource2",
+                                            "url": "http://resource2.csv",
+                                            "format": "csv"}]
 
     def test_update_json(self, configuration, static_json):
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
@@ -629,14 +647,14 @@ class TestDataset:
         dataset.update_from_json(static_json)
         assert dataset['name'] == 'MyDataset1'
         assert dataset['author'] == 'Someone'
-        assert dataset.get_resources() == [{"id": "123", "description": "Resource1",
-                                            "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d", "name": "Resource1",
-                                            "url": "http://resource1.xlsx",
-                                            "format": "xlsx"},
-                                           {"id": "456", "description": "Resource2",
-                                            "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d", "name": "Resource2",
-                                            "url": "http://resource2.csv",
-                                            "format": "csv"}]
+        assert dataset.get_resources() == [{'id': '123', 'description': 'Resource1',
+                                            'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d', 'name': 'Resource1',
+                                            'url': 'http://resource1.xlsx',
+                                            'format': 'xlsx'},
+                                           {'id': '456', 'description': 'Resource2',
+                                            'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d', 'name': 'Resource2',
+                                            'url': 'http://resource2.csv',
+                                            'format': 'csv'}]
 
         assert dataset.get_gallery() == [{'image_url': 'http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png',
                                           'url': 'http://www.acleddata.com/visuals/maps/dynamic-maps/',
@@ -647,6 +665,7 @@ class TestDataset:
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
         resources_data = copy.deepcopy(TestDataset.resources_data)
         dataset = Dataset(dataset_data)
+        dataset.add_update_resources(resources_data)
         dataset.add_update_resources(resources_data)
         assert len(dataset.resources) == 2
         dataset.delete_resource('NOTEXIST')

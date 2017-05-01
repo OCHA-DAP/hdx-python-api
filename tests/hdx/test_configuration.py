@@ -314,12 +314,16 @@ class TestConfiguration:
         assert actual_configuration._get_credentials() == ('', '')
 
     def test_set_hdx_key_value(self, empty_hdx_key_file, project_config_yaml):
+        with pytest.raises(ConfigurationError):
+            Configuration.load_api_key(empty_hdx_key_file)
         Configuration._create(hdx_site='prod', hdx_key='TEST_HDX_KEY',
                              hdx_config_dict={},
                              project_config_yaml=project_config_yaml)
         assert Configuration.read().get_api_key() == 'TEST_HDX_KEY'
-        with pytest.raises(ConfigurationError):
-            Configuration.load_api_key(empty_hdx_key_file)
+        Configuration._create(hdx_site='prod', hdx_read_only=True,
+                              hdx_config_dict={},
+                              project_config_yaml=project_config_yaml)
+        assert Configuration.read().get_api_key() is None
 
     def test_create_set_configuration(self, project_config_yaml):
         Configuration._create(hdx_site='prod', hdx_key='TEST_HDX_KEY',
