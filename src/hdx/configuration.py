@@ -311,6 +311,37 @@ class Configuration(UserDict, object):
             cls._validlocations = validlocations
 
     @classmethod
+    def _create(cls, configuration=None, remoteckan=None, validlocations=None, **kwargs):
+        # type: ('Configuration', ckanapi.RemoteCKAN, List[Dict], ...) -> str
+        """
+        Create HDX configuration
+
+        Args:
+            configuration (Configuration): Configuration instance. Defaults to setting one up from passed arguments.
+            remoteckan (ckanapi.RemoteCKAN): CKAN instance. Defaults to setting one up from configuration.
+            validlocations (List[Dict]): A list of valid locations. Defaults to reading list from HDX.
+            **kwargs: See below
+            hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
+            hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
+            hdx_key (Optional[str]): Your HDX key. Ignored if hdx_read_only = True.
+            hdx_key_file (Optional[str]): Path to HDX key file. Ignored if hdx_read_only = True or hdx_key supplied. Defaults to ~/.hdxkey.
+            hdx_config_dict (dict): HDX configuration dictionary OR
+            hdx_config_json (str): Path to JSON HDX configuration OR
+            hdx_config_yaml (str): Path to YAML HDX configuration. Defaults to library's internal hdx_configuration.yml.
+            project_config_dict (dict): Project configuration dictionary OR
+            project_config_json (str): Path to JSON Project configuration OR
+            project_config_yaml (str): Path to YAML Project configuration
+
+        Returns:
+            str: HDX site url
+
+        """
+        cls.setup(configuration, **kwargs)
+        cls.setup_remoteckan(remoteckan)
+        cls.setup_validlocations(validlocations)
+        return cls._configuration.get_hdx_site_url()
+
+    @classmethod
     def create(cls, configuration=None, remoteckan=None, validlocations=None, **kwargs):
         # type: ('Configuration', ckanapi.RemoteCKAN, List[Dict], ...) -> str
         """
@@ -338,7 +369,4 @@ class Configuration(UserDict, object):
         """
         if cls._configuration is not None:
             raise ConfigurationError('Configuration already created!')
-        cls.setup(configuration, **kwargs)
-        cls.setup_remoteckan(remoteckan)
-        cls.setup_validlocations(validlocations)
-        return cls._configuration.get_hdx_site_url()
+        return cls._create(**kwargs)
