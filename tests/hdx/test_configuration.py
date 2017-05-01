@@ -2,6 +2,7 @@
 """Configuration Tests"""
 from os.path import join
 
+import ckanapi
 import pytest
 
 from hdx.configuration import Configuration, ConfigurationError
@@ -54,6 +55,7 @@ class TestConfiguration:
                           project_config_json=project_config_json)
 
     def test_hdx_configuration_dict(self, hdx_key_file, project_config_yaml):
+        Configuration._configuration = None
         Configuration.create(hdx_site='prod', hdx_key_file=hdx_key_file,
                              hdx_config_dict={
                                                  'hdx_prod_site': {
@@ -78,7 +80,8 @@ class TestConfiguration:
 
     def test_hdx_configuration_json(self, hdx_key_file, project_config_yaml, locations):
         hdx_config_json = join('tests', 'fixtures', 'config', 'hdx_config.json')
-        Configuration.create(hdx_key_file=hdx_key_file, hdx_config_json=hdx_config_json,
+        Configuration._configuration = None
+        Configuration.create(validlocations=locations, hdx_key_file=hdx_key_file, hdx_config_json=hdx_config_json,
                              project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
@@ -108,8 +111,9 @@ class TestConfiguration:
 
     def test_hdx_configuration_yaml(self, hdx_key_file, project_config_yaml, locations):
         hdx_configuration_yaml = join('tests', 'fixtures', 'config', 'hdx_config.yml')
-        Configuration.create(hdx_key_file=hdx_key_file, hdx_config_yaml=hdx_configuration_yaml,
-                             project_config_yaml=project_config_yaml)
+        Configuration._configuration = None
+        Configuration.create(validlocations=locations, hdx_key_file=hdx_key_file,
+                             hdx_config_yaml=hdx_configuration_yaml, project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
             'param_1': 'ABC',
@@ -139,6 +143,7 @@ class TestConfiguration:
         assert Configuration.read() == expected_configuration
 
     def test_project_configuration_dict(self, hdx_key_file):
+        Configuration._configuration = None
         Configuration.create(hdx_key_file=hdx_key_file)
         expected_configuration = {
             'api_key': '12345',
@@ -189,11 +194,13 @@ class TestConfiguration:
             ], 'ignore_dataset_id_on_update': True},
         }
         assert Configuration.read() == expected_configuration
+        Configuration._configuration = None
         Configuration.create(hdx_key_file=hdx_key_file, project_config_dict={'abc': '123'})
         expected_configuration['abc'] = '123'
         assert Configuration.read() == expected_configuration
 
     def test_project_configuration_json(self, hdx_key_file, project_config_json):
+        Configuration._configuration = None
         Configuration.create(hdx_key_file=hdx_key_file, project_config_json=project_config_json)
         expected_configuration = {
             'api_key': '12345',
@@ -247,6 +254,7 @@ class TestConfiguration:
         assert Configuration.read() == expected_configuration
 
     def test_project_configuration_yaml(self, hdx_key_file, project_config_yaml):
+        Configuration._configuration = None
         Configuration.create(hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
@@ -300,6 +308,7 @@ class TestConfiguration:
         assert Configuration.read() == expected_configuration
 
     def test_get_hdx_key_site(self, hdx_key_file, project_config_yaml):
+        Configuration._configuration = None
         Configuration.create(hdx_site='prod', hdx_key_file=hdx_key_file,
                              hdx_config_dict={},
                              project_config_yaml=project_config_yaml)
@@ -309,7 +318,47 @@ class TestConfiguration:
         assert actual_configuration._get_credentials() == ('', '')
 
     def test_set_hdx_key_value(self, project_config_yaml):
+        Configuration._configuration = None
         Configuration.create(hdx_site='prod', hdx_key="TEST_HDX_KEY",
                              hdx_config_dict={},
                              project_config_yaml=project_config_yaml)
         assert Configuration.read().get_api_key() == 'TEST_HDX_KEY'
+
+    def test_create_set_configuration(self, project_config_yaml):
+        Configuration._configuration = None
+        Configuration.create(hdx_site='prod', hdx_key="TEST_HDX_KEY",
+                             hdx_config_dict={},
+                             project_config_yaml=project_config_yaml)
+        with pytest.raises(ConfigurationError):
+            Configuration.create(hdx_site='prod', hdx_key="TEST_HDX_KEY",
+                                 hdx_config_dict={},
+                                 project_config_yaml=project_config_yaml)
+        configuration = Configuration(hdx_site='test', hdx_key="TEST_HDX_KEY",
+                                      hdx_config_dict={},
+                                      project_config_yaml=project_config_yaml)
+        Configuration.set(configuration)
+        assert Configuration.read() == configuration
+
+    def test_remoteckan_validlocations(self, project_config_yaml):
+        Configuration._configuration = None
+        Configuration.create(hdx_site='prod', hdx_key="TEST_HDX_KEY",
+                             hdx_config_dict={},
+                             project_config_yaml=project_config_yaml)
+        remoteckan = ckanapi.RemoteCKAN('http://lalala', apikey='12345',
+                                        user_agent='HDXPythonLibrary/1.0')
+        Configuration.setup_remoteckan(remoteckan)
+        assert Configuration.remoteckan() == remoteckan
+        validlocations = [{'a': '1', 'b': '2'}]
+        Configuration.setup_validlocations(validlocations)
+        assert Configuration.validlocations() == validlocations
+        Configuration._configuration = None
+        remoteckan = ckanapi.RemoteCKAN('http://hahaha', apikey='54321',
+                                        user_agent='HDXPythonLibrary/0.5')
+        validlocations = [{'1': 'a', '3': 'd'}]
+        Configuration.create(remoteckan=remoteckan,
+                             validlocations=validlocations,
+                             hdx_site='prod', hdx_key="TEST_HDX_KEY",
+                             hdx_config_dict={},
+                             project_config_yaml=project_config_yaml)
+        assert Configuration.remoteckan() == remoteckan
+        assert Configuration.validlocations() == validlocations

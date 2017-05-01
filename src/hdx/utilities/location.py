@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from typing import List, Callable, Any, Tuple, Optional
+from typing import List, Callable, Tuple, Optional
 
 import geonamescache
 
-import hdx
+from hdx.configuration import Configuration
 
 
 class Location(object):
@@ -42,7 +42,7 @@ class Location(object):
         Returns:
             Optional[str]: location name
         """
-        for locdict in hdx.validlocations:
+        for locdict in Configuration.validlocations():
             if code.lower() == locdict['name'].lower():
                 return locdict['title']
 
@@ -85,16 +85,16 @@ class Location(object):
             Tuple[Optional[str], bool]: HDX code and if the match is strong or (None, False) for no match
         """
         locationlower = location.lower()
-        for locdict in hdx.validlocations:
+        for locdict in Configuration.validlocations():
             locationcode = locdict['name']
             if locationlower == locationcode.lower():
                 return locationcode, True
 
-        for locdict in hdx.validlocations:
+        for locdict in Configuration.validlocations():
             if locationlower == locdict['title'].lower():
                 return locdict['name'], True
 
-        for locdict in hdx.validlocations:
+        for locdict in Configuration.validlocations():
             locationname = locdict['title'].lower()
             if locationlower in locationname or locationname in locationlower:
                 return locdict['name'], False
