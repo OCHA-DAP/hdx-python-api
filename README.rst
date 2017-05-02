@@ -348,6 +348,17 @@ For more advanced users, there are methods to allow you to pass in
 your own configuration object, remote CKAN object and list of valid
 locations. See the API documentation for more information.
 
+This global configuration is used by default by the library but can
+be replaced by Configuration instances passed to the constructors
+of HDX objects like Dataset eg.
+
+::
+
+    configuration = Configuration(KEYWORD ARGUMENTS)
+    configuration.setup_remoteckan(REMOTE CKAN OBJECT)
+    configuration.setup_validlocations(LIST OF VALID LOCATIONS)
+    dataset = Dataset(configuration=configuration)
+
 Configuring Logging
 ~~~~~~~~~~~~~~~~~~~
 
