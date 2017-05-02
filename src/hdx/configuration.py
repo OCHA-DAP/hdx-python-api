@@ -46,7 +46,7 @@ class Configuration(UserDict, object):
     _configuration = None
 
     def __init__(self, **kwargs):
-        # type: (Any) -> None
+        # type: (...) -> None
         super(Configuration, self).__init__()
 
         self._remoteckan = None
@@ -168,7 +168,7 @@ class Configuration(UserDict, object):
         return self._remoteckan
 
     def call_remoteckan(self, *args, **kwargs):
-        # type: () -> ckanapi.RemoteCKAN
+        # type: (...) -> dict
         """
         Calls the remote CKAN
 
@@ -177,7 +177,7 @@ class Configuration(UserDict, object):
             **kwargs: Keyword arguments to pass to remote CKAN call_action method
 
         Returns:
-            ckanapi.RemoteCKAN: The remote CKAN object
+            dict: The response from the remote CKAN call_action method
 
         """
         requests_kwargs = kwargs.get('requests_kwargs', dict())
@@ -213,12 +213,12 @@ class Configuration(UserDict, object):
                                   user_agent='HDXPythonLibrary/%s' % version)
 
     def setup_remoteckan(self, remoteckan=None):
-        # type: (ckanapi.RemoteCKAN) -> None
+        # type: (Optional[ckanapi.RemoteCKAN]) -> None
         """
         Set up remote CKAN from provided CKAN or by creating from configuration
 
         Args:
-            remoteckan (ckanapi.RemoteCKAN): CKAN instance. Defaults to setting one up from configuration.
+            remoteckan (Optional[ckanapi.RemoteCKAN]): CKAN instance. Defaults to setting one up from configuration.
 
         Returns:
             None
@@ -240,12 +240,12 @@ class Configuration(UserDict, object):
         return self.call_remoteckan('group_list', {'all_fields': True})
 
     def setup_validlocations(self, validlocations=None):
-        # type: (List[Dict]) -> None
+        # type: (Optional[List[Dict]]) -> None
         """
         Set up valid locations from provided list or by reading from HDX (default).
 
         Args:
-            validlocations (List[Dict]): A list of valid locations. Defaults to reading list from HDX.
+            validlocations (Optional[List[Dict]]): A list of valid locations. Defaults to reading list from HDX.
 
         Returns:
             None
@@ -291,12 +291,12 @@ class Configuration(UserDict, object):
 
     @classmethod
     def setup(cls, configuration=None, **kwargs):
-        # type: ('Configuration', ...) -> None
+        # type: (Optional['Configuration'], ...) -> None
         """
         Set up the HDX configuration
 
         Args:
-            configuration (Configuration): Configuration instance. Defaults to setting one up from passed arguments.
+            configuration (Optional[Configuration]): Configuration instance. Defaults to setting one up from passed arguments.
             **kwargs: See below
             hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
             hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
@@ -320,14 +320,14 @@ class Configuration(UserDict, object):
 
     @classmethod
     def _create(cls, configuration=None, remoteckan=None, validlocations=None, **kwargs):
-        # type: ('Configuration', ckanapi.RemoteCKAN, List[Dict], ...) -> str
+        # type: (Optional['Configuration'], Optional[ckanapi.RemoteCKAN], Optional[List[Dict]], ...) -> str
         """
         Create HDX configuration
 
         Args:
-            configuration (Configuration): Configuration instance. Defaults to setting one up from passed arguments.
-            remoteckan (ckanapi.RemoteCKAN): CKAN instance. Defaults to setting one up from configuration.
-            validlocations (List[Dict]): A list of valid locations. Defaults to reading list from HDX.
+            configuration (Optional[Configuration]): Configuration instance. Defaults to setting one up from passed arguments.
+            remoteckan (Optional[ckanapi.RemoteCKAN]): CKAN instance. Defaults to setting one up from configuration.
+            validlocations (Optional[List[Dict]]): A list of valid locations. Defaults to reading list from HDX.
             **kwargs: See below
             hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
             hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
@@ -351,14 +351,14 @@ class Configuration(UserDict, object):
 
     @classmethod
     def create(cls, configuration=None, remoteckan=None, validlocations=None, **kwargs):
-        # type: ('Configuration', ckanapi.RemoteCKAN, List[Dict], ...) -> str
+        # type: (Optional['Configuration'], Optional[ckanapi.RemoteCKAN], Optional[List[Dict]], ...) -> str
         """
         Create HDX configuration. Can only be called once (will raise an error if called more than once).
 
         Args:
-            configuration (Configuration): Configuration instance. Defaults to setting one up from passed arguments.
-            remoteckan (ckanapi.RemoteCKAN): CKAN instance. Defaults to setting one up from configuration.
-            validlocations (List[Dict]): A list of valid locations. Defaults to reading list from HDX.
+            configuration (Optional[Configuration]): Configuration instance. Defaults to setting one up from passed arguments.
+            remoteckan (Optional[ckanapi.RemoteCKAN]): CKAN instance. Defaults to setting one up from configuration.
+            validlocations (Optional[List[Dict]]): A list of valid locations. Defaults to reading list from HDX.
             **kwargs: See below
             hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
             hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.

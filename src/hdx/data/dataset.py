@@ -31,6 +31,7 @@ class Dataset(HDXObject):
     Args:
         initial_data (Optional[dict]): Initial dataset metadata dictionary. Defaults to None.
         include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
+        configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
     """
 
     update_frequencies = {
@@ -64,7 +65,7 @@ class Dataset(HDXObject):
 
     def __init__(self, initial_data=None,
                  include_gallery=True, configuration=None):
-        # type: (Optional[dict], Optional[bool]) -> None
+        # type: (Optional[dict], Optional[bool], Optional[Configuration]) -> None
         if not initial_data:
             initial_data = dict()
         super(Dataset, self).__init__(dict(), configuration=configuration)

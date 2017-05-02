@@ -14,10 +14,11 @@ class GalleryItem(HDXObject):
 
     Args:
         initial_data (Optional[dict]): Initial gallery item metadata dictionary. Defaults to None.
+        configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
     """
 
     def __init__(self, initial_data=None, configuration=None):
-        # type: (Optional[dict]) -> None
+        # type: (Optional[dict], Optional[Configuration]) -> None
         if not initial_data:
             initial_data = dict()
         super(GalleryItem, self).__init__(initial_data, configuration=configuration)

@@ -37,6 +37,7 @@ class HDXObject(UserDict, object):
 
     Args:
         initial_data (dict): Initial metadata dictionary
+        configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
     """
     __metaclass__ = abc.ABCMeta
 
@@ -52,7 +53,7 @@ class HDXObject(UserDict, object):
         pass
 
     def __init__(self, initial_data, configuration=None):
-        # type: (dict) -> None
+        # type: (dict, Optional[Configuration]) -> None
         super(HDXObject, self).__init__(initial_data)
         self.old_data = None
         if configuration is None:

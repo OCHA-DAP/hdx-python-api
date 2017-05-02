@@ -33,12 +33,12 @@ class Location(object):
 
     @staticmethod
     def get_location_from_HDX_code(code, configuration=None):
-        # type: (str, Configuration) -> Optional[str]
+        # type: (str, Optional[Configuration]) -> Optional[str]
         """Get location from HDX location code
 
         Args:
             code (str): code for which to get location name
-            configuration (Configuration): HDX configuration. Defaults to global configuration.
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
             Optional[str]: location name
@@ -78,12 +78,12 @@ class Location(object):
 
     @staticmethod
     def get_HDX_code_from_location(location, configuration=None):
-        # type: (str, Configuration) -> Tuple[Optional[str], bool]
+        # type: (str, Optional[Configuration]) -> Tuple[Optional[str], bool]
         """Get HDX code for location
 
         Args:
             location (str): Location for which to get HDX code
-            configuration (Configuration): HDX configuration. Defaults to global configuration.
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
             Tuple[Optional[str], bool]: HDX code and if the match is strong or (None, False) for no match
