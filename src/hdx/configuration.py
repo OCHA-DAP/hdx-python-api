@@ -170,7 +170,11 @@ class Configuration(UserDict, object):
     def call_remoteckan(self, *args, **kwargs):
         # type: () -> ckanapi.RemoteCKAN
         """
-        Return the remote CKAN object (see ckanapi library)
+        Calls the remote CKAN
+
+        Args:
+            *args: Arguments to pass to remote CKAN call_action method
+            **kwargs: Keyword arguments to pass to remote CKAN call_action method
 
         Returns:
             ckanapi.RemoteCKAN: The remote CKAN object
