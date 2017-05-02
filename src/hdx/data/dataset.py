@@ -12,7 +12,6 @@ from typing import List, Optional
 from dateutil import parser
 from six.moves import range
 
-from hdx.configuration import Configuration
 from hdx.data.galleryitem import GalleryItem
 from hdx.data.hdxobject import HDXObject, HDXError
 from hdx.data.resource import Resource
@@ -64,11 +63,11 @@ class Dataset(HDXObject):
     }
 
     def __init__(self, initial_data=None,
-                 include_gallery=True):
+                 include_gallery=True, configuration=None):
         # type: (Optional[dict], Optional[bool]) -> None
         if not initial_data:
             initial_data = dict()
-        super(Dataset, self).__init__(dict())
+        super(Dataset, self).__init__(dict(), configuration=configuration)
         # workaround: python2 IterableUserDict does not call __setitem__ in __init__,
         # while python3 collections.UserDict does
         for key in initial_data:
@@ -353,7 +352,7 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        for field in Configuration.read()['dataset']['required_fields']:
+        for field in self.configuration['dataset']['required_fields']:
             if field not in self.data:
                 raise HDXError("Field %s is missing in dataset!" % field)
 
@@ -416,7 +415,7 @@ class Dataset(HDXObject):
         if self.include_gallery and update_gallery and old_gallery:
             self.old_data['gallery'] = self._copy_hdxobjects(self.gallery, GalleryItem)
             galleryitem_titles = set()
-            galleryitem_dataset_id = Configuration.read()['galleryitem']['dataset_id']
+            galleryitem_dataset_id = self.configuration['galleryitem']['dataset_id']
             for i, galleryitem in enumerate(self.gallery):
                 galleryitem_title = galleryitem['title']
                 galleryitem_titles.add(galleryitem_title)
@@ -499,7 +498,7 @@ class Dataset(HDXObject):
 
         if self.include_gallery:
             self.old_data['gallery'] = self._copy_hdxobjects(self.gallery, GalleryItem)
-            galleryitem_dataset_id = Configuration.read()['galleryitem']['dataset_id']
+            galleryitem_dataset_id = self.configuration['galleryitem']['dataset_id']
             for i, galleryitem in enumerate(self.gallery):
                 galleryitem[galleryitem_dataset_id] = self.data['id']
                 galleryitem.check_required_fields()
@@ -930,7 +929,7 @@ class Dataset(HDXObject):
         countries = self.data.get('groups', None)
         if not countries:
             return list()
-        return [Location.get_location_from_HDX_code(x['name']) for x in countries]
+        return [Location.get_location_from_HDX_code(x['name'], self.configuration) for x in countries]
 
     def add_country_location(self, country):
         # type: (str) -> None
@@ -946,7 +945,7 @@ class Dataset(HDXObject):
         iso3, match = Location.get_iso3_country_code(country)
         if iso3 is None:
             raise HDXError('Country: %s - cannot find iso3 code!' % country)
-        hdx_code, match = Location.get_HDX_code_from_location(iso3)
+        hdx_code, match = Location.get_HDX_code_from_location(iso3, self.configuration)
         if hdx_code is None:
             raise HDXError('Country: %s with iso3: %s could not be found in HDX list!' % (country, iso3))
         groups = self.data.get('groups', None)
@@ -996,7 +995,7 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        hdx_code, match = Location.get_HDX_code_from_location(location)
+        hdx_code, match = Location.get_HDX_code_from_location(location, self.configuration)
         if hdx_code is None:
             raise HDXError('Location: %s - cannot find in HDX!' % location)
         groups = self.data.get('groups', None)

@@ -5,12 +5,11 @@ import zipfile
 from os import unlink
 from os.path import join, splitext
 from tempfile import gettempdir
-from typing import Optional, List, Tuple, Any
+from typing import Optional, List, Tuple
 
 import tabulator
 from tabulator import Stream
 
-from hdx.configuration import Configuration
 from hdx.utilities import raisefrom
 from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_yaml, load_json
@@ -27,11 +26,11 @@ class Resource(HDXObject):
         initial_data (Optional[dict]): Initial resource metadata dictionary. Defaults to None.
     """
 
-    def __init__(self, initial_data=None):
+    def __init__(self, initial_data=None, configuration=None):
         # type: (Optional[dict]) -> None
         if not initial_data:
             initial_data = dict()
-        super(Resource, self).__init__(initial_data)
+        super(Resource, self).__init__(initial_data, configuration=configuration)
         self.file_to_upload = None
 
     @staticmethod
@@ -148,7 +147,7 @@ class Resource(HDXObject):
             if 'tracking_summary' in self.data:
                 del self.data['tracking_summary']
         if ignore_dataset_id:
-            ignore_fields = [Configuration.read()['resource']['dataset_id']]
+            ignore_fields = [self.configuration['resource']['dataset_id']]
         else:
             ignore_fields = list()
 

@@ -16,7 +16,7 @@ import copy
 import logging
 
 from ckanapi.errors import NotFound
-from typing import Optional, List, Tuple, TypeVar, Union, Any
+from typing import Optional, List, Tuple, TypeVar, Union
 
 from hdx.configuration import Configuration
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -51,10 +51,14 @@ class HDXObject(UserDict, object):
         """
         pass
 
-    def __init__(self, initial_data):
+    def __init__(self, initial_data, configuration=None):
         # type: (dict) -> None
         super(HDXObject, self).__init__(initial_data)
         self.old_data = None
+        if configuration is None:
+            self.configuration = Configuration.read()
+        else:
+            self.configuration = configuration
 
     def get_old_data_dict(self):
         # type: () -> None
@@ -111,9 +115,7 @@ class HDXObject(UserDict, object):
         data = {fieldname: value}
         data.update(kwargs)
         try:
-            result = Configuration.remoteckan().call_action(action, data,
-                                                            requests_kwargs={
-                                                                'auth': Configuration.read()._get_credentials()})
+            result = self.configuration.call_remoteckan(action, data)
             return True, result
         except NotFound:
             return False, "%s=%s: not found!" % (fieldname, value)
@@ -200,7 +202,7 @@ class HDXObject(UserDict, object):
         Returns:
             None
         """
-        for field in Configuration.read()['%s' % object_type]['required_fields']:
+        for field in self.configuration['%s' % object_type]['required_fields']:
             if field not in self.data and field not in ignore_fields:
                 raise HDXError("Field %s is missing in %s!" % (field, object_type))
 
@@ -217,7 +219,7 @@ class HDXObject(UserDict, object):
             None
         """
         merge_two_dictionaries(self.data, self.old_data)
-        ignore_dataset_id = Configuration.read()['%s' % object_type].get('ignore_dataset_id_on_update', False)
+        ignore_dataset_id = self.configuration['%s' % object_type].get('ignore_dataset_id_on_update', False)
         self.check_required_fields(ignore_dataset_id=ignore_dataset_id)
         self._save_to_hdx('update', id_field_name, file_to_upload)
 
@@ -267,9 +269,7 @@ class HDXObject(UserDict, object):
                 files = [('upload', file)]
             else:
                 files = None
-            return Configuration.remoteckan().call_action(self.actions()[action], data, files=files,
-                                                          requests_kwargs={
-                                                              'auth': Configuration.read()._get_credentials()})
+            return self.configuration.call_remoteckan(self.actions()[action], data, files=files)
         except Exception as e:
             raisefrom(HDXError, 'Failed when trying to %s %s! (POST)' % (action, self.data[id_field_name]), e)
         finally:

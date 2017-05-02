@@ -32,17 +32,20 @@ class Location(object):
         return None
 
     @staticmethod
-    def get_location_from_HDX_code(code):
-        # type: (str) -> Optional[str]
+    def get_location_from_HDX_code(code, configuration=None):
+        # type: (str, Configuration) -> Optional[str]
         """Get location from HDX location code
 
         Args:
             code (str): code for which to get location name
+            configuration (Configuration): HDX configuration. Defaults to global configuration.
 
         Returns:
             Optional[str]: location name
         """
-        for locdict in Configuration.validlocations():
+        if configuration is None:
+            configuration = Configuration.read()
+        for locdict in configuration.validlocations():
             if code.lower() == locdict['name'].lower():
                 return locdict['title']
 
@@ -74,27 +77,30 @@ class Location(object):
         return None, False
 
     @staticmethod
-    def get_HDX_code_from_location(location):
-        # type: (str) -> Tuple[Optional[str], bool]
+    def get_HDX_code_from_location(location, configuration=None):
+        # type: (str, Configuration) -> Tuple[Optional[str], bool]
         """Get HDX code for location
 
         Args:
             location (str): Location for which to get HDX code
+            configuration (Configuration): HDX configuration. Defaults to global configuration.
 
         Returns:
             Tuple[Optional[str], bool]: HDX code and if the match is strong or (None, False) for no match
         """
+        if configuration is None:
+            configuration = Configuration.read()
         locationlower = location.lower()
-        for locdict in Configuration.validlocations():
+        for locdict in configuration.validlocations():
             locationcode = locdict['name']
             if locationlower == locationcode.lower():
                 return locationcode, True
 
-        for locdict in Configuration.validlocations():
+        for locdict in configuration.validlocations():
             if locationlower == locdict['title'].lower():
                 return locdict['name'], True
 
-        for locdict in Configuration.validlocations():
+        for locdict in configuration.validlocations():
             locationname = locdict['title'].lower()
             if locationlower in locationname or locationname in locationlower:
                 return locdict['name'], False

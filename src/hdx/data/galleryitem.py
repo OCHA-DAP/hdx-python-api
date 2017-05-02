@@ -2,10 +2,8 @@
 """GalleryItem class containing all logic for creating, checking, and updating gallery items."""
 import logging
 from os.path import join
-
 from typing import Optional
 
-from hdx.configuration import Configuration
 from hdx.data.hdxobject import HDXObject
 
 logger = logging.getLogger(__name__)
@@ -18,11 +16,11 @@ class GalleryItem(HDXObject):
         initial_data (Optional[dict]): Initial gallery item metadata dictionary. Defaults to None.
     """
 
-    def __init__(self, initial_data=None):
+    def __init__(self, initial_data=None, configuration=None):
         # type: (Optional[dict]) -> None
         if not initial_data:
             initial_data = dict()
-        super(GalleryItem, self).__init__(initial_data)
+        super(GalleryItem, self).__init__(initial_data, configuration=configuration)
 
     @staticmethod
     def actions():
@@ -95,7 +93,7 @@ class GalleryItem(HDXObject):
             None
         """
         if ignore_dataset_id:
-            ignore_fields = [Configuration.read()['galleryitem']['dataset_id']]
+            ignore_fields = [self.configuration['galleryitem']['dataset_id']]
         else:
             ignore_fields = list()
         self._check_required_fields('galleryitem', ignore_fields)

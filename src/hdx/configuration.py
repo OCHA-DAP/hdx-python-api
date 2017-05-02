@@ -44,12 +44,13 @@ class Configuration(UserDict, object):
     """
 
     _configuration = None
-    _remoteckan = None
-    _validlocations = list()
 
     def __init__(self, **kwargs):
         # type: (Any) -> None
         super(Configuration, self).__init__()
+
+        self._remoteckan = None
+        self._validlocations = list()
 
         hdx_config_found = False
         hdx_config_dict = kwargs.get('hdx_config_dict', None)
@@ -153,6 +154,103 @@ class Configuration(UserDict, object):
         else:
             return '', ''
 
+    def remoteckan(self):
+        # type: () -> ckanapi.RemoteCKAN
+        """
+        Return the remote CKAN object (see ckanapi library)
+
+        Returns:
+            ckanapi.RemoteCKAN: The remote CKAN object
+
+        """
+        if self._remoteckan is None:
+            raise ConfigurationError('There is no remote CKAN set up! Use Configuration.create(**kwargs)')
+        return self._remoteckan
+
+    def call_remoteckan(self, *args, **kwargs):
+        # type: () -> ckanapi.RemoteCKAN
+        """
+        Return the remote CKAN object (see ckanapi library)
+
+        Returns:
+            ckanapi.RemoteCKAN: The remote CKAN object
+
+        """
+        requests_kwargs = kwargs.get('requests_kwargs', dict())
+        requests_kwargs['auth'] = self._get_credentials()
+        kwargs['requests_kwargs'] = requests_kwargs
+        return self.remoteckan().call_action(*args, **kwargs)
+
+    def validlocations(self):
+        # type: () -> List[Dict]
+        """
+        Return valid locations
+
+        Returns:
+            List[Dict]: Valid locations
+
+        """
+        if self._validlocations is None:
+            raise ConfigurationError('There are no valid locations set up! Use Configuration.create(**kwargs)')
+        return self._validlocations
+
+    def create_remoteckan(self):
+        # type: () -> ckanapi.RemoteCKAN
+        """
+        Create remote CKAN instance from configuration
+
+        Returns:
+            ckanapi.RemoteCKAN: Remote CKAN instance
+
+        """
+        version_file = open(script_dir_plus_file('version.txt', Configuration))
+        version = version_file.read().strip()
+        return ckanapi.RemoteCKAN(self.get_hdx_site_url(), apikey=self.get_api_key(),
+                                  user_agent='HDXPythonLibrary/%s' % version)
+
+    def setup_remoteckan(self, remoteckan=None):
+        # type: (ckanapi.RemoteCKAN) -> None
+        """
+        Set up remote CKAN from provided CKAN or by creating from configuration
+
+        Args:
+            remoteckan (ckanapi.RemoteCKAN): CKAN instance. Defaults to setting one up from configuration.
+
+        Returns:
+            None
+
+        """
+        if remoteckan is None:
+            self._remoteckan = self.create_remoteckan()
+        else:
+            self._remoteckan = remoteckan
+
+    def read_validlocations(self):
+        # type: () -> List[Dict]
+        """
+        Read valid locations from HDX (default)
+
+        Returns:
+            List[Dict]: A list of valid locations
+        """
+        return self.call_remoteckan('group_list', {'all_fields': True})
+
+    def setup_validlocations(self, validlocations=None):
+        # type: (List[Dict]) -> None
+        """
+        Set up valid locations from provided list or by reading from HDX (default).
+
+        Args:
+            validlocations (List[Dict]): A list of valid locations. Defaults to reading list from HDX.
+
+        Returns:
+            None
+        """
+        if validlocations is None:
+            self._validlocations = self.read_validlocations()
+        else:
+            self._validlocations = validlocations
+
     @staticmethod
     def load_api_key(path):
         # type: (str) -> str
@@ -217,100 +315,6 @@ class Configuration(UserDict, object):
             cls._configuration = configuration
 
     @classmethod
-    def remoteckan(cls):
-        # type: () -> ckanapi.RemoteCKAN
-        """
-        Return the remote CKAN object (see ckanapi library)
-
-        Returns:
-            ckanapi.RemoteCKAN: The remote CKAN object
-
-        """
-        if cls._remoteckan is None:
-            if cls._configuration is None:
-                raise ConfigurationError('There is no HDX configuration! Use Configuration.create(**kwargs)')
-            raise ConfigurationError('There is no remote CKAN set up! Use Configuration.create(**kwargs)')
-        return cls._remoteckan
-
-    @classmethod
-    def validlocations(cls):
-        # type: () -> List[Dict]
-        """
-        Return valid locations
-
-        Returns:
-            List[Dict]: Valid locations
-
-        """
-        if cls._validlocations is None:
-            if cls._configuration is None:
-                raise ConfigurationError('There is no HDX configuration! Use Configuration.create(**kwargs)')
-            raise ConfigurationError('There are no valid locations set up! Use Configuration.create(**kwargs)')
-        return cls._validlocations
-
-    @classmethod
-    def create_remoteckan(cls):
-        # type: () -> ckanapi.RemoteCKAN
-        """
-        Create remote CKAN instance from configuration
-
-        Returns:
-            ckanapi.RemoteCKAN: Remote CKAN instance
-
-        """
-        version_file = open(script_dir_plus_file('version.txt', cls))
-        version = version_file.read().strip()
-        return ckanapi.RemoteCKAN(cls._configuration.get_hdx_site_url(), apikey=cls._configuration.get_api_key(),
-                                  user_agent='HDXPythonLibrary/%s' % version)
-
-    @classmethod
-    def setup_remoteckan(cls, remoteckan=None):
-        # type: (ckanapi.RemoteCKAN) -> None
-        """
-        Set up remote CKAN from provided CKAN or by creating from configuration
-
-        Args:
-            remoteckan (ckanapi.RemoteCKAN): CKAN instance. Defaults to setting one up from configuration.
-
-        Returns:
-            None
-
-        """
-        if remoteckan is None:
-            cls._remoteckan = cls.create_remoteckan()
-        else:
-            cls._remoteckan = remoteckan
-
-    @classmethod
-    def read_validlocations(cls):
-        # type: () -> List[Dict]
-        """
-        Read valid locations from HDX (default)
-
-        Returns:
-            List[Dict]: A list of valid locations
-        """
-        return cls._remoteckan.call_action('group_list', {'all_fields': True},
-                                           requests_kwargs={'auth': cls._configuration._get_credentials()})
-
-    @classmethod
-    def setup_validlocations(cls, validlocations=None):
-        # type: (List[Dict]) -> None
-        """
-        Set up valid locations from provided list or by reading from HDX (default).
-
-        Args:
-            validlocations (List[Dict]): A list of valid locations. Defaults to reading list from HDX.
-
-        Returns:
-            None
-        """
-        if validlocations is None:
-            cls._validlocations = cls.read_validlocations()
-        else:
-            cls._validlocations = validlocations
-
-    @classmethod
     def _create(cls, configuration=None, remoteckan=None, validlocations=None, **kwargs):
         # type: ('Configuration', ckanapi.RemoteCKAN, List[Dict], ...) -> str
         """
@@ -337,8 +341,8 @@ class Configuration(UserDict, object):
 
         """
         cls.setup(configuration, **kwargs)
-        cls.setup_remoteckan(remoteckan)
-        cls.setup_validlocations(validlocations)
+        cls._configuration.setup_remoteckan(remoteckan)
+        cls._configuration.setup_validlocations(validlocations)
         return cls._configuration.get_hdx_site_url()
 
     @classmethod

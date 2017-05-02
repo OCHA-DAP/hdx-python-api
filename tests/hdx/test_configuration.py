@@ -352,11 +352,11 @@ class TestConfiguration:
                              project_config_yaml=project_config_yaml)
         remoteckan = ckanapi.RemoteCKAN('http://lalala', apikey='12345',
                                         user_agent='HDXPythonLibrary/1.0')
-        Configuration.setup_remoteckan(remoteckan)
-        assert Configuration.remoteckan() == remoteckan
+        Configuration.read().setup_remoteckan(remoteckan)
+        assert Configuration.read().remoteckan() == remoteckan
         validlocations = [{'a': '1', 'b': '2'}]
-        Configuration.setup_validlocations(validlocations)
-        assert Configuration.validlocations() == validlocations
+        Configuration.read().setup_validlocations(validlocations)
+        assert Configuration.read().validlocations() == validlocations
         remoteckan = ckanapi.RemoteCKAN('http://hahaha', apikey='54321',
                                         user_agent='HDXPythonLibrary/0.5')
         validlocations = [{'1': 'a', '3': 'd'}]
@@ -365,16 +365,16 @@ class TestConfiguration:
                              hdx_site='prod', hdx_key='TEST_HDX_KEY',
                              hdx_config_dict={},
                              project_config_yaml=project_config_yaml)
-        assert Configuration.remoteckan() == remoteckan
-        assert Configuration.validlocations() == validlocations
-        Configuration._remoteckan = None
+        assert Configuration.read().remoteckan() == remoteckan
+        assert Configuration.read().validlocations() == validlocations
+        Configuration.read()._remoteckan = None
         with pytest.raises(ConfigurationError):
-            Configuration.remoteckan()
-        Configuration._validlocations = None
+            Configuration.read().remoteckan()
+        Configuration.read()._validlocations = None
         with pytest.raises(ConfigurationError):
-            Configuration.validlocations()
+            Configuration.read().validlocations()
         Configuration._configuration = None
         with pytest.raises(ConfigurationError):
-            Configuration.remoteckan()
+            Configuration.read().remoteckan()
         with pytest.raises(ConfigurationError):
-            Configuration.validlocations()
+            Configuration.read().validlocations()
