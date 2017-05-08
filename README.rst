@@ -198,7 +198,7 @@ On other OSs:
 
    ::
 
-       dataset.set_dataset_date('2015-07-26', '%Y-%m-%d')
+       dataset.set_dataset_date('2015-07-26', date_format='%Y-%m-%d')
        print(dataset.get_dataset_date())
        dataset.update_in_hdx()
 
@@ -207,7 +207,7 @@ On other OSs:
 
    ::
 
-       dataset.set_dataset_date('2016-06-25', '%Y-%m-%d')
+       dataset.set_dataset_date('2016-06-25', date_format='%Y-%m-%d')
        dataset.update_in_hdx()
 
 #. You can search for datasets on HDX and get their resources:
