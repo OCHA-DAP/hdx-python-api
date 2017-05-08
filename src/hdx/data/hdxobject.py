@@ -144,12 +144,13 @@ class HDXObject(UserDict, object):
 
     @staticmethod
     @abc.abstractmethod
-    def read_from_hdx(id_field):
-        # type: (str) -> Optional[HDXObjectUpperBound]
+    def read_from_hdx(id_field, configuration=None):
+        # type: (str, Optional[Configuration]) -> Optional[HDXObjectUpperBound]
         """Abstract method to read the HDX object given by identifier from HDX and return it
 
         Args:
             id_field (str): HDX object identifier
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
             Optional[T <= HDXObject]: HDX object if successful read, None if not

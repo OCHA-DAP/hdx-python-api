@@ -297,19 +297,20 @@ class Dataset(HDXObject):
         self.separate_gallery()
 
     @staticmethod
-    def read_from_hdx(identifier, configuration=None):
-        # type: (str) -> Optional['Dataset']
+    def read_from_hdx(identifier, include_gallery=True, configuration=None):
+        # type: (str, Optional[bool], Optional[Configuration]) -> Optional['Dataset']
         """Reads the dataset given by identifier from HDX and returns Dataset object
 
         Args:
             identifier (str): Identifier of dataset
+            include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
             Optional[Dataset]: Dataset object if successful read, None if not
         """
 
-        dataset = Dataset(configuration=configuration)
+        dataset = Dataset(include_gallery=include_gallery, configuration=configuration)
         result = dataset._dataset_load_from_hdx(identifier)
         if result:
             return dataset
@@ -518,7 +519,7 @@ class Dataset(HDXObject):
 
     @staticmethod
     def search_in_hdx(query, include_gallery=True, configuration=None, **kwargs):
-        # type: (str, Optional[bool], Any) -> List['Dataset']
+        # type: (str, Optional[bool], Optional[Configuration], ...) -> List['Dataset']
         """Searches for datasets in HDX
 
         Args:
@@ -588,7 +589,7 @@ class Dataset(HDXObject):
 
     @staticmethod
     def get_all_dataset_names(configuration=None, **kwargs):
-        # type: (Optional[bool]) -> List['Dataset']
+        # type: (Optional[Configuration], ...) -> List['Dataset']
         """Get all dataset names in HDX
 
         Args:
@@ -606,7 +607,7 @@ class Dataset(HDXObject):
 
     @staticmethod
     def get_all_datasets(include_gallery=True, configuration=None, **kwargs):
-        # type: (Optional[bool]) -> List['Dataset']
+        # type: (Optional[bool], Optional[Configuration], ...) -> List['Dataset']
         """Get all datasets in HDX
 
         Args:

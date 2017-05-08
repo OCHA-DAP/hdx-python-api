@@ -80,7 +80,7 @@ class Resource(HDXObject):
 
     @staticmethod
     def read_from_hdx(identifier, configuration=None):
-        # type: (str) -> Optional['Resource']
+        # type: (str, Optional[Configuration]) -> Optional['Resource']
         """Reads the resource given by identifier from HDX and returns Resource object
 
         Args:
@@ -184,7 +184,7 @@ class Resource(HDXObject):
 
     @staticmethod
     def search_in_hdx(query, configuration=None, **kwargs):
-        # type: (str, Any) -> List['Resource']
+        # type: (str, Optional[Configuration], ...) -> List['Resource']
         """Searches for resources in HDX. NOTE: Does not search dataset metadata!
 
         Args:

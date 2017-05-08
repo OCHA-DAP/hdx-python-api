@@ -65,7 +65,7 @@ class GalleryItem(HDXObject):
 
     @staticmethod
     def read_from_hdx(identifier, configuration=None):
-        # type: (str) -> Optional['GalleryItem']
+        # type: (str, Optional[Configuration]) -> Optional['GalleryItem']
         """Reads the gallery item given by identifier from HDX and returns GalleryItem object
 
         Args:
