@@ -139,18 +139,19 @@ class Dataset(HDXObject):
         self.resources = list()
         """:type : List[Resource]"""
 
-    def add_update_resource(self, resource):
+    def add_update_resource(self, resource, configuration=None):
         # type: (Any) -> None
         """Add new or update existing resource in dataset with new metadata
 
         Args:
             resource (Any): Resource metadata either from a Resource object or a dictionary
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
             None
         """
         if isinstance(resource, dict):
-            resource = Resource(resource)
+            resource = Resource(resource, configuration=configuration)
         if isinstance(resource, Resource):
             if 'package_id' in resource:
                 raise HDXError("Resource %s being added already has a dataset id!" % (resource['name']))
@@ -220,7 +221,7 @@ class Dataset(HDXObject):
 
         """
         if isinstance(galleryitem, dict):
-            galleryitem = GalleryItem(galleryitem)
+            galleryitem = GalleryItem(galleryitem, configuration=self.configuration)
         if isinstance(galleryitem, GalleryItem):
             if 'dataset_id' in galleryitem:
                 raise HDXError("Gallery item %s being added already has a dataset id!" % (galleryitem['name']))
@@ -296,18 +297,19 @@ class Dataset(HDXObject):
         self.separate_gallery()
 
     @staticmethod
-    def read_from_hdx(identifier):
+    def read_from_hdx(identifier, configuration=None):
         # type: (str) -> Optional['Dataset']
         """Reads the dataset given by identifier from HDX and returns Dataset object
 
         Args:
             identifier (str): Identifier of dataset
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
             Optional[Dataset]: Dataset object if successful read, None if not
         """
 
-        dataset = Dataset()
+        dataset = Dataset(configuration=configuration)
         result = dataset._dataset_load_from_hdx(identifier)
         if result:
             return dataset
@@ -515,13 +517,14 @@ class Dataset(HDXObject):
         self._delete_from_hdx('dataset', 'id')
 
     @staticmethod
-    def search_in_hdx(query, include_gallery=True, **kwargs):
+    def search_in_hdx(query, include_gallery=True, configuration=None, **kwargs):
         # type: (str, Optional[bool], Any) -> List['Dataset']
         """Searches for datasets in HDX
 
         Args:
             query (str): Query (in Solr format). Defaults to '*:*'.
             include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
             **kwargs: See below
             fq (string): Any filter queries to apply
             sort (string): Sorting of the search results. Defaults to 'relevance asc, metadata_modified desc'.
@@ -537,7 +540,7 @@ class Dataset(HDXObject):
             List[Dataset]: List of datasets resulting from query
         """
 
-        dataset = Dataset()
+        dataset = Dataset(include_gallery=include_gallery, configuration=configuration)
         total_rows = kwargs.get('rows', max_int)
         start = kwargs.get('start', 0)
         all_datasets = None
@@ -559,7 +562,7 @@ class Dataset(HDXObject):
                         counts.add(count)
                         no_results = len(result['results'])
                         for datasetdict in result['results']:
-                            dataset = Dataset(include_gallery=include_gallery)
+                            dataset = Dataset(include_gallery=include_gallery, configuration=configuration)
                             dataset.old_data = dict()
                             dataset.data = datasetdict
                             dataset._dataset_create_resources_gallery()
@@ -584,11 +587,12 @@ class Dataset(HDXObject):
         return all_datasets
 
     @staticmethod
-    def get_all_dataset_names(**kwargs):
+    def get_all_dataset_names(configuration=None, **kwargs):
         # type: (Optional[bool]) -> List['Dataset']
         """Get all dataset names in HDX
 
         Args:
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
             **kwargs: See below
             limit (int): Number of rows to return. Defaults to all dataset names.
             offset (int): Offset in the complete result for where the set of returned dataset names should begin
@@ -596,17 +600,18 @@ class Dataset(HDXObject):
         Returns:
             List[str]: List of all dataset names in HDX
         """
-        dataset = Dataset()
+        dataset = Dataset(configuration=configuration)
         dataset['id'] = 'all dataset names'  # only for error message if produced
         return dataset._write_to_hdx('list', kwargs, 'id')
 
     @staticmethod
-    def get_all_datasets(include_gallery=True, **kwargs):
+    def get_all_datasets(include_gallery=True, configuration=None, **kwargs):
         # type: (Optional[bool]) -> List['Dataset']
         """Get all datasets in HDX
 
         Args:
             include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
             **kwargs: See below
             limit (int): Number of rows to return. Defaults to all datasets (sys.maxsize).
             offset (int): Offset in the complete result for where the set of returned datasets should begin
@@ -615,7 +620,7 @@ class Dataset(HDXObject):
             List[Dataset]: List of all datasets in HDX
         """
 
-        dataset = Dataset()
+        dataset = Dataset(include_gallery=include_gallery, configuration=configuration)
         dataset['id'] = 'all datasets'  # only for error message if produced
         total_rows = kwargs.get('limit', max_int)
         start = kwargs.get('offset', 0)
@@ -634,7 +639,7 @@ class Dataset(HDXObject):
                 if result:
                     no_results = len(result)
                     for datasetdict in result:
-                        dataset = Dataset(include_gallery=include_gallery)
+                        dataset = Dataset(include_gallery=include_gallery, configuration=configuration)
                         dataset.old_data = dict()
                         dataset.data = datasetdict
                         dataset._dataset_create_resources_gallery()

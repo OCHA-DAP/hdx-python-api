@@ -2,6 +2,8 @@
 """Configuration for HDX"""
 import six
 
+from hdx.utilities import raisefrom
+
 if six.PY2:
     from UserDict import IterableUserDict as UserDict
 else:
@@ -50,7 +52,8 @@ class Configuration(UserDict, object):
         super(Configuration, self).__init__()
 
         self._remoteckan = None
-        self._validlocations = list()
+        self._validlocations = None
+        self._validlocationsfn = None
 
         hdx_config_found = False
         hdx_config_dict = kwargs.get('hdx_config_dict', None)
@@ -194,9 +197,11 @@ class Configuration(UserDict, object):
             List[Dict]: Valid locations
 
         """
-        if self._validlocations is None:
-            raise ConfigurationError('There are no valid locations set up! Use Configuration.create(**kwargs)')
-        return self._validlocations
+        try:
+            return self._validlocationsfn()
+        except (AttributeError, TypeError) as e:
+            raisefrom(ConfigurationError,
+                      'There is no valid locations function set up! Use Configuration.create(**kwargs)', e)
 
     def create_remoteckan(self):
         # type: () -> ckanapi.RemoteCKAN
@@ -232,28 +237,30 @@ class Configuration(UserDict, object):
     def read_validlocations(self):
         # type: () -> List[Dict]
         """
-        Read valid locations from HDX (default)
+        Read valid locations from HDX
 
         Returns:
             List[Dict]: A list of valid locations
         """
-        return self.call_remoteckan('group_list', {'all_fields': True})
+        if self._validlocations is None:
+            self._validlocations = self.call_remoteckan('group_list', {'all_fields': True})
+        return self._validlocations
 
-    def setup_validlocations(self, validlocations=None):
+    def setup_validlocations(self, validlocationsfn=None):
         # type: (Optional[List[Dict]]) -> None
         """
         Set up valid locations from provided list or by reading from HDX (default).
 
         Args:
-            validlocations (Optional[List[Dict]]): A list of valid locations. Defaults to reading list from HDX.
+            validlocationsfn (Callable[[], [List[Dict]]]): FUnction that returns a list of valid locations. Defaults to reading list from HDX.
 
         Returns:
             None
         """
-        if validlocations is None:
-            self._validlocations = self.read_validlocations()
+        if validlocationsfn is None:
+            self._validlocationsfn = self.read_validlocations
         else:
-            self._validlocations = validlocations
+            self._validlocationsfn = validlocationsfn
 
     @staticmethod
     def load_api_key(path):
@@ -319,7 +326,7 @@ class Configuration(UserDict, object):
             cls._configuration = configuration
 
     @classmethod
-    def _create(cls, configuration=None, remoteckan=None, validlocations=None, **kwargs):
+    def _create(cls, configuration=None, remoteckan=None, validlocationsfn=None, **kwargs):
         # type: (Optional['Configuration'], Optional[ckanapi.RemoteCKAN], Optional[List[Dict]], ...) -> str
         """
         Create HDX configuration
@@ -327,7 +334,7 @@ class Configuration(UserDict, object):
         Args:
             configuration (Optional[Configuration]): Configuration instance. Defaults to setting one up from passed arguments.
             remoteckan (Optional[ckanapi.RemoteCKAN]): CKAN instance. Defaults to setting one up from configuration.
-            validlocations (Optional[List[Dict]]): A list of valid locations. Defaults to reading list from HDX.
+            validlocationsfn (Callable[[], [List[Dict]]]): FUnction that returns a list of valid locations. Defaults to reading list from HDX.
             **kwargs: See below
             hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
             hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
@@ -346,11 +353,11 @@ class Configuration(UserDict, object):
         """
         cls.setup(configuration, **kwargs)
         cls._configuration.setup_remoteckan(remoteckan)
-        cls._configuration.setup_validlocations(validlocations)
+        cls._configuration.setup_validlocations(validlocationsfn)
         return cls._configuration.get_hdx_site_url()
 
     @classmethod
-    def create(cls, configuration=None, remoteckan=None, validlocations=None, **kwargs):
+    def create(cls, configuration=None, remoteckan=None, validlocationsfn=None, **kwargs):
         # type: (Optional['Configuration'], Optional[ckanapi.RemoteCKAN], Optional[List[Dict]], ...) -> str
         """
         Create HDX configuration. Can only be called once (will raise an error if called more than once).
@@ -358,7 +365,7 @@ class Configuration(UserDict, object):
         Args:
             configuration (Optional[Configuration]): Configuration instance. Defaults to setting one up from passed arguments.
             remoteckan (Optional[ckanapi.RemoteCKAN]): CKAN instance. Defaults to setting one up from configuration.
-            validlocations (Optional[List[Dict]]): A list of valid locations. Defaults to reading list from HDX.
+            validlocationsfn (Callable[[], [List[Dict]]]): FUnction that returns a list of valid locations. Defaults to reading list from HDX.
             **kwargs: See below
             hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
             hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
@@ -377,4 +384,5 @@ class Configuration(UserDict, object):
         """
         if cls._configuration is not None:
             raise ConfigurationError('Configuration already created!')
-        return cls._create(**kwargs)
+        return cls._create(configuration=configuration, remoteckan=remoteckan,
+                           validlocationsfn=validlocationsfn, **kwargs)

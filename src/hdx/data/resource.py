@@ -79,18 +79,19 @@ class Resource(HDXObject):
         super(Resource, self).update_from_json(path)
 
     @staticmethod
-    def read_from_hdx(identifier):
+    def read_from_hdx(identifier, configuration=None):
         # type: (str) -> Optional['Resource']
         """Reads the resource given by identifier from HDX and returns Resource object
 
         Args:
             identifier (str): Identifier of resource
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
             Optional[Resource]: Resource object if successful read, None if not
         """
 
-        resource = Resource()
+        resource = Resource(configuration=configuration)
         result = resource._load_from_hdx('resource', identifier)
         if result:
             return resource
@@ -182,12 +183,13 @@ class Resource(HDXObject):
         self._delete_from_hdx('resource', 'id')
 
     @staticmethod
-    def search_in_hdx(query, **kwargs):
+    def search_in_hdx(query, configuration=None, **kwargs):
         # type: (str, Any) -> List['Resource']
         """Searches for resources in HDX. NOTE: Does not search dataset metadata!
 
         Args:
             query (str): Query
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
             **kwargs: See below
             order_by (str): A field on the Resource model that orders the results
             offset (int): Apply an offset to the query
@@ -197,13 +199,13 @@ class Resource(HDXObject):
         """
 
         resources = []
-        resource = Resource()
+        resource = Resource(configuration=configuration)
         success, result = resource._read_from_hdx('resource', query, 'query', Resource.actions()['search'])
         if result:
             count = result.get('count', None)
             if count:
                 for resourcedict in result['results']:
-                    resource = Resource(resourcedict)
+                    resource = Resource(resourcedict, configuration=configuration)
                     resources.append(resource)
         else:
             logger.debug(result)

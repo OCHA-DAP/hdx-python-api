@@ -355,22 +355,27 @@ class TestConfiguration:
         Configuration.read().setup_remoteckan(remoteckan)
         assert Configuration.read().remoteckan() == remoteckan
         validlocations = [{'a': '1', 'b': '2'}]
-        Configuration.read().setup_validlocations(validlocations)
+        Configuration.read()._validlocations = validlocations
+        assert Configuration.read().validlocations() == validlocations
+        validlocations = [{'z': '25', 'x': '32'}]
+        validlocationsfn = lambda: validlocations
+        Configuration.read().setup_validlocations(validlocationsfn)
         assert Configuration.read().validlocations() == validlocations
         remoteckan = ckanapi.RemoteCKAN('http://hahaha', apikey='54321',
                                         user_agent='HDXPythonLibrary/0.5')
         validlocations = [{'1': 'a', '3': 'd'}]
+        validlocationsfn = lambda: validlocations
         Configuration._create(remoteckan=remoteckan,
-                             validlocations=validlocations,
-                             hdx_site='prod', hdx_key='TEST_HDX_KEY',
-                             hdx_config_dict={},
-                             project_config_yaml=project_config_yaml)
+                              validlocationsfn=validlocationsfn,
+                              hdx_site='prod', hdx_key='TEST_HDX_KEY',
+                              hdx_config_dict={},
+                              project_config_yaml=project_config_yaml)
         assert Configuration.read().remoteckan() == remoteckan
         assert Configuration.read().validlocations() == validlocations
         Configuration.read()._remoteckan = None
         with pytest.raises(ConfigurationError):
             Configuration.read().remoteckan()
-        Configuration.read()._validlocations = None
+        Configuration.read()._validlocationsfn = None
         with pytest.raises(ConfigurationError):
             Configuration.read().validlocations()
         Configuration._configuration = None

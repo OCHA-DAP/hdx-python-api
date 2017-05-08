@@ -64,18 +64,19 @@ class GalleryItem(HDXObject):
         super(GalleryItem, self).update_from_json(path)
 
     @staticmethod
-    def read_from_hdx(identifier):
+    def read_from_hdx(identifier, configuration=None):
         # type: (str) -> Optional['GalleryItem']
         """Reads the gallery item given by identifier from HDX and returns GalleryItem object
 
         Args:
             identifier (str): Identifier of gallery item
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
             Optional[GalleryItem]: GalleryItem object if successful read, None if not
         """
 
-        galleryitem = GalleryItem()
+        galleryitem = GalleryItem(configuration=configuration)
         result = galleryitem._load_from_hdx('galleryitem', identifier)
         if result:
             return galleryitem
