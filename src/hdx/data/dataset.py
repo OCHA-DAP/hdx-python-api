@@ -139,19 +139,18 @@ class Dataset(HDXObject):
         self.resources = list()
         """:type : List[Resource]"""
 
-    def add_update_resource(self, resource, configuration=None):
+    def add_update_resource(self, resource):
         # type: (Any) -> None
         """Add new or update existing resource in dataset with new metadata
 
         Args:
             resource (Any): Resource metadata either from a Resource object or a dictionary
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
             None
         """
         if isinstance(resource, dict):
-            resource = Resource(resource, configuration=configuration)
+            resource = Resource(resource, configuration=self.configuration)
         if isinstance(resource, Resource):
             if 'package_id' in resource:
                 raise HDXError("Resource %s being added already has a dataset id!" % (resource['name']))
@@ -210,7 +209,7 @@ class Dataset(HDXObject):
         self.gallery = list()
 
     def add_update_galleryitem(self, galleryitem):
-        # type: (...) -> None
+        # type: (Any) -> None
         """Add new or update existing gallery item in dataset with new metadata
 
         Args:
