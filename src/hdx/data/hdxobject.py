@@ -402,7 +402,7 @@ class HDXObject(UserDict, object):
         newhdxobjects = list()
         for hdxobject in hdxobjects:
             newhdxobjectdata = copy.deepcopy(hdxobject.data)
-            newhdxobject = hdxobjectclass(newhdxobjectdata)
+            newhdxobject = hdxobjectclass(newhdxobjectdata, configuration=self.configuration)
             if attribute_to_copy:
                 value = getattr(hdxobject, attribute_to_copy)
                 setattr(newhdxobject, attribute_to_copy, value)
@@ -437,5 +437,5 @@ class HDXObject(UserDict, object):
                         break
             for new_hdxobject in new_hdxobjects:
                 if not new_hdxobject[id_field] in hdxobject_names:
-                    hdxobjects.append(hdxobjectclass(new_hdxobject))
+                    hdxobjects.append(hdxobjectclass(new_hdxobject, configuration=self.configuration))
             del self.data[hdxobjects_name]
