@@ -11,6 +11,7 @@ from os.path import join
 import pytest
 import requests
 
+from hdx.configuration import Configuration
 from hdx.data import dataset
 from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
@@ -500,13 +501,20 @@ class TestDataset:
         with pytest.raises(HDXError):
             dataset = Dataset(dataset_data)
         del dataset_data['gallery']
-        dataset = Dataset(dataset_data)
+
+        config = Configuration(hdx_read_only=True)
+        config.setup_remoteckan()
+        uniqueval = 'myconfig'
+        config.unique = uniqueval
+
+        dataset = Dataset(dataset_data, configuration=config)
         del gallery_data[0]['id']
         dataset.add_update_gallery(gallery_data)
         dataset.create_in_hdx()
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
         assert len(dataset.resources) == 2
         assert len(dataset.gallery) == 1
+        assert dataset.gallery[0].configuration.unique == uniqueval
 
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
         resources_data = copy.deepcopy(TestDataset.resources_data)
@@ -514,7 +522,9 @@ class TestDataset:
         with pytest.raises(HDXError):
             dataset = Dataset(dataset_data)
         del dataset_data['resources']
-        dataset = Dataset(dataset_data)
+        uniqueval = 'myconfig2'
+        config.unique = uniqueval
+        dataset = Dataset(dataset_data, configuration=config)
         del resources_data[0]['id']
         del resources_data[1]['id']
         dataset.add_update_resources(resources_data)
@@ -522,6 +532,7 @@ class TestDataset:
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
         assert len(dataset.resources) == 2
         assert len(dataset.gallery) == 0
+        assert dataset.resources[0].configuration.unique == uniqueval
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
         dataset = Dataset(dataset_data)
         resource = Resource(resources_data[0])
