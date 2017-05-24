@@ -19,9 +19,15 @@ class DownloadError(Exception):
 
 
 class Download(object):
-    def __init__(self):
-        # type: () -> None
+    """Download class with various download operations.
+
+    Args:
+        auth (Optional[Tuple[str, str]]): Authorisation information in tuple form (user, pass). Defaults to None.
+    """
+    def __init__(self, auth=None):
+        # type: (Optional[Tuple[str, str]]) -> None
         s = requests.Session()
+        s.auth = auth
         retries = Retry(total=5, backoff_factor=0.4, status_forcelist=[429, 500, 502, 503, 504], raise_on_redirect=True,
                         raise_on_status=True)
         s.mount('http://', HTTPAdapter(max_retries=retries, pool_connections=100, pool_maxsize=100))
