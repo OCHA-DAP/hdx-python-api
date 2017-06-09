@@ -1,0 +1,7 @@
+connection_type: "smtp"
+host: "localhost"
+port: 123
+local_hostname: "mycomputer.fqdn.com"
+timeout: 3
+username: "user"
+password: "pass"

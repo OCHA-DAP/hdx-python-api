@@ -47,4 +47,12 @@ galleryitem:
     - description
     - url
     - image_url
-  ignore_dataset_id_on_update: True
+  ignore_on_update: dataset_id
+user:
+  required_fields:
+    - name
+    - email
+    - password
+    - fullname
+    - about
+  ignore_on_update: password

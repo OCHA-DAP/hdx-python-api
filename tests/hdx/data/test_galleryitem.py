@@ -39,7 +39,7 @@ resultdict = {
 def mockshow(url, datadict):
     if 'show' not in url:
         return MockResponse(404,
-                            '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
+                            '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_show"}')
     result = json.dumps(resultdict)
     if datadict['id'] == 'TEST1':
         return MockResponse(200,

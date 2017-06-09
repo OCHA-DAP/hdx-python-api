@@ -348,21 +348,25 @@ class Dataset(HDXObject):
         self._dataset_create_resources_gallery()
         return True
 
-    def check_required_fields(self, ignore_dataset_id=False):
-        # type: (...) -> None
-        """Check that metadata for dataset and its resources and gallery is complete. (ignore_dataset_id is not used.)
+    def check_required_fields(self, ignore_fields=list()):
+        # type: (List[str]) -> None
+        """Check that metadata for dataset and its resources and gallery is complete. The parameter ignore_fields
+        should be set if required to any fields that should be ignored for the particular operation.
+
+        Args:
+            ignore_fields (List[str]): Fields to ignore. Default is [].
 
         Returns:
             None
         """
-        for field in self.configuration['dataset']['required_fields']:
-            if field not in self.data:
-                raise HDXError("Field %s is missing in dataset!" % field)
+        self._check_required_fields('dataset', ignore_fields)
 
         for resource in self.resources:
-            resource.check_required_fields(ignore_dataset_id=True)
+            ignore_fields = [self.configuration['resource']['dataset_id']]
+            resource.check_required_fields(ignore_fields=ignore_fields)
         for galleryitem in self.gallery:
-            galleryitem.check_required_fields(ignore_dataset_id=True)
+            ignore_fields = [self.configuration['galleryitem']['dataset_id']]
+            galleryitem.check_required_fields(ignore_fields=ignore_fields)
 
     def _dataset_merge_hdx_update(self, update_resources, update_gallery):
         # type: (bool, bool) -> None
@@ -383,6 +387,7 @@ class Dataset(HDXObject):
         old_resources = self.old_data.get('resources', None)
         filestore_resources = list()
         if update_resources and old_resources:
+            ignore_fields = [self.configuration['resource']['dataset_id']]
             resource_names = set()
             for resource in self.resources:
                 resource_name = resource['name']
@@ -394,11 +399,11 @@ class Dataset(HDXObject):
                         if old_resource.get_file_to_upload():
                             resource.set_file_to_upload(old_resource.get_file_to_upload())
                             filestore_resources.append(resource)
-                        resource.check_required_fields(ignore_dataset_id=True)
+                        resource.check_required_fields(ignore_fields=ignore_fields)
                         break
             for old_resource in old_resources:
                 if not old_resource['name'] in resource_names:
-                    old_resource.check_required_fields(ignore_dataset_id=True)
+                    old_resource.check_required_fields(ignore_fields=ignore_fields)
                     self.resources.append(old_resource)
                     if old_resource.get_file_to_upload():
                         filestore_resources.append(old_resource)
@@ -417,6 +422,7 @@ class Dataset(HDXObject):
 
         if self.include_gallery and update_gallery and old_gallery:
             self.old_data['gallery'] = self._copy_hdxobjects(self.gallery, GalleryItem)
+            ignore_fields = [self.configuration['galleryitem']['dataset_id']]
             galleryitem_titles = set()
             galleryitem_dataset_id = self.configuration['galleryitem']['dataset_id']
             for i, galleryitem in enumerate(self.gallery):
@@ -426,7 +432,7 @@ class Dataset(HDXObject):
                     if galleryitem_title == old_galleryitem['title']:
                         logger.warning('Gallery item exists. Updating %s' % galleryitem_title)
                         merge_two_dictionaries(galleryitem, old_galleryitem)
-                        galleryitem.check_required_fields(ignore_dataset_id=True)
+                        galleryitem.check_required_fields(ignore_fields=ignore_fields)
                         galleryitem.update_in_hdx()
             for old_galleryitem in old_gallery:
                 if not old_galleryitem['title'] in galleryitem_titles:
@@ -483,8 +489,9 @@ class Dataset(HDXObject):
 
         filestore_resources = list()
         if self.resources:
+            ignore_fields = [self.configuration['resource']['dataset_id']]
             for resource in self.resources:
-                resource.check_required_fields(ignore_dataset_id=True)
+                resource.check_required_fields(ignore_fields=ignore_fields)
                 if resource.get_file_to_upload():
                     filestore_resources.append(resource)
             self.data['resources'] = self._convert_hdxobjects(self.resources)
@@ -588,7 +595,7 @@ class Dataset(HDXObject):
 
     @staticmethod
     def get_all_dataset_names(configuration=None, **kwargs):
-        # type: (Optional[Configuration], ...) -> List['Dataset']
+        # type: (Optional[Configuration], ...) -> List[str]
         """Get all dataset names in HDX
 
         Args:

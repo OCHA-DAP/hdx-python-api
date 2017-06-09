@@ -191,7 +191,14 @@ class TestConfiguration:
                 'description',
                 'url',
                 'image_url',
-            ], 'ignore_dataset_id_on_update': True},
+            ], 'ignore_on_update': 'dataset_id'},
+            'user': {'required_fields': [
+                'name',
+                'email',
+                'password',
+                'fullname',
+                'about',
+            ], 'ignore_on_update': 'password'},
         }
         assert Configuration.read() == expected_configuration
         Configuration._create(hdx_key_file=hdx_key_file, project_config_dict={'abc': '123'})
@@ -247,7 +254,14 @@ class TestConfiguration:
                 'description',
                 'url',
                 'image_url',
-            ], 'ignore_dataset_id_on_update': True},
+            ], 'ignore_on_update': 'dataset_id'},
+            'user': {'required_fields': [
+                'name',
+                'email',
+                'password',
+                'fullname',
+                'about',
+            ], 'ignore_on_update': 'password'},
         }
         assert Configuration.read() == expected_configuration
 
@@ -300,7 +314,14 @@ class TestConfiguration:
                 'description',
                 'url',
                 'image_url',
-            ], 'ignore_dataset_id_on_update': True},
+            ], 'ignore_on_update': 'dataset_id'},
+            'user': {'required_fields': [
+                'name',
+                'email',
+                'password',
+                'fullname',
+                'about',
+            ], 'ignore_on_update': 'password'},
         }
         assert Configuration.read() == expected_configuration
 

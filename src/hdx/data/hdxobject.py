@@ -180,14 +180,13 @@ class HDXObject(UserDict, object):
             raise HDXError("No existing %s to update!" % object_type)
 
     @abc.abstractmethod
-    def check_required_fields(self, ignore_dataset_id=False):
-        # type: (Optional[bool]) -> None
-        """Abstract method to check that metadata for HDX object is complete. The parameter ignore_dataset_id should
-        be set to True if you intend to add the object to a Dataset object (where it will be created during dataset
-        creation).
+    def check_required_fields(self, ignore_fields=list()):
+        # type: (List[str]) -> None
+        """Abstract method to check that metadata for HDX object is complete. The parameter ignore_fields should
+        be set if required to any fields that should be ignored for the particular operation.
 
         Args:
-            ignore_dataset_id (bool): Whether to ignore the dataset id. Default is False.
+            ignore_fields (List[str]): Fields to ignore. Default is [].
 
         Returns:
             None
@@ -221,8 +220,8 @@ class HDXObject(UserDict, object):
             None
         """
         merge_two_dictionaries(self.data, self.old_data)
-        ignore_dataset_id = self.configuration['%s' % object_type].get('ignore_dataset_id_on_update', False)
-        self.check_required_fields(ignore_dataset_id=ignore_dataset_id)
+        ignore_field = self.configuration['%s' % object_type].get('ignore_on_update')
+        self.check_required_fields(ignore_fields=[ignore_field])
         self._save_to_hdx('update', id_field_name, file_to_upload)
 
     @abc.abstractmethod

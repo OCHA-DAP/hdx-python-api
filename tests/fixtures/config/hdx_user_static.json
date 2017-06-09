@@ -1,0 +1,8 @@
+{
+  "name": "MyUser1",
+  "fullname": "My User",
+  "email": "xxx@yyy.com",
+  "image_url": "http://myvisual/visual.png",
+  "about": "other",
+  "password": "xxx"
+}

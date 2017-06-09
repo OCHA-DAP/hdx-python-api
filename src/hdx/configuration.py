@@ -112,8 +112,10 @@ class Configuration(UserDict, object):
             if 'hdx_key' in kwargs:
                 self.data['api_key'] = kwargs.get('hdx_key')
             else:
-                hdx_key_file = kwargs.get('hdx_key_file', join(expanduser('~'), '.hdxkey'))
-                """ :type : str"""
+                hdx_key_file = kwargs.get('hdx_key_file', None)
+                if not hdx_key_file:
+                    logger.info('No HDX key or key file given. Using default key file path.')
+                    hdx_key_file = join(expanduser('~'), '.hdxkey')
                 self.data['api_key'] = self.load_api_key(hdx_key_file)
 
         self.hdx_site = 'hdx_%s_site' % kwargs.get('hdx_site', 'test')
@@ -275,11 +277,11 @@ class Configuration(UserDict, object):
             str: HDX api key
 
         """
+        logger.info('Loading HDX api key from: %s' % path)
         with open(path, 'rt') as f:
             apikey = f.read().replace('\n', '')
         if not apikey:
             raise ConfigurationError('HDX api key is empty!')
-        logger.info('Loaded HDX api key from: %s' % path)
         return apikey
 
     @classmethod
