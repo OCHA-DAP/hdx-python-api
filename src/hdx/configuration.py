@@ -3,6 +3,7 @@
 import six
 
 from hdx.utilities import raisefrom
+from hdx.utilities.email import Email
 
 if six.PY2:
     from UserDict import IterableUserDict as UserDict
@@ -54,6 +55,7 @@ class Configuration(UserDict, object):
         self._remoteckan = None
         self._validlocations = None
         self._validlocationsfn = None
+        self._emailer = None
 
         hdx_config_found = False
         hdx_config_dict = kwargs.get('hdx_config_dict', None)
@@ -263,6 +265,42 @@ class Configuration(UserDict, object):
             self._validlocationsfn = self.read_validlocations
         else:
             self._validlocationsfn = validlocationsfn
+
+    def emailer(self):
+        # type: () -> Email
+        """
+        Return the Email object (see :any:`Email`)
+
+        Returns:
+            Email: The email object
+
+        """
+        if self._emailer is None:
+            raise ConfigurationError('There is no emailer set up! Use setup_emailer(...)')
+        return self._emailer
+
+    def setup_emailer(self, **kwargs):
+        # type: (...) -> None
+        """
+        Set up emailer. Parameters in dictionary or file (eg. yaml below):
+        | connection_type: "ssl"   ("ssl" for smtp ssl or "lmtp", otherwise basic smtp is assumed)
+        | host: "localhost"
+        | port: 123
+        | local_hostname: "mycomputer.fqdn.com"
+        | timeout: 3
+        | username: "user"
+        | password: "pass"
+
+        Args:
+            **kwargs: See below
+            email_config_dict (dict): HDX configuration dictionary OR
+            email_config_json (str): Path to JSON HDX configuration OR
+            email_config_yaml (str): Path to YAML HDX configuration. Defaults to ~/hdx_email_configuration.yml.
+
+        Returns:
+            None
+        """
+        self._emailer = Email(**kwargs)
 
     @staticmethod
     def load_api_key(path):

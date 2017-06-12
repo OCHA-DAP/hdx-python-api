@@ -192,7 +192,7 @@ def mocksearch(url, datadict):
 def mocklist(url):
     if 'list' not in url:
         return MockResponse(404,
-                            '{"success": false, "error": {"message": "TEST ERROR: Not search", "__type": "TEST ERROR: Not All Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}')
+                            '{"success": false, "error": {"message": "TEST ERROR: Not all", "__type": "TEST ERROR: Not All Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}')
     return MockResponse(200,
                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}' % json.dumps(
                             dataset_list))

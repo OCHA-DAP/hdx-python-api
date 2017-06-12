@@ -7,6 +7,7 @@ from os.path import join
 import pytest
 import requests
 
+from hdx.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.user import User
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -39,6 +40,10 @@ resultdict = {
     'number_created_packages': 0
 }
 
+result2dict = copy.deepcopy(resultdict)
+result2dict['email'] = 'aaa@bbb.com'
+user_list = [resultdict, result2dict]
+
 
 def mockshow(url, datadict):
     if 'show' not in url:
@@ -58,6 +63,15 @@ def mockshow(url, datadict):
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}')
 
 
+def mocklist(url):
+    if 'list' not in url:
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "TEST ERROR: Not all", "__type": "TEST ERROR: Not All Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_list"}')
+    return MockResponse(200,
+                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_list"}' % json.dumps(
+                            user_list))
+
+
 class TestUser:
     user_data = {
         'name': 'MyUser1',
@@ -66,6 +80,27 @@ class TestUser:
         'fullname': 'xxx xxx',
         'about': 'Data Scientist',
     }
+
+    smtp_initargs = {
+        'host': 'localhost',
+        'port': 123,
+        'local_hostname': 'mycomputer.fqdn.com',
+        'timeout': 3,
+        'source_address': ('machine', 456),
+    }
+    username = 'user'
+    password = 'pass'
+    email_config_dict = {
+        'connection_type': 'ssl',
+        'username': username,
+        'password': password
+    }
+    subject = 'hello'
+    body = 'hello there'
+    sender = 'me@gmail.com'
+    mail_options = ['a', 'b']
+    rcpt_options = [1, 2]
+    email_config_dict.update(smtp_initargs)
 
     @pytest.fixture(scope='class')
     def static_yaml(self):
@@ -164,7 +199,17 @@ class TestUser:
 
         monkeypatch.setattr(requests, 'Session', MockSession)
 
-    def test_read_from_hdx(self, configuration, read):
+    @pytest.fixture(scope='function')
+    def post_list(self, monkeypatch):
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                datadict = json.loads(data.decode('utf-8'))
+                return mocklist(url)
+
+        monkeypatch.setattr(requests, 'Session', MockSession)
+
+    def test_read_from_hdx(self, configuration, read, mocksmtp):
         user = User.read_from_hdx('TEST1')
         assert user['id'] == '9f3e9973-7dbe-4c65-8820-f48578e3ffea'
         assert user['name'] == 'MyUser1'
@@ -172,6 +217,27 @@ class TestUser:
         assert user is None
         user = User.read_from_hdx('TEST3')
         assert user is None
+        config = Configuration.read()
+        config.setup_emailer(email_config_dict=TestUser.email_config_dict)
+        user = User.read_from_hdx('TEST1')
+        user.email(TestUser.subject, TestUser.body, sender=TestUser.sender, mail_options=TestUser.mail_options,
+                   rcpt_options=TestUser.rcpt_options)
+        email = config.emailer()
+        assert email.server.type == 'smtpssl'
+        assert email.server.initargs == TestUser.smtp_initargs
+        assert email.server.username == TestUser.username
+        assert email.server.password == TestUser.password
+        assert email.server.sender == TestUser.sender
+        assert email.server.recipients == ['xxx@yyy.com']
+        assert email.server.msg == '''Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: hello
+From: me@gmail.com
+To: xxx@yyy.com
+
+hello there'''
+        assert email.server.send_args == {'mail_options': ['a', 'b'], 'rcpt_options': [1, 2]}
 
     def test_create_in_hdx(self, configuration, post_create):
         user = User()
@@ -257,3 +323,27 @@ class TestUser:
         user.update_from_json(static_json)
         assert user['name'] == 'MyUser1'
         assert user['about'] == 'other'
+
+    def test_get_all_users(self, configuration, post_list, mocksmtp):
+        users = User.get_all_users()
+        assert len(users) == 2
+        config = Configuration.read()
+        config.setup_emailer(email_config_dict=TestUser.email_config_dict)
+        User.email_users(users, TestUser.subject, TestUser.body, sender=TestUser.sender, mail_options=TestUser.mail_options,
+                   rcpt_options=TestUser.rcpt_options)
+        email = config.emailer()
+        assert email.server.type == 'smtpssl'
+        assert email.server.initargs == TestUser.smtp_initargs
+        assert email.server.username == TestUser.username
+        assert email.server.password == TestUser.password
+        assert email.server.sender == TestUser.sender
+        assert email.server.recipients == ['xxx@yyy.com', 'aaa@bbb.com']
+        assert email.server.msg == '''Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: hello
+From: me@gmail.com
+To: xxx@yyy.com, aaa@bbb.com
+
+hello there'''
+        assert email.server.send_args == {'mail_options': ['a', 'b'], 'rcpt_options': [1, 2]}

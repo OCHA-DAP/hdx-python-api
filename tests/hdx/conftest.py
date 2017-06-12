@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
 """Global fixtures"""
+import smtplib
 from os.path import join
 
 import pytest
@@ -296,3 +297,39 @@ def configuration(locations, hdx_key_file, project_config_yaml):
     locationsfn = lambda: locations
     Configuration._create(validlocationsfn=locationsfn, hdx_key_file=hdx_key_file,
                           project_config_yaml=project_config_yaml)
+
+
+@pytest.fixture(scope='function')
+def mocksmtp(monkeypatch):
+    class MockSMTPBase(object):
+        type = None
+
+        def __init__(self, **kwargs):
+            self.initargs = kwargs
+
+        def login(self, username, password):
+            self.username = username
+            self.password = password
+
+        def sendmail(self, sender, recipients, msg, **kwargs):
+            self.sender = sender
+            self.recipients = recipients
+            self.msg = msg
+            self.send_args = kwargs
+
+        @staticmethod
+        def quit():
+            pass
+
+    class MockSMTPSSL(MockSMTPBase):
+        type = 'smtpssl'
+
+    class MockLMTP(MockSMTPBase):
+        type = 'lmtp'
+
+    class MockSMTP(MockSMTPBase):
+        type = 'smtp'
+
+    monkeypatch.setattr(smtplib, 'SMTP_SSL', MockSMTPSSL)
+    monkeypatch.setattr(smtplib, 'LMTP', MockLMTP)
+    monkeypatch.setattr(smtplib, 'SMTP', MockSMTP)

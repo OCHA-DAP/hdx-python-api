@@ -58,7 +58,7 @@ class TestConfiguration:
             Configuration(hdx_key_file=hdx_key_file, project_config_dict={'la': 'la'},
                           project_config_json=project_config_json)
 
-    def test_hdx_configuration_dict(self, hdx_key_file, project_config_yaml):
+    def test_hdx_configuration_dict(self, hdx_key_file, project_config_yaml, mocksmtp):
         Configuration._create(hdx_site='prod', hdx_key_file=hdx_key_file,
                              hdx_config_dict={
                                                  'hdx_prod_site': {
@@ -79,7 +79,52 @@ class TestConfiguration:
             },
             'XYZ': {'567': 987}
         }
-        assert Configuration.read() == expected_configuration
+
+        configuration = Configuration.read()
+        assert configuration == expected_configuration
+
+        smtp_initargs = {
+            'host': 'localhost',
+            'port': 123,
+            'local_hostname': 'mycomputer.fqdn.com',
+            'timeout': 3,
+            'source_address': ('machine', 456),
+        }
+        username = 'user'
+        password = 'pass'
+        email_config_dict = {
+            'connection_type': 'ssl',
+            'username': username,
+            'password': password
+        }
+        email_config_dict.update(smtp_initargs)
+
+        recipients = ['larry@gmail.com', 'moe@gmail.com', 'curly@gmail.com']
+        subject = 'hello'
+        body = 'hello there'
+        sender = 'me@gmail.com'
+        mail_options = ['a', 'b']
+        rcpt_options = [1, 2]
+
+        configuration.setup_emailer(email_config_dict=email_config_dict)
+        email = configuration.emailer()
+        email.send(recipients, subject, body, sender=sender, mail_options=mail_options,
+                                     rcpt_options=rcpt_options)
+        assert email.server.type == 'smtpssl'
+        assert email.server.initargs == smtp_initargs
+        assert email.server.username == username
+        assert email.server.password == password
+        assert email.server.sender == sender
+        assert email.server.recipients == recipients
+        assert email.server.msg == '''Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: hello
+From: me@gmail.com
+To: larry@gmail.com, moe@gmail.com, curly@gmail.com
+
+hello there'''
+        assert email.server.send_args == {'mail_options': ['a', 'b'], 'rcpt_options': [1, 2]}
 
     def test_hdx_configuration_json(self, hdx_key_file, project_config_yaml, locations):
         hdx_config_json = join('tests', 'fixtures', 'config', 'hdx_config.json')

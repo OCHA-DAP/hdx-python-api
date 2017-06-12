@@ -122,6 +122,23 @@ class User(HDXObject):
         """
         self._delete_from_hdx('user', 'id')
 
+    def email(self, subject, body, sender=None, **kwargs):
+        # type: (str, str, Optional[str], ...) -> None
+        """Emails a user.
+
+        Args:
+            subject (str): Email subject
+            body (str): Email body
+            sender (Optional[str]): Email sender. Defaults to SMTP username.
+            **kwargs: See below
+            mail_options (list): Mail options (see smtplib documentation)
+            rcpt_options (list): Recipient options (see smtplib documentation)
+
+        Returns:
+            None
+        """
+        self.configuration.emailer().send([self.data['email']], subject, body, sender=sender, **kwargs)
+
     @staticmethod
     def get_all_users(configuration=None, **kwargs):
         # type: (Optional[Configuration], ...) -> List['User']
@@ -147,3 +164,30 @@ class User(HDXObject):
         else:
             logger.debug(result)
         return users
+
+    @staticmethod
+    def email_users(users, subject, body, sender=None, configuration=None, **kwargs):
+        # type: (List['User'], str, str, Optional[str], Optional[Configuration], ...) -> None
+        """Email a list of users
+
+        Args:
+            users (List[User]): List of users
+            subject (str): Email subject
+            body (str): Email body
+            sender (Optional[str]): Email sender. Defaults to SMTP username.
+            configuration (Optional[Configuration]): HDX configuration. Defaults to configuration of first user in list.
+            **kwargs: See below
+            mail_options (list): Mail options (see smtplib documentation)
+            rcpt_options (list): Recipient options (see smtplib documentation)
+
+        Returns:
+            None
+        """
+        if not users:
+            raise ValueError('No users supplied')
+        recipients = list()
+        for user in users:
+            recipients.append(user.data['email'])
+        if configuration is None:
+            configuration = users[0].configuration
+        configuration.emailer().send(recipients, subject, body, sender=sender, **kwargs)
