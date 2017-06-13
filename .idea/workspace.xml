@@ -4,9 +4,10 @@
     <option name="CUSTOM_SCOPE_NAME" value="Project and Libraries" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78dced69-aba6-482d-97c8-9f71833379e5" name="Default" comment="Increase coverage">
+    <list default="true" id="78dced69-aba6-482d-97c8-9f71833379e5" name="Default" comment="Update README">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.rst" afterPath="$PROJECT_DIR$/README.rst" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/hdx/data/test_user.py" afterPath="$PROJECT_DIR$/tests/hdx/data/test_user.py" />
     </list>
     <ignored path="hdx-python-api.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -53,9 +54,11 @@
       <file leaf-file-name="test_email.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/hdx/utilities/test_email.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="299">
+            <state relative-caret-position="1044">
               <caret line="79" column="0" selection-start-line="78" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
-              <folding />
+              <folding>
+                <element signature="e#42#66#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -85,8 +88,8 @@
       <file leaf-file-name="README.rst" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/README.rst">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="77">
-              <caret line="890" column="22" selection-start-line="890" selection-start-column="22" selection-end-line="890" selection-end-column="22" />
+            <state relative-caret-position="270">
+              <caret line="871" column="25" selection-start-line="871" selection-start-column="25" selection-end-line="871" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -95,9 +98,11 @@
       <file leaf-file-name="test_user.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/hdx/data/test_user.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="371">
-              <caret line="350" column="35" selection-start-line="350" selection-start-column="35" selection-end-line="350" selection-end-column="35" />
-              <folding />
+            <state relative-caret-position="432">
+              <caret line="351" column="65" selection-start-line="351" selection-start-column="65" selection-end-line="351" selection-end-column="65" />
+              <folding>
+                <element signature="e#41#52#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -292,10 +297,10 @@
         <option value="$PROJECT_DIR$/tests/hdx/test_configuration.py" />
         <option value="$PROJECT_DIR$/src/hdx/utilities/email.py" />
         <option value="$PROJECT_DIR$/tests/hdx/utilities/test_email.py" />
-        <option value="$PROJECT_DIR$/tests/hdx/data/test_user.py" />
         <option value="$PROJECT_DIR$/.coveragerc" />
         <option value="$PROJECT_DIR$/src/hdx/data/hdxobject.py" />
         <option value="$PROJECT_DIR$/tests/hdx/data/test_galleryitem.py" />
+        <option value="$PROJECT_DIR$/tests/hdx/data/test_user.py" />
         <option value="$PROJECT_DIR$/README.rst" />
       </list>
     </option>
@@ -1197,20 +1202,6 @@
       <option name="presentableId" value="Default" />
       <updated>1464695506411</updated>
     </task>
-    <task id="LOCAL-00276" summary="Datastore for csv and Excel">
-      <created>1491407112343</created>
-      <option name="number" value="00276" />
-      <option name="presentableId" value="LOCAL-00276" />
-      <option name="project" value="LOCAL" />
-      <updated>1491407112343</updated>
-    </task>
-    <task id="LOCAL-00277" summary="Datastore for csv and Excel">
-      <created>1491407211933</created>
-      <option name="number" value="00277" />
-      <option name="presentableId" value="LOCAL-00277" />
-      <option name="project" value="LOCAL" />
-      <updated>1491407211934</updated>
-    </task>
     <task id="LOCAL-00278" summary="Datastore for csv and Excel">
       <created>1491407497412</created>
       <option name="number" value="00278" />
@@ -1540,7 +1531,21 @@
       <option name="project" value="LOCAL" />
       <updated>1497345954275</updated>
     </task>
-    <option name="localTasksCounter" value="325" />
+    <task id="LOCAL-00325" summary="Update README">
+      <created>1497346951388</created>
+      <option name="number" value="00325" />
+      <option name="presentableId" value="LOCAL-00325" />
+      <option name="project" value="LOCAL" />
+      <updated>1497346951389</updated>
+    </task>
+    <task id="LOCAL-00326" summary="Update README">
+      <created>1497347019688</created>
+      <option name="number" value="00326" />
+      <option name="presentableId" value="LOCAL-00326" />
+      <option name="project" value="LOCAL" />
+      <updated>1497347019688</updated>
+    </task>
+    <option name="localTasksCounter" value="327" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1679,7 +1684,6 @@
     <MESSAGE value="Make date methods handle ranges (using start date+adding methods for end dates)" />
     <MESSAGE value="Add locations from HDX group list" />
     <MESSAGE value="Improve coverage" />
-    <MESSAGE value="Update README" />
     <MESSAGE value="Doc fix" />
     <MESSAGE value="New get_all_datasets that uses current package list CKAN function&#10;Checks for counts and duplicates&#10;get_all_dataset_names = package_list  function" />
     <MESSAGE value="Set a maximum number of attempts for retrying get all datasets and search for datasets" />
@@ -1699,7 +1703,8 @@
     <MESSAGE value="auth for download" />
     <MESSAGE value="Add user management and email utility" />
     <MESSAGE value="Increase coverage" />
-    <option name="LAST_COMMIT_MESSAGE" value="Increase coverage" />
+    <MESSAGE value="Update README" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update README" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -2034,22 +2039,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/hdx/utilities/test_email.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="79" column="0" selection-start-line="78" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/hdx/data/test_user.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="371">
-          <caret line="350" column="35" selection-start-line="350" selection-start-column="35" selection-end-line="350" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/hdx/data/test_resource.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="175">
@@ -2108,10 +2097,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tests/hdx/utilities/test_email.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1044">
+          <caret line="79" column="0" selection-start-line="78" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
+          <folding>
+            <element signature="e#42#66#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/hdx/data/test_user.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="351" column="65" selection-start-line="351" selection-start-column="65" selection-end-line="351" selection-end-column="65" />
+          <folding>
+            <element signature="e#41#52#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/README.rst">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="77">
-          <caret line="890" column="22" selection-start-line="890" selection-start-column="22" selection-end-line="890" selection-end-column="22" />
+        <state relative-caret-position="270">
+          <caret line="871" column="25" selection-start-line="871" selection-start-column="25" selection-end-line="871" selection-end-column="25" />
           <folding />
         </state>
       </provider>

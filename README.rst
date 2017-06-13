@@ -867,7 +867,9 @@ dictionary or file:
 
 ::
 
-    email_config_dict = {'connection_type': 'TYPE', 'host': 'HOST', 'port': PORT, 'username': USERNAME, 'password': PASSWORD}
+    email_config_dict = {'connection_type': 'TYPE', 'host': 'HOST',
+                         'port': PORT, 'username': USERNAME,
+                         'password': PASSWORD}
     Configuration.read().setup_emailer(email_config_dict=email_config_dict)
 
 
