@@ -32,6 +32,7 @@
       -  `Tags <#tags>`__
 
    -  `Resource Specific Operations <#resource-specific-operations>`__
+   -  `User Management <#user-management>`__
 
 -  `Working Example <#working-example>`__
 -  `ACLED Example <#acled-example>`__
