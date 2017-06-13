@@ -53,6 +53,7 @@ def get_readme():
 
 requirements = ['ckanapi',
                 'colorlog',
+                'email_validator',
                 'geonamescache',
                 'ndg-httpsclient',
                 'pyaml',
