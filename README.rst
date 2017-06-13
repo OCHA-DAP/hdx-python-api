@@ -855,6 +855,33 @@ using other related methods eg.
     resource.update_datastore(schema={'id': 'FIELD', 'type': 'TYPE'}, primary_key='PRIMARY_KEY_OF_SCHEMA', path='LOCAL_PATH_OF_UPLOADED_FILE') -> None:
     resource.update_datastore_from_json_schema(json_path='PATH_TO_JSON_SCHEMA', path='LOCAL_PATH_OF_UPLOADED_FILE')
 
+User Management
+~~~~~~~~~~~~~~~
+
+The **User** class enables you to manage users, creating, deleting and
+updating (as for other HDX objects) according to your permissions.
+
+You can email a user. First you need to set up an email server using a
+dictionary or file:
+
+::
+
+    email_config_dict = {'connection_type': 'TYPE', 'host': 'HOST', 'port': PORT, 'username': USERNAME, 'password': PASSWORD}
+    Configuration.read().setup_emailer(email_config_dict=email_config_dict)
+
+
+Then you can email a user like this:
+
+::
+
+    user.email('SUBJECT', 'BODY', sender='SENDER EMAIL')
+
+You can email multiple users like this:
+
+::
+
+    User.email_users(LIST_OF_USERS, 'SUBJECT', 'BODY', sender='SENDER EMAIL')
+
 Working Example
 ---------------
 
