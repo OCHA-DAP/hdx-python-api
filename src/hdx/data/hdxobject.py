@@ -50,7 +50,7 @@ class HDXObject(UserDict, object):
         Returns:
             dict: Dictionary of actions that can be performed on object
         """
-        pass
+        raise NotImplementedError
 
     def __init__(self, initial_data, configuration=None):
         # type: (dict, Optional[Configuration]) -> None
@@ -155,7 +155,7 @@ class HDXObject(UserDict, object):
         Returns:
             Optional[T <= HDXObject]: HDX object if successful read, None if not
         """
-        return
+        raise NotImplementedError
 
     def _check_existing_object(self, object_type, id_field_name):
         # type: (str, str) -> None
@@ -232,7 +232,7 @@ class HDXObject(UserDict, object):
         Returns:
             None
         """
-        return
+        raise NotImplementedError
 
     def _update_in_hdx(self, object_type, id_field_name, file_to_upload=None):
         # type: (str, str, Optional[str]) -> None
@@ -302,7 +302,7 @@ class HDXObject(UserDict, object):
         Returns:
             None
         """
-        return
+        raise NotImplementedError
 
     def _create_in_hdx(self, object_type, id_field_name, name_field_name,
                        file_to_upload=None):
@@ -334,7 +334,7 @@ class HDXObject(UserDict, object):
         Returns:
             None
         """
-        return
+        raise NotImplementedError
 
     def _delete_from_hdx(self, object_type, id_field_name):
         # type: (str, str) -> None

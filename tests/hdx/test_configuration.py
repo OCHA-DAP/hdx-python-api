@@ -26,6 +26,12 @@ class TestConfiguration:
         return join('tests', 'fixtures', 'config', 'project_configuration.json')
 
     def test_init(self, hdx_key_file, project_config_json, project_config_yaml):
+        default_key_file = Configuration.default_hdx_key_file
+        Configuration.default_hdx_key_file = 'NOT EXIST'
+        with pytest.raises(IOError):
+            Configuration()
+        Configuration.default_hdx_key_file = default_key_file
+
         with pytest.raises(IOError):
             Configuration(hdx_key_file='NOT_EXIST', project_config_yaml=project_config_yaml)
 

@@ -39,6 +39,9 @@ class Email:
         email_config_json (str): Path to JSON HDX configuration OR
         email_config_yaml (str): Path to YAML HDX configuration. Defaults to ~/hdx_email_configuration.yml.
     """
+
+    default_email_config_yaml = join(expanduser('~'), 'hdx_email_configuration.yml')
+
     def __init__(self, **kwargs):
         # type: (...) -> None
         email_config_found = False
@@ -62,7 +65,7 @@ class Email:
         else:
             if not email_config_yaml:
                 logger.info('No email configuration parameter. Using default email configuration path.')
-                email_config_yaml = join(expanduser('~'), 'hdx_email_configuration.yml')
+                email_config_yaml = Email.default_email_config_yaml
             logger.info('Loading email configuration from: %s' % email_config_yaml)
             email_config_dict = load_yaml(email_config_yaml)
 

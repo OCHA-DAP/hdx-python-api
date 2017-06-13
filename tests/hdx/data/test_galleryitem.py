@@ -213,6 +213,13 @@ class TestGalleryItem:
         galleryitem.update_in_hdx()
         assert galleryitem['id'] == 'TEST1'
         assert galleryitem['type'] == 'paper'
+        assert galleryitem.get_old_data_dict() == {'__extras': {'view_count': 1},
+                                                   'description': 'My GalleryItem',
+                                                   'featured': 0, 'id': 'TEST1',
+                                                   'image_url': 'http://myvisual/visual.png',
+                                                   'owner_id': '196196be-6037-4488-8b71-d786adf4c081',
+                                                   'title': 'MyGalleryItem1', 'type': 'paper',
+                                                   'url': 'http://visualisation/url/'}
 
         galleryitem['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):

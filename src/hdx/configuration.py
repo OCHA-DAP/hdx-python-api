@@ -47,6 +47,7 @@ class Configuration(UserDict, object):
     """
 
     _configuration = None
+    default_hdx_key_file = join(expanduser('~'), '.hdxkey')
 
     def __init__(self, **kwargs):
         # type: (...) -> None
@@ -117,7 +118,7 @@ class Configuration(UserDict, object):
                 hdx_key_file = kwargs.get('hdx_key_file', None)
                 if not hdx_key_file:
                     logger.info('No HDX key or key file given. Using default key file path.')
-                    hdx_key_file = join(expanduser('~'), '.hdxkey')
+                    hdx_key_file = Configuration.default_hdx_key_file
                 self.data['api_key'] = self.load_api_key(hdx_key_file)
 
         self.hdx_site = 'hdx_%s_site' % kwargs.get('hdx_site', 'test')

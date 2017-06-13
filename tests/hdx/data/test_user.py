@@ -347,3 +347,6 @@ To: xxx@yyy.com, aaa@bbb.com
 
 hello there'''
         assert email.server.send_args == {'mail_options': ['a', 'b'], 'rcpt_options': [1, 2]}
+        with pytest.raises(ValueError):
+            User.email_users(list(), TestUser.subject, TestUser.body, sender=TestUser.sender, mail_options=TestUser.mail_options,
+                             rcpt_options=TestUser.rcpt_options)
