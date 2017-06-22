@@ -9,9 +9,10 @@ import requests
 
 from hdx.data.hdxobject import HDXError
 from hdx.data.organization import Organization
+from hdx.data.user import User
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
-from . import MockResponse, organization_data
+from . import MockResponse, organization_data, user_data
 from .test_user import user_mockshow
 
 resultdict = load_yaml(join('tests', 'fixtures', 'organization_show_results.yml'))
@@ -292,7 +293,10 @@ class TestOrganization:
         organization.delete_user('8b84230c-e04a-43ec-99e5-41307a203a2f')
         users = organization.get_users()
         assert len(users) == 0
-        organization.add_update_users([{'name': 'TEST1', 'capacity': 'member'}])
+        user = User(user_data)
+        user['name'] = 'TEST1'
+        user['capacity'] = 'member'
+        organization.add_update_users([user])
         users = organization.get_users('member')
         assert len(users) == 1
         assert users[0]['name'] == 'MyUser1'
