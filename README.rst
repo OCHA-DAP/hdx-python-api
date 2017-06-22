@@ -936,7 +936,7 @@ You can get the datasets in an organization as follows:
 
 ::
 
-    users = organization.get_datasets()
+    datasets = organization.get_datasets()
 
 You can get the users in an organization like this:
 
