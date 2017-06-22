@@ -11,8 +11,8 @@ from hdx.data.hdxobject import HDXError
 from hdx.data.organization import Organization
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
-from tests.hdx.data import MockResponse, organization_data
-from tests.hdx.data.test_user import user_mockshow
+from . import MockResponse, organization_data
+from .test_user import user_mockshow
 
 resultdict = load_yaml(join('tests', 'fixtures', 'organization_show_results.yml'))
 

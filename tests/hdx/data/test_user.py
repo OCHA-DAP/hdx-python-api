@@ -11,7 +11,7 @@ from hdx.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.user import User
 from hdx.utilities.dictandlist import merge_two_dictionaries
-from tests.hdx.data import MockResponse, user_data
+from . import MockResponse, user_data
 
 resultdict = {
     'openid': None,

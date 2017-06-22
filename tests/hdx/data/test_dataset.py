@@ -20,9 +20,9 @@ from hdx.data.resource import Resource
 from hdx.data.user import User
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
-from tests.hdx.data import MockResponse, user_data, organization_data
-from tests.hdx.data.test_organization import organization_mockshow
-from tests.hdx.data.test_user import user_mockshow
+from . import MockResponse, user_data, organization_data
+from .test_organization import organization_mockshow
+from .test_user import user_mockshow
 
 resulttags = [{'state': 'active', 'display_name': 'conflict', 'vocabulary_id': None,
                'id': '1dae41e5-eacd-4fa5-91df-8d80cf579e53', 'name': 'conflict'},

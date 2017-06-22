@@ -13,7 +13,7 @@ from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.downloader import DownloadError
-from tests.hdx.data import MockResponse
+from . import MockResponse
 
 resultdict = {'cache_last_updated': None, 'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',
               'webstore_last_updated': None, 'datastore_active': None,

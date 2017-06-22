@@ -10,7 +10,7 @@ import requests
 from hdx.data.galleryitem import GalleryItem
 from hdx.data.hdxobject import HDXError
 from hdx.utilities.dictandlist import merge_two_dictionaries
-from tests.hdx.data import MockResponse
+from . import MockResponse
 
 resultdict = {
     'description': 'My GalleryItem',
