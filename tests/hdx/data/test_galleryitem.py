@@ -10,16 +10,7 @@ import requests
 from hdx.data.galleryitem import GalleryItem
 from hdx.data.hdxobject import HDXError
 from hdx.utilities.dictandlist import merge_two_dictionaries
-
-
-class MockResponse:
-    def __init__(self, status_code, text):
-        self.status_code = status_code
-        self.text = text
-
-    def json(self):
-        return json.loads(self.text)
-
+from tests.hdx.data import MockResponse
 
 resultdict = {
     'description': 'My GalleryItem',

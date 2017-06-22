@@ -250,6 +250,11 @@ hello there'''
                 'fullname',
                 'about',
             ], 'ignore_on_update': 'password'},
+            'organization': {'required_fields': [
+                'name',
+                'title',
+                'description',
+            ]},
         }
         assert Configuration.read() == expected_configuration
         Configuration._create(hdx_key_file=hdx_key_file, project_config_dict={'abc': '123'})
@@ -313,6 +318,11 @@ hello there'''
                 'fullname',
                 'about',
             ], 'ignore_on_update': 'password'},
+            'organization': {'required_fields': [
+                'name',
+                'title',
+                'description',
+            ]},
         }
         assert Configuration.read() == expected_configuration
 
@@ -373,6 +383,11 @@ hello there'''
                 'fullname',
                 'about',
             ], 'ignore_on_update': 'password'},
+            'organization': {'required_fields': [
+                'name',
+                'title',
+                'description',
+            ]},
         }
         assert Configuration.read() == expected_configuration
 

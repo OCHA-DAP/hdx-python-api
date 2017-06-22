@@ -12,9 +12,11 @@ from typing import List, Optional
 from dateutil import parser
 from six.moves import range
 
+import hdx.data.organization
 from hdx.data.galleryitem import GalleryItem
 from hdx.data.hdxobject import HDXObject, HDXError
 from hdx.data.resource import Resource
+from hdx.data.user import User
 from hdx.utilities import raisefrom
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.location import Location
@@ -524,12 +526,12 @@ class Dataset(HDXObject):
         self._delete_from_hdx('dataset', 'id')
 
     @staticmethod
-    def search_in_hdx(query, include_gallery=True, configuration=None, **kwargs):
-        # type: (str, Optional[bool], Optional[Configuration], ...) -> List['Dataset']
+    def search_in_hdx(query='*:*', include_gallery=True, configuration=None, **kwargs):
+        # type: (Optional[str], Optional[bool], Optional[Configuration], ...) -> List['Dataset']
         """Searches for datasets in HDX
 
         Args:
-            query (str): Query (in Solr format). Defaults to '*:*'.
+            query (Optional[str]): Query (in Solr format). Defaults to '*:*'.
             include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
             **kwargs: See below
@@ -1019,3 +1021,56 @@ class Dataset(HDXObject):
             groups = list()
         groups.append({'name': hdx_code})
         self.data['groups'] = groups
+
+    def get_maintainer(self):
+        # type: () -> User
+        """Get the dataset's maintainer.
+
+         Returns:
+             User: Returns dataset's maintainer
+        """
+        return User.read_from_hdx(self.data['maintainer'], configuration=self.configuration)
+
+    def set_maintainer(self, maintainer):
+        # type: (Any) -> None
+        """Set the dataset's maintainer.
+
+         Args:
+             maintainer (Any): Set the dataset's maintainer either from a User object or a str.
+         Returns:
+             None
+        """
+        if isinstance(maintainer, str):
+            self.data['maintainer'] = maintainer
+        elif isinstance(maintainer, User):
+            self.data['maintainer'] = maintainer['name']
+        else:
+            raise HDXError("Type %s cannot be added as a maintainer!" % type(maintainer).__name__)
+
+    def get_organization(self):
+        # type: () -> hdx.data.organization.Organization
+        """Get the dataset's organization.
+
+         Returns:
+             Organization: Returns dataset's organization
+        """
+        return hdx.data.organization.Organization.read_from_hdx(self.data['owner_org'], configuration=self.configuration)
+
+    def set_organization(self, organization):
+        # type: (hdx.data.organization.Organization) -> None
+        """Set the dataset's organization.
+
+         Args:
+             organization (Organization): Set the dataset's organization either from an Organization object or a str.
+         Returns:
+             None
+        """
+        if isinstance(organization, str):
+            self.data['owner_org'] = organization
+        elif isinstance(organization, hdx.data.organization.Organization):
+            org_id = organization.get('id')
+            if org_id is None:
+                org_id = organization['name']
+            self.data['owner_org'] = org_id
+        else:
+            raise HDXError("Type %s cannot be added as a organization!" % type(organization).__name__)

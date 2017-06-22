@@ -11,16 +11,7 @@ from hdx.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.user import User
 from hdx.utilities.dictandlist import merge_two_dictionaries
-
-
-class MockResponse:
-    def __init__(self, status_code, text):
-        self.status_code = status_code
-        self.text = text
-
-    def json(self):
-        return json.loads(self.text)
-
+from tests.hdx.data import MockResponse, user_data
 
 resultdict = {
     'openid': None,
@@ -45,7 +36,7 @@ result2dict['email'] = 'aaa@bbb.com'
 user_list = [resultdict, result2dict]
 
 
-def mockshow(url, datadict):
+def user_mockshow(url, datadict):
     if 'show' not in url:
         return MockResponse(404,
                             '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}')
@@ -73,14 +64,6 @@ def mocklist(url):
 
 
 class TestUser:
-    user_data = {
-        'name': 'MyUser1',
-        'email': 'xxx@yyy.com',
-        'password': 'xxx',
-        'fullname': 'xxx xxx',
-        'about': 'Data Scientist',
-    }
-
     smtp_initargs = {
         'host': 'localhost',
         'port': 123,
@@ -116,7 +99,7 @@ class TestUser:
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
-                return mockshow(url, datadict)
+                return user_mockshow(url, datadict)
 
         monkeypatch.setattr(requests, 'Session', MockSession)
 
@@ -127,7 +110,7 @@ class TestUser:
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
                 if 'show' in url:
-                    return mockshow(url, datadict)
+                    return user_mockshow(url, datadict)
                 if 'create' not in url:
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_create"}')
@@ -155,7 +138,7 @@ class TestUser:
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
                 if 'show' in url:
-                    return mockshow(url, datadict)
+                    return user_mockshow(url, datadict)
                 if 'update' not in url:
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "TEST ERROR: Not update", "__type": "TEST ERROR: Not Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_update"}')
@@ -186,7 +169,7 @@ class TestUser:
                 decodedata = data.decode('utf-8')
                 datadict = json.loads(decodedata)
                 if 'show' in url:
-                    return mockshow(url, datadict)
+                    return user_mockshow(url, datadict)
                 if 'delete' not in url:
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "TEST ERROR: Not delete", "__type": "TEST ERROR: Not Delete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_delete"}')
@@ -248,18 +231,19 @@ hello there'''
         with pytest.raises(HDXError):
             user.create_in_hdx()
 
-        user_data = copy.deepcopy(TestUser.user_data)
-        user = User(user_data)
+        data = copy.deepcopy(user_data)
+        user = User(data)
         user.create_in_hdx()
         assert user['id'] == '9f3e9973-7dbe-4c65-8820-f48578e3ffea'
+        assert user['capacity'] == 'admin'
 
-        user_data['name'] = 'MyUser2'
-        user = User(user_data)
+        data['name'] = 'MyUser2'
+        user = User(data)
         with pytest.raises(HDXError):
             user.create_in_hdx()
 
-        user_data['name'] = 'MyUser3'
-        user = User(user_data)
+        data['name'] = 'MyUser3'
+        user = User(data)
         with pytest.raises(HDXError):
             user.create_in_hdx()
 
@@ -279,9 +263,11 @@ hello there'''
         user['about'] = 'IMO'
         user['id'] = 'TEST1'
         user['name'] = 'MyUser1'
+        user['capacity'] = 'member'
         user.update_in_hdx()
         assert user['id'] == 'TEST1'
         assert user['about'] == 'IMO'
+        assert user['capacity'] == 'member'
 
         user['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):
@@ -291,10 +277,10 @@ hello there'''
         with pytest.raises(HDXError):
             user.update_in_hdx()
 
-        user_data = copy.deepcopy(TestUser.user_data)
-        user_data['name'] = 'MyUser1'
-        user_data['id'] = 'TEST1'
-        user = User(user_data)
+        data = copy.deepcopy(user_data)
+        data['name'] = 'MyUser1'
+        data['id'] = 'TEST1'
+        user = User(data)
         user.create_in_hdx()
         assert user['id'] == 'TEST1'
         assert user['about'] == 'Data Scientist'
@@ -307,8 +293,8 @@ hello there'''
             user.delete_from_hdx()
 
     def test_update_yaml(self, configuration, static_yaml):
-        user_data = copy.deepcopy(TestUser.user_data)
-        user = User(user_data)
+        data = copy.deepcopy(user_data)
+        user = User(data)
         assert user['name'] == 'MyUser1'
         assert user['about'] == 'Data Scientist'
         user.update_from_yaml(static_yaml)
@@ -316,8 +302,8 @@ hello there'''
         assert user['about'] == 'IMO'
 
     def test_update_json(self, configuration, static_json):
-        user_data = copy.deepcopy(TestUser.user_data)
-        user = User(user_data)
+        data = copy.deepcopy(user_data)
+        user = User(data)
         assert user['name'] == 'MyUser1'
         assert user['about'] == 'Data Scientist'
         user.update_from_json(static_json)

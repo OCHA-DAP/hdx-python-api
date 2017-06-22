@@ -1,0 +1,151 @@
+users:
+-
+ email_hash: 16ab5ae71d656c7de6700a9cec678c18
+ about: null
+ capacity: admin
+ name: acled
+ created: "2015-01-08T09:54:57.734937"
+ openid: null
+ sysadmin: false
+ activity_streams_email_notifications: false
+ state: active
+ number_of_edits: 6
+ display_name: "ACLED Conflict Event Data Project"
+ fullname: "ACLED Conflict Event Data Project"
+ id: "8b84230c-e04a-43ec-99e5-41307a203a2f"
+ number_created_packages: 1
+display_name: "ACLED Conflict Data Project"
+description: "ACLED (Armed Conflict Location & Event Data Project) is the most comprehensive public collection of political violence data for developing states. This dataset contains information on the specific dates and locations of political violence, the types of event, the groups involved, fatalities and changes in territorial control. Information is recorded on the battles, killings, riots, and recruitment activities of rebels, governments, militias, armed groups, protesters and civilians. \r\n\r\nAs of early 2015, ACLED has recorded over 100,000 individual events, with ongoing data collection focused on Africa, South Asia and South East Asia. Data can be used for medium- and long-term analysis and mapping of political violence across developing countries through use of historical data from 1997, as well as informing humanitarian and development work in crisis and conflict-affected contexts through realtime data updates and reports. Despite the waning of civil wars across the developing world, ACLED data show that political violence rates have remained relatively stable in the past eighteen years. ACLED seeks to support research and work devoted to understanding, predicting and reducing levels of violence and their consequences."
+image_display_url: ""
+package_count: 28
+created: "2015-01-09T14:44:54.006612"
+name: acled
+is_organization: true
+state: active
+extras:
+-
+ value: ""
+ state: active
+ key: fts_id
+ revision_id: "e7b568fc-0ac0-4448-9d30-ca45df30c931"
+ group_id: "b67e6c74-c185-4f43-b561-0e114a736f19"
+ id: "f15f9c37-cc12-441f-8cae-282bfa55b184"
+-
+ value: "http://www.acleddata.com"
+ state: active
+ key: org_url
+ revision_id: "e7b568fc-0ac0-4448-9d30-ca45df30c931"
+ group_id: "b67e6c74-c185-4f43-b561-0e114a736f19"
+ id: "b97e9b93-effb-415b-a618-c7dbf38716eb"
+image_url: ""
+groups:
+type: organization
+title: "ACLED Conflict Data Project"
+revision_id: "684f3eee-b708-4f91-bd22-7860d4eca423"
+packages:
+-
+ owner_org: "b67e6c74-c185-4f43-b561-0e114a736f19"
+ maintainer: acled
+ relationships_as_object:
+ private: false
+ dataset_date: "06/17/2017"
+ num_tags: 4
+ solr_additions: "{\"countries\": [\"Angola\", \"Burundi\", \"Benin\", \"Burkina Faso\", \"Botswana\", \"Central African Republic\", \"C\\\\u00f4te d'Ivoire\", \"Cameroon\", \"Democratic Republic of the Congo\", \"Congo\", \"Comoros\", \"Cape Verde\", \"Djibouti\", \"Algeria\", \"Egypt\", \"Eritrea\", \"Western Sahara\", \"Ethiopia\", \"Gabon\", \"Ghana\", \"Guinea\", \"Gambia\", \"Guinea-Bissau\", \"Equatorial Guinea\", \"Kenya\", \"Liberia\", \"Libya\", \"Lesotho\", \"Morocco\", \"Madagascar\", \"Mali\", \"Mozambique\", \"Mauritania\", \"Mauritius\", \"Malawi\", \"Mayotte\", \"Namibia\", \"Niger\", \"Nigeria\", \"Reunion\", \"Rwanda\", \"Sudan\", \"Senegal\", \"St. Helena\", \"Sierra Leone\", \"Somalia\", \"South Sudan\", \"Sao Tome And Principe\", \"Swaziland\", \"Seychelles\", \"Chad\", \"Togo\", \"Tunisia\", \"United Republic of Tanzania\", \"Uganda\", \"South Africa\", \"Zambia\", \"Zimbabwe\"]}"
+ id: "4013d8b9-6dfa-40f7-9cee-73d2ac915ebf"
+ metadata_created: "2017-01-10T00:00:55.729384"
+ caveats: "Due to the realtime nature of data collection which results in occasional reporting lags, and/or insufficient detail in early event reports for inclusion in the dataset, a small number of events in the 2017 data pre-date this period. These have been coded and published for the first time in 2017 and do not duplicate any events found in the full published dataset."
+ metadata_modified: "2017-06-20T00:00:59.879573"
+ author: acled
+ author_email: "info.africa@acleddata.com"
+ state: active
+ relationships_as_subject:
+ methodology: Other
+ version: null
+ dataset_source: ACLED
+ license_id: "cc-by-sa"
+ type: dataset
+ maintainer_email: "info.africa@acleddata.com"
+ num_resources: 2
+ subnational: 1
+ title: "ACLED Conflict Data for Africa (Realtime - 2017)"
+ tracking_summary:
+  total: 684
+  recent: 72
+ revision_id: "d9bec4dc-1c2c-4eba-96af-b34511edf4d3"
+ creator_user_id: "154de241-38d6-47d3-a77f-0a9848a61df3"
+ methodology_other: "This page contains information about how the ACLED team collects, cleans, reviews and checks event data, with a focus on what makes ACLED unique and compatible with other data. The process of ACLED coding assures that it is accurate, comprehensive, transparent and regularly updated. ACLED-Africa data is available from 1997 and into real time. ACLED-Asia produces publicly available real-time data and continues to backdate for all states. Data will be posted as it is complete.  For more information about its methodology, please consult [ACLED's Methodology page](http://www.acleddata.com/methodology/)."
+ package_creator: mcarans
+ name: "acled-conflict-data-for-africa-realtime-2017"
+ isopen: true
+ url: null
+ notes: "ACLED conflict and protest data for African states from 1997 – December 2016 is available in Version 7 of the the ACLED dataset. Realtime data for 2017 is collected and published on a weekly basis, and will continue to be made available through the Climate Change and African Political Stability (CCAPS) website and on this page.\n\nDue to the realtime nature of data collection which results in occasional reporting lags, and/or insufficient detail in early event reports for inclusion in the dataset, a small number of events in the 2017 data pre-date this period. These have been coded and published for the first time in 2017 and do not duplicate any events found in the full published dataset.\n\nData files are updated each Monday, containing data from the previous week. The data files below include a single running file for all 2017 data, with monthly files updated on an ongoing basis."
+ license_title: "Creative Commons Attribution Share-Alike"
+ license_url: "http://www.opendefinition.org/licenses/cc-by-sa"
+ organization:
+  description: "ACLED (Armed Conflict Location & Event Data Project) is the most comprehensive public collection of political violence data for developing states. This dataset contains information on the specific dates and locations of political violence, the types of event, the groups involved, fatalities and changes in territorial control. Information is recorded on the battles, killings, riots, and recruitment activities of rebels, governments, militias, armed groups, protesters and civilians. \r\n\r\nAs of early 2015, ACLED has recorded over 100,000 individual events, with ongoing data collection focused on Africa, South Asia and South East Asia. Data can be used for medium- and long-term analysis and mapping of political violence across developing countries through use of historical data from 1997, as well as informing humanitarian and development work in crisis and conflict-affected contexts through realtime data updates and reports. Despite the waning of civil wars across the developing world, ACLED data show that political violence rates have remained relatively stable in the past eighteen years. ACLED seeks to support research and work devoted to understanding, predicting and reducing levels of violence and their consequences."
+  created: "2015-01-09T14:44:54.006612"
+  title: "ACLED Conflict Data Project"
+  name: acled
+  is_organization: true
+  state: active
+  image_url: ""
+  revision_id: "684f3eee-b708-4f91-bd22-7860d4eca423"
+  type: organization
+  id: "b67e6c74-c185-4f43-b561-0e114a736f19"
+  approval_status: approved
+ data_update_frequency: 7
+-
+ owner_org: "b67e6c74-c185-4f43-b561-0e114a736f19"
+ maintainer: acled
+ relationships_as_object:
+ private: false
+ dataset_date: "01/01/1997-12/31/2015"
+ num_tags: 4
+ solr_additions: "{\"countries\": [\"Ethiopia\", \"Ethiopia\"]}"
+ id: "5ea80d40-ef69-43b7-9baf-4bd4cafb5965"
+ metadata_created: "2016-03-29T17:32:40.337761"
+ caveats: "Most data analysis can be carried out using the standard Excel file. In this file, both Actor 1 and Actor 2 appear in the same row, with each event constituting a single unit of analysis. However, in order to analyse conflict actors and actor types, a monadic file is more useful. This is a file in which Actor 1 and Actor 2 appear in a single column, with each actor’s activity constituting a single unit of analysis. This allows users to analyse different trends and patterns, like the proportion of events in which a particular actor or actor type is involved; or the geographic patterns of activity of specific actors. Creating a monadic file involves duplicating the events so that each actor is represented as participating in a single event (almost doubling the number of events in the dataset). For this reason, monadic files are not useful for analysis of the number of events or overall patterns of violence in a country, etc. They should be used for analysis of actors, actor types and patterns in their activity. The dyadic actor file allows analysis on specific actors within the dataset. Actor 1 and Actor 2 are each assigned a unique actor ID and the actor dyad column represents the two actors involved in each event. This allows users to analyse the number of events; number of fatalities; type of event; or geographic location of events in which two discrete actors interact, for example, events involving Boko Haram and the Military Forces of Nigeria."
+ metadata_modified: "2016-11-08T14:02:36.798354"
+ author: acled
+ author_email: "acledinfo@acleddata.com"
+ state: active
+ relationships_as_subject:
+ methodology: Other
+ version: null
+ dataset_source: ACLED
+ license_id: "cc-by-sa"
+ type: dataset
+ maintainer_email: "acledinfo@acleddata.com"
+ num_resources: 1
+ subnational: 1
+ title: "ACLED Conflict Data for Ethiopia"
+ tracking_summary:
+  total: 87
+  recent: 2
+ revision_id: "60a706cb-7396-4dd1-af9f-2420d86588fe"
+ creator_user_id: "154de241-38d6-47d3-a77f-0a9848a61df3"
+ methodology_other: "This page contains information about how the ACLED team collects, cleans, reviews and checks event data, with a focus on what makes ACLED unique and compatible with other data. The process of ACLED coding assures that it is accurate, comprehensive, transparent and regularly updated. ACLED-Africa data is available from 1997 and into real time. ACLED-Asia produces publicly available real-time data and continues to backdate for all states. Data will be posted as it is complete.  For more information about its methodology, please consult [ACLED's Methodology page](http://www.acleddata.com/methodology/)."
+ package_creator: luiscape
+ name: "acled-conflict-data-for-ethiopia"
+ isopen: true
+ url: null
+ notes: "ACLED makes its dataset of disaggregated conflict and protest data publicly available. A new version of the dataset is released annually, with data from the previous year and targeted quality review being added in each new version. Files for all countries are composed of ACLED events which indicate the day, actors, type of activity, location, fatalities, sources and notes for individual politically violent events. Please see the [codebook](http://www.acleddata.com/wp-content/uploads/2016/01/ACLED_Codebook_2016.pdf) for further details on conflict categories, actors, events and sources. The [user guide](http://www.acleddata.com/wp-content/uploads/2016/01/ACLED_User-Guide_2016.pdf) provides guidance on downloading and reading files. <br />ACLED data are presented in three forms: the first is an Excel for the entire African continent; the second is a corresponding shapefile of the African continent created from those data; the third format is an Excel file called “COUNTRY X” containing data disaggregated by country which occur in the named state’s territory (including foreign groups active in a state’s territory)."
+ license_title: "Creative Commons Attribution Share-Alike"
+ license_url: "http://www.opendefinition.org/licenses/cc-by-sa"
+ organization:
+  description: "ACLED (Armed Conflict Location & Event Data Project) is the most comprehensive public collection of political violence data for developing states. This dataset contains information on the specific dates and locations of political violence, the types of event, the groups involved, fatalities and changes in territorial control. Information is recorded on the battles, killings, riots, and recruitment activities of rebels, governments, militias, armed groups, protesters and civilians. \r\n\r\nAs of early 2015, ACLED has recorded over 100,000 individual events, with ongoing data collection focused on Africa, South Asia and South East Asia. Data can be used for medium- and long-term analysis and mapping of political violence across developing countries through use of historical data from 1997, as well as informing humanitarian and development work in crisis and conflict-affected contexts through realtime data updates and reports. Despite the waning of civil wars across the developing world, ACLED data show that political violence rates have remained relatively stable in the past eighteen years. ACLED seeks to support research and work devoted to understanding, predicting and reducing levels of violence and their consequences."
+  created: "2015-01-09T14:44:54.006612"
+  title: "ACLED Conflict Data Project"
+  name: acled
+  is_organization: true
+  state: active
+  image_url: ""
+  revision_id: "684f3eee-b708-4f91-bd22-7860d4eca423"
+  type: organization
+  id: "b67e6c74-c185-4f43-b561-0e114a736f19"
+  approval_status: approved
+ data_update_frequency: 30
+num_followers: 32
+id: "b67e6c74-c185-4f43-b561-0e114a736f19"
+tags:
+approval_status: approved

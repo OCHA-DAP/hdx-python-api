@@ -102,7 +102,12 @@ class User(HDXObject):
         Returns:
             None
         """
+        capacity = self.data.get('capacity')
+        if capacity is not None:
+            del self.data['capacity']  # remove capacity (which comes from users from Organization)
         self._update_in_hdx('user', 'id')
+        if capacity is not None:
+            self.data['capacity'] = capacity
 
     def create_in_hdx(self):
         # type: () -> None
@@ -111,7 +116,12 @@ class User(HDXObject):
         Returns:
             None
         """
+        capacity = self.data.get('capacity')
+        if capacity is not None:
+            del self.data['capacity']
         self._create_in_hdx('user', 'id', 'name')
+        if capacity is not None:
+            self.data['capacity'] = capacity
 
     def delete_from_hdx(self):
         # type: () -> None

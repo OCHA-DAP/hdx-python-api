@@ -15,19 +15,14 @@ from hdx.configuration import Configuration
 from hdx.data import dataset
 from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
+from hdx.data.organization import Organization
 from hdx.data.resource import Resource
+from hdx.data.user import User
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
-
-
-class MockResponse:
-    def __init__(self, status_code, text):
-        self.status_code = status_code
-        self.text = text
-
-    def json(self):
-        return json.loads(self.text)
-
+from tests.hdx.data import MockResponse, user_data, organization_data
+from tests.hdx.data.test_organization import organization_mockshow
+from tests.hdx.data.test_user import user_mockshow
 
 resulttags = [{'state': 'active', 'display_name': 'conflict', 'vocabulary_id': None,
                'id': '1dae41e5-eacd-4fa5-91df-8d80cf579e53', 'name': 'conflict'},
@@ -93,8 +88,8 @@ resultdict = {
     'solr_additions': '{"countries": ["Algeria", "Zimbabwe"]}',
     'dataset_date': '06/04/2016'}
 
-searchdict = load_yaml(join('tests', 'fixtures', 'search_results.yml'))
-alldict = load_yaml(join('tests', 'fixtures', 'all_results.yml'))
+searchdict = load_yaml(join('tests', 'fixtures', 'dataset_search_results.yml'))
+alldict = load_yaml(join('tests', 'fixtures', 'dataset_all_results.yml'))
 dataset_list = ['acled-conflict-data-for-libya', 'acled-conflict-data-for-liberia', 'acled-conflict-data-for-lesotho',
                 'acled-conflict-data-for-kenya', 'acled-conflict-data-for-guinea', 'acled-conflict-data-for-ghana',
                 'acled-conflict-data-for-gambia', 'acled-conflict-data-for-gabon', 'acled-conflict-data-for-ethiopia',
@@ -225,7 +220,6 @@ def mockall(url, datadict):
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}' % json.dumps(
                                 dataset_list))
-
 
 
 class TestDataset:
@@ -454,6 +448,26 @@ class TestDataset:
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
                 return mockall(url, datadict)
+
+        monkeypatch.setattr(requests, 'Session', MockSession)
+
+    @pytest.fixture(scope='function')
+    def user_read(self, monkeypatch):
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                datadict = json.loads(data.decode('utf-8'))
+                return user_mockshow(url, datadict)
+
+        monkeypatch.setattr(requests, 'Session', MockSession)
+
+    @pytest.fixture(scope='function')
+    def organization_read(self, monkeypatch):
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                datadict = json.loads(data.decode('utf-8'))
+                return organization_mockshow(url, datadict)
 
         monkeypatch.setattr(requests, 'Session', MockSession)
 
@@ -869,3 +883,29 @@ class TestDataset:
         assert dataset['groups'] == [{'name': 'nepal-earthquake'}]
         with pytest.raises(HDXError):
             dataset.add_other_location('lala')
+
+    def test_maintainer(self, configuration, user_read):
+        dataset = Dataset(TestDataset.dataset_data)
+        dataset.set_maintainer('TEST1')
+        maintainer = dataset.get_maintainer()
+        assert maintainer['name'] == 'MyUser1'
+        user = User(user_data)
+        user['name'] = 'TEST1'
+        dataset.set_maintainer(user)
+        maintainer = dataset.get_maintainer()
+        assert maintainer['name'] == 'MyUser1'
+        with pytest.raises(HDXError):
+            dataset.set_maintainer(123)
+
+    def test_organization(self, configuration, organization_read):
+        dataset = Dataset(TestDataset.dataset_data)
+        dataset.set_organization('TEST1')
+        organization = dataset.get_organization()
+        assert organization['name'] == 'acled'
+        organization = Organization(organization_data)
+        organization['name'] = 'TEST1'
+        dataset.set_organization(organization)
+        organization = dataset.get_organization()
+        assert organization['name'] == 'acled'
+        with pytest.raises(HDXError):
+            dataset.set_organization(123)

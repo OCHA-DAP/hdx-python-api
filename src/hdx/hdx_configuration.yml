@@ -56,3 +56,8 @@ user:
     - fullname
     - about
   ignore_on_update: password
+organization:
+  required_fields:
+    - name
+    - title
+    - description

@@ -30,6 +30,8 @@
       -  `Expected Update Frequency <#expected-update-frequency>`__
       -  `Location <#location>`__
       -  `Tags <#tags>`__
+      -  `Maintainer <#maintainer>`__
+      -  `Organization <#organization>`__
 
    -  `Resource Specific Operations <#resource-specific-operations>`__
    -  `User Management <#user-management>`__
@@ -808,6 +810,44 @@ If you want to add a list of tags, you do it as follows:
 
     dataset.add_tags(['TAG','TAG','TAG'...])
 
+Maintainer
+^^^^^^^^^^
+
+HDX datasets must have a maintainer.
+
+If you wish to get the current maintainer, you can do this:
+
+::
+
+    maintainer = dataset.get_maintainer()
+
+If you want to set the maintainer, you do it like this:
+
+::
+
+    dataset.set_maintainer(USER)
+
+USER is either a dictionary or a User object.
+
+Organization
+^^^^^^^^^^^^
+
+HDX datasets must be part of an organization.
+
+If you wish to get the current organization, you can do this:
+
+::
+
+    organization = dataset.get_organization()
+
+If you want to set the organization, you do it like this:
+
+::
+
+    dataset.set_organization(ORGANIZATION)
+
+ORGANIZATION is either a dictionary or an Organization object.
+
 Resource Specific Operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -884,6 +924,44 @@ You can email multiple users like this:
 ::
 
     User.email_users(LIST_OF_USERS, 'SUBJECT', 'BODY', sender='SENDER EMAIL')
+
+Organization Management
+~~~~~~~~~~~~~~~~~~~~~~~
+
+The **Organization** class enables you to manage organizations, creating, deleting and
+updating (as for other HDX objects) according to your permissions.
+
+You can get the datasets in an organization as follows:
+
+::
+
+    users = organization.get_datasets()
+
+You can get the users in an organization like this:
+
+::
+
+    users = organization.get_users()
+
+You can add or update a user in an organization as shown below:
+
+::
+
+    organization.add_update_user(USER)
+
+You need to include a capacity field in the USER where capacity is member, editor, admin.
+
+You can add or update multiple users in an organization as follows:
+
+::
+
+    organization.add_update_users([LIST OF USERS])
+
+You can delete a user from an organization:
+
+::
+
+    organization.delete_user('USER ID')
 
 Working Example
 ---------------
