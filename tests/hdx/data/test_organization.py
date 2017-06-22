@@ -296,6 +296,7 @@ class TestOrganization:
         user = User(user_data)
         user['name'] = 'TEST1'
         user['capacity'] = 'member'
+        del organization['users']
         organization.add_update_users([user])
         users = organization.get_users('member')
         assert len(users) == 1
