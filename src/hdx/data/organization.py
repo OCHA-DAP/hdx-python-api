@@ -155,8 +155,14 @@ class Organization(HDXObject):
             None
 
         """
-        if isinstance(user, dict) or isinstance(user, User):
-            self._addupdate_hdxobject(self.data['users'], 'name', user)
+        if isinstance(user, User):
+            user = user.data
+        if isinstance(user, dict):
+            users = self.data.get('users')
+            if users is None:
+                users = list()
+                self.data['users'] = users
+            self._addupdate_hdxobject(users, 'name', user)
             return
         raise HDXError("Type %s cannot be added as a user!" % type(user).__name__)
 
