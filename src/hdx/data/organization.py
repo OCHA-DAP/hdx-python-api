@@ -195,12 +195,13 @@ class Organization(HDXObject):
                 if userdata['id'] == identifier:
                     del usersdicts[i]
 
-    def get_datasets(self, include_gallery=True, **kwargs):
+    def get_datasets(self, include_gallery=True, query='*:*', **kwargs):
         # type: (Optional[bool], Optional[Configuration], ...) -> List[hdx.data.dataset.Dataset]
         """Get list of datasets in organization
 
         Args:
             include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
+            query (Optional[str]): Restrict search to this query (in Solr format). Defaults to '*:*'.
             **kwargs: See below
             sort (string): Sorting of the search results. Defaults to 'relevance asc, metadata_modified desc'.
             rows (int): Number of matching rows to return. Defaults to all datasets (sys.maxsize).
@@ -214,7 +215,7 @@ class Organization(HDXObject):
         Returns:
             List[Dataset]: List of datasets in organization
         """
-        return hdx.data.dataset.Dataset.search_in_hdx(include_gallery=include_gallery,
+        return hdx.data.dataset.Dataset.search_in_hdx(query=query, include_gallery=include_gallery,
                                                       configuration=self.configuration,
                                                       fq='organization:%s' % self.data['name'], **kwargs)
 
