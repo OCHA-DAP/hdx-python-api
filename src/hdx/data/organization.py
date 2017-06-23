@@ -200,8 +200,8 @@ class Organization(HDXObject):
         """Get list of datasets in organization
 
         Args:
-            include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
-            query (Optional[str]): Restrict search to this query (in Solr format). Defaults to '*:*'.
+            include_gallery (Optional[bool]): Whether to include gallery items in datasets. Defaults to True.
+            query (Optional[str]): Restrict datasets returned to this query (in Solr format). Defaults to '*:*'.
             **kwargs: See below
             sort (string): Sorting of the search results. Defaults to 'relevance asc, metadata_modified desc'.
             rows (int): Number of matching rows to return. Defaults to all datasets (sys.maxsize).

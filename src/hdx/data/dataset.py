@@ -532,7 +532,7 @@ class Dataset(HDXObject):
 
         Args:
             query (Optional[str]): Query (in Solr format). Defaults to '*:*'.
-            include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
+            include_gallery (Optional[bool]): Whether to include gallery items in datasets. Defaults to True.
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
             **kwargs: See below
             fq (string): Any filter queries to apply
@@ -619,7 +619,7 @@ class Dataset(HDXObject):
         """Get all datasets in HDX
 
         Args:
-            include_gallery (Optional[bool]): Whether to include gallery items in dataset. Defaults to True.
+            include_gallery (Optional[bool]): Whether to include gallery items in datasets. Defaults to True.
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
             **kwargs: See below
             limit (int): Number of rows to return. Defaults to all datasets (sys.maxsize).
