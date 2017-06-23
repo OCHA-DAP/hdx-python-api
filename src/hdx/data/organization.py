@@ -196,7 +196,7 @@ class Organization(HDXObject):
                     del usersdicts[i]
 
     def get_datasets(self, include_gallery=True, query='*:*', **kwargs):
-        # type: (Optional[bool], Optional[Configuration], ...) -> List[hdx.data.dataset.Dataset]
+        # type: (Optional[bool], Optional[str], ...) -> List[hdx.data.dataset.Dataset]
         """Get list of datasets in organization
 
         Args:
