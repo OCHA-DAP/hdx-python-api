@@ -486,7 +486,7 @@ resources.
 Various additional arguments (``**kwargs``) can be supplied. These are
 detailed in the API documentation. The rows parameter for datasets
 (limit for resources) is the maximum number of matches returned and is
-by default 10.
+by default everything.
 
 You can create an HDX Object, such as a dataset, resource or gallery
 item by calling the constructor with an optional dictionary containing
@@ -929,20 +929,26 @@ You can email multiple users like this:
 Organization Management
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-The **Organization** class enables you to manage organizations, creating, deleting and
-updating (as for other HDX objects) according to your permissions.
+The **Organization** class enables you to manage organizations,
+creating, deleting and updating (as for other HDX objects)
+according to your permissions.
 
 You can get the datasets in an organization as follows:
 
 ::
 
-    datasets = organization.get_datasets()
+    datasets = organization.get_datasets(**kwargs)
+
+Various additional arguments (``**kwargs``) can be supplied. These are
+detailed in the API documentation.
 
 You can get the users in an organization like this:
 
 ::
 
-    users = organization.get_users()
+    users = organization.get_users('OPTIONAL FILTER')
+
+OPTIONAL FILTER can be member, editor, admin.
 
 You can add or update a user in an organization as shown below:
 
@@ -950,7 +956,8 @@ You can add or update a user in an organization as shown below:
 
     organization.add_update_user(USER)
 
-You need to include a capacity field in the USER where capacity is member, editor, admin.
+You need to include a capacity field in the USER where capacity is member,
+editor, admin.
 
 You can add or update multiple users in an organization as follows:
 
