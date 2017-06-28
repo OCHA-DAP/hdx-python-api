@@ -7,25 +7,39 @@ from os.path import join, abspath
 import pytest
 
 from hdx.utilities.downloader import Download, DownloadError
-from hdx.utilities.path import script_dir
 
 
 class TestDownloader:
-    @pytest.fixture
+    @pytest.fixture(scope='class')
+    def downloaderfolder(self, fixturesfolder):
+        return join(fixturesfolder, 'downloader')
+
+    @pytest.fixture(scope='class')
     def fixtureurl(self):
         return 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
 
-    @pytest.fixture
+    @pytest.fixture(scope='class')
     def fixturenotexistsurl(self):
         return 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/NOTEXIST.csv'
 
-    def test_get_path_for_url(self, fixtureurl):
-        scriptdir = script_dir(TestDownloader)
-        path = Download.get_path_for_url(fixtureurl, scriptdir)
-        assert abspath(path) == abspath(join(scriptdir, 'test_data.csv'))
-        downloader_folder = join(scriptdir, '..', '..', 'fixtures', 'downloader')
-        path = Download.get_path_for_url(fixtureurl, downloader_folder)
-        assert abspath(path) == abspath(join(downloader_folder, 'test_data3.csv'))
+    def test_get_path_for_url(self, fixtureurl, configfolder, downloaderfolder):
+        path = Download.get_path_for_url(fixtureurl, configfolder)
+        assert abspath(path) == abspath(join(configfolder, 'test_data.csv'))
+        path = Download.get_path_for_url(fixtureurl, downloaderfolder)
+        assert abspath(path) == abspath(join(downloaderfolder, 'test_data3.csv'))
+
+    def test_init(self, downloaderfolder):
+        basicauthfile = join(downloaderfolder, 'basicauth.txt')
+        with Download(basicauthfile=basicauthfile) as download:
+            assert download.session.auth == ('testuser', 'testpass')
+        with pytest.raises(DownloadError):
+            Download(auth=('u', 'p'), basicauth='Basic xxxxxxxxxxxxxxxx')
+        with pytest.raises(DownloadError):
+            Download(auth=('u', 'p'), basicauthfile=join('lala', 'lala.txt'))
+        with pytest.raises(DownloadError):
+            Download(basicauth='Basic xxxxxxxxxxxxxxxx', basicauthfile=join('lala', 'lala.txt'))
+        with pytest.raises(FileNotFoundError):
+            Download(basicauthfile='NOTEXIST')
 
     def test_setup_stream(self, fixtureurl, fixturenotexistsurl):
         with pytest.raises(DownloadError), Download() as download:

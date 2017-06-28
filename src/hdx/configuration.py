@@ -19,7 +19,7 @@ from typing import Optional
 import ckanapi
 
 from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.loader import load_yaml, load_json
+from hdx.utilities.loader import load_yaml, load_json, load_file_to_str
 from hdx.utilities.path import script_dir_plus_file
 
 logger = logging.getLogger(__name__)
@@ -317,10 +317,7 @@ class Configuration(UserDict, object):
 
         """
         logger.info('Loading HDX api key from: %s' % path)
-        with open(path, 'rt') as f:
-            apikey = f.read().replace('\n', '')
-        if not apikey:
-            raise ConfigurationError('HDX api key is empty!')
+        apikey = load_file_to_str(path)
         return apikey
 
     @classmethod

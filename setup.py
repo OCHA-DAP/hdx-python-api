@@ -51,7 +51,8 @@ def get_readme():
     return readme_file.read()
 
 
-requirements = ['ckanapi',
+requirements = ['basicauth',
+                'ckanapi',
                 'colorlog',
                 'email_validator',
                 'geonamescache',

@@ -7,11 +7,13 @@ from tempfile import gettempdir
 from typing import Optional
 
 import requests
+from basicauth import decode
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3 import Retry
 from six.moves.urllib.parse import urlparse
 
 from hdx.utilities import raisefrom
+from hdx.utilities.loader import load_file_to_str
 
 
 class DownloadError(Exception):
@@ -23,10 +25,24 @@ class Download(object):
 
     Args:
         auth (Optional[Tuple[str, str]]): Authorisation information in tuple form (user, pass). Defaults to None.
+        basicauth (Optional[str]): Authorisation information in basic auth string form (Basic xxxxxxxxxxxxxxxx). Defaults to None.
+        basicauthfile (Optional[str]): Pat hto file containing authorisation information in basic auth string form (Basic xxxxxxxxxxxxxxxx). Defaults to None.
     """
-    def __init__(self, auth=None):
+    def __init__(self, auth=None, basicauth=None, basicauthfile=None):
         # type: (Optional[Tuple[str, str]]) -> None
         s = requests.Session()
+        if basicauthfile is not None:
+            if basicauth is not None:
+                raise DownloadError('Both basicauth and basicauthfile supplied!')
+            elif auth is not None:
+                raise DownloadError('Both auth and basicauthfile supplied!')
+            else:
+                basicauth = load_file_to_str(basicauthfile)
+        if basicauth is not None:
+            if auth is None:
+                auth = decode(basicauth)
+            else:
+                raise DownloadError('Both auth and basicauth supplied!')
         s.auth = auth
         retries = Retry(total=5, backoff_factor=0.4, status_forcelist=[429, 500, 502, 503, 504], raise_on_redirect=True,
                         raise_on_status=True)

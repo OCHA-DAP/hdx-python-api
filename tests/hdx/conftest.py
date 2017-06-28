@@ -8,17 +8,27 @@ import pytest
 from hdx.configuration import Configuration
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope='session')
+def fixturesfolder():
+    return join('tests', 'fixtures')
+
+
+@pytest.fixture(scope='session')
+def configfolder(fixturesfolder):
+        return join(fixturesfolder, 'config')
+
+
+@pytest.fixture(scope='session')
 def hdx_key_file():
     return join('tests', 'fixtures', '.hdxkey')
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope='session')
 def project_config_yaml():
     return join('tests', 'fixtures', 'config', 'project_configuration.yml')
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope='session')
 def locations():
     return [{'display_name': 'Aruba', 'id': 'abw', 'name': 'abw', 'title': 'Aruba'},
             {'display_name': 'Afghanistan', 'id': 'afg', 'name': 'afg', 'title': 'Afghanistan'},

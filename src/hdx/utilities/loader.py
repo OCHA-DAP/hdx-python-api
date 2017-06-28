@@ -2,9 +2,9 @@
 """Loading utilities for YAML, JSON etc."""
 
 import json
+from typing import List
 
 import yaml
-from typing import List
 
 from hdx.utilities.dictandlist import merge_two_dictionaries, merge_dictionaries
 
@@ -105,3 +105,22 @@ def load_json(path):
     if not jsondict:
         raise (LoadError('JSON file: %s is empty!' % path))
     return jsondict
+
+
+def load_file_to_str(path):
+    # type: (str) -> str
+    """
+    Load file into a string
+
+    Args:
+        path (str): Path to file
+
+    Returns:
+        str: String contenats of file
+
+    """
+    with open(path, 'rt') as f:
+        string = f.read().replace('\n', '')
+    if not string:
+        raise LoadError('%s file is empty!' % path)
+    return string

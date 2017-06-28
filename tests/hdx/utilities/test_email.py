@@ -9,12 +9,12 @@ from hdx.utilities.email import Email, EmailConfigurationError
 
 class TestEmail:
     @pytest.fixture(scope='class')
-    def email_json(self):
-        return join('tests', 'fixtures', 'config', 'hdx_email_configuration.json')
+    def email_json(self, configfolder):
+        return join(configfolder, 'hdx_email_configuration.json')
 
     @pytest.fixture(scope='class')
-    def email_yaml(self):
-        return join('tests', 'fixtures', 'config', 'hdx_email_configuration.yml')
+    def email_yaml(self, configfolder):
+        return join(configfolder, 'hdx_email_configuration.yml')
 
     def test_mail(self, mocksmtp):
         smtp_initargs = {

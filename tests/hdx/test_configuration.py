@@ -6,20 +6,13 @@ import ckanapi
 import pytest
 
 from hdx.configuration import Configuration, ConfigurationError
+from hdx.utilities.loader import LoadError
 
 
 class TestConfiguration:
     @pytest.fixture(scope='class')
-    def hdx_key_file(self):
-        return join('tests', 'fixtures', '.hdxkey')
-
-    @pytest.fixture(scope='class')
     def empty_hdx_key_file(self):
         return join('tests', 'fixtures', '.emptyhdxkey')
-
-    @pytest.fixture(scope='class')
-    def project_config_yaml(self):
-        return join('tests', 'fixtures', 'config', 'project_configuration.yml')
 
     @pytest.fixture(scope='class')
     def project_config_json(self):
@@ -401,7 +394,7 @@ hello there'''
         assert actual_configuration._get_credentials() == ('', '')
 
     def test_set_hdx_key_value(self, empty_hdx_key_file, project_config_yaml):
-        with pytest.raises(ConfigurationError):
+        with pytest.raises(LoadError):
             Configuration.load_api_key(empty_hdx_key_file)
         Configuration._create(hdx_site='prod', hdx_key='TEST_HDX_KEY',
                              hdx_config_dict={},

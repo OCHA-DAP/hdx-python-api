@@ -5,19 +5,9 @@ from os.path import join
 import pytest
 
 from hdx.utilities.loader import load_yaml, load_json, load_and_merge_yaml, load_and_merge_json, LoadError
-from hdx.utilities.path import script_dir
 
 
 class TestLoader:
-    @pytest.fixture
-    def fixturesfolder(self):
-        scriptdir = script_dir(TestLoader)
-        return join(scriptdir, '..', '..', 'fixtures')
-
-    @pytest.fixture
-    def configfolder(self, fixturesfolder):
-        return join(fixturesfolder, 'config')
-
     def test_load_empty(self, fixturesfolder):
         loaderfolder = join(fixturesfolder, 'loader')
         with pytest.raises(LoadError):
