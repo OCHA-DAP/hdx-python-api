@@ -38,7 +38,7 @@ class TestDownloader:
             Download(auth=('u', 'p'), basicauthfile=join('lala', 'lala.txt'))
         with pytest.raises(DownloadError):
             Download(basicauth='Basic xxxxxxxxxxxxxxxx', basicauthfile=join('lala', 'lala.txt'))
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(IOError):
             Download(basicauthfile='NOTEXIST')
 
     def test_setup_stream(self, fixtureurl, fixturenotexistsurl):
