@@ -15,10 +15,18 @@ class TestConfiguration:
         return join('tests', 'fixtures', '.emptyhdxkey')
 
     @pytest.fixture(scope='class')
-    def project_config_json(self):
-        return join('tests', 'fixtures', 'config', 'project_configuration.json')
+    def hdx_config_yaml(self, configfolder):
+        return join(configfolder, 'hdx_config.yml')
 
-    def test_init(self, hdx_key_file, project_config_json, project_config_yaml):
+    @pytest.fixture(scope='class')
+    def hdx_config_json(self, configfolder):
+        return join(configfolder, 'hdx_config.json')
+
+    @pytest.fixture(scope='class')
+    def project_config_json(self, configfolder):
+        return join(configfolder, 'project_configuration.json')
+
+    def test_init(self, hdx_key_file, hdx_config_yaml, hdx_config_json, project_config_json, project_config_yaml):
         default_key_file = Configuration.default_hdx_key_file
         Configuration.default_hdx_key_file = 'NOT EXIST'
         with pytest.raises(IOError):
@@ -34,6 +42,18 @@ class TestConfiguration:
 
         with pytest.raises(IOError):
             Configuration(hdx_key_file=hdx_key_file, hdx_config_json='NOT_EXIST',
+                          project_config_yaml=project_config_yaml)
+
+        with pytest.raises(ConfigurationError):
+            Configuration(hdx_key_file=hdx_key_file, hdx_config_dict={'a': 1}, hdx_config_yaml=hdx_config_yaml,
+                          project_config_yaml=project_config_yaml)
+
+        with pytest.raises(ConfigurationError):
+            Configuration(hdx_key_file=hdx_key_file, hdx_config_dict={'a': 1}, hdx_config_json=hdx_config_json,
+                          project_config_yaml=project_config_yaml)
+
+        with pytest.raises(ConfigurationError):
+            Configuration(hdx_key_file=hdx_key_file, hdx_config_json=hdx_config_json, hdx_config_yaml=hdx_config_yaml,
                           project_config_yaml=project_config_yaml)
 
         with pytest.raises(IOError):
@@ -105,6 +125,8 @@ class TestConfiguration:
         mail_options = ['a', 'b']
         rcpt_options = [1, 2]
 
+        with pytest.raises(ConfigurationError):
+            configuration.emailer()
         configuration.setup_emailer(email_config_dict=email_config_dict)
         email = configuration.emailer()
         email.send(recipients, subject, body, sender=sender, mail_options=mail_options,
@@ -125,8 +147,7 @@ To: larry@gmail.com, moe@gmail.com, curly@gmail.com
 hello there'''
         assert email.server.send_args == {'mail_options': ['a', 'b'], 'rcpt_options': [1, 2]}
 
-    def test_hdx_configuration_json(self, hdx_key_file, project_config_yaml, locations):
-        hdx_config_json = join('tests', 'fixtures', 'config', 'hdx_config.json')
+    def test_hdx_configuration_json(self, hdx_key_file, hdx_config_json, project_config_yaml, locations):
         Configuration._create(validlocations=locations, hdx_key_file=hdx_key_file, hdx_config_json=hdx_config_json,
                              project_config_yaml=project_config_yaml)
         expected_configuration = {
@@ -155,10 +176,9 @@ hello there'''
         }
         assert Configuration.read() == expected_configuration
 
-    def test_hdx_configuration_yaml(self, hdx_key_file, project_config_yaml, locations):
-        hdx_configuration_yaml = join('tests', 'fixtures', 'config', 'hdx_config.yml')
+    def test_hdx_configuration_yaml(self, hdx_key_file, hdx_config_yaml, project_config_yaml, locations):
         Configuration._create(validlocations=locations, hdx_key_file=hdx_key_file,
-                             hdx_config_yaml=hdx_configuration_yaml, project_config_yaml=project_config_yaml)
+                             hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
             'param_1': 'ABC',
