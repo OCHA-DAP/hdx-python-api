@@ -38,7 +38,7 @@ resource:
     - description
     - url_type
     - resource_type
-galleryitem:
+showcaseitem:
   dataset_id: dataset_id
   required_fields:
     - dataset_id

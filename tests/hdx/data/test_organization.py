@@ -311,5 +311,5 @@ class TestOrganization:
     def test_get_datasets(self, configuration, datasets_get):
         org_data = copy.deepcopy(resultdict)
         organization = Organization(org_data)
-        datasets = organization.get_datasets(include_gallery=False)
+        datasets = organization.get_datasets(include_showcase=False)
         assert len(datasets) == 10

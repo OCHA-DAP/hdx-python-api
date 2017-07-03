@@ -22,7 +22,7 @@
       "description"
     ]
   },
-  "galleryitem": {
+  "showcaseitem": {
     "dataset_id": "dataset_id",
     "required_fields": [
       "dataset_id"

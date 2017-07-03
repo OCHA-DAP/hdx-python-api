@@ -102,14 +102,14 @@ def mockshow(url, datadict):
     result = json.dumps(resultdict)
     if 'related_list' in url:
         if datadict['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d':
-            result = json.dumps(TestDataset.gallery_data)
+            result = json.dumps(TestDataset.showcase_data)
             return MockResponse(200,
                                 '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}' % result)
         elif datadict['id'] == 'TEST4':
             return MockResponse(200,
                                 '{"success": true, "result": [], "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}')
     elif 'related_show' in url:
-        result = json.dumps(TestDataset.gallerydict)
+        result = json.dumps(TestDataset.showcasedict)
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_show"}' % result)
     elif 'resource_show' in url:
@@ -143,7 +143,7 @@ def mocksearch(url, datadict):
         return MockResponse(404,
                             '{"success": false, "error": {"message": "TEST ERROR: Not search", "__type": "TEST ERROR: Not Search Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
     if 'related_list' in url:
-        result = json.dumps(TestDataset.gallery_data)
+        result = json.dumps(TestDataset.showcase_data)
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}' % result)
     if datadict['q'] == 'ACLED':
@@ -198,7 +198,7 @@ def mockall(url, datadict):
         return MockResponse(404,
                             '{"success": false, "error": {"message": "TEST ERROR: Not search", "__type": "TEST ERROR: Not All Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}')
     if 'related_list' in url:
-        result = json.dumps(TestDataset.gallery_data)
+        result = json.dumps(TestDataset.showcase_data)
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_list"}' % result)
     if 'current' in url:
@@ -263,11 +263,11 @@ class TestDataset:
                        "url": "http://resource2.csv",
                        "format": "csv"}]
 
-    gallery_data = [
+    showcase_data = [
         {
             'view_count': 0,
             'description': 'The dynamic maps below have been drawn from ACLED Version 6. They illustrate key dynamics in event types, reported fatalities, and actor categories. Clicking on the maps, and selecting or de-selecting options in the legends, allows users to interactively edit and manipulate the visualisations, and export or share the finished visuals. The maps are visualised using Tableau Public.',
-            'title': 'MyGalleryItem1',
+            'title': 'MyShowcaseItem1',
             'url': 'http://www.acleddata.com/visuals/maps/dynamic-maps/',
             'created': '2016-06-14T00:01:18.330364',
             'featured': 0,
@@ -277,13 +277,13 @@ class TestDataset:
             'owner_id': '196196be-6037-4488-8b71-d786adf4c081'}
     ]
 
-    gallerydict = {
-        'description': 'My GalleryItem',
+    showcasedict = {
+        'description': 'My ShowcaseItem',
         '__extras': {
             'view_count': 1
         },
         'url': 'http://visualisation/url/',
-        'title': 'MyGalleryItem1',
+        'title': 'MyShowcaseItem1',
         'featured': 0,
         'image_url': 'http://myvisual/visual.png',
         'type': 'visualization',
@@ -321,7 +321,7 @@ class TestDataset:
                 if 'show' in url or 'related_list' in url:
                     return mockshow(url, datadict)
                 if 'related' in url:
-                    result = json.dumps(TestDataset.gallerydict)
+                    result = json.dumps(TestDataset.showcasedict)
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}' % result)
                 if 'resource' in url:
@@ -360,7 +360,7 @@ class TestDataset:
                 if 'show' in url or 'related_list' in url:
                     return mockshow(url, datadict)
                 if 'related' in url:
-                    result = json.dumps(TestDataset.gallerydict)
+                    result = json.dumps(TestDataset.showcasedict)
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}' % result)
                 if 'resource' in url:
@@ -477,7 +477,7 @@ class TestDataset:
         assert dataset['name'] == 'MyDataset1'
         assert dataset['dataset_date'] == '06/04/2016'
         assert len(dataset.resources) == 2
-        assert len(dataset.gallery) == 1
+        assert len(dataset.showcase) == 1
         dataset = Dataset.read_from_hdx('TEST2')
         assert dataset is None
         dataset = Dataset.read_from_hdx('TEST3')
@@ -497,7 +497,7 @@ class TestDataset:
         dataset.create_in_hdx()
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
         assert len(dataset.resources) == 2
-        assert len(dataset.gallery) == 0
+        assert len(dataset.showcase) == 0
 
         dataset_data['name'] = 'MyDataset2'
         dataset = Dataset(dataset_data)
@@ -510,11 +510,11 @@ class TestDataset:
             dataset.create_in_hdx()
 
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
-        gallery_data = copy.deepcopy(TestDataset.gallery_data)
-        dataset_data['gallery'] = gallery_data
+        showcase_data = copy.deepcopy(TestDataset.showcase_data)
+        dataset_data['showcase'] = showcase_data
         with pytest.raises(HDXError):
             dataset = Dataset(dataset_data)
-        del dataset_data['gallery']
+        del dataset_data['showcase']
 
         config = Configuration(hdx_read_only=True)
         config.setup_remoteckan()
@@ -522,13 +522,13 @@ class TestDataset:
         config.unique = uniqueval
 
         dataset = Dataset(dataset_data, configuration=config)
-        del gallery_data[0]['id']
-        dataset.add_update_gallery(gallery_data)
+        del showcase_data[0]['id']
+        dataset.add_update_showcase(showcase_data)
         dataset.create_in_hdx()
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
         assert len(dataset.resources) == 2
-        assert len(dataset.gallery) == 1
-        assert dataset.gallery[0].configuration.unique == uniqueval
+        assert len(dataset.showcase) == 1
+        assert dataset.showcase[0].configuration.unique == uniqueval
 
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
         resources_data = copy.deepcopy(TestDataset.resources_data)
@@ -545,7 +545,7 @@ class TestDataset:
         dataset.create_in_hdx()
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
         assert len(dataset.resources) == 2
-        assert len(dataset.gallery) == 0
+        assert len(dataset.showcase) == 0
         assert dataset.resources[0].configuration.unique == uniqueval
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
         dataset = Dataset(dataset_data)
@@ -556,7 +556,7 @@ class TestDataset:
         dataset.create_in_hdx()
         os.unlink(file.name)
         assert len(dataset.resources) == 2
-        assert len(dataset.gallery) == 0
+        assert len(dataset.showcase) == 0
 
     def test_update_in_hdx(self, configuration, post_update):
         dataset = Dataset()
@@ -587,26 +587,26 @@ class TestDataset:
             dataset.update_in_hdx()
 
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
-        gallery_data = copy.deepcopy(TestDataset.gallery_data)
+        showcase_data = copy.deepcopy(TestDataset.showcase_data)
         dataset_data['name'] = 'MyDataset1'
         dataset_data['id'] = 'TEST1'
         dataset = Dataset(dataset_data)
-        dataset.add_update_gallery(gallery_data)
+        dataset.add_update_showcase(showcase_data)
         dataset.create_in_hdx()
         assert dataset['id'] == 'TEST1'
         assert dataset['dataset_date'] == '03/23/2016'
         assert len(dataset.resources) == 2
-        assert len(dataset.gallery) == 1
+        assert len(dataset.showcase) == 1
         dataset.update_in_hdx()
         assert len(dataset.resources) == 2
-        assert len(dataset.gallery) == 1
+        assert len(dataset.showcase) == 1
         dataset = Dataset.read_from_hdx('TEST4')
-        del gallery_data[0]['id']
-        dataset.add_update_gallery(gallery_data)
+        del showcase_data[0]['id']
+        dataset.add_update_showcase(showcase_data)
         dataset['id'] = 'TEST4'
         dataset.update_in_hdx()
         assert len(dataset.resources) == 2
-        assert len(dataset.gallery) == 1
+        assert len(dataset.showcase) == 1
         dataset = Dataset.read_from_hdx('TEST4')
         resources_data = copy.deepcopy(TestDataset.resources_data)
         resource = Resource(resources_data[0])
@@ -616,7 +616,7 @@ class TestDataset:
         dataset.update_in_hdx()
         os.unlink(file.name)
         assert len(dataset.resources) == 2
-        assert len(dataset.gallery) == 0
+        assert len(dataset.showcase) == 0
 
     def test_delete_from_hdx(self, configuration, post_delete):
         dataset = Dataset.read_from_hdx('TEST1')
@@ -641,7 +641,7 @@ class TestDataset:
                                             "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d", "name": "Resource2",
                                             "url": "http://resource2.csv",
                                             "format": "csv"}]
-        assert dataset.get_gallery() == [{'image_url': 'http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png',
+        assert dataset.get_showcase() == [{'image_url': 'http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png',
                                           'url': 'http://www.acleddata.com/visuals/maps/dynamic-maps/',
                                           'type': 'visualization', 'title': 'Dynamic Map: Political Conflict in Africa',
                                           'description': 'ACLED maps'}]
@@ -681,7 +681,7 @@ class TestDataset:
                                             'url': 'http://resource2.csv',
                                             'format': 'csv'}]
 
-        assert dataset.get_gallery() == [{'image_url': 'http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png',
+        assert dataset.get_showcase() == [{'image_url': 'http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png',
                                           'url': 'http://www.acleddata.com/visuals/maps/dynamic-maps/',
                                           'type': 'visualization', 'title': 'A Map',
                                           'description': 'ACLED maps'}]
@@ -703,15 +703,15 @@ class TestDataset:
         dataset.add_update_resource(resource)
         assert dataset.resources[1].get_file_to_upload() == 'lala'
 
-    def test_add_update_delete_gallery(self, configuration, post_delete):
+    def test_add_update_delete_showcase(self, configuration, post_delete):
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
-        gallery_data = copy.deepcopy(TestDataset.gallery_data)
+        showcase_data = copy.deepcopy(TestDataset.showcase_data)
         dataset = Dataset(dataset_data)
-        dataset.add_update_gallery(gallery_data)
-        assert len(dataset.gallery) == 1
-        dataset.delete_galleryitem('NOTEXIST')
-        dataset.delete_galleryitem('d59a01d8-e52b-4337-bcda-fceb1d059bef')
-        assert len(dataset.gallery) == 0
+        dataset.add_update_showcase(showcase_data)
+        assert len(dataset.showcase) == 1
+        dataset.delete_showcaseitem('NOTEXIST')
+        dataset.delete_showcaseitem('d59a01d8-e52b-4337-bcda-fceb1d059bef')
+        assert len(dataset.showcase) == 0
 
     def test_search_in_hdx(self, configuration, search):
         dataset.page_size = 1000

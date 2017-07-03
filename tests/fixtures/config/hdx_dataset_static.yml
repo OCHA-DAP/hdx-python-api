@@ -36,7 +36,7 @@ resources:
     url: "http://resource2.csv"
     format: "csv"
 
-gallery:
+showcase:
   -
     title: "Dynamic Map: Political Conflict in Africa"
     type: "visualization"

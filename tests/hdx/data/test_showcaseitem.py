@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-"""GalleryItem Tests"""
+"""ShowcaseItem Tests"""
 import copy
 import json
 from os.path import join
@@ -7,18 +7,18 @@ from os.path import join
 import pytest
 import requests
 
-from hdx.data.galleryitem import GalleryItem
 from hdx.data.hdxobject import HDXError
+from hdx.data.showcaseitem import ShowcaseItem
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from . import MockResponse
 
 resultdict = {
-    'description': 'My GalleryItem',
+    'description': 'My ShowcaseItem',
     '__extras': {
         'view_count': 1
     },
     'url': 'http://visualisation/url/',
-    'title': 'MyGalleryItem1',
+    'title': 'MyShowcaseItem1',
     'featured': 0,
     'image_url': 'http://myvisual/visual.png',
     'type': 'visualization',
@@ -45,10 +45,10 @@ def mockshow(url, datadict):
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_show"}')
 
 
-class TestGalleryItem:
-    galleryitem_data = {
-        'title': 'MyGalleryItem1',
-        'description': 'My GalleryItem',
+class TestShowcaseItem:
+    showcaseitem_data = {
+        'title': 'MyShowcaseItem1',
+        'description': 'My ShowcaseItem',
         'dataset_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',
         'image_url': 'http://myvisual/visual.png',
         'type': 'visualization',
@@ -57,11 +57,11 @@ class TestGalleryItem:
 
     @pytest.fixture(scope='class')
     def static_yaml(self):
-        return join('tests', 'fixtures', 'config', 'hdx_galleryitem_static.yml')
+        return join('tests', 'fixtures', 'config', 'hdx_showcaseitem_static.yml')
 
     @pytest.fixture(scope='class')
     def static_json(self):
-        return join('tests', 'fixtures', 'config', 'hdx_galleryitem_static.json')
+        return join('tests', 'fixtures', 'config', 'hdx_showcaseitem_static.json')
 
     @pytest.fixture(scope='function')
     def read(self, monkeypatch):
@@ -86,13 +86,13 @@ class TestGalleryItem:
                                         '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}')
 
                 result = json.dumps(resultdict)
-                if datadict['title'] == 'MyGalleryItem1':
+                if datadict['title'] == 'MyShowcaseItem1':
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}' % result)
-                if datadict['title'] == 'MyGalleryItem2':
+                if datadict['title'] == 'MyShowcaseItem2':
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}')
-                if datadict['title'] == 'MyGalleryItem3':
+                if datadict['title'] == 'MyShowcaseItem3':
                     return MockResponse(200,
                                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}')
 
@@ -116,13 +116,13 @@ class TestGalleryItem:
                 merge_two_dictionaries(resultdictcopy, datadict)
 
                 result = json.dumps(resultdictcopy)
-                if datadict['title'] == 'MyGalleryItem1':
+                if datadict['title'] == 'MyShowcaseItem1':
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}' % result)
-                if datadict['title'] == 'MyGalleryItem2':
+                if datadict['title'] == 'MyShowcaseItem2':
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}')
-                if datadict['title'] == 'MyGalleryItem3':
+                if datadict['title'] == 'MyShowcaseItem3':
                     return MockResponse(200,
                                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}')
 
@@ -153,102 +153,102 @@ class TestGalleryItem:
         monkeypatch.setattr(requests, 'Session', MockSession)
 
     def test_read_from_hdx(self, configuration, read):
-        galleryitem = GalleryItem.read_from_hdx('TEST1')
-        assert galleryitem['id'] == '2f90d964-f980-4513-ad1b-5df6b2d044ff'
-        assert galleryitem['title'] == 'MyGalleryItem1'
-        galleryitem = GalleryItem.read_from_hdx('TEST2')
-        assert galleryitem is None
-        galleryitem = GalleryItem.read_from_hdx('TEST3')
-        assert galleryitem is None
+        showcaseitem = ShowcaseItem.read_from_hdx('TEST1')
+        assert showcaseitem['id'] == '2f90d964-f980-4513-ad1b-5df6b2d044ff'
+        assert showcaseitem['title'] == 'MyShowcaseItem1'
+        showcaseitem = ShowcaseItem.read_from_hdx('TEST2')
+        assert showcaseitem is None
+        showcaseitem = ShowcaseItem.read_from_hdx('TEST3')
+        assert showcaseitem is None
 
     def test_create_in_hdx(self, configuration, post_create):
-        galleryitem = GalleryItem()
+        showcaseitem = ShowcaseItem()
         with pytest.raises(HDXError):
-            galleryitem.create_in_hdx()
-        galleryitem['id'] = 'TEST1'
-        galleryitem['title'] = 'LALA'
+            showcaseitem.create_in_hdx()
+        showcaseitem['id'] = 'TEST1'
+        showcaseitem['title'] = 'LALA'
         with pytest.raises(HDXError):
-            galleryitem.create_in_hdx()
+            showcaseitem.create_in_hdx()
 
-        galleryitem_data = copy.deepcopy(TestGalleryItem.galleryitem_data)
-        galleryitem = GalleryItem(galleryitem_data)
-        galleryitem.create_in_hdx()
-        assert galleryitem['id'] == '2f90d964-f980-4513-ad1b-5df6b2d044ff'
+        showcaseitem_data = copy.deepcopy(TestShowcaseItem.showcaseitem_data)
+        showcaseitem = ShowcaseItem(showcaseitem_data)
+        showcaseitem.create_in_hdx()
+        assert showcaseitem['id'] == '2f90d964-f980-4513-ad1b-5df6b2d044ff'
 
-        galleryitem_data['title'] = 'MyGalleryItem2'
-        galleryitem = GalleryItem(galleryitem_data)
+        showcaseitem_data['title'] = 'MyShowcaseItem2'
+        showcaseitem = ShowcaseItem(showcaseitem_data)
         with pytest.raises(HDXError):
-            galleryitem.create_in_hdx()
+            showcaseitem.create_in_hdx()
 
-        galleryitem_data['title'] = 'MyGalleryItem3'
-        galleryitem = GalleryItem(galleryitem_data)
+        showcaseitem_data['title'] = 'MyShowcaseItem3'
+        showcaseitem = ShowcaseItem(showcaseitem_data)
         with pytest.raises(HDXError):
-            galleryitem.create_in_hdx()
+            showcaseitem.create_in_hdx()
 
     def test_update_in_hdx(self, configuration, post_update):
-        galleryitem = GalleryItem()
-        galleryitem['id'] = 'NOTEXIST'
+        showcaseitem = ShowcaseItem()
+        showcaseitem['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):
-            galleryitem.update_in_hdx()
-        galleryitem['title'] = 'LALA'
+            showcaseitem.update_in_hdx()
+        showcaseitem['title'] = 'LALA'
         with pytest.raises(HDXError):
-            galleryitem.update_in_hdx()
+            showcaseitem.update_in_hdx()
 
-        galleryitem = GalleryItem.read_from_hdx('TEST1')
-        assert galleryitem['id'] == '2f90d964-f980-4513-ad1b-5df6b2d044ff'
-        assert galleryitem['type'] == 'visualization'
+        showcaseitem = ShowcaseItem.read_from_hdx('TEST1')
+        assert showcaseitem['id'] == '2f90d964-f980-4513-ad1b-5df6b2d044ff'
+        assert showcaseitem['type'] == 'visualization'
 
-        galleryitem['type'] = 'paper'
-        galleryitem['id'] = 'TEST1'
-        galleryitem['title'] = 'MyGalleryItem1'
-        galleryitem.update_in_hdx()
-        assert galleryitem['id'] == 'TEST1'
-        assert galleryitem['type'] == 'paper'
-        assert galleryitem.get_old_data_dict() == {'__extras': {'view_count': 1},
-                                                   'description': 'My GalleryItem',
+        showcaseitem['type'] = 'paper'
+        showcaseitem['id'] = 'TEST1'
+        showcaseitem['title'] = 'MyShowcaseItem1'
+        showcaseitem.update_in_hdx()
+        assert showcaseitem['id'] == 'TEST1'
+        assert showcaseitem['type'] == 'paper'
+        assert showcaseitem.get_old_data_dict() == {'__extras': {'view_count': 1},
+                                                   'description': 'My ShowcaseItem',
                                                    'featured': 0, 'id': 'TEST1',
                                                    'image_url': 'http://myvisual/visual.png',
                                                    'owner_id': '196196be-6037-4488-8b71-d786adf4c081',
-                                                   'title': 'MyGalleryItem1', 'type': 'paper',
+                                                   'title': 'MyShowcaseItem1', 'type': 'paper',
                                                    'url': 'http://visualisation/url/'}
 
-        galleryitem['id'] = 'NOTEXIST'
+        showcaseitem['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):
-            galleryitem.update_in_hdx()
+            showcaseitem.update_in_hdx()
 
-        del galleryitem['id']
+        del showcaseitem['id']
         with pytest.raises(HDXError):
-            galleryitem.update_in_hdx()
+            showcaseitem.update_in_hdx()
 
-        galleryitem_data = copy.deepcopy(TestGalleryItem.galleryitem_data)
-        galleryitem_data['title'] = 'MyGalleryItem1'
-        galleryitem_data['id'] = 'TEST1'
-        galleryitem = GalleryItem(galleryitem_data)
-        galleryitem.create_in_hdx()
-        assert galleryitem['id'] == 'TEST1'
-        assert galleryitem['type'] == 'visualization'
+        showcaseitem_data = copy.deepcopy(TestShowcaseItem.showcaseitem_data)
+        showcaseitem_data['title'] = 'MyShowcaseItem1'
+        showcaseitem_data['id'] = 'TEST1'
+        showcaseitem = ShowcaseItem(showcaseitem_data)
+        showcaseitem.create_in_hdx()
+        assert showcaseitem['id'] == 'TEST1'
+        assert showcaseitem['type'] == 'visualization'
 
     def test_delete_from_hdx(self, configuration, post_delete):
-        galleryitem = GalleryItem.read_from_hdx('TEST1')
-        galleryitem.delete_from_hdx()
-        del galleryitem['id']
+        showcaseitem = ShowcaseItem.read_from_hdx('TEST1')
+        showcaseitem.delete_from_hdx()
+        del showcaseitem['id']
         with pytest.raises(HDXError):
-            galleryitem.delete_from_hdx()
+            showcaseitem.delete_from_hdx()
 
     def test_update_yaml(self, configuration, static_yaml):
-        galleryitem_data = copy.deepcopy(TestGalleryItem.galleryitem_data)
-        galleryitem = GalleryItem(galleryitem_data)
-        assert galleryitem['title'] == 'MyGalleryItem1'
-        assert galleryitem['type'] == 'visualization'
-        galleryitem.update_from_yaml(static_yaml)
-        assert galleryitem['title'] == 'MyGalleryItem1'
-        assert galleryitem['type'] == 'paper'
+        showcaseitem_data = copy.deepcopy(TestShowcaseItem.showcaseitem_data)
+        showcaseitem = ShowcaseItem(showcaseitem_data)
+        assert showcaseitem['title'] == 'MyShowcaseItem1'
+        assert showcaseitem['type'] == 'visualization'
+        showcaseitem.update_from_yaml(static_yaml)
+        assert showcaseitem['title'] == 'MyShowcaseItem1'
+        assert showcaseitem['type'] == 'paper'
 
     def test_update_json(self, configuration, static_json):
-        galleryitem_data = copy.deepcopy(TestGalleryItem.galleryitem_data)
-        galleryitem = GalleryItem(galleryitem_data)
-        assert galleryitem['title'] == 'MyGalleryItem1'
-        assert galleryitem['type'] == 'visualization'
-        galleryitem.update_from_json(static_json)
-        assert galleryitem['title'] == 'MyGalleryItem1'
-        assert galleryitem['type'] == 'other'
+        showcaseitem_data = copy.deepcopy(TestShowcaseItem.showcaseitem_data)
+        showcaseitem = ShowcaseItem(showcaseitem_data)
+        assert showcaseitem['title'] == 'MyShowcaseItem1'
+        assert showcaseitem['type'] == 'visualization'
+        showcaseitem.update_from_json(static_json)
+        assert showcaseitem['title'] == 'MyShowcaseItem1'
+        assert showcaseitem['type'] == 'other'

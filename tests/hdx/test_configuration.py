@@ -170,7 +170,7 @@ hello there'''
             'resource': {'dataset_id': 'package_id',
                          'required_fields': ['name', 'description'
                                              ]},
-            'galleryitem': {'dataset_id': 'dataset_id', 'required_fields': [
+            'showcaseitem': {'dataset_id': 'dataset_id', 'required_fields': [
                 'dataset_id',
             ],},
         }
@@ -200,7 +200,7 @@ hello there'''
             'resource': {'dataset_id': 'package_id',
                          'required_fields': ['package_id', 'name', 'description'
                                              ]},
-            'galleryitem': {'dataset_id': 'dataset_id', 'required_fields': [
+            'showcaseitem': {'dataset_id': 'dataset_id', 'required_fields': [
                 'dataset_id',
                 'title',
             ], 'ignore_on_update': ['dataset_id']},
@@ -248,7 +248,7 @@ hello there'''
                          'required_fields': ['package_id', 'name', 'format', 'url', 'description',
                                              'url_type', 'resource_type'
                                              ]},
-            'galleryitem': {'dataset_id': 'dataset_id', 'required_fields': [
+            'showcaseitem': {'dataset_id': 'dataset_id', 'required_fields': [
                 'dataset_id',
                 'title',
                 'type',
@@ -316,7 +316,7 @@ hello there'''
                          'required_fields': ['package_id', 'name', 'format', 'url', 'description',
                                              'url_type', 'resource_type'
                                              ]},
-            'galleryitem': {'dataset_id': 'dataset_id', 'required_fields': [
+            'showcaseitem': {'dataset_id': 'dataset_id', 'required_fields': [
                 'dataset_id',
                 'title',
                 'type',
@@ -381,7 +381,7 @@ hello there'''
                          'required_fields': ['package_id', 'name', 'format', 'url', 'description',
                                              'url_type', 'resource_type'
                                              ]},
-            'galleryitem': {'dataset_id': 'dataset_id', 'required_fields': [
+            'showcaseitem': {'dataset_id': 'dataset_id', 'required_fields': [
                 'dataset_id',
                 'title',
                 'type',
