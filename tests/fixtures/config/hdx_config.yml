@@ -13,15 +13,11 @@ dataset:
     - title
     - dataset_date
 resource:
-  dataset_id: package_id
   required_fields:
     - package_id
     - name
     - description
 showcaseitem:
-  dataset_id: dataset_id
   required_fields:
-    - dataset_id
+    - package_id
     - title
-  ignore_on_update:
-    - dataset_id

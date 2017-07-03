@@ -167,12 +167,8 @@ hello there'''
                 'name',
                 'dataset_date',
             ]},
-            'resource': {'dataset_id': 'package_id',
-                         'required_fields': ['name', 'description'
-                                             ]},
-            'showcaseitem': {'dataset_id': 'dataset_id', 'required_fields': [
-                'dataset_id',
-            ],},
+            'resource': {'required_fields': ['name', 'description']},
+            'showcaseitem': {'required_fields': ['package_id']},
         }
         assert Configuration.read() == expected_configuration
 
@@ -197,13 +193,8 @@ hello there'''
                 'title',
                 'dataset_date',
             ]},
-            'resource': {'dataset_id': 'package_id',
-                         'required_fields': ['package_id', 'name', 'description'
-                                             ]},
-            'showcaseitem': {'dataset_id': 'dataset_id', 'required_fields': [
-                'dataset_id',
-                'title',
-            ], 'ignore_on_update': ['dataset_id']},
+            'resource': {'required_fields': ['package_id', 'name', 'description']},
+            'showcaseitem': {'required_fields': ['package_id', 'title']},
         }
         assert Configuration.read() == expected_configuration
 
@@ -244,18 +235,16 @@ hello there'''
                 'methodology',
                 'data_update_frequency'
             ]},
-            'resource': {'dataset_id': 'package_id',
-                         'required_fields': ['package_id', 'name', 'format', 'url', 'description',
-                                             'url_type', 'resource_type'
-                                             ]},
-            'showcaseitem': {'dataset_id': 'dataset_id', 'required_fields': [
-                'dataset_id',
+            'resource': {'required_fields': ['package_id', 'name', 'format', 'url', 'description',
+                                             'url_type', 'resource_type']},
+            'showcaseitem': {'required_fields': [
+                'package_id',
+                'name',
                 'title',
-                'type',
-                'description',
+                'notes',
                 'url',
-                'image_url',
-            ], 'ignore_on_update': 'dataset_id'},
+                'image_display_url',
+            ]},
             'user': {'required_fields': [
                 'name',
                 'email',
@@ -312,18 +301,17 @@ hello there'''
                 'methodology',
                 'data_update_frequency'
             ]},
-            'resource': {'dataset_id': 'package_id',
-                         'required_fields': ['package_id', 'name', 'format', 'url', 'description',
+            'resource': {'required_fields': ['package_id', 'name', 'format', 'url', 'description',
                                              'url_type', 'resource_type'
                                              ]},
-            'showcaseitem': {'dataset_id': 'dataset_id', 'required_fields': [
-                'dataset_id',
+            'showcaseitem': {'required_fields': [
+                'package_id',
+                'name',
                 'title',
-                'type',
-                'description',
+                'notes',
                 'url',
-                'image_url',
-            ], 'ignore_on_update': 'dataset_id'},
+                'image_display_url',
+            ]},
             'user': {'required_fields': [
                 'name',
                 'email',
@@ -377,18 +365,17 @@ hello there'''
                 'methodology',
                 'data_update_frequency'
             ]},
-            'resource': {'dataset_id': 'package_id',
-                         'required_fields': ['package_id', 'name', 'format', 'url', 'description',
+            'resource': {'required_fields': ['package_id', 'name', 'format', 'url', 'description',
                                              'url_type', 'resource_type'
                                              ]},
-            'showcaseitem': {'dataset_id': 'dataset_id', 'required_fields': [
-                'dataset_id',
+            'showcaseitem': {'required_fields': [
+                'package_id',
+                'name',
                 'title',
-                'type',
-                'description',
+                'notes',
                 'url',
-                'image_url',
-            ], 'ignore_on_update': 'dataset_id'},
+                'image_display_url',
+            ]},
             'user': {'required_fields': [
                 'name',
                 'email',

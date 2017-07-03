@@ -265,14 +265,12 @@ class TestDataset:
 
     showcase_data = [
         {
-            'view_count': 0,
+            'name': 'showcase_item_1',
             'description': 'The dynamic maps below have been drawn from ACLED Version 6. They illustrate key dynamics in event types, reported fatalities, and actor categories. Clicking on the maps, and selecting or de-selecting options in the legends, allows users to interactively edit and manipulate the visualisations, and export or share the finished visuals. The maps are visualised using Tableau Public.',
             'title': 'MyShowcaseItem1',
             'url': 'http://www.acleddata.com/visuals/maps/dynamic-maps/',
             'created': '2016-06-14T00:01:18.330364',
-            'featured': 0,
-            'image_url': 'http://docs.humdata.org/wp-content/uploads/acled_visual.png',
-            'type': 'visualization',
+            'image_display_url': 'http://docs.humdata.org/wp-content/uploads/acled_visual.png',
             'id': 'd59a01d8-e52b-4337-bcda-fceb1d059bef',
             'owner_id': '196196be-6037-4488-8b71-d786adf4c081'}
     ]
@@ -641,9 +639,9 @@ class TestDataset:
                                             "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d", "name": "Resource2",
                                             "url": "http://resource2.csv",
                                             "format": "csv"}]
-        assert dataset.get_showcase() == [{'image_url': 'http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png',
+        assert dataset.get_showcase() == [{'image_display_url': 'http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png',
                                           'url': 'http://www.acleddata.com/visuals/maps/dynamic-maps/',
-                                          'type': 'visualization', 'title': 'Dynamic Map: Political Conflict in Africa',
+                                          'name': 'showcase_item_1', 'title': 'Dynamic Map: Political Conflict in Africa',
                                           'description': 'ACLED maps'}]
         dataset.get_resources()[0]['url'] = 'http://lalala.xlsx'
         assert dataset.get_resources() == [{"id": "ABC", "description": "Resource1",
@@ -681,9 +679,9 @@ class TestDataset:
                                             'url': 'http://resource2.csv',
                                             'format': 'csv'}]
 
-        assert dataset.get_showcase() == [{'image_url': 'http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png',
+        assert dataset.get_showcase() == [{'image_display_url': 'http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png',
                                           'url': 'http://www.acleddata.com/visuals/maps/dynamic-maps/',
-                                          'type': 'visualization', 'title': 'A Map',
+                                          'name': 'showcase_item_1', 'title': 'A Map',
                                           'description': 'ACLED maps'}]
 
     def test_add_update_delete_resources(self, configuration, post_delete):

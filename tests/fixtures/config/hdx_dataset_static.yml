@@ -38,8 +38,8 @@ resources:
 
 showcase:
   -
+    name: "acled-africa-showcase"
     title: "Dynamic Map: Political Conflict in Africa"
-    type: "visualization"
-    description: "ACLED maps"
+    notes: "ACLED maps"
     url: "http://www.acleddata.com/visuals/maps/dynamic-maps/"
-    image_url: "http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png"
+    image_display_url: "http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png"

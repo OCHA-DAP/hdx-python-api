@@ -10,49 +10,96 @@ import requests
 from hdx.data.hdxobject import HDXError
 from hdx.data.showcaseitem import ShowcaseItem
 from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.loader import load_yaml
 from . import MockResponse
 
 resultdict = {
-    'description': 'My ShowcaseItem',
-    '__extras': {
-        'view_count': 1
-    },
+    'relationships_as_object': [],
+    'num_tags': 2,
+    'id': '05e392bf-04e0-4ca6-848c-4e87bba10746',
+    'metadata_created': '2017-07-03T07:50:49.474517',
+    'metadata_modified': '2017-07-03T08:12:43.726624',
+    'author': 'Dan Mihaila',
+    'author_email': 'dan@gmail.com',
+    'state': 'active',
+    'creator_user_id': '060468e4-2f33-4488-8504-c4b10cc34821',
+    'type': 'showcase',
+    'resources': [],
+    'tags': [
+        {
+            'vocabulary_id': '57f71f5f-adb0-48fd-ab2c-6b93b9d30332',
+            'state': 'active',
+            'display_name': 'economy',
+            'id': 'c69c6fa1-7b2d-403e-a386-c57272da505d',
+            'name': 'economy'
+        },
+        {
+            'vocabulary_id': '57f71f5f-adb0-48fd-ab2c-6b93b9d30332',
+            'state': 'active',
+            'display_name': 'health',
+            'id': 'cfc3fb43-78a5-45e0-8bac-fbb81d00d211',
+            'name': 'health'
+        }
+    ],
+    'groups': [],
+    'relationships_as_subject': [],
+    'total_res_downloads': 0,
+    'num_datasets': 2,
+    'showcase_notes_formatted': '<p>lalala</p>',
+    'image_url': 'visual.png',
+    'revision_id': 'cc64364b-ede2-400a-bb9f-8e585a4f6399',
+    'notes': 'My ShowcaseItem',
     'url': 'http://visualisation/url/',
     'title': 'MyShowcaseItem1',
-    'featured': 0,
-    'image_url': 'http://myvisual/visual.png',
-    'type': 'visualization',
-    'id': '2f90d964-f980-4513-ad1b-5df6b2d044ff',
-    'owner_id': '196196be-6037-4488-8b71-d786adf4c081'
+    'image_display_url': 'http://myvisual/visual.png',
+    'name': 'showcase-item-1'
 }
+
+datasetsdict = load_yaml(join('tests', 'fixtures', 'dataset_all_results.yml'))
 
 
 def mockshow(url, datadict):
-    if 'show' not in url:
+    if 'list' in url:
+        result = json.dumps(datasetsdict)
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_package_list"}' % result)
+    if '_show' not in url:
         return MockResponse(404,
-                            '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_show"}')
+                            '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_show"}')
     result = json.dumps(resultdict)
     if datadict['id'] == 'TEST1':
         return MockResponse(200,
-                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_show"}' % result)
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_show"}' % result)
     if datadict['id'] == 'TEST2':
         return MockResponse(404,
-                            '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_show"}')
+                            '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_show"}')
     if datadict['id'] == 'TEST3':
         return MockResponse(200,
-                            '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_show"}')
+                            '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_show"}')
     return MockResponse(404,
-                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_show"}')
+                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_show"}')
+
+
+def mockassociate(url, datadict):
+    if 'association_delete' in url:
+        return MockResponse(200,
+                            '{"success": true, "result": null, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_package_association_delete"}')
+    elif 'association_create' in url:
+        result = json.dumps(datadict)
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_package_association_create"}' % result)
 
 
 class TestShowcaseItem:
     showcaseitem_data = {
         'title': 'MyShowcaseItem1',
-        'description': 'My ShowcaseItem',
-        'dataset_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',
-        'image_url': 'http://myvisual/visual.png',
-        'type': 'visualization',
-        'url': 'http://visualisation/url/'
+        'notes': 'My ShowcaseItem',
+        'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',
+        'image_display_url': 'http://myvisual/visual.png',
+        'name': 'showcase-item-1',
+        'url': 'http://visualisation/url/',
+        'tags': [{'name': 'economy'}, {'name': 'health'}],
+        'dataset_ids': ['a89c6260-6392-416e-bcbc-eb2c5f1d7add']
     }
 
     @pytest.fixture(scope='class')
@@ -79,25 +126,27 @@ class TestShowcaseItem:
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
-                if 'show' in url:
+                if url.endswith('show') or 'list' in url:
                     return mockshow(url, datadict)
+                if 'association' in url:
+                    return mockassociate(url, datadict)
                 if 'create' not in url:
                     return MockResponse(404,
-                                        '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}')
+                                        '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_create"}')
 
                 result = json.dumps(resultdict)
                 if datadict['title'] == 'MyShowcaseItem1':
                     return MockResponse(200,
-                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}' % result)
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_create"}' % result)
                 if datadict['title'] == 'MyShowcaseItem2':
                     return MockResponse(404,
-                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}')
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_create"}')
                 if datadict['title'] == 'MyShowcaseItem3':
                     return MockResponse(200,
-                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}')
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_create"}')
 
                 return MockResponse(404,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_create"}')
+                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_create"}')
 
         monkeypatch.setattr(requests, 'Session', MockSession)
 
@@ -107,27 +156,29 @@ class TestShowcaseItem:
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
-                if 'show' in url:
+                if url.endswith('show') or 'list' in url:
                     return mockshow(url, datadict)
+                if 'association' in url:
+                    return mockassociate(url, datadict)
                 if 'update' not in url:
                     return MockResponse(404,
-                                        '{"success": false, "error": {"message": "TEST ERROR: Not update", "__type": "TEST ERROR: Not Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}')
+                                        '{"success": false, "error": {"message": "TEST ERROR: Not update", "__type": "TEST ERROR: Not Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_update"}')
                 resultdictcopy = copy.deepcopy(resultdict)
                 merge_two_dictionaries(resultdictcopy, datadict)
 
                 result = json.dumps(resultdictcopy)
                 if datadict['title'] == 'MyShowcaseItem1':
                     return MockResponse(200,
-                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}' % result)
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_update"}' % result)
                 if datadict['title'] == 'MyShowcaseItem2':
                     return MockResponse(404,
-                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}')
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_update"}')
                 if datadict['title'] == 'MyShowcaseItem3':
                     return MockResponse(200,
-                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}')
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_update"}')
 
                 return MockResponse(404,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_update"}')
+                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_update"}')
 
         monkeypatch.setattr(requests, 'Session', MockSession)
 
@@ -138,24 +189,25 @@ class TestShowcaseItem:
             def post(url, data, headers, files, allow_redirects, auth):
                 decodedata = data.decode('utf-8')
                 datadict = json.loads(decodedata)
-                if 'show' in url:
+                if url.endswith('show') or 'list' in url:
                     return mockshow(url, datadict)
                 if 'delete' not in url:
                     return MockResponse(404,
-                                        '{"success": false, "error": {"message": "TEST ERROR: Not delete", "__type": "TEST ERROR: Not Delete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_delete"}')
-                if datadict['id'] == '2f90d964-f980-4513-ad1b-5df6b2d044ff':
+                                        '{"success": false, "error": {"message": "TEST ERROR: Not delete", "__type": "TEST ERROR: Not Delete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_delete"}')
+                if datadict['id'] == '05e392bf-04e0-4ca6-848c-4e87bba10746':
                     return MockResponse(200,
-                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_delete"}' % decodedata)
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_delete"}' % decodedata)
 
                 return MockResponse(404,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=related_delete"}')
+                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_delete"}')
 
         monkeypatch.setattr(requests, 'Session', MockSession)
 
     def test_read_from_hdx(self, configuration, read):
         showcaseitem = ShowcaseItem.read_from_hdx('TEST1')
-        assert showcaseitem['id'] == '2f90d964-f980-4513-ad1b-5df6b2d044ff'
+        assert showcaseitem['id'] == '05e392bf-04e0-4ca6-848c-4e87bba10746'
         assert showcaseitem['title'] == 'MyShowcaseItem1'
+        assert showcaseitem['dataset_ids'][7] == 'a89c6260-6392-416e-bcbc-eb2c5f1d7add'
         showcaseitem = ShowcaseItem.read_from_hdx('TEST2')
         assert showcaseitem is None
         showcaseitem = ShowcaseItem.read_from_hdx('TEST3')
@@ -173,7 +225,7 @@ class TestShowcaseItem:
         showcaseitem_data = copy.deepcopy(TestShowcaseItem.showcaseitem_data)
         showcaseitem = ShowcaseItem(showcaseitem_data)
         showcaseitem.create_in_hdx()
-        assert showcaseitem['id'] == '2f90d964-f980-4513-ad1b-5df6b2d044ff'
+        assert showcaseitem['id'] == '05e392bf-04e0-4ca6-848c-4e87bba10746'
 
         showcaseitem_data['title'] = 'MyShowcaseItem2'
         showcaseitem = ShowcaseItem(showcaseitem_data)
@@ -195,22 +247,23 @@ class TestShowcaseItem:
             showcaseitem.update_in_hdx()
 
         showcaseitem = ShowcaseItem.read_from_hdx('TEST1')
-        assert showcaseitem['id'] == '2f90d964-f980-4513-ad1b-5df6b2d044ff'
-        assert showcaseitem['type'] == 'visualization'
+        assert showcaseitem['id'] == '05e392bf-04e0-4ca6-848c-4e87bba10746'
+        assert showcaseitem['title'] == 'MyShowcaseItem1'
 
-        showcaseitem['type'] = 'paper'
         showcaseitem['id'] = 'TEST1'
-        showcaseitem['title'] = 'MyShowcaseItem1'
+        showcaseitem['notes'] = 'lalalala'
         showcaseitem.update_in_hdx()
         assert showcaseitem['id'] == 'TEST1'
-        assert showcaseitem['type'] == 'paper'
-        assert showcaseitem.get_old_data_dict() == {'__extras': {'view_count': 1},
-                                                   'description': 'My ShowcaseItem',
-                                                   'featured': 0, 'id': 'TEST1',
-                                                   'image_url': 'http://myvisual/visual.png',
-                                                   'owner_id': '196196be-6037-4488-8b71-d786adf4c081',
-                                                   'title': 'MyShowcaseItem1', 'type': 'paper',
-                                                   'url': 'http://visualisation/url/'}
+        assert showcaseitem['notes'] == 'lalalala'
+        expected = copy.deepcopy(resultdict)
+        expected['notes'] = 'lalalala'
+        expected['id'] = 'TEST1'
+        expected['dataset_ids'] = ['6a5aebc1-f5a9-4842-8183-b8118228e71e', 'b2f32edd-bac2-4940-aa58-49e565041056',
+                                   '86e6d416-d2e8-499d-b2aa-6c75ea931f19', '8fc7bcd9-5daa-44a8-b219-e707af2cd4a8',
+                                   '87a5dbbc-db76-4a0f-a20f-5210a20a3bc9', '7ba76fc6-22aa-4295-be20-39ccaa1d0c0c',
+                                   '13398455-5826-4420-b7e4-af22ff9b4061', 'a89c6260-6392-416e-bcbc-eb2c5f1d7add',
+                                   '5ea80d40-ef69-43b7-9baf-4bd4cafb5965', 'd80ef63d-6b5e-4188-9e33-654155e03013']
+        assert showcaseitem.get_old_data_dict() == expected
 
         showcaseitem['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):
@@ -226,7 +279,7 @@ class TestShowcaseItem:
         showcaseitem = ShowcaseItem(showcaseitem_data)
         showcaseitem.create_in_hdx()
         assert showcaseitem['id'] == 'TEST1'
-        assert showcaseitem['type'] == 'visualization'
+        assert showcaseitem['notes'] == 'My ShowcaseItem'
 
     def test_delete_from_hdx(self, configuration, post_delete):
         showcaseitem = ShowcaseItem.read_from_hdx('TEST1')
@@ -239,16 +292,16 @@ class TestShowcaseItem:
         showcaseitem_data = copy.deepcopy(TestShowcaseItem.showcaseitem_data)
         showcaseitem = ShowcaseItem(showcaseitem_data)
         assert showcaseitem['title'] == 'MyShowcaseItem1'
-        assert showcaseitem['type'] == 'visualization'
+        assert showcaseitem['name'] == 'showcase-item-1'
         showcaseitem.update_from_yaml(static_yaml)
         assert showcaseitem['title'] == 'MyShowcaseItem1'
-        assert showcaseitem['type'] == 'paper'
+        assert showcaseitem['name'] == 'my-showcase-item-1'
 
     def test_update_json(self, configuration, static_json):
         showcaseitem_data = copy.deepcopy(TestShowcaseItem.showcaseitem_data)
         showcaseitem = ShowcaseItem(showcaseitem_data)
         assert showcaseitem['title'] == 'MyShowcaseItem1'
-        assert showcaseitem['type'] == 'visualization'
+        assert showcaseitem['name'] == 'showcase-item-1'
         showcaseitem.update_from_json(static_json)
         assert showcaseitem['title'] == 'MyShowcaseItem1'
-        assert showcaseitem['type'] == 'other'
+        assert showcaseitem['name'] == 'new-showcase-item-1'

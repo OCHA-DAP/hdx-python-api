@@ -1,8 +1,8 @@
 {
+  "name": "new-showcase-item-1",
   "title": "MyShowcaseItem1",
-  "description": "My ShowcaseItem",
-  "dataset_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d",
-  "image_url": "http://myvisual/visual.png",
-  "type": "other",
+  "notes": "My ShowcaseItem",
+  "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d",
+  "image_display_url": "http://myvisual/visual.png",
   "url": "http://visualisation/url/"
 }

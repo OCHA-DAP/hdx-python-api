@@ -272,7 +272,7 @@ class HDXObject(UserDict, object):
                 files = None
             return self.configuration.call_remoteckan(self.actions()[action], data, files=files)
         except Exception as e:
-            raisefrom(HDXError, 'Failed when trying to %s %s! (POST)' % (action, self.data[id_field_name]), e)
+            raisefrom(HDXError, 'Failed when trying to %s %s! (POST)' % (action, data[id_field_name]), e)
         finally:
             if file_to_upload and file:
                 file.close()
@@ -438,3 +438,48 @@ class HDXObject(UserDict, object):
                 if not new_hdxobject[id_field] in hdxobject_names:
                     hdxobjects.append(hdxobjectclass(new_hdxobject, configuration=self.configuration))
             del self.data[hdxobjects_name]
+
+    def _get_tags(self):
+        # type: () -> List[str]
+        """Return the dataset's list of tags
+
+        Returns:
+            List[str]: List of tags or [] if there are none
+        """
+        tags = self.data.get('tags', None)
+        if not tags:
+            return list()
+        return [x['name'] for x in tags]
+
+    def _add_tag(self, tag):
+        # type: (str) -> None
+        """Add a tag
+
+        Args:
+            tag (str): Tag to add
+
+        Returns:
+            None
+        """
+        tags = self.data.get('tags', None)
+        if tags:
+            if tag in [x['name'] for x in tags]:
+                return
+        else:
+            tags = list()
+        tags.append({'name': tag})
+        self.data['tags'] = tags
+
+    def _add_tags(self, tags):
+        # type: (List[str]) -> None
+        """Add a list of tag
+
+        Args:
+            tags (List[str]): List of tags to add
+
+        Returns:
+            None
+        """
+        for tag in tags:
+            self._add_tag(tag)
+

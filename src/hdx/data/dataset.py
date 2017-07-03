@@ -7,10 +7,10 @@ import logging
 import sys
 from datetime import datetime
 from os.path import join
+from typing import List
 
 from dateutil import parser
 from six.moves import range
-from typing import List
 
 import hdx.data.organization
 from hdx.data.hdxobject import HDXObject, HDXError
@@ -224,7 +224,7 @@ class Dataset(HDXObject):
         if isinstance(showcaseitem, dict):
             showcaseitem = ShowcaseItem(showcaseitem, configuration=self.configuration)
         if isinstance(showcaseitem, ShowcaseItem):
-            if 'dataset_id' in showcaseitem:
+            if 'package_id' in showcaseitem:
                 raise HDXError("Showcase item %s being added already has a dataset id!" % (showcaseitem['name']))
             self._addupdate_hdxobject(self.showcase, 'title', showcaseitem)
             return
@@ -364,10 +364,10 @@ class Dataset(HDXObject):
         self._check_required_fields('dataset', ignore_fields)
 
         for resource in self.resources:
-            ignore_fields = [self.configuration['resource']['dataset_id']]
+            ignore_fields = ['package_id']
             resource.check_required_fields(ignore_fields=ignore_fields)
         for showcaseitem in self.showcase:
-            ignore_fields = [self.configuration['showcaseitem']['dataset_id']]
+            ignore_fields = ['package_id']
             showcaseitem.check_required_fields(ignore_fields=ignore_fields)
 
     def _dataset_merge_hdx_update(self, update_resources, update_showcase):
@@ -389,7 +389,7 @@ class Dataset(HDXObject):
         old_resources = self.old_data.get('resources', None)
         filestore_resources = list()
         if update_resources and old_resources:
-            ignore_fields = [self.configuration['resource']['dataset_id']]
+            ignore_fields = ['package_id']
             resource_names = set()
             for resource in self.resources:
                 resource_name = resource['name']
@@ -424,9 +424,8 @@ class Dataset(HDXObject):
 
         if self.include_showcase and update_showcase and old_showcase:
             self.old_data['showcase'] = self._copy_hdxobjects(self.showcase, ShowcaseItem)
-            ignore_fields = [self.configuration['showcaseitem']['dataset_id']]
+            ignore_fields = ['package_id']
             showcaseitem_titles = set()
-            showcaseitem_dataset_id = self.configuration['showcaseitem']['dataset_id']
             for i, showcaseitem in enumerate(self.showcase):
                 showcaseitem_title = showcaseitem['title']
                 showcaseitem_titles.add(showcaseitem_title)
@@ -438,7 +437,7 @@ class Dataset(HDXObject):
                         showcaseitem.update_in_hdx()
             for old_showcaseitem in old_showcase:
                 if not old_showcaseitem['title'] in showcaseitem_titles:
-                    old_showcaseitem[showcaseitem_dataset_id] = self.data['id']
+                    old_showcaseitem['package_id'] = self.data['id']
                     old_showcaseitem.check_required_fields()
                     old_showcaseitem.create_in_hdx()
                     self.showcase.append(old_showcaseitem)
@@ -491,7 +490,7 @@ class Dataset(HDXObject):
 
         filestore_resources = list()
         if self.resources:
-            ignore_fields = [self.configuration['resource']['dataset_id']]
+            ignore_fields = ['package_id']
             for resource in self.resources:
                 resource.check_required_fields(ignore_fields=ignore_fields)
                 if resource.get_file_to_upload():
@@ -510,9 +509,8 @@ class Dataset(HDXObject):
 
         if self.include_showcase:
             self.old_data['showcase'] = self._copy_hdxobjects(self.showcase, ShowcaseItem)
-            showcaseitem_dataset_id = self.configuration['showcaseitem']['dataset_id']
             for i, showcaseitem in enumerate(self.showcase):
-                showcaseitem[showcaseitem_dataset_id] = self.data['id']
+                showcaseitem['package_id'] = self.data['id']
                 showcaseitem.check_required_fields()
                 showcaseitem.create_in_hdx()
 
@@ -897,10 +895,7 @@ class Dataset(HDXObject):
         Returns:
             List[str]: List of tags or [] if there are none
         """
-        tags = self.data.get('tags', None)
-        if not tags:
-            return list()
-        return [x['name'] for x in tags]
+        return self._get_tags()
 
     def add_tag(self, tag):
         # type: (str) -> None
@@ -912,14 +907,7 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        tags = self.data.get('tags', None)
-        if tags:
-            if tag in [x['name'] for x in tags]:
-                return
-        else:
-            tags = list()
-        tags.append({'name': tag})
-        self.data['tags'] = tags
+        self._add_tag(tag)
 
     def add_tags(self, tags):
         # type: (List[str]) -> None
@@ -931,8 +919,7 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        for tag in tags:
-            self.add_tag(tag)
+        self.add_tags(tags)
 
     def get_location(self):
         # type: () -> List[str]
