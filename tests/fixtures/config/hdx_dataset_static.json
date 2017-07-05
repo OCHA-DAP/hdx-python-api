@@ -30,15 +30,6 @@
       "name": "war"
     }
   ],
-  "showcase": [
-    {
-      "name": "acled-africa-showcase",
-      "title": "A Map",
-      "notes": "ACLED maps",
-      "url": "http://www.acleddata.com/visuals/maps/dynamic-maps/",
-      "image_display_url": "http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png"
-    }
-  ],
   "resources": [
     {
       "id": "123",

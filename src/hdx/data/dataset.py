@@ -1,21 +1,19 @@
 # -*- coding: utf-8 -*-
-"""Dataset class containing all logic for creating, checking, and updating datasets.
-
-It also handles resource and showcase items.
+"""Dataset class containing all logic for creating, checking, and updating datasets and associated resources.
 """
 import logging
 import sys
 from datetime import datetime
 from os.path import join
-from typing import List
+from typing import List, Union
 
 from dateutil import parser
 from six.moves import range
 
 import hdx.data.organization
+import hdx.data.showcase
 from hdx.data.hdxobject import HDXObject, HDXError
 from hdx.data.resource import Resource
-from hdx.data.showcaseitem import ShowcaseItem
 from hdx.data.user import User
 from hdx.utilities import raisefrom
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -28,11 +26,10 @@ page_size = 1000
 max_int = sys.maxsize
 
 class Dataset(HDXObject):
-    """Dataset class enabling operations on datasets and associated resources and showcase items.
+    """Dataset class enabling operations on datasets and associated resources.
 
     Args:
         initial_data (Optional[dict]): Initial dataset metadata dictionary. Defaults to None.
-        include_showcase (Optional[bool]): Whether to include showcase items in dataset. Defaults to True.
         configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
     """
 
@@ -65,19 +62,16 @@ class Dataset(HDXObject):
         'yearly': '365'
     }
 
-    def __init__(self, initial_data=None,
-                 include_showcase=True, configuration=None):
+    def __init__(self, initial_data=None, configuration=None):
         # type: (Optional[dict], Optional[bool], Optional[Configuration]) -> None
         if not initial_data:
             initial_data = dict()
         super(Dataset, self).__init__(dict(), configuration=configuration)
+        self.init_resources()
         # workaround: python2 IterableUserDict does not call __setitem__ in __init__,
         # while python3 collections.UserDict does
         for key in initial_data:
             self[key] = initial_data[key]
-        self.include_showcase = include_showcase
-        self.init_resources()
-        self.init_showcase()
 
     @staticmethod
     def actions():
@@ -99,7 +93,7 @@ class Dataset(HDXObject):
 
     def __setitem__(self, key, value):
         # type: (Any, Any) -> None
-        """Set dictionary items but do not allow setting of resources or showcase
+        """Set dictionary items but do not allow setting of resources
 
         Args:
             key (Any): Key in dictionary
@@ -109,9 +103,8 @@ class Dataset(HDXObject):
             None
         """
         if key == 'resources':
-            raise HDXError('Add resource using add_update_resource or resources using add_update_resources!')
-        if key == 'showcase':
-            raise HDXError('Add showcase item using add_update_showcaseitem or showcase using add_update_showcase!')
+            self.add_update_resources(value)
+            return
         super(Dataset, self).__setitem__(key, value)
 
     def separate_resources(self):
@@ -122,14 +115,6 @@ class Dataset(HDXObject):
             None
         """
         self._separate_hdxobjects(self.resources, 'resources', 'name', Resource)
-
-    def separate_showcase(self):
-        """Move contents of showcase key in internal dictionary into self.showcase
-
-        Returns:
-            None
-        """
-        self._separate_hdxobjects(self.showcase, 'showcase', 'title', ShowcaseItem)
 
     def init_resources(self):
         # type: () -> None
@@ -142,16 +127,18 @@ class Dataset(HDXObject):
         """:type : List[Resource]"""
 
     def add_update_resource(self, resource):
-        # type: (Any) -> None
+        # type: (Union[Resource,dict,str]) -> None
         """Add new or update existing resource in dataset with new metadata
 
         Args:
-            resource (Any): Resource metadata either from a Resource object or a dictionary
+            resource (Union[Resource,dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
 
         Returns:
             None
         """
-        if isinstance(resource, dict):
+        if isinstance(resource, str):
+            resource = Resource.read_from_hdx(resource, configuration=self.configuration)
+        elif isinstance(resource, dict):
             resource = Resource(resource, configuration=self.configuration)
         if isinstance(resource, Resource):
             if 'package_id' in resource:
@@ -162,11 +149,11 @@ class Dataset(HDXObject):
         raise HDXError("Type %s cannot be added as a resource!" % type(resource).__name__)
 
     def add_update_resources(self, resources):
-        # type: (List[Any]) -> None
+        # type: (List[Union[Resource,dict,str]]) -> None
         """Add new or update existing resources with new metadata to the dataset
 
         Args:
-            resources (List[Any]): Resources metadata from a list of either Resource objects or dictionaries
+            resources (List[Union[Resource,dict,str]]): A list of either resource ids or resources metadata from either Resource objects or dictionaries
 
         Returns:
             None
@@ -176,21 +163,17 @@ class Dataset(HDXObject):
         for resource in resources:
             self.add_update_resource(resource)
 
-    def delete_resource(self, identifier):
-        # type: (str) -> None
+    def delete_resource(self, resource):
+        # type: (Union[Resource,dict,str]) -> None
         """Delete a resource from the dataset
 
         Args:
-            identifier (str): Id of resource to delete
+            resource (Union[Resource,dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
 
         Returns:
             None
         """
-        for i, resource in enumerate(self.resources):
-            resourceid = resource.get('id', None)
-            if resourceid and resourceid == identifier:
-                resource.delete_from_hdx()
-                del self.resources[i]
+        self._remove_hdxobject(self.resources, resource, delete=True)
 
     def get_resources(self):
         # type: () -> List[Resource]
@@ -200,74 +183,6 @@ class Dataset(HDXObject):
             List[Resource]: List of Resource objects
         """
         return self.resources
-
-    def init_showcase(self):
-        # type: () -> None
-        """Initialise self.showcase list
-
-        Returns:
-            None
-        """
-        self.showcase = list()
-
-    def add_update_showcaseitem(self, showcaseitem):
-        # type: (Any) -> None
-        """Add new or update existing showcase item in dataset with new metadata
-
-        Args:
-            showcaseitem (Any): Showcase item metadata either from a ShowcaseItem object or a dictionary
-
-        Returns:
-            None
-
-        """
-        if isinstance(showcaseitem, dict):
-            showcaseitem = ShowcaseItem(showcaseitem, configuration=self.configuration)
-        if isinstance(showcaseitem, ShowcaseItem):
-            if 'package_id' in showcaseitem:
-                raise HDXError("Showcase item %s being added already has a dataset id!" % (showcaseitem['name']))
-            self._addupdate_hdxobject(self.showcase, 'title', showcaseitem)
-            return
-        raise HDXError("Type %s cannot be added as a showcase item!" % type(showcaseitem).__name__)
-
-    def add_update_showcase(self, showcase):
-        """Add new or update existing showcase items with new metadata to the dataset
-
-        Args:
-            showcase (List[Any]): Gallery metadata from a list of either ShowcaseItem objects or dictionaries
-
-        Returns:
-            None
-        """
-        if not isinstance(showcase, list):
-            raise HDXError('Gallery should be a list!')
-        for showcaseitem in showcase:
-            self.add_update_showcaseitem(showcaseitem)
-
-    def delete_showcaseitem(self, identifier):
-        # type: (str) -> None
-        """Delete a showcase item from the dataset
-
-        Args:
-            identifier (str): Id of showcase item to delete
-
-        Returns:
-            None
-        """
-        for i, showcaseitem in enumerate(self.showcase):
-            showcaseitemid = showcaseitem.get('id', None)
-            if showcaseitemid and showcaseitemid == identifier:
-                showcaseitem.delete_from_hdx()
-                del self.showcase[i]
-
-    def get_showcase(self):
-        # type: () -> List[ShowcaseItem]
-        """Get dataset's showcase
-
-        Returns:
-            List[ShowcaseItem]: List of ShowcaseItem objects
-        """
-        return self.showcase
 
     def update_from_yaml(self, path=join('config', 'hdx_dataset_static.yml')):
         # type: (Optional[str]) -> None
@@ -281,7 +196,6 @@ class Dataset(HDXObject):
         """
         super(Dataset, self).update_from_yaml(path)
         self.separate_resources()
-        self.separate_showcase()
 
     def update_from_json(self, path=join('config', 'hdx_dataset_static.json')):
         # type: (Optional[str]) -> None
@@ -295,44 +209,35 @@ class Dataset(HDXObject):
         """
         super(Dataset, self).update_from_json(path)
         self.separate_resources()
-        self.separate_showcase()
 
     @staticmethod
-    def read_from_hdx(identifier, include_showcase=True, configuration=None):
-        # type: (str, Optional[bool], Optional[Configuration]) -> Optional['Dataset']
+    def read_from_hdx(identifier, configuration=None):
+        # type: (str, Optional[Configuration]) -> Optional['Dataset']
         """Reads the dataset given by identifier from HDX and returns Dataset object
 
         Args:
             identifier (str): Identifier of dataset
-            include_showcase (Optional[bool]): Whether to include showcase items in dataset. Defaults to True.
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
             Optional[Dataset]: Dataset object if successful read, None if not
         """
 
-        dataset = Dataset(include_showcase=include_showcase, configuration=configuration)
+        dataset = Dataset(configuration=configuration)
         result = dataset._dataset_load_from_hdx(identifier)
         if result:
             return dataset
         return None
 
-    def _dataset_create_resources_showcase(self):
+    def _dataset_create_resources(self):
         # type: () -> None
-        """Creates resource and showcase item objects in dataset
+        """Creates resource objects in dataset
         """
 
         if 'resources' in self.data:
             self.old_data['resources'] = self._copy_hdxobjects(self.resources, Resource, 'file_to_upload')
             self.init_resources()
             self.separate_resources()
-        if self.include_showcase:
-            success, result = self._read_from_hdx('showcase', self.data['id'], 'id', ShowcaseItem.actions()['list'])
-            if success:
-                self.data['showcase'] = result
-                self.old_data['showcase'] = self._copy_hdxobjects(self.showcase, ShowcaseItem)
-                self.init_showcase()
-                self.separate_showcase()
 
     def _dataset_load_from_hdx(self, id_or_name):
         # type: (str) -> bool
@@ -347,12 +252,12 @@ class Dataset(HDXObject):
 
         if not self._load_from_hdx('dataset', id_or_name):
             return False
-        self._dataset_create_resources_showcase()
+        self._dataset_create_resources()
         return True
 
     def check_required_fields(self, ignore_fields=list()):
         # type: (List[str]) -> None
-        """Check that metadata for dataset and its resources and showcase is complete. The parameter ignore_fields
+        """Check that metadata for dataset and its resources is complete. The parameter ignore_fields
         should be set if required to any fields that should be ignored for the particular operation.
 
         Args:
@@ -366,17 +271,13 @@ class Dataset(HDXObject):
         for resource in self.resources:
             ignore_fields = ['package_id']
             resource.check_required_fields(ignore_fields=ignore_fields)
-        for showcaseitem in self.showcase:
-            ignore_fields = ['package_id']
-            showcaseitem.check_required_fields(ignore_fields=ignore_fields)
 
-    def _dataset_merge_hdx_update(self, update_resources, update_showcase):
-        # type: (bool, bool) -> None
-        """Helper method to check if dataset or its resources or showcase items exist and update them
+    def _dataset_merge_hdx_update(self, update_resources):
+        # type: (bool) -> None
+        """Helper method to check if dataset or its resources exist and update them
 
         Args:
             update_resources (bool): Whether to update resources
-            update_showcase (bool): Whether to update showcase
 
         Returns:
             None
@@ -384,8 +285,6 @@ class Dataset(HDXObject):
         merge_two_dictionaries(self.data, self.old_data)
         if 'resources' in self.data:
             del self.data['resources']
-        if 'showcase' in self.data:
-            del self.data['showcase']
         old_resources = self.old_data.get('resources', None)
         filestore_resources = list()
         if update_resources and old_resources:
@@ -409,7 +308,6 @@ class Dataset(HDXObject):
                     self.resources.append(old_resource)
                     if old_resource.get_file_to_upload():
                         filestore_resources.append(old_resource)
-        old_showcase = self.old_data.get('showcase', None)
         if self.resources:
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         self._save_to_hdx('update', 'id')
@@ -422,33 +320,12 @@ class Dataset(HDXObject):
                     merge_two_dictionaries(created_resource, resource.data)
                     break
 
-        if self.include_showcase and update_showcase and old_showcase:
-            self.old_data['showcase'] = self._copy_hdxobjects(self.showcase, ShowcaseItem)
-            ignore_fields = ['package_id']
-            showcaseitem_titles = set()
-            for i, showcaseitem in enumerate(self.showcase):
-                showcaseitem_title = showcaseitem['title']
-                showcaseitem_titles.add(showcaseitem_title)
-                for old_showcaseitem in old_showcase:
-                    if showcaseitem_title == old_showcaseitem['title']:
-                        logger.warning('Showcase item exists. Updating %s' % showcaseitem_title)
-                        merge_two_dictionaries(showcaseitem, old_showcaseitem)
-                        showcaseitem.check_required_fields(ignore_fields=ignore_fields)
-                        showcaseitem.update_in_hdx()
-            for old_showcaseitem in old_showcase:
-                if not old_showcaseitem['title'] in showcaseitem_titles:
-                    old_showcaseitem['package_id'] = self.data['id']
-                    old_showcaseitem.check_required_fields()
-                    old_showcaseitem.create_in_hdx()
-                    self.showcase.append(old_showcaseitem)
-
-    def update_in_hdx(self, update_resources=True, update_showcase=True):
-        # type: (Optional[bool], Optional[bool]) -> None
+    def update_in_hdx(self, update_resources=True):
+        # type: (Optional[bool]) -> None
         """Check if dataset exists in HDX and if so, update it
 
         Args:
             update_resources (Optional[bool]): Whether to update resources. Defaults to True.
-            update_showcase (Optional[bool]): Whether to update resources. Defaults to True.
 
         Returns:
             None
@@ -464,7 +341,7 @@ class Dataset(HDXObject):
             self._check_existing_object('dataset', 'name')
             if not self._dataset_load_from_hdx(self.data['name']):
                 raise HDXError('No existing dataset to update!')
-        self._dataset_merge_hdx_update(update_resources, update_showcase)
+        self._dataset_merge_hdx_update(update_resources)
 
     def create_in_hdx(self):
         # type: () -> None
@@ -485,7 +362,7 @@ class Dataset(HDXObject):
                 loadedid = self.data['name']
         if loadedid:
             logger.warning('Dataset exists. Updating %s' % loadedid)
-            self._dataset_merge_hdx_update(True, True)
+            self._dataset_merge_hdx_update(True)
             return
 
         filestore_resources = list()
@@ -507,13 +384,6 @@ class Dataset(HDXObject):
         self.init_resources()
         self.separate_resources()
 
-        if self.include_showcase:
-            self.old_data['showcase'] = self._copy_hdxobjects(self.showcase, ShowcaseItem)
-            for i, showcaseitem in enumerate(self.showcase):
-                showcaseitem['package_id'] = self.data['id']
-                showcaseitem.check_required_fields()
-                showcaseitem.create_in_hdx()
-
     def delete_from_hdx(self):
         # type: () -> None
         """Deletes a dataset from HDX.
@@ -524,13 +394,12 @@ class Dataset(HDXObject):
         self._delete_from_hdx('dataset', 'id')
 
     @staticmethod
-    def search_in_hdx(query='*:*', include_showcase=True, configuration=None, **kwargs):
-        # type: (Optional[str], Optional[bool], Optional[Configuration], ...) -> List['Dataset']
+    def search_in_hdx(query='*:*', configuration=None, **kwargs):
+        # type: (Optional[str], Optional[Configuration], ...) -> List['Dataset']
         """Searches for datasets in HDX
 
         Args:
             query (Optional[str]): Query (in Solr format). Defaults to '*:*'.
-            include_showcase (Optional[bool]): Whether to include showcase items in datasets. Defaults to True.
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
             **kwargs: See below
             fq (string): Any filter queries to apply
@@ -547,7 +416,7 @@ class Dataset(HDXObject):
             List[Dataset]: List of datasets resulting from query
         """
 
-        dataset = Dataset(include_showcase=include_showcase, configuration=configuration)
+        dataset = Dataset(configuration=configuration)
         total_rows = kwargs.get('rows', max_int)
         start = kwargs.get('start', 0)
         all_datasets = None
@@ -569,10 +438,10 @@ class Dataset(HDXObject):
                         counts.add(count)
                         no_results = len(result['results'])
                         for datasetdict in result['results']:
-                            dataset = Dataset(include_showcase=include_showcase, configuration=configuration)
+                            dataset = Dataset(configuration=configuration)
                             dataset.old_data = dict()
                             dataset.data = datasetdict
-                            dataset._dataset_create_resources_showcase()
+                            dataset._dataset_create_resources()
                             datasets.append(dataset)
                         all_datasets += datasets
                         if no_results < rows:
@@ -612,12 +481,11 @@ class Dataset(HDXObject):
         return dataset._write_to_hdx('list', kwargs, 'id')
 
     @staticmethod
-    def get_all_datasets(include_showcase=True, configuration=None, **kwargs):
-        # type: (Optional[bool], Optional[Configuration], ...) -> List['Dataset']
+    def get_all_datasets(configuration=None, **kwargs):
+        # type: (Optional[Configuration], ...) -> List['Dataset']
         """Get all datasets in HDX
 
         Args:
-            include_showcase (Optional[bool]): Whether to include showcase items in datasets. Defaults to True.
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
             **kwargs: See below
             limit (int): Number of rows to return. Defaults to all datasets (sys.maxsize).
@@ -627,7 +495,7 @@ class Dataset(HDXObject):
             List[Dataset]: List of all datasets in HDX
         """
 
-        dataset = Dataset(include_showcase=include_showcase, configuration=configuration)
+        dataset = Dataset(configuration=configuration)
         dataset['id'] = 'all datasets'  # only for error message if produced
         total_rows = kwargs.get('limit', max_int)
         start = kwargs.get('offset', 0)
@@ -646,10 +514,10 @@ class Dataset(HDXObject):
                 if result:
                     no_results = len(result)
                     for datasetdict in result:
-                        dataset = Dataset(include_showcase=include_showcase, configuration=configuration)
+                        dataset = Dataset(configuration=configuration)
                         dataset.old_data = dict()
                         dataset.data = datasetdict
-                        dataset._dataset_create_resources_showcase()
+                        dataset._dataset_create_resources()
                         datasets.append(dataset)
                     all_datasets += datasets
                     if no_results < rows:
@@ -919,7 +787,19 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        self.add_tags(tags)
+        self._add_tags(tags)
+
+    def remove_tag(self, tag):
+        # type: (str) -> None
+        """Remove a tag
+
+        Args:
+            tag (str): Tag to remove
+
+        Returns:
+            None
+        """
+        self._remove_hdxobject(self.data.get('tags'), tag, matchon='name')
 
     def get_location(self):
         # type: () -> List[str]
@@ -1009,6 +889,19 @@ class Dataset(HDXObject):
         groups.append({'name': hdx_code})
         self.data['groups'] = groups
 
+    def remove_location(self, location):
+        # type: (str) -> None
+        """Remove a location. If the location is already added, it is ignored.
+
+        Args:
+            location (str): Location to remove
+
+        Returns:
+            None
+        """
+        self._remove_hdxobject(self.data.get('groups'), location, matchon='name')
+        self._remove_object_from_hdx_list('groups', location)
+
     def get_maintainer(self):
         # type: () -> User
         """Get the dataset's maintainer.
@@ -1044,11 +937,11 @@ class Dataset(HDXObject):
         return hdx.data.organization.Organization.read_from_hdx(self.data['owner_org'], configuration=self.configuration)
 
     def set_organization(self, organization):
-        # type: (hdx.data.organization.Organization) -> None
+        # type: (Union[Organization,str]) -> None
         """Set the dataset's organization.
 
          Args:
-             organization (Organization): Set the dataset's organization either from an Organization object or a str.
+             organization (Union[Organization,str]): Set the dataset's organization either from an Organization object or a str.
          Returns:
              None
         """
@@ -1061,3 +954,78 @@ class Dataset(HDXObject):
             self.data['owner_org'] = org_id
         else:
             raise HDXError("Type %s cannot be added as a organization!" % type(organization).__name__)
+
+    def get_showcases(self):
+        # type: () -> List[Showcase]
+        """Get any showcases the dataset is in
+
+        Returns:
+            List[Showcase]: List of showcases
+        """
+        assoc_result, showcases_dicts = self._read_from_hdx('showcase', self.data['id'], fieldname='id',
+                                                            action=hdx.data.showcase.Showcase.actions()['list_showcases'])
+        showcases = list()
+        if assoc_result:
+            for showcase_dict in showcases_dicts:
+                showcase = hdx.data.showcase.Showcase(showcase_dict, configuration=self.configuration)
+                showcases.append(showcase)
+        return showcases
+
+    def _get_dataset_showcase_dict(self, showcase):
+        # type: (Union[Showcase,dict,str]) -> dict
+        """Get dataset showcase dict
+
+        Args:
+            showcase (Union[Showcase,dict,str]): Either a showcase id or Showcase metadata from a Showcase object or dictionary
+
+        Returns:
+            dict: dataset showcase dict
+        """
+        if isinstance(showcase, str):
+            return {'package_id': self.data['id'], 'showcase_id': showcase}
+        elif isinstance(showcase, hdx.data.showcase.Showcase) or isinstance(showcase, dict):
+            return {'package_id': self.data['id'], 'showcase_id': showcase['id']}
+        else:
+            raise HDXError("Type %s cannot be added as a showcase!" % type(showcase).__name__)
+
+    def add_showcase(self, showcase):
+        # type: (Union[Showcase,dict,str]) -> None
+        """Add dataset to showcase
+
+        Args:
+            showcase (Union[Showcase,dict,str]): Either a showcase id or showcase metadata from a Showcase object or dictionary
+
+        Returns:
+            None
+        """
+        dataset_showcase = self._get_dataset_showcase_dict(showcase)
+        showcase = hdx.data.showcase.Showcase({'id': dataset_showcase['showcase_id']}, configuration=self.configuration)
+        showcase._write_to_hdx('associate', dataset_showcase, 'package_id')
+
+    def add_showcases(self, showcases):
+        # type: (List[Union[Showcase,dict,str]]) -> None
+        """Add dataset to multiple showcases
+
+        Args:
+            showcases (List[Union[Showcase,dict,str]]): A list of either showcase ids or showcase metadata from Showcase objects or dictionaries
+
+        Returns:
+            None
+        """
+        for showcase in showcases:
+            self.add_showcase(showcase)
+
+    def remove_showcase(self, showcase):
+        # type: (Union[Showcase,dict,str]) -> None
+        """Remove dataset from showcase
+
+        Args:
+            showcase (Union[Showcase,dict,str]): Either a showcase id string or showcase metadata from a Showcase object or dictionary
+
+        Returns:
+            None
+        """
+        dataset_showcase = self._get_dataset_showcase_dict(showcase)
+        showcase = hdx.data.showcase.Showcase({'id': dataset_showcase['showcase_id']}, configuration=self.configuration)
+        showcase._write_to_hdx('disassociate', dataset_showcase, 'package_id')
+

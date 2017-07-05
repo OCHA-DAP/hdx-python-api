@@ -38,9 +38,8 @@ resource:
     - description
     - url_type
     - resource_type
-showcaseitem:
+showcase:
   required_fields:
-    - dataset_ids
     - name
     - title
     - notes

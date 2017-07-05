@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Dict and List utilities"""
 import itertools
-from typing import List, Optional, TypeVar, Any, Callable
+from typing import List, Optional, TypeVar, Callable
 
 import six
 from six.moves import UserDict, zip_longest

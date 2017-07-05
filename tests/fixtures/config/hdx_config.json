@@ -21,9 +21,9 @@
       "description"
     ]
   },
-  "showcaseitem": {
+  "showcase": {
     "required_fields": [
-      "package_id"
+      "name"
     ]
   }
 }

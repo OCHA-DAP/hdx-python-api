@@ -168,7 +168,7 @@ hello there'''
                 'dataset_date',
             ]},
             'resource': {'required_fields': ['name', 'description']},
-            'showcaseitem': {'required_fields': ['package_id']},
+            'showcase': {'required_fields': ['name']},
         }
         assert Configuration.read() == expected_configuration
 
@@ -194,7 +194,7 @@ hello there'''
                 'dataset_date',
             ]},
             'resource': {'required_fields': ['package_id', 'name', 'description']},
-            'showcaseitem': {'required_fields': ['package_id', 'title']},
+            'showcase': {'required_fields': ['name', 'title']},
         }
         assert Configuration.read() == expected_configuration
 
@@ -233,17 +233,18 @@ hello there'''
                 'groups',
                 'license_id',
                 'methodology',
-                'data_update_frequency'
+                'data_update_frequency',
+                'tags'
             ]},
             'resource': {'required_fields': ['package_id', 'name', 'format', 'url', 'description',
                                              'url_type', 'resource_type']},
-            'showcaseitem': {'required_fields': [
-                'package_id',
+            'showcase': {'required_fields': [
                 'name',
                 'title',
                 'notes',
                 'url',
                 'image_display_url',
+                'tags'
             ]},
             'user': {'required_fields': [
                 'name',
@@ -258,6 +259,7 @@ hello there'''
                 'description',
             ]},
         }
+        print(Configuration.read())
         assert Configuration.read() == expected_configuration
         Configuration._create(hdx_key_file=hdx_key_file, project_config_dict={'abc': '123'})
         expected_configuration['abc'] = '123'
@@ -299,18 +301,19 @@ hello there'''
                 'groups',
                 'license_id',
                 'methodology',
-                'data_update_frequency'
+                'data_update_frequency',
+                'tags'
             ]},
             'resource': {'required_fields': ['package_id', 'name', 'format', 'url', 'description',
                                              'url_type', 'resource_type'
                                              ]},
-            'showcaseitem': {'required_fields': [
-                'package_id',
+            'showcase': {'required_fields': [
                 'name',
                 'title',
                 'notes',
                 'url',
                 'image_display_url',
+                'tags'
             ]},
             'user': {'required_fields': [
                 'name',
@@ -363,18 +366,19 @@ hello there'''
                 'groups',
                 'license_id',
                 'methodology',
-                'data_update_frequency'
+                'data_update_frequency',
+                'tags'
             ]},
             'resource': {'required_fields': ['package_id', 'name', 'format', 'url', 'description',
                                              'url_type', 'resource_type'
                                              ]},
-            'showcaseitem': {'required_fields': [
-                'package_id',
+            'showcase': {'required_fields': [
                 'name',
                 'title',
                 'notes',
                 'url',
                 'image_display_url',
+                'tags'
             ]},
             'user': {'required_fields': [
                 'name',

@@ -35,11 +35,3 @@ resources:
     name: "Resource2"
     url: "http://resource2.csv"
     format: "csv"
-
-showcase:
-  -
-    name: "acled-africa-showcase"
-    title: "Dynamic Map: Political Conflict in Africa"
-    notes: "ACLED maps"
-    url: "http://www.acleddata.com/visuals/maps/dynamic-maps/"
-    image_display_url: "http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png"

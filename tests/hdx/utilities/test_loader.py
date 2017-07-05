@@ -37,8 +37,8 @@ class TestLoader:
             ]},
             'resource': {'required_fields': ['package_id', 'name', 'description'
                                              ]},
-            'showcaseitem': {'required_fields': [
-                'package_id',
+            'showcase': {'required_fields': [
+                'name',
                 'title',
             ]},
         }
@@ -66,8 +66,8 @@ class TestLoader:
             ]},
             'resource': {'required_fields': ['name', 'description'
                                              ]},
-            'showcaseitem': {'required_fields': [
-                'package_id',
+            'showcase': {'required_fields': [
+                'name',
             ], },
         }
 

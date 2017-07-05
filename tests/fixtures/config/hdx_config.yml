@@ -17,7 +17,7 @@ resource:
     - package_id
     - name
     - description
-showcaseitem:
+showcase:
   required_fields:
-    - package_id
+    - name
     - title

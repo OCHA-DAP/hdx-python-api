@@ -3,9 +3,6 @@
 New HDX objects should extend this in similar fashion to Resource for example.
 """
 import six
-
-from hdx.utilities import raisefrom
-
 if six.PY2:
     from UserDict import IterableUserDict as UserDict
 else:
@@ -18,6 +15,7 @@ import logging
 from ckanapi.errors import NotFound
 from typing import Optional, List, Tuple, TypeVar, Union
 
+from hdx.utilities import raisefrom
 from hdx.configuration import Configuration
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml_into_existing_dict, load_json_into_existing_dict
@@ -83,7 +81,7 @@ class HDXObject(UserDict, object):
         self.data = load_yaml_into_existing_dict(self.data, path)
 
     def update_from_json(self, path):
-        # type: (str) -> Any
+        # type: (str) -> None
         """Update metadata with static metadata from JSON file
 
         Args:
@@ -96,13 +94,13 @@ class HDXObject(UserDict, object):
 
     def _read_from_hdx(self, object_type, value, fieldname='id',
                        action=None, **kwargs):
-        # type: (str, str, str, Optional[str], Any) -> Tuple[bool, Union[dict, str]]
+        # type: (str, str, Optional[str], Optional[str], ...) -> Tuple[bool, Union[dict, str]]
         """Makes a read call to HDX passing in given parameter.
 
         Args:
             object_type (str): Description of HDX object type (for messages)
             value (str): Value of HDX field
-            fieldname (str): HDX field name. Defaults to id.
+            fieldname (Optional[str]): HDX field name. Defaults to id.
             action (Optional[str]): Replacement CKAN action url to use. Defaults to None.
             **kwargs: Other fields to pass to CKAN.
 
@@ -357,7 +355,7 @@ class HDXObject(UserDict, object):
         already exists in the list
 
         Args:
-            hdxobjects (list[T <= HDXObject]): List of HDX objects to which to add new objects or update existing ones
+            hdxobjects (List[T <= HDXObject]): List of HDX objects to which to add new objects or update existing ones
             id_field (str): Field on which to match to determine if object already exists in list
             new_hdxobject (T <= HDXObject): The HDX object to be added/updated
 
@@ -370,6 +368,38 @@ class HDXObject(UserDict, object):
                 return hdxobject
         hdxobjects.append(new_hdxobject)
         return new_hdxobject
+
+    def _remove_hdxobject(self, objlist, obj, matchon='id', delete=False):
+        # type: (List[Union[HDXObjectUpperBound,dict]], Union[HDXObjectUpperBound,dict,str], Optional[str]) -> None
+        """Remove an HDX object from a list within the parent HDX object
+
+        Args:
+            objlist (List[Union[T <= HDXObject,dict]]): List of HDX objects
+            obj (Union[T <= HDXObject,dict,str]): Either an id or hdx object metadata either from an HDX object or a dictionary
+            matchon (Optional[str]): Field to match on. Defaults to id.
+            delete (Optional[bool]): Whether to delete HDX object. Defaults to False.
+
+        Returns:
+            bool: True if object removed, False if not
+        """
+        if objlist is None:
+            return False
+        if isinstance(obj, str):
+            obj_id = obj
+        elif isinstance(obj, dict) or isinstance(obj, HDXObject):
+            obj_id = obj.get(matchon)
+        else:
+            raise HDXError('Type of object not a string, dict or T<=HDXObject')
+        if not obj_id:
+            return False
+        for i, objdata in enumerate(objlist):
+            objid = objdata.get(matchon)
+            if objid and objid == obj_id:
+                if delete:
+                    objlist[i].delete_from_hdx()
+                del objlist[i]
+                return True
+        return False
 
     def _convert_hdxobjects(self, hdxobjects):
         # type: (List[HDXObjectUpperBound]) -> List[HDXObjectUpperBound]
@@ -482,4 +512,3 @@ class HDXObject(UserDict, object):
         """
         for tag in tags:
             self._add_tag(tag)
-
