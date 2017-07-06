@@ -813,13 +813,14 @@ class Dataset(HDXObject):
             return list()
         return [Location.get_location_from_HDX_code(x['name'], self.configuration) for x in countries]
 
-    def add_country_location(self, country):
-        # type: (str) -> bool
+    def add_country_location(self, country, exact=True):
+        # type: (str, Optional[bool]) -> bool
         """Add a country. If an iso 3 code is not provided, value is parsed and if it is a valid country name,
         converted to an iso 3 code. If the country is already added, it is ignored.
 
         Args:
             country (str): Country to add
+            exact (Optional[bool]): True for exact matching or False to allow fuzzy matching. Defaults to True.
 
         Returns:
             bool: True if country added or False if country already present
@@ -827,8 +828,9 @@ class Dataset(HDXObject):
         iso3, match = Location.get_iso3_country_code(country)
         if iso3 is None:
             raise HDXError('Country: %s - cannot find iso3 code!' % country)
-        return self.add_other_location(iso3, alterror='Country: %s with iso3: %s could not be found in HDX list!' %
-                                                      (country, iso3))
+        return self.add_other_location(iso3, exact=exact,
+                                       alterror='Country: %s with iso3: %s could not be found in HDX list!' %
+                                                (country, iso3))
 
     def add_country_locations(self, countries):
         # type: (List[str]) -> bool
@@ -860,19 +862,20 @@ class Dataset(HDXObject):
         """
         return self.add_country_locations(Location.get_countries_in_continent(continent))
 
-    def add_other_location(self, location, alterror=None):
-        # type: (str) -> bool
+    def add_other_location(self, location, exact=True, alterror=None):
+        # type: (str, Optional[bool], Optional[str]) -> bool
         """Add a location which is not a country or continent. Value is parsed and compared to existing locations in 
         HDX. If the location is already added, it is ignored.
 
         Args:
             location (str): Location to add
-            alterror (str): Alternative error message if location not found
+            exact (Optional[bool]): True for exact matching or False to allow fuzzy matching. Defaults to True.
+            alterror (Optional[str]): Alternative error message to builtin if location not found. Defaults to None.
 
         Returns:
             bool: True if location added or False if location already present
         """
-        hdx_code, match = Location.get_HDX_code_from_location(location, self.configuration)
+        hdx_code, match = Location.get_HDX_code_from_location(location, exact=exact, configuration=self.configuration)
         if hdx_code is None:
             if alterror is None:
                 raise HDXError('Location: %s - cannot find in HDX!' % location)

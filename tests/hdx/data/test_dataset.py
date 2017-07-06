@@ -559,8 +559,13 @@ class TestDataset:
         resource.set_file_to_upload(file.name)
         dataset.add_update_resource(resource)
         dataset.update_in_hdx()
-        os.unlink(file.name)
         assert len(dataset.resources) == 2
+        resource['name'] = '123'
+        resource.set_file_to_upload(None)
+        dataset.add_update_resource(resource)
+        dataset.update_in_hdx()
+        assert len(dataset.resources) == 3
+        os.unlink(file.name)
 
     def test_delete_from_hdx(self, configuration, post_delete):
         dataset = Dataset.read_from_hdx('TEST1')
@@ -728,6 +733,7 @@ class TestDataset:
             dataset.set_dataset_date('lalala', 'lalala', date_format='%Y/%m/%d')
         del dataset['dataset_date']
         assert dataset.get_dataset_date_as_datetime() is None
+        assert dataset.get_dataset_end_date_as_datetime() is None
         assert dataset.get_dataset_date() is None
         assert dataset.get_dataset_date('YYYY/MM/DD') is None
         assert dataset.get_dataset_date_type() is None
@@ -774,6 +780,8 @@ class TestDataset:
         expected.extend([{'name': 'ABC'}, {'name': 'DEF'}])
         assert dataset['tags'] == expected
         assert dataset.get_tags() == ['conflict', 'political violence', 'LALA', 'ABC', 'DEF']
+        dataset.remove_tag('LALA')
+        assert dataset.get_tags() == ['conflict', 'political violence', 'ABC', 'DEF']
         del dataset['tags']
         assert dataset.get_tags() == []
         dataset.add_tag('LALA')
@@ -796,14 +804,18 @@ class TestDataset:
         expected.extend([{'name': 'ken'}, {'name': 'moz'}])
         assert dataset['groups'] == expected
         assert dataset.get_location() == ['Algeria', 'Zimbabwe', 'Sudan', 'Kenya', 'Mozambique']
+        dataset.remove_location('sdn')
+        assert dataset.get_location() == ['Algeria', 'Zimbabwe', 'Kenya', 'Mozambique']
         dataset.add_continent_location('af')
         assert len(dataset['groups']) == 58
         assert len(dataset.get_location()) == 58
         del dataset['groups']
         assert dataset.get_location() == []
         with pytest.raises(HDXError):
+            dataset.add_country_location('ala')
+        with pytest.raises(HDXError):
             dataset.add_country_location('lala')
-        dataset.add_country_location('Ukrai')
+        dataset.add_country_location('Ukrai', exact=False)
         assert dataset['groups'] == [{'name': 'ukr'}]
         assert dataset.get_location() == ['Ukraine']
         dataset.add_country_location('ukr')
@@ -811,7 +823,7 @@ class TestDataset:
         assert dataset['groups'] == [{'name': 'ukr'}, {'name': 'nepal-earthquake'}]
         assert dataset.get_location() == ['Ukraine', 'Nepal Earthquake']
         del dataset['groups']
-        dataset.add_other_location('Nepal E')
+        dataset.add_other_location('Nepal E', exact=False)
         assert dataset['groups'] == [{'name': 'nepal-earthquake'}]
         dataset.add_other_location('Nepal Earthquake')
         assert dataset['groups'] == [{'name': 'nepal-earthquake'}]
