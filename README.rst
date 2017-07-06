@@ -488,9 +488,9 @@ detailed in the API documentation. The rows parameter for datasets
 (limit for resources) is the maximum number of matches returned and is
 by default everything.
 
-You can create an HDX Object, such as a dataset, resource or showcase
-item by calling the constructor with an optional dictionary containing
-metadata. For example:
+You can create an HDX Object, such as a dataset, resource, showcase,
+organization or user by calling the constructor with an optional
+dictionary containing metadata. For example:
 
 ::
 
@@ -533,7 +533,7 @@ very human readable and recommended, while JSON is also accepted eg.
 The default path if unspecified is **config/hdx_TYPE_static.yml** for
 YAML and **config/hdx_TYPE_static.json** for JSON where TYPE is an HDX
 object's type like dataset or resource eg.
-**config/hdx_showcaseitem_static.json**. The YAML file takes the
+**config/hdx_showcase_static.json**. The YAML file takes the
 following form:
 
 ::
@@ -544,15 +544,15 @@ following form:
     tags:
         - name: "conflict"
         - name: "political violence"
-    showcase:
-        - title: "Dynamic Map: Political Conflict in Africa"
-          type: "visualization"
-          description: "The dynamic maps below have been drawn from ACLED Version 6."
+    resources:
+        -
+          description: "Resource1"
+          url: "http://resource1.xlsx"
+          format: "xlsx"
     ...
 
-Notice how you can define a showcase with one or more showcase items (each
-starting with a dash '-') within the file as shown above. You can do the
-same for resources.
+Notice how you can define resources (each resource starts with a dash
+'-') within the file as shown above.
 
 You can check if all the fields required by HDX are populated by
 calling \ **check_required_fields**. This will throw an exception if any
@@ -585,12 +585,10 @@ for failures like the object to delete or update not existing.
 Dataset Specific Operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A dataset can have resources and a showcase.
+A dataset can have resources and can be in a showcase.
 
-|UML_Diagram|
-
-If you wish to add resources or a showcase, you can supply a list and
-call the appropriate \ **add_update_*** function, for example:
+If you wish to add resources, you can supply a list and
+call the \ **add_update_resources*** function, for example:
 
 ::
 
@@ -610,33 +608,68 @@ call the appropriate \ **add_update_*** function, for example:
 Calling \ **add_update_resources** creates a list of HDX Resource
 objects in dataset and operations can be performed on those objects.
 
-To see the list of resources or showcase items, you use the
-appropriate \ **get_*** function eg.
+To see the list of resources, you use the
+\ **get_resources*** function eg.
 
 ::
 
     resources = dataset.get_resources()
 
-If you wish to add one resource or showcase item, you can supply a
-dictionary or object of the correct type and call the
-appropriate \ **add_update_*** function, for example:
+If you wish to add one resource, you can supply an id string,
+dictionary or Resource object and call the
+\ **add_update_resource*** function, for example:
 
 ::
 
     dataset.add_update_resource(resource)
 
-You can delete a Resource or ShowcaseItem object from the dataset
-using the appropriate \ **delete_*** function, for example:
+You can delete a Resource object from the dataset using the
+\ **delete_resource*** function, for example:
 
 ::
 
-    dataset.delete_showcaseitem('GALLERYITEM_TITLE')
+    dataset.delete_resource(resource)
 
 You can get all the resources from a list of datasets as follows:
 
 ::
 
     resources = Dataset.get_all_resources(datasets)
+
+To see the list of showcases a dataset is in, you use the
+\ **get_showcases*** function eg.
+
+::
+
+    resources = dataset.get_showcases()
+
+If you wish to add the dataset to a showcase, you must first create
+the showcase in HDX if it does not already exist:
+
+::
+
+    showcase = Showcase({'name': 'new-showcase-1',
+                         'title': 'MyShowcase1',
+                         'notes': 'My Showcase',
+                         'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',
+                         'image_display_url': 'http://myvisual/visual.png',
+                         'url': 'http://visualisation/url/'})
+    showcase.create_in_hdx()
+
+Then you can supply an id, dictionary or Showcase object and call
+the \ **add_showcase*** function, for example:
+
+::
+
+    dataset.add_showcase(showcase)
+
+You can remove the dataset from a showcase using the
+\ **remove_showcase*** function, for example:
+
+::
+
+    dataset.remove_showcase(showcase)
+
 
 Dataset Date
 ^^^^^^^^^^^^
@@ -825,7 +858,7 @@ If you want to set the maintainer, you do it like this:
 
     dataset.set_maintainer(USER)
 
-USER is either a dictionary or a User object.
+USER is either a string id, dictionary or a User object.
 
 Organization
 ^^^^^^^^^^^^
@@ -844,7 +877,7 @@ If you want to set the organization, you do it like this:
 
     dataset.set_organization(ORGANIZATION)
 
-ORGANIZATION is either a dictionary or an Organization object.
+ORGANIZATION is either a string id, dictionary or an Organization object.
 
 Resource Specific Operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1050,7 +1083,7 @@ then creates resources that point to urls of `Excel and csv files for
 Realtime 2016 All Africa
 data <http://www.acleddata.com/data/realtime-data-2016/>`__ (or updates
 the links and metadata if the resources already exist). Finally it
-creates a showcase item that points to these `dynamic maps and
+creates a showcase that points to these `dynamic maps and
 graphs <http://www.acleddata.com/visuals/maps/dynamic-maps/>`__.
 
 The first iteration of the ACLED scraper was written without the HDX
@@ -1060,7 +1093,7 @@ add unnecessary complexity to the task of coding against HDX.
 Simplifying the interface to HDX drove the development of the Python
 library and the second iteration of the scraper was built using it. With
 the interface using HDX terminology and mapping directly on to datasets,
-resources and showcase items, the ACLED scraper was faster to develop and
+resources and showcases, the ACLED scraper was faster to develop and
 is much easier to understand for someone inexperienced in how it works
 and what it is doing. The challenge with ACLED is that sometimes the
 urls that the resources point to have not been updated and hence do not
@@ -1078,5 +1111,4 @@ makes putting data programmatically into HDX a breeze.
     :alt: Coveralls Build Status
     :target: https://coveralls.io/github/OCHA-DAP/hdx-python-api?branch=master
 .. |A_Quick_Example| image:: https://humanitarian.atlassian.net/wiki/download/attachments/6356996/HDXPythonLibrary.gif?version=1&modificationDate=1469520811486&api=v2
-.. |UML_Diagram| image:: https://humanitarian.atlassian.net/wiki/download/attachments/8028192/UMLDiagram.png?api=v2
 
