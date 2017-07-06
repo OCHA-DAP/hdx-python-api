@@ -305,8 +305,12 @@ class TestShowcase:
         assert showcase.get_tags() == ['economy', 'health', 'wash']
         showcase.add_tags(['sanitation'])
         assert showcase.get_tags() == ['economy', 'health', 'wash', 'sanitation']
-        showcase.remove_tag('wash')
+        result = showcase.remove_tag('wash')
+        assert result is True
         assert showcase.get_tags() == ['economy', 'health', 'sanitation']
+        showcase['tags'] = None
+        result = showcase.remove_tag('wash')
+        assert result is False
 
     def test_datasets(self, configuration, read):
         showcase = Showcase.read_from_hdx('TEST1')
@@ -326,3 +330,6 @@ class TestShowcase:
         showcase.add_datasets([{'id': 'lala'}])
         assert TestShowcase.association == 'create'
         TestShowcase.association = None
+        with pytest.raises(HDXError):
+            showcase.add_dataset(123)
+

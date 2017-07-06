@@ -190,16 +190,16 @@ class Organization(HDXObject):
             self.add_update_user(user, capacity)
 
     def remove_user(self, user):
-        # type: (Union[User,dict,str]) -> None
+        # type: (Union[User,dict,str]) -> bool
         """Remove a user from the organization
 
         Args:
             user (Union[User,dict,str]): Either a user id or user metadata either from a User object or a dictionary
 
         Returns:
-            None
+            bool: True if user removed or False if not
         """
-        self._remove_hdxobject(self.data.get('users'), user)
+        return self._remove_hdxobject(self.data.get('users'), user)
 
     def get_datasets(self, include_gallery=True, query='*:*', **kwargs):
         # type: (Optional[bool], Optional[str], ...) -> List[hdx.data.dataset.Dataset]

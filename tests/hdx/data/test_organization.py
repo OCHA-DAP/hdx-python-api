@@ -308,16 +308,19 @@ class TestOrganization:
         organization.add_update_users([user])
         users = organization.get_users('member')
         assert len(users) == 1
+        organization.add_update_users(['TEST1'], 'member')
+        users = organization.get_users('member')
+        assert len(users) == 2
         assert users[0]['name'] == 'MyUser1'
         organization.remove_user(users[0].data)
         users = organization.get_users('member')
-        assert len(users) == 0
-        organization.add_update_users([user])
+        assert len(users) == 1
+        organization.add_update_users([user], 'editor')
         organization.remove_user('')
-        users = organization.get_users('member')
+        users = organization.get_users('editor')
         assert len(users) == 1
         organization.remove_user('NOT_EXIST')
-        users = organization.get_users('member')
+        users = organization.get_users('editor')
         assert len(users) == 1
         users = organization.get_users('admin')
         assert len(users) == 0

@@ -164,16 +164,16 @@ class Dataset(HDXObject):
             self.add_update_resource(resource)
 
     def delete_resource(self, resource):
-        # type: (Union[Resource,dict,str]) -> None
+        # type: (Union[Resource,dict,str]) -> bool
         """Delete a resource from the dataset
 
         Args:
             resource (Union[Resource,dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
 
         Returns:
-            None
+            bool: True if resource removed or False if not
         """
-        self._remove_hdxobject(self.resources, resource, delete=True)
+        return self._remove_hdxobject(self.resources, resource, delete=True)
 
     def get_resources(self):
         # type: () -> List[Resource]
@@ -766,40 +766,40 @@ class Dataset(HDXObject):
         return self._get_tags()
 
     def add_tag(self, tag):
-        # type: (str) -> None
+        # type: (str) -> bool
         """Add a tag
 
         Args:
             tag (str): Tag to add
 
         Returns:
-            None
+            bool: True if tag added or False if tag already present
         """
-        self._add_tag(tag)
+        return self._add_tag(tag)
 
     def add_tags(self, tags):
-        # type: (List[str]) -> None
+        # type: (List[str]) -> bool
         """Add a list of tag
 
         Args:
             tags (List[str]): List of tags to add
 
         Returns:
-            None
+            bool: Returns True if all tags added or False if any already present.
         """
-        self._add_tags(tags)
+        return self._add_tags(tags)
 
     def remove_tag(self, tag):
-        # type: (str) -> None
+        # type: (str) -> bool
         """Remove a tag
 
         Args:
             tag (str): Tag to remove
 
         Returns:
-            None
+            bool: True if tag removed or False if not
         """
-        self._remove_hdxobject(self.data.get('tags'), tag, matchon='name')
+        return self._remove_hdxobject(self.data.get('tags'), tag, matchon='name')
 
     def get_location(self):
         # type: () -> List[str]
@@ -814,7 +814,7 @@ class Dataset(HDXObject):
         return [Location.get_location_from_HDX_code(x['name'], self.configuration) for x in countries]
 
     def add_country_location(self, country):
-        # type: (str) -> None
+        # type: (str) -> bool
         """Add a country. If an iso 3 code is not provided, value is parsed and if it is a valid country name,
         converted to an iso 3 code. If the country is already added, it is ignored.
 
@@ -822,25 +822,16 @@ class Dataset(HDXObject):
             country (str): Country to add
 
         Returns:
-            None
+            bool: True if country added or False if country already present
         """
         iso3, match = Location.get_iso3_country_code(country)
         if iso3 is None:
             raise HDXError('Country: %s - cannot find iso3 code!' % country)
-        hdx_code, match = Location.get_HDX_code_from_location(iso3, self.configuration)
-        if hdx_code is None:
-            raise HDXError('Country: %s with iso3: %s could not be found in HDX list!' % (country, iso3))
-        groups = self.data.get('groups', None)
-        if groups:
-            if hdx_code in [x['name'] for x in groups]:
-                return
-        else:
-            groups = list()
-        groups.append({'name': hdx_code})
-        self.data['groups'] = groups
+        return self.add_other_location(iso3, alterror='Country: %s with iso3: %s could not be found in HDX list!' %
+                                                      (country, iso3))
 
     def add_country_locations(self, countries):
-        # type: (List[str]) -> None
+        # type: (List[str]) -> bool
         """Add a list of countries. If iso 3 codes are not provided, values are parsed and where they are valid country
         names, converted to iso 3 codes. If any country is already added, it is ignored.
 
@@ -848,13 +839,16 @@ class Dataset(HDXObject):
             countries (List[str]): List of countries to add
 
         Returns:
-            None
+            bool: Returns True if all countries added or False if any already present.
         """
+        allcountriesadded = True
         for country in countries:
-            self.add_country_location(country)
+            if not self.add_country_location(country):
+                allcountriesadded = False
+        return allcountriesadded
 
     def add_continent_location(self, continent):
-        # type: (str) -> None
+        # type: (str) -> bool
         """Add all countries in a  continent. If a 2 letter continent code is not provided, value is parsed and if it
         is a valid continent name, converted to a 2 letter code. If any country is already added, it is ignored.
 
@@ -862,45 +856,49 @@ class Dataset(HDXObject):
             continent (str): Continent to add
 
         Returns:
-            None
+            bool: Returns True if all countries in continent added or False if any already present.
         """
-        self.add_country_locations(Location.get_countries_in_continent(continent))
+        return self.add_country_locations(Location.get_countries_in_continent(continent))
 
-    def add_other_location(self, location):
-        # type: (str) -> None
+    def add_other_location(self, location, alterror=None):
+        # type: (str) -> bool
         """Add a location which is not a country or continent. Value is parsed and compared to existing locations in 
         HDX. If the location is already added, it is ignored.
 
         Args:
             location (str): Location to add
+            alterror (str): Alternative error message if location not found
 
         Returns:
-            None
+            bool: True if location added or False if location already present
         """
         hdx_code, match = Location.get_HDX_code_from_location(location, self.configuration)
         if hdx_code is None:
-            raise HDXError('Location: %s - cannot find in HDX!' % location)
+            if alterror is None:
+                raise HDXError('Location: %s - cannot find in HDX!' % location)
+            else:
+                raise HDXError(alterror)
         groups = self.data.get('groups', None)
         if groups:
             if hdx_code in [x['name'] for x in groups]:
-                return
+                return False
         else:
             groups = list()
         groups.append({'name': hdx_code})
         self.data['groups'] = groups
+        return True
 
     def remove_location(self, location):
-        # type: (str) -> None
+        # type: (str) -> bool
         """Remove a location. If the location is already added, it is ignored.
 
         Args:
             location (str): Location to remove
 
         Returns:
-            None
+            bool: True if location removed or False if not
         """
-        self._remove_hdxobject(self.data.get('groups'), location, matchon='name')
-        self._remove_object_from_hdx_list('groups', location)
+        return self._remove_hdxobject(self.data.get('groups'), location, matchon='name')
 
     def get_maintainer(self):
         # type: () -> User
@@ -962,7 +960,7 @@ class Dataset(HDXObject):
         Returns:
             List[Showcase]: List of showcases
         """
-        assoc_result, showcases_dicts = self._read_from_hdx('showcase', self.data['id'], fieldname='id',
+        assoc_result, showcases_dicts = self._read_from_hdx('showcase', self.data['id'], fieldname='package_id',
                                                             action=hdx.data.showcase.Showcase.actions()['list_showcases'])
         showcases = list()
         if assoc_result:

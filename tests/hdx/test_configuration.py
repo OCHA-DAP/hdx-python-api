@@ -429,7 +429,7 @@ hello there'''
                                       project_config_yaml=project_config_yaml)
         Configuration.setup(configuration)
         assert Configuration.read() == configuration
-        Configuration._configuration = None
+        Configuration.delete()
         with pytest.raises(ConfigurationError):
             Configuration.read()
         Configuration.create(hdx_site='prod', hdx_key='TEST_HDX_KEY',
@@ -469,7 +469,7 @@ hello there'''
         Configuration.read()._validlocationsfn = None
         with pytest.raises(ConfigurationError):
             Configuration.read().validlocations()
-        Configuration._configuration = None
+        Configuration.delete()
         with pytest.raises(ConfigurationError):
             Configuration.read().remoteckan()
         with pytest.raises(ConfigurationError):

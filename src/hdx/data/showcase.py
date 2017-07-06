@@ -137,40 +137,40 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         return self._get_tags()
 
     def add_tag(self, tag):
-        # type: (str) -> None
+        # type: (str) -> bool
         """Add a tag
 
         Args:
             tag (str): Tag to add
 
         Returns:
-            None
+            bool: True if tag added or False if tag already present
         """
-        self._add_tag(tag)
+        return self._add_tag(tag)
 
     def add_tags(self, tags):
-        # type: (List[str]) -> None
+        # type: (List[str]) -> bool
         """Add a list of tag
 
         Args:
             tags (List[str]): List of tags to add
 
         Returns:
-            None
+            bool: Returns True if all tags added or False if any already present.
         """
-        self._add_tags(tags)
+        return self._add_tags(tags)
 
     def remove_tag(self, tag):
-        # type: (str) -> None
+        # type: (str) -> bool
         """Remove a tag
 
         Args:
             tag (str): Tag to remove
 
         Returns:
-            None
+            bool: True if tag removed or False if not
         """
-        self._remove_hdxobject(self.data.get('tags'), tag, matchon='name')
+        return self._remove_hdxobject(self.data.get('tags'), tag, matchon='name')
 
     def get_datasets(self):
         # type: () -> List[Dataset]

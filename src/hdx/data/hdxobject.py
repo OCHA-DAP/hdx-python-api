@@ -189,7 +189,7 @@ class HDXObject(UserDict, object):
         Returns:
             None
         """
-        return
+        raise NotImplementedError
 
     def _check_required_fields(self, object_type, ignore_fields):
         # type: (str, List[str]) -> None
@@ -482,33 +482,37 @@ class HDXObject(UserDict, object):
         return [x['name'] for x in tags]
 
     def _add_tag(self, tag):
-        # type: (str) -> None
+        # type: (str) -> bool
         """Add a tag
 
         Args:
             tag (str): Tag to add
 
         Returns:
-            None
+            bool: True if tag added or False if tag already present
         """
         tags = self.data.get('tags', None)
         if tags:
             if tag in [x['name'] for x in tags]:
-                return
+                return False
         else:
             tags = list()
         tags.append({'name': tag})
         self.data['tags'] = tags
+        return True
 
     def _add_tags(self, tags):
-        # type: (List[str]) -> None
+        # type: (List[str]) -> bool
         """Add a list of tag
 
         Args:
             tags (List[str]): List of tags to add
 
         Returns:
-            None
+            bool: Returns True if all tags added or False if any already present.
         """
+        alltagsadded = True
         for tag in tags:
-            self._add_tag(tag)
+            if not self._add_tag(tag):
+                alltagsadded = False
+        return alltagsadded

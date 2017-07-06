@@ -637,6 +637,15 @@ class TestDataset:
         resource.set_file_to_upload('lala')
         dataset.add_update_resource(resource)
         assert dataset.resources[1].get_file_to_upload() == 'lala'
+        dataset.add_update_resource('de6549d8-268b-4dfe-adaf-a4ae5c8510d5')
+        assert len(dataset.resources) == 2
+        with pytest.raises(HDXError):
+            dataset.add_update_resource(123)
+        resources_data[0]['package_id'] = '123'
+        with pytest.raises(HDXError):
+            dataset.add_update_resources(resources_data)
+        with pytest.raises(HDXError):
+            dataset.add_update_resources(123)
 
     def test_search_in_hdx(self, configuration, search):
         dataset.page_size = 1000
@@ -852,4 +861,6 @@ class TestDataset:
         dataset.add_showcases([{'id': 'lala'}])
         assert TestDataset.association == 'create'
         TestDataset.association = None
+        with pytest.raises(HDXError):
+            dataset.add_showcase(123)
 
