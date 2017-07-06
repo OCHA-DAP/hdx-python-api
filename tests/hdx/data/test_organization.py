@@ -290,26 +290,49 @@ class TestOrganization:
         users = organization.get_users()
         assert len(users) == 1
         assert users[0]['name'] == 'MyUser1'
-        organization.delete_user('8b84230c-e04a-43ec-99e5-41307a203a2f')
+        organization.remove_user('8b84230c-e04a-43ec-99e5-41307a203a2f')
         users = organization.get_users()
         assert len(users) == 0
-        user = User(user_data)
+        userdata_copy = copy.deepcopy(user_data)
+        userdata_copy['id'] = '9f3e9973-7dbe-4c65-8820-f48578e3ffea'
+        user = User(userdata_copy)
         user['name'] = 'TEST1'
         user['capacity'] = 'member'
         del organization['users']
         organization.add_update_users([user])
         users = organization.get_users('member')
         assert len(users) == 1
+        organization.remove_user(users[0])
+        users = organization.get_users()
+        assert len(users) == 0
+        organization.add_update_users([user])
+        users = organization.get_users('member')
+        assert len(users) == 1
+        organization.add_update_users(['TEST1'], 'member')
+        users = organization.get_users('member')
+        assert len(users) == 2
         assert users[0]['name'] == 'MyUser1'
+        organization.remove_user(users[0].data)
+        users = organization.get_users('member')
+        assert len(users) == 1
+        organization.add_update_users([user], 'editor')
+        organization.remove_user('')
+        users = organization.get_users('editor')
+        assert len(users) == 1
+        organization.remove_user('NOT_EXIST')
+        users = organization.get_users('editor')
+        assert len(users) == 1
         users = organization.get_users('admin')
         assert len(users) == 0
         with pytest.raises(HDXError):
             organization.add_update_users(123)
         with pytest.raises(HDXError):
             organization.add_update_user(123)
+        with pytest.raises(HDXError):
+            organization.remove_user(123)
 
     def test_get_datasets(self, configuration, datasets_get):
         org_data = copy.deepcopy(resultdict)
         organization = Organization(org_data)
-        datasets = organization.get_datasets(include_gallery=False)
+        datasets = organization.get_datasets(include_showcase=False)
         assert len(datasets) == 10

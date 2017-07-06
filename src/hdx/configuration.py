@@ -424,3 +424,15 @@ class Configuration(UserDict, object):
             raise ConfigurationError('Configuration already created!')
         return cls._create(configuration=configuration, remoteckan=remoteckan,
                            validlocationsfn=validlocationsfn, **kwargs)
+
+    @classmethod
+    def delete(cls):
+        # type: () -> None
+        """
+        Delete global HDX configuration.
+
+        Returns:
+            None
+
+        """
+        cls._configuration = None

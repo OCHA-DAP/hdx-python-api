@@ -28,8 +28,8 @@ dataset:
     - license_id
     - methodology
     - data_update_frequency
+    - tags
 resource:
-  dataset_id: package_id
   required_fields:
     - package_id
     - name
@@ -38,16 +38,14 @@ resource:
     - description
     - url_type
     - resource_type
-galleryitem:
-  dataset_id: dataset_id
+showcase:
   required_fields:
-    - dataset_id
+    - name
     - title
-    - type
-    - description
+    - notes
     - url
-    - image_url
-  ignore_on_update: dataset_id
+    - image_display_url
+    - tags
 user:
   required_fields:
     - name

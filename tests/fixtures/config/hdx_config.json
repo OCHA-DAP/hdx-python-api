@@ -16,16 +16,14 @@
     ]
   },
   "resource": {
-    "dataset_id": "package_id",
     "required_fields": [
       "name",
       "description"
     ]
   },
-  "galleryitem": {
-    "dataset_id": "dataset_id",
+  "showcase": {
     "required_fields": [
-      "dataset_id"
+      "name"
     ]
   }
 }

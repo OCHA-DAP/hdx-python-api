@@ -140,6 +140,8 @@ class TestResource:
         'resource_type': 'api'
     }
 
+    datastore = None
+
     @pytest.fixture(scope='class')
     def static_yaml(self):
         return join('tests', 'fixtures', 'config', 'hdx_resource_static.yml')
@@ -286,6 +288,7 @@ class TestResource:
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_delete"}')
                 if 'delete' in url and datadict['resource_id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5':
+                    TestResource.datastore = 'delete'
                     return MockResponse(200,
                                         '{"success": true, "result": {"resource_id": "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}')
                 if 'create' in url and datadict['resource_id'] == 'datastore_unknown_resource':
@@ -293,6 +296,7 @@ class TestResource:
                                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}')
                 if ('create' in url or 'insert' in url or 'upsert' in url) and datadict[
                     'resource_id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5':
+                    TestResource.datastore = 'create'
                     return MockResponse(200,
                                         '{"success": true, "result": {"fields": [{"type": "text", "id": "code"}, {"type": "text", "id": "title"}, {"type": "float", "id": "value"}, {"type": "timestamp", "id": "latest_date"}, {"type": "text", "id": "source"}, {"type": "text", "id": "source_link"}, {"type": "text", "id": "notes"}, {"type": "text", "id": "explore"}, {"type": "text", "id": "units"}], "method": "insert", "primary_key": "code", "resource_id": "bfa6b55f-10b6-4ba2-8470-33bb9a5194a5"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}')
                 return MockResponse(404,
@@ -399,6 +403,10 @@ class TestResource:
         with pytest.raises(HDXError):
             resource.update_in_hdx()
 
+        resource.data = None
+        with pytest.raises(HDXError):
+            resource.update_in_hdx()
+
         resource_data = copy.deepcopy(TestResource.resource_data)
         resource_data['name'] = 'MyResource1'
         resource_data['id'] = 'TEST1'
@@ -457,17 +465,52 @@ class TestResource:
         resource = Resource.read_from_hdx('TEST1')
         resource2 = Resource.read_from_hdx('TEST5')
         monkeypatch.undo()
+        TestResource.datastore = None
         resource.create_datastore(delete_first=0)
+        assert TestResource.datastore == 'create'
+        TestResource.datastore = None
         resource.create_datastore(delete_first=1)
+        assert TestResource.datastore == 'create'
+        TestResource.datastore = None
         resource.create_datastore(delete_first=2)
+        assert TestResource.datastore == 'create'
+        TestResource.datastore = None
         with pytest.raises(HDXError):
             resource.create_datastore(delete_first=3)
         resource.update_datastore()
+        assert TestResource.datastore == 'create'
+        TestResource.datastore = None
         resource.update_datastore_for_topline()
+        assert TestResource.datastore == 'create'
+        TestResource.datastore = None
+        resource.update_datastore_from_dict_schema({
+  "schema": [
+    {
+      "id": "code",
+      "type": "text"
+    },
+  ],
+  "primary_key": "code"
+})
+        assert TestResource.datastore == 'create'
+        TestResource.datastore = None
         resource.update_datastore_from_yaml_schema(topline_yaml)
+        assert TestResource.datastore == 'create'
+        TestResource.datastore = None
         filefordatastore = join('tests', 'fixtures', 'test_data.csv')
         resource.update_datastore_from_json_schema(topline_json, path=filefordatastore)
+        assert TestResource.datastore == 'create'
+        TestResource.datastore = None
+        filefordatastore = join('tests', 'fixtures', 'test_data.zip')
         filefordatastore = join('tests', 'fixtures', 'test_data.zip')
         resource.update_datastore_from_json_schema(topline_json, path=filefordatastore)
+        assert TestResource.datastore == 'create'
+        TestResource.datastore = None
         with pytest.raises(HDXError):
             resource2.update_datastore_from_json_schema(topline_json)
+        resource.delete_datastore()
+        assert TestResource.datastore == 'delete'
+        TestResource.datastore = None
+        with pytest.raises(HDXError):
+            del resource['url']
+            resource.create_datastore()

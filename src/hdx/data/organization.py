@@ -144,17 +144,22 @@ class Organization(HDXObject):
                 users.append(user)
         return users
 
-    def add_update_user(self, user):
-        # type: (Any) -> None
-        """Add new or update existing users item in organization with new metadata
+    def add_update_user(self, user, capacity=None):
+        # type: (Union[User,dict,str],Optional[str]) -> None
+        """Add new or update existing users item in organization with new metadata. Capacity eg. member, admin
+        must be supplied either within the User object or dictionary or using the capacity argument (which takes
+        precedence)
 
         Args:
-            user (Any): User metadata either from a User object or a dictionary
+            user (Union[User,dict,str]): Either a user id or user metadata either from a User object or a dictionary
+            capacity (Optional[str]): Capacity of user eg. member, admin. Defaults to None.
 
         Returns:
             None
 
         """
+        if isinstance(user, str):
+            user = User.read_from_hdx(user, configuration=self.configuration)
         if isinstance(user, User):
             user = user.data
         if isinstance(user, dict):
@@ -162,15 +167,19 @@ class Organization(HDXObject):
             if users is None:
                 users = list()
                 self.data['users'] = users
+            if capacity is not None:
+                user['capacity'] = capacity
             self._addupdate_hdxobject(users, 'name', user)
             return
         raise HDXError("Type %s cannot be added as a user!" % type(user).__name__)
 
-    def add_update_users(self, users):
+    def add_update_users(self, users, capacity=None):
+        # type: (List[Union[User,dict,str]]) -> None
         """Add new or update existing users items with new metadata to the organization
 
         Args:
-            users (List[Any]): Users metadata from a list of either User objects or dictionaries
+            users (List[Union[User,dict,str]]): A list of either user ids or users metadata from User objects or dictionaries
+            capacity (Optional[str]): Capacity of users eg. member, admin. Defaults to None.
 
         Returns:
             None
@@ -178,22 +187,19 @@ class Organization(HDXObject):
         if not isinstance(users, list):
             raise HDXError('Users should be a list!')
         for user in users:
-            self.add_update_user(user)
+            self.add_update_user(user, capacity)
 
-    def delete_user(self, identifier):
-        """Delete a user from the organization
+    def remove_user(self, user):
+        # type: (Union[User,dict,str]) -> bool
+        """Remove a user from the organization
 
         Args:
-            identifier (str): Id of user to delete
+            user (Union[User,dict,str]): Either a user id or user metadata either from a User object or a dictionary
 
         Returns:
-            None
+            bool: True if user removed or False if not
         """
-        usersdicts = self.data.get('users')
-        if usersdicts is not None:
-            for i, userdata in enumerate(usersdicts):
-                if userdata['id'] == identifier:
-                    del usersdicts[i]
+        return self._remove_hdxobject(self.data.get('users'), user)
 
     def get_datasets(self, include_gallery=True, query='*:*', **kwargs):
         # type: (Optional[bool], Optional[str], ...) -> List[hdx.data.dataset.Dataset]

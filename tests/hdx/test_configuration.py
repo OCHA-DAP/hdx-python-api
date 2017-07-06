@@ -167,12 +167,8 @@ hello there'''
                 'name',
                 'dataset_date',
             ]},
-            'resource': {'dataset_id': 'package_id',
-                         'required_fields': ['name', 'description'
-                                             ]},
-            'galleryitem': {'dataset_id': 'dataset_id', 'required_fields': [
-                'dataset_id',
-            ],},
+            'resource': {'required_fields': ['name', 'description']},
+            'showcase': {'required_fields': ['name']},
         }
         assert Configuration.read() == expected_configuration
 
@@ -197,13 +193,8 @@ hello there'''
                 'title',
                 'dataset_date',
             ]},
-            'resource': {'dataset_id': 'package_id',
-                         'required_fields': ['package_id', 'name', 'description'
-                                             ]},
-            'galleryitem': {'dataset_id': 'dataset_id', 'required_fields': [
-                'dataset_id',
-                'title',
-            ], 'ignore_on_update': ['dataset_id']},
+            'resource': {'required_fields': ['package_id', 'name', 'description']},
+            'showcase': {'required_fields': ['name', 'title']},
         }
         assert Configuration.read() == expected_configuration
 
@@ -242,20 +233,19 @@ hello there'''
                 'groups',
                 'license_id',
                 'methodology',
-                'data_update_frequency'
+                'data_update_frequency',
+                'tags'
             ]},
-            'resource': {'dataset_id': 'package_id',
-                         'required_fields': ['package_id', 'name', 'format', 'url', 'description',
-                                             'url_type', 'resource_type'
-                                             ]},
-            'galleryitem': {'dataset_id': 'dataset_id', 'required_fields': [
-                'dataset_id',
+            'resource': {'required_fields': ['package_id', 'name', 'format', 'url', 'description',
+                                             'url_type', 'resource_type']},
+            'showcase': {'required_fields': [
+                'name',
                 'title',
-                'type',
-                'description',
+                'notes',
                 'url',
-                'image_url',
-            ], 'ignore_on_update': 'dataset_id'},
+                'image_display_url',
+                'tags'
+            ]},
             'user': {'required_fields': [
                 'name',
                 'email',
@@ -269,6 +259,7 @@ hello there'''
                 'description',
             ]},
         }
+        print(Configuration.read())
         assert Configuration.read() == expected_configuration
         Configuration._create(hdx_key_file=hdx_key_file, project_config_dict={'abc': '123'})
         expected_configuration['abc'] = '123'
@@ -310,20 +301,20 @@ hello there'''
                 'groups',
                 'license_id',
                 'methodology',
-                'data_update_frequency'
+                'data_update_frequency',
+                'tags'
             ]},
-            'resource': {'dataset_id': 'package_id',
-                         'required_fields': ['package_id', 'name', 'format', 'url', 'description',
+            'resource': {'required_fields': ['package_id', 'name', 'format', 'url', 'description',
                                              'url_type', 'resource_type'
                                              ]},
-            'galleryitem': {'dataset_id': 'dataset_id', 'required_fields': [
-                'dataset_id',
+            'showcase': {'required_fields': [
+                'name',
                 'title',
-                'type',
-                'description',
+                'notes',
                 'url',
-                'image_url',
-            ], 'ignore_on_update': 'dataset_id'},
+                'image_display_url',
+                'tags'
+            ]},
             'user': {'required_fields': [
                 'name',
                 'email',
@@ -375,20 +366,20 @@ hello there'''
                 'groups',
                 'license_id',
                 'methodology',
-                'data_update_frequency'
+                'data_update_frequency',
+                'tags'
             ]},
-            'resource': {'dataset_id': 'package_id',
-                         'required_fields': ['package_id', 'name', 'format', 'url', 'description',
+            'resource': {'required_fields': ['package_id', 'name', 'format', 'url', 'description',
                                              'url_type', 'resource_type'
                                              ]},
-            'galleryitem': {'dataset_id': 'dataset_id', 'required_fields': [
-                'dataset_id',
+            'showcase': {'required_fields': [
+                'name',
                 'title',
-                'type',
-                'description',
+                'notes',
                 'url',
-                'image_url',
-            ], 'ignore_on_update': 'dataset_id'},
+                'image_display_url',
+                'tags'
+            ]},
             'user': {'required_fields': [
                 'name',
                 'email',
@@ -438,7 +429,7 @@ hello there'''
                                       project_config_yaml=project_config_yaml)
         Configuration.setup(configuration)
         assert Configuration.read() == configuration
-        Configuration._configuration = None
+        Configuration.delete()
         with pytest.raises(ConfigurationError):
             Configuration.read()
         Configuration.create(hdx_site='prod', hdx_key='TEST_HDX_KEY',
@@ -478,7 +469,7 @@ hello there'''
         Configuration.read()._validlocationsfn = None
         with pytest.raises(ConfigurationError):
             Configuration.read().validlocations()
-        Configuration._configuration = None
+        Configuration.delete()
         with pytest.raises(ConfigurationError):
             Configuration.read().remoteckan()
         with pytest.raises(ConfigurationError):

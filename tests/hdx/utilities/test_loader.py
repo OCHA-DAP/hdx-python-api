@@ -35,13 +35,12 @@ class TestLoader:
                 'title',
                 'dataset_date',
             ]},
-            'resource': {'dataset_id': 'package_id',
-                         'required_fields': ['package_id', 'name', 'description'
+            'resource': {'required_fields': ['package_id', 'name', 'description'
                                              ]},
-            'galleryitem': {'dataset_id': 'dataset_id', 'required_fields': [
-                'dataset_id',
+            'showcase': {'required_fields': [
+                'name',
                 'title',
-            ], 'ignore_on_update': ['dataset_id']},
+            ]},
         }
 
         assert result == expected
@@ -65,11 +64,10 @@ class TestLoader:
                 'name',
                 'dataset_date',
             ]},
-            'resource': {'dataset_id': 'package_id',
-                         'required_fields': ['name', 'description'
+            'resource': {'required_fields': ['name', 'description'
                                              ]},
-            'galleryitem': {'dataset_id': 'dataset_id', 'required_fields': [
-                'dataset_id',
+            'showcase': {'required_fields': [
+                'name',
             ], },
         }
 

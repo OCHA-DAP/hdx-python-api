@@ -77,12 +77,13 @@ class Location(object):
         return None, False
 
     @staticmethod
-    def get_HDX_code_from_location(location, configuration=None):
-        # type: (str, Optional[Configuration]) -> Tuple[Optional[str], bool]
+    def get_HDX_code_from_location(location, exact=True, configuration=None):
+        # type: (str, Optional[bool], Optional[Configuration]) -> Tuple[Optional[str], bool]
         """Get HDX code for location
 
         Args:
             location (str): Location for which to get HDX code
+            exact (Optional[bool]): True for exact matching or False to allow fuzzy matching. Defaults to True.
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
@@ -100,10 +101,11 @@ class Location(object):
             if locationlower == locdict['title'].lower():
                 return locdict['name'], True
 
-        for locdict in configuration.validlocations():
-            locationname = locdict['title'].lower()
-            if locationlower in locationname or locationname in locationlower:
-                return locdict['name'], False
+        if not exact:
+            for locdict in configuration.validlocations():
+                locationname = locdict['title'].lower()
+                if locationlower in locationname or locationname in locationlower:
+                    return locdict['name'], False
         return None, False
 
     @staticmethod
