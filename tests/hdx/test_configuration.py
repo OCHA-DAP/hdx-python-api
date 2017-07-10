@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+# -*'coding: UTF-8 -*-
 """Configuration Tests"""
 from os.path import join
 
@@ -229,12 +229,28 @@ hello there'''
                 'notes',
                 'dataset_source',
                 'owner_org',
+                'maintainer',
                 'dataset_date',
+                'data_update_frequency',
                 'groups',
                 'license_id',
                 'methodology',
-                'data_update_frequency',
                 'tags'
+            ]},
+            'dataset-requestable': {'required_fields': [
+                'name',
+                'title',
+                'notes',
+                'dataset_source',
+                'owner_org',
+                'maintainer',
+                'dataset_date',
+                'data_update_frequency',
+                'groups',
+                'tags',
+                'field_names',
+                'file_types',
+                'num_of_rows'
             ]},
             'resource': {'required_fields': ['package_id', 'name', 'format', 'url', 'description',
                                              'url_type', 'resource_type']},
@@ -297,12 +313,28 @@ hello there'''
                 'notes',
                 'dataset_source',
                 'owner_org',
+                'maintainer',
                 'dataset_date',
+                'data_update_frequency',
                 'groups',
                 'license_id',
                 'methodology',
-                'data_update_frequency',
                 'tags'
+            ]},
+            'dataset-requestable': {'required_fields': [
+                'name',
+                'title',
+                'notes',
+                'dataset_source',
+                'owner_org',
+                'maintainer',
+                'dataset_date',
+                'data_update_frequency',
+                'groups',
+                'tags',
+                'field_names',
+                'file_types',
+                'num_of_rows'
             ]},
             'resource': {'required_fields': ['package_id', 'name', 'format', 'url', 'description',
                                              'url_type', 'resource_type'
@@ -362,12 +394,28 @@ hello there'''
                 'notes',
                 'dataset_source',
                 'owner_org',
+                'maintainer',
                 'dataset_date',
+                'data_update_frequency',
                 'groups',
                 'license_id',
                 'methodology',
-                'data_update_frequency',
                 'tags'
+            ]},
+            'dataset-requestable': {'required_fields': [
+                'name',
+                'title',
+                'notes',
+                'dataset_source',
+                'owner_org',
+                'maintainer',
+                'dataset_date',
+                'data_update_frequency',
+                'groups',
+                'tags',
+                'field_names',
+                'file_types',
+                'num_of_rows'
             ]},
             'resource': {'required_fields': ['package_id', 'name', 'format', 'url', 'description',
                                              'url_type', 'resource_type'

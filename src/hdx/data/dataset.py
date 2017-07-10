@@ -142,11 +142,11 @@ class Dataset(HDXObject):
             resource = Resource(resource, configuration=self.configuration)
         if isinstance(resource, Resource):
             if 'package_id' in resource:
-                raise HDXError("Resource %s being added already has a dataset id!" % (resource['name']))
+                raise HDXError('Resource %s being added already has a dataset id!' % (resource['name']))
             resource_updated = self._addupdate_hdxobject(self.resources, 'name', resource)
             resource_updated.set_file_to_upload(resource.get_file_to_upload())
             return
-        raise HDXError("Type %s cannot be added as a resource!" % type(resource).__name__)
+        raise HDXError('Type %s cannot be added as a resource!' % type(resource).__name__)
 
     def add_update_resources(self, resources):
         # type: (List[Union[Resource,dict,str]]) -> None
@@ -266,11 +266,15 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        self._check_required_fields('dataset', ignore_fields)
-
-        for resource in self.resources:
-            ignore_fields = ['package_id']
-            resource.check_required_fields(ignore_fields=ignore_fields)
+        if self.get_requestable():
+            self._check_required_fields('dataset-requestable', ignore_fields)
+        else:
+            self._check_required_fields('dataset', ignore_fields)
+            if len(self.resources) == 0:
+                raise HDXError('There are no resources! Please add at least one resource!')
+            for resource in self.resources:
+                ignore_fields = ['package_id']
+                resource.check_required_fields(ignore_fields=ignore_fields)
 
     def _dataset_merge_hdx_update(self, update_resources):
         # type: (bool) -> None
@@ -926,7 +930,7 @@ class Dataset(HDXObject):
         elif isinstance(maintainer, User):
             self.data['maintainer'] = maintainer['name']
         else:
-            raise HDXError("Type %s cannot be added as a maintainer!" % type(maintainer).__name__)
+            raise HDXError('Type %s cannot be added as a maintainer!' % type(maintainer).__name__)
 
     def get_organization(self):
         # type: () -> hdx.data.organization.Organization
@@ -954,7 +958,7 @@ class Dataset(HDXObject):
                 org_id = organization['name']
             self.data['owner_org'] = org_id
         else:
-            raise HDXError("Type %s cannot be added as a organization!" % type(organization).__name__)
+            raise HDXError('Type %s cannot be added as a organization!' % type(organization).__name__)
 
     def get_showcases(self):
         # type: () -> List[Showcase]
@@ -987,7 +991,7 @@ class Dataset(HDXObject):
         elif isinstance(showcase, hdx.data.showcase.Showcase) or isinstance(showcase, dict):
             return {'package_id': self.data['id'], 'showcase_id': showcase['id']}
         else:
-            raise HDXError("Type %s cannot be added as a showcase!" % type(showcase).__name__)
+            raise HDXError('Type %s cannot be added as a showcase!' % type(showcase).__name__)
 
     def add_showcase(self, showcase):
         # type: (Union[Showcase,dict,str]) -> None
@@ -1030,3 +1034,115 @@ class Dataset(HDXObject):
         showcase = hdx.data.showcase.Showcase({'id': dataset_showcase['showcase_id']}, configuration=self.configuration)
         showcase._write_to_hdx('disassociate', dataset_showcase, 'package_id')
 
+    def get_requestable(self):
+        # type: () -> bool
+        """Get whether the dataset is requestable or not
+
+        Returns:
+            bool
+        """
+        return self.data.get('is_requestdata_type', False)
+
+    def set_requestable(self, requestable=True):
+        # type: (Optional[bool]) -> None
+        """Set the dataset to be of type requestable or not
+
+        Args:
+            requestable (Optional[bool]): Set whether dataset is requestable. Defaults to True.
+
+        Returns:
+            None
+        """
+        self.data['is_requestdata_type'] = requestable
+        if requestable:
+            self.data['private'] = False
+
+    def get_fieldnames(self):
+        # type: () -> List(str)
+        """Return list of fieldnames in your data
+
+        Returns:
+            List(str): Returns list of field names
+        """
+        return self._get_stringlist_from_commastring('field_names')
+
+    def add_fieldname(self, fieldname):
+        # type: (str) -> bool
+        """Add a fieldname to list of fieldnames in your data
+
+        Args:
+            fieldname (str): fieldname to add
+
+        Returns:
+            bool: True if fieldname added or False if tag already present
+        """
+        return self._add_string_to_commastring('field_names', fieldname)
+
+    def add_fieldnames(self, fieldnames):
+        # type: (List[str]) -> bool
+        """Add a list of fieldnames to list of fieldnames in your data
+
+        Args:
+            fieldnames (List[str]): List of fieldnames to add
+
+        Returns:
+            bool: Returns True if all fieldnames added or False if any already present
+        """
+        return self._add_strings_to_commastring('field_names', fieldnames)
+
+    def remove_fieldname(self, fieldname):
+        # type: (str) -> bool
+        """Remove a fieldname
+
+        Args:
+            fieldname (str): Fieldname to remove
+
+        Returns:
+            bool: True if fieldname removed or False if not
+        """
+        return self._remove_string_from_commastring('field_names', fieldname)
+
+    def get_filetypes(self):
+        # type: () -> List(str)
+        """Return list of filetypes in your data
+
+        Returns:
+            List(str): Returns list of field names
+        """
+        return self._get_stringlist_from_commastring('file_types')
+
+    def add_filetype(self, filetype):
+        # type: (str) -> bool
+        """Add a filetype to list of filetypes in your data
+
+        Args:
+            filetype (str): filetype to add
+
+        Returns:
+            bool: True if filetype added or False if tag already present
+        """
+        return self._add_string_to_commastring('file_types', filetype)
+
+    def add_filetypes(self, filetypes):
+        # type: (List[str]) -> bool
+        """Add a list of filetypes to list of filetypes in your data
+
+        Args:
+            filetypes (List[str]): List of filetypes to add
+
+        Returns:
+            bool: Returns True if all filetypes added or False if any already present
+        """
+        return self._add_strings_to_commastring('file_types', filetypes)
+
+    def remove_filetype(self, filetype):
+        # type: (str) -> bool
+        """Remove a filetype
+
+        Args:
+            filetype (str): Fieldname to remove
+
+        Returns:
+            bool: True if filetype removed or False if not
+        """
+        return self._remove_string_from_commastring('file_types', filetype)

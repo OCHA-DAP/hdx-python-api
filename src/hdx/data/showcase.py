@@ -203,7 +203,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         elif isinstance(dataset, hdx.data.dataset.Dataset) or isinstance(dataset, dict):
             return {'showcase_id': self.data['id'], 'package_id': dataset['id']}
         else:
-            raise hdx.data.hdxobject.HDXError("Type %s cannot be added as a dataset!" % type(dataset).__name__)
+            raise hdx.data.hdxobject.HDXError('Type %s cannot be added as a dataset!' % type(dataset).__name__)
 
     def add_dataset(self, dataset):
         # type: (Union[Dataset,dict,str]) -> None

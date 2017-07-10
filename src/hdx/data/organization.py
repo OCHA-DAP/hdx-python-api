@@ -171,7 +171,7 @@ class Organization(HDXObject):
                 user['capacity'] = capacity
             self._addupdate_hdxobject(users, 'name', user)
             return
-        raise HDXError("Type %s cannot be added as a user!" % type(user).__name__)
+        raise HDXError('Type %s cannot be added as a user!' % type(user).__name__)
 
     def add_update_users(self, users, capacity=None):
         # type: (List[Union[User,dict,str]]) -> None

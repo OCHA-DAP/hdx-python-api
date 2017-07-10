@@ -25,7 +25,7 @@ def merge_two_dictionaries(a, b, merge_lists=False):
     """
     key = None
     # ## debug output
-    # sys.stderr.write("DEBUG: %s to %s\n" %(b,a))
+    # sys.stderr.write('DEBUG: %s to %s\n' %(b,a))
     try:
         if a is None or isinstance(a, (six.string_types, six.text_type, six.integer_types, float)):
             # border case for first run or if a is a primitive

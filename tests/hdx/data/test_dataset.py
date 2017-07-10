@@ -465,6 +465,11 @@ class TestDataset:
 
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
         dataset = Dataset(dataset_data)
+        with pytest.raises(HDXError):
+            dataset.create_in_hdx()
+        resources_data = copy.deepcopy(TestDataset.resources_data)
+        resource = Resource(resources_data[0])
+        dataset.add_update_resources([resource, resource])
         dataset.create_in_hdx()
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
         assert len(dataset.resources) == 2
@@ -542,6 +547,11 @@ class TestDataset:
         dataset_data['name'] = 'MyDataset1'
         dataset_data['id'] = 'TEST1'
         dataset = Dataset(dataset_data)
+        with pytest.raises(HDXError):
+            dataset.create_in_hdx()
+        resources_data = copy.deepcopy(TestDataset.resources_data)
+        resource = Resource(resources_data[0])
+        dataset.add_update_resources([resource, resource])
         dataset.create_in_hdx()
         assert dataset['id'] == 'TEST1'
         assert dataset['dataset_date'] == '03/23/2016'
@@ -553,8 +563,6 @@ class TestDataset:
         dataset.update_in_hdx()
         assert len(dataset.resources) == 2
         dataset = Dataset.read_from_hdx('TEST4')
-        resources_data = copy.deepcopy(TestDataset.resources_data)
-        resource = Resource(resources_data[0])
         file = tempfile.NamedTemporaryFile(delete=False)
         resource.set_file_to_upload(file.name)
         dataset.add_update_resource(resource)
@@ -876,3 +884,36 @@ class TestDataset:
         with pytest.raises(HDXError):
             dataset.add_showcase(123)
 
+    def test_hdxconnect(self, configuration, post_create):
+        dataset_data = copy.deepcopy(TestDataset.dataset_data)
+        dataset = Dataset(dataset_data)
+        dataset['private'] = True
+        dataset.set_requestable()
+        assert dataset['is_requestdata_type'] == True
+        assert dataset['private'] == False
+        dataset['private'] = True
+        dataset.set_requestable(False)
+        assert dataset['is_requestdata_type'] == False
+        assert dataset['private'] == True
+        dataset.set_requestable()
+        assert dataset.get('field_name') is None
+        assert dataset.get_fieldnames() == list()
+        assert dataset.add_fieldname('myfield1') == True
+        assert dataset.add_fieldnames(['myfield1', 'myfield2']) == False
+        assert dataset.remove_fieldname('myfield1') == True
+        assert dataset.remove_fieldname('myfield1') == False
+        assert dataset.add_fieldnames(['myfield3', 'myfield4']) == True
+        assert dataset.get_fieldnames() == ['myfield2', 'myfield3', 'myfield4']
+        assert dataset.get('fiele_types') is None
+        assert dataset.get_filetypes() == list()
+        assert dataset.add_filetype('mytype1') == True
+        assert dataset.add_filetypes(['mytype1', 'mytype2']) == False
+        assert dataset.remove_filetype('mytype1') == True
+        assert dataset.remove_filetype('mytype1') == False
+        assert dataset.add_filetypes(['mytype3', 'mytype4']) == True
+        assert dataset.get_filetypes() == ['mytype2', 'mytype3', 'mytype4']
+        with pytest.raises(HDXError):
+            dataset.create_in_hdx()
+        dataset['num_of_rows'] = 100
+        dataset.create_in_hdx()
+        assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'

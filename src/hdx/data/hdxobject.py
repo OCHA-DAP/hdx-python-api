@@ -108,7 +108,7 @@ class HDXObject(UserDict, object):
             Tuple[bool, Union[dict, str]]: (True/False, HDX object metadata/Error)
         """
         if not fieldname:
-            raise HDXError("Empty %s field name!" % object_type)
+            raise HDXError('Empty %s field name!' % object_type)
         if action is None:
             action = self.actions()['show']
         data = {fieldname: value}
@@ -117,7 +117,7 @@ class HDXObject(UserDict, object):
             result = self.configuration.call_remoteckan(action, data)
             return True, result
         except NotFound:
-            return False, "%s=%s: not found!" % (fieldname, value)
+            return False, '%s=%s: not found!' % (fieldname, value)
         except Exception as e:
             raisefrom(HDXError, 'Failed when trying to read: %s=%s! (POST)' % (fieldname, value), e)
 
@@ -158,9 +158,9 @@ class HDXObject(UserDict, object):
     def _check_existing_object(self, object_type, id_field_name):
         # type: (str, str) -> None
         if not self.data:
-            raise HDXError("No data in %s!" % object_type)
+            raise HDXError('No data in %s!' % object_type)
         if id_field_name not in self.data:
-            raise HDXError("No %s field (mandatory) in %s!" % (id_field_name, object_type))
+            raise HDXError('No %s field (mandatory) in %s!' % (id_field_name, object_type))
 
     def _check_load_existing_object(self, object_type, id_field_name):
         # type: (str, str) -> None
@@ -175,7 +175,7 @@ class HDXObject(UserDict, object):
         """
         self._check_existing_object(object_type, id_field_name)
         if not self._load_from_hdx(object_type, self.data[id_field_name]):
-            raise HDXError("No existing %s to update!" % object_type)
+            raise HDXError('No existing %s to update!' % object_type)
 
     @abc.abstractmethod
     def check_required_fields(self, ignore_fields=list()):
@@ -201,9 +201,9 @@ class HDXObject(UserDict, object):
         Returns:
             None
         """
-        for field in self.configuration['%s' % object_type]['required_fields']:
+        for field in self.configuration[object_type]['required_fields']:
             if field not in self.data and field not in ignore_fields:
-                raise HDXError("Field %s is missing in %s!" % (field, object_type))
+                raise HDXError('Field %s is missing in %s!' % (field, object_type))
 
     def _merge_hdx_update(self, object_type, id_field_name, file_to_upload=None):
         # type: (str, str, Optional[str]) -> None
@@ -346,7 +346,7 @@ class HDXObject(UserDict, object):
             None
         """
         if id_field_name not in self.data:
-            raise HDXError("No %s field (mandatory) in %s!" % (id_field_name, object_type))
+            raise HDXError('No %s field (mandatory) in %s!' % (id_field_name, object_type))
         self._save_to_hdx('delete', id_field_name)
 
     def _addupdate_hdxobject(self, hdxobjects, id_field, new_hdxobject):
@@ -516,3 +516,72 @@ class HDXObject(UserDict, object):
             if not self._add_tag(tag):
                 alltagsadded = False
         return alltagsadded
+
+    def _get_stringlist_from_commastring(self, field):
+        # type: (str) -> List(str)
+        """Return list of strings from comma separated list
+
+        Args:
+            field (str): Field containing comma separated list
+
+        Returns:
+            List(str): Returns list of strings
+        """
+        strings = self.data.get(field)
+        if strings:
+            return strings.split(',')
+        else:
+            return list()
+
+    def _add_string_to_commastring(self, field, string):
+        # type: (str) -> bool
+        """Add a string to a comma separated list of strings
+
+        Args:
+            field (str): Field containing comma separated list
+            string (str): String to add
+
+        Returns:
+            bool: True if string added or False if string already present
+        """
+        if string in self._get_stringlist_from_commastring(field):
+            return False
+        strings = '%s,%s' % (self.data.get(field, ''), string)
+        if strings[0] == ',':
+            strings = strings[1:]
+        self.data[field] = strings
+        return True
+
+    def _add_strings_to_commastring(self, field, strings):
+        # type: (List[str]) -> bool
+        """Add a list of strings to a comma separated list of strings
+
+        Args:
+            field (str): Field containing comma separated list
+            strings (List[str]): List of strings to add
+
+        Returns:
+            bool: Returns True if all strings added or False if any already present.
+        """
+        allstringsadded = True
+        for string in strings:
+            if not self._add_string_to_commastring(field, string):
+                allstringsadded = False
+        return allstringsadded
+
+    def _remove_string_from_commastring(self, field, string):
+        # type: (str) -> bool
+        """Remove a string from a comma separated list of strings
+
+        Args:
+            field (str): Field containing comma separated list
+            string (str): String to remove
+
+        Returns:
+            bool: True if string removed or False if not
+        """
+        commastring = self.data.get(field, '')
+        if string in commastring:
+            self.data[field] = commastring.replace(string, '')
+            return True
+        return False
