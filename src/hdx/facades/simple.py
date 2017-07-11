@@ -2,8 +2,8 @@
 """Facade to simplify project setup that calls project main function"""
 import logging
 
-from hdx.configuration import Configuration
 from hdx.facades import logging_kwargs
+from hdx.hdx_configuration import Configuration
 from hdx.hdx_logging import setup_logging
 
 logger = logging.getLogger(__name__)

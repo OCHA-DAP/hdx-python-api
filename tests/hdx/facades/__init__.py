@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-from hdx.configuration import Configuration
+from hdx.hdx_configuration import Configuration
 
 
 class TestResult:

@@ -15,6 +15,7 @@ import hdx.data.showcase
 from hdx.data.hdxobject import HDXObject, HDXError
 from hdx.data.resource import Resource
 from hdx.data.user import User
+from hdx.hdx_locations import Locations
 from hdx.utilities import raisefrom
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.location import Location
@@ -805,9 +806,12 @@ class Dataset(HDXObject):
         """
         return self._remove_hdxobject(self.data.get('tags'), tag, matchon='name')
 
-    def get_location(self):
-        # type: () -> List[str]
+    def get_location(self, locations=None):
+        # type: (Optional[List[str]]) -> List[str]
         """Return the dataset's location
+
+        Args:
+            locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
 
         Returns:
             List[str]: List of locations or [] if there are none
@@ -815,16 +819,18 @@ class Dataset(HDXObject):
         countries = self.data.get('groups', None)
         if not countries:
             return list()
-        return [Location.get_location_from_HDX_code(x['name'], self.configuration) for x in countries]
+        return [Locations.get_location_from_HDX_code(x['name'], locations=locations,
+                                                     configuration=self.configuration) for x in countries]
 
-    def add_country_location(self, country, exact=True):
-        # type: (str, Optional[bool]) -> bool
+    def add_country_location(self, country, exact=True, locations=None):
+        # type: (str, Optional[bool],Optional[List[str]]) -> bool
         """Add a country. If an iso 3 code is not provided, value is parsed and if it is a valid country name,
         converted to an iso 3 code. If the country is already added, it is ignored.
 
         Args:
             country (str): Country to add
             exact (Optional[bool]): True for exact matching or False to allow fuzzy matching. Defaults to True.
+            locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
 
         Returns:
             bool: True if country added or False if country already present
@@ -834,40 +840,43 @@ class Dataset(HDXObject):
             raise HDXError('Country: %s - cannot find iso3 code!' % country)
         return self.add_other_location(iso3, exact=exact,
                                        alterror='Country: %s with iso3: %s could not be found in HDX list!' %
-                                                (country, iso3))
+                                                (country, iso3),
+                                       locations=locations)
 
-    def add_country_locations(self, countries):
-        # type: (List[str]) -> bool
+    def add_country_locations(self, countries, locations=None):
+        # type: (List[str], Optional[List[str]]) -> bool
         """Add a list of countries. If iso 3 codes are not provided, values are parsed and where they are valid country
         names, converted to iso 3 codes. If any country is already added, it is ignored.
 
         Args:
             countries (List[str]): List of countries to add
+            locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
 
         Returns:
             bool: Returns True if all countries added or False if any already present.
         """
         allcountriesadded = True
         for country in countries:
-            if not self.add_country_location(country):
+            if not self.add_country_location(country, locations=locations):
                 allcountriesadded = False
         return allcountriesadded
 
-    def add_continent_location(self, continent):
-        # type: (str) -> bool
+    def add_continent_location(self, continent, locations=None):
+        # type: (str, Optional[List[str]]) -> bool
         """Add all countries in a  continent. If a 2 letter continent code is not provided, value is parsed and if it
         is a valid continent name, converted to a 2 letter code. If any country is already added, it is ignored.
 
         Args:
             continent (str): Continent to add
+            locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
 
         Returns:
             bool: Returns True if all countries in continent added or False if any already present.
         """
-        return self.add_country_locations(Location.get_countries_in_continent(continent))
+        return self.add_country_locations(Location.get_countries_in_continent(continent), locations=locations)
 
-    def add_other_location(self, location, exact=True, alterror=None):
-        # type: (str, Optional[bool], Optional[str]) -> bool
+    def add_other_location(self, location, exact=True, alterror=None, locations=None):
+        # type: (str, Optional[bool], Optional[str], Optional[List[str]]) -> bool
         """Add a location which is not a country or continent. Value is parsed and compared to existing locations in 
         HDX. If the location is already added, it is ignored.
 
@@ -875,11 +884,13 @@ class Dataset(HDXObject):
             location (str): Location to add
             exact (Optional[bool]): True for exact matching or False to allow fuzzy matching. Defaults to True.
             alterror (Optional[str]): Alternative error message to builtin if location not found. Defaults to None.
+            locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
 
         Returns:
             bool: True if location added or False if location already present
         """
-        hdx_code, match = Location.get_HDX_code_from_location(location, exact=exact, configuration=self.configuration)
+        hdx_code, match = Locations.get_HDX_code_from_location(location, exact=exact, locations=locations,
+                                                               configuration=self.configuration)
         if hdx_code is None:
             if alterror is None:
                 raise HDXError('Location: %s - cannot find in HDX!' % location)

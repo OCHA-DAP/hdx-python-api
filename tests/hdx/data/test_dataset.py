@@ -11,13 +11,13 @@ from os.path import join
 import pytest
 import requests
 
-from hdx.configuration import Configuration
 from hdx.data import dataset
 from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
 from hdx.data.organization import Organization
 from hdx.data.resource import Resource
 from hdx.data.user import User
+from hdx.hdx_configuration import Configuration
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
 from . import MockResponse, user_data, organization_data
@@ -796,7 +796,7 @@ class TestDataset:
         assert dataset['tags'] == [{'name': 'LALA'}]
         assert dataset.get_tags() == ['LALA']
 
-    def test_get_add_location(self, configuration, read):
+    def test_get_add_location(self, locations, read):
         dataset = Dataset.read_from_hdx('TEST1')
         assert dataset['groups'] == resultgroups
         assert dataset.get_location() == ['Algeria', 'Zimbabwe']

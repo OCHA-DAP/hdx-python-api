@@ -16,7 +16,7 @@ from ckanapi.errors import NotFound
 from typing import Optional, List, Tuple, TypeVar, Union
 
 from hdx.utilities import raisefrom
-from hdx.configuration import Configuration
+from hdx.hdx_configuration import Configuration
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml_into_existing_dict, load_json_into_existing_dict
 

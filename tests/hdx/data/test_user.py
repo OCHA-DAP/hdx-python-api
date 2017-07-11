@@ -7,9 +7,9 @@ from os.path import join
 import pytest
 import requests
 
-from hdx.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.user import User
+from hdx.hdx_configuration import Configuration
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from . import MockResponse, user_data
 

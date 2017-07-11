@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
+"""Location utilities"""
 from typing import List, Callable, Tuple, Optional
 
 import geonamescache
-
-from hdx.configuration import Configuration
 
 
 class Location(object):
@@ -32,24 +31,6 @@ class Location(object):
         return None
 
     @staticmethod
-    def get_location_from_HDX_code(code, configuration=None):
-        # type: (str, Optional[Configuration]) -> Optional[str]
-        """Get location from HDX location code
-
-        Args:
-            code (str): code for which to get location name
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
-
-        Returns:
-            Optional[str]: location name
-        """
-        if configuration is None:
-            configuration = Configuration.read()
-        for locdict in configuration.validlocations():
-            if code.lower() == locdict['name'].lower():
-                return locdict['title']
-
-    @staticmethod
     def get_iso3_country_code(country):
         # type: (str) -> Tuple[Optional[str], bool]
         """Get iso 3 code for country
@@ -74,38 +55,6 @@ class Location(object):
             countryname = countrydetails.get('name').lower()
             if countrylower in countryname or countryname in countrylower:
                 return countrydetails.get('iso3').lower(), False
-        return None, False
-
-    @staticmethod
-    def get_HDX_code_from_location(location, exact=True, configuration=None):
-        # type: (str, Optional[bool], Optional[Configuration]) -> Tuple[Optional[str], bool]
-        """Get HDX code for location
-
-        Args:
-            location (str): Location for which to get HDX code
-            exact (Optional[bool]): True for exact matching or False to allow fuzzy matching. Defaults to True.
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
-
-        Returns:
-            Tuple[Optional[str], bool]: HDX code and if the match is strong or (None, False) for no match
-        """
-        if configuration is None:
-            configuration = Configuration.read()
-        locationlower = location.lower()
-        for locdict in configuration.validlocations():
-            locationcode = locdict['name']
-            if locationlower == locationcode.lower():
-                return locationcode, True
-
-        for locdict in configuration.validlocations():
-            if locationlower == locdict['title'].lower():
-                return locdict['name'], True
-
-        if not exact:
-            for locdict in configuration.validlocations():
-                locationname = locdict['title'].lower()
-                if locationlower in locationname or locationname in locationlower:
-                    return locdict['name'], False
         return None, False
 
     @staticmethod
