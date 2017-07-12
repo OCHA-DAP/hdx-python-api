@@ -309,7 +309,7 @@ class Resource(HDXObject):
             rowset = stream.read(keyed=True, limit=chunksize)
             while len(rowset) != 0:
                 data = {'resource_id': self.data['id'], 'force': True, 'method': method, 'records': rowset}
-                self._write_to_hdx('datastore_upsert', data, 'id')
+                self._write_to_hdx('datastore_upsert', data, 'resource_id')
                 rowset = stream.read(keyed=True, limit=chunksize)
                 logger.debug('Uploading: %s' % offset)
                 offset += chunksize
