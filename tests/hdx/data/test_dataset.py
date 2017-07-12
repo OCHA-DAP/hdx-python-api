@@ -684,9 +684,9 @@ class TestDataset:
         assert len(datasets) == 10
         with pytest.raises(HDXError):
             Dataset.get_all_datasets(limit=11)
-        dataset.page_size = 1001
-        with pytest.raises(HDXError):
-            Dataset.get_all_datasets()
+        # dataset.page_size = 1001
+        # with pytest.raises(HDXError):
+        #     Dataset.get_all_datasets()
 
     def test_get_all_resources(self, configuration, search):
         datasets = Dataset.search_in_hdx('ACLED')
