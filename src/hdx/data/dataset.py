@@ -537,11 +537,11 @@ class Dataset(HDXObject):
             if len(names_list) != len(names):  # check for duplicates (shouldn't happen)
                 all_datasets = None
                 attempts += 1
-            elif total_rows == max_int:
-                all_names = set(Dataset.get_all_dataset_names())  # check dataset names match package_list
-                if names != all_names:
-                    all_datasets = None
-                    attempts += 1
+            # elif total_rows == max_int:
+            #     all_names = set(Dataset.get_all_dataset_names())  # check dataset names match package_list
+            #     if names != all_names:
+            #         all_datasets = None
+            #         attempts += 1
         if attempts == max_attempts and all_datasets is None:
             raise HDXError('Maximum attempts reached for getting all datasets!')
         return all_datasets
