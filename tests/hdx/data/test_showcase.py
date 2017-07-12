@@ -86,7 +86,7 @@ class TestShowcase:
         'title': 'MyShowcase1',
         'notes': 'My Showcase',
         'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',
-        'image_display_url': 'http://myvisual/visual.png',
+        'image_url': 'http://myvisual/visual.png',
         'name': 'showcase-1',
         'url': 'http://visualisation/url/',
         'tags': [{'name': 'economy'}, {'name': 'health'}],
@@ -246,30 +246,30 @@ class TestShowcase:
         assert showcase['id'] == '05e392bf-04e0-4ca6-848c-4e87bba10746'
         assert showcase['title'] == 'MyShowcase1'
 
-        showcase['id'] = 'TEST1'
+        showcase['name'] = 'TEST1'
         showcase['notes'] = 'lalalala'
         showcase.update_in_hdx()
-        assert showcase['id'] == 'TEST1'
+        assert showcase['name'] == 'TEST1'
         assert showcase['notes'] == 'lalalala'
         expected = copy.deepcopy(showcase_resultdict)
         expected['notes'] = 'lalalala'
-        expected['id'] = 'TEST1'
+        expected['name'] = 'TEST1'
         assert showcase.get_old_data_dict() == expected
 
-        showcase['id'] = 'NOTEXIST'
+        showcase['name'] = 'NOTEXIST'
         with pytest.raises(HDXError):
             showcase.update_in_hdx()
 
-        del showcase['id']
+        del showcase['name']
         with pytest.raises(HDXError):
             showcase.update_in_hdx()
 
         showcase_data = copy.deepcopy(TestShowcase.showcase_data)
         showcase_data['title'] = 'MyShowcase1'
-        showcase_data['id'] = 'TEST1'
+        showcase_data['name'] = 'TEST1'
         showcase = Showcase(showcase_data)
         showcase.create_in_hdx()
-        assert showcase['id'] == 'TEST1'
+        assert showcase['name'] == 'TEST1'
         assert showcase['notes'] == 'My Showcase'
 
     def test_delete_from_hdx(self, configuration, post_delete):

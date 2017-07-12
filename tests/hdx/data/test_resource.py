@@ -502,10 +502,12 @@ class TestResource:
         assert TestResource.datastore == 'create'
         TestResource.datastore = None
         filefordatastore = join('tests', 'fixtures', 'test_data.zip')
-        filefordatastore = join('tests', 'fixtures', 'test_data.zip')
         resource.update_datastore_from_json_schema(topline_json, path=filefordatastore)
         assert TestResource.datastore == 'create'
         TestResource.datastore = None
+        filefordatastore = join('tests', 'fixtures', 'datastore', 'ACLED-All-Africa-File_20170101-to-20170708.xlsx')
+        resource.update_datastore(path=filefordatastore)
+        assert TestResource.datastore == 'create'
         with pytest.raises(HDXError):
             resource2.update_datastore_from_json_schema(topline_json)
         resource.delete_datastore()

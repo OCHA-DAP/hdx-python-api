@@ -259,7 +259,7 @@ hello there'''
                 'title',
                 'notes',
                 'url',
-                'image_display_url',
+                'image_url',
                 'tags'
             ]},
             'user': {'required_fields': [
@@ -344,7 +344,7 @@ hello there'''
                 'title',
                 'notes',
                 'url',
-                'image_display_url',
+                'image_url',
                 'tags'
             ]},
             'user': {'required_fields': [
@@ -425,7 +425,7 @@ hello there'''
                 'title',
                 'notes',
                 'url',
-                'image_display_url',
+                'image_url',
                 'tags'
             ]},
             'user': {'required_fields': [
