@@ -4,7 +4,7 @@
     <option name="CUSTOM_SCOPE_NAME" value="Project and Libraries" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78dced69-aba6-482d-97c8-9f71833379e5" name="Default" comment="Fix resource updating">
+    <list default="true" id="78dced69-aba6-482d-97c8-9f71833379e5" name="Default" comment="Fix datastore updating">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hdx/data/resource.py" afterPath="$PROJECT_DIR$/src/hdx/data/resource.py" />
     </list>
@@ -113,9 +113,11 @@
       <file leaf-file-name="resource.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/hdx/data/resource.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="311" column="52" selection-start-line="311" selection-start-column="46" selection-end-line="311" selection-end-column="52" />
-              <folding />
+            <state relative-caret-position="342">
+              <caret line="300" column="67" selection-start-line="300" selection-start-column="67" selection-end-line="300" selection-end-column="67" />
+              <folding>
+                <element signature="e#114#128#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -1252,13 +1254,6 @@
       <option name="presentableId" value="Default" />
       <updated>1464695506411</updated>
     </task>
-    <task id="LOCAL-00305" summary="Increase coverage">
-      <created>1493631653884</created>
-      <option name="number" value="00305" />
-      <option name="presentableId" value="LOCAL-00305" />
-      <option name="project" value="LOCAL" />
-      <updated>1493631653885</updated>
-    </task>
     <task id="LOCAL-00306" summary="Add internal _create">
       <created>1493634373914</created>
       <option name="number" value="00306" />
@@ -1595,7 +1590,14 @@
       <option name="project" value="LOCAL" />
       <updated>1499854378257</updated>
     </task>
-    <option name="localTasksCounter" value="354" />
+    <task id="LOCAL-00354" summary="Fix datastore updating">
+      <created>1499854916247</created>
+      <option name="number" value="00354" />
+      <option name="presentableId" value="LOCAL-00354" />
+      <option name="project" value="LOCAL" />
+      <updated>1499854916247</updated>
+    </task>
+    <option name="localTasksCounter" value="355" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1729,7 +1731,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Test configuration passed" />
     <MESSAGE value="auth for download" />
     <MESSAGE value="Add user management and email utility" />
     <MESSAGE value="Update setup.py" />
@@ -1754,7 +1755,8 @@
     <MESSAGE value="Allow locations to be passed as parameter or set and move it outside of Configuration" />
     <MESSAGE value="Fix showcase updating" />
     <MESSAGE value="Fix resource updating" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix resource updating" />
+    <MESSAGE value="Fix datastore updating" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix datastore updating" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -2148,9 +2150,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/hdx/data/resource.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="311" column="52" selection-start-line="311" selection-start-column="46" selection-end-line="311" selection-end-column="52" />
-          <folding />
+        <state relative-caret-position="342">
+          <caret line="300" column="67" selection-start-line="300" selection-start-column="67" selection-end-line="300" selection-end-column="67" />
+          <folding>
+            <element signature="e#114#128#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

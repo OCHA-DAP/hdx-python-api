@@ -298,7 +298,7 @@ class Resource(HDXObject):
                 for fieldname in stream.headers:
                     schema.append({'id': fieldname, 'type': 'text'})
             data = {'resource_id': self.data['id'], 'force': True, 'fields': schema, 'primary_key': primary_key}
-            self._write_to_hdx('datastore_create', data, 'id')
+            self._write_to_hdx('datastore_create', data, 'resource_id')
             if primary_key is None:
                 method = 'insert'
             else:
