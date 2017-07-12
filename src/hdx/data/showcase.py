@@ -107,7 +107,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             None
         """
-        self._update_in_hdx('showcase', 'id')
+        self._update_in_hdx('showcase', 'name')
 
     def create_in_hdx(self):
         # type: () -> None
@@ -116,7 +116,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             None
         """
-        self._create_in_hdx('showcase', 'id', 'title')
+        self._create_in_hdx('showcase', 'name', 'title')
 
     def delete_from_hdx(self):
         # type: () -> None

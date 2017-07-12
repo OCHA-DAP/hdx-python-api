@@ -170,7 +170,7 @@ On other OSs:
 
    ::
 
-       from hdx.configuration import Configuration
+       from hdx.hdx_configuration import Configuration
        from hdx.data.dataset import Dataset
 
 #. Use configuration defaults.
@@ -302,7 +302,7 @@ arguments ie.
 
 ::
 
-    from hdx.configuration import Configuration
+    from hdx.hdx_configuration import Configuration
     ...
     Configuration.create(KEYWORD ARGUMENTS)
 
