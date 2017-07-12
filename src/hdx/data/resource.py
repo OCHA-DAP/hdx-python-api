@@ -293,11 +293,14 @@ class Resource(HDXObject):
             tabulator.config.BYTES_SAMPLE_SIZE = 1000000
             stream = Stream(path, headers=1, post_parse=[convert_to_text])
             stream.open()
+            nonefieldname = False
             if schema is None:
                 schema = list()
                 for fieldname in stream.headers:
                     if fieldname is not None:
                         schema.append({'id': fieldname, 'type': 'text'})
+                    else:
+                        nonefieldname = True
             data = {'resource_id': self.data['id'], 'force': True, 'fields': schema, 'primary_key': primary_key}
             self._write_to_hdx('datastore_create', data, 'resource_id')
             if primary_key is None:
@@ -309,6 +312,9 @@ class Resource(HDXObject):
             chunksize = 100
             rowset = stream.read(keyed=True, limit=chunksize)
             while len(rowset) != 0:
+                if nonefieldname:
+                    for row in rowset:
+                        del row[None]
                 data = {'resource_id': self.data['id'], 'force': True, 'method': method, 'records': rowset}
                 self._write_to_hdx('datastore_upsert', data, 'resource_id')
                 rowset = stream.read(keyed=True, limit=chunksize)
