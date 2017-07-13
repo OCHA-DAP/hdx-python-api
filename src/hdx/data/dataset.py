@@ -259,13 +259,14 @@ class Dataset(HDXObject):
         self._dataset_create_resources()
         return True
 
-    def check_required_fields(self, ignore_fields=list()):
-        # type: (List[str]) -> None
+    def check_required_fields(self, ignore_fields=list(), allow_no_resources=False):
+        # type: (List[str], Optional[bool]) -> None
         """Check that metadata for dataset and its resources is complete. The parameter ignore_fields
         should be set if required to any fields that should be ignored for the particular operation.
 
         Args:
             ignore_fields (List[str]): Fields to ignore. Default is [].
+            allow_no_resources (Optional[bool]): Whether to allow no resources. Defaults to False.
 
         Returns:
             None
@@ -274,6 +275,8 @@ class Dataset(HDXObject):
             self._check_required_fields('dataset-requestable', ignore_fields)
         else:
             self._check_required_fields('dataset', ignore_fields)
+            if len(self.resources) == 0 and not allow_no_resources:
+                raise HDXError('There are no resources! Please add at least one resource!')
             for resource in self.resources:
                 ignore_fields = ['package_id']
                 resource.check_required_fields(ignore_fields=ignore_fields)
@@ -349,14 +352,17 @@ class Dataset(HDXObject):
                 raise HDXError('No existing dataset to update!')
         self._dataset_merge_hdx_update(update_resources)
 
-    def create_in_hdx(self):
-        # type: () -> None
+    def create_in_hdx(self, allow_no_resources=False):
+        # type: (Optional[bool]) -> None
         """Check if dataset exists in HDX and if so, update it, otherwise create it
+
+        Args:
+            allow_no_resources (Optional[bool]): Whether to allow no resources. Defaults to False.
 
         Returns:
             None
         """
-        self.check_required_fields()
+        self.check_required_fields(allow_no_resources=allow_no_resources)
         loadedid = None
         if 'id' in self.data:
             if self._dataset_load_from_hdx(self.data['id']):

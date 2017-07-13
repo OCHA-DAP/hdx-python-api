@@ -467,6 +467,9 @@ class TestDataset:
         dataset = Dataset(dataset_data)
         with pytest.raises(HDXError):
             dataset.create_in_hdx()
+        dataset.create_in_hdx(allow_no_resources=True)
+        assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
+        dataset = Dataset(dataset_data)
         resources_data = copy.deepcopy(TestDataset.resources_data)
         resource = Resource(resources_data[0])
         dataset.add_update_resources([resource, resource])
@@ -547,8 +550,6 @@ class TestDataset:
         dataset_data['name'] = 'MyDataset1'
         dataset_data['id'] = 'TEST1'
         dataset = Dataset(dataset_data)
-        with pytest.raises(HDXError):
-            dataset.create_in_hdx()
         resources_data = copy.deepcopy(TestDataset.resources_data)
         resource = Resource(resources_data[0])
         dataset.add_update_resources([resource, resource])
