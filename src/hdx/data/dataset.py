@@ -274,8 +274,6 @@ class Dataset(HDXObject):
             self._check_required_fields('dataset-requestable', ignore_fields)
         else:
             self._check_required_fields('dataset', ignore_fields)
-            if len(self.resources) == 0:
-                raise HDXError('There are no resources! Please add at least one resource!')
             for resource in self.resources:
                 ignore_fields = ['package_id']
                 resource.check_required_fields(ignore_fields=ignore_fields)
