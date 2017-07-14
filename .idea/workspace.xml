@@ -4,13 +4,9 @@
     <option name="CUSTOM_SCOPE_NAME" value="Project and Libraries" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78dced69-aba6-482d-97c8-9f71833379e5" name="Default" comment="Update version">
+    <list default="true" id="78dced69-aba6-482d-97c8-9f71833379e5" name="Default" comment="make showcase.add_dataset and dataset.add_showcase check existence before adding">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hdx/data/dataset.py" afterPath="$PROJECT_DIR$/src/hdx/data/dataset.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hdx/data/showcase.py" afterPath="$PROJECT_DIR$/src/hdx/data/showcase.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/hdx/version.txt" afterPath="$PROJECT_DIR$/src/hdx/version.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/hdx/data/test_dataset.py" afterPath="$PROJECT_DIR$/tests/hdx/data/test_dataset.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/hdx/data/test_showcase.py" afterPath="$PROJECT_DIR$/tests/hdx/data/test_showcase.py" />
     </list>
     <ignored path="hdx-python-api.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -65,17 +61,15 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="169">
               <caret line="200" column="0" selection-start-line="200" selection-start-column="0" selection-end-line="200" selection-end-column="0" />
-              <folding>
-                <element signature="e#114#128#0" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dataset.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="dataset.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/hdx/data/dataset.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3169">
+            <state relative-caret-position="-3088">
               <caret line="982" column="17" selection-start-line="982" selection-start-column="17" selection-end-line="982" selection-end-column="17" />
               <folding />
             </state>
@@ -92,7 +86,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="version.txt" pinned="false" current-in-tab="false">
+      <file leaf-file-name="version.txt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/hdx/version.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
@@ -304,10 +298,10 @@
         <option value="$PROJECT_DIR$/tests/fixtures/config/hdx_showcase_static.json" />
         <option value="$PROJECT_DIR$/tests/fixtures/config/hdx_showcase_static.yml" />
         <option value="$PROJECT_DIR$/tests/hdx/data/test_resource.py" />
-        <option value="$PROJECT_DIR$/src/hdx/data/dataset.py" />
         <option value="$PROJECT_DIR$/tests/hdx/data/test_dataset.py" />
         <option value="$PROJECT_DIR$/src/hdx/data/showcase.py" />
         <option value="$PROJECT_DIR$/tests/hdx/data/test_showcase.py" />
+        <option value="$PROJECT_DIR$/src/hdx/data/dataset.py" />
         <option value="$PROJECT_DIR$/src/hdx/version.txt" />
       </list>
     </option>
@@ -1277,13 +1271,6 @@
       <option name="presentableId" value="Default" />
       <updated>1464695506411</updated>
     </task>
-    <task id="LOCAL-00314" summary="Pass confioguration properly in static methods&#10;Lazy valid locations reading">
-      <created>1494228166460</created>
-      <option name="number" value="00314" />
-      <option name="presentableId" value="LOCAL-00314" />
-      <option name="project" value="LOCAL" />
-      <updated>1494228166461</updated>
-    </task>
     <task id="LOCAL-00315" summary="Update example">
       <created>1494239463445</created>
       <option name="number" value="00315" />
@@ -1620,7 +1607,14 @@
       <option name="project" value="LOCAL" />
       <updated>1499932053030</updated>
     </task>
-    <option name="localTasksCounter" value="363" />
+    <task id="LOCAL-00363" summary="make showcase.add_dataset and dataset.add_showcase check existence before adding">
+      <created>1500024704196</created>
+      <option name="number" value="00363" />
+      <option name="presentableId" value="LOCAL-00363" />
+      <option name="project" value="LOCAL" />
+      <updated>1500024704196</updated>
+    </task>
+    <option name="localTasksCounter" value="364" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1660,12 +1654,12 @@
     <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4050633" sideWeight="0.41185898" order="6" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31962025" sideWeight="0.5844017" order="6" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36009175" sideWeight="0.5497612" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.37844038" sideWeight="0.43232483" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4050633" sideWeight="0.588141" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4050633" sideWeight="0.588141" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31891027" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31962025" sideWeight="0.41720086" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31962025" sideWeight="0.4155983" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27029914" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3206751" sideWeight="0.41025642" order="1" side_tool="false" content_ui="tabs" />
@@ -1754,7 +1748,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Update readme" />
     <MESSAGE value="README" />
     <MESSAGE value="Fix adding users to orgs" />
     <MESSAGE value="Fix Adding users to orgs" />
@@ -1779,7 +1772,8 @@
     <MESSAGE value="get_all_datasets fix because current_package_list... returns datasets only but package_list also returns showcases" />
     <MESSAGE value="Add allow_no_resources flag to dataset.create_in_hdx" />
     <MESSAGE value="Update version" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update version" />
+    <MESSAGE value="make showcase.add_dataset and dataset.add_showcase check existence before adding" />
+    <option name="LAST_COMMIT_MESSAGE" value="make showcase.add_dataset and dataset.add_showcase check existence before adding" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -2141,9 +2135,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="169">
           <caret line="200" column="0" selection-start-line="200" selection-start-column="0" selection-end-line="200" selection-end-column="0" />
-          <folding>
-            <element signature="e#114#128#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2163,18 +2155,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/hdx/version.txt">
+    <entry file="file://$PROJECT_DIR$/src/hdx/data/dataset.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="5" selection-start-line="0" selection-start-column="5" selection-end-line="0" selection-end-column="5" />
+        <state relative-caret-position="-3088">
+          <caret line="982" column="17" selection-start-line="982" selection-start-column="17" selection-end-line="982" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/hdx/data/dataset.py">
+    <entry file="file://$PROJECT_DIR$/src/hdx/version.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3169">
-          <caret line="982" column="17" selection-start-line="982" selection-start-column="17" selection-end-line="982" selection-end-column="17" />
+        <state relative-caret-position="0">
+          <caret line="0" column="5" selection-start-line="0" selection-start-column="5" selection-end-line="0" selection-end-column="5" />
           <folding />
         </state>
       </provider>
