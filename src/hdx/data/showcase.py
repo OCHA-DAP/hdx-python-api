@@ -205,30 +205,44 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         else:
             raise hdx.data.hdxobject.HDXError('Type %s cannot be added as a dataset!' % type(dataset).__name__)
 
-    def add_dataset(self, dataset):
-        # type: (Union[Dataset,dict,str]) -> None
+    def add_dataset(self, dataset, datasets_to_check=None):
+        # type: (Union[Dataset,dict,str], List[Dataset]) -> bool
         """Add a dataset
 
         Args:
             dataset (Union[Dataset,dict,str]): Either a dataset id or dataset metadata either from a Dataset object or a dictionary
+            datasets_to_check (List[Dataset]): List of datasets against which to check existence of dataset. Defaults to datasets in showcase.
 
         Returns:
-            None
+            bool: True if the dataset was added, False if already present
         """
-        self._write_to_hdx('associate', self._get_showcase_dataset_dict(dataset), 'package_id')
+        showcase_dataset = self._get_showcase_dataset_dict(dataset)
+        if datasets_to_check is None:
+            datasets_to_check = self.get_datasets()
+        for dataset in datasets_to_check:
+            if showcase_dataset['package_id'] == dataset['id']:
+                return False
+        self._write_to_hdx('associate', showcase_dataset, 'package_id')
+        return True
 
-    def add_datasets(self, datasets):
-        # type: (List[Union[Dataset,dict,str]]) -> None
+    def add_datasets(self, datasets, datasets_to_check=None):
+        # type: (List[Union[Dataset,dict,str]], List[Dataset]) -> bool
         """Add multiple datasets
 
         Args:
             datasets (List[Union[Dataset,dict,str]]): A list of either dataset ids or dataset metadata from Dataset objects or dictionaries
+            datasets_to_check (List[Dataset]): List of datasets against which to check existence of dataset. Defaults to datasets in showcase.
 
         Returns:
-            None
+            bool: Returns True if all datasets added or False if any already present
         """
+        if datasets_to_check is None:
+            datasets_to_check = self.get_datasets()
+        alldatasetsadded = True
         for dataset in datasets:
-            self.add_dataset(dataset)
+            if not self.add_dataset(dataset, datasets_to_check=datasets_to_check):
+                alldatasetsadded = False
+        return alldatasetsadded
 
     def remove_dataset(self, dataset):
         # type: (Union[Dataset,dict,str]) -> None

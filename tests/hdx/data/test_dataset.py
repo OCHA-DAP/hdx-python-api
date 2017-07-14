@@ -876,10 +876,13 @@ class TestDataset:
         dataset.remove_showcase(showcases[0])
         assert TestDataset.association == 'delete'
         TestDataset.association = None
-        dataset.add_showcase('lala')
+        assert dataset.add_showcase('lala') is True
         assert TestDataset.association == 'create'
         TestDataset.association = None
         dataset.add_showcases([{'id': 'lala'}])
+        assert TestDataset.association == 'create'
+        TestDataset.association = None
+        assert dataset.add_showcases([{'id': 'lala'}, {'id': '05e392bf-04e0-4ca6-848c-4e87bba10746'}]) is False
         assert TestDataset.association == 'create'
         TestDataset.association = None
         with pytest.raises(HDXError):
@@ -890,28 +893,28 @@ class TestDataset:
         dataset = Dataset(dataset_data)
         dataset['private'] = True
         dataset.set_requestable()
-        assert dataset['is_requestdata_type'] == True
-        assert dataset['private'] == False
+        assert dataset['is_requestdata_type'] is True
+        assert dataset['private'] is False
         dataset['private'] = True
         dataset.set_requestable(False)
-        assert dataset['is_requestdata_type'] == False
-        assert dataset['private'] == True
+        assert dataset['is_requestdata_type'] is False
+        assert dataset['private'] is True
         dataset.set_requestable()
         assert dataset.get('field_name') is None
         assert dataset.get_fieldnames() == list()
-        assert dataset.add_fieldname('myfield1') == True
-        assert dataset.add_fieldnames(['myfield1', 'myfield2']) == False
-        assert dataset.remove_fieldname('myfield1') == True
-        assert dataset.remove_fieldname('myfield1') == False
-        assert dataset.add_fieldnames(['myfield3', 'myfield4']) == True
+        assert dataset.add_fieldname('myfield1') is True
+        assert dataset.add_fieldnames(['myfield1', 'myfield2']) is False
+        assert dataset.remove_fieldname('myfield1') is True
+        assert dataset.remove_fieldname('myfield1') is False
+        assert dataset.add_fieldnames(['myfield3', 'myfield4']) is True
         assert dataset.get_fieldnames() == ['myfield2', 'myfield3', 'myfield4']
         assert dataset.get('fiele_types') is None
         assert dataset.get_filetypes() == list()
-        assert dataset.add_filetype('mytype1') == True
-        assert dataset.add_filetypes(['mytype1', 'mytype2']) == False
-        assert dataset.remove_filetype('mytype1') == True
-        assert dataset.remove_filetype('mytype1') == False
-        assert dataset.add_filetypes(['mytype3', 'mytype4']) == True
+        assert dataset.add_filetype('mytype1') is True
+        assert dataset.add_filetypes(['mytype1', 'mytype2']) is False
+        assert dataset.remove_filetype('mytype1') is True
+        assert dataset.remove_filetype('mytype1') is False
+        assert dataset.add_filetypes(['mytype3', 'mytype4']) is True
         assert dataset.get_filetypes() == ['mytype2', 'mytype3', 'mytype4']
         with pytest.raises(HDXError):
             dataset.create_in_hdx()

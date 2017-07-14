@@ -324,10 +324,10 @@ class TestShowcase:
         showcase.remove_dataset(datasets[0])
         assert TestShowcase.association == 'delete'
         TestShowcase.association = None
-        showcase.add_dataset('lala')
+        assert showcase.add_dataset('lala') is True
         assert TestShowcase.association == 'create'
         TestShowcase.association = None
-        showcase.add_datasets([{'id': 'lala'}])
+        assert showcase.add_datasets([{'id': 'lala'}, {'id': '6a5aebc1-f5a9-4842-8183-b8118228e71e'}]) is False
         assert TestShowcase.association == 'create'
         TestShowcase.association = None
         with pytest.raises(HDXError):
