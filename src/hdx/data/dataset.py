@@ -666,8 +666,8 @@ class Dataset(HDXObject):
         """Set dataset date from datetime.datetime object
 
         Args:
-            dataset_date (datetime.datetime): Dataset date string
-            dataset_end_date (Optional[datetime.datetime]): Dataset end date string
+            dataset_date (datetime.datetime): Dataset date
+            dataset_end_date (Optional[datetime.datetime]): Dataset end date
 
         Returns:
             None
@@ -722,6 +722,33 @@ class Dataset(HDXObject):
         else:
             parsed_end_date = self._parse_date(dataset_end_date, date_format)
             self.set_dataset_date_from_datetime(parsed_date, parsed_end_date)
+
+    def set_dataset_year_range(self, dataset_year, dataset_end_year=None):
+        # type: (Union[str, int], Optional[Union[str, int]]) -> None
+        """Set dataset date as a range from year or start and end year.
+
+        Args:
+            dataset_year (Union[str, int]): Dataset year given as string or int
+            dataset_end_year (Optional[Union[str, int]]): Dataset end year given as string or int
+
+        Returns:
+            None
+        """
+        if isinstance(dataset_year, int):
+            dataset_date = '01/01/%d' % dataset_year
+        elif isinstance(dataset_year, str):
+            dataset_date = '01/01/%s' % dataset_year
+        else:
+            raise hdx.data.hdxobject.HDXError('dataset_year has type %s which is not supported!' % type(dataset_year).__name__)
+        if dataset_end_year is None:
+            dataset_end_year = dataset_year
+        if isinstance(dataset_end_year, int):
+            dataset_end_date = '31/12/%d' % dataset_end_year
+        elif isinstance(dataset_end_year, str):
+            dataset_end_date = '31/12/%s' % dataset_end_year
+        else:
+            raise hdx.data.hdxobject.HDXError('dataset_end_year has type %s which is not supported!' % type(dataset_end_year).__name__)
+        self.set_dataset_date(dataset_date, dataset_end_date)
 
     @staticmethod
     def transform_update_frequency(frequency):

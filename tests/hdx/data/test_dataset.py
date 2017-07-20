@@ -734,12 +734,25 @@ class TestDataset:
         assert dataset.get_dataset_date('%Y/%m/%d') == test_date
         assert dataset.get_dataset_end_date('%Y/%m/%d') == test_end_date
         assert dataset.get_dataset_date_type() == 'range'
+        dataset.set_dataset_year_range(2001, 2015)
+        assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2001, 1, 1, 0, 0)
+        assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2015, 12, 31, 0, 0)
+        dataset.set_dataset_year_range('2010', '2017')
+        assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2010, 1, 1, 0, 0)
+        assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2017, 12, 31, 0, 0)
+        dataset.set_dataset_year_range('2013')
+        assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2013, 1, 1, 0, 0)
+        assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2013, 12, 31, 0, 0)
         with pytest.raises(HDXError):
             dataset.set_dataset_date('lalala')
         with pytest.raises(HDXError):
             dataset.set_dataset_date('lalala', 'lalala')
         with pytest.raises(HDXError):
             dataset.set_dataset_date('lalala', 'lalala', date_format='%Y/%m/%d')
+        with pytest.raises(HDXError):
+            dataset.set_dataset_year_range(23.5)
+        with pytest.raises(HDXError):
+            dataset.set_dataset_year_range(2015, 23.5)
         del dataset['dataset_date']
         assert dataset.get_dataset_date_as_datetime() is None
         assert dataset.get_dataset_end_date_as_datetime() is None
