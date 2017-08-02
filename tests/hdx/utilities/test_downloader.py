@@ -40,6 +40,14 @@ class TestDownloader:
             Download(basicauth='Basic xxxxxxxxxxxxxxxx', basicauthfile=join('lala', 'lala.txt'))
         with pytest.raises(IOError):
             Download(basicauthfile='NOTEXIST')
+        extraparamsfile = join(downloaderfolder, 'extraparams.yml')
+        with Download(extraparamsfile=extraparamsfile) as download:
+            assert download.session.params == {'param1': 'value1', 'param2': 'value 2', 'param3': 10}
+        with Download(basicauthfile=basicauthfile, extraparams={'key1': 'val1'}, extraparamsfile=extraparamsfile) as download:
+            assert download.session.auth == ('testuser', 'testpass')
+            assert download.session.params == {'key1': 'val1', 'param1': 'value1', 'param2': 'value 2', 'param3': 10}
+        with pytest.raises(IOError):
+            Download(extraparamsfile='NOTEXIST')
 
     def test_setup_stream(self, fixtureurl, fixturenotexistsurl):
         with pytest.raises(DownloadError), Download() as download:

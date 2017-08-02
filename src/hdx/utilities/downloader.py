@@ -13,7 +13,7 @@ from requests.packages.urllib3 import Retry
 from six.moves.urllib.parse import urlparse
 
 from hdx.utilities import raisefrom
-from hdx.utilities.loader import load_file_to_str
+from hdx.utilities.loader import load_file_to_str, load_yaml_into_existing_dict
 
 
 class DownloadError(Exception):
@@ -27,10 +27,11 @@ class Download(object):
         auth (Optional[Tuple[str, str]]): Authorisation information in tuple form (user, pass). Defaults to None.
         basicauth (Optional[str]): Authorisation information in basic auth string form (Basic xxxxxxxxxxxxxxxx). Defaults to None.
         basicauthfile (Optional[str]): Path to file containing authorisation information in basic auth string form (Basic xxxxxxxxxxxxxxxx). Defaults to None.
-        extraparams (Optional[str]): Additional parameters to put on end of url. Defaults to dict().
+        extraparams (Dict): Additional parameters to put on end of url. Defaults to dict().
+        extraparamsfile (Optional[str]): Path to YAML file containing additional parameters to put on end of url. Defaults to None.
     """
-    def __init__(self, auth=None, basicauth=None, basicauthfile=None, extraparams=dict()):
-        # type: (Optional[Tuple[str, str]]) -> None
+    def __init__(self, auth=None, basicauth=None, basicauthfile=None, extraparams=dict(), extraparamsfile=None):
+        # type: (Optional[Tuple[str, str]], Optional[str], Optional[str], Dict, Optional[str]) -> None
         s = requests.Session()
         if basicauthfile is not None:
             if basicauth is not None:
@@ -44,8 +45,10 @@ class Download(object):
                 auth = decode(basicauth)
             else:
                 raise DownloadError('Both auth and basicauth supplied!')
-        s.auth = auth
+        if extraparamsfile is not None:
+            load_yaml_into_existing_dict(extraparams, extraparamsfile)
         s.params = extraparams
+        s.auth = auth
         retries = Retry(total=5, backoff_factor=0.4, status_forcelist=[429, 500, 502, 503, 504], raise_on_redirect=True,
                         raise_on_status=True)
         s.mount('http://', HTTPAdapter(max_retries=retries, pool_connections=100, pool_maxsize=100))
