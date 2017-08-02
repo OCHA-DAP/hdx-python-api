@@ -30,24 +30,31 @@ class TestDownloader:
 
     def test_init(self, downloaderfolder):
         basicauthfile = join(downloaderfolder, 'basicauth.txt')
-        with Download(basicauthfile=basicauthfile) as download:
+        with Download(basic_auth_file=basicauthfile) as download:
             assert download.session.auth == ('testuser', 'testpass')
         with pytest.raises(DownloadError):
-            Download(auth=('u', 'p'), basicauth='Basic xxxxxxxxxxxxxxxx')
+            Download(auth=('u', 'p'), basic_auth='Basic xxxxxxxxxxxxxxxx')
         with pytest.raises(DownloadError):
-            Download(auth=('u', 'p'), basicauthfile=join('lala', 'lala.txt'))
+            Download(auth=('u', 'p'), basic_auth_file=join('lala', 'lala.txt'))
         with pytest.raises(DownloadError):
-            Download(basicauth='Basic xxxxxxxxxxxxxxxx', basicauthfile=join('lala', 'lala.txt'))
+            Download(basic_auth='Basic dXNlcjpwYXNz', basic_auth_file=join('lala', 'lala.txt'))
         with pytest.raises(IOError):
-            Download(basicauthfile='NOTEXIST')
-        extraparamsfile = join(downloaderfolder, 'extraparams.yml')
-        with Download(extraparamsfile=extraparamsfile) as download:
+            Download(basic_auth_file='NOTEXIST')
+        extraparamsjson = join(downloaderfolder, 'extra_params.json')
+        extraparamsyaml = join(downloaderfolder, 'extra_params.yml')
+        with Download(basic_auth_file=basicauthfile, extra_params_dict={'key1': 'val1'}) as download:
+            assert download.session.auth == ('testuser', 'testpass')
+            assert download.session.params == {'key1': 'val1'}
+        with Download(extra_params_json=extraparamsjson) as download:
+            assert download.session.params == {'param_1': 'value 1', 'param_2': 'value_2', 'param_3': 12}
+        with Download(extra_params_yaml=extraparamsyaml) as download:
             assert download.session.params == {'param1': 'value1', 'param2': 'value 2', 'param3': 10}
-        with Download(basicauthfile=basicauthfile, extraparams={'key1': 'val1'}, extraparamsfile=extraparamsfile) as download:
-            assert download.session.auth == ('testuser', 'testpass')
-            assert download.session.params == {'key1': 'val1', 'param1': 'value1', 'param2': 'value 2', 'param3': 10}
+        with pytest.raises(DownloadError):
+            Download(extra_params_dict={'key1': 'val1'}, extra_params_json=extraparamsjson)
+        with pytest.raises(DownloadError):
+            Download(extra_params_dict={'key1': 'val1'}, extra_params_yaml=extraparamsyaml)
         with pytest.raises(IOError):
-            Download(extraparamsfile='NOTEXIST')
+            Download(extra_params_json='NOTEXIST')
 
     def test_setup_stream(self, fixtureurl, fixturenotexistsurl):
         with pytest.raises(DownloadError), Download() as download:

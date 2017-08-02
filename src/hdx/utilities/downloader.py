@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Downloading utilities for urls"""
 import hashlib
+import logging
 from os.path import splitext, join, exists
 from posixpath import basename
 from tempfile import gettempdir
@@ -13,7 +14,9 @@ from requests.packages.urllib3 import Retry
 from six.moves.urllib.parse import urlparse
 
 from hdx.utilities import raisefrom
-from hdx.utilities.loader import load_file_to_str, load_yaml_into_existing_dict
+from hdx.utilities.loader import load_file_to_str, load_json, load_yaml
+
+logger = logging.getLogger(__name__)
 
 
 class DownloadError(Exception):
@@ -24,31 +27,64 @@ class Download(object):
     """Download class with various download operations.
 
     Args:
-        auth (Optional[Tuple[str, str]]): Authorisation information in tuple form (user, pass). Defaults to None.
-        basicauth (Optional[str]): Authorisation information in basic auth string form (Basic xxxxxxxxxxxxxxxx). Defaults to None.
-        basicauthfile (Optional[str]): Path to file containing authorisation information in basic auth string form (Basic xxxxxxxxxxxxxxxx). Defaults to None.
-        extraparams (Dict): Additional parameters to put on end of url. Defaults to dict().
-        extraparamsfile (Optional[str]): Path to YAML file containing additional parameters to put on end of url. Defaults to None.
+        **kwargs: See below
+        auth (Tuple[str, str]): Authorisation information in tuple form (user, pass) OR
+        basic_auth (str): Authorisation information in basic auth string form (Basic xxxxxxxxxxxxxxxx) OR
+        basic_auth_file (str): Path to file containing authorisation information in basic auth string form (Basic xxxxxxxxxxxxxxxx)
+        extra_params_dict (dict): Extra parameters to put on end of url as a dictionary OR
+        extra_params_json (str): Path to JSON file containing extra parameters to put on end of url OR
+        extra_params_yaml (str): Path to YAML file containing extra parameters to put on end of url
     """
-    def __init__(self, auth=None, basicauth=None, basicauthfile=None, extraparams=dict(), extraparamsfile=None):
-        # type: (Optional[Tuple[str, str]], Optional[str], Optional[str], Dict, Optional[str]) -> None
+    def __init__(self, **kwargs):
+        # type: (...) -> None
         s = requests.Session()
-        if basicauthfile is not None:
-            if basicauth is not None:
-                raise DownloadError('Both basicauth and basicauthfile supplied!')
-            elif auth is not None:
-                raise DownloadError('Both auth and basicauthfile supplied!')
-            else:
-                basicauth = load_file_to_str(basicauthfile)
-        if basicauth is not None:
-            if auth is None:
-                auth = decode(basicauth)
-            else:
-                raise DownloadError('Both auth and basicauth supplied!')
-        if extraparamsfile is not None:
-            load_yaml_into_existing_dict(extraparams, extraparamsfile)
-        s.params = extraparams
+        auth_found = False
+        auth = kwargs.get('auth')
+        if auth:
+            auth_found = True
+            logger.info('Loading authorisation from auth argument')
+        basic_auth = kwargs.get('basic_auth')
+        if basic_auth:
+            if auth_found:
+                raise DownloadError('More than one authorisation given!')
+            auth_found = True
+            logger.info('Loading authorisation from basic_auth argument')
+            auth = decode(basic_auth)
+        basic_auth_file = kwargs.get('basic_auth_file')
+        if basic_auth_file:
+            if auth_found:
+                raise DownloadError('More than one authorisation given!')
+            logger.info('Loading authorisation from: %s' % basic_auth_file)
+            basic_auth = load_file_to_str(basic_auth_file)
+            auth = decode(basic_auth)
         s.auth = auth
+
+        extra_params_found = False
+        extra_params_dict = kwargs.get('extra_params_dict', None)
+        if extra_params_dict:
+            extra_params_found = True
+            logger.info('Loading extra parameters from dictionary')
+
+        extra_params_json = kwargs.get('extra_params_json', '')
+        if extra_params_json:
+            if extra_params_found:
+                raise DownloadError('More than one set of extra parameters given!')
+            extra_params_found = True
+            logger.info('Loading extra parameters from: %s' % extra_params_json)
+            extra_params_dict = load_json(extra_params_json)
+
+        extra_params_yaml = kwargs.get('extra_params_yaml', '')
+        if extra_params_found:
+            if extra_params_yaml:
+                raise DownloadError('More than one set of extra parameters given!')
+        else:
+            if extra_params_yaml:
+                logger.info('Loading extra parameters from: %s' % extra_params_yaml)
+                extra_params_dict = load_yaml(extra_params_yaml)
+            else:
+                extra_params_dict = dict()
+        s.params = extra_params_dict
+
         retries = Retry(total=5, backoff_factor=0.4, status_forcelist=[429, 500, 502, 503, 504], raise_on_redirect=True,
                         raise_on_status=True)
         s.mount('http://', HTTPAdapter(max_retries=retries, pool_connections=100, pool_maxsize=100))

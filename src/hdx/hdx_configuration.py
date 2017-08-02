@@ -64,7 +64,7 @@ class Configuration(UserDict, object):
         hdx_config_json = kwargs.get('hdx_config_json', '')
         if hdx_config_json:
             if hdx_config_found:
-                raise ConfigurationError('More than one HDX configuration file given!')
+                raise ConfigurationError('More than one HDX configuration given!')
             hdx_config_found = True
             logger.info('Loading HDX configuration from: %s' % hdx_config_json)
             hdx_config_dict = load_json(hdx_config_json)
@@ -72,7 +72,7 @@ class Configuration(UserDict, object):
         hdx_config_yaml = kwargs.get('hdx_config_yaml', '')
         if hdx_config_found:
             if hdx_config_yaml:
-                raise ConfigurationError('More than one HDX configuration file given!')
+                raise ConfigurationError('More than one HDX configuration given!')
         else:
             if not hdx_config_yaml:
                 logger.info('No HDX configuration parameter. Using default.')
@@ -89,7 +89,7 @@ class Configuration(UserDict, object):
         project_config_json = kwargs.get('project_config_json', '')
         if project_config_json:
             if project_config_found:
-                raise ConfigurationError('More than one project configuration file given!')
+                raise ConfigurationError('More than one project configuration given!')
             project_config_found = True
             logger.info('Loading project configuration from: %s' % project_config_json)
             project_config_dict = load_json(project_config_json)
@@ -97,7 +97,7 @@ class Configuration(UserDict, object):
         project_config_yaml = kwargs.get('project_config_yaml', '')
         if project_config_found:
             if project_config_yaml:
-                raise ConfigurationError('More than one project configuration file given!')
+                raise ConfigurationError('More than one project configuration given!')
         else:
             if project_config_yaml:
                 logger.info('Loading project configuration from: %s' % project_config_yaml)
