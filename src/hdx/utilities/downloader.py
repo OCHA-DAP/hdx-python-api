@@ -26,9 +26,10 @@ class Download(object):
     Args:
         auth (Optional[Tuple[str, str]]): Authorisation information in tuple form (user, pass). Defaults to None.
         basicauth (Optional[str]): Authorisation information in basic auth string form (Basic xxxxxxxxxxxxxxxx). Defaults to None.
-        basicauthfile (Optional[str]): Pat hto file containing authorisation information in basic auth string form (Basic xxxxxxxxxxxxxxxx). Defaults to None.
+        basicauthfile (Optional[str]): Path to file containing authorisation information in basic auth string form (Basic xxxxxxxxxxxxxxxx). Defaults to None.
+        extraparams (Optional[str]): Additional parameters to put on end of url. Defaults to dict().
     """
-    def __init__(self, auth=None, basicauth=None, basicauthfile=None):
+    def __init__(self, auth=None, basicauth=None, basicauthfile=None, extraparams=dict()):
         # type: (Optional[Tuple[str, str]]) -> None
         s = requests.Session()
         if basicauthfile is not None:
@@ -44,6 +45,7 @@ class Download(object):
             else:
                 raise DownloadError('Both auth and basicauth supplied!')
         s.auth = auth
+        s.params = extraparams
         retries = Retry(total=5, backoff_factor=0.4, status_forcelist=[429, 500, 502, 503, 504], raise_on_redirect=True,
                         raise_on_status=True)
         s.mount('http://', HTTPAdapter(max_retries=retries, pool_connections=100, pool_maxsize=100))
