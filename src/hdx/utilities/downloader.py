@@ -31,9 +31,10 @@ class Download(object):
         auth (Tuple[str, str]): Authorisation information in tuple form (user, pass) OR
         basic_auth (str): Authorisation information in basic auth string form (Basic xxxxxxxxxxxxxxxx) OR
         basic_auth_file (str): Path to file containing authorisation information in basic auth string form (Basic xxxxxxxxxxxxxxxx)
-        extra_params_dict (dict): Extra parameters to put on end of url as a dictionary OR
+        extra_params_dict (dict[str]): Extra parameters to put on end of url as a dictionary OR
         extra_params_json (str): Path to JSON file containing extra parameters to put on end of url OR
         extra_params_yaml (str): Path to YAML file containing extra parameters to put on end of url
+        status_forcelist (list[int]): HTTP statuses for which to force retry
     """
     def __init__(self, **kwargs):
         # type: (...) -> None
@@ -85,7 +86,9 @@ class Download(object):
                 extra_params_dict = dict()
         s.params = extra_params_dict
 
-        retries = Retry(total=5, backoff_factor=0.4, status_forcelist=[429, 500, 502, 503, 504], raise_on_redirect=True,
+        status_forcelist = kwargs.get('status_forcelist', [429, 500, 502, 503, 504])
+
+        retries = Retry(total=5, backoff_factor=0.4, status_forcelist=status_forcelist, raise_on_redirect=True,
                         raise_on_status=True)
         s.mount('http://', HTTPAdapter(max_retries=retries, pool_connections=100, pool_maxsize=100))
         s.mount('https://', HTTPAdapter(max_retries=retries, pool_connections=100, pool_maxsize=100))
