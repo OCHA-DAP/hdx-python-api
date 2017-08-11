@@ -173,7 +173,7 @@ class Configuration(UserDict, object):
         return self._remoteckan
 
     def call_remoteckan(self, *args, **kwargs):
-        # type: (...) -> dict
+        # type: (...) -> Dict
         """
         Calls the remote CKAN
 
@@ -182,7 +182,7 @@ class Configuration(UserDict, object):
             **kwargs: Keyword arguments to pass to remote CKAN call_action method
 
         Returns:
-            dict: The response from the remote CKAN call_action method
+            Dict: The response from the remote CKAN call_action method
 
         """
         requests_kwargs = kwargs.get('requests_kwargs', dict())

@@ -5,11 +5,12 @@ import zipfile
 from os import unlink
 from os.path import join, splitext
 from tempfile import gettempdir
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Dict
 
 import tabulator
 from tabulator import Stream
 
+from hdx.hdx_configuration import Configuration
 from hdx.utilities import raisefrom
 from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_yaml, load_json
@@ -23,12 +24,12 @@ class Resource(HDXObject):
     """Resource class containing all logic for creating, checking, and updating resources.
 
     Args:
-        initial_data (Optional[dict]): Initial resource metadata dictionary. Defaults to None.
+        initial_data (Optional[Dict]): Initial resource metadata dictionary. Defaults to None.
         configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
     """
 
     def __init__(self, initial_data=None, configuration=None):
-        # type: (Optional[dict], Optional[Configuration]) -> None
+        # type: (Optional[Dict], Optional[Configuration]) -> None
         if not initial_data:
             initial_data = dict()
         super(Resource, self).__init__(initial_data, configuration=configuration)
@@ -36,11 +37,11 @@ class Resource(HDXObject):
 
     @staticmethod
     def actions():
-        # type: () -> dict
+        # type: () -> Dict[str, str]
         """Dictionary of actions that can be performed on object
 
         Returns:
-            dict: Dictionary of actions that can be performed on object
+            Dict[str, str]: Dictionary of actions that can be performed on object
         """
         return {
             'show': 'resource_show',
@@ -240,12 +241,12 @@ class Resource(HDXObject):
 
     def create_datastore(self, schema=None, primary_key=None,
                          delete_first=0, path=None):
-        # type: (Optional[List[dict]], Optional[str], Optional[int], Optional[str]) -> None
+        # type: (Optional[List[Dict]], Optional[str], Optional[int], Optional[str]) -> None
         """For csvs, create a resource in the HDX datastore which enables data preview in HDX. If no schema is provided
         all fields are assumed to be text. If path is not supplied, the file is first downloaded from HDX.
 
         Args:
-            schema (List[dict]): List of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}. Defaults to None.
+            schema (List[Dict]): List of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}. Defaults to None.
             primary_key (Optional[str]): Primary key of schema. Defaults to None.
             delete_first (int): Delete datastore before creation. 0 = No, 1 = Yes, 2 = If no primary key. Defaults to 0.
             path (Optional[str]): Local path to file that was uploaded. Defaults to None.
@@ -403,12 +404,12 @@ class Resource(HDXObject):
 
     def update_datastore(self, schema=None, primary_key=None,
                          path=None):
-        # type: (Optional[List[dict]], Optional[str], Optional[str]) -> None
+        # type: (Optional[List[Dict]], Optional[str], Optional[str]) -> None
         """For csvs, update a resource in the HDX datastore which enables data preview in HDX. If no schema is provided
         all fields are assumed to be text. If path is not supplied, the file is first downloaded from HDX.
 
         Args:
-            schema (List[dict]): List of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}. Defaults to None.
+            schema (List[Dict]): List of fields and types of form {'id': 'FIELD', 'type': 'TYPE'}. Defaults to None.
             primary_key (Optional[str]): Primary key of schema. Defaults to None.
             path (Optional[str]): Local path to file that was uploaded. Defaults to None.
 

@@ -12,7 +12,7 @@ users:
  number_of_edits: 6
  display_name: "ACLED Conflict Event Data Project"
  fullname: "ACLED Conflict Event Data Project"
- id: "8b84230c-e04a-43ec-99e5-41307a203a2f"
+ id: "9f3e9973-7dbe-4c65-8820-f48578e3ffea"
  number_created_packages: 1
 display_name: "ACLED Conflict Data Project"
 description: "ACLED (Armed Conflict Location & Event Data Project) is the most comprehensive public collection of political violence data for developing states. This dataset contains information on the specific dates and locations of political violence, the types of event, the groups involved, fatalities and changes in territorial control. Information is recorded on the battles, killings, riots, and recruitment activities of rebels, governments, militias, armed groups, protesters and civilians. \r\n\r\nAs of early 2015, ACLED has recorded over 100,000 individual events, with ongoing data collection focused on Africa, South Asia and South East Asia. Data can be used for medium- and long-term analysis and mapping of political violence across developing countries through use of historical data from 1997, as well as informing humanitarian and development work in crisis and conflict-affected contexts through realtime data updates and reports. Despite the waning of civil wars across the developing world, ACLED data show that political violence rates have remained relatively stable in the past eighteen years. ACLED seeks to support research and work devoted to understanding, predicting and reducing levels of violence and their consequences."

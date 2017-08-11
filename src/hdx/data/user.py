@@ -2,9 +2,10 @@
 """User class containing all logic for creating, checking, and updating users."""
 import logging
 from os.path import join
-from typing import Optional
+from typing import Optional, List
 
 from hdx.data.hdxobject import HDXObject
+from hdx.hdx_configuration import Configuration
 
 logger = logging.getLogger(__name__)
 
@@ -13,23 +14,23 @@ class User(HDXObject):
     """User class containing all logic for creating, checking, and updating users.
 
     Args:
-        initial_data (Optional[dict]): Initial user metadata dictionary. Defaults to None.
+        initial_data (Optional[Dict]): Initial user metadata dictionary. Defaults to None.
         configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
     """
 
     def __init__(self, initial_data=None, configuration=None):
-        # type: (Optional[dict], Optional[Configuration]) -> None
+        # type: (Optional[Dict], Optional[Configuration]) -> None
         if not initial_data:
             initial_data = dict()
         super(User, self).__init__(initial_data, configuration=configuration)
 
     @staticmethod
     def actions():
-        # type: () -> dict
+        # type: () -> Dict[str, str]
         """Dictionary of actions that can be performed on object
 
         Returns:
-            dict: Dictionary of actions that can be performed on object
+            Dict[str, str]: Dictionary of actions that can be performed on object
         """
         return {
             'show': 'user_show',
@@ -141,8 +142,8 @@ class User(HDXObject):
             body (str): Email body
             sender (Optional[str]): Email sender. Defaults to SMTP username.
             **kwargs: See below
-            mail_options (list): Mail options (see smtplib documentation)
-            rcpt_options (list): Recipient options (see smtplib documentation)
+            mail_options (List): Mail options (see smtplib documentation)
+            rcpt_options (List): Recipient options (see smtplib documentation)
 
         Returns:
             None
@@ -187,8 +188,8 @@ class User(HDXObject):
             sender (Optional[str]): Email sender. Defaults to SMTP username.
             configuration (Optional[Configuration]): HDX configuration. Defaults to configuration of first user in list.
             **kwargs: See below
-            mail_options (list): Mail options (see smtplib documentation)
-            rcpt_options (list): Recipient options (see smtplib documentation)
+            mail_options (List): Mail options (see smtplib documentation)
+            rcpt_options (List): Recipient options (see smtplib documentation)
 
         Returns:
             None

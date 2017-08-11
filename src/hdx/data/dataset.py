@@ -5,7 +5,7 @@ import logging
 import sys
 from datetime import datetime
 from os.path import join
-from typing import List, Union
+from typing import List, Union, Optional, Dict
 
 from dateutil import parser
 from six.moves import range
@@ -15,10 +15,12 @@ import hdx.data.showcase
 from hdx.data.hdxobject import HDXObject, HDXError
 from hdx.data.resource import Resource
 from hdx.data.user import User
+from hdx.hdx_configuration import Configuration
 from hdx.hdx_locations import Locations
 from hdx.utilities import raisefrom
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.location import Location
+from hdx.utilities.uuid import is_valid_uuid
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +32,7 @@ class Dataset(HDXObject):
     """Dataset class enabling operations on datasets and associated resources.
 
     Args:
-        initial_data (Optional[dict]): Initial dataset metadata dictionary. Defaults to None.
+        initial_data (Optional[Dict]): Initial dataset metadata dictionary. Defaults to None.
         configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
     """
 
@@ -64,7 +66,7 @@ class Dataset(HDXObject):
     }
 
     def __init__(self, initial_data=None, configuration=None):
-        # type: (Optional[dict], Optional[bool], Optional[Configuration]) -> None
+        # type: (Optional[Dict], Optional[bool], Optional[Configuration]) -> None
         if not initial_data:
             initial_data = dict()
         super(Dataset, self).__init__(dict(), configuration=configuration)
@@ -76,11 +78,11 @@ class Dataset(HDXObject):
 
     @staticmethod
     def actions():
-        # type: () -> dict
+        # type: () -> Dict[str, str]
         """Dictionary of actions that can be performed on object
 
         Returns:
-            dict: Dictionary of actions that can be performed on object
+            Dict[str, str]: Dictionary of actions that can be performed on object
         """
         return {
             'show': 'package_show',
@@ -128,11 +130,11 @@ class Dataset(HDXObject):
         """:type : List[Resource]"""
 
     def add_update_resource(self, resource, ignore_datasetid=False):
-        # type: (Union[Resource,dict,str], Optional[bool]) -> None
+        # type: (Union[Resource,Dict,str], Optional[bool]) -> None
         """Add new or update existing resource in dataset with new metadata
 
         Args:
-            resource (Union[Resource,dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
+            resource (Union[Resource,Dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
             ignore_datasetid (Optional[bool]): Whether to ignore dataset id in the resource
 
         Returns:
@@ -152,11 +154,11 @@ class Dataset(HDXObject):
         raise HDXError('Type %s cannot be added as a resource!' % type(resource).__name__)
 
     def add_update_resources(self, resources, ignore_datasetid=False):
-        # type: (List[Union[Resource,dict,str]]) -> None
+        # type: (List[Union[Resource,Dict,str]]) -> None
         """Add new or update existing resources with new metadata to the dataset
 
         Args:
-            resources (List[Union[Resource,dict,str]]): A list of either resource ids or resources metadata from either Resource objects or dictionaries
+            resources (List[Union[Resource,Dict,str]]): A list of either resource ids or resources metadata from either Resource objects or dictionaries
             ignore_datasetid (Optional[bool]): Whether to ignore dataset id in the resource
 
         Returns:
@@ -168,11 +170,11 @@ class Dataset(HDXObject):
             self.add_update_resource(resource, ignore_datasetid)
 
     def delete_resource(self, resource):
-        # type: (Union[Resource,dict,str]) -> bool
+        # type: (Union[Resource,Dict,str]) -> bool
         """Delete a resource from the dataset
 
         Args:
-            resource (Union[Resource,dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
+            resource (Union[Resource,Dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
 
         Returns:
             bool: True if resource removed or False if not
@@ -184,7 +186,7 @@ class Dataset(HDXObject):
         """Get dataset's resources
 
         Returns:
-            List[Resource]: List of Resource objects
+            List[Resource]: list of Resource objects
         """
         return self.resources
 
@@ -425,7 +427,7 @@ class Dataset(HDXObject):
             use_default_schema (bool): Use default package schema instead of custom schema. Defaults to False.
 
         Returns:
-            List[Dataset]: List of datasets resulting from query
+            List[Dataset]: list of datasets resulting from query
         """
 
         dataset = Dataset(configuration=configuration)
@@ -486,7 +488,7 @@ class Dataset(HDXObject):
             offset (int): Offset in the complete result for where the set of returned dataset names should begin
 
         Returns:
-            List[str]: List of all dataset names in HDX
+            List[str]: list of all dataset names in HDX
         """
         dataset = Dataset(configuration=configuration)
         dataset['id'] = 'all dataset names'  # only for error message if produced
@@ -504,7 +506,7 @@ class Dataset(HDXObject):
             offset (int): Offset in the complete result for where the set of returned datasets should begin
 
         Returns:
-            List[Dataset]: List of all datasets in HDX
+            List[Dataset]: list of all datasets in HDX
         """
 
         dataset = Dataset(configuration=configuration)
@@ -556,10 +558,10 @@ class Dataset(HDXObject):
         """Get all resources from a list of datasets (such as returned by search)
 
         Args:
-            datasets (List[Dataset]): List of datasets
+            datasets (List[Dataset]): list of datasets
 
         Returns:
-            List[Resource]: List of resources within those datasets
+            List[Resource]: list of resources within those datasets
         """
         resources = []
         for dataset in datasets:
@@ -800,7 +802,7 @@ class Dataset(HDXObject):
         """Return the dataset's list of tags
 
         Returns:
-            List[str]: List of tags or [] if there are none
+            List[str]: list of tags or [] if there are none
         """
         return self._get_tags()
 
@@ -821,7 +823,7 @@ class Dataset(HDXObject):
         """Add a list of tag
 
         Args:
-            tags (List[str]): List of tags to add
+            tags (List[str]): list of tags to add
 
         Returns:
             bool: Returns True if all tags added or False if any already present.
@@ -848,7 +850,7 @@ class Dataset(HDXObject):
             locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
 
         Returns:
-            List[str]: List of locations or [] if there are none
+            List[str]: list of locations or [] if there are none
         """
         countries = self.data.get('groups', None)
         if not countries:
@@ -883,7 +885,7 @@ class Dataset(HDXObject):
         names, converted to iso 3 codes. If any country is already added, it is ignored.
 
         Args:
-            countries (List[str]): List of countries to add
+            countries (List[str]): list of countries to add
             locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
 
         Returns:
@@ -966,14 +968,18 @@ class Dataset(HDXObject):
         """Set the dataset's maintainer.
 
          Args:
-             maintainer (Any): Set the dataset's maintainer either from a User object or a str.
+             maintainer (Any): Set the dataset's maintainer either from a User object or an id in a str.
          Returns:
              None
         """
         if isinstance(maintainer, str):
+            if is_valid_uuid(maintainer) is False:
+                raise HDXError('Maintainer %s does not look like a user id!' % maintainer)
             self.data['maintainer'] = maintainer
         elif isinstance(maintainer, User):
-            self.data['maintainer'] = maintainer['name']
+            if 'id' not in maintainer:
+                maintainer = User.read_from_hdx(maintainer['name'], configuration=self.configuration)
+            self.data['maintainer'] = maintainer['id']
         else:
             raise HDXError('Type %s cannot be added as a maintainer!' % type(maintainer).__name__)
 
@@ -1006,11 +1012,11 @@ class Dataset(HDXObject):
             raise HDXError('Type %s cannot be added as a organization!' % type(organization).__name__)
 
     def get_showcases(self):
-        # type: () -> List[Showcase]
+        # type: () -> List[hdx.data.showcase.Showcase]
         """Get any showcases the dataset is in
 
         Returns:
-            List[Showcase]: List of showcases
+            List[Showcase]: list of showcases
         """
         assoc_result, showcases_dicts = self._read_from_hdx('showcase', self.data['id'], fieldname='package_id',
                                                             action=hdx.data.showcase.Showcase.actions()['list_showcases'])
@@ -1022,11 +1028,11 @@ class Dataset(HDXObject):
         return showcases
 
     def _get_dataset_showcase_dict(self, showcase):
-        # type: (Union[Showcase,dict,str]) -> dict
+        # type: (Union[hdx.data.showcase.Showcase, Dict,str]) -> Dict
         """Get dataset showcase dict
 
         Args:
-            showcase (Union[Showcase,dict,str]): Either a showcase id or Showcase metadata from a Showcase object or dictionary
+            showcase (Union[Showcase,Dict,str]): Either a showcase id or Showcase metadata from a Showcase object or dictionary
 
         Returns:
             dict: dataset showcase dict
@@ -1039,12 +1045,12 @@ class Dataset(HDXObject):
             raise HDXError('Type %s cannot be added as a showcase!' % type(showcase).__name__)
 
     def add_showcase(self, showcase, showcases_to_check=None):
-        # type: (Union[Showcase,dict,str], List[Showcase]) -> bool
+        # type: (Union[hdx.data.showcase.Showcase,Dict,str], List[hdx.data.showcase.Showcase]) -> bool
         """Add dataset to showcase
 
         Args:
-            showcase (Union[Showcase,dict,str]): Either a showcase id or showcase metadata from a Showcase object or dictionary
-            showcases_to_check (List[Showcase]): List of showcases against which to check existence of showcase. Defaults to showcases containing dataset.
+            showcase (Union[Showcase,Dict,str]): Either a showcase id or showcase metadata from a Showcase object or dictionary
+            showcases_to_check (List[Showcase]): list of showcases against which to check existence of showcase. Defaults to showcases containing dataset.
 
         Returns:
             bool: True if the showcase was added, False if already present
@@ -1060,12 +1066,12 @@ class Dataset(HDXObject):
         return True
 
     def add_showcases(self, showcases, showcases_to_check=None):
-        # type: (List[Union[Showcase,dict,str]], List[Showcase]) -> bool
+        # type: (List[Union[hdx.data.showcase.Showcase,Dict,str]], List[hdx.data.showcase.Showcase]) -> bool
         """Add dataset to multiple showcases
 
         Args:
-            showcases (List[Union[Showcase,dict,str]]): A list of either showcase ids or showcase metadata from Showcase objects or dictionaries
-            showcases_to_check (List[Showcase]): List of showcases against which to check existence of showcase. Defaults to showcases containing dataset.
+            showcases (List[Union[Showcase,Dict,str]]): A list of either showcase ids or showcase metadata from Showcase objects or dictionaries
+            showcases_to_check (List[Showcase]): list of showcases against which to check existence of showcase. Defaults to showcases containing dataset.
 
         Returns:
             bool: Returns True if all showcases added or False if any already present
@@ -1079,11 +1085,11 @@ class Dataset(HDXObject):
         return allshowcasesadded
 
     def remove_showcase(self, showcase):
-        # type: (Union[Showcase,dict,str]) -> None
+        # type: (Union[hdx.data.showcase.Showcase,Dict,str]) -> None
         """Remove dataset from showcase
 
         Args:
-            showcase (Union[Showcase,dict,str]): Either a showcase id string or showcase metadata from a Showcase object or dictionary
+            showcase (Union[Showcase,Dict,str]): Either a showcase id string or showcase metadata from a Showcase object or dictionary
 
         Returns:
             None
@@ -1116,11 +1122,11 @@ class Dataset(HDXObject):
             self.data['private'] = False
 
     def get_fieldnames(self):
-        # type: () -> List(str)
+        # type: () -> List[str]
         """Return list of fieldnames in your data
 
         Returns:
-            List(str): Returns list of field names
+            List[str]: Returns list of field names
         """
         return self._get_stringlist_from_commastring('field_names')
 
@@ -1141,7 +1147,7 @@ class Dataset(HDXObject):
         """Add a list of fieldnames to list of fieldnames in your data
 
         Args:
-            fieldnames (List[str]): List of fieldnames to add
+            fieldnames (List[str]): list of fieldnames to add
 
         Returns:
             bool: Returns True if all fieldnames added or False if any already present
@@ -1161,11 +1167,11 @@ class Dataset(HDXObject):
         return self._remove_string_from_commastring('field_names', fieldname)
 
     def get_filetypes(self):
-        # type: () -> List(str)
+        # type: () -> List[str]
         """Return list of filetypes in your data
 
         Returns:
-            List(str): Returns list of field names
+            List[str]: Returns list of field names
         """
         return self._get_stringlist_from_commastring('file_types')
 
@@ -1186,7 +1192,7 @@ class Dataset(HDXObject):
         """Add a list of filetypes to list of filetypes in your data
 
         Args:
-            filetypes (List[str]): List of filetypes to add
+            filetypes (List[str]): list of filetypes to add
 
         Returns:
             bool: Returns True if all filetypes added or False if any already present

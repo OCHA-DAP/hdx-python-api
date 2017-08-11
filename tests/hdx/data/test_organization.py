@@ -286,11 +286,11 @@ class TestOrganization:
     def test_users(self, configuration, user_read):
         org_data = copy.deepcopy(resultdict)
         organization = Organization(org_data)
-        organization['users'][0]['name'] = 'TEST1'
+        organization['users'][0]['name'] = 'MyUser1'
         users = organization.get_users()
         assert len(users) == 1
         assert users[0]['name'] == 'MyUser1'
-        organization.remove_user('8b84230c-e04a-43ec-99e5-41307a203a2f')
+        organization.remove_user('9f3e9973-7dbe-4c65-8820-f48578e3ffea')
         users = organization.get_users()
         assert len(users) == 0
         userdata_copy = copy.deepcopy(user_data)
@@ -308,7 +308,7 @@ class TestOrganization:
         organization.add_update_users([user])
         users = organization.get_users('member')
         assert len(users) == 1
-        organization.add_update_users(['TEST1'], 'member')
+        organization.add_update_users(['MyUser1'], 'member')
         users = organization.get_users('member')
         assert len(users) == 2
         assert users[0]['name'] == 'MyUser1'
@@ -334,5 +334,5 @@ class TestOrganization:
     def test_get_datasets(self, configuration, datasets_get):
         org_data = copy.deepcopy(resultdict)
         organization = Organization(org_data)
-        datasets = organization.get_datasets(include_showcase=False)
+        datasets = organization.get_datasets()
         assert len(datasets) == 10

@@ -2,9 +2,11 @@
 """Showcase class containing all logic for creating, checking, and updating showcases."""
 import logging
 from os.path import join
+from typing import List, Union, Optional, Dict
 
 import hdx.data.dataset
 import hdx.data.hdxobject
+from hdx.hdx_configuration import Configuration
 
 logger = logging.getLogger(__name__)
 
@@ -13,24 +15,24 @@ class Showcase(hdx.data.hdxobject.HDXObject):
     """Showcase class containing all logic for creating, checking, and updating showcases.
 
     Args:
-        initial_data (Optional[dict]): Initial showcase metadata dictionary. Defaults to None.
+        initial_data (Optional[Dict]): Initial showcase metadata dictionary. Defaults to None.
         configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
     """
     dataset_ids_field = 'dataset_ids'
 
     def __init__(self, initial_data=None, configuration=None):
-        # type: (Optional[dict], Optional[Configuration]) -> None
+        # type: (Optional[Dict], Optional[Configuration]) -> None
         if not initial_data:
             initial_data = dict()
         super(Showcase, self).__init__(initial_data, configuration=configuration)
 
     @staticmethod
     def actions():
-        # type: () -> dict
+        # type: () -> Dict[str, str]
         """Dictionary of actions that can be performed on object
 
         Returns:
-            dict: Dictionary of actions that can be performed on object
+            Dict[str, str]: Dictionary of actions that can be performed on object
         """
         return {
             'show': 'ckanext_showcase_show',
@@ -173,7 +175,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         return self._remove_hdxobject(self.data.get('tags'), tag, matchon='name')
 
     def get_datasets(self):
-        # type: () -> List[Dataset]
+        # type: () -> List[hdx.data.dataset.Dataset]
         """Get any datasets in the showcase
 
         Returns:
@@ -189,14 +191,14 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         return datasets
 
     def _get_showcase_dataset_dict(self, dataset):
-        # type: (Union[Dataset,dict,str]) -> dict
+        # type: (Union[hdx.data.dataset.Dataset,Dict,str]) -> Dict
         """Get showcase dataset dict
 
         Args:
-            showcase (Union[Showcase,dict,str]): Either a showcase id or Showcase metadata from a Showcase object or dictionary
+            showcase (Union[Showcase,Dict,str]): Either a showcase id or Showcase metadata from a Showcase object or dictionary
 
         Returns:
-            dict: showcase dataset dict
+            Dict: showcase dataset dict
         """
         if isinstance(dataset, str):
             return {'showcase_id': self.data['id'], 'package_id': dataset}
@@ -206,11 +208,11 @@ class Showcase(hdx.data.hdxobject.HDXObject):
             raise hdx.data.hdxobject.HDXError('Type %s cannot be added as a dataset!' % type(dataset).__name__)
 
     def add_dataset(self, dataset, datasets_to_check=None):
-        # type: (Union[Dataset,dict,str], List[Dataset]) -> bool
+        # type: (Union[hdx.data.dataset.Dataset,Dict,str], List[hdx.data.dataset.Dataset]) -> bool
         """Add a dataset
 
         Args:
-            dataset (Union[Dataset,dict,str]): Either a dataset id or dataset metadata either from a Dataset object or a dictionary
+            dataset (Union[Dataset,Dict,str]): Either a dataset id or dataset metadata either from a Dataset object or a dictionary
             datasets_to_check (List[Dataset]): List of datasets against which to check existence of dataset. Defaults to datasets in showcase.
 
         Returns:
@@ -226,11 +228,11 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         return True
 
     def add_datasets(self, datasets, datasets_to_check=None):
-        # type: (List[Union[Dataset,dict,str]], List[Dataset]) -> bool
+        # type: (List[Union[hdx.data.dataset.Dataset,Dict,str]], List[hdx.data.dataset.Dataset]) -> bool
         """Add multiple datasets
 
         Args:
-            datasets (List[Union[Dataset,dict,str]]): A list of either dataset ids or dataset metadata from Dataset objects or dictionaries
+            datasets (List[Union[Dataset,Dict,str]]): A list of either dataset ids or dataset metadata from Dataset objects or dictionaries
             datasets_to_check (List[Dataset]): List of datasets against which to check existence of dataset. Defaults to datasets in showcase.
 
         Returns:
@@ -245,11 +247,11 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         return alldatasetsadded
 
     def remove_dataset(self, dataset):
-        # type: (Union[Dataset,dict,str]) -> None
+        # type: (Union[Dataset,Dict,str]) -> None
         """Remove a dataset
 
         Args:
-            dataset (Union[Dataset,dict,str]): Either a dataset id or dataset metadata either from a Dataset object or a dictionary
+            dataset (Union[Dataset,Dict,str]): Either a dataset id or dataset metadata either from a Dataset object or a dictionary
 
         Returns:
             None

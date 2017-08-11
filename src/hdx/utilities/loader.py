@@ -14,14 +14,14 @@ class LoadError(Exception):
 
 
 def load_and_merge_yaml(paths):
-    # type: (List[str]) -> dict
+    # type: (List[str]) -> Dict
     """Load multiple YAML files and merge into one dictionary
 
     Args:
         paths (List[str]): Paths to YAML files
 
     Returns:
-        dict: Dictionary of merged YAML files
+        Dict: Dictionary of merged YAML files
 
     """
     configs = [load_yaml(path) for path in paths]
@@ -29,14 +29,14 @@ def load_and_merge_yaml(paths):
 
 
 def load_and_merge_json(paths):
-    # type: (List[str]) -> dict
+    # type: (List[str]) -> Dict
     """Load multiple JSON files and merge into one dictionary
 
     Args:
         paths (List[str]): Paths to JSON files
 
     Returns:
-        dict: Dictionary of merged JSON files
+        Dict: Dictionary of merged JSON files
 
     """
     configs = [load_json(path) for path in paths]
@@ -44,7 +44,7 @@ def load_and_merge_json(paths):
 
 
 def load_yaml_into_existing_dict(data, path):
-    # type: (dict, str) -> dict
+    # type: (dict, str) -> Dict
     """Merge YAML file into existing dictionary
 
     Args:
@@ -52,14 +52,14 @@ def load_yaml_into_existing_dict(data, path):
         path (str): YAML file to load and merge
 
     Returns:
-        dict: YAML file merged into dictionary
+        Dict: YAML file merged into dictionary
     """
     yamldict = load_yaml(path)
     return merge_two_dictionaries(data, yamldict)
 
 
 def load_json_into_existing_dict(data, path):
-    # type: (dict, str) -> dict
+    # type: (dict, str) -> Dict
     """Merge JSON file into existing dictionary
 
     Args:
@@ -74,14 +74,14 @@ def load_json_into_existing_dict(data, path):
 
 
 def load_yaml(path):
-    # type: (str) -> dict
+    # type: (str) -> Dict
     """Load YAML file into dictionary
 
     Args:
         path (str): Path to YAML file
 
     Returns:
-        dict: Dictionary containing loaded YAML file
+        Dict: Dictionary containing loaded YAML file
     """
     with open(path, 'rt') as f:
         yamldict = yaml.safe_load(f.read())
@@ -91,14 +91,14 @@ def load_yaml(path):
 
 
 def load_json(path):
-    # type: (str) -> dict
+    # type: (str) -> Dict
     """Load JSON file into dictionary
 
     Args:
         path (str): Path to JSON file
 
     Returns:
-        dict: Dictionary containing loaded JSON file
+        Dict: Dictionary containing loaded JSON file
     """
     with open(path, 'rt') as f:
         jsondict = json.loads(f.read())

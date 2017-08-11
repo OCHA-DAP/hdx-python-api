@@ -13,7 +13,7 @@ import copy
 import logging
 
 from ckanapi.errors import NotFound
-from typing import Optional, List, Tuple, TypeVar, Union
+from typing import Optional, List, Tuple, TypeVar, Union, Dict
 
 from hdx.utilities import raisefrom
 from hdx.hdx_configuration import Configuration
@@ -34,7 +34,7 @@ class HDXObject(UserDict, object):
     New HDX objects should extend this in similar fashion to Resource for example.
 
     Args:
-        initial_data (dict): Initial metadata dictionary
+        initial_data (Dict): Initial metadata dictionary
         configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
     """
     __metaclass__ = abc.ABCMeta
@@ -42,16 +42,16 @@ class HDXObject(UserDict, object):
     @staticmethod
     @abc.abstractmethod
     def actions():
-        # type: () -> dict
+        # type: () -> Dict[str, str]
         """Dictionary of actions that can be performed on object
 
         Returns:
-            dict: Dictionary of actions that can be performed on object
+            Dict[str, str]: Dictionary of actions that can be performed on object
         """
         raise NotImplementedError
 
     def __init__(self, initial_data, configuration=None):
-        # type: (dict, Optional[Configuration]) -> None
+        # type: (Dict, Optional[Configuration]) -> None
         super(HDXObject, self).__init__(initial_data)
         self.old_data = None
         if configuration is None:
@@ -94,7 +94,7 @@ class HDXObject(UserDict, object):
 
     def _read_from_hdx(self, object_type, value, fieldname='id',
                        action=None, **kwargs):
-        # type: (str, str, Optional[str], Optional[str], ...) -> Tuple[bool, Union[dict, str]]
+        # type: (str, str, Optional[str], Optional[str], ...) -> Tuple[bool, Union[Dict, str]]
         """Makes a read call to HDX passing in given parameter.
 
         Args:
@@ -105,7 +105,7 @@ class HDXObject(UserDict, object):
             **kwargs: Other fields to pass to CKAN.
 
         Returns:
-            Tuple[bool, Union[dict, str]]: (True/False, HDX object metadata/Error)
+            Tuple[bool, Union[Dict, str]]: (True/False, HDX object metadata/Error)
         """
         if not fieldname:
             raise HDXError('Empty %s field name!' % object_type)
@@ -249,17 +249,17 @@ class HDXObject(UserDict, object):
         self._merge_hdx_update(object_type, id_field_name, file_to_upload)
 
     def _write_to_hdx(self, action, data, id_field_name, file_to_upload=None):
-        # type: (str, dict, str, Optional[str]) -> dict
+        # type: (str, Dict, str, Optional[str]) -> Dict
         """Creates or updates an HDX object in HDX and return HDX object metadata dict
 
         Args:
             action (str): Action to perform eg. 'create', 'update'
-            data (dict): Data to write to HDX
+            data (Dict): Data to write to HDX
             id_field_name (str): Name of field containing HDX object identifier or None
             file_to_upload (Optional[str]): File to upload to HDX
 
         Returns:
-            dict: HDX object metadata
+            Dict: HDX object metadata
         """
         file = None
         try:
@@ -355,7 +355,7 @@ class HDXObject(UserDict, object):
         already exists in the list
 
         Args:
-            hdxobjects (List[T <= HDXObject]): List of HDX objects to which to add new objects or update existing ones
+            hdxobjects (List[T <= HDXObject]): list of HDX objects to which to add new objects or update existing ones
             id_field (str): Field on which to match to determine if object already exists in list
             new_hdxobject (T <= HDXObject): The HDX object to be added/updated
 
@@ -370,12 +370,12 @@ class HDXObject(UserDict, object):
         return new_hdxobject
 
     def _remove_hdxobject(self, objlist, obj, matchon='id', delete=False):
-        # type: (List[Union[HDXObjectUpperBound,dict]], Union[HDXObjectUpperBound,dict,str], Optional[str]) -> None
+        # type: (List[Union[HDXObjectUpperBound,Dict]], Union[HDXObjectUpperBound,Dict,str], Optional[str]) -> None
         """Remove an HDX object from a list within the parent HDX object
 
         Args:
-            objlist (List[Union[T <= HDXObject,dict]]): List of HDX objects
-            obj (Union[T <= HDXObject,dict,str]): Either an id or hdx object metadata either from an HDX object or a dictionary
+            objlist (List[Union[T <= HDXObject,Dict]]): list of HDX objects
+            obj (Union[T <= HDXObject,Dict,str]): Either an id or hdx object metadata either from an HDX object or a dictionary
             matchon (Optional[str]): Field to match on. Defaults to id.
             delete (Optional[bool]): Whether to delete HDX object. Defaults to False.
 
@@ -406,10 +406,10 @@ class HDXObject(UserDict, object):
         """Helper function to convert supplied list of HDX objects to a list of dict
 
         Args:
-            hdxobjects (list[T <= HDXObject]): List of HDX objects to convert
+            hdxobjects (List[T <= HDXObject]): List of HDX objects to convert
 
         Returns:
-            list[dict]: List of HDX objects converted to simple dictionaries
+            List[Dict]: List of HDX objects converted to simple dictionaries
         """
         newhdxobjects = list()
         for hdxobject in hdxobjects:
@@ -421,12 +421,12 @@ class HDXObject(UserDict, object):
         """Helper function to make a deep copy of a supplied list of HDX objects
 
         Args:
-            hdxobjects (list[T <= HDXObject]): List of HDX objects to copy
+            hdxobjects (List[T <= HDXObject]): list of HDX objects to copy
             hdxobjectclass (type): Type of the HDX Objects to be copied
             attribute_to_copy (Optional[str]): An attribute to copy over from the HDX object. Defaults to None.
 
         Returns:
-            list[T <= HDXObject]: Deep copy of list of HDX objects
+            List[T <= HDXObject]: Deep copy of list of HDX objects
         """
         newhdxobjects = list()
         for hdxobject in hdxobjects:
@@ -445,7 +445,7 @@ class HDXObject(UserDict, object):
         the internal dictionary is then deleted.
 
         Args:
-            hdxobjects (list[T <= HDXObject]): List of HDX objects to which to add new objects or update existing ones
+            hdxobjects (List[T <= HDXObject]): list of HDX objects to which to add new objects or update existing ones
             hdxobjects_name (str): Name of key in internal dictionary from which to obtain list of HDX objects
             id_field (str): Field on which to match to determine if object already exists in list
             hdxobjectclass (type): Type of the HDX Object to be added/updated
@@ -474,7 +474,7 @@ class HDXObject(UserDict, object):
         """Return the dataset's list of tags
 
         Returns:
-            List[str]: List of tags or [] if there are none
+            List[str]: list of tags or [] if there are none
         """
         tags = self.data.get('tags', None)
         if not tags:
@@ -506,7 +506,7 @@ class HDXObject(UserDict, object):
         """Add a list of tag
 
         Args:
-            tags (List[str]): List of tags to add
+            tags (List[str]): list of tags to add
 
         Returns:
             bool: Returns True if all tags added or False if any already present.
@@ -518,14 +518,14 @@ class HDXObject(UserDict, object):
         return alltagsadded
 
     def _get_stringlist_from_commastring(self, field):
-        # type: (str) -> List(str)
+        # type: (str) -> List[str]
         """Return list of strings from comma separated list
 
         Args:
             field (str): Field containing comma separated list
 
         Returns:
-            List(str): Returns list of strings
+            List[str]: Returns list of strings
         """
         strings = self.data.get(field)
         if strings:
@@ -558,7 +558,7 @@ class HDXObject(UserDict, object):
 
         Args:
             field (str): Field containing comma separated list
-            strings (List[str]): List of strings to add
+            strings (List[str]): list of strings to add
 
         Returns:
             bool: Returns True if all strings added or False if any already present.

@@ -67,7 +67,7 @@ resultdict = {
     'subnational': '1', 'maintainer_email': 'me@me.com',
     'license_title': 'Creative Commons Attribution Share-Alike',
     'title': 'MyDataset', 'private': False,
-    'maintainer': 'acled', 'methodology': 'Other', 'num_tags': 4, 'license_id': 'cc-by-sa',
+    'maintainer': '8b84230c-e04a-43ec-99e5-41307a203a2f', 'methodology': 'Other', 'num_tags': 4, 'license_id': 'cc-by-sa',
     'tracking_summary': {'recent': 32, 'total': 178}, 'relationships_as_subject': [],
     'owner_org': 'b67e6c74-c185-4f43-b561-0e114a736f19', 'id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',
     'dataset_source': 'ACLED', 'type': 'dataset',
@@ -854,14 +854,15 @@ class TestDataset:
 
     def test_maintainer(self, configuration, user_read):
         dataset = Dataset(TestDataset.dataset_data)
-        dataset.set_maintainer('TEST1')
+        dataset.set_maintainer('9f3e9973-7dbe-4c65-8820-f48578e3ffea')
         maintainer = dataset.get_maintainer()
         assert maintainer['name'] == 'MyUser1'
         user = User(user_data)
-        user['name'] = 'TEST1'
         dataset.set_maintainer(user)
         maintainer = dataset.get_maintainer()
         assert maintainer['name'] == 'MyUser1'
+        with pytest.raises(HDXError):
+            dataset.set_maintainer('jpsmith')
         with pytest.raises(HDXError):
             dataset.set_maintainer(123)
 

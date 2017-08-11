@@ -41,7 +41,7 @@ def user_mockshow(url, datadict):
         return MockResponse(404,
                             '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}')
     result = json.dumps(resultdict)
-    if datadict['id'] == 'TEST1' or datadict['id'] == 'MyUser1':
+    if datadict['id'] == '9f3e9973-7dbe-4c65-8820-f48578e3ffea' or datadict['id'] == 'MyUser1':
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}' % result)
     if datadict['id'] == 'TEST2':
@@ -193,7 +193,7 @@ class TestUser:
         monkeypatch.setattr(requests, 'Session', MockSession)
 
     def test_read_from_hdx(self, configuration, read, mocksmtp):
-        user = User.read_from_hdx('TEST1')
+        user = User.read_from_hdx('9f3e9973-7dbe-4c65-8820-f48578e3ffea')
         assert user['id'] == '9f3e9973-7dbe-4c65-8820-f48578e3ffea'
         assert user['name'] == 'MyUser1'
         user = User.read_from_hdx('TEST2')
@@ -202,7 +202,7 @@ class TestUser:
         assert user is None
         config = Configuration.read()
         config.setup_emailer(email_config_dict=TestUser.email_config_dict)
-        user = User.read_from_hdx('TEST1')
+        user = User.read_from_hdx('9f3e9973-7dbe-4c65-8820-f48578e3ffea')
         user.email(TestUser.subject, TestUser.body, sender=TestUser.sender, mail_options=TestUser.mail_options,
                    rcpt_options=TestUser.rcpt_options)
         email = config.emailer()
@@ -226,7 +226,7 @@ hello there'''
         user = User()
         with pytest.raises(HDXError):
             user.create_in_hdx()
-        user['id'] = 'TEST1'
+        user['id'] = '9f3e9973-7dbe-4c65-8820-f48578e3ffea'
         user['name'] = 'LALA'
         with pytest.raises(HDXError):
             user.create_in_hdx()
@@ -256,16 +256,16 @@ hello there'''
         with pytest.raises(HDXError):
             user.update_in_hdx()
 
-        user = User.read_from_hdx('TEST1')
+        user = User.read_from_hdx('9f3e9973-7dbe-4c65-8820-f48578e3ffea')
         assert user['id'] == '9f3e9973-7dbe-4c65-8820-f48578e3ffea'
         assert user['about'] == 'Data Scientist'
 
         user['about'] = 'IMO'
-        user['id'] = 'TEST1'
+        user['id'] = '9f3e9973-7dbe-4c65-8820-f48578e3ffea'
         user['name'] = 'MyUser1'
         user['capacity'] = 'member'
         user.update_in_hdx()
-        assert user['id'] == 'TEST1'
+        assert user['id'] == '9f3e9973-7dbe-4c65-8820-f48578e3ffea'
         assert user['about'] == 'IMO'
         assert user['capacity'] == 'member'
 
@@ -279,14 +279,14 @@ hello there'''
 
         data = copy.deepcopy(user_data)
         data['name'] = 'MyUser1'
-        data['id'] = 'TEST1'
+        data['id'] = '9f3e9973-7dbe-4c65-8820-f48578e3ffea'
         user = User(data)
         user.create_in_hdx()
-        assert user['id'] == 'TEST1'
+        assert user['id'] == '9f3e9973-7dbe-4c65-8820-f48578e3ffea'
         assert user['about'] == 'Data Scientist'
 
     def test_delete_from_hdx(self, configuration, post_delete):
-        user = User.read_from_hdx('TEST1')
+        user = User.read_from_hdx('9f3e9973-7dbe-4c65-8820-f48578e3ffea')
         user.delete_from_hdx()
         del user['id']
         with pytest.raises(HDXError):

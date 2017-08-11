@@ -78,7 +78,7 @@ def merge_dictionaries(dicts, merge_lists=False):
 
 
 def dict_diff(d1, d2, no_key='<KEYNOTFOUND>'):
-    # type: (DictUpperBound, DictUpperBound, Optional[str]) -> dict
+    # type: (DictUpperBound, DictUpperBound, Optional[str]) -> Dict
     """Compares two dictionaries
 
     Args:
@@ -87,7 +87,7 @@ def dict_diff(d1, d2, no_key='<KEYNOTFOUND>'):
         no_key (Optional[str]): What value to use if key is not found Defaults to '<KEYNOTFOUND>'.
 
     Returns:
-        dict: Comparison dictionary
+        Dict: Comparison dictionary
 
     """
     d1keys = set(d1.keys())
