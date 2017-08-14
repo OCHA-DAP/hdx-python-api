@@ -964,7 +964,7 @@ class Dataset(HDXObject):
         return User.read_from_hdx(self.data['maintainer'], configuration=self.configuration)
 
     def set_maintainer(self, maintainer):
-        # type: (Any) -> None
+        # type: (Union[User,str]) -> None
         """Set the dataset's maintainer.
 
          Args:
