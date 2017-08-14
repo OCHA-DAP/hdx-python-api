@@ -964,11 +964,11 @@ class Dataset(HDXObject):
         return User.read_from_hdx(self.data['maintainer'], configuration=self.configuration)
 
     def set_maintainer(self, maintainer):
-        # type: (Union[User,str]) -> None
+        # type: (Union[User,Dict,str]) -> None
         """Set the dataset's maintainer.
 
          Args:
-             maintainer (Union[User,str]): Set the dataset's maintainer either from a User object or an id in a str.
+             maintainer (Union[User,Dict,str]): Either a user id or User metadata from a User object or dictionary.
          Returns:
              None
         """
@@ -976,7 +976,7 @@ class Dataset(HDXObject):
             if is_valid_uuid(maintainer) is False:
                 raise HDXError('Maintainer %s does not look like a user id!' % maintainer)
             self.data['maintainer'] = maintainer
-        elif isinstance(maintainer, User):
+        elif isinstance(maintainer, User) or isinstance(maintainer, dict):
             if 'id' not in maintainer:
                 maintainer = User.read_from_hdx(maintainer['name'], configuration=self.configuration)
             self.data['maintainer'] = maintainer['id']
@@ -993,17 +993,17 @@ class Dataset(HDXObject):
         return hdx.data.organization.Organization.read_from_hdx(self.data['owner_org'], configuration=self.configuration)
 
     def set_organization(self, organization):
-        # type: (Union[hdx.data.organization.Organization,str]) -> None
+        # type: (Union[hdx.data.organization.Organization,Dict,str]) -> None
         """Set the dataset's organization.
 
          Args:
-             organization (Union[Organization,str]): Set the dataset's organization either from an Organization object or a str.
+             organization (Union[Organization,Dict,str]): Either an Organization id or Organization metadata from an Organization object or dictionary.
          Returns:
              None
         """
         if isinstance(organization, str):
             self.data['owner_org'] = organization
-        elif isinstance(organization, hdx.data.organization.Organization):
+        elif isinstance(organization, hdx.data.organization.Organization) or isinstance(organization, dict):
             org_id = organization.get('id')
             if org_id is None:
                 org_id = organization['name']
