@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 """UUID Tests"""
 
-from hdx.utilities.uuid import is_valid_uuid
+from hdx.utilities import is_valid_uuid
 
 
 class TestUUID:

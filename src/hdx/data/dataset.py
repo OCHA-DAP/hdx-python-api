@@ -5,10 +5,10 @@ import logging
 import sys
 from datetime import datetime
 from os.path import join
-from typing import List, Union, Optional, Dict
 
 from dateutil import parser
 from six.moves import range
+from typing import List, Union, Optional, Dict
 
 import hdx.data.organization
 import hdx.data.showcase
@@ -17,10 +17,10 @@ from hdx.data.resource import Resource
 from hdx.data.user import User
 from hdx.hdx_configuration import Configuration
 from hdx.hdx_locations import Locations
+from hdx.utilities import is_valid_uuid
 from hdx.utilities import raisefrom
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.location import Location
-from hdx.utilities.uuid import is_valid_uuid
 
 logger = logging.getLogger(__name__)
 
