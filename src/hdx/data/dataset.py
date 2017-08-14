@@ -968,7 +968,7 @@ class Dataset(HDXObject):
         """Set the dataset's maintainer.
 
          Args:
-             maintainer (Any): Set the dataset's maintainer either from a User object or an id in a str.
+             maintainer (Union[User,str]): Set the dataset's maintainer either from a User object or an id in a str.
          Returns:
              None
         """
