@@ -324,6 +324,9 @@ class TestOrganization:
         assert len(users) == 1
         users = organization.get_users('admin')
         assert len(users) == 0
+        del organization['users'][0]['id']
+        users = organization.get_users('member')
+        assert len(users) == 1
         with pytest.raises(HDXError):
             organization.add_update_users(123)
         with pytest.raises(HDXError):

@@ -2,7 +2,7 @@
 """Organization class containing all logic for creating, checking, and updating organizations."""
 import logging
 from os.path import join
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Union
 
 import hdx.data.dataset
 from hdx.data.hdxobject import HDXObject, HDXError
