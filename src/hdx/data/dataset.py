@@ -5,10 +5,10 @@ import logging
 import sys
 from datetime import datetime
 from os.path import join
+from typing import List, Union, Optional, Dict
 
 from dateutil import parser
 from six.moves import range
-from typing import List, Union, Optional, Dict
 
 import hdx.data.organization
 import hdx.data.showcase
@@ -993,7 +993,7 @@ class Dataset(HDXObject):
         return hdx.data.organization.Organization.read_from_hdx(self.data['owner_org'], configuration=self.configuration)
 
     def set_organization(self, organization):
-        # type: (Union[Organization,str]) -> None
+        # type: (Union[hdx.data.organization.Organization,str]) -> None
         """Set the dataset's organization.
 
          Args:
