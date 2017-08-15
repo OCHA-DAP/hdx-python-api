@@ -868,7 +868,7 @@ class TestDataset:
 
     def test_organization(self, configuration, organization_read):
         dataset = Dataset(TestDataset.dataset_data)
-        dataset.set_organization('TEST1')
+        dataset.set_organization('b67e6c74-c185-4f43-b561-0e114a736f19')
         organization = dataset.get_organization()
         assert organization['name'] == 'acled'
         organization = Organization(organization_data)
@@ -876,6 +876,8 @@ class TestDataset:
         dataset.set_organization(organization)
         organization = dataset.get_organization()
         assert organization['name'] == 'acled'
+        with pytest.raises(HDXError):
+            dataset.set_organization('123')
         with pytest.raises(HDXError):
             dataset.set_organization(123)
 
@@ -886,19 +888,24 @@ class TestDataset:
         showcases = dataset.get_showcases()
         assert len(showcases) == 1
         TestDataset.association = None
-        showcases[0]['id'] = 'showcase123'
+        showcases[0]['id'] = '05e392bf-04e0-4ca6-848c-4e87bba10746'
         dataset.remove_showcase(showcases[0])
         assert TestDataset.association == 'delete'
         TestDataset.association = None
-        assert dataset.add_showcase('lala') is True
+        assert dataset.add_showcase('15e392bf-04e0-4ca6-848c-4e87bba10745') is True
         assert TestDataset.association == 'create'
         TestDataset.association = None
-        dataset.add_showcases([{'id': 'lala'}])
+        dataset.add_showcases([{'id': '15e392bf-04e0-4ca6-848c-4e87bba10745'}])
         assert TestDataset.association == 'create'
         TestDataset.association = None
-        assert dataset.add_showcases([{'id': 'lala'}, {'id': '05e392bf-04e0-4ca6-848c-4e87bba10746'}]) is False
+        assert dataset.add_showcases([{'id': '15e392bf-04e0-4ca6-848c-4e87bba10745'}, {'id': '05e392bf-04e0-4ca6-848c-4e87bba10746'}]) is False
         assert TestDataset.association == 'create'
         TestDataset.association = None
+        assert dataset.add_showcase({'name': 'TEST1'}) is True
+        assert TestDataset.association == 'create'
+        TestDataset.association = None
+        with pytest.raises(HDXError):
+            dataset.add_showcase('123')
         with pytest.raises(HDXError):
             dataset.add_showcase(123)
 

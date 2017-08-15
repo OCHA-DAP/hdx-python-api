@@ -7,6 +7,7 @@ from typing import List, Union, Optional, Dict
 import hdx.data.dataset
 import hdx.data.hdxobject
 from hdx.hdx_configuration import Configuration
+from hdx.utilities import is_valid_uuid
 
 logger = logging.getLogger(__name__)
 
@@ -200,12 +201,15 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             Dict: showcase dataset dict
         """
-        if isinstance(dataset, str):
-            return {'showcase_id': self.data['id'], 'package_id': dataset}
-        elif isinstance(dataset, hdx.data.dataset.Dataset) or isinstance(dataset, dict):
-            return {'showcase_id': self.data['id'], 'package_id': dataset['id']}
-        else:
+        if isinstance(dataset, hdx.data.dataset.Dataset) or isinstance(dataset, dict):
+            if 'id' not in dataset:
+                dataset = hdx.data.dataset.Dataset.read_from_hdx(dataset['name'])
+            dataset = dataset['id']
+        elif not isinstance(dataset, str):
             raise hdx.data.hdxobject.HDXError('Type %s cannot be added as a dataset!' % type(dataset).__name__)
+        if is_valid_uuid(dataset) is False:
+            raise hdx.data.hdxobject.HDXError('Dataset %s does not look like a dataset id!' % dataset)
+        return {'showcase_id': self.data['id'], 'package_id': dataset}
 
     def add_dataset(self, dataset, datasets_to_check=None):
         # type: (Union[hdx.data.dataset.Dataset,Dict,str], List[hdx.data.dataset.Dataset]) -> bool

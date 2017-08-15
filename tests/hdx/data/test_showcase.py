@@ -67,7 +67,7 @@ def mockshow(url, datadict):
         return MockResponse(404,
                             '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_show"}')
     result = json.dumps(showcase_resultdict)
-    if datadict['id'] == 'TEST1':
+    if datadict['id'] == '05e392bf-04e0-4ca6-848c-4e87bba10746' or datadict['id'] == 'TEST1':
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_show"}' % result)
     if datadict['id'] == 'TEST2':
@@ -201,7 +201,7 @@ class TestShowcase:
         monkeypatch.setattr(requests, 'Session', MockSession)
 
     def test_read_from_hdx(self, configuration, read):
-        showcase = Showcase.read_from_hdx('TEST1')
+        showcase = Showcase.read_from_hdx('05e392bf-04e0-4ca6-848c-4e87bba10746')
         assert showcase['id'] == '05e392bf-04e0-4ca6-848c-4e87bba10746'
         assert showcase['title'] == 'MyShowcase1'
         showcase = Showcase.read_from_hdx('TEST2')
@@ -213,7 +213,7 @@ class TestShowcase:
         showcase = Showcase()
         with pytest.raises(HDXError):
             showcase.create_in_hdx()
-        showcase['id'] = 'TEST1'
+        showcase['id'] = '05e392bf-04e0-4ca6-848c-4e87bba10746'
         showcase['title'] = 'LALA'
         with pytest.raises(HDXError):
             showcase.create_in_hdx()
@@ -242,7 +242,7 @@ class TestShowcase:
         with pytest.raises(HDXError):
             showcase.update_in_hdx()
 
-        showcase = Showcase.read_from_hdx('TEST1')
+        showcase = Showcase.read_from_hdx('05e392bf-04e0-4ca6-848c-4e87bba10746')
         assert showcase['id'] == '05e392bf-04e0-4ca6-848c-4e87bba10746'
         assert showcase['title'] == 'MyShowcase1'
 
@@ -273,7 +273,7 @@ class TestShowcase:
         assert showcase['notes'] == 'My Showcase'
 
     def test_delete_from_hdx(self, configuration, post_delete):
-        showcase = Showcase.read_from_hdx('TEST1')
+        showcase = Showcase.read_from_hdx('05e392bf-04e0-4ca6-848c-4e87bba10746')
         showcase.delete_from_hdx()
         del showcase['id']
         with pytest.raises(HDXError):
@@ -313,7 +313,7 @@ class TestShowcase:
         assert result is False
 
     def test_datasets(self, configuration, read):
-        showcase = Showcase.read_from_hdx('TEST1')
+        showcase = Showcase.read_from_hdx('05e392bf-04e0-4ca6-848c-4e87bba10746')
         datasets = showcase.get_datasets()
         assert len(datasets) == 10
         assert datasets[0].data == datasetsdict[0]
@@ -324,12 +324,17 @@ class TestShowcase:
         showcase.remove_dataset(datasets[0])
         assert TestShowcase.association == 'delete'
         TestShowcase.association = None
-        assert showcase.add_dataset('lala') is True
+        assert showcase.add_dataset('a2f32edd-bac2-4940-aa58-49e565041055') is True
         assert TestShowcase.association == 'create'
         TestShowcase.association = None
-        assert showcase.add_datasets([{'id': 'lala'}, {'id': '6a5aebc1-f5a9-4842-8183-b8118228e71e'}]) is False
+        assert showcase.add_datasets([{'id': 'a2f32edd-bac2-4940-aa58-49e565041055'}, {'id': '6a5aebc1-f5a9-4842-8183-b8118228e71e'}]) is False
         assert TestShowcase.association == 'create'
         TestShowcase.association = None
+        assert showcase.add_dataset({'name': 'TEST1'}) is True
+        assert TestShowcase.association == 'create'
+        TestShowcase.association = None
+        with pytest.raises(HDXError):
+            showcase.add_dataset('123')
         with pytest.raises(HDXError):
             showcase.add_dataset(123)
 

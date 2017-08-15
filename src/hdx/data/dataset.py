@@ -972,16 +972,15 @@ class Dataset(HDXObject):
          Returns:
              None
         """
-        if isinstance(maintainer, str):
-            if is_valid_uuid(maintainer) is False:
-                raise HDXError('Maintainer %s does not look like a user id!' % maintainer)
-            self.data['maintainer'] = maintainer
-        elif isinstance(maintainer, User) or isinstance(maintainer, dict):
+        if isinstance(maintainer, User) or isinstance(maintainer, dict):
             if 'id' not in maintainer:
                 maintainer = User.read_from_hdx(maintainer['name'], configuration=self.configuration)
-            self.data['maintainer'] = maintainer['id']
-        else:
+            maintainer = maintainer['id']
+        elif not isinstance(maintainer, str):
             raise HDXError('Type %s cannot be added as a maintainer!' % type(maintainer).__name__)
+        if is_valid_uuid(maintainer) is False:
+            raise HDXError('Maintainer %s does not look like a user id!' % maintainer)
+        self.data['maintainer'] = maintainer
 
     def get_organization(self):
         # type: () -> hdx.data.organization.Organization
@@ -1001,15 +1000,15 @@ class Dataset(HDXObject):
          Returns:
              None
         """
-        if isinstance(organization, str):
-            self.data['owner_org'] = organization
-        elif isinstance(organization, hdx.data.organization.Organization) or isinstance(organization, dict):
-            org_id = organization.get('id')
-            if org_id is None:
-                org_id = organization['name']
-            self.data['owner_org'] = org_id
-        else:
+        if isinstance(organization, hdx.data.organization.Organization) or isinstance(organization, dict):
+            if 'id' not in organization:
+                organization = hdx.data.organization.Organization.read_from_hdx(organization['name'], configuration=self.configuration)
+            organization = organization['id']
+        elif not isinstance(organization, str):
             raise HDXError('Type %s cannot be added as a organization!' % type(organization).__name__)
+        if is_valid_uuid(organization) is False:
+            raise HDXError('Organization %s does not look like an organization id!' % organization)
+        self.data['owner_org'] = organization
 
     def get_showcases(self):
         # type: () -> List[hdx.data.showcase.Showcase]
@@ -1037,12 +1036,15 @@ class Dataset(HDXObject):
         Returns:
             dict: dataset showcase dict
         """
-        if isinstance(showcase, str):
-            return {'package_id': self.data['id'], 'showcase_id': showcase}
-        elif isinstance(showcase, hdx.data.showcase.Showcase) or isinstance(showcase, dict):
-            return {'package_id': self.data['id'], 'showcase_id': showcase['id']}
-        else:
+        if isinstance(showcase, hdx.data.showcase.Showcase) or isinstance(showcase, dict):
+            if 'id' not in showcase:
+                showcase = hdx.data.showcase.Showcase.read_from_hdx(showcase['name'])
+            showcase = showcase['id']
+        elif not isinstance(showcase, str):
             raise HDXError('Type %s cannot be added as a showcase!' % type(showcase).__name__)
+        if is_valid_uuid(showcase) is False:
+            raise HDXError('Showcase %s does not look like a showcase id!' % showcase)
+        return {'package_id': self.data['id'], 'showcase_id': showcase}
 
     def add_showcase(self, showcase, showcases_to_check=None):
         # type: (Union[hdx.data.showcase.Showcase,Dict,str], List[hdx.data.showcase.Showcase]) -> bool

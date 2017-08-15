@@ -27,7 +27,7 @@ def organization_mockshow(url, datadict):
         return MockResponse(404,
                             '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_show"}')
     result = json.dumps(resultdict)
-    if datadict['id'] == 'TEST1':
+    if datadict['id'] == 'b67e6c74-c185-4f43-b561-0e114a736f19' or datadict['id'] == 'TEST1':
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_show"}' % result)
     if datadict['id'] == 'TEST2':
@@ -186,7 +186,7 @@ class TestOrganization:
         monkeypatch.setattr(requests, 'Session', MockSession)
 
     def test_read_from_hdx(self, configuration, read, mocksmtp):
-        organization = Organization.read_from_hdx('TEST1')
+        organization = Organization.read_from_hdx('b67e6c74-c185-4f43-b561-0e114a736f19')
         assert organization['id'] == 'b67e6c74-c185-4f43-b561-0e114a736f19'
         assert organization['name'] == 'acled'
         organization = Organization.read_from_hdx('TEST2')
@@ -198,7 +198,7 @@ class TestOrganization:
         organization = Organization()
         with pytest.raises(HDXError):
             organization.create_in_hdx()
-        organization['id'] = 'TEST1'
+        organization['id'] = 'b67e6c74-c185-4f43-b561-0e114a736f19'
         organization['name'] = 'LALA'
         with pytest.raises(HDXError):
             organization.create_in_hdx()
@@ -227,15 +227,15 @@ class TestOrganization:
         with pytest.raises(HDXError):
             organization.update_in_hdx()
 
-        organization = Organization.read_from_hdx('TEST1')
+        organization = Organization.read_from_hdx('b67e6c74-c185-4f43-b561-0e114a736f19')
         assert organization['id'] == 'b67e6c74-c185-4f43-b561-0e114a736f19'
         assert organization['name'] == 'acled'
 
         organization['description'] = 'Humanitarian work'
-        organization['id'] = 'TEST1'
+        organization['id'] = 'b67e6c74-c185-4f43-b561-0e114a736f19'
         organization['name'] = 'MyOrganization1'
         organization.update_in_hdx()
-        assert organization['id'] == 'TEST1'
+        assert organization['id'] == 'b67e6c74-c185-4f43-b561-0e114a736f19'
         assert organization['description'] == 'Humanitarian work'
 
         organization['id'] = 'NOTEXIST'
@@ -248,14 +248,14 @@ class TestOrganization:
 
         org_data = copy.deepcopy(organization_data)
         org_data['name'] = 'MyOrganization1'
-        org_data['id'] = 'TEST1'
+        org_data['id'] = 'b67e6c74-c185-4f43-b561-0e114a736f19'
         organization = Organization(org_data)
         organization.create_in_hdx()
-        assert organization['id'] == 'TEST1'
+        assert organization['id'] == 'b67e6c74-c185-4f43-b561-0e114a736f19'
         assert organization['name'] == 'MyOrganization1'
 
     def test_delete_from_hdx(self, configuration, post_delete):
-        organization = Organization.read_from_hdx('TEST1')
+        organization = Organization.read_from_hdx('b67e6c74-c185-4f43-b561-0e114a736f19')
         organization.delete_from_hdx()
         del organization['id']
         with pytest.raises(HDXError):
@@ -327,6 +327,9 @@ class TestOrganization:
         del organization['users'][0]['id']
         users = organization.get_users('member')
         assert len(users) == 1
+        organization.add_update_user({'name': 'TEST1'}, 'member')
+        users = organization.get_users('member')
+        assert len(users) == 2
         with pytest.raises(HDXError):
             organization.add_update_users(123)
         with pytest.raises(HDXError):

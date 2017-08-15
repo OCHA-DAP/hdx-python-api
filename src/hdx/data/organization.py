@@ -164,9 +164,9 @@ class Organization(HDXObject):
         """
         if isinstance(user, str):
             user = User.read_from_hdx(user, configuration=self.configuration)
+        elif isinstance(user, dict):
+            user = User(user, configuration=self.configuration)
         if isinstance(user, User):
-            user = user.data
-        if isinstance(user, dict):
             users = self.data.get('users')
             if users is None:
                 users = list()
