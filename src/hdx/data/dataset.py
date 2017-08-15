@@ -1006,7 +1006,7 @@ class Dataset(HDXObject):
             organization = organization['id']
         elif not isinstance(organization, str):
             raise HDXError('Type %s cannot be added as a organization!' % type(organization).__name__)
-        if is_valid_uuid(organization) is False:
+        if is_valid_uuid(organization) is False and organization != 'hdx':
             raise HDXError('Organization %s does not look like an organization id!' % organization)
         self.data['owner_org'] = organization
 
