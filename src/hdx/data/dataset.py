@@ -91,7 +91,8 @@ class Dataset(HDXObject):
             'delete': 'package_delete',
             'search': 'package_search',
             'list': 'package_list',
-            'all': 'current_package_list_with_resources'
+            'all': 'current_package_list_with_resources',
+            'hxl': 'package_hxl_update'
         }
 
     def __setitem__(self, key, value):
@@ -353,6 +354,7 @@ class Dataset(HDXObject):
             if not self._dataset_load_from_hdx(self.data['name']):
                 raise HDXError('No existing dataset to update!')
         self._dataset_merge_hdx_update(update_resources)
+        self.hxl_update()
 
     def create_in_hdx(self, allow_no_resources=False):
         # type: (Optional[bool]) -> None
@@ -397,6 +399,7 @@ class Dataset(HDXObject):
                     break
         self.init_resources()
         self.separate_resources()
+        self.hxl_update()
 
     def delete_from_hdx(self):
         # type: () -> None
@@ -406,6 +409,15 @@ class Dataset(HDXObject):
             None
         """
         self._delete_from_hdx('dataset', 'id')
+
+    def hxl_update(self):
+        # type: () -> None
+        """Checks dataset for HXL in resources and updates tags and other metadata to trigger HXL preview.
+
+        Returns:
+            None
+        """
+        self._read_from_hdx('dataset', self.data['id'], action=self.actions()['hxl'])
 
     @staticmethod
     def search_in_hdx(query='*:*', configuration=None, **kwargs):

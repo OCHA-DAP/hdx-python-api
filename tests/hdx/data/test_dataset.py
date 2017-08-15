@@ -95,12 +95,14 @@ dataset_list = ['acled-conflict-data-for-libya', 'acled-conflict-data-for-liberi
                 'acled-conflict-data-for-kenya', 'acled-conflict-data-for-guinea', 'acled-conflict-data-for-ghana',
                 'acled-conflict-data-for-gambia', 'acled-conflict-data-for-gabon', 'acled-conflict-data-for-ethiopia',
                 'acled-conflict-data-for-eritrea']
-
+hxlupdate_list = [{'title': 'Quick Charts', 'resource_id': 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5', 
+                   'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d', 'view_type': 'hdx_hxl_preview', 
+                   'description': '', 'id': '29cc5894-4306-4bef-96ce-b7a833e7986a'}]
 
 def mockshow(url, datadict):
     if 'show' not in url:
         return MockResponse(404,
-                            '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
+                            '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}')
     result = json.dumps(resultdict)
     if 'resource_show' in url:
         result = json.dumps(TestDataset.resources_data[0])
@@ -110,22 +112,22 @@ def mockshow(url, datadict):
         if datadict['id'] == 'TEST1':
             result = json.dumps(resultdict)
             return MockResponse(200,
-                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}' % result)
+                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}' % result)
         if datadict['id'] == 'TEST2':
             return MockResponse(404,
-                                '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}')
+                                '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}')
         if datadict['id'] == 'TEST3':
             return MockResponse(200,
-                                '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}')
+                                '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}')
         if datadict['id'] == 'TEST4':
             resultdictcopy = copy.deepcopy(resultdict)
             resultdictcopy['id'] = 'TEST4'
             result = json.dumps(resultdictcopy)
             return MockResponse(200,
-                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}' % result)
+                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}' % result)
 
     return MockResponse(404,
-                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_show"}')
+                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}')
 
 
 def mocksearch(url, datadict):
@@ -204,6 +206,15 @@ def mockall(url, datadict):
                                 dataset_list))
 
 
+def mockhxlupdate(url, datadict):
+    if 'hxl' not in url:
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "TEST ERROR: Not HXL Update", "__type": "TEST ERROR: Not HXL Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_hxl_update"}')
+    result = json.dumps(hxlupdate_list)
+    return MockResponse(200,
+                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_hxl_update"}' % result)
+
+
 class TestDataset:
     dataset_data = {
         'name': 'MyDataset1',
@@ -276,6 +287,8 @@ class TestDataset:
                     datadict = json.loads(data.decode('utf-8'))
                 if 'show' in url:
                     return mockshow(url, datadict)
+                if 'hxl' in url:
+                    return mockhxlupdate(url, datadict)
                 if 'resource' in url:
                     result = json.dumps(TestDataset.resources_data[0])
                     return MockResponse(200,
@@ -311,6 +324,8 @@ class TestDataset:
                     datadict = json.loads(data.decode('utf-8'))
                 if 'show' in url:
                     return mockshow(url, datadict)
+                if 'hxl' in url:
+                    return mockhxlupdate(url, datadict)
                 if 'resource' in url:
                     result = json.dumps(TestDataset.resources_data[0])
                     return MockResponse(200,
