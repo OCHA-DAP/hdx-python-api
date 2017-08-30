@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 """Downloading utilities for urls"""
+import csv
 import hashlib
 import logging
 from os.path import splitext, join, exists
 from posixpath import basename
 from tempfile import gettempdir
-from typing import Optional
+from typing import Optional, List
 
 import requests
 from basicauth import decode
@@ -227,3 +228,37 @@ class Download(object):
         except Exception as e:
             raisefrom(DownloadError, 'Download of %s failed!' % url, e)
         return self.response
+
+    def download_csv(self, url, timeout=None):
+        # type: (str, Optional[float]) -> List[str]
+        """Download url and return a csv DictReader
+
+        Args:
+            url (str): URL to download
+            timeout (Optional[float]): Timeout for connecting to URL. Defaults to None (no timeout).
+
+        Returns:
+            List[str]: List of lines in csv
+
+        """
+        response = self.download(url, timeout)
+        decoded_content = response.content.decode('utf-8')
+        return decoded_content.splitlines()
+
+    def download_csv_with_header(self, url, timeout=None, delimiter=','):
+        # type: (str, Optional[float], Optional[str]) -> csv.DictReader
+        """Download url and return a csv DictReader
+
+        Args:
+            url (str): URL to download
+            timeout (Optional[float]): Timeout for connecting to URL. Defaults to None (no timeout).
+            delimiter (Optional[str]): Delimiter for each row in csv. Defaults to ','.
+
+        Returns:
+            csv.DictReader: DictReader
+
+        """
+        lines = self.download_csv(url, timeout)
+        if len(lines) < 2:
+            raise DownloadError('Less than 2 rows in file!')
+        return csv.DictReader(lines, delimiter=delimiter)
