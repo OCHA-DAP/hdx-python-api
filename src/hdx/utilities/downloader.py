@@ -231,14 +231,14 @@ class Download(object):
 
     def download_csv(self, url, timeout=None):
         # type: (str, Optional[float]) -> List[str]
-        """Download url and return a csv DictReader
+        """Download csv from url and return a list of rows
 
         Args:
             url (str): URL to download
             timeout (Optional[float]): Timeout for connecting to URL. Defaults to None (no timeout).
 
         Returns:
-            List[str]: List of lines in csv
+            List[str]: List of rows in csv
 
         """
         response = self.download(url, timeout)
@@ -247,7 +247,7 @@ class Download(object):
 
     def download_csv_with_header(self, url, timeout=None, delimiter=','):
         # type: (str, Optional[float], Optional[str]) -> csv.DictReader
-        """Download url and return a csv DictReader
+        """Download csv with headers from url and return a csv DictReader
 
         Args:
             url (str): URL to download
@@ -258,7 +258,31 @@ class Download(object):
             csv.DictReader: DictReader
 
         """
-        lines = self.download_csv(url, timeout)
-        if len(lines) < 2:
+        rows = self.download_csv(url, timeout)
+        if len(rows) < 2:
             raise DownloadError('Less than 2 rows in file!')
-        return csv.DictReader(lines, delimiter=delimiter)
+        return csv.DictReader(rows, delimiter=delimiter)
+
+    def download_csv_key_value(self, url, timeout=None, delimiter=','):
+        # type: (str, Optional[float], Optional[str]) -> Dict
+        """Download 2 column csv from url and return a dictionary of keys (first column) and values (second column)
+
+        Args:
+            url (str): URL to download
+            timeout (Optional[float]): Timeout for connecting to URL. Defaults to None (no timeout).
+            delimiter (Optional[str]): Delimiter for each row in csv. Defaults to ','.
+
+        Returns:
+            Dict: Dictionary keys (first column) and values (second column)
+
+        """
+        rows = self.download_csv(url, timeout)
+        if len(rows) < 1:
+            raise DownloadError('No rows in file!')
+        reader = csv.reader(rows, delimiter=delimiter)
+        output_dict = dict()
+        for row in reader:
+            if len(row) < 2:
+                continue
+            output_dict[row[0]] = row[1]
+        return output_dict

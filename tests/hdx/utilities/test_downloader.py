@@ -95,6 +95,8 @@ class TestDownloader:
             downloader.download(fixturenotexistsurl)
         with pytest.raises(DownloadError), Download() as downloader:
             downloader.download_csv_with_header(emptyurl)
+        with pytest.raises(DownloadError), Download() as downloader:
+            downloader.download_csv_key_value(emptyurl)
         with Download() as downloader:
             result = downloader.download(fixtureurl)
             assert result.headers['Content-Length'] == '728'
@@ -112,3 +114,5 @@ class TestDownloader:
                               {'COUNTRY': 'Algeria', 'EVENT_ID_CNTY': '2229RTA', 'ADMIN3': '', 'ALLY_ACTOR_1': 'Berber Ethnic Group (Algeria)', 'ADMIN1': 'Tizi Ouzou', 'ACTOR2': 'Police Forces of Algeria (1999-)', 'ALLY_ACTOR_2': '', 'FATALITIES': '0', 'GWNO': '615', 'EVENT_ID_NO_CNTY': '', 'SOURCE': 'Kabylie report', 'INTER2': '1', 'GEO_PRECISION': '3', 'LATITUDE': '36.71183', 'YEAR': '2001', 'INTER1': '5', 'ADMIN2': 'Tizi Ouzou', 'TIME_PRECISION': '1', 'INTERACTION': '15', 'LOCATION': 'Tizi Ouzou', 'ACTOR1': 'Rioters (Algeria)', 'EVENT_TYPE': 'Riots/Protests', 'LONGITUDE': '4.04591', 'EVENT_DATE': '19/04/2001', 'NOTES': 'Riots were reported in numerous villages in Kabylie, resulting in dozens wounded in clashes between protesters and police and significant material damage.'},
                               {'COUNTRY': 'Algeria', 'EVENT_ID_CNTY': '2230RTA', 'ADMIN3': '', 'ALLY_ACTOR_1': 'Students (Algeria)', 'ADMIN1': 'Bejaia', 'ACTOR2': '', 'ALLY_ACTOR_2': '', 'FATALITIES': '0', 'GWNO': '615', 'EVENT_ID_NO_CNTY': '', 'SOURCE': 'Crisis Group', 'INTER2': '0', 'GEO_PRECISION': '1', 'LATITUDE': '36.64022', 'YEAR': '2001', 'INTER1': '6', 'ADMIN2': 'Amizour', 'TIME_PRECISION': '1', 'INTERACTION': '60', 'LOCATION': 'Amizour', 'ACTOR1': 'Protesters (Algeria)', 'EVENT_TYPE': 'Riots/Protests', 'LONGITUDE': '4.90131', 'EVENT_DATE': '20/04/2001', 'NOTES': 'Students protested in the Amizour area. At least 3 were later arrested for allegedly insulting gendarmes.'},
                               {'COUNTRY': 'Algeria', 'EVENT_ID_CNTY': '2231RTA', 'ADMIN3': '', 'ALLY_ACTOR_1': 'Berber Ethnic Group (Algeria)', 'ADMIN1': 'Bejaia', 'ACTOR2': 'Police Forces of Algeria (1999-)', 'ALLY_ACTOR_2': '', 'FATALITIES': '0', 'GWNO': '615', 'EVENT_ID_NO_CNTY': '', 'SOURCE': 'Kabylie report', 'INTER2': '1', 'GEO_PRECISION': '1', 'LATITUDE': '36.64022', 'YEAR': '2001', 'INTER1': '5', 'ADMIN2': 'Amizour', 'TIME_PRECISION': '1', 'INTERACTION': '15', 'LOCATION': 'Amizour', 'ACTOR1': 'Rioters (Algeria)', 'EVENT_TYPE': 'Riots/Protests', 'LONGITUDE': '4.90131', 'EVENT_DATE': '21/04/2001', 'NOTES': 'Rioters threw molotov cocktails, rocks and burning tires at gendarmerie stations in Beni Douala, El-Kseur and Amizour.'}]
+            result = downloader.download_csv_key_value(fixtureurl)
+            assert result == {'615': '2231RTA', 'GWNO': 'EVENT_ID_CNTY'}
