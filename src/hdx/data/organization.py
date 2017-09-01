@@ -47,7 +47,7 @@ class Organization(HDXObject):
         """Update organization metadata with static metadata from YAML file
 
         Args:
-            path (Optional[str]): Path to YAML dataset metadata. Defaults to config/hdx_organization_static.yml.
+            path (str): Path to YAML dataset metadata. Defaults to config/hdx_organization_static.yml.
 
         Returns:
             None
@@ -59,7 +59,7 @@ class Organization(HDXObject):
         """Update organization metadata with static metadata from JSON file
 
         Args:
-            path (Optional[str]): Path to JSON dataset metadata. Defaults to config/hdx_organization_static.json.
+            path (str): Path to JSON dataset metadata. Defaults to config/hdx_organization_static.json.
 
         Returns:
             None
@@ -206,11 +206,11 @@ class Organization(HDXObject):
         return self._remove_hdxobject(self.data.get('users'), user)
 
     def get_datasets(self, query='*:*', **kwargs):
-        # type: (Optional[str], ...) -> List[hdx.data.dataset.Dataset]
+        # type: (str, ...) -> List[hdx.data.dataset.Dataset]
         """Get list of datasets in organization
 
         Args:
-            query (Optional[str]): Restrict datasets returned to this query (in Solr format). Defaults to '*:*'.
+            query (str): Restrict datasets returned to this query (in Solr format). Defaults to '*:*'.
             **kwargs: See below
             sort (string): Sorting of the search results. Defaults to 'relevance asc, metadata_modified desc'.
             rows (int): Number of matching rows to return. Defaults to all datasets (sys.maxsize).

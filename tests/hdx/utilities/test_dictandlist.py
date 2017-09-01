@@ -3,7 +3,7 @@
 import pytest
 
 from hdx.utilities.dictandlist import merge_dictionaries, dict_diff, dict_of_lists_add, list_distribute_contents, \
-    list_distribute_contents_simple
+    list_distribute_contents_simple, extract_list_from_list_of_dict
 
 
 class TestDictAndList:
@@ -78,3 +78,11 @@ class TestDictAndList:
         result = list_distribute_contents(input_list, lambda x: x['key'])
         assert result == [{'key': 'a', 'data': 2}, {'key': 'd', 'data': 5}, {'key': 'b', 'data': 5},
                           {'key': 'a', 'data': 3}, {'key': 'd', 'data': 1}, {'key': 'g', 'data': 2}]
+
+    def test_extract_list_from_list_of_dict(self):
+        input_list = [{'key': 'd', 1: 5}, {'key': 'd', 1: 1}, {'key': 'g', 1: 2},
+                      {'key': 'a', 1: 2}, {'key': 'a', 1: 3}, {'key': 'b', 1: 5}]
+        result = extract_list_from_list_of_dict(input_list, 'key')
+        assert result == ['d', 'd', 'g', 'a', 'a', 'b']
+        result = extract_list_from_list_of_dict(input_list, 1)
+        assert result == [5, 1, 2, 2, 3, 5]

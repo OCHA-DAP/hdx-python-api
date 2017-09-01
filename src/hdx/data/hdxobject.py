@@ -94,13 +94,13 @@ class HDXObject(UserDict, object):
 
     def _read_from_hdx(self, object_type, value, fieldname='id',
                        action=None, **kwargs):
-        # type: (str, str, Optional[str], Optional[str], ...) -> Tuple[bool, Union[Dict, str]]
+        # type: (str, str, str, Optional[str], ...) -> Tuple[bool, Union[Dict, str]]
         """Makes a read call to HDX passing in given parameter.
 
         Args:
             object_type (str): Description of HDX object type (for messages)
             value (str): Value of HDX field
-            fieldname (Optional[str]): HDX field name. Defaults to id.
+            fieldname (str): HDX field name. Defaults to id.
             action (Optional[str]): Replacement CKAN action url to use. Defaults to None.
             **kwargs: Other fields to pass to CKAN.
 
@@ -370,14 +370,14 @@ class HDXObject(UserDict, object):
         return new_hdxobject
 
     def _remove_hdxobject(self, objlist, obj, matchon='id', delete=False):
-        # type: (List[Union[HDXObjectUpperBound,Dict]], Union[HDXObjectUpperBound,Dict,str], Optional[str]) -> None
+        # type: (List[Union[HDXObjectUpperBound,Dict]], Union[HDXObjectUpperBound,Dict,str], str, bool) -> None
         """Remove an HDX object from a list within the parent HDX object
 
         Args:
             objlist (List[Union[T <= HDXObject,Dict]]): list of HDX objects
             obj (Union[T <= HDXObject,Dict,str]): Either an id or hdx object metadata either from an HDX object or a dictionary
-            matchon (Optional[str]): Field to match on. Defaults to id.
-            delete (Optional[bool]): Whether to delete HDX object. Defaults to False.
+            matchon (str): Field to match on. Defaults to id.
+            delete (bool): Whether to delete HDX object. Defaults to False.
 
         Returns:
             bool: True if object removed, False if not

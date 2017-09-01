@@ -131,12 +131,12 @@ class Dataset(HDXObject):
         """:type : List[Resource]"""
 
     def add_update_resource(self, resource, ignore_datasetid=False):
-        # type: (Union[Resource,Dict,str], Optional[bool]) -> None
+        # type: (Union[Resource,Dict,str], bool) -> None
         """Add new or update existing resource in dataset with new metadata
 
         Args:
             resource (Union[Resource,Dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
-            ignore_datasetid (Optional[bool]): Whether to ignore dataset id in the resource
+            ignore_datasetid (bool): Whether to ignore dataset id in the resource
 
         Returns:
             None
@@ -192,11 +192,11 @@ class Dataset(HDXObject):
         return self.resources
 
     def update_from_yaml(self, path=join('config', 'hdx_dataset_static.yml')):
-        # type: (Optional[str]) -> None
+        # type: (str) -> None
         """Update dataset metadata with static metadata from YAML file
 
         Args:
-            path (Optional[str]): Path to YAML dataset metadata. Defaults to config/hdx_dataset_static.yml.
+            path (str): Path to YAML dataset metadata. Defaults to config/hdx_dataset_static.yml.
 
         Returns:
             None
@@ -205,11 +205,11 @@ class Dataset(HDXObject):
         self.separate_resources()
 
     def update_from_json(self, path=join('config', 'hdx_dataset_static.json')):
-        # type: (Optional[str]) -> None
+        # type: (str) -> None
         """Update dataset metadata with static metadata from JSON file
 
         Args:
-            path (Optional[str]): Path to JSON dataset metadata. Defaults to config/hdx_dataset_static.json.
+            path (str): Path to JSON dataset metadata. Defaults to config/hdx_dataset_static.json.
 
         Returns:
             None

@@ -5,16 +5,14 @@ import inspect
 import sys
 from os.path import abspath, realpath, dirname, join
 
-from typing import Optional
-
 
 def script_dir(pyobject, follow_symlinks=True):
-    # type: (Any, Optional[bool]) -> str
+    # type: (Any, bool) -> str
     """Get current script's directory
 
     Args:
         pyobject (Any): Any Python object in the script
-        follow_symlinks (Optional[bool]): Follow symlinks or not. Defaults to True.
+        follow_symlinks (bool): Follow symlinks or not. Defaults to True.
 
     Returns:
         str: Current script's directory
@@ -29,13 +27,13 @@ def script_dir(pyobject, follow_symlinks=True):
 
 
 def script_dir_plus_file(filename, pyobject, follow_symlinks=True):
-    # type: (str, Any, Optional[bool]) -> str
+    # type: (str, Any, bool) -> str
     """Get current script's directory and then append a filename
 
     Args:
         filename (str): Filename to append to directory path
         pyobject (Any): Any Python object in the script
-        follow_symlinks (Optional[bool]): Follow symlinks or not. Defaults to True.
+        follow_symlinks (bool): Follow symlinks or not. Defaults to True.
 
     Returns:
         str: Current script's directory and with filename appended

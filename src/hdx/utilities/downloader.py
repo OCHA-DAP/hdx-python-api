@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 """Downloading utilities for urls"""
-import csv
 import hashlib
 import logging
 from os.path import splitext, join, exists
 from posixpath import basename
 from tempfile import gettempdir
-from typing import Optional, List
+from typing import Optional
 
 import requests
 from basicauth import decode
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3 import Retry
 from six.moves.urllib.parse import urlparse
+from tabulator import Stream
 
 from hdx.utilities import raisefrom
 from hdx.utilities.loader import load_file_to_str, load_json, load_yaml
@@ -229,60 +229,24 @@ class Download(object):
             raisefrom(DownloadError, 'Download of %s failed!' % url, e)
         return self.response
 
-    def download_csv(self, url, timeout=None):
-        # type: (str, Optional[float]) -> List[str]
-        """Download csv from url and return a list of rows
-
-        Args:
-            url (str): URL to download
-            timeout (Optional[float]): Timeout for connecting to URL. Defaults to None (no timeout).
-
-        Returns:
-            List[str]: List of rows in csv
-
-        """
-        response = self.download(url, timeout)
-        decoded_content = response.content.decode('utf-8')
-        return decoded_content.splitlines()
-
-    def download_csv_with_header(self, url, timeout=None, delimiter=','):
-        # type: (str, Optional[float], Optional[str]) -> csv.DictReader
-        """Download csv with headers from url and return a csv DictReader
-
-        Args:
-            url (str): URL to download
-            timeout (Optional[float]): Timeout for connecting to URL. Defaults to None (no timeout).
-            delimiter (Optional[str]): Delimiter for each row in csv. Defaults to ','.
-
-        Returns:
-            csv.DictReader: DictReader
-
-        """
-        rows = self.download_csv(url, timeout)
-        if len(rows) < 2:
-            raise DownloadError('Less than 2 rows in file!')
-        return csv.DictReader(rows, delimiter=delimiter)
-
-    def download_csv_key_value(self, url, timeout=None, delimiter=','):
-        # type: (str, Optional[float], Optional[str]) -> Dict
+    def download_csv_key_value(self, url, delimiter=','):
+        # type: (str, str) -> Dict
         """Download 2 column csv from url and return a dictionary of keys (first column) and values (second column)
 
         Args:
             url (str): URL to download
-            timeout (Optional[float]): Timeout for connecting to URL. Defaults to None (no timeout).
-            delimiter (Optional[str]): Delimiter for each row in csv. Defaults to ','.
+            delimiter (str): Delimiter for each row in csv. Defaults to ','.
 
         Returns:
             Dict: Dictionary keys (first column) and values (second column)
 
         """
-        rows = self.download_csv(url, timeout)
-        if len(rows) < 1:
-            raise DownloadError('No rows in file!')
-        reader = csv.reader(rows, delimiter=delimiter)
+        stream = Stream(url, delimiter=delimiter)
+        stream.open()
         output_dict = dict()
-        for row in reader:
+        for row in stream.iter():
             if len(row) < 2:
                 continue
             output_dict[row[0]] = row[1]
+        stream.close()
         return output_dict

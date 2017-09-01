@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Dict and List utilities"""
 import itertools
-from typing import List, Optional, TypeVar, Callable
+from typing import List, TypeVar, Callable, Dict, Any
 
 import six
 from six.moves import UserDict, zip_longest
@@ -78,13 +78,13 @@ def merge_dictionaries(dicts, merge_lists=False):
 
 
 def dict_diff(d1, d2, no_key='<KEYNOTFOUND>'):
-    # type: (DictUpperBound, DictUpperBound, Optional[str]) -> Dict
+    # type: (DictUpperBound, DictUpperBound, str) -> Dict
     """Compares two dictionaries
 
     Args:
         d1 (DictUpperBound): First dictionary to compare
         d2 (DictUpperBound): Second dictionary to compare
-        no_key (Optional[str]): What value to use if key is not found Defaults to '<KEYNOTFOUND>'.
+        no_key (str): What value to use if key is not found Defaults to '<KEYNOTFOUND>'.
 
     Returns:
         Dict: Comparison dictionary
@@ -187,3 +187,21 @@ def list_distribute_contents(input_list, function=lambda x: x):
     for key in sorted(dictionary):
         intermediate_list.append(dictionary[key])
     return riffle_shuffle(intermediate_list)
+
+
+def extract_list_from_list_of_dict(list_of_dict, key):
+    # type: (List[Dict], Any) -> List[Any]
+    """Extract a list by looking up key in each member of a list of dictionaries
+
+    Args:
+        list_of_dict (List[Dict]): List of dictionaries
+        key (Any): Key to find in each dictionary
+
+    Returns:
+        List[Any]: List containing values returned from each dictionary
+
+    """
+    result = list()
+    for dictionary in list_of_dict:
+        result.append(dictionary[key])
+    return result

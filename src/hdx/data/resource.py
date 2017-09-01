@@ -241,7 +241,7 @@ class Resource(HDXObject):
 
     def create_datastore(self, schema=None, primary_key=None,
                          delete_first=0, path=None):
-        # type: (Optional[List[Dict]], Optional[str], Optional[int], Optional[str]) -> None
+        # type: (Optional[List[Dict]], Optional[str], int, Optional[str]) -> None
         """For csvs, create a resource in the HDX datastore which enables data preview in HDX. If no schema is provided
         all fields are assumed to be text. If path is not supplied, the file is first downloaded from HDX.
 
@@ -335,7 +335,7 @@ class Resource(HDXObject):
                     unlink(path)  # ie. we keep the zip but remove the extracted file
 
     def create_datastore_from_dict_schema(self, data, delete_first=0, path=None):
-        # type: (dict, Optional[int], Optional[str]) -> None
+        # type: (dict, int, Optional[str]) -> None
         """For csvs, create a resource in the HDX datastore which enables data preview in HDX from a dictionary
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
         If path is not supplied, the file is first downloaded from HDX.
@@ -371,7 +371,7 @@ class Resource(HDXObject):
         self.create_datastore_from_dict_schema(data, delete_first, path=path)
 
     def create_datastore_from_json_schema(self, json_path, delete_first=0, path=None):
-        # type: (str, Optional[int], Optional[str]) -> None
+        # type: (str, int, Optional[str]) -> None
         """For csvs, create a resource in the HDX datastore which enables data preview in HDX from a JSON file
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
         If path is not supplied, the file is first downloaded from HDX.
@@ -388,7 +388,7 @@ class Resource(HDXObject):
         self.create_datastore_from_dict_schema(data, delete_first, path=path)
 
     def create_datastore_for_topline(self, delete_first=0, path=None):
-        # type: (Optional[int], Optional[str]) -> None
+        # type: (int, Optional[str]) -> None
         """For csvs, create a resource in the HDX datastore which enables data preview in HDX using the built in
         YAML definition for a topline. If path is not supplied, the file is first downloaded from HDX.
 

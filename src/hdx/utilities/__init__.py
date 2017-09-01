@@ -2,7 +2,6 @@ import sys
 from uuid import UUID
 
 import six
-from typing import Optional
 
 
 def raisefrom(exc_type, message, exc):
@@ -25,13 +24,13 @@ def raisefrom(exc_type, message, exc):
 
 
 def is_valid_uuid(uuid_to_test, version=4):
-    # type: (str, Optional[int]) -> bool
+    # type: (str, int) -> bool
     """
     Check if uuid_to_test is a valid UUID.
 
     Args:
         uuid_to_test (str): UUID to test for validity
-        version (Optional[int]): UUID version. Defaults to 4.
+        version (int): UUID version. Defaults to 4.
 
     Returns:
         str: Current script's directory
