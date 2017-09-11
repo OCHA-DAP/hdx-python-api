@@ -103,6 +103,11 @@ class TestDownloader:
         result = Download.download_csv_key_value(fixtureprocessurl, headers=2)
         assert result == {'coal': '3', 'gas': '2'}
 
+    def test_download_csv_rows_as_dicts(self, fixtureprocessurl):
+        result = Download.download_csv_rows_as_dicts(fixtureprocessurl, headers=2)
+        assert result == {'coal': {'header2': '3', 'header3': '7.4', 'header4': "'needed'"},
+                          'gas': {'header2': '2', 'header3': '6.5', 'header4': "'n/a'"}}
+
     def test_download_csv_cols_as_dicts(self, fixtureprocessurl):
         result = Download.download_csv_cols_as_dicts(fixtureprocessurl, headers=2)
         assert result == {'header2': {'coal': '3', 'gas': '2'},

@@ -254,6 +254,38 @@ class Download(object):
         return output_dict
 
     @staticmethod
+    def download_csv_rows_as_dicts(url, delimiter=',', headers=1):
+        # type: (str, str, int) -> Dict[Dict]
+        """Download multicolumn csv from url and return dictionary where keys are first column and values are
+        dictionaries with keys from column headers and values from columns beneath
+
+        Args:
+            url (str): URL to download
+            delimiter (str): Delimiter for each row in csv. Defaults to ','.
+            headers (int): Number of row containing headers. Defaults to 1.
+
+        Returns:
+            Dict[Dict]: Dictionary where keys are first column and values are dictionaries with keys from column
+            headers and values from columns beneath
+
+        """
+        stream = Stream(url, delimiter=delimiter, headers=headers)
+        stream.open()
+        output_dict = dict()
+        headers = stream.headers
+        first_header = headers[0]
+        for row in stream.iter(keyed=True):
+            first_val = row[first_header]
+            output_dict[first_val] = dict()
+            for header in row:
+                if header == first_header:
+                    continue
+                else:
+                    output_dict[first_val][header] = row[header]
+        stream.close()
+        return output_dict
+
+    @staticmethod
     def download_csv_cols_as_dicts(url, delimiter=',', headers=1):
         # type: (str, str, int) -> Dict[Dict]
         """Download multicolumn csv from url and return dictionary where keys are header names and values are
