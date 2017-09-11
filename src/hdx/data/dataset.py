@@ -883,7 +883,7 @@ class Dataset(HDXObject):
         Returns:
             bool: True if country added or False if country already present
         """
-        iso3, match = Location.get_iso3_country_code(country)
+        iso3, match = Location.get_iso3_country_code_partial(country)
         if iso3 is None:
             raise HDXError('Country: %s - cannot find iso3 code!' % country)
         return self.add_other_location(iso3, exact=exact,
@@ -937,9 +937,9 @@ class Dataset(HDXObject):
         Returns:
             bool: True if location added or False if location already present
         """
-        hdx_code, match = Locations.get_HDX_code_from_location(location, exact=exact, locations=locations,
-                                                               configuration=self.configuration)
-        if hdx_code is None:
+        hdx_code, match = Locations.get_HDX_code_from_location_partial(location, locations=locations,
+                                                                       configuration=self.configuration)
+        if hdx_code is None or (exact is True and match is False):
             if alterror is None:
                 raise HDXError('Location: %s - cannot find in HDX!' % location)
             else:

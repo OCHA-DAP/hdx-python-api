@@ -31,32 +31,51 @@ class Location(object):
         return None
 
     @staticmethod
-    def get_iso3_country_code(country, exact=False):
-        # type: (str, bool) -> Tuple[Optional[str], bool]
-        """Get iso 3 code for country
+    def get_iso3_country_code(country):
+        # type: (str) -> Optional[str]]
+        """Get iso 3 code for country. Only exact matches or None are returned.
 
         Args:
             country (str): Country for which to get iso 3 code
-            exact (bool): True for exact matching or False to allow fuzzy matching. Defaults to True.
 
         Returns:
-            Tuple[Optional[str], bool]: iso 3 country code and if the match is strong or (None, False) for no match
+            Optional[str]: Return iso 3 country code or None
         """
         countrylower = country.lower()
         if len(countrylower) == 3:
             for countrydetails in Location.countries:
                 if countrylower == countrydetails.get('iso3').lower():
-                    return countrylower, True
+                    return countrylower
 
         for countrydetails in Location.countries:
             if countrylower == countrydetails.get('name').lower():
-                return countrydetails.get('iso3').lower(), True
+                return countrydetails.get('iso3').lower()
 
-        if not exact:
-            for countrydetails in Location.countries:
-                countryname = countrydetails.get('name').lower()
-                if countrylower in countryname or countryname in countrylower:
-                    return countrydetails.get('iso3').lower(), False
+        return None
+
+    @staticmethod
+    def get_iso3_country_code_partial(country):
+        # type: (str) -> Tuple[Optional[str], bool]]
+        """Get iso 3 code for country. A tuple is returned with the first value being the iso 3 code and the second
+        showing if the match is exact or not.
+
+        Args:
+            country (str): Country for which to get iso 3 code
+
+        Returns:
+            Tuple[Optional[str], bool]]: Return iso 3 code and if the match is exact or (None, False).
+        """
+        iso3 = Location.get_iso3_country_code(country)
+
+        if iso3 is not None:
+            return iso3, True
+
+        countrylower = country.lower()
+        for countrydetails in Location.countries:
+            countryname = countrydetails.get('name').lower()
+            if countrylower in countryname or countryname in countrylower:
+                return countrydetails.get('iso3').lower(), False
+
         return None, False
 
     @staticmethod

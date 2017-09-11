@@ -13,16 +13,20 @@ class TestLocation:
         assert Location.get_country_name_from_iso3('uy') is None
 
     def test_get_iso3_country_code(self):
-        assert Location.get_iso3_country_code('jpn') == ('jpn', True)
-        assert Location.get_iso3_country_code('ZWE') == ('zwe', True)
-        assert Location.get_iso3_country_code('Vut') == ('vut', True)
-        assert Location.get_iso3_country_code('abc') == (None, False)
-        assert Location.get_iso3_country_code('United Kingdom') == ('gbr', True)
-        assert Location.get_iso3_country_code('united states') == ('usa', True)
-        assert Location.get_iso3_country_code('UZBEKISTAN') == ('uzb', True)
-        assert Location.get_iso3_country_code('Sierra') == ('sle', False)
-        assert Location.get_iso3_country_code('Venezuela (Bolivarian Republic of)') == ('ven', False)
-        assert Location.get_iso3_country_code('Venezuela (Bolivarian Republic of)', exact=True) == (None, False)
+        assert Location.get_iso3_country_code('jpn') == 'jpn'
+        assert Location.get_iso3_country_code_partial('jpn') == ('jpn', True)
+        assert Location.get_iso3_country_code_partial('ZWE') == ('zwe', True)
+        assert Location.get_iso3_country_code_partial('Vut') == ('vut', True)
+        assert Location.get_iso3_country_code('abc') is None
+        assert Location.get_iso3_country_code_partial('abc') == (None, False)
+        assert Location.get_iso3_country_code_partial('United Kingdom') == ('gbr', True)
+        assert Location.get_iso3_country_code_partial('united states') == ('usa', True)
+        assert Location.get_iso3_country_code('UZBEKISTAN') == 'uzb'
+        assert Location.get_iso3_country_code_partial('UZBEKISTAN') == ('uzb', True)
+        assert Location.get_iso3_country_code('Sierra') is None
+        assert Location.get_iso3_country_code_partial('Sierra') == ('sle', False)
+        assert Location.get_iso3_country_code('Venezuela (Bolivarian Republic of)') is None
+        assert Location.get_iso3_country_code_partial('Venezuela (Bolivarian Republic of)') == ('ven', False)
 
     def test_get_countries_in_continent(self):
         assert len(Location.get_countries_in_continent('AF')) == 58

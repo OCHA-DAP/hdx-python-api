@@ -62,18 +62,17 @@ class Locations(object):
                 return locdict['title']
 
     @staticmethod
-    def get_HDX_code_from_location(location, exact=True, locations=None, configuration=None):
-        # type: (str, bool, Optional[List[Dict]], Optional[Configuration]) -> Tuple[Optional[str], bool]
+    def get_HDX_code_from_location(location, locations=None, configuration=None):
+        # type: (str, Optional[List[Dict]], Optional[Configuration]) -> Optional[str]
         """Get HDX code for location
 
         Args:
             location (str): Location for which to get HDX code
-            exact (bool): True for exact matching or False to allow fuzzy matching. Defaults to True.
             locations (Optional[List[Dict]]): Valid locations list. Defaults to list downloaded from HDX.
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
-            Tuple[Optional[str], bool]: HDX code and if the match is strong or (None, False) for no match
+            Optional[str]: HDX code or None
         """
         if locations is None:
             locations = Locations.validlocations(configuration)
@@ -81,15 +80,36 @@ class Locations(object):
         for locdict in locations:
             locationcode = locdict['name']
             if locationlower == locationcode.lower():
-                return locationcode, True
+                return locationcode
 
         for locdict in locations:
             if locationlower == locdict['title'].lower():
-                return locdict['name'], True
+                return locdict['name']
 
-        if not exact:
-            for locdict in locations:
-                locationname = locdict['title'].lower()
-                if locationlower in locationname or locationname in locationlower:
-                    return locdict['name'], False
+    @staticmethod
+    def get_HDX_code_from_location_partial(location, locations=None, configuration=None):
+        # type: (str, Optional[List[Dict]], Optional[Configuration]) -> Tuple[Optional[str], bool]
+        """Get HDX code for location
+
+        Args:
+            location (str): Location for which to get HDX code
+            locations (Optional[List[Dict]]): Valid locations list. Defaults to list downloaded from HDX.
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+
+        Returns:
+            Tuple[Optional[str], bool]: HDX code and if the match is exact or (None, False) for no match
+        """
+        hdx_code = Locations.get_HDX_code_from_location(location, locations, configuration)
+
+        if hdx_code is not None:
+            return hdx_code, True
+
+        if locations is None:
+            locations = Locations.validlocations(configuration)
+        locationlower = location.lower()
+        for locdict in locations:
+            locationname = locdict['title'].lower()
+            if locationlower in locationname or locationname in locationlower:
+                return locdict['name'], False
+
         return None, False
