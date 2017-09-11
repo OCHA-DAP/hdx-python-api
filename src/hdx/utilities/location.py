@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """Location utilities"""
-from typing import List, Callable, Tuple, Optional
+from typing import List, Callable, Tuple, Optional, TypeVar
 
 import geonamescache
+
+ExceptionUpperBound = TypeVar('T', bound='Exception')
 
 
 class Location(object):
@@ -31,12 +33,13 @@ class Location(object):
         return None
 
     @staticmethod
-    def get_iso3_country_code(country):
-        # type: (str) -> Optional[str]]
+    def get_iso3_country_code(country, exception=None):
+        # type: (str, ExceptionUpperBound) -> Optional[str]]
         """Get iso 3 code for country. Only exact matches or None are returned.
 
         Args:
             country (str): Country for which to get iso 3 code
+            exception (ExceptionUpperBound): An exception to raise if country not found. Defaults to None.
 
         Returns:
             Optional[str]: Return iso 3 country code or None
@@ -51,16 +54,19 @@ class Location(object):
             if countrylower == countrydetails.get('name').lower():
                 return countrydetails.get('iso3').lower()
 
+        if exception is not None:
+            raise exception
         return None
 
     @staticmethod
-    def get_iso3_country_code_partial(country):
-        # type: (str) -> Tuple[Optional[str], bool]]
+    def get_iso3_country_code_partial(country, exception=None):
+        # type: (str, ExceptionUpperBound) -> Tuple[Optional[str], bool]]
         """Get iso 3 code for country. A tuple is returned with the first value being the iso 3 code and the second
         showing if the match is exact or not.
 
         Args:
             country (str): Country for which to get iso 3 code
+            exception (ExceptionUpperBound): An exception to raise if country not found. Defaults to None.
 
         Returns:
             Tuple[Optional[str], bool]]: Return iso 3 code and if the match is exact or (None, False).
@@ -76,6 +82,8 @@ class Location(object):
             if countrylower in countryname or countryname in countrylower:
                 return countrydetails.get('iso3').lower(), False
 
+        if exception is not None:
+            raise exception
         return None, False
 
     @staticmethod

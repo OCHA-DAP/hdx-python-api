@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
 """Location Tests"""
+import pytest
 
 from hdx.utilities.location import Location
 
@@ -27,6 +28,10 @@ class TestLocation:
         assert Location.get_iso3_country_code_partial('Sierra') == ('sle', False)
         assert Location.get_iso3_country_code('Venezuela (Bolivarian Republic of)') is None
         assert Location.get_iso3_country_code_partial('Venezuela (Bolivarian Republic of)') == ('ven', False)
+        with pytest.raises(ValueError):
+            Location.get_iso3_country_code('abc', exception=ValueError)
+        with pytest.raises(ValueError):
+            Location.get_iso3_country_code_partial('abc', exception=ValueError)
 
     def test_get_countries_in_continent(self):
         assert len(Location.get_countries_in_continent('AF')) == 58
