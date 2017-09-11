@@ -34,12 +34,12 @@ class Location(object):
 
     @staticmethod
     def get_iso3_country_code(country, exception=None):
-        # type: (str, ExceptionUpperBound) -> Optional[str]]
+        # type: (str, Optional[ExceptionUpperBound]) -> Optional[str]]
         """Get iso 3 code for country. Only exact matches or None are returned.
 
         Args:
             country (str): Country for which to get iso 3 code
-            exception (ExceptionUpperBound): An exception to raise if country not found. Defaults to None.
+            exception (Optional[ExceptionUpperBound]): An exception to raise if country not found. Defaults to None.
 
         Returns:
             Optional[str]: Return iso 3 country code or None
@@ -60,13 +60,13 @@ class Location(object):
 
     @staticmethod
     def get_iso3_country_code_partial(country, exception=None):
-        # type: (str, ExceptionUpperBound) -> Tuple[Optional[str], bool]]
+        # type: (str, Optional[ExceptionUpperBound]) -> Tuple[Optional[str], bool]]
         """Get iso 3 code for country. A tuple is returned with the first value being the iso 3 code and the second
         showing if the match is exact or not.
 
         Args:
             country (str): Country for which to get iso 3 code
-            exception (ExceptionUpperBound): An exception to raise if country not found. Defaults to None.
+            exception (Optional[ExceptionUpperBound]): An exception to raise if country not found. Defaults to None.
 
         Returns:
             Tuple[Optional[str], bool]]: Return iso 3 code and if the match is exact or (None, False).

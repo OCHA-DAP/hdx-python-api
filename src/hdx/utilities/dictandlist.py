@@ -9,6 +9,7 @@ import six
 from six.moves import UserDict, zip_longest
 
 DictUpperBound = TypeVar('T', bound='dict')
+ExceptionUpperBound = TypeVar('TE', bound='Exception')
 
 
 def merge_two_dictionaries(a, b, merge_lists=False):
@@ -209,8 +210,9 @@ def extract_list_from_list_of_dict(list_of_dict, key):
     return result
 
 
-def key_value_convert(dictin, keyfn=lambda x: x, valuefn=lambda x: x, dropfailedkeys=False, dropfailedvalues=False):
-    # type: (DictUpperBound, Callable[[Any], Any], Callable[[Any], Any], bool, bool) -> Dict
+def key_value_convert(dictin, keyfn=lambda x: x, valuefn=lambda x: x, dropfailedkeys=False, dropfailedvalues=False,
+                      exception=ValueError):
+    # type: (DictUpperBound, Callable[[Any], Any], Callable[[Any], Any], bool, bool, ExceptionUpperBound) -> Dict
     """Convert keys and/or values of dictionary using functions passed in as parameters
 
     Args:
@@ -219,6 +221,7 @@ def key_value_convert(dictin, keyfn=lambda x: x, valuefn=lambda x: x, dropfailed
         valuefn (Callable[[Any], Any]): Function to convert values. Defaults to lambda x: x
         dropfailedkeys (bool): Whether to drop dictionary entries where key conversion fails. Defaults to False.
         dropfailedvalues (bool): Whether to drop dictionary entries where value conversion fails. Defaults to False.
+        exception (ExceptionUpperBound): The exception to expect if keyfn or valuefn fail. Defaults to ValueError.
 
     Returns:
         Dict: Dictionary with converted keys and/or values
@@ -228,14 +231,14 @@ def key_value_convert(dictin, keyfn=lambda x: x, valuefn=lambda x: x, dropfailed
     for key in dictin:
         try:
             new_key = keyfn(key)
-        except ValueError:
+        except exception:
             if dropfailedkeys:
                 continue
             new_key = key
         value = dictin[key]
         try:
             new_value = valuefn(value)
-        except ValueError:
+        except exception:
             if dropfailedvalues:
                 continue
             new_value = value
