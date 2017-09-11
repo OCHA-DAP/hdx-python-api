@@ -5,7 +5,7 @@ import logging
 from os.path import splitext, join, exists
 from posixpath import basename
 from tempfile import gettempdir
-from typing import Optional
+from typing import Optional, Dict
 
 import requests
 from basicauth import decode
@@ -229,24 +229,59 @@ class Download(object):
             raisefrom(DownloadError, 'Download of %s failed!' % url, e)
         return self.response
 
-    def download_csv_key_value(self, url, delimiter=','):
-        # type: (str, str) -> Dict
+    @staticmethod
+    def download_csv_key_value(url, delimiter=',', headers=None):
+        # type: (str, str, Optional[int]) -> Dict
         """Download 2 column csv from url and return a dictionary of keys (first column) and values (second column)
 
         Args:
             url (str): URL to download
             delimiter (str): Delimiter for each row in csv. Defaults to ','.
+            headers (Optional[int]): Number of row containing headers. Defaults to None.
 
         Returns:
             Dict: Dictionary keys (first column) and values (second column)
 
         """
-        stream = Stream(url, delimiter=delimiter)
+        stream = Stream(url, delimiter=delimiter, headers=headers)
         stream.open()
         output_dict = dict()
         for row in stream.iter():
             if len(row) < 2:
                 continue
             output_dict[row[0]] = row[1]
+        stream.close()
+        return output_dict
+
+    @staticmethod
+    def download_csv_cols_as_dicts(url, delimiter=',', headers=1):
+        # type: (str, str, int) -> Dict[Dict]
+        """Download multicolumn csv from url and return dictionary where keys are header names and values are
+        dictionaries with keys from first column and values from other columns
+
+        Args:
+            url (str): URL to download
+            delimiter (str): Delimiter for each row in csv. Defaults to ','.
+            headers (int): Number of row containing headers. Defaults to 1.
+
+        Returns:
+            Dict[Dict]: Dictionary where keys are header names and values are dictionaries with keys from first column
+            and values from other columns
+
+        """
+        stream = Stream(url, delimiter=delimiter, headers=headers)
+        stream.open()
+        output_dict = dict()
+        headers = stream.headers
+        first_header = headers[0]
+        for header in stream.headers:
+            if header == first_header:
+                continue
+            output_dict[header] = dict()
+        for row in stream.iter(keyed=True):
+            for header in row:
+                if header == first_header:
+                    continue
+                output_dict[header][row[first_header]] = row[header]
         stream.close()
         return output_dict

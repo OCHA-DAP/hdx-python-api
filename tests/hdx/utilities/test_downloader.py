@@ -22,6 +22,10 @@ class TestDownloader:
     def fixturenotexistsurl(self):
         return 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/NOTEXIST.csv'
 
+    @pytest.fixture(scope='class')
+    def fixtureprocessurl(self):
+        return 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/downloader/test_csv_processing.csv?a=1'
+
     def test_get_path_for_url(self, fixtureurl, configfolder, downloaderfolder):
         path = Download.get_path_for_url(fixtureurl, configfolder)
         assert abspath(path) == abspath(join(configfolder, 'test_data.csv'))
@@ -94,3 +98,13 @@ class TestDownloader:
             assert result.headers['Content-Length'] == '728'
             result = downloader.download_csv_key_value(fixtureurl)
             assert result == {'615': '2231RTA', 'GWNO': 'EVENT_ID_CNTY'}
+
+    def test_download_csv_key_value(self, fixtureprocessurl):
+        result = Download.download_csv_key_value(fixtureprocessurl, headers=2)
+        assert result == {'coal': '3', 'gas': '2'}
+
+    def test_download_csv_cols_as_dicts(self, fixtureprocessurl):
+        result = Download.download_csv_cols_as_dicts(fixtureprocessurl, headers=2)
+        assert result == {'header2': {'coal': '3', 'gas': '2'},
+                          'header3': {'coal': '7.4', 'gas': '6.5'},
+                          'header4': {'coal': "'needed'", 'gas': "'n/a'"}}

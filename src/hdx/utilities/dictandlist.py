@@ -118,16 +118,16 @@ def dict_of_lists_add(dictionary, key, value):
 
 
 def list_distribute_contents_simple(input_list, function=lambda x: x):
-    # type: (List[Any], Callable[[Any], Any]) -> List[Any]
+    # type: (List, Callable[[Any], Any]) -> List
     """Distribute the contents of a list eg. [1, 1, 1, 2, 2, 3] -> [1, 2, 3, 1, 2, 1]. List can contain complex types
     like dictionaries in which case the function can return the appropriate value eg.  lambda x: x[KEY]
 
     Args:
-        input_list (List[Any]): Dictionary to which to add values
+        input_list (List): List to distribute values
         function (Callable[[Any], Any]): Return value to use for distributing. Defaults to lambda x: x.
 
     Returns:
-        List[Any]: Distributed list
+        List: Distributed list
 
     """
     dictionary = dict()
@@ -150,16 +150,16 @@ def list_distribute_contents_simple(input_list, function=lambda x: x):
 
 
 def list_distribute_contents(input_list, function=lambda x: x):
-    # type: (List[Any], Callable[[Any], Any]) -> List[Any]
+    # type: (List, Callable[[Any], Any]) -> List
     """Distribute the contents of a list eg. [1, 1, 1, 2, 2, 3] -> [1, 2, 1, 2, 1, 3]. List can contain complex types
     like dictionaries in which case the function can return the appropriate value eg.  lambda x: x[KEY]
 
     Args:
-        input_list (List[Any]): Dictionary to which to add values
+        input_list (List): List to distribute values
         function (Callable[[Any], Any]): Return value to use for distributing. Defaults to lambda x: x.
 
     Returns:
-        List[Any]: Distributed list
+        List: Distributed list
 
     """
 
@@ -190,18 +190,115 @@ def list_distribute_contents(input_list, function=lambda x: x):
 
 
 def extract_list_from_list_of_dict(list_of_dict, key):
-    # type: (List[Dict], Any) -> List[Any]
+    # type: (List[DictUpperBound], Any) -> List
     """Extract a list by looking up key in each member of a list of dictionaries
 
     Args:
-        list_of_dict (List[Dict]): List of dictionaries
+        list_of_dict (List[DictUpperBound]): List of dictionaries
         key (Any): Key to find in each dictionary
 
     Returns:
-        List[Any]: List containing values returned from each dictionary
+        List: List containing values returned from each dictionary
 
     """
     result = list()
     for dictionary in list_of_dict:
         result.append(dictionary[key])
     return result
+
+
+def key_value_convert(dictin, keyfn=lambda x: x, valuefn=lambda x: x, dropfailedkeys=False, dropfailedvalues=False):
+    # type: (DictUpperBound, Callable[[Any], Any], Callable[[Any], Any], bool, bool) -> Dict
+    """Convert keys and/or values of dictionary using functions passed in as parameters
+
+    Args:
+        dictin (DictUpperBound): Input dictionary
+        keyfn (Callable[[Any], Any]): Function to convert keys. Defaults to lambda x: x
+        valuefn (Callable[[Any], Any]): Function to convert values. Defaults to lambda x: x
+        dropfailedkeys (bool): Whether to drop dictionary entries where key conversion fails. Defaults to False.
+        dropfailedvalues (bool): Whether to drop dictionary entries where value conversion fails. Defaults to False.
+
+    Returns:
+        Dict: Dictionary with converted keys and/or values
+
+    """
+    dictout = dict()
+    for key in dictin:
+        try:
+            new_key = keyfn(key)
+        except ValueError:
+            if dropfailedkeys:
+                continue
+            new_key = key
+        value = dictin[key]
+        try:
+            new_value = valuefn(value)
+        except ValueError:
+            if dropfailedvalues:
+                continue
+            new_value = value
+        dictout[new_key] = new_value
+    return dictout
+
+
+def integer_key_convert(dictin, dropfailedkeys=False):
+    # type: (DictUpperBound, bool) -> Dict
+    """Convert keys of dictionary to integers
+
+    Args:
+        dictin (DictUpperBound): Input dictionary
+        dropfailedkeys (bool): Whether to drop dictionary entries where key conversion fails. Defaults to False.
+
+    Returns:
+        Dict: Dictionary with keys converted to integers
+
+    """
+    return key_value_convert(dictin, keyfn=int, dropfailedkeys=dropfailedkeys)
+
+
+def integer_value_convert(dictin, dropfailedvalues=False):
+    # type: (DictUpperBound, bool) -> Dict
+    """Convert values of dictionary to integers
+
+    Args:
+        dictin (DictUpperBound): Input dictionary
+        dropfailedkeys (bool): Whether to drop dictionary entries where key conversion fails. Defaults to False.
+
+    Returns:
+        Dict: Dictionary with values converted to integers
+
+    """
+    return key_value_convert(dictin, valuefn=int, dropfailedvalues=dropfailedvalues)
+
+
+def float_value_convert(dictin, dropfailedvalues=False):
+    # type: (DictUpperBound, bool) -> Dict
+    """Convert values of dictionary to floats
+
+    Args:
+        dictin (DictUpperBound): Input dictionary
+        dropfailedkeys (bool): Whether to drop dictionary entries where key conversion fails. Defaults to False.
+
+    Returns:
+        Dict: Dictionary with values converted to floats
+
+    """
+    return key_value_convert(dictin, valuefn=float, dropfailedvalues=dropfailedvalues)
+
+
+def avg_dicts(dictin1, dictin2):
+    # type: (DictUpperBound, DictUpperBound) -> Dict
+    """Create a new dictionary from two dictionaries by averaging values
+
+    Args:
+        dictin1 (DictUpperBound): First input dictionary
+        dictin2 (DictUpperBound): Second input dictionary
+
+    Returns:
+        Dict: Dictionary with values being average of 2 input dictionaries
+
+    """
+    dictout = dict()
+    for key in dictin1:
+        dictout[key] = (dictin1[key] + dictin2[key]) / 2
+    return dictout

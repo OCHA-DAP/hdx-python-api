@@ -3,7 +3,8 @@
 import pytest
 
 from hdx.utilities.dictandlist import merge_dictionaries, dict_diff, dict_of_lists_add, list_distribute_contents, \
-    list_distribute_contents_simple, extract_list_from_list_of_dict
+    list_distribute_contents_simple, extract_list_from_list_of_dict, avg_dicts, key_value_convert, integer_key_convert, \
+    integer_value_convert, float_value_convert
 
 
 class TestDictAndList:
@@ -24,7 +25,6 @@ class TestDictAndList:
         d1 = {1: 1, 2: 2, 3: 3, 4: ['a', 'b', 'c']}
         result = merge_dictionaries([d1, d2], merge_lists=True)
         assert result == {1: 1, 2: 6, 3: 3, 4: ['a', 'b', 'c', 'd', 'e'], 6: 9}
-
 
     def test_dict_diff(self):
         d1 = {1: 1, 2: 2, 3: 3, 4: {'a': 1, 'b': 'c'}}
@@ -86,3 +86,31 @@ class TestDictAndList:
         assert result == ['d', 'd', 'g', 'a', 'a', 'b']
         result = extract_list_from_list_of_dict(input_list, 1)
         assert result == [5, 1, 2, 2, 3, 5]
+
+    def test_key_value_convert(self):
+        d1 = {1: 1, 2: 1.0, 3: 3, 4: 4}
+        assert key_value_convert(d1) == d1
+        d1 = {1: 2, 2: 2.0, 3: 5, 'la': 4}
+        assert key_value_convert(d1, keyfn=int) == {1: 2, 2: 2.0, 3: 5, 'la': 4}
+        assert key_value_convert(d1, keyfn=int, dropfailedkeys=True) == {1: 2, 2: 2.0, 3: 5}
+        d1 = {1: 2, 2: 2.0, 3: 5, 4: 'la'}
+        assert key_value_convert(d1, valuefn=int) == {1: 2, 2: 2.0, 3: 5, 4: 'la'}
+        assert key_value_convert(d1, valuefn=int, dropfailedvalues=True) == {1: 2, 2: 2.0, 3: 5}
+
+    def test_integer_key_convert(self):
+        d1 = {1: 1, 2: 1.5, 3.5: 3, '4': 4}
+        assert integer_key_convert(d1) == {1: 1, 2: 1.5, 3: 3, 4: 4}
+
+    def test_integer_value_convert(self):
+        d1 = {1: 1, 2: 1.5, 3: '3', 4: 4}
+        assert integer_value_convert(d1) == {1: 1, 2: 1, 3: 3, 4: 4}
+
+    def test_float_value_convert(self):
+        d1 = {1: 1, 2: 1.5, 3: '3', 4: 4}
+        assert float_value_convert(d1) == {1: 1.0, 2: 1.5, 3: 3.0, 4: 4.0}
+
+    def test_avg_dicts(self):
+        d1 = {1: 1, 2: 1.0, 3: 3, 4: 4}
+        d2 = {1: 2, 2: 2.0, 3: 5, 4: 4}
+        assert avg_dicts(d1, d2) == {1: 1.5, 2: 1.5, 3: 4, 4: 4}
+

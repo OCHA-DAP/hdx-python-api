@@ -31,12 +31,13 @@ class Location(object):
         return None
 
     @staticmethod
-    def get_iso3_country_code(country):
-        # type: (str) -> Tuple[Optional[str], bool]
+    def get_iso3_country_code(country, exact=False):
+        # type: (str, bool) -> Tuple[Optional[str], bool]
         """Get iso 3 code for country
 
         Args:
             country (str): Country for which to get iso 3 code
+            exact (bool): True for exact matching or False to allow fuzzy matching. Defaults to True.
 
         Returns:
             Tuple[Optional[str], bool]: iso 3 country code and if the match is strong or (None, False) for no match
@@ -51,10 +52,11 @@ class Location(object):
             if countrylower == countrydetails.get('name').lower():
                 return countrydetails.get('iso3').lower(), True
 
-        for countrydetails in Location.countries:
-            countryname = countrydetails.get('name').lower()
-            if countrylower in countryname or countryname in countrylower:
-                return countrydetails.get('iso3').lower(), False
+        if not exact:
+            for countrydetails in Location.countries:
+                countryname = countrydetails.get('name').lower()
+                if countrylower in countryname or countryname in countrylower:
+                    return countrydetails.get('iso3').lower(), False
         return None, False
 
     @staticmethod
@@ -85,3 +87,4 @@ class Location(object):
             if country.get('continentcode') == continentcode:
                 countries.append(function(country.get('iso3').lower()))
         return sorted(countries)
+

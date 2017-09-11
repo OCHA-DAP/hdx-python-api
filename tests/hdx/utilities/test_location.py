@@ -22,6 +22,7 @@ class TestLocation:
         assert Location.get_iso3_country_code('UZBEKISTAN') == ('uzb', True)
         assert Location.get_iso3_country_code('Sierra') == ('sle', False)
         assert Location.get_iso3_country_code('Venezuela (Bolivarian Republic of)') == ('ven', False)
+        assert Location.get_iso3_country_code('Venezuela (Bolivarian Republic of)', exact=True) == (None, False)
 
     def test_get_countries_in_continent(self):
         assert len(Location.get_countries_in_continent('AF')) == 58

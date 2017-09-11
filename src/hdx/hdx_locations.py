@@ -63,12 +63,12 @@ class Locations(object):
 
     @staticmethod
     def get_HDX_code_from_location(location, exact=True, locations=None, configuration=None):
-        # type: (str, Optional[bool], Optional[List[Dict]], Optional[Configuration]) -> Tuple[Optional[str], bool]
+        # type: (str, bool, Optional[List[Dict]], Optional[Configuration]) -> Tuple[Optional[str], bool]
         """Get HDX code for location
 
         Args:
             location (str): Location for which to get HDX code
-            exact (Optional[bool]): True for exact matching or False to allow fuzzy matching. Defaults to True.
+            exact (bool): True for exact matching or False to allow fuzzy matching. Defaults to True.
             locations (Optional[List[Dict]]): Valid locations list. Defaults to list downloaded from HDX.
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
