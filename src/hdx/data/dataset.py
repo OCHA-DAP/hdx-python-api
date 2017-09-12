@@ -37,7 +37,9 @@ class Dataset(HDXObject):
     """
 
     update_frequencies = {
-        '0': 'Never',
+        '-2': 'Adhoc',
+        '-1': 'Never',
+        '0': 'Live',
         '1': 'Every day',
         '7': 'Every week',
         '14': 'Every two weeks',
@@ -45,7 +47,9 @@ class Dataset(HDXObject):
         '90': 'Every three months',
         '180': 'Every six months',
         '365': 'Every year',
-        'never': '0',
+        'adhoc': '-2',
+        'never': '-1',
+        'live': '0',
         'every day': '1',
         'every week': '7',
         'every two weeks': '14',
