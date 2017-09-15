@@ -1,5 +1,5 @@
 basicauth==0.4.1
-ckanapi==4.0
+ckanapi==4.1
 colorlog==3.0.1
 email_validator==1.0.2
 geonamescache==0.3.1
@@ -11,5 +11,5 @@ python-dateutil==2.6.1
 requests==2.18.4
 scraperwiki==0.5.1
 six==1.10.0
-tabulator==1.4.1
+tabulator==1.5.0
 typing==3.6.2

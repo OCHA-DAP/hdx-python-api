@@ -1,10 +1,14 @@
 # -*- coding: UTF-8 -*-
 """Dictionary Tests"""
+from os import unlink
+from os.path import join
+from tempfile import gettempdir
+
 import pytest
 
 from hdx.utilities.dictandlist import merge_dictionaries, dict_diff, dict_of_lists_add, list_distribute_contents, \
     list_distribute_contents_simple, extract_list_from_list_of_dict, avg_dicts, key_value_convert, integer_key_convert, \
-    integer_value_convert, float_value_convert
+    integer_value_convert, float_value_convert, write_list_to_csv, read_list_from_csv
 
 
 class TestDictAndList:
@@ -114,3 +118,18 @@ class TestDictAndList:
         d2 = {1: 2, 2: 2.0, 3: 5, 4: 4}
         assert avg_dicts(d1, d2) == {1: 1.5, 2: 1.5, 3: 4, 4: 4}
 
+    def test_read_write_list_to_csv(self):
+        l = [[1, 2, 3, 'a'],
+             [4, 5, 6, 'b'],
+             [7, 8, 9, 'c']]
+        folder = gettempdir()
+        filename = 'test_read_write_list_to_csv.csv'
+        filepath = join(folder, filename)
+        assert write_list_to_csv(l, folder, filename, headers=['h1', 'h2', 'h3', 'h4']) == filepath
+        newll = read_list_from_csv(folder, filename)
+        newld = read_list_from_csv(folder, filename, dict_form=True, headers=1)
+        unlink(filepath)
+        assert newll == [['h1', 'h2', 'h3', 'h4'], ['1', '2', '3', 'a'], ['4', '5', '6', 'b'], ['7', '8', '9', 'c']]
+        assert newld == [{'h1': '1', 'h2': '2', 'h4': 'a', 'h3': '3'},
+                        {'h1': '4', 'h2': '5', 'h4': 'b', 'h3': '6'},
+                        {'h1': '7', 'h2': '8', 'h4': 'c', 'h3': '9'}]
