@@ -79,7 +79,7 @@ class TestConfiguration:
 
     def test_hdx_configuration_dict(self, hdx_key_file, project_config_yaml, mocksmtp):
         Configuration._create(hdx_site='prod', hdx_key_file=hdx_key_file,
-                             hdx_config_dict={
+                              hdx_config_dict={
                                                  'hdx_prod_site': {
                                                      'url': 'https://data.humdata.org/',
                                                      'username': None,
@@ -87,7 +87,7 @@ class TestConfiguration:
                                                  },
                                                  'XYZ': {'567': 987}
                                              },
-                             project_config_yaml=project_config_yaml)
+                              project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
             'param_1': 'ABC',
@@ -149,7 +149,7 @@ hello there'''
 
     def test_hdx_configuration_json(self, hdx_key_file, hdx_config_json, project_config_yaml):
         Configuration._create(hdx_key_file=hdx_key_file, hdx_config_json=hdx_config_json,
-                             project_config_yaml=project_config_yaml)
+                              project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
             'param_1': 'ABC',
@@ -275,7 +275,6 @@ hello there'''
                 'description',
             ]},
         }
-        print(Configuration.read())
         assert Configuration.read() == expected_configuration
         Configuration._create(hdx_key_file=hdx_key_file, project_config_dict={'abc': '123'})
         expected_configuration['abc'] = '123'
@@ -445,8 +444,8 @@ hello there'''
 
     def test_get_hdx_key_site(self, hdx_key_file, project_config_yaml):
         Configuration._create(hdx_site='prod', hdx_key_file=hdx_key_file,
-                             hdx_config_dict={},
-                             project_config_yaml=project_config_yaml)
+                              hdx_config_dict={},
+                              project_config_yaml=project_config_yaml)
         actual_configuration = Configuration.read()
         assert actual_configuration.get_api_key() == '12345'
         assert actual_configuration.get_hdx_site_url() == 'https://data.humdata.org/'
@@ -456,8 +455,8 @@ hello there'''
         with pytest.raises(LoadError):
             Configuration.load_api_key(empty_hdx_key_file)
         Configuration._create(hdx_site='prod', hdx_key='TEST_HDX_KEY',
-                             hdx_config_dict={},
-                             project_config_yaml=project_config_yaml)
+                              hdx_config_dict={},
+                              project_config_yaml=project_config_yaml)
         assert Configuration.read().get_api_key() == 'TEST_HDX_KEY'
         Configuration._create(hdx_site='prod', hdx_read_only=True,
                               hdx_config_dict={},
@@ -466,8 +465,8 @@ hello there'''
 
     def test_create_set_configuration(self, project_config_yaml):
         Configuration._create(hdx_site='prod', hdx_key='TEST_HDX_KEY',
-                             hdx_config_dict={},
-                             project_config_yaml=project_config_yaml)
+                              hdx_config_dict={},
+                              project_config_yaml=project_config_yaml)
         with pytest.raises(ConfigurationError):
             Configuration.create(hdx_site='prod', hdx_key='TEST_HDX_KEY',
                                  hdx_config_dict={},
@@ -487,8 +486,8 @@ hello there'''
 
     def test_remoteckan_validlocations(self, project_config_yaml):
         Configuration._create(hdx_site='prod', hdx_key='TEST_HDX_KEY',
-                             hdx_config_dict={},
-                             project_config_yaml=project_config_yaml)
+                              hdx_config_dict={},
+                              project_config_yaml=project_config_yaml)
         remoteckan = ckanapi.RemoteCKAN('http://lalala', apikey='12345',
                                         user_agent='HDXPythonLibrary/1.0')
         Configuration.read().setup_remoteckan(remoteckan)

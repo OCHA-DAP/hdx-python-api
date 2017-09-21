@@ -7,10 +7,10 @@ from os import unlink
 from os.path import join
 
 import pytest
-import requests
 
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
+from hdx.hdx_configuration import Configuration
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.downloader import DownloadError
 from . import MockResponse
@@ -80,6 +80,9 @@ searchdict = {'count': 4, 'results': [{'size': None, 'description': 'ACLED-All-A
                                        'id': 'e1e16f5c-2380-4a28-87b1-f5d644f248e5', 'mimetype_inner': None,
                                        'webstore_url': None,
                                        'hash': '', 'originalHash': '97196323'}]}
+
+patch_result = {}
+
 
 def mockshow(url, datadict):
     if 'show' not in url:
@@ -159,17 +162,17 @@ class TestResource:
         return join('tests', 'fixtures', 'config', 'hdx_datasource_topline.json')
 
     @pytest.fixture(scope='function')
-    def read(self, monkeypatch):
+    def read(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
                 return mockshow(url, datadict)
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def post_create(self, monkeypatch):
+    def post_create(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
@@ -207,10 +210,10 @@ class TestResource:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}')
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def post_update(self, monkeypatch):
+    def post_update(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
@@ -249,10 +252,10 @@ class TestResource:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}')
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def post_delete(self, monkeypatch):
+    def post_delete(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
@@ -270,10 +273,10 @@ class TestResource:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}')
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def post_datastore(self, monkeypatch):
+    def post_datastore(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
@@ -302,17 +305,25 @@ class TestResource:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}')
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
+
+    def mockpatch(url, datadict):
+        if 'patch' not in url:
+            return MockResponse(404,
+                                '{"success": false, "error": {"message": "TEST ERROR: Not patch", "__type": "TEST ERROR: Not Patch Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_patch"}')
+        result = json.dumps(patch_result)
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_patch"}' % result)
 
     @pytest.fixture(scope='function')
-    def search(self, monkeypatch):
+    def search(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
                 return mocksearch(url, datadict)
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     def test_read_from_hdx(self, configuration, read):
         resource = Resource.read_from_hdx('TEST1')
@@ -448,10 +459,9 @@ class TestResource:
         with pytest.raises(HDXError):
             Resource.search_in_hdx('fail')
 
-    def test_download(self, configuration, read, monkeypatch):
+    def test_download(self, configuration, read):
         resource = Resource.read_from_hdx('TEST1')
         resource2 = Resource.read_from_hdx('TEST4')
-        monkeypatch.undo()
         url, path = resource.download()
         unlink(path)
         assert url == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
@@ -461,10 +471,9 @@ class TestResource:
         with pytest.raises(DownloadError):
             resource2.download()
 
-    def test_datastore(self, configuration, post_datastore, topline_yaml, topline_json, monkeypatch):
+    def test_datastore(self, configuration, post_datastore, topline_yaml, topline_json):
         resource = Resource.read_from_hdx('TEST1')
         resource2 = Resource.read_from_hdx('TEST5')
-        monkeypatch.undo()
         TestResource.datastore = None
         resource.create_datastore(delete_first=0)
         assert TestResource.datastore == 'create'

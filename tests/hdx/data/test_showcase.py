@@ -5,10 +5,10 @@ import json
 from os.path import join
 
 import pytest
-import requests
 
 from hdx.data.hdxobject import HDXError
 from hdx.data.showcase import Showcase
+from hdx.hdx_configuration import Configuration
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
 from . import MockResponse
@@ -103,7 +103,7 @@ class TestShowcase:
         return join('tests', 'fixtures', 'config', 'hdx_showcase_static.json')
 
     @pytest.fixture(scope='function')
-    def read(self, monkeypatch):
+    def read(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
@@ -119,10 +119,10 @@ class TestShowcase:
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_package_association_create"}' % result)
                 return mockshow(url, datadict)
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def post_create(self, monkeypatch):
+    def post_create(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
@@ -147,10 +147,10 @@ class TestShowcase:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_create"}')
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def post_update(self, monkeypatch):
+    def post_update(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
@@ -177,10 +177,10 @@ class TestShowcase:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_update"}')
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def post_delete(self, monkeypatch):
+    def post_delete(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
@@ -198,7 +198,7 @@ class TestShowcase:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_delete"}')
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     def test_read_from_hdx(self, configuration, read):
         showcase = Showcase.read_from_hdx('05e392bf-04e0-4ca6-848c-4e87bba10746')

@@ -5,7 +5,6 @@ import json
 from os.path import join
 
 import pytest
-import requests
 
 from hdx.data.hdxobject import HDXError
 from hdx.data.user import User
@@ -94,17 +93,17 @@ class TestUser:
         return join('tests', 'fixtures', 'config', 'hdx_user_static.json')
 
     @pytest.fixture(scope='function')
-    def read(self, monkeypatch):
+    def read(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
                 return user_mockshow(url, datadict)
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def post_create(self, monkeypatch):
+    def post_create(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
@@ -129,10 +128,10 @@ class TestUser:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_create"}')
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def post_update(self, monkeypatch):
+    def post_update(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
@@ -159,10 +158,10 @@ class TestUser:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_update"}')
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def post_delete(self, monkeypatch):
+    def post_delete(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
@@ -180,17 +179,17 @@ class TestUser:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_delete"}')
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def post_list(self, monkeypatch):
+    def post_list(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
                 return mocklist(url)
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     def test_read_from_hdx(self, configuration, read, mocksmtp):
         user = User.read_from_hdx('9f3e9973-7dbe-4c65-8820-f48578e3ffea')

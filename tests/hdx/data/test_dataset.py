@@ -9,7 +9,6 @@ import tempfile
 from os.path import join
 
 import pytest
-import requests
 
 from hdx.data import dataset
 from hdx.data.dataset import Dataset
@@ -267,17 +266,17 @@ class TestDataset:
         return join('tests', 'fixtures', 'config', 'hdx_dataset_static.json')
 
     @pytest.fixture(scope='function')
-    def read(self, monkeypatch):
+    def read(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
                 return mockshow(url, datadict)
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def post_create(self, monkeypatch):
+    def post_create(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
@@ -311,10 +310,10 @@ class TestDataset:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_create"}')
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def post_update(self, monkeypatch):
+    def post_update(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
@@ -357,10 +356,10 @@ class TestDataset:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}')
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def post_delete(self, monkeypatch):
+    def post_delete(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
@@ -382,60 +381,60 @@ class TestDataset:
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_delete"}')
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def search(self, monkeypatch):
+    def search(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
                 return mocksearch(url, datadict)
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def post_list(self, monkeypatch):
+    def post_list(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
                 return mocklist(url)
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def all(self, monkeypatch):
+    def all(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
                 return mockall(url, datadict)
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def user_read(self, monkeypatch):
+    def user_read(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
                 return user_mockshow(url, datadict)
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def organization_read(self, monkeypatch):
+    def organization_read(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
                 return organization_mockshow(url, datadict)
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
-    def showcase_read(self, monkeypatch):
+    def showcase_read(self):
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
@@ -456,7 +455,7 @@ class TestDataset:
                 return mockshow(url, datadict)
 
 
-        monkeypatch.setattr(requests, 'Session', MockSession)
+        Configuration.read().remoteckan().session = MockSession()
 
     def test_read_from_hdx(self, configuration, read):
         dataset = Dataset.read_from_hdx('TEST1')
@@ -504,6 +503,7 @@ class TestDataset:
 
         config = Configuration(hdx_read_only=True)
         config.setup_remoteckan()
+        config.remoteckan().session = Configuration.read().remoteckan().session
         uniqueval = 'myconfig'
         config.unique = uniqueval
 

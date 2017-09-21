@@ -49,6 +49,7 @@ class Resource(HDXObject):
             'create': 'resource_create',
             'delete': 'resource_delete',
             'search': 'resource_search',
+            'patch': 'resource_patch',
             'datastore_delete': 'datastore_delete',
             'datastore_create': 'datastore_create',
             'datastore_insert': 'datastore_insert',
@@ -475,3 +476,12 @@ class Resource(HDXObject):
             None
         """
         self.create_datastore_for_topline(2, path=path)
+
+    def touch(self):
+        # type: () -> None
+        """Touch resource
+
+        Returns:
+            None
+        """
+        self._read_from_hdx('resource', self.data['id'], action=self.actions()['patch'])

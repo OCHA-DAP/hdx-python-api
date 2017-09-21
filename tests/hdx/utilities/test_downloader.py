@@ -7,6 +7,7 @@ from os.path import join, abspath
 import pytest
 
 from hdx.utilities.downloader import Download, DownloadError
+from hdx.utilities.session import SessionError
 
 
 class TestDownloader:
@@ -36,11 +37,11 @@ class TestDownloader:
         basicauthfile = join(downloaderfolder, 'basicauth.txt')
         with Download(basic_auth_file=basicauthfile) as downloader:
             assert downloader.session.auth == ('testuser', 'testpass')
-        with pytest.raises(DownloadError):
+        with pytest.raises(SessionError):
             Download(auth=('u', 'p'), basic_auth='Basic xxxxxxxxxxxxxxxx')
-        with pytest.raises(DownloadError):
+        with pytest.raises(SessionError):
             Download(auth=('u', 'p'), basic_auth_file=join('lala', 'lala.txt'))
-        with pytest.raises(DownloadError):
+        with pytest.raises(SessionError):
             Download(basic_auth='Basic dXNlcjpwYXNz', basic_auth_file=join('lala', 'lala.txt'))
         with pytest.raises(IOError):
             Download(basic_auth_file='NOTEXIST')
@@ -53,9 +54,9 @@ class TestDownloader:
             assert downloader.session.params == {'param_1': 'value 1', 'param_2': 'value_2', 'param_3': 12}
         with Download(extra_params_yaml=extraparamsyaml) as downloader:
             assert downloader.session.params == {'param1': 'value1', 'param2': 'value 2', 'param3': 10}
-        with pytest.raises(DownloadError):
+        with pytest.raises(SessionError):
             Download(extra_params_dict={'key1': 'val1'}, extra_params_json=extraparamsjson)
-        with pytest.raises(DownloadError):
+        with pytest.raises(SessionError):
             Download(extra_params_dict={'key1': 'val1'}, extra_params_yaml=extraparamsyaml)
         with pytest.raises(IOError):
             Download(extra_params_json='NOTEXIST')

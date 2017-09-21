@@ -3,6 +3,7 @@
 import six
 
 from hdx.utilities.email import Email
+from hdx.utilities.session import get_session
 
 if six.PY2:
     from UserDict import IterableUserDict as UserDict
@@ -190,10 +191,13 @@ class Configuration(UserDict, object):
         kwargs['requests_kwargs'] = requests_kwargs
         return self.remoteckan().call_action(*args, **kwargs)
 
-    def create_remoteckan(self):
+    def create_remoteckan(self, session=get_session()):
         # type: () -> ckanapi.RemoteCKAN
         """
         Create remote CKAN instance from configuration
+
+        Args:
+            session: requests Session object to use. Defaults to calling hdx.utilities.session.get_session()
 
         Returns:
             ckanapi.RemoteCKAN: Remote CKAN instance
@@ -201,7 +205,7 @@ class Configuration(UserDict, object):
         """
         version_file = open(script_dir_plus_file('version.txt', Configuration))
         version = version_file.read().strip()
-        return ckanapi.RemoteCKAN(self.get_hdx_site_url(), apikey=self.get_api_key(),
+        return ckanapi.RemoteCKAN(self.get_hdx_site_url(), apikey=self.get_api_key(), session=session,
                                   user_agent='HDXPythonLibrary/%s' % version)
 
     def setup_remoteckan(self, remoteckan=None):
