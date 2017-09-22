@@ -28,8 +28,8 @@ def get_session(**kwargs):
         extra_params_dict (Dict[str]): Extra parameters to put on end of url as a dictionary OR
         extra_params_json (str): Path to JSON file containing extra parameters to put on end of url OR
         extra_params_yaml (str): Path to YAML file containing extra parameters to put on end of url
-        status_forcelist (List[int]): HTTP statuses for which to force retry. Defaults to [429, 500, 502, 503, 504].
-        method_whitelist (Set[str]): HTTP methods for which to force retry. Defaults t0 frozenset(['GET']).
+        status_forcelist (iterable): HTTP statuses for which to force retry. Defaults to [429, 500, 502, 503, 504].
+        method_whitelist (iterable): HTTP methods for which to force retry. Defaults t0 frozenset(['GET']).
     """
     s = requests.Session()
     auth_found = False
@@ -80,7 +80,7 @@ def get_session(**kwargs):
     s.params = extra_params_dict
 
     status_forcelist = kwargs.get('status_forcelist', [429, 500, 502, 503, 504])
-    method_whitelist = kwargs.get('method_whitelist', frozenset(['GET']))
+    method_whitelist = kwargs.get('method_whitelist', frozenset(['HEAD', 'TRACE', 'GET', 'PUT', 'OPTIONS', 'DELETE']))
 
     retries = Retry(total=5, backoff_factor=0.4, status_forcelist=status_forcelist, method_whitelist=method_whitelist,
                     raise_on_redirect=True,
