@@ -191,7 +191,7 @@ class Configuration(UserDict, object):
         kwargs['requests_kwargs'] = requests_kwargs
         return self.remoteckan().call_action(*args, **kwargs)
 
-    def create_remoteckan(self, session=get_session()):
+    def create_remoteckan(self, session=get_session(method_whitelist=frozenset(['GET', 'POST']))):
         # type: () -> ckanapi.RemoteCKAN
         """
         Create remote CKAN instance from configuration
