@@ -123,9 +123,36 @@ class Configuration(UserDict, object):
         if self.hdx_site not in self.data:
             raise ConfigurationError('%s not defined in configuration!' % self.hdx_site)
 
+    def set_read_only(self, read_only=True):
+        # type: (bool) -> None
+        """
+        Set HDX read only flag
+
+        Args:
+            read_only (bool): Value to set HDX read only flag. Defaults to True.
+        Returns:
+            None
+
+        """
+        self.hdx_read_only = read_only
+
+    def set_api_key(self, apikey):
+        # type: (str) -> None
+        """
+        Set HDX api key
+
+        Args:
+            apikey (str): Value to set api key.
+        Returns:
+            None
+
+        """
+        self.data['api_key'] = apikey
+
     def get_api_key(self):
         # type: () -> Optional[str]
         """
+        Return HDX api key or None if read only
 
         Returns:
             Optional[str]: HDX api key or None if read only
@@ -138,6 +165,7 @@ class Configuration(UserDict, object):
     def get_hdx_site_url(self):
         # type: () -> str
         """
+        Return HDX web site url
 
         Returns:
             str: HDX web site url
@@ -148,6 +176,7 @@ class Configuration(UserDict, object):
     def _get_credentials(self):
         # type: () -> tuple
         """
+        Return HDX site username and password
 
         Returns:
             tuple: HDX site username and password
@@ -189,6 +218,8 @@ class Configuration(UserDict, object):
         requests_kwargs = kwargs.get('requests_kwargs', dict())
         requests_kwargs['auth'] = self._get_credentials()
         kwargs['requests_kwargs'] = requests_kwargs
+        apikey = kwargs.get('apikey', self.get_api_key())
+        kwargs['apikey'] = apikey
         return self.remoteckan().call_action(*args, **kwargs)
 
     def create_remoteckan(self, session=get_session(method_whitelist=frozenset(['HEAD', 'TRACE', 'GET', 'POST', 'PUT',
@@ -206,7 +237,7 @@ class Configuration(UserDict, object):
         """
         version_file = open(script_dir_plus_file('version.txt', Configuration))
         version = version_file.read().strip()
-        return ckanapi.RemoteCKAN(self.get_hdx_site_url(), apikey=self.get_api_key(), session=session,
+        return ckanapi.RemoteCKAN(self.get_hdx_site_url(), session=session,
                                   user_agent='HDXPythonLibrary/%s' % version)
 
     def setup_remoteckan(self, remoteckan=None):

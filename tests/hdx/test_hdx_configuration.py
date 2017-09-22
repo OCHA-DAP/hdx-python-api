@@ -457,11 +457,24 @@ hello there'''
         Configuration._create(hdx_site='prod', hdx_key='TEST_HDX_KEY',
                               hdx_config_dict={},
                               project_config_yaml=project_config_yaml)
-        assert Configuration.read().get_api_key() == 'TEST_HDX_KEY'
+        configuration = Configuration.read()
+        assert configuration.get_api_key() == 'TEST_HDX_KEY'
+        configuration.set_api_key('NEW API KEY')
+        assert configuration.get_api_key() == 'NEW API KEY'
         Configuration._create(hdx_site='prod', hdx_read_only=True,
                               hdx_config_dict={},
                               project_config_yaml=project_config_yaml)
         assert Configuration.read().get_api_key() is None
+        configuration = Configuration.read()
+        configuration.set_api_key('TEST API KEY')
+        assert configuration.get_api_key() is None
+        configuration.set_read_only(False)
+        assert configuration.get_api_key() == 'TEST API KEY'
+        configuration.set_read_only(True)
+        assert configuration.get_api_key() is None
+        configuration.set_api_key('NEW API KEY')
+        configuration.set_read_only(False)
+        assert configuration.get_api_key() == 'NEW API KEY'
 
     def test_create_set_configuration(self, project_config_yaml):
         Configuration._create(hdx_site='prod', hdx_key='TEST_HDX_KEY',
