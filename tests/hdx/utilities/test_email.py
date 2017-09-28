@@ -35,13 +35,25 @@ class TestEmail:
 
         recipients = ['larry@gmail.com', 'moe@gmail.com', 'curly@gmail.com']
         subject = 'hello'
-        body = 'hello there'
+        text_body = 'hello there'
+        html_body = """\
+<html>
+  <head></head>
+  <body>
+    <p>Hi!<br>
+       How are you?<br>
+       Here is the <a href="https://www.python.org">link</a> you wanted.
+    </p>
+  </body>
+</html>
+        """
         sender = 'me@gmail.com'
         mail_options = ['a', 'b']
         rcpt_options = [1, 2]
 
         with Email(email_config_dict=email_config_dict) as email:
-            email.send(recipients, subject, body, sender=sender, mail_options=mail_options, rcpt_options=rcpt_options)
+            email.send(recipients, subject, text_body, sender=sender, mail_options=mail_options,
+                       rcpt_options=rcpt_options)
             assert email.server.type == 'smtpssl'
             assert email.server.initargs == smtp_initargs
             assert email.server.username == username
@@ -57,7 +69,12 @@ To: larry@gmail.com, moe@gmail.com, curly@gmail.com
 
 hello there'''
             assert email.server.send_args == {'mail_options': ['a', 'b'], 'rcpt_options': [1, 2]}
-            email.send(recipients, subject, body, mail_options=mail_options, rcpt_options=rcpt_options)
+            email.send(recipients, subject, text_body, html_body=html_body, sender=sender, mail_options=mail_options,
+                       rcpt_options=rcpt_options)
+            assert 'Content-Type: text/plain; charset="us-ascii"' in email.server.msg
+            assert 'Content-Type: text/html; charset="us-ascii"' in email.server.msg
+            assert 'Here is the <a href="https://www.python.org">link</a> you wanted' in email.server.msg
+            email.send(recipients, subject, text_body, mail_options=mail_options, rcpt_options=rcpt_options)
             assert email.server.sender == username
 
     def test_json(self, mocksmtp, email_json):

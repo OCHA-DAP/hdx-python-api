@@ -8,7 +8,9 @@ Utility to simplify sending emails
 '''
 import logging
 import smtplib
+from email.mime.multipart import MIMEMultipart
 from os.path import join, expanduser
+from typing import Optional
 
 from email_validator import validate_email
 from six.moves.email_mime_text import MIMEText
@@ -135,15 +137,16 @@ class Email:
         """
         self.server.quit()
 
-    def send(self, recipients, subject, body, sender=None, **kwargs):
-        # type: (str, str, str, Optional[str], ...) -> None
+    def send(self, recipients, subject, text_body, html_body=None, sender=None, **kwargs):
+        # type: (str, str, str, Optional[str], Optional[str], ...) -> None
         """
         Send email
 
         Args:
-            recipient (str): Email recipient
+            recipients (str): Email recipient
             subject (str): Email subject
-            body (str): Email body
+            text_body (str): Plain text email body
+            html_body (str): HTML email body
             sender (Optional[str]): Email sender. Defaults to SMTP username.
             **kwargs: See below
             mail_options (list): Mail options (see smtplib documentation)
@@ -162,7 +165,14 @@ class Email:
             v = validate_email(recipient, check_deliverability=True)  # validate and get info
             normalised_recipients.append(v['email'])  # replace with normalized form
 
-        msg = MIMEText(body)
+        if html_body is not None:
+            msg = MIMEMultipart('alternative')
+            part1 = MIMEText(text_body, 'plain')
+            part2 = MIMEText(html_body, 'html')
+            msg.attach(part1)
+            msg.attach(part2)
+        else:
+            msg = MIMEText(text_body)
         msg['Subject'] = subject
         msg['From'] = sender
         msg['To'] = ', '.join(normalised_recipients)
