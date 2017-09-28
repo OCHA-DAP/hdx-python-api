@@ -133,13 +133,14 @@ class User(HDXObject):
         """
         self._delete_from_hdx('user', 'id')
 
-    def email(self, subject, body, sender=None, **kwargs):
-        # type: (str, str, Optional[str], ...) -> None
+    def email(self, subject, text_body, html_body=None, sender=None, **kwargs):
+        # type: (str, str, Optional[str], Optional[str], ...) -> None
         """Emails a user.
 
         Args:
             subject (str): Email subject
-            body (str): Email body
+            text_body (str): Plain text email body
+            html_body (str): HTML email body
             sender (Optional[str]): Email sender. Defaults to SMTP username.
             **kwargs: See below
             mail_options (List): Mail options (see smtplib documentation)
@@ -148,7 +149,8 @@ class User(HDXObject):
         Returns:
             None
         """
-        self.configuration.emailer().send([self.data['email']], subject, body, sender=sender, **kwargs)
+        self.configuration.emailer().send([self.data['email']], subject, text_body, html_body=html_body, sender=sender,
+                                          **kwargs)
 
     @staticmethod
     def get_all_users(configuration=None, **kwargs):
@@ -177,14 +179,15 @@ class User(HDXObject):
         return users
 
     @staticmethod
-    def email_users(users, subject, body, sender=None, configuration=None, **kwargs):
-        # type: (List['User'], str, str, Optional[str], Optional[Configuration], ...) -> None
+    def email_users(users, subject, text_body, html_body=None, sender=None, configuration=None, **kwargs):
+        # type: (List['User'], str, str, Optional[str], Optional[str], Optional[Configuration], ...) -> None
         """Email a list of users
 
         Args:
             users (List[User]): List of users
             subject (str): Email subject
-            body (str): Email body
+            text_body (str): Plain text email body
+            html_body (str): HTML email body
             sender (Optional[str]): Email sender. Defaults to SMTP username.
             configuration (Optional[Configuration]): HDX configuration. Defaults to configuration of first user in list.
             **kwargs: See below
@@ -201,4 +204,4 @@ class User(HDXObject):
             recipients.append(user.data['email'])
         if configuration is None:
             configuration = users[0].configuration
-        configuration.emailer().send(recipients, subject, body, sender=sender, **kwargs)
+        configuration.emailer().send(recipients, subject, text_body, html_body=html_body, sender=sender, **kwargs)

@@ -78,7 +78,16 @@ class TestUser:
         'password': password
     }
     subject = 'hello'
-    body = 'hello there'
+    text_body = 'hello there'
+    html_body = '''\
+<html>
+  <head></head>
+  <body>
+    <p>Hi!<br>
+    </p>
+  </body>
+</html>
+'''
     sender = 'me@gmail.com'
     mail_options = ['a', 'b']
     rcpt_options = [1, 2]
@@ -202,8 +211,8 @@ class TestUser:
         config = Configuration.read()
         config.setup_emailer(email_config_dict=TestUser.email_config_dict)
         user = User.read_from_hdx('9f3e9973-7dbe-4c65-8820-f48578e3ffea')
-        user.email(TestUser.subject, TestUser.body, sender=TestUser.sender, mail_options=TestUser.mail_options,
-                   rcpt_options=TestUser.rcpt_options)
+        user.email(TestUser.subject, TestUser.text_body, html_body=TestUser.html_body, sender=TestUser.sender,
+                   mail_options=TestUser.mail_options, rcpt_options=TestUser.rcpt_options)
         email = config.emailer()
         assert email.server.type == 'smtpssl'
         assert email.server.initargs == TestUser.smtp_initargs
@@ -211,14 +220,31 @@ class TestUser:
         assert email.server.password == TestUser.password
         assert email.server.sender == TestUser.sender
         assert email.server.recipients == ['xxx@yyy.com']
-        assert email.server.msg == '''Content-Type: text/plain; charset="us-ascii"
+        assert 'Content-Type: multipart/alternative; boundary=' in email.server.msg
+        print (email.server.msg)
+        assert '''\
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Subject: hello
 From: me@gmail.com
-To: xxx@yyy.com
+To: xxx@yyy.com''' in email.server.msg
+        assert '''\
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
-hello there'''
+hello there''' in email.server.msg
+        assert '''\
+Content-Type: text/html; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+<html>
+  <head></head>
+  <body>
+    <p>Hi!<br>
+    </p>
+  </body>
+</html>''' in email.server.msg
         assert email.server.send_args == {'mail_options': ['a', 'b'], 'rcpt_options': [1, 2]}
 
     def test_create_in_hdx(self, configuration, post_create):
@@ -314,8 +340,8 @@ hello there'''
         assert len(users) == 2
         config = Configuration.read()
         config.setup_emailer(email_config_dict=TestUser.email_config_dict)
-        User.email_users(users, TestUser.subject, TestUser.body, sender=TestUser.sender, mail_options=TestUser.mail_options,
-                   rcpt_options=TestUser.rcpt_options)
+        User.email_users(users, TestUser.subject, TestUser.text_body, html_body=TestUser.html_body,
+                         sender=TestUser.sender, mail_options=TestUser.mail_options, rcpt_options=TestUser.rcpt_options)
         email = config.emailer()
         assert email.server.type == 'smtpssl'
         assert email.server.initargs == TestUser.smtp_initargs
@@ -323,15 +349,31 @@ hello there'''
         assert email.server.password == TestUser.password
         assert email.server.sender == TestUser.sender
         assert email.server.recipients == ['xxx@yyy.com', 'aaa@bbb.com']
-        assert email.server.msg == '''Content-Type: text/plain; charset="us-ascii"
+        assert 'Content-Type: multipart/alternative; boundary=' in email.server.msg
+        assert '''\
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Subject: hello
 From: me@gmail.com
-To: xxx@yyy.com, aaa@bbb.com
+To: xxx@yyy.com, aaa@bbb.com''' in email.server.msg
+        assert '''\
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
-hello there'''
+hello there''' in email.server.msg
+        assert '''\
+Content-Type: text/html; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+<html>
+  <head></head>
+  <body>
+    <p>Hi!<br>
+    </p>
+  </body>
+</html>''' in email.server.msg
         assert email.server.send_args == {'mail_options': ['a', 'b'], 'rcpt_options': [1, 2]}
         with pytest.raises(ValueError):
-            User.email_users(list(), TestUser.subject, TestUser.body, sender=TestUser.sender,
+            User.email_users(list(), TestUser.subject, TestUser.text_body, sender=TestUser.sender,
                              mail_options=TestUser.mail_options, rcpt_options=TestUser.rcpt_options)
