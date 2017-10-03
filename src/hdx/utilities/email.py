@@ -8,13 +8,11 @@ Utility to simplify sending emails
 '''
 import logging
 import smtplib
-from email.mime.multipart import MIMEMultipart
 from os.path import join, expanduser
 from typing import Optional
 
 from email_validator import validate_email
-from six.moves.email_mime_multipart import MIMEMultipart
-from six.moves.email_mime_text import MIMEText
+from six.moves import email_mime_text, email_mime_multipart
 
 from hdx.utilities.loader import load_yaml, load_json
 
@@ -167,13 +165,13 @@ class Email:
             normalised_recipients.append(v['email'])  # replace with normalized form
 
         if html_body is not None:
-            msg = MIMEMultipart('alternative')
-            part1 = MIMEText(text_body, 'plain')
-            part2 = MIMEText(html_body, 'html')
+            msg = email_mime_multipart.MIMEMultipart('alternative')
+            part1 = email_mime_text.MIMEText(text_body, 'plain')
+            part2 = email_mime_text.MIMEText(html_body, 'html')
             msg.attach(part1)
             msg.attach(part2)
         else:
-            msg = MIMEText(text_body)
+            msg = email_mime_text.MIMEText(text_body)
         msg['Subject'] = subject
         msg['From'] = sender
         msg['To'] = ', '.join(normalised_recipients)
