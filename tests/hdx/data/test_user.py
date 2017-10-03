@@ -220,8 +220,7 @@ class TestUser:
         assert email.server.password == TestUser.password
         assert email.server.sender == TestUser.sender
         assert email.server.recipients == ['xxx@yyy.com']
-        assert 'Content-Type: multipart/alternative; boundary=' in email.server.msg
-        print (email.server.msg)
+        assert 'Content-Type: multipart/alternative;' in email.server.msg
         assert '''\
 MIME-Version: 1.0
 Subject: hello
@@ -349,7 +348,7 @@ Content-Transfer-Encoding: 7bit
         assert email.server.password == TestUser.password
         assert email.server.sender == TestUser.sender
         assert email.server.recipients == ['xxx@yyy.com', 'aaa@bbb.com']
-        assert 'Content-Type: multipart/alternative; boundary=' in email.server.msg
+        assert 'Content-Type: multipart/alternative;' in email.server.msg
         assert '''\
 MIME-Version: 1.0
 Subject: hello

@@ -71,7 +71,7 @@ hello there'''
             assert email.server.send_args == {'mail_options': ['a', 'b'], 'rcpt_options': [1, 2]}
             email.send(recipients, subject, text_body, html_body=html_body, sender=sender, mail_options=mail_options,
                        rcpt_options=rcpt_options)
-            assert 'Content-Type: multipart/alternative; boundary=' in email.server.msg
+            assert 'Content-Type: multipart/alternative;' in email.server.msg
             assert '''\
 MIME-Version: 1.0
 Subject: hello
