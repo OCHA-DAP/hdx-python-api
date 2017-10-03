@@ -13,6 +13,7 @@ from hdx.data.resource import Resource
 from hdx.hdx_configuration import Configuration
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.downloader import DownloadError
+from .test_dataset import dataset_resultdict
 from . import MockResponse
 
 resultdict = {'cache_last_updated': None, 'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',
@@ -81,9 +82,6 @@ searchdict = {'count': 4, 'results': [{'size': None, 'description': 'ACLED-All-A
                                        'webstore_url': None,
                                        'hash': '', 'originalHash': '97196323'}]}
 
-patch_result = {}
-
-
 def mockshow(url, datadict):
     if 'show' not in url:
         return MockResponse(404,
@@ -112,6 +110,24 @@ def mockshow(url, datadict):
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}' % result)
     return MockResponse(404,
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
+
+
+def mockpatch(url, datadict):
+    if 'patch' not in url:
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "TEST ERROR: Not patch", "__type": "TEST ERROR: Not Patch Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_patch"}')
+    result = json.dumps(resultdict)
+    return MockResponse(200,
+                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_patch"}' % result)
+
+
+def mockdataset(url, datadict):
+    if 'show' not in url:
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}')
+    result = json.dumps(dataset_resultdict)
+    return MockResponse(200,
+                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}' % result)
 
 
 def mocksearch(url, datadict):
@@ -307,13 +323,25 @@ class TestResource:
 
         Configuration.read().remoteckan().session = MockSession()
 
-    def mockpatch(url, datadict):
-        if 'patch' not in url:
-            return MockResponse(404,
-                                '{"success": false, "error": {"message": "TEST ERROR: Not patch", "__type": "TEST ERROR: Not Patch Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_patch"}')
-        result = json.dumps(patch_result)
-        return MockResponse(200,
-                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_patch"}' % result)
+    @pytest.fixture(scope='function')
+    def post_patch(self):
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                datadict = json.loads(data.decode('utf-8'))
+                return mockpatch(url, datadict)
+
+        Configuration.read().remoteckan().session = MockSession()
+
+    @pytest.fixture(scope='function')
+    def post_dataset(self):
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                datadict = json.loads(data.decode('utf-8'))
+                return mockdataset(url, datadict)
+
+        Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
     def search(self):
@@ -450,6 +478,18 @@ class TestResource:
         resource.update_from_json(static_json)
         assert resource['name'] == 'MyResource1'
         assert resource['format'] == 'zipped csv'
+
+    def test_touch(self, configuration, post_patch):
+        resource = Resource()
+        resource['id'] = 'TEST1'
+        resource.touch()
+        assert resource['id'] == 'TEST1'
+
+    def test_get_dataset(self, configuration, post_dataset):
+        resource_data = copy.deepcopy(TestResource.resource_data)
+        resource = Resource(resource_data)
+        dataset = resource.get_dataset()
+        assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
 
     def test_search_in_hdx(self, configuration, search):
         resources = Resource.search_in_hdx('name:ACLED')

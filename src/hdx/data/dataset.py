@@ -5,15 +5,15 @@ import logging
 import sys
 from datetime import datetime
 from os.path import join
-from typing import List, Union, Optional, Dict
+from typing import List, Union, Optional, Dict, Any
 
 from dateutil import parser
 from six.moves import range
 
 import hdx.data.organization
 import hdx.data.showcase
+import hdx.data.resource
 from hdx.data.hdxobject import HDXObject, HDXError
-from hdx.data.resource import Resource
 from hdx.data.user import User
 from hdx.hdx_configuration import Configuration
 from hdx.hdx_locations import Locations
@@ -122,7 +122,7 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        self._separate_hdxobjects(self.resources, 'resources', 'name', Resource)
+        self._separate_hdxobjects(self.resources, 'resources', 'name', hdx.data.resource.Resource)
 
     def init_resources(self):
         # type: () -> None
@@ -132,24 +132,24 @@ class Dataset(HDXObject):
             None
         """
         self.resources = list()
-        """:type : List[Resource]"""
+        """:type : List[hdx.data.resource.Resource]"""
 
     def add_update_resource(self, resource, ignore_datasetid=False):
-        # type: (Union[Resource,Dict,str], bool) -> None
+        # type: (Union[hdx.data.resource.Resource,Dict,str], bool) -> None
         """Add new or update existing resource in dataset with new metadata
 
         Args:
-            resource (Union[Resource,Dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
+            resource (Union[hdx.data.resource.Resource,Dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
             ignore_datasetid (bool): Whether to ignore dataset id in the resource
 
         Returns:
             None
         """
         if isinstance(resource, str):
-            resource = Resource.read_from_hdx(resource, configuration=self.configuration)
+            resource = hdx.data.resource.Resource.read_from_hdx(resource, configuration=self.configuration)
         elif isinstance(resource, dict):
-            resource = Resource(resource, configuration=self.configuration)
-        if isinstance(resource, Resource):
+            resource = hdx.data.resource.Resource(resource, configuration=self.configuration)
+        if isinstance(resource, hdx.data.resource.Resource):
             if 'package_id' in resource:
                 if not ignore_datasetid:
                     raise HDXError('Resource %s being added already has a dataset id!' % (resource['name']))
@@ -159,11 +159,11 @@ class Dataset(HDXObject):
         raise HDXError('Type %s cannot be added as a resource!' % type(resource).__name__)
 
     def add_update_resources(self, resources, ignore_datasetid=False):
-        # type: (List[Union[Resource,Dict,str]]) -> None
+        # type: (List[Union[hdx.data.resource.Resource,Dict,str]]) -> None
         """Add new or update existing resources with new metadata to the dataset
 
         Args:
-            resources (List[Union[Resource,Dict,str]]): A list of either resource ids or resources metadata from either Resource objects or dictionaries
+            resources (List[Union[hdx.data.resource.Resource,Dict,str]]): A list of either resource ids or resources metadata from either Resource objects or dictionaries
             ignore_datasetid (Optional[bool]): Whether to ignore dataset id in the resource
 
         Returns:
@@ -175,11 +175,11 @@ class Dataset(HDXObject):
             self.add_update_resource(resource, ignore_datasetid)
 
     def delete_resource(self, resource):
-        # type: (Union[Resource,Dict,str]) -> bool
+        # type: (Union[hdx.data.resource.Resource,Dict,str]) -> bool
         """Delete a resource from the dataset
 
         Args:
-            resource (Union[Resource,Dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
+            resource (Union[hdx.data.resource.Resource,Dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
 
         Returns:
             bool: True if resource removed or False if not
@@ -187,11 +187,11 @@ class Dataset(HDXObject):
         return self._remove_hdxobject(self.resources, resource, delete=True)
 
     def get_resources(self):
-        # type: () -> List[Resource]
+        # type: () -> List[hdx.data.resource.Resource]
         """Get dataset's resources
 
         Returns:
-            List[Resource]: list of Resource objects
+            List[hdx.data.resource.Resource]: list of Resource objects
         """
         return self.resources
 
@@ -246,7 +246,7 @@ class Dataset(HDXObject):
         """
 
         if 'resources' in self.data:
-            self.old_data['resources'] = self._copy_hdxobjects(self.resources, Resource, 'file_to_upload')
+            self.old_data['resources'] = self._copy_hdxobjects(self.resources, hdx.data.resource.Resource, 'file_to_upload')
             self.init_resources()
             self.separate_resources()
 
@@ -570,14 +570,14 @@ class Dataset(HDXObject):
 
     @staticmethod
     def get_all_resources(datasets):
-        # type: (List['Dataset']) -> List['Resource']
+        # type: (List['Dataset']) -> List[hdx.data.resource.Resource]
         """Get all resources from a list of datasets (such as returned by search)
 
         Args:
             datasets (List[Dataset]): list of datasets
 
         Returns:
-            List[Resource]: list of resources within those datasets
+            List[hdx.data.resource.Resource]: list of resources within those datasets
         """
         resources = []
         for dataset in datasets:

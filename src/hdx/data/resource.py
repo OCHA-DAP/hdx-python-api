@@ -10,12 +10,13 @@ from typing import Optional, List, Tuple, Dict
 import tabulator
 from tabulator import Stream
 
+import hdx.data.dataset
 from hdx.hdx_configuration import Configuration
 from hdx.utilities import raisefrom
 from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_yaml, load_json
 from hdx.utilities.path import script_dir_plus_file
-from .hdxobject import HDXObject, HDXError
+from hdx.data.hdxobject import HDXObject, HDXError
 
 logger = logging.getLogger(__name__)
 
@@ -177,6 +178,18 @@ class Resource(HDXObject):
             None
         """
         self._delete_from_hdx('resource', 'id')
+
+    def get_dataset(self):
+        # type: () -> hdx.data.dataset.Dataset
+        """Return dataset containing this resource
+
+        Returns:
+            hdx.data.dataset.Dataset: Dataset containing this resource
+        """
+        package_id = self.data.get('package_id')
+        if package_id is None:
+            raise HDXError('Resource has no package id!')
+        return hdx.data.dataset.Dataset.read_from_hdx(package_id)
 
     @staticmethod
     def search_in_hdx(query, configuration=None, **kwargs):

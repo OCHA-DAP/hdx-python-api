@@ -34,7 +34,7 @@ resultgroups = [{'description': '', 'name': 'dza', 'image_display_url': '', 'dis
                 {'description': '', 'name': 'zwe', 'image_display_url': '', 'display_name': 'Zimbabwe', 'id': 'zwe',
                  'title': 'Zimbabwe'}]
 
-resultdict = {
+dataset_resultdict = {
     'resources': [{'revision_id': '43765383-1fce-471f-8166-d6c8660cc8a9', 'cache_url': None,
                    'datastore_active': False, 'format': 'XLSX', 'webstore_url': None,
                    'last_modified': None, 'tracking_summary': {'recent': 0, 'total': 0},
@@ -102,14 +102,14 @@ def mockshow(url, datadict):
     if 'show' not in url:
         return MockResponse(404,
                             '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}')
-    result = json.dumps(resultdict)
+    result = json.dumps(dataset_resultdict)
     if 'resource_show' in url:
         result = json.dumps(TestDataset.resources_data[0])
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}' % result)
     else:
         if datadict['id'] == 'TEST1':
-            result = json.dumps(resultdict)
+            result = json.dumps(dataset_resultdict)
             return MockResponse(200,
                                 '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}' % result)
         if datadict['id'] == 'TEST2':
@@ -119,7 +119,7 @@ def mockshow(url, datadict):
             return MockResponse(200,
                                 '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}')
         if datadict['id'] == 'TEST4':
-            resultdictcopy = copy.deepcopy(resultdict)
+            resultdictcopy = copy.deepcopy(dataset_resultdict)
             resultdictcopy['id'] = 'TEST4'
             result = json.dumps(resultdictcopy)
             return MockResponse(200,
@@ -296,7 +296,7 @@ class TestDataset:
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_create"}')
 
-                result = json.dumps(resultdict)
+                result = json.dumps(dataset_resultdict)
                 if datadict['name'] == 'MyDataset1':
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_create"}' % result)
@@ -333,7 +333,7 @@ class TestDataset:
                     if 'update' not in url:
                         return MockResponse(404,
                                             '{"success": false, "error": {"message": "TEST ERROR: Not update", "__type": "TEST ERROR: Not Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}')
-                    resultdictcopy = copy.deepcopy(resultdict)
+                    resultdictcopy = copy.deepcopy(dataset_resultdict)
                     merge_two_dictionaries(resultdictcopy, datadict)
                     for i, resource in enumerate(resultdictcopy['resources']):
                         for j, resource2 in enumerate(resultdictcopy['resources']):
