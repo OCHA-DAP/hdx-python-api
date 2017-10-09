@@ -11,5 +11,5 @@ python-dateutil==2.6.1
 requests==2.18.4
 scraperwiki==0.5.1
 six==1.11.0
-tabulator==1.5.0
+tabulator==1.6.0
 typing==3.6.2

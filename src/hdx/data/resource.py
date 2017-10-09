@@ -7,16 +7,15 @@ from os.path import join, splitext
 from tempfile import gettempdir
 from typing import Optional, List, Tuple, Dict
 
-import tabulator
 from tabulator import Stream
 
 import hdx.data.dataset
+from hdx.data.hdxobject import HDXObject, HDXError
 from hdx.hdx_configuration import Configuration
 from hdx.utilities import raisefrom
 from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_yaml, load_json
 from hdx.utilities.path import script_dir_plus_file
-from hdx.data.hdxobject import HDXObject, HDXError
 
 logger = logging.getLogger(__name__)
 
@@ -305,8 +304,7 @@ class Resource(HDXObject):
                         row[i] = str(val)
                     yield (number, headers, row)
 
-            tabulator.config.BYTES_SAMPLE_SIZE = 1000000
-            stream = Stream(path, headers=1, post_parse=[convert_to_text])
+            stream = Stream(path, headers=1, post_parse=[convert_to_text], bytes_sample_size=1000000)
             stream.open()
             nonefieldname = False
             if schema is None:
