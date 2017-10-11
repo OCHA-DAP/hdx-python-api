@@ -376,7 +376,7 @@ If not using facade:
 
 ::
 
-    from hdx.hdx_logging import setup_logging
+    from hdx.utilities.easy_logging import setup_logging
     ...
     logger = logging.getLogger(__name__)
     setup_logging(KEYWORD ARGUMENTS)

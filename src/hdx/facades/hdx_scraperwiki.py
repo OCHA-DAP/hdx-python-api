@@ -2,13 +2,13 @@
 """Facade that handles ScraperWiki and calls project main function"""
 import logging
 import sys
-from typing import Callable
 
 import scraperwiki
+from hdx.utilities.easy_logging import setup_logging
+from typing import Callable
 
 from hdx.facades import logging_kwargs
 from hdx.hdx_configuration import Configuration
-from hdx.hdx_logging import setup_logging
 
 logger = logging.getLogger(__name__)
 setup_logging(**logging_kwargs)
