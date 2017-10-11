@@ -51,21 +51,14 @@ def get_readme():
     return readme_file.read()
 
 
-requirements = ['basicauth',
-                'ckanapi',
-                'colorlog',
-                'email_validator',
-                'geonamescache',
+requirements = ['ckanapi',
+                'hdx-python-utilities',
                 'ndg-httpsclient',
-                'pyaml',
                 'pyasn1',
                 'pyOpenSSL',
                 'python-dateutil',
                 'requests',
-                'scraperwiki',
-                'six',
-                'tabulator',
-                'typing'
+                'scraperwiki'
                 ]
 
 classifiers = [
