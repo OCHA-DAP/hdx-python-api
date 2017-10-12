@@ -17,7 +17,6 @@ Contents
    source/hdx.rst
    source/hdx.data.rst
    source/hdx.facades.rst
-   source/hdx.utilities.rst
 
 Indices and tables
 ------------------
@@ -25,4 +24,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
