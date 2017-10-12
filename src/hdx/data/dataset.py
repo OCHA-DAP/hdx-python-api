@@ -913,23 +913,23 @@ class Dataset(HDXObject):
                 allcountriesadded = False
         return allcountriesadded
 
-    def add_continent_location(self, continent, locations=None):
+    def add_region_location(self, region, locations=None):
         # type: (str, Optional[List[str]]) -> bool
-        """Add all countries in a  continent. If a 2 letter continent code is not provided, value is parsed and if it
-        is a valid continent name, converted to a 2 letter code. If any country is already added, it is ignored.
+        """Add all countries in a region. If a 3 letter region code is not provided, value is parsed and if it
+        is a valid region name, converted to a 3 letter code. If any country is already added, it is ignored.
 
         Args:
-            continent (str): Continent to add
+            region (str): Continent to add
             locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
 
         Returns:
-            bool: Returns True if all countries in continent added or False if any already present.
+            bool: Returns True if all countries in region added or False if any already present.
         """
-        return self.add_country_locations(Location.get_countries_in_continent(continent), locations=locations)
+        return self.add_country_locations(Location.get_countries_in_region(region), locations=locations)
 
     def add_other_location(self, location, exact=True, alterror=None, locations=None):
         # type: (str, Optional[bool], Optional[str], Optional[List[str]]) -> bool
-        """Add a location which is not a country or continent. Value is parsed and compared to existing locations in 
+        """Add a location which is not a country or region. Value is parsed and compared to existing locations in
         HDX. If the location is already added, it is ignored.
 
         Args:

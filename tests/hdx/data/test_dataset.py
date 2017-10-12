@@ -9,6 +9,8 @@ import tempfile
 from os.path import join
 
 import pytest
+from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.loader import load_yaml
 
 from hdx.data import dataset
 from hdx.data.dataset import Dataset
@@ -17,8 +19,6 @@ from hdx.data.organization import Organization
 from hdx.data.resource import Resource
 from hdx.data.user import User
 from hdx.hdx_configuration import Configuration
-from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.loader import load_yaml
 from . import MockResponse, user_data, organization_data
 from .test_organization import organization_mockshow
 from .test_showcase import showcase_resultdict
@@ -848,13 +848,13 @@ class TestDataset:
         assert dataset.get_location() == ['Algeria', 'Zimbabwe', 'Sudan', 'Kenya', 'Mozambique']
         dataset.remove_location('sdn')
         assert dataset.get_location() == ['Algeria', 'Zimbabwe', 'Kenya', 'Mozambique']
-        dataset.add_continent_location('af')
-        assert len(dataset['groups']) == 58
-        assert len(dataset.get_location()) == 58
+        dataset.add_region_location('mea')
+        assert len(dataset['groups']) == 24
+        assert len(dataset.get_location()) == 24
         del dataset['groups']
         assert dataset.get_location() == []
         with pytest.raises(HDXError):
-            dataset.add_country_location('ala')
+            dataset.add_country_location('abc')
         with pytest.raises(HDXError):
             dataset.add_country_location('lala')
         dataset.add_country_location('Ukrai', exact=False)
