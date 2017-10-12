@@ -801,13 +801,22 @@ place where valid country names are found.
 
     dataset.add_country_locations(['ISO 3','ISO 3','ISO 3'...])
 
-If you want to add a continent, you do it as follows. If you don't
-provide a two letter continent code, then parsing and conversion will
-occur if a valid continent name is supplied.
+If you want to add a region, you do it as follows. If you don't
+provide a three letter region code, then parsing and conversion will
+occur if a valid region name is supplied.
 
 ::
 
-    dataset.add_continent_location('TWO LETTER CONTINENT CODE')
+    dataset.add_region_location('THREE LETTER REGION CODE')
+
+Valid regions are:
+
+::
+
+    {'EAS': 'East Asia & Pacific', 'SAS': 'South Asia',
+    'MEA': 'Middle East & North Africa', 'ECS': 'Europe & Central Asia',
+    'LCN': 'Latin America & Caribbean ', 'NAC': 'North America',
+    'SSF': 'Sub-Saharan Africa '}
 
 If you want to add any other kind of location (which must be in this
 \ `list of valid locations <https://data.humdata.org/api/action/group_list?all_fields=true>`__), you do as shown below.
