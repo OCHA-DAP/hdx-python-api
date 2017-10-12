@@ -1076,21 +1076,21 @@ ACLED Example
 -------------
 
 A complete example can be found
-here: \ https://github.com/mcarans/hdxscraper-acled-africa
+here: \ https://github.com/OCHA-DAP/hdxscraper-acled-africa
 
 In particular, take a look at the files **run.py**, **acled_africa.py**
 and the **config** folder. If you run it unchanged, it will conflict
 with the existing dataset in the ACLED organisation! Therefore, you will
 need to modify the dataset **name** in **acled_africa.py** and change
-the organisation information such as **owner_org** to your organisation
-in **config/hdx_dataset_static.yml**.
+the organisation information to your organisation. Also update metadata
+in **config/hdx_dataset_static.yml** appropriately.
 
 The ACLED scraper creates a dataset in HDX for `ACLED realtime
-data <https://data.humdata.org/dataset/acled-conflict-data-for-africa-realtime-2016>`__
+data <https://data.humdata.org/dataset/acled-conflict-data-for-africa-realtime-2017>`__
 if it doesn't already exist, populating all the required metadata. It
 then creates resources that point to urls of `Excel and csv files for
-Realtime 2016 All Africa
-data <http://www.acleddata.com/data/realtime-data-2016/>`__ (or updates
+Realtime 2017 All Africa
+data <http://www.acleddata.com/data/realtime-data-2017/>`__ (or updates
 the links and metadata if the resources already exist). Finally it
 creates a showcase that points to these `dynamic maps and
 graphs <http://www.acleddata.com/visuals/maps/dynamic-maps/>`__.
