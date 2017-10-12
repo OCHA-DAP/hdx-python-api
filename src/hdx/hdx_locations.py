@@ -60,6 +60,7 @@ class Locations(object):
         for locdict in locations:
             if code.lower() == locdict['name'].lower():
                 return locdict['title']
+        return None
 
     @staticmethod
     def get_HDX_code_from_location(location, locations=None, configuration=None):
@@ -85,6 +86,7 @@ class Locations(object):
         for locdict in locations:
             if locationlower == locdict['title'].lower():
                 return locdict['name']
+        return None
 
     @staticmethod
     def get_HDX_code_from_location_partial(location, locations=None, configuration=None):
