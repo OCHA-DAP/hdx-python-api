@@ -8,19 +8,19 @@ from os.path import join
 from typing import List, Union, Optional, Dict, Any
 
 from dateutil import parser
+from hdx.location.country import Country
+from hdx.utilities import is_valid_uuid
+from hdx.utilities import raisefrom
+from hdx.utilities.dictandlist import merge_two_dictionaries
 from six.moves import range
 
 import hdx.data.organization
-import hdx.data.showcase
 import hdx.data.resource
+import hdx.data.showcase
 from hdx.data.hdxobject import HDXObject, HDXError
 from hdx.data.user import User
 from hdx.hdx_configuration import Configuration
 from hdx.hdx_locations import Locations
-from hdx.utilities import is_valid_uuid
-from hdx.utilities import raisefrom
-from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.location import Location
 
 logger = logging.getLogger(__name__)
 
@@ -887,7 +887,7 @@ class Dataset(HDXObject):
         Returns:
             bool: True if country added or False if country already present
         """
-        iso3, match = Location.get_iso3_country_code_partial(country)
+        iso3, match = Country.get_iso3_country_code_partial(country)
         if iso3 is None:
             raise HDXError('Country: %s - cannot find iso3 code!' % country)
         return self.add_other_location(iso3, exact=exact,
@@ -925,7 +925,7 @@ class Dataset(HDXObject):
         Returns:
             bool: Returns True if all countries in region added or False if any already present.
         """
-        return self.add_country_locations(Location.get_countries_in_region(region), locations=locations)
+        return self.add_country_locations(Country.get_countries_in_region(region), locations=locations)
 
     def add_other_location(self, location, exact=True, alterror=None, locations=None):
         # type: (str, Optional[bool], Optional[str], Optional[List[str]]) -> bool
