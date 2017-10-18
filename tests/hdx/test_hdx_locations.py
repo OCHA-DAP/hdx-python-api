@@ -20,12 +20,12 @@ class TestHDXLocations:
         assert Locations.validlocations() == validlocations
         assert Locations.get_HDX_code_from_location_partial('NOT') == (None, False)
         assert Locations.get_location_from_HDX_code('pr') is None
-        assert Locations.get_HDX_code_from_location('zmb') == 'zmb'
-        assert Locations.get_HDX_code_from_location_partial('zmb') == ('zmb', True)
+        assert Locations.get_HDX_code_from_location('zmb') == 'ZMB'
+        assert Locations.get_HDX_code_from_location_partial('zmb') == ('ZMB', True)
         assert Locations.get_HDX_code_from_location('Z') is None
-        assert Locations.get_HDX_code_from_location_partial('Z') == ('zmb', False)
-        assert Locations.get_HDX_code_from_location_partial('Zambia') == ('zmb', True)
-        assert Locations.get_HDX_code_from_location_partial('ZAM') == ('zmb', False)
+        assert Locations.get_HDX_code_from_location_partial('Z') == ('ZMB', False)
+        assert Locations.get_HDX_code_from_location_partial('Zambia') == ('ZMB', True)
+        assert Locations.get_HDX_code_from_location_partial('ZAM') == ('ZMB', False)
         assert Locations.get_location_from_HDX_code('zmb', locations=validlocations) == 'Zambia'
         validlocations = [{'name': 'shn', 'title': 'St. Helena'}]
         assert Locations.get_HDX_code_from_location('sh', locations=validlocations) is None
@@ -33,7 +33,7 @@ class TestHDXLocations:
         assert Locations.get_location_from_HDX_code('shn', locations=validlocations) == 'St. Helena'
         Configuration.setup(MyConfiguration())
         Locations.set_validlocations(None)
-        assert Locations.get_HDX_code_from_location('zaf') == 'zaf'
-        assert Locations.get_HDX_code_from_location_partial('zaf') == ('zaf', True)
+        assert Locations.get_HDX_code_from_location('zaf') == 'ZAF'
+        assert Locations.get_HDX_code_from_location_partial('zaf') == ('ZAF', True)
         assert Locations.get_location_from_HDX_code('zaf') == 'South Africa'
 

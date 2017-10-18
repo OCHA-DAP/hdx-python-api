@@ -58,7 +58,7 @@ class Locations(object):
         if locations is None:
             locations = Locations.validlocations(configuration)
         for locdict in locations:
-            if code.lower() == locdict['name'].lower():
+            if code.upper() == locdict['name'].upper():
                 return locdict['title']
         return None
 
@@ -77,15 +77,15 @@ class Locations(object):
         """
         if locations is None:
             locations = Locations.validlocations(configuration)
-        locationlower = location.lower()
+        locationupper = location.upper()
         for locdict in locations:
-            locationcode = locdict['name']
-            if locationlower == locationcode.lower():
+            locationcode = locdict['name'].upper()
+            if locationupper == locationcode:
                 return locationcode
 
         for locdict in locations:
-            if locationlower == locdict['title'].lower():
-                return locdict['name']
+            if locationupper == locdict['title'].upper():
+                return locdict['name'].upper()
         return None
 
     @staticmethod
@@ -108,10 +108,10 @@ class Locations(object):
 
         if locations is None:
             locations = Locations.validlocations(configuration)
-        locationlower = location.lower()
+        locationupper = location.upper()
         for locdict in locations:
-            locationname = locdict['title'].lower()
-            if locationlower in locationname or locationname in locationlower:
-                return locdict['name'], False
+            locationname = locdict['title'].upper()
+            if locationupper in locationname or locationname in locationupper:
+                return locdict['name'].upper(), False
 
         return None, False

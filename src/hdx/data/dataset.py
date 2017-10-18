@@ -915,17 +915,18 @@ class Dataset(HDXObject):
 
     def add_region_location(self, region, locations=None):
         # type: (str, Optional[List[str]]) -> bool
-        """Add all countries in a region. If a 3 letter region code is not provided, value is parsed and if it
-        is a valid region name, converted to a 3 letter code. If any country is already added, it is ignored.
+        """Add all countries in a region. If a 3 digit UNStats M49 region code is not provided, value is parsed as a
+        region name. If any country is already added, it is ignored.
 
         Args:
-            region (str): Continent to add
+            region (str): M49 region, intermediate region or subregion to add
             locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
 
         Returns:
             bool: Returns True if all countries in region added or False if any already present.
         """
-        return self.add_country_locations(Country.get_countries_in_region(region), locations=locations)
+        return self.add_country_locations(Country.get_countries_in_region(region, exception=HDXError),
+                                          locations=locations)
 
     def add_other_location(self, location, exact=True, alterror=None, locations=None):
         # type: (str, Optional[bool], Optional[str], Optional[List[str]]) -> bool
@@ -952,6 +953,10 @@ class Dataset(HDXObject):
         if groups:
             if hdx_code in [x['name'] for x in groups]:
                 return False
+            if hdx_code.upper() in [x['name'] for x in groups]:
+                return False
+            if hdx_code.lower() in [x['name'] for x in groups]:
+                return False
         else:
             groups = list()
         groups.append({'name': hdx_code})
@@ -968,7 +973,12 @@ class Dataset(HDXObject):
         Returns:
             bool: True if location removed or False if not
         """
-        return self._remove_hdxobject(self.data.get('groups'), location, matchon='name')
+        res = self._remove_hdxobject(self.data.get('groups'), location, matchon='name')
+        if not res:
+            res = self._remove_hdxobject(self.data.get('groups'), location.upper(), matchon='name')
+        if not res:
+            res = self._remove_hdxobject(self.data.get('groups'), location.lower(), matchon='name')
+        return res
 
     def get_maintainer(self):
         # type: () -> User

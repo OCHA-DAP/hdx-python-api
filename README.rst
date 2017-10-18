@@ -1,9 +1,11 @@
 |Build_Status| |Coverage_Status|
 
 | The HDX Python Library is designed to enable you to easily develop
-  code that interacts with the Humanitarian Data Exchange platform. The
+  code that interacts with the `Humanitarian Data Exchange`_ (HDX) platform. The
   major goal of the library is to make pushing and pulling data from HDX
-  as simple as possible for the end user.
+  as simple as possible for the end user. If you have humanitarian-related data,
+  please upload your datasets to HDX.
+
 | For more about the purpose and design philosophy, please visit `HDX
   Python
   Library <https://humanitarian.atlassian.net/wiki/display/HDX/HDX+Python+Library>`__.
@@ -802,24 +804,19 @@ place where valid country names are found.
     dataset.add_country_locations(['ISO 3','ISO 3','ISO 3'...])
 
 If you want to add a region, you do it as follows. If you don't
-provide a three letter region code, then parsing and conversion will
-occur if a valid region name is supplied.
+provide a three digit `UNStats M49`_ region code, then parsing and
+conversion will occur if a valid region name is supplied.
 
 ::
 
-    dataset.add_region_location('THREE LETTER REGION CODE')
+    dataset.add_region_location('M49 REGION CODE')
 
-Valid regions are:
-
-::
-
-    {'EAS': 'East Asia & Pacific', 'SAS': 'South Asia',
-    'MEA': 'Middle East & North Africa', 'ECS': 'Europe & Central Asia',
-    'LCN': 'Latin America & Caribbean ', 'NAC': 'North America',
-    'SSF': 'Sub-Saharan Africa '}
+**add_region_location** accepts regions, intermediate regions or
+subregions as specified on the `UNStats M49`_ website.
 
 If you want to add any other kind of location (which must be in this
-\ `list of valid locations <https://data.humdata.org/api/action/group_list?all_fields=true>`__), you do as shown below.
+\ `list of valid locations <https://data.humdata.org/api/action/group_list?all_fields=true>`__),
+you do as shown below.
 
 ::
 
@@ -1119,5 +1116,7 @@ makes putting data programmatically into HDX a breeze.
 .. |Coverage_Status| image:: https://coveralls.io/repos/github/OCHA-DAP/hdx-python-api/badge.svg?branch=master
     :alt: Coveralls Build Status
     :target: https://coveralls.io/github/OCHA-DAP/hdx-python-api?branch=master
+.. _Humanitarian Data Exchange: https://data.humdata.org/
+.. _UNStats M49: https://unstats.un.org/unsd/methodology/m49/overview/
 .. |A_Quick_Example| image:: https://humanitarian.atlassian.net/wiki/download/attachments/6356996/HDXPythonLibrary.gif?version=1&modificationDate=1469520811486&api=v2
 
