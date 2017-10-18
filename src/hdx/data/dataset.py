@@ -950,12 +950,9 @@ class Dataset(HDXObject):
             else:
                 raise HDXError(alterror)
         groups = self.data.get('groups', None)
+        hdx_code = hdx_code.lower()
         if groups:
             if hdx_code in [x['name'] for x in groups]:
-                return False
-            if hdx_code.upper() in [x['name'] for x in groups]:
-                return False
-            if hdx_code.lower() in [x['name'] for x in groups]:
                 return False
         else:
             groups = list()

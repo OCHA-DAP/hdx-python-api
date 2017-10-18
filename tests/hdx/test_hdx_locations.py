@@ -1,5 +1,7 @@
 # -*'coding: UTF-8 -*-
 """HDX Location Tests"""
+from hdx.location.country import Country
+
 from hdx.hdx_configuration import Configuration
 from hdx.hdx_locations import Locations
 
@@ -11,6 +13,7 @@ class MyConfiguration:
 
 class TestHDXLocations:
     def test_validlocations(self, project_config_yaml):
+        Country.countriesdata(use_live=False)
         validlocations = [{'name': 'shn', 'title': 'St. Helena'}]
         assert Locations.get_HDX_code_from_location('sh', locations=validlocations) is None
         assert Locations.get_HDX_code_from_location_partial('sh', locations=validlocations) == (None, False)

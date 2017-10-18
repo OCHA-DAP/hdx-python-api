@@ -9,6 +9,7 @@ import tempfile
 from os.path import join
 
 import pytest
+from hdx.location.country import Country
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
 
@@ -831,19 +832,20 @@ class TestDataset:
         assert dataset.get_tags() == ['LALA']
 
     def test_get_add_location(self, locations, read):
+        Country.countriesdata(use_live=False)
         dataset = Dataset.read_from_hdx('TEST1')
         assert dataset['groups'] == resultgroups
         assert dataset.get_location() == ['Algeria', 'Zimbabwe']
         dataset.add_country_location('sdn')
         expected = copy.deepcopy(resultgroups)
-        expected.append({'name': 'SDN'})
+        expected.append({'name': 'sdn'})
         assert dataset['groups'] == expected
         assert dataset.get_location() == ['Algeria', 'Zimbabwe', 'Sudan']
         dataset.add_country_location('dza')
         assert dataset['groups'] == expected
         assert dataset.get_location() == ['Algeria', 'Zimbabwe', 'Sudan']
         dataset.add_country_locations(['KEN', 'Mozambique', 'ken'])
-        expected.extend([{'name': 'KEN'}, {'name': 'MOZ'}])
+        expected.extend([{'name': 'ken'}, {'name': 'moz'}])
         assert dataset['groups'] == expected
         assert dataset.get_location() == ['Algeria', 'Zimbabwe', 'Sudan', 'Kenya', 'Mozambique']
         dataset.remove_location('sdn')
@@ -860,17 +862,17 @@ class TestDataset:
         with pytest.raises(HDXError):
             dataset.add_country_location('lala')
         dataset.add_country_location('Ukrai', exact=False)
-        assert dataset['groups'] == [{'name': 'UKR'}]
+        assert dataset['groups'] == [{'name': 'ukr'}]
         assert dataset.get_location() == ['Ukraine']
         dataset.add_country_location('ukr')
         dataset.add_other_location('nepal-earthquake')
-        assert dataset['groups'] == [{'name': 'UKR'}, {'name': 'NEPAL-EARTHQUAKE'}]
+        assert dataset['groups'] == [{'name': 'ukr'}, {'name': 'nepal-earthquake'}]
         assert dataset.get_location() == ['Ukraine', 'Nepal Earthquake']
         del dataset['groups']
         dataset.add_other_location('Nepal E', exact=False)
-        assert dataset['groups'] == [{'name': 'NEPAL-EARTHQUAKE'}]
+        assert dataset['groups'] == [{'name': 'nepal-earthquake'}]
         dataset.add_other_location('Nepal Earthquake')
-        assert dataset['groups'] == [{'name': 'NEPAL-EARTHQUAKE'}]
+        assert dataset['groups'] == [{'name': 'nepal-earthquake'}]
         with pytest.raises(HDXError):
             dataset.add_other_location('lala')
 
