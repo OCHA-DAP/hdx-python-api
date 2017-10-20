@@ -875,6 +875,11 @@ class TestDataset:
         assert dataset['groups'] == [{'name': 'nepal-earthquake'}]
         with pytest.raises(HDXError):
             dataset.add_other_location('lala')
+        dataset['groups'] = [{'name': 'ken'}, {'name': 'MOZ'}, {'name': 'dza'}]
+        dataset.remove_location('moz')
+        assert dataset['groups'] == [{'name': 'ken'}, {'name': 'dza'}]
+        dataset.remove_location('KEN')
+        assert dataset['groups'] == [{'name': 'dza'}]
 
     def test_maintainer(self, configuration, user_read):
         dataset = Dataset(TestDataset.dataset_data)
