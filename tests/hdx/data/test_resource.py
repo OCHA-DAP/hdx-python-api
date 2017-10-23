@@ -7,14 +7,14 @@ from os import unlink
 from os.path import join
 
 import pytest
+from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.downloader import DownloadError
 
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
 from hdx.hdx_configuration import Configuration
-from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.downloader import DownloadError
-from .test_dataset import dataset_resultdict
 from . import MockResponse
+from .test_dataset import dataset_resultdict
 
 resultdict = {'cache_last_updated': None, 'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',
               'webstore_last_updated': None, 'datastore_active': None,
@@ -413,14 +413,15 @@ class TestResource:
 
         resource = Resource.read_from_hdx('TEST1')
         assert resource['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
-        assert resource['format'] == 'XLSX'
+        assert resource.get_file_type() == 'XLSX'
 
-        resource['format'] = 'CSV'
+        resource.set_file_type('CSV')
         resource['id'] = 'TEST1'
         resource['name'] = 'MyResource1'
         resource.update_in_hdx()
         assert resource['id'] == 'TEST1'
-        assert resource['format'] == 'CSV'
+        assert resource['format'] == 'csv'
+        assert resource.get_file_type() == 'csv'
         assert resource['url_type'] == 'api'
         assert resource['resource_type'] == 'api'
         assert resource[
@@ -452,7 +453,7 @@ class TestResource:
         resource = Resource(resource_data)
         resource.create_in_hdx()
         assert resource['id'] == 'TEST1'
-        assert resource['format'] == 'xlsx'
+        assert resource.get_file_type() == 'xlsx'
 
     def test_delete_from_hdx(self, configuration, post_delete):
         resource = Resource.read_from_hdx('TEST1')
@@ -465,19 +466,19 @@ class TestResource:
         resource_data = copy.deepcopy(TestResource.resource_data)
         resource = Resource(resource_data)
         assert resource['name'] == 'MyResource1'
-        assert resource['format'] == 'xlsx'
+        assert resource.get_file_type() == 'xlsx'
         resource.update_from_yaml(static_yaml)
         assert resource['name'] == 'MyResource1'
-        assert resource['format'] == 'csv'
+        assert resource.get_file_type() == 'csv'
 
     def test_update_json(self, configuration, static_json):
         resource_data = copy.deepcopy(TestResource.resource_data)
         resource = Resource(resource_data)
         assert resource['name'] == 'MyResource1'
-        assert resource['format'] == 'xlsx'
+        assert resource.get_file_type() == 'xlsx'
         resource.update_from_json(static_json)
         assert resource['name'] == 'MyResource1'
-        assert resource['format'] == 'zipped csv'
+        assert resource.get_file_type() == 'zipped csv'
 
     def test_touch(self, configuration, post_patch):
         resource = Resource()

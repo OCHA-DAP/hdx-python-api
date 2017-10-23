@@ -7,15 +7,15 @@ from os.path import join, splitext
 from tempfile import gettempdir
 from typing import Optional, List, Tuple, Dict
 
+from hdx.utilities import raisefrom
+from hdx.utilities.downloader import Download
+from hdx.utilities.loader import load_yaml, load_json
+from hdx.utilities.path import script_dir_plus_file
 from tabulator import Stream
 
 import hdx.data.dataset
 from hdx.data.hdxobject import HDXObject, HDXError
 from hdx.hdx_configuration import Configuration
-from hdx.utilities import raisefrom
-from hdx.utilities.downloader import Download
-from hdx.utilities.loader import load_yaml, load_json
-from hdx.utilities.path import script_dir_plus_file
 
 logger = logging.getLogger(__name__)
 
@@ -98,6 +98,27 @@ class Resource(HDXObject):
         if result:
             return resource
         return None
+
+    def get_file_type(self):
+        # type: () -> Optional[str]
+        """Get the resource's file type
+
+        Returns:
+            Optional[str]: Returns the resource's file type or None if it has not been set
+        """
+        return self.data.get('format')
+
+    def set_file_type(self, file_type):
+        # type: (str) -> None
+        """Set the resource's file type
+
+        Args:
+            file_type (str): resource's file type
+
+        Returns:
+            None
+        """
+        self.data['format'] = file_type.lower()
 
     def get_file_to_upload(self):
         # type: () -> Optional[str]

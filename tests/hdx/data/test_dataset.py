@@ -14,7 +14,7 @@ from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
 
 from hdx.data import dataset
-from hdx.data.dataset import Dataset
+from hdx.data.dataset import Dataset, NotRequestableError
 from hdx.data.hdxobject import HDXError
 from hdx.data.organization import Organization
 from hdx.data.resource import Resource
@@ -944,6 +944,7 @@ class TestDataset:
         dataset['private'] = True
         dataset.set_requestable()
         assert dataset['is_requestdata_type'] is True
+        assert dataset.is_requestable() is True
         assert dataset['private'] is False
         dataset['private'] = True
         dataset.set_requestable(False)
@@ -971,3 +972,23 @@ class TestDataset:
         dataset['num_of_rows'] = 100
         dataset.create_in_hdx()
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
+        dataset_data = copy.deepcopy(TestDataset.dataset_data)
+        dataset = Dataset(dataset_data)
+        resources_data = copy.deepcopy(TestDataset.resources_data)
+        dataset.add_update_resources(resources_data)
+        with pytest.raises(NotRequestableError):
+            dataset.get_fieldnames()
+        with pytest.raises(NotRequestableError):
+            dataset.add_fieldname('LALA')
+        with pytest.raises(NotRequestableError):
+            dataset.add_fieldnames(['LALA'])
+        with pytest.raises(NotRequestableError):
+            dataset.remove_fieldname('LALA')
+        with pytest.raises(NotRequestableError):
+            dataset.add_filetype('csv')
+        with pytest.raises(NotRequestableError):
+            dataset.add_filetypes(['csv'])
+        with pytest.raises(NotRequestableError):
+            dataset.remove_filetype('csv')
+        assert dataset.get_filetypes() == ['xlsx', 'csv']
+

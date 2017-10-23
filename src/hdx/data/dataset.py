@@ -28,6 +28,9 @@ max_attempts = 5
 page_size = 1000
 max_int = sys.maxsize
 
+class NotRequestableError(HDXError):
+    pass
+
 class Dataset(HDXObject):
     """Dataset class enabling operations on datasets and associated resources.
 
@@ -278,7 +281,7 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        if self.get_requestable():
+        if self.is_requestable():
             self._check_required_fields('dataset-requestable', ignore_fields)
         else:
             self._check_required_fields('dataset', ignore_fields)
@@ -1123,12 +1126,12 @@ class Dataset(HDXObject):
         showcase = hdx.data.showcase.Showcase({'id': dataset_showcase['showcase_id']}, configuration=self.configuration)
         showcase._write_to_hdx('disassociate', dataset_showcase, 'package_id')
 
-    def get_requestable(self):
+    def is_requestable(self):
         # type: () -> bool
-        """Get whether the dataset is requestable or not
+        """Return whether the dataset is requestable or not
 
         Returns:
-            bool
+            bool: Returns whether the dataset is requestable or not
         """
         return self.data.get('is_requestdata_type', False)
 
@@ -1148,16 +1151,18 @@ class Dataset(HDXObject):
 
     def get_fieldnames(self):
         # type: () -> List[str]
-        """Return list of fieldnames in your data
+        """Return list of fieldnames in your data. Only applicable to requestable datasets.
 
         Returns:
             List[str]: Returns list of field names
         """
+        if not self.is_requestable():
+            raise NotRequestableError('get_fieldnames is only applicable to requestable datasets!')
         return self._get_stringlist_from_commastring('field_names')
 
     def add_fieldname(self, fieldname):
         # type: (str) -> bool
-        """Add a fieldname to list of fieldnames in your data
+        """Add a fieldname to list of fieldnames in your data. Only applicable to requestable datasets.
 
         Args:
             fieldname (str): fieldname to add
@@ -1165,11 +1170,13 @@ class Dataset(HDXObject):
         Returns:
             bool: True if fieldname added or False if tag already present
         """
+        if not self.is_requestable():
+            raise NotRequestableError('add_fieldname is only applicable to requestable datasets!')
         return self._add_string_to_commastring('field_names', fieldname)
 
     def add_fieldnames(self, fieldnames):
         # type: (List[str]) -> bool
-        """Add a list of fieldnames to list of fieldnames in your data
+        """Add a list of fieldnames to list of fieldnames in your data. Only applicable to requestable datasets.
 
         Args:
             fieldnames (List[str]): list of fieldnames to add
@@ -1177,11 +1184,13 @@ class Dataset(HDXObject):
         Returns:
             bool: Returns True if all fieldnames added or False if any already present
         """
+        if not self.is_requestable():
+            raise NotRequestableError('add_fieldnames is only applicable to requestable datasets!')
         return self._add_strings_to_commastring('field_names', fieldnames)
 
     def remove_fieldname(self, fieldname):
         # type: (str) -> bool
-        """Remove a fieldname
+        """Remove a fieldname. Only applicable to requestable datasets.
 
         Args:
             fieldname (str): Fieldname to remove
@@ -1189,6 +1198,8 @@ class Dataset(HDXObject):
         Returns:
             bool: True if fieldname removed or False if not
         """
+        if not self.is_requestable():
+            raise NotRequestableError('remove_fieldname is only applicable to requestable datasets!')
         return self._remove_string_from_commastring('field_names', fieldname)
 
     def get_filetypes(self):
@@ -1196,13 +1207,15 @@ class Dataset(HDXObject):
         """Return list of filetypes in your data
 
         Returns:
-            List[str]: Returns list of field names
+            List[str]: Returns list of filetypes
         """
+        if not self.is_requestable():
+            return [resource.get_file_type() for resource in self.get_resources()]
         return self._get_stringlist_from_commastring('file_types')
 
     def add_filetype(self, filetype):
         # type: (str) -> bool
-        """Add a filetype to list of filetypes in your data
+        """Add a filetype to list of filetypes in your data. Only applicable to requestable datasets.
 
         Args:
             filetype (str): filetype to add
@@ -1210,11 +1223,13 @@ class Dataset(HDXObject):
         Returns:
             bool: True if filetype added or False if tag already present
         """
+        if not self.is_requestable():
+            raise NotRequestableError('add_filetype is only applicable to requestable datasets!')
         return self._add_string_to_commastring('file_types', filetype)
 
     def add_filetypes(self, filetypes):
         # type: (List[str]) -> bool
-        """Add a list of filetypes to list of filetypes in your data
+        """Add a list of filetypes to list of filetypes in your data. Only applicable to requestable datasets.
 
         Args:
             filetypes (List[str]): list of filetypes to add
@@ -1222,6 +1237,8 @@ class Dataset(HDXObject):
         Returns:
             bool: Returns True if all filetypes added or False if any already present
         """
+        if not self.is_requestable():
+            raise NotRequestableError('add_filetypes is only applicable to requestable datasets!')
         return self._add_strings_to_commastring('file_types', filetypes)
 
     def remove_filetype(self, filetype):
@@ -1229,9 +1246,11 @@ class Dataset(HDXObject):
         """Remove a filetype
 
         Args:
-            filetype (str): Fieldname to remove
+            filetype (str): Filetype to remove
 
         Returns:
             bool: True if filetype removed or False if not
         """
+        if not self.is_requestable():
+            raise NotRequestableError('remove_filetype is only applicable to requestable datasets!')
         return self._remove_string_from_commastring('file_types', filetype)
