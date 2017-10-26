@@ -87,12 +87,12 @@ line:
     hdx-python-api==VERSION
 
 Replace **VERSION** with the latest tag available from
-  https://github.com/OCHA-DAP/hdx-python-api/tags.
+https://github.com/OCHA-DAP/hdx-python-api/tags.
 
 If you get dependency errors, it is probably the dependencies of the
-  cryptography package that are missing eg. for Ubuntu: python-dev,
-  libffi-dev and libssl-dev. See `cryptography
-  dependencies <https://cryptography.io/en/latest/installation/#building-cryptography-on-linux>`__.
+cryptography package that are missing eg. for Ubuntu: python-dev,
+libffi-dev and libssl-dev. See `cryptography dependencies
+<https://cryptography.io/en/latest/installation/#building-cryptography-on-linux>`__.
 
 If you get import or other errors, then please either recreate your
 virtualenv if you are using one or uninstall hdx-python-api,
