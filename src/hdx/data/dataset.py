@@ -28,8 +28,10 @@ max_attempts = 5
 page_size = 1000
 max_int = sys.maxsize
 
+
 class NotRequestableError(HDXError):
     pass
+
 
 class Dataset(HDXObject):
     """Dataset class enabling operations on datasets and associated resources.
