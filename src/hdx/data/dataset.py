@@ -879,7 +879,7 @@ class Dataset(HDXObject):
         return [Locations.get_location_from_HDX_code(x['name'], locations=locations,
                                                      configuration=self.configuration) for x in countries]
 
-    def add_country_location(self, country, exact=True, locations=None):
+    def add_country_location(self, country, exact=True, locations=None, use_live=True):
         # type: (str, Optional[bool],Optional[List[str]]) -> bool
         """Add a country. If an iso 3 code is not provided, value is parsed and if it is a valid country name,
         converted to an iso 3 code. If the country is already added, it is ignored.
@@ -888,11 +888,12 @@ class Dataset(HDXObject):
             country (str): Country to add
             exact (Optional[bool]): True for exact matching or False to allow fuzzy matching. Defaults to True.
             locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
+            use_live (bool): Try to get use latest country data from web rather than file in package. Defaults to True.
 
         Returns:
             bool: True if country added or False if country already present
         """
-        iso3, match = Country.get_iso3_country_code_partial(country)
+        iso3, match = Country.get_iso3_country_code_fuzzy(country, use_live=use_live)
         if iso3 is None:
             raise HDXError('Country: %s - cannot find iso3 code!' % country)
         return self.add_other_location(iso3, exact=exact,
@@ -900,7 +901,7 @@ class Dataset(HDXObject):
                                                 (country, iso3),
                                        locations=locations)
 
-    def add_country_locations(self, countries, locations=None):
+    def add_country_locations(self, countries, locations=None, use_live=True):
         # type: (List[str], Optional[List[str]]) -> bool
         """Add a list of countries. If iso 3 codes are not provided, values are parsed and where they are valid country
         names, converted to iso 3 codes. If any country is already added, it is ignored.
@@ -908,17 +909,18 @@ class Dataset(HDXObject):
         Args:
             countries (List[str]): list of countries to add
             locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
+            use_live (bool): Try to get use latest country data from web rather than file in package. Defaults to True.
 
         Returns:
             bool: Returns True if all countries added or False if any already present.
         """
         allcountriesadded = True
         for country in countries:
-            if not self.add_country_location(country, locations=locations):
+            if not self.add_country_location(country, locations=locations, use_live=use_live):
                 allcountriesadded = False
         return allcountriesadded
 
-    def add_region_location(self, region, locations=None):
+    def add_region_location(self, region, locations=None, use_live=True):
         # type: (str, Optional[List[str]]) -> bool
         """Add all countries in a region. If a 3 digit UNStats M49 region code is not provided, value is parsed as a
         region name. If any country is already added, it is ignored.
@@ -926,12 +928,13 @@ class Dataset(HDXObject):
         Args:
             region (str): M49 region, intermediate region or subregion to add
             locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
+            use_live (bool): Try to get use latest country data from web rather than file in package. Defaults to True.
 
         Returns:
             bool: Returns True if all countries in region added or False if any already present.
         """
-        return self.add_country_locations(Country.get_countries_in_region(region, exception=HDXError),
-                                          locations=locations)
+        return self.add_country_locations(Country.get_countries_in_region(region, exception=HDXError,
+                                                                          use_live=use_live), locations=locations)
 
     def add_other_location(self, location, exact=True, alterror=None, locations=None):
         # type: (str, Optional[bool], Optional[str], Optional[List[str]]) -> bool
