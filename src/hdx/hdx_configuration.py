@@ -50,7 +50,7 @@ class Configuration(UserDict, object):
     default_hdx_key_file = join(expanduser('~'), '.hdxkey')
 
     def __init__(self, **kwargs):
-        # type: (...) -> None
+        # type: (Any) -> None
         super(Configuration, self).__init__()
 
         self._remoteckan = None
@@ -203,7 +203,7 @@ class Configuration(UserDict, object):
         return self._remoteckan
 
     def call_remoteckan(self, *args, **kwargs):
-        # type: (...) -> Dict
+        # type: (Any) -> Dict
         """
         Calls the remote CKAN
 
@@ -267,11 +267,11 @@ class Configuration(UserDict, object):
 
         """
         if self._emailer is None:
-            raise ConfigurationError('There is no emailer set up! Use setup_emailer(...)')
+            raise ConfigurationError('There is no emailer set up! Use setup_emailer(Any)')
         return self._emailer
 
     def setup_emailer(self, **kwargs):
-        # type: (...) -> None
+        # type: (Any) -> None
         """
         Set up emailer. Parameters in dictionary or file (eg. yaml below):
         | connection_type: "ssl"   ("ssl" for smtp ssl or "lmtp", otherwise basic smtp is assumed)
@@ -326,7 +326,7 @@ class Configuration(UserDict, object):
 
     @classmethod
     def setup(cls, configuration=None, **kwargs):
-        # type: (Optional['Configuration'], ...) -> None
+        # type: (Optional['Configuration'], Any) -> None
         """
         Set up the HDX configuration
 
@@ -355,7 +355,7 @@ class Configuration(UserDict, object):
 
     @classmethod
     def _create(cls, configuration=None, remoteckan=None, **kwargs):
-        # type: (Optional['Configuration'], Optional[ckanapi.RemoteCKAN], ...) -> str
+        # type: (Optional['Configuration'], Optional[ckanapi.RemoteCKAN], Any) -> str
         """
         Create HDX configuration
 
@@ -384,7 +384,7 @@ class Configuration(UserDict, object):
 
     @classmethod
     def create(cls, configuration=None, remoteckan=None, **kwargs):
-        # type: (Optional['Configuration'], Optional[ckanapi.RemoteCKAN], ...) -> str
+        # type: (Optional['Configuration'], Optional[ckanapi.RemoteCKAN], Any) -> str
         """
         Create HDX configuration. Can only be called once (will raise an error if called more than once).
 

@@ -51,14 +51,14 @@ def get_readme():
     return readme_file.read()
 
 
-requirements = ['ckanapi',
-                'hdx-python-country',
+requirements = ['ckanapi>=4.1',
+                'hdx-python-country>=1.1.1',
                 'ndg-httpsclient',
                 'pyasn1',
                 'pyOpenSSL',
                 'python-dateutil',
-                'requests',
-                'scraperwiki'
+                'requests>=2.18.4',
+                'scraperwiki>=0.5.1'
                 ]
 
 classifiers = [

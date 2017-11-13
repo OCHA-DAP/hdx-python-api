@@ -132,7 +132,7 @@ class Organization(HDXObject):
         Args:
             capacity (Optional[str]): Filter by capacity eg. member, admin. Defaults to None.
         Returns:
-            List[User]: Returns the organization's users.
+            List[User]: Organization's users.
         """
         users = list()
         usersdicts = self.data.get('users')
@@ -206,7 +206,7 @@ class Organization(HDXObject):
         return self._remove_hdxobject(self.data.get('users'), user)
 
     def get_datasets(self, query='*:*', **kwargs):
-        # type: (str, ...) -> List[hdx.data.dataset.Dataset]
+        # type: (str, Any) -> List[hdx.data.dataset.Dataset]
         """Get list of datasets in organization
 
         Args:
@@ -230,7 +230,7 @@ class Organization(HDXObject):
 
     @staticmethod
     def get_all_organization_names(configuration=None, **kwargs):
-        # type: (Optional[Configuration], ...) -> List[str]
+        # type: (Optional[Configuration], Any) -> List[str]
         """Get all organization names in HDX
 
         Args:

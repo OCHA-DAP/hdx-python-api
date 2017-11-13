@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 """Resource class containing all logic for creating, checking, and updating resources."""
 import logging
-import zipfile
 from os import unlink
-from os.path import join, splitext
-from tempfile import gettempdir
+from os.path import join
 from typing import Optional, List, Tuple, Dict
 
 from hdx.utilities import raisefrom
 from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_yaml, load_json
 from hdx.utilities.path import script_dir_plus_file
-from tabulator import Stream
 
 import hdx.data.dataset
 from hdx.data.hdxobject import HDXObject, HDXError
@@ -104,7 +101,7 @@ class Resource(HDXObject):
         """Get the resource's file type
 
         Returns:
-            Optional[str]: Returns the resource's file type or None if it has not been set
+            Optional[str]: Resource's file type or None if it has not been set
         """
         return self.data.get('format')
 
@@ -213,7 +210,7 @@ class Resource(HDXObject):
 
     @staticmethod
     def search_in_hdx(query, configuration=None, **kwargs):
-        # type: (str, Optional[Configuration], ...) -> List['Resource']
+        # type: (str, Optional[Configuration], Any) -> List['Resource']
         """Searches for resources in HDX. NOTE: Does not search dataset metadata!
 
         Args:
@@ -256,8 +253,8 @@ class Resource(HDXObject):
         if not url:
             raise HDXError('No URL to download!')
         logger.debug('Downloading %s' % url)
-        with Download() as download:
-            path = download.download_file(url, folder)
+        with Download() as downloader:
+            path = downloader.download_file(url, folder)
             return url, path
 
     def delete_datastore(self):
@@ -297,27 +294,18 @@ class Resource(HDXObject):
                 self.delete_datastore()
         else:
             raise HDXError('delete_first must be 0, 1 or 2! (0 = No, 1 = Yes, 2 = Delete if no primary key)')
-        if path is None:
-            # Download the resource
-            url, path = self.download()
-            delete_after_download = True
-        else:
-            url = self.data.get('url', None)
-            if not url:
-                raise HDXError('No URL to download!')
-            delete_after_download = False
-
-        zip_path = None
-        stream = None
-        try:
-            extension = splitext(path)[1]
-            if extension.lower() == '.zip':
-                zip_file = zipfile.ZipFile(path)
-                filename = zip_file.namelist()[0]
-                tempdir = gettempdir()
-                zip_file.extract(filename, tempdir)
-                zip_path = path
-                path = join(tempdir, filename)
+        with Download() as downloader:
+            if path is None:
+                # Download the resource
+                url = self.data.get('url', None)
+                if not url:
+                    raise HDXError('No URL to download!')
+                logger.debug('Downloading %s' % url)
+                path = downloader.download_file(url)
+                delete_after_download = True
+            else:
+                url = path
+                delete_after_download = False
 
             def convert_to_text(extended_rows):
                 for number, headers, row in extended_rows:
@@ -325,47 +313,41 @@ class Resource(HDXObject):
                         row[i] = str(val)
                     yield (number, headers, row)
 
-            stream = Stream(path, headers=1, post_parse=[convert_to_text], bytes_sample_size=1000000)
-            stream.open()
-            nonefieldname = False
-            if schema is None:
-                schema = list()
-                for fieldname in stream.headers:
-                    if fieldname is not None:
-                        schema.append({'id': fieldname, 'type': 'text'})
-                    else:
-                        nonefieldname = True
-            data = {'resource_id': self.data['id'], 'force': True, 'fields': schema, 'primary_key': primary_key}
-            self._write_to_hdx('datastore_create', data, 'resource_id')
-            if primary_key is None:
-                method = 'insert'
-            else:
-                method = 'upsert'
-            logger.debug('Uploading data from %s to datastore' % url)
-            offset = 0
-            chunksize = 100
-            rowset = stream.read(keyed=True, limit=chunksize)
-            while len(rowset) != 0:
-                if nonefieldname:
-                    for row in rowset:
-                        del row[None]
-                data = {'resource_id': self.data['id'], 'force': True, 'method': method, 'records': rowset}
-                self._write_to_hdx('datastore_upsert', data, 'resource_id')
+            try:
+                stream = downloader.get_tabular_stream(path, headers=1, post_parse=[convert_to_text],
+                                                       bytes_sample_size=1000000)
+                nonefieldname = False
+                if schema is None:
+                    schema = list()
+                    for fieldname in stream.headers:
+                        if fieldname is not None:
+                            schema.append({'id': fieldname, 'type': 'text'})
+                        else:
+                            nonefieldname = True
+                data = {'resource_id': self.data['id'], 'force': True, 'fields': schema, 'primary_key': primary_key}
+                self._write_to_hdx('datastore_create', data, 'resource_id')
+                if primary_key is None:
+                    method = 'insert'
+                else:
+                    method = 'upsert'
+                logger.debug('Uploading data from %s to datastore' % url)
+                offset = 0
+                chunksize = 100
                 rowset = stream.read(keyed=True, limit=chunksize)
-                logger.debug('Uploading: %s' % offset)
-                offset += chunksize
-        except Exception as e:
-            raisefrom(HDXError, 'Upload to datastore of %s failed!' % url, e)
-        finally:
-            if stream:
-                stream.close()
-            if delete_after_download:
-                unlink(path)
-                if zip_path:
-                    unlink(zip_path)
-            else:
-                if zip_path:
-                    unlink(path)  # ie. we keep the zip but remove the extracted file
+                while len(rowset) != 0:
+                    if nonefieldname:
+                        for row in rowset:
+                            del row[None]
+                    data = {'resource_id': self.data['id'], 'force': True, 'method': method, 'records': rowset}
+                    self._write_to_hdx('datastore_upsert', data, 'resource_id')
+                    rowset = stream.read(keyed=True, limit=chunksize)
+                    logger.debug('Uploading: %s' % offset)
+                    offset += chunksize
+            except Exception as e:
+                raisefrom(HDXError, 'Upload to datastore of %s failed!' % url, e)
+            finally:
+                if delete_after_download:
+                    unlink(path)
 
     def create_datastore_from_dict_schema(self, data, delete_first=0, path=None):
         # type: (dict, int, Optional[str]) -> None

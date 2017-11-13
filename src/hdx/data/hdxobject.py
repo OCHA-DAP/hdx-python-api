@@ -94,7 +94,7 @@ class HDXObject(UserDict, object):
 
     def _read_from_hdx(self, object_type, value, fieldname='id',
                        action=None, **kwargs):
-        # type: (str, str, str, Optional[str], ...) -> Tuple[bool, Union[Dict, str]]
+        # type: (str, str, str, Optional[str], Any) -> Tuple[bool, Union[Dict, str]]
         """Makes a read call to HDX passing in given parameter.
 
         Args:
@@ -509,7 +509,7 @@ class HDXObject(UserDict, object):
             tags (List[str]): list of tags to add
 
         Returns:
-            bool: Returns True if all tags added or False if any already present.
+            bool: True if all tags added or False if any already present.
         """
         alltagsadded = True
         for tag in tags:
@@ -525,7 +525,7 @@ class HDXObject(UserDict, object):
             field (str): Field containing comma separated list
 
         Returns:
-            List[str]: Returns list of strings
+            List[str]: List of strings
         """
         strings = self.data.get(field)
         if strings:
@@ -561,7 +561,7 @@ class HDXObject(UserDict, object):
             strings (List[str]): list of strings to add
 
         Returns:
-            bool: Returns True if all strings added or False if any already present.
+            bool: True if all strings added or False if any already present.
         """
         allstringsadded = True
         for string in strings:

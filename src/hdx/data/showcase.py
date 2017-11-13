@@ -4,10 +4,11 @@ import logging
 from os.path import join
 from typing import List, Union, Optional, Dict
 
+from hdx.utilities import is_valid_uuid
+
 import hdx.data.dataset
 import hdx.data.hdxobject
 from hdx.hdx_configuration import Configuration
-from hdx.utilities import is_valid_uuid
 
 logger = logging.getLogger(__name__)
 
@@ -159,7 +160,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
             tags (List[str]): List of tags to add
 
         Returns:
-            bool: Returns True if all tags added or False if any already present.
+            bool: True if all tags added or False if any already present.
         """
         return self._add_tags(tags)
 
@@ -240,7 +241,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
             datasets_to_check (List[Dataset]): List of datasets against which to check existence of dataset. Defaults to datasets in showcase.
 
         Returns:
-            bool: Returns True if all datasets added or False if any already present
+            bool: True if all datasets added or False if any already present
         """
         if datasets_to_check is None:
             datasets_to_check = self.get_datasets()

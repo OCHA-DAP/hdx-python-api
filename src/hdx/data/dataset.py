@@ -430,7 +430,7 @@ class Dataset(HDXObject):
 
     @staticmethod
     def search_in_hdx(query='*:*', configuration=None, **kwargs):
-        # type: (Optional[str], Optional[Configuration], ...) -> List['Dataset']
+        # type: (Optional[str], Optional[Configuration], Any) -> List['Dataset']
         """Searches for datasets in HDX
 
         Args:
@@ -499,7 +499,7 @@ class Dataset(HDXObject):
 
     @staticmethod
     def get_all_dataset_names(configuration=None, **kwargs):
-        # type: (Optional[Configuration], ...) -> List[str]
+        # type: (Optional[Configuration], Any) -> List[str]
         """Get all dataset names in HDX
 
         Args:
@@ -517,7 +517,7 @@ class Dataset(HDXObject):
 
     @staticmethod
     def get_all_datasets(configuration=None, **kwargs):
-        # type: (Optional[Configuration], ...) -> List['Dataset']
+        # type: (Optional[Configuration], Any) -> List['Dataset']
         """Get all datasets in HDX
 
         Args:
@@ -847,7 +847,7 @@ class Dataset(HDXObject):
             tags (List[str]): list of tags to add
 
         Returns:
-            bool: Returns True if all tags added or False if any already present.
+            bool: True if all tags added or False if any already present.
         """
         return self._add_tags(tags)
 
@@ -912,7 +912,7 @@ class Dataset(HDXObject):
             use_live (bool): Try to get use latest country data from web rather than file in package. Defaults to True.
 
         Returns:
-            bool: Returns True if all countries added or False if any already present.
+            bool: True if all countries added or False if any already present.
         """
         allcountriesadded = True
         for country in countries:
@@ -931,7 +931,7 @@ class Dataset(HDXObject):
             use_live (bool): Try to get use latest country data from web rather than file in package. Defaults to True.
 
         Returns:
-            bool: Returns True if all countries in region added or False if any already present.
+            bool: True if all countries in region added or False if any already present.
         """
         return self.add_country_locations(Country.get_countries_in_region(region, exception=HDXError,
                                                                           use_live=use_live), locations=locations)
@@ -990,7 +990,7 @@ class Dataset(HDXObject):
         """Get the dataset's maintainer.
 
          Returns:
-             User: Returns dataset's maintainer
+             User: Dataset's maintainer
         """
         return User.read_from_hdx(self.data['maintainer'], configuration=self.configuration)
 
@@ -1018,7 +1018,7 @@ class Dataset(HDXObject):
         """Get the dataset's organization.
 
          Returns:
-             Organization: Returns dataset's organization
+             Organization: Dataset's organization
         """
         return hdx.data.organization.Organization.read_from_hdx(self.data['owner_org'], configuration=self.configuration)
 
@@ -1107,7 +1107,7 @@ class Dataset(HDXObject):
             showcases_to_check (List[Showcase]): list of showcases against which to check existence of showcase. Defaults to showcases containing dataset.
 
         Returns:
-            bool: Returns True if all showcases added or False if any already present
+            bool: True if all showcases added or False if any already present
         """
         if showcases_to_check is None:
             showcases_to_check = self.get_showcases()
@@ -1136,7 +1136,7 @@ class Dataset(HDXObject):
         """Return whether the dataset is requestable or not
 
         Returns:
-            bool: Returns whether the dataset is requestable or not
+            bool: Whether the dataset is requestable or not
         """
         return self.data.get('is_requestdata_type', False)
 
@@ -1159,7 +1159,7 @@ class Dataset(HDXObject):
         """Return list of fieldnames in your data. Only applicable to requestable datasets.
 
         Returns:
-            List[str]: Returns list of field names
+            List[str]: List of field names
         """
         if not self.is_requestable():
             raise NotRequestableError('get_fieldnames is only applicable to requestable datasets!')
@@ -1187,7 +1187,7 @@ class Dataset(HDXObject):
             fieldnames (List[str]): list of fieldnames to add
 
         Returns:
-            bool: Returns True if all fieldnames added or False if any already present
+            bool: True if all fieldnames added or False if any already present
         """
         if not self.is_requestable():
             raise NotRequestableError('add_fieldnames is only applicable to requestable datasets!')
@@ -1212,7 +1212,7 @@ class Dataset(HDXObject):
         """Return list of filetypes in your data
 
         Returns:
-            List[str]: Returns list of filetypes
+            List[str]: List of filetypes
         """
         if not self.is_requestable():
             return [resource.get_file_type() for resource in self.get_resources()]
@@ -1240,7 +1240,7 @@ class Dataset(HDXObject):
             filetypes (List[str]): list of filetypes to add
 
         Returns:
-            bool: Returns True if all filetypes added or False if any already present
+            bool: True if all filetypes added or False if any already present
         """
         if not self.is_requestable():
             raise NotRequestableError('add_filetypes is only applicable to requestable datasets!')

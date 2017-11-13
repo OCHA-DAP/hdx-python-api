@@ -134,7 +134,7 @@ class User(HDXObject):
         self._delete_from_hdx('user', 'id')
 
     def email(self, subject, text_body, html_body=None, sender=None, **kwargs):
-        # type: (str, str, Optional[str], Optional[str], ...) -> None
+        # type: (str, str, Optional[str], Optional[str], Any) -> None
         """Emails a user.
 
         Args:
@@ -154,7 +154,7 @@ class User(HDXObject):
 
     @staticmethod
     def get_all_users(configuration=None, **kwargs):
-        # type: (Optional[Configuration], ...) -> List['User']
+        # type: (Optional[Configuration], Any) -> List['User']
         """Get all users in HDX
 
         Args:
@@ -180,7 +180,7 @@ class User(HDXObject):
 
     @staticmethod
     def email_users(users, subject, text_body, html_body=None, sender=None, configuration=None, **kwargs):
-        # type: (List['User'], str, str, Optional[str], Optional[str], Optional[Configuration], ...) -> None
+        # type: (List['User'], str, str, Optional[str], Optional[str], Optional[Configuration], Any) -> None
         """Email a list of users
 
         Args:
