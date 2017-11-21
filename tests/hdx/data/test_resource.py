@@ -7,6 +7,7 @@ from os import unlink
 from os.path import join
 
 import pytest
+import six
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.downloader import DownloadError
 
@@ -551,9 +552,6 @@ class TestResource:
         resource.update_datastore_from_json_schema(topline_json, path=filefordatastore)
         assert TestResource.datastore == 'create'
         TestResource.datastore = None
-        filefordatastore = join('tests', 'fixtures', 'test_data.zip')
-        resource.update_datastore_from_json_schema(topline_json, path=filefordatastore)
-        assert TestResource.datastore == 'create'
         TestResource.datastore = None
         filefordatastore = join('tests', 'fixtures', 'datastore', 'ACLED-All-Africa-File_20170101-to-20170708.xlsx')
         resource.update_datastore(path=filefordatastore)
@@ -566,3 +564,7 @@ class TestResource:
         with pytest.raises(HDXError):
             del resource['url']
             resource.create_datastore()
+        if six.PY3:
+            filefordatastore = join('tests', 'fixtures', 'test_data.zip')
+            resource.update_datastore_from_json_schema(topline_json, path=filefordatastore)
+            assert TestResource.datastore == 'create'
