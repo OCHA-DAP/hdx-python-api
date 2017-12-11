@@ -4,9 +4,9 @@ from os.path import join
 
 import ckanapi
 import pytest
+from hdx.utilities.loader import LoadError
 
 from hdx.hdx_configuration import Configuration, ConfigurationError
-from hdx.utilities.loader import LoadError
 
 
 class TestConfiguration:

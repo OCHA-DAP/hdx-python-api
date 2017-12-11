@@ -5,11 +5,11 @@ import json
 from os.path import join
 
 import pytest
+from hdx.utilities.dictandlist import merge_two_dictionaries
 
 from hdx.data.hdxobject import HDXError
 from hdx.data.user import User
 from hdx.hdx_configuration import Configuration
-from hdx.utilities.dictandlist import merge_two_dictionaries
 from . import MockResponse, user_data
 
 resultdict = {
