@@ -253,8 +253,12 @@ class Resource(HDXObject):
         if not url:
             raise HDXError('No URL to download!')
         logger.debug('Downloading %s' % url)
+        filename = self.data['name']
+        format = '.%s' % self.data['format']
+        if format not in filename:
+            filename = '%s%s' % (filename, format)
         with Download() as downloader:
-            path = downloader.download_file(url, folder)
+            path = downloader.download_file(url, folder, filename)
             return url, path
 
     def delete_datastore(self):
@@ -294,25 +298,21 @@ class Resource(HDXObject):
                 self.delete_datastore()
         else:
             raise HDXError('delete_first must be 0, 1 or 2! (0 = No, 1 = Yes, 2 = Delete if no primary key)')
+        if path is None:
+            # Download the resource
+            url, path = self.download()
+            delete_after_download = True
+        else:
+            url = path
+            delete_after_download = False
+
+        def convert_to_text(extended_rows):
+            for number, headers, row in extended_rows:
+                for i, val in enumerate(row):
+                    row[i] = str(val)
+                yield (number, headers, row)
+
         with Download() as downloader:
-            if path is None:
-                # Download the resource
-                url = self.data.get('url', None)
-                if not url:
-                    raise HDXError('No URL to download!')
-                logger.debug('Downloading %s' % url)
-                path = downloader.download_file(url)
-                delete_after_download = True
-            else:
-                url = path
-                delete_after_download = False
-
-            def convert_to_text(extended_rows):
-                for number, headers, row in extended_rows:
-                    for i, val in enumerate(row):
-                        row[i] = str(val)
-                    yield (number, headers, row)
-
             try:
                 stream = downloader.get_tabular_stream(path, headers=1, post_parse=[convert_to_text],
                                                        bytes_sample_size=1000000)

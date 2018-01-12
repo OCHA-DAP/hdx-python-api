@@ -1,8 +1,8 @@
 ckanapi==4.1
-hdx-python-country==1.1.2
+hdx-python-country==1.1.3
 ndg-httpsclient==0.4.3
-pyasn1==0.3.6
-pyOpenSSL==17.3.0
+pyasn1==0.4.2
+pyOpenSSL==17.5.0
 python-dateutil==2.6.1
 requests==2.18.4
 scraperwiki==0.5.1

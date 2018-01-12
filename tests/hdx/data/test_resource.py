@@ -4,7 +4,7 @@ import copy
 import json
 import os
 from os import unlink
-from os.path import join
+from os.path import join, basename
 
 import pytest
 import six
@@ -20,7 +20,7 @@ from .test_dataset import dataset_resultdict
 resultdict = {'cache_last_updated': None, 'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',
               'webstore_last_updated': None, 'datastore_active': None,
               'id': 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5', 'size': None, 'state': 'active',
-              'hash': '', 'description': 'My Resource', 'format': 'XLSX', 'last_modified': None, 'url_type': 'api',
+              'hash': '', 'description': 'My Resource', 'format': 'csv', 'last_modified': None, 'url_type': 'api',
               'mimetype': None, 'cache_url': None, 'name': 'MyResource1', 'created': '2016-06-07T08:57:27.367939',
               'url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv',
               'webstore_url': None, 'mimetype_inner': None, 'position': 0,
@@ -414,15 +414,15 @@ class TestResource:
 
         resource = Resource.read_from_hdx('TEST1')
         assert resource['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
-        assert resource.get_file_type() == 'XLSX'
+        assert resource.get_file_type() == 'csv'
 
-        resource.set_file_type('CSV')
+        resource.set_file_type('XLSX')
         resource['id'] = 'TEST1'
         resource['name'] = 'MyResource1'
         resource.update_in_hdx()
         assert resource['id'] == 'TEST1'
-        assert resource['format'] == 'csv'
-        assert resource.get_file_type() == 'csv'
+        assert resource['format'] == 'xlsx'
+        assert resource.get_file_type() == 'xlsx'
         assert resource['url_type'] == 'api'
         assert resource['resource_type'] == 'api'
         assert resource[
@@ -507,6 +507,7 @@ class TestResource:
         url, path = resource.download()
         unlink(path)
         assert url == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
+        assert basename(path) == 'MyResource1.csv'
         resource['url'] = ''
         with pytest.raises(HDXError):
             resource.download()
