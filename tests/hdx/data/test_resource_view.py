@@ -12,10 +12,12 @@ from hdx.data.resource_view import ResourceView
 from hdx.hdx_configuration import Configuration
 from . import MockResponse
 
+hxl_preview_config = '{"configVersion":2,"bites":[{"init":true,"type":"key figure","filteredValues":[],"errorMsg":null,"ingredient":{"aggregateColumn":null,"valueColumn":"#affected+killed","aggregateFunction":"sum"},"dataTitle":"#affected+killed","displayCategory":"Key Figures","unit":null,"hashCode":-1955043658,"title":"Sum of fatalities","value":null},{"init":true,"type":"chart","filteredValues":[],"errorMsg":null,"swapAxis":true,"showGrid":true,"pieChart":false,"ingredient":{"aggregateColumn":"#adm1+name","valueColumn":"#affected+killed","aggregateFunction":"sum"},"dataTitle":"#affected+killed","displayCategory":"Charts","hashCode":738289179,"title":"Sum of fatalities grouped by admin1","values":null,"categories":null},{"init":true,"type":"chart","filteredValues":[],"errorMsg":null,"swapAxis":true,"showGrid":true,"pieChart":false,"ingredient":{"aggregateColumn":"#adm2+name","valueColumn":"#affected+killed","aggregateFunction":"sum"},"dataTitle":"#affected+killed","displayCategory":"Charts","hashCode":766918330,"title":"Sum of fatalities grouped by admin2","values":null,"categories":null}]}'
+
 resource_view_list = [{'description': '', 'resource_id': '25982d1c-f45a-45e1-b14e-87d367413045', 'view_type': 'recline_view',
                        'title': 'Data Explorer', 'package_id': '53f4375e-8872-4bcd-9746-c0fda941dadb', 'id': 'd80301b5-4abd-49bd-bf94-fa4af7b6e7a4'},
                       {'description': '', 'resource_id': '25982d1c-f45a-45e1-b14e-87d367413045',
-                       'hxl_preview_config': '{"configVersion":2,"bites":[{"init":true,"type":"key figure","filteredValues":[],"errorMsg":null,"ingredient":{"aggregateColumn":null,"valueColumn":"#affected+killed","aggregateFunction":"sum"},"dataTitle":"#affected+killed","displayCategory":"Key Figures","unit":null,"hashCode":-1955043658,"title":"Sum of fatalities","value":null},{"init":true,"type":"chart","filteredValues":[],"errorMsg":null,"swapAxis":true,"showGrid":true,"pieChart":false,"ingredient":{"aggregateColumn":"#adm1+name","valueColumn":"#affected+killed","aggregateFunction":"sum"},"dataTitle":"#affected+killed","displayCategory":"Charts","hashCode":738289179,"title":"Sum of fatalities grouped by admin1","values":null,"categories":null},{"init":true,"type":"chart","filteredValues":[],"errorMsg":null,"swapAxis":true,"showGrid":true,"pieChart":false,"ingredient":{"aggregateColumn":"#adm2+name","valueColumn":"#affected+killed","aggregateFunction":"sum"},"dataTitle":"#affected+killed","displayCategory":"Charts","hashCode":766918330,"title":"Sum of fatalities grouped by admin2","values":null,"categories":null}]}',
+                       'hxl_preview_config': hxl_preview_config,
                        'view_type': 'hdx_hxl_preview', 'title': 'Quick Charts', 'package_id': '53f4375e-8872-4bcd-9746-c0fda941dadb', 'id': 'c06b5a0d-1d41-4a74-a196-41c251c76023'}]
 
 resultdict = resource_view_list[1]
@@ -263,3 +265,22 @@ class TestResourceView:
         assert resource_view['title'] == 'Data Explorer'
         assert resource_view['description'] == 'haha'
         assert resource_view['resource_id'] == '25982d1c-f45a-45e1-b14e-87d367413045'
+
+    def test_copy(self, configuration, read):
+        data = copy.deepcopy(self.resource_view_data)
+        resource_view = ResourceView(data)
+        resource_view.copy(resultdict)
+        assert resource_view['resource_id'] == self.resource_view_data['resource_id']
+        assert resource_view['view_type'] == 'hdx_hxl_preview'
+        assert resource_view['hxl_preview_config'] == hxl_preview_config
+        data = copy.deepcopy(self.resource_view_data)
+        resource_view = ResourceView(data)
+        resource_view.copy('c06b5a0d-1d41-4a74-a196-41c251c76023')
+        assert resource_view['resource_id'] == self.resource_view_data['resource_id']
+        assert resource_view['view_type'] == 'hdx_hxl_preview'
+        assert resource_view['hxl_preview_config'] == hxl_preview_config
+        with pytest.raises(HDXError):
+            resource_view.copy('123')
+        with pytest.raises(HDXError):
+            resource_view.copy(5)
+
