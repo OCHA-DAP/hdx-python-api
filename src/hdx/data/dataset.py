@@ -204,6 +204,18 @@ class Dataset(HDXObject):
         """
         return self.resources
 
+    def get_resource(self, index=0):
+        # type: (int) -> hdx.data.resource.Resource
+        """Get one resource from dataset by index
+
+        Args:
+            index (int): Index of resource in dataset. Defaults to 0.
+
+        Returns:
+            hdx.data.resource.Resource: Resource object
+        """
+        return self.resources[index]
+
     def update_from_yaml(self, path=join('config', 'hdx_dataset_static.yml')):
         # type: (str) -> None
         """Update dataset metadata with static metadata from YAML file

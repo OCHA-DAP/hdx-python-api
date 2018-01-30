@@ -645,6 +645,10 @@ class TestDataset:
         dataset.update_from_json(static_json)
         assert dataset['name'] == 'MyDataset1'
         assert dataset['author'] == 'Someone'
+        assert dataset.get_resource() == {'id': '123', 'description': 'Resource1',
+                                            'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d', 'name': 'Resource1',
+                                            'url': 'http://resource1.xlsx',
+                                            'format': 'xlsx'}
         assert dataset.get_resources() == [{'id': '123', 'description': 'Resource1',
                                             'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d', 'name': 'Resource1',
                                             'url': 'http://resource1.xlsx',
