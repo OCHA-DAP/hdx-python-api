@@ -661,7 +661,7 @@ class TestDataset:
         dataset.add_update_resources(resources_data)
         dataset.add_update_resources(resources_data)
         assert len(dataset.resources) == 2
-        dataset.delete_resource('NOTEXIST')
+        dataset.delete_resource('de6549d8-268b-4dfe-adaf-a4ae5c8510d6')
         assert len(dataset.resources) == 2
         dataset.delete_resource('de6549d8-268b-4dfe-adaf-a4ae5c8510d5')
         assert len(dataset.resources) == 1
@@ -679,6 +679,8 @@ class TestDataset:
             dataset.add_update_resources(resources_data)
         with pytest.raises(HDXError):
             dataset.add_update_resources(123)
+        with pytest.raises(HDXError):
+            dataset.delete_resource('NOTEXIST')
 
     def test_search_in_hdx(self, configuration, search):
         datasets = Dataset.search_in_hdx('ACLED')

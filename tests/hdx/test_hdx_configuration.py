@@ -274,6 +274,11 @@ hello there'''
                 'title',
                 'description',
             ]},
+            'resource view': {'required_fields': [
+                'resource_id',
+                'title',
+                'view_type',
+            ]},
         }
         assert Configuration.read() == expected_configuration
         Configuration._create(hdx_key_file=hdx_key_file, project_config_dict={'abc': '123'})
@@ -358,6 +363,11 @@ hello there'''
                 'title',
                 'description',
             ]},
+            'resource view': {'required_fields': [
+                'resource_id',
+                'title',
+                'view_type',
+            ]},
         }
         assert Configuration.read() == expected_configuration
 
@@ -438,6 +448,11 @@ hello there'''
                 'name',
                 'title',
                 'description',
+            ]},
+            'resource view': {'required_fields': [
+                'resource_id',
+                'title',
+                'view_type',
             ]},
         }
         assert Configuration.read() == expected_configuration

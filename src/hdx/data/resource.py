@@ -3,15 +3,16 @@
 import logging
 from os import unlink
 from os.path import join
-from typing import Optional, List, Tuple, Dict
+from typing import Optional, List, Tuple, Dict, Union
 
-from hdx.utilities import raisefrom
+from hdx.utilities import raisefrom, is_valid_uuid
 from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_yaml, load_json
 from hdx.utilities.path import script_dir_plus_file
 
 import hdx.data.dataset
 from hdx.data.hdxobject import HDXObject, HDXError
+from hdx.data.resource_view import ResourceView
 from hdx.hdx_configuration import Configuration
 
 logger = logging.getLogger(__name__)
@@ -90,6 +91,8 @@ class Resource(HDXObject):
             Optional[Resource]: Resource object if successful read, None if not
         """
 
+        if is_valid_uuid(identifier) is False:
+            raise HDXError('%s is not a valid resource id!' % identifier)
         resource = Resource(configuration=configuration)
         result = resource._load_from_hdx('resource', identifier)
         if result:
@@ -499,3 +502,114 @@ class Resource(HDXObject):
             None
         """
         self._read_from_hdx('resource', self.data['id'], action=self.actions()['patch'])
+
+    def get_resource_views(self):
+        # type: () -> List[ResourceView]
+        """Get any resource views in the resource
+
+        Returns:
+            List[ResourceView]: List of resource views
+        """
+        _, result = self._read_from_hdx('resource view', self.data['id'], 'id', ResourceView.actions()['list'])
+        resourceviews = list()
+        for resourceviewdict in result:
+            resourceview = ResourceView(resourceviewdict, configuration=self.configuration)
+            resourceviews.append(resourceview)
+        return resourceviews
+
+    def _get_resource_view(self, resource_view):
+        # type: (Union[ResourceView,Dict,str]) -> ResourceView
+        """Get resource view id
+
+        Args:
+            resource_view (Union[ResourceView,Dict,str]): Either a resource view id or ResourceView metadata from a ResourceView object or dictionary
+
+        Returns:
+            ResourceView: ResourceView object
+        """
+        if isinstance(resource_view, dict):
+            resource_view = ResourceView(resource_view, configuration=self.configuration)
+        if isinstance(resource_view, ResourceView):
+            return resource_view
+        raise HDXError('Type %s cannot be added as a resource view!' % type(resource_view).__name__)
+
+    def add_update_resource_view(self, resource_view):
+        # type: (Union[ResourceView,Dict]) -> None
+        """Add new resource view in resource with new metadata
+
+        Args:
+            resource_view (Union[ResourceView,Dict]): Resource view metadata either from a ResourceView object or a dictionary
+
+        Returns:
+            None
+
+        """
+        resource_view = self._get_resource_view(resource_view)
+        resource_view.create_in_hdx()
+
+    def add_update_resource_views(self, resource_views):
+        # type: (List[Union[ResourceView,Dict]]) -> None
+        """Add new or update existing resource views in resource with new metadata.
+
+        Args:
+            resource_views (List[Union[ResourceView,Dict]]): A list of resource views metadata from ResourceView objects or dictionaries
+
+        Returns:
+            None
+        """
+        if not isinstance(resource_views, list):
+            raise HDXError('ResourceViews should be a list!')
+        for resource_view in resource_views:
+            self.add_update_resource_view(resource_view)
+
+    def reorder_resource_views(self, resource_views):
+        # type: (List[Union[ResourceView,Dict,str]]) -> None
+        """Order resource views in resource.
+
+        Args:
+            resource_views (List[Union[ResourceView,Dict,str]]): A list of either resource view ids or resource views metadata from ResourceView objects or dictionaries
+
+        Returns:
+            None
+        """
+        if not isinstance(resource_views, list):
+            raise HDXError('ResourceViews should be a list!')
+        ids = list()
+        for resource_view in resource_views:
+            if isinstance(resource_view, str):
+                resource_view_id = resource_view
+            else:
+                resource_view_id = resource_view['id']
+            if is_valid_uuid(resource_view_id) is False:
+                raise HDXError('%s is not a valid resource view id!' % resource_view)
+            ids.append(resource_view_id)
+        _, result = self._read_from_hdx('resource view', self.data['id'], 'id',
+                                        ResourceView.actions()['reorder'], order=ids)
+
+    def delete_resource_view(self, resource_view):
+        # type: (Union[ResourceView,Dict,str]) -> None
+        """Delete a resource view from the resource and HDX
+
+        Args:
+            resource_view (Union[ResourceView,Dict,str]): Either a resource view id or resource view metadata either from a ResourceView object or a dictionary
+
+        Returns:
+            None
+        """
+        if isinstance(resource_view, str):
+            if is_valid_uuid(resource_view) is False:
+                raise HDXError('%s is not a valid resource view id!' % resource_view)
+            resource_view = ResourceView({'id': resource_view}, configuration=self.configuration)
+        else:
+            resource_view = self._get_resource_view(resource_view)
+            if 'id' not in resource_view:
+                found = False
+                title = resource_view.get('title')
+                for rv in self.get_resource_views():
+                    if resource_view['title'] == rv['title']:
+                        resource_view = rv
+                        found = True
+                        break
+                if not found:
+                    raise HDXError('No resource views have title %s in this resource!' % title)
+        resource_view.delete_from_hdx()

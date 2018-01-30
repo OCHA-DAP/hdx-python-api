@@ -75,3 +75,8 @@ organization:
     - name
     - title
     - description
+"resource view":
+  required_fields:
+    - resource_id
+    - title
+    - view_type

@@ -14,6 +14,7 @@ from hdx.utilities.downloader import DownloadError
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
 from hdx.hdx_configuration import Configuration
+from tests.hdx.data.test_resource_view import resource_view_list
 from . import MockResponse
 from .test_dataset import dataset_resultdict
 
@@ -67,7 +68,7 @@ searchdict = {'count': 4, 'results': [{'size': None, 'description': 'ACLED-All-A
                                        'webstore_last_updated': None,
                                        'mimetype': None, 'package_id': '45f53bde-544c-4a4a-9c6f-d609481b8719',
                                        'resource_type': 'api',
-                                       'id': '74b74ae1-df0c-4716-829f-4f939a046823', 'mimetype_inner': None, 'hash': '',
+                                       'id': '74b74ae1-df0c-4716-829f-4f939a046811', 'mimetype_inner': None, 'hash': '',
                                        'webstore_url': None},
                                       {'size': None, 'description': '',
                                        'revision_id': '5259be68-e72f-4c02-be8e-61d7cd594a9b',
@@ -88,22 +89,22 @@ def mockshow(url, datadict):
         return MockResponse(404,
                             '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
     result = json.dumps(resultdict)
-    if datadict['id'] == 'TEST1':
+    if datadict['id'] == '74b74ae1-df0c-4716-829f-4f939a046811':
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}' % result)
-    if datadict['id'] == 'TEST2':
+    if datadict['id'] == '74b74ae1-df0c-4716-829f-4f939a046812':
         return MockResponse(404,
                             '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
-    if datadict['id'] == 'TEST3':
+    if datadict['id'] == '74b74ae1-df0c-4716-829f-4f939a046813':
         return MockResponse(200,
                             '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}')
-    if datadict['id'] == 'TEST4':
+    if datadict['id'] == '74b74ae1-df0c-4716-829f-4f939a046814':
         resdictcopy = copy.deepcopy(resultdict)
         resdictcopy['url'] = 'lalalala'
         result = json.dumps(resdictcopy)
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}' % result)
-    if datadict['id'] == 'TEST5':
+    if datadict['id'] == '74b74ae1-df0c-4716-829f-4f939a046815':
         resdictcopy = copy.deepcopy(resultdict)
         resdictcopy['id'] = 'datastore_unknown_resource'
         result = json.dumps(resdictcopy)
@@ -147,6 +148,44 @@ def mocksearch(url, datadict):
                             '{"success": true, "result": {"count": 0, "results": []}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_search"}')
     return MockResponse(404,
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_search"}')
+
+
+def mockresourceview(url, decodedata):
+    if 'delete' in url:
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_delete"}' % decodedata)
+    datadict = json.loads(decodedata)
+    if 'show' in url:
+        if id not in datadict:
+            return MockResponse(404,
+                                '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_show"}')
+        if datadict['title'] == 'Data Explorer':
+            result = json.dumps(resource_view_list[0])
+            return MockResponse(200,
+                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_show"}' % result)
+        if datadict['title'] == 'Quick Charts':
+            result = json.dumps(resource_view_list[1])
+            return MockResponse(200,
+                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_show"}' % result)
+    if 'list' in url:
+        result = json.dumps(resource_view_list)
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_list"}' % result)
+    if 'create' in url:
+        if datadict['title'] == 'Data Explorer':
+            result = json.dumps(resource_view_list[0])
+            return MockResponse(200,
+                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}' % result)
+        if datadict['title'] == 'Quick Charts':
+            result = json.dumps(resource_view_list[1])
+            return MockResponse(200,
+                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_show"}' % result)
+    if 'reorder' in url:
+        result = json.dumps({'id': '25982d1c-f45a-45e1-b14e-87d367413045', 'order': ['c06b5a0d-1d41-4a74-a196-41c251c76023', 'd80301b5-4abd-49bd-bf94-fa4af7b6e7a4']})
+        return MockResponse(200, '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_reorder"}' % result)
+
+    return MockResponse(404,
+                        '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_show"}')
 
 
 class TestResource:
@@ -241,7 +280,7 @@ class TestResource:
                 if 'show' in url:
                     return mockshow(url, datadict)
                 if 'resource_id' in datadict:
-                    if datadict['resource_id'] == 'TEST1':
+                    if datadict['resource_id'] == '74b74ae1-df0c-4716-829f-4f939a046811':
                         return MockResponse(200,
                                             '{"success": true, "result": {"fields": [{"type": "text", "id": "code"}, {"type": "text", "id": "title"}, {"type": "float", "id": "value"}, {"type": "timestamp", "id": "latest_date"}, {"type": "text", "id": "source"}, {"type": "text", "id": "source_link"}, {"type": "text", "id": "notes"}, {"type": "text", "id": "explore"}, {"type": "text", "id": "units"}], "method": "insert", "primary_key": "code", "resource_id": "bfa6b55f-10b6-4ba2-8470-33bb9a5194a5"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}')
                 if 'update' not in url:
@@ -354,21 +393,41 @@ class TestResource:
 
         Configuration.read().remoteckan().session = MockSession()
 
+    @pytest.fixture(scope='function')
+    def post_resourceview(self):
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                decodedata = data.decode('utf-8')
+                return mockresourceview(url, decodedata)
+
+        Configuration.read().remoteckan().session = MockSession()
+
     def test_read_from_hdx(self, configuration, read):
-        resource = Resource.read_from_hdx('TEST1')
+        resource = Resource.read_from_hdx('74b74ae1-df0c-4716-829f-4f939a046811')
         assert resource['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
         assert resource['name'] == 'MyResource1'
         assert resource['package_id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
-        resource = Resource.read_from_hdx('TEST2')
+        resource = Resource.read_from_hdx('74b74ae1-df0c-4716-829f-4f939a046812')
         assert resource is None
-        resource = Resource.read_from_hdx('TEST3')
+        resource = Resource.read_from_hdx('74b74ae1-df0c-4716-829f-4f939a046813')
         assert resource is None
+        with pytest.raises(HDXError):
+            Resource.read_from_hdx('ABC')
+
+    def test_check_required_fields(self, configuration):
+        resource_data = copy.deepcopy(TestResource.resource_data)
+        resource = Resource(resource_data)
+        resource.check_required_fields()
+        del resource['url']
+        resource.set_file_to_upload('abc')
+        resource.check_required_fields()
 
     def test_create_in_hdx(self, configuration, post_create):
         resource = Resource()
         with pytest.raises(HDXError):
             resource.create_in_hdx()
-        resource['id'] = 'TEST1'
+        resource['id'] = '74b74ae1-df0c-4716-829f-4f939a046811'
         resource['name'] = 'LALA'
         with pytest.raises(HDXError):
             resource.create_in_hdx()
@@ -412,15 +471,15 @@ class TestResource:
         with pytest.raises(HDXError):
             resource.update_in_hdx()
 
-        resource = Resource.read_from_hdx('TEST1')
+        resource = Resource.read_from_hdx('74b74ae1-df0c-4716-829f-4f939a046811')
         assert resource['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
         assert resource.get_file_type() == 'csv'
 
         resource.set_file_type('XLSX')
-        resource['id'] = 'TEST1'
+        resource['id'] = '74b74ae1-df0c-4716-829f-4f939a046811'
         resource['name'] = 'MyResource1'
         resource.update_in_hdx()
-        assert resource['id'] == 'TEST1'
+        assert resource['id'] == '74b74ae1-df0c-4716-829f-4f939a046811'
         assert resource['format'] == 'xlsx'
         assert resource.get_file_type() == 'xlsx'
         assert resource['url_type'] == 'api'
@@ -450,14 +509,14 @@ class TestResource:
 
         resource_data = copy.deepcopy(TestResource.resource_data)
         resource_data['name'] = 'MyResource1'
-        resource_data['id'] = 'TEST1'
+        resource_data['id'] = '74b74ae1-df0c-4716-829f-4f939a046811'
         resource = Resource(resource_data)
         resource.create_in_hdx()
-        assert resource['id'] == 'TEST1'
+        assert resource['id'] == '74b74ae1-df0c-4716-829f-4f939a046811'
         assert resource.get_file_type() == 'xlsx'
 
     def test_delete_from_hdx(self, configuration, post_delete):
-        resource = Resource.read_from_hdx('TEST1')
+        resource = Resource.read_from_hdx('74b74ae1-df0c-4716-829f-4f939a046811')
         resource.delete_from_hdx()
         del resource['id']
         with pytest.raises(HDXError):
@@ -483,15 +542,18 @@ class TestResource:
 
     def test_touch(self, configuration, post_patch):
         resource = Resource()
-        resource['id'] = 'TEST1'
+        resource['id'] = '74b74ae1-df0c-4716-829f-4f939a046811'
         resource.touch()
-        assert resource['id'] == 'TEST1'
+        assert resource['id'] == '74b74ae1-df0c-4716-829f-4f939a046811'
 
     def test_get_dataset(self, configuration, post_dataset):
         resource_data = copy.deepcopy(TestResource.resource_data)
         resource = Resource(resource_data)
         dataset = resource.get_dataset()
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
+        del resource['package_id']
+        with pytest.raises(HDXError):
+            resource.get_dataset()
 
     def test_search_in_hdx(self, configuration, search):
         resources = Resource.search_in_hdx('name:ACLED')
@@ -502,8 +564,8 @@ class TestResource:
             Resource.search_in_hdx('fail')
 
     def test_download(self, configuration, read):
-        resource = Resource.read_from_hdx('TEST1')
-        resource2 = Resource.read_from_hdx('TEST4')
+        resource = Resource.read_from_hdx('74b74ae1-df0c-4716-829f-4f939a046811')
+        resource2 = Resource.read_from_hdx('74b74ae1-df0c-4716-829f-4f939a046814')
         url, path = resource.download()
         unlink(path)
         assert url == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
@@ -515,8 +577,8 @@ class TestResource:
             resource2.download()
 
     def test_datastore(self, configuration, post_datastore, topline_yaml, topline_json):
-        resource = Resource.read_from_hdx('TEST1')
-        resource2 = Resource.read_from_hdx('TEST5')
+        resource = Resource.read_from_hdx('74b74ae1-df0c-4716-829f-4f939a046811')
+        resource2 = Resource.read_from_hdx('74b74ae1-df0c-4716-829f-4f939a046815')
         TestResource.datastore = None
         resource.create_datastore(delete_first=0)
         assert TestResource.datastore == 'create'
@@ -536,14 +598,14 @@ class TestResource:
         assert TestResource.datastore == 'create'
         TestResource.datastore = None
         resource.update_datastore_from_dict_schema({
-  "schema": [
-    {
-      "id": "code",
-      "type": "text"
-    },
-  ],
-  "primary_key": "code"
-})
+          "schema": [
+            {
+              "id": "code",
+              "type": "text"
+            },
+          ],
+          "primary_key": "code"
+        })
         assert TestResource.datastore == 'create'
         TestResource.datastore = None
         resource.update_datastore_from_yaml_schema(topline_yaml)
@@ -569,3 +631,36 @@ class TestResource:
             filefordatastore = join('tests', 'fixtures', 'test_data.zip')
             resource.update_datastore_from_json_schema(topline_json, path=filefordatastore)
             assert TestResource.datastore == 'create'
+
+    def test_resource_views(self, configuration, post_resourceview):
+        resource = Resource({'id': 'XXX'})
+        with pytest.raises(HDXError):
+            resource.add_update_resource_view('123')
+        resource_view = copy.deepcopy(resource_view_list[0])
+        del resource_view['id']
+        del resource_view['package_id']
+        resource.add_update_resource_view(resource_view)
+        resource_view = copy.deepcopy(resource_view_list[1])
+        del resource_view['id']
+        del resource_view['package_id']
+        with pytest.raises(HDXError):
+            resource.add_update_resource_views('123')
+        resource.add_update_resource_views([resource_view])
+        resource_views = resource.get_resource_views()
+        assert resource_views[0]['id'] == 'd80301b5-4abd-49bd-bf94-fa4af7b6e7a4'
+        assert resource_views[1]['id'] == 'c06b5a0d-1d41-4a74-a196-41c251c76023'
+        with pytest.raises(HDXError):
+            resource.delete_resource_view('123')
+        resource.delete_resource_view('d80301b5-4abd-49bd-bf94-fa4af7b6e7a4')
+        resource.delete_resource_view(resource_view)
+        resource_view['title'] = 'XXX'
+        with pytest.raises(HDXError):
+            resource.delete_resource_view(resource_view)
+        with pytest.raises(HDXError):
+            resource.reorder_resource_views('123')
+        resource.reorder_resource_views(['c06b5a0d-1d41-4a74-a196-41c251c76023', 'd80301b5-4abd-49bd-bf94-fa4af7b6e7a4'])
+        resource.reorder_resource_views(resource_view_list)
+        resource_view = copy.deepcopy(resource_view_list[0])
+        resource_view['id'] = '123'
+        with pytest.raises(HDXError):
+            resource.reorder_resource_views([resource_view_list[1], resource_view])

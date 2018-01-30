@@ -149,6 +149,8 @@ class Dataset(HDXObject):
             None
         """
         if isinstance(resource, str):
+            if is_valid_uuid(resource) is False:
+                raise HDXError('%s is not a valid resource id!' % resource)
             resource = hdx.data.resource.Resource.read_from_hdx(resource, configuration=self.configuration)
         elif isinstance(resource, dict):
             resource = hdx.data.resource.Resource(resource, configuration=self.configuration)
@@ -177,17 +179,21 @@ class Dataset(HDXObject):
         for resource in resources:
             self.add_update_resource(resource, ignore_datasetid)
 
-    def delete_resource(self, resource):
+    def delete_resource(self, resource, delete=True):
         # type: (Union[hdx.data.resource.Resource,Dict,str]) -> bool
-        """Delete a resource from the dataset
+        """Delete a resource from the dataset and also from HDX by default
 
         Args:
             resource (Union[hdx.data.resource.Resource,Dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
+            delete (bool): Whetehr to delete the resource from HDX (not just the dataset). Defaults to True.
 
         Returns:
             bool: True if resource removed or False if not
         """
-        return self._remove_hdxobject(self.resources, resource, delete=True)
+        if isinstance(resource, str):
+            if is_valid_uuid(resource) is False:
+                raise HDXError('%s is not a valid resource id!' % resource)
+        return self._remove_hdxobject(self.resources, resource, delete=delete)
 
     def get_resources(self):
         # type: () -> List[hdx.data.resource.Resource]
@@ -1011,7 +1017,7 @@ class Dataset(HDXObject):
         elif not isinstance(maintainer, str):
             raise HDXError('Type %s cannot be added as a maintainer!' % type(maintainer).__name__)
         if is_valid_uuid(maintainer) is False:
-            raise HDXError('Maintainer %s does not look like a user id!' % maintainer)
+            raise HDXError('%s is not a valid user id for a maintainer!' % maintainer)
         self.data['maintainer'] = maintainer
 
     def get_organization(self):
@@ -1039,7 +1045,7 @@ class Dataset(HDXObject):
         elif not isinstance(organization, str):
             raise HDXError('Type %s cannot be added as a organization!' % type(organization).__name__)
         if is_valid_uuid(organization) is False and organization != 'hdx':
-            raise HDXError('Organization %s does not look like an organization id!' % organization)
+            raise HDXError('%s is not a valid organization id!' % organization)
         self.data['owner_org'] = organization
 
     def get_showcases(self):
@@ -1075,7 +1081,7 @@ class Dataset(HDXObject):
         elif not isinstance(showcase, str):
             raise HDXError('Type %s cannot be added as a showcase!' % type(showcase).__name__)
         if is_valid_uuid(showcase) is False:
-            raise HDXError('Showcase %s does not look like a showcase id!' % showcase)
+            raise HDXError('%s is not a valid showcase id!' % showcase)
         return {'package_id': self.data['id'], 'showcase_id': showcase}
 
     def add_showcase(self, showcase, showcases_to_check=None):

@@ -370,7 +370,7 @@ class HDXObject(UserDict, object):
         return new_hdxobject
 
     def _remove_hdxobject(self, objlist, obj, matchon='id', delete=False):
-        # type: (List[Union[HDXObjectUpperBound,Dict]], Union[HDXObjectUpperBound,Dict,str], str, bool) -> None
+        # type: (List[Union[HDXObjectUpperBound,Dict]], Union[HDXObjectUpperBound,Dict,str], str, bool) -> bool
         """Remove an HDX object from a list within the parent HDX object
 
         Args:

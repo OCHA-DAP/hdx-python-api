@@ -209,7 +209,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         elif not isinstance(dataset, str):
             raise hdx.data.hdxobject.HDXError('Type %s cannot be added as a dataset!' % type(dataset).__name__)
         if is_valid_uuid(dataset) is False:
-            raise hdx.data.hdxobject.HDXError('Dataset %s does not look like a dataset id!' % dataset)
+            raise hdx.data.hdxobject.HDXError('%s is not a valid dataset id!' % dataset)
         return {'showcase_id': self.data['id'], 'package_id': dataset}
 
     def add_dataset(self, dataset, datasets_to_check=None):

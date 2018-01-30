@@ -150,9 +150,9 @@ class Organization(HDXObject):
 
     def add_update_user(self, user, capacity=None):
         # type: (Union[User,Dict,str],Optional[str]) -> None
-        """Add new or update existing users item in organization with new metadata. Capacity eg. member, admin
+        """Add new or update existing user in organization with new metadata. Capacity eg. member, admin
         must be supplied either within the User object or dictionary or using the capacity argument (which takes
-        precedence)
+        precedence).
 
         Args:
             user (Union[User,Dict,str]): Either a user id or user metadata either from a User object or a dictionary
@@ -178,8 +178,10 @@ class Organization(HDXObject):
         raise HDXError('Type %s cannot be added as a user!' % type(user).__name__)
 
     def add_update_users(self, users, capacity=None):
-        # type: (List[Union[User,Dict,str]]) -> None
-        """Add new or update existing users items with new metadata to the organization
+        # type: (List[Union[User,Dict,str]],Optional[str]) -> None
+        """Add new or update existing users in organization with new metadata. Capacity eg. member, admin
+        must be supplied either within the User object or dictionary or using the capacity argument (which takes
+        precedence).
 
         Args:
             users (List[Union[User,Dict,str]]): A list of either user ids or users metadata from User objects or dictionaries
