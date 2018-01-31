@@ -86,6 +86,28 @@ class ResourceView(HDXObject):
             return resourceview
         return None
 
+    @staticmethod
+    def get_all_for_resource(identifier, configuration=None):
+        # type: (str, Optional[Configuration]) -> List['ResourceView']
+        """Read all resource views for a resource given by identifier from HDX and returns list of ResourceView objects
+
+        Args:
+            identifier (str): Identifier of resource
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+
+        Returns:
+            List[ResourceView]: List of ResourceView objects
+        """
+
+        resourceview = ResourceView(configuration=configuration)
+        success, result = resourceview._read_from_hdx('resource view', identifier, 'id', ResourceView.actions()['list'])
+        resourceviews = list()
+        if success:
+            for resourceviewdict in result:
+                resourceview = ResourceView(resourceviewdict, configuration=configuration)
+                resourceviews.append(resourceview)
+        return resourceviews
+
     def check_required_fields(self, ignore_fields=list()):
         # type: (List[str]) -> None
         """Check that metadata for resource view is complete. The parameter ignore_fields should
@@ -99,6 +121,31 @@ class ResourceView(HDXObject):
         """
         self._check_required_fields('resource view', ignore_fields)
 
+    def _update_resource_view(self, log=False):
+        # type: () -> bool
+        """Check if resource view exists in HDX and if so, update resource view
+
+        Returns:
+            bool: True if updated and False if not
+        """
+        update = False
+        if 'id' in self.data and self._load_from_hdx('resource view', self.data['id']):
+            update = True
+        else:
+            if 'resource_id' in self.data:
+                resource_views = self.get_all_for_resource(self.data['resource_id'])
+                for resource_view in resource_views:
+                    if self.data['title'] == resource_view['title']:
+                        self.old_data = self.data
+                        self.data = resource_view.data
+                        update = True
+                        break
+        if update:
+            if log:
+                logger.warning('resource view exists. Updating %s' % self.data['id'])
+            self._merge_hdx_update('resource view', 'id')
+        return update
+
     def update_in_hdx(self):
         # type: () -> None
         """Check if resource view exists in HDX and if so, update resource view
@@ -106,7 +153,8 @@ class ResourceView(HDXObject):
         Returns:
             None
         """
-        self._update_in_hdx('resource view', 'id')
+        if not self._update_resource_view():
+            raise HDXError('No existing resource view to update!')
 
     def create_in_hdx(self):
         # type: () -> None
@@ -115,7 +163,9 @@ class ResourceView(HDXObject):
         Returns:
             None
         """
-        self._create_in_hdx('resource view', 'id', 'title')
+        self.check_required_fields()
+        if not self._update_resource_view(log=True):
+            self._save_to_hdx('create', 'title')
 
     def delete_from_hdx(self):
         # type: () -> None

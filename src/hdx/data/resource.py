@@ -510,12 +510,7 @@ class Resource(HDXObject):
         Returns:
             List[ResourceView]: List of resource views
         """
-        _, result = self._read_from_hdx('resource view', self.data['id'], 'id', ResourceView.actions()['list'])
-        resourceviews = list()
-        for resourceviewdict in result:
-            resourceview = ResourceView(resourceviewdict, configuration=self.configuration)
-            resourceviews.append(resourceview)
-        return resourceviews
+        return ResourceView.get_all_for_resource(self.data['id'])
 
     def _get_resource_view(self, resource_view):
         # type: (Union[ResourceView,Dict]) -> ResourceView

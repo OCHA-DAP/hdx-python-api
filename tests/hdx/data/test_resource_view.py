@@ -41,13 +41,15 @@ def resource_view_mockshow(url, datadict):
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_show"}')
 
 
-def mocklist(url):
+def resource_view_mocklist(url, datadict):
     if 'list' not in url:
         return MockResponse(404,
                             '{"success": false, "error": {"message": "TEST ERROR: Not all", "__type": "TEST ERROR: Not All Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_list"}')
-    return MockResponse(200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_list"}' % json.dumps(
-                            resource_view_list))
+    if datadict['id'] == '25982d1c-f45a-45e1-b14e-87d367413045':
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_list"}' % json.dumps(resource_view_list))
+    return MockResponse(404,
+                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_list"}')
 
 
 class TestResourceView:
@@ -83,12 +85,14 @@ class TestResourceView:
                 datadict = json.loads(data.decode('utf-8'))
                 if 'show' in url:
                     return resource_view_mockshow(url, datadict)
+                if 'list' in url:
+                    return resource_view_mocklist(url, datadict)
                 if 'create' not in url:
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}')
 
                 result = json.dumps(resultdict)
-                if datadict['title'] == 'Data Explorer':
+                if datadict['title'] == 'A Preview':
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}' % result)
                 if datadict['title'] == 'XXX':
@@ -111,6 +115,8 @@ class TestResourceView:
                 datadict = json.loads(data.decode('utf-8'))
                 if 'show' in url:
                     return resource_view_mockshow(url, datadict)
+                if 'list' in url:
+                    return resource_view_mocklist(url, datadict)
                 if 'update' not in url:
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "TEST ERROR: Not update", "__type": "TEST ERROR: Not Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_update"}')
@@ -160,7 +166,7 @@ class TestResourceView:
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
-                return mocklist(url)
+                return resource_view_mocklist(url, datadict)
 
         Configuration.read().remoteckan().session = MockSession()
 
@@ -183,6 +189,7 @@ class TestResourceView:
 
         data = copy.deepcopy(self.resource_view_data)
         resource_view = ResourceView(data)
+        resource_view['title'] = 'A Preview'
         resource_view.create_in_hdx()
         assert resource_view['id'] == 'c06b5a0d-1d41-4a74-a196-41c251c76023'
         assert resource_view['view_type'] == 'hdx_hxl_preview'
@@ -222,7 +229,15 @@ class TestResourceView:
         with pytest.raises(HDXError):
             resource_view.update_in_hdx()
 
+        resource_view['view_type'] = 'hdx_hxl_preview'
+        resource_view['resource_id'] = '25982d1c-f45a-45e1-b14e-87d367413045'
+        resource_view.update_in_hdx()
+        assert resource_view['id'] == 'NOTEXIST'
+        assert resource_view['view_type'] == 'hdx_hxl_preview'
+        assert resource_view['resource_id'] == '25982d1c-f45a-45e1-b14e-87d367413045'
+
         del resource_view['id']
+        resource_view['title'] = 'NOTEXIST'
         with pytest.raises(HDXError):
             resource_view.update_in_hdx()
 
@@ -284,3 +299,7 @@ class TestResourceView:
         with pytest.raises(HDXError):
             resource_view.copy(5)
 
+    def test_get_all_for_resource(self, configuration, post_list):
+        resource_views = ResourceView.get_all_for_resource('25982d1c-f45a-45e1-b14e-87d367413045')
+        assert resource_views[0]['id'] == 'd80301b5-4abd-49bd-bf94-fa4af7b6e7a4'
+        assert resource_views[1]['id'] == 'c06b5a0d-1d41-4a74-a196-41c251c76023'

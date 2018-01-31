@@ -16,7 +16,7 @@ from hdx.data.resource import Resource
 from hdx.hdx_configuration import Configuration
 from . import MockResponse
 from .test_dataset import dataset_resultdict
-from .test_resource_view import resource_view_list
+from .test_resource_view import resource_view_list, resource_view_mocklist
 
 resultdict = {'cache_last_updated': None, 'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',
               'webstore_last_updated': None, 'datastore_active': None,
@@ -168,10 +168,9 @@ def mockresourceview(url, decodedata):
             return MockResponse(200,
                                 '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_show"}' % result)
     if 'list' in url:
-        result = json.dumps(resource_view_list)
-        return MockResponse(200,
-                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_list"}' % result)
-    if 'create' in url:
+        return resource_view_mocklist(url, datadict)
+
+    if 'create' in url or 'update' in url:
         if datadict['title'] == 'Data Explorer':
             result = json.dumps(resource_view_list[0])
             return MockResponse(200,
@@ -633,7 +632,7 @@ class TestResource:
             assert TestResource.datastore == 'create'
 
     def test_resource_views(self, configuration, post_resourceview):
-        resource = Resource({'id': 'XXX'})
+        resource = Resource({'id': '25982d1c-f45a-45e1-b14e-87d367413045'})
         with pytest.raises(HDXError):
             resource.add_update_resource_view('123')
         resource_view = copy.deepcopy(resource_view_list[0])
