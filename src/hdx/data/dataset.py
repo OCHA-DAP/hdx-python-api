@@ -351,9 +351,9 @@ class Dataset(HDXObject):
                 for i, old_resource in enumerate(old_resources):
                     if len(self.resources) > i:
                         old_resource_name = old_resource['name']
-                        logger.warning('Resource exists. Updating %s' % old_resource_name)
                         resource = self.resources[i]
                         resource_name = resource['name']
+                        logger.warning('Resource exists. Updating %s' % resource_name)
                         if resource_name != old_resource_name:
                             logger.warning('Changing resource name to: %s' % old_resource_name)
                         merge_two_dictionaries(resource, old_resource)
