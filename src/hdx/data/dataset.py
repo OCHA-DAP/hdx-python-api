@@ -309,12 +309,13 @@ class Dataset(HDXObject):
                 ignore_fields = ['package_id']
                 resource.check_required_fields(ignore_fields=ignore_fields)
 
-    def _dataset_merge_hdx_update(self, update_resources):
+    def _dataset_merge_hdx_update(self, update_resources, update_resources_by_name):
         # type: (bool) -> None
         """Helper method to check if dataset or its resources exist and update them
 
         Args:
             update_resources (bool): Whether to update resources
+            update_resources_by_name (bool): Compare resource names rather than position in list
 
         Returns:
             None
@@ -326,25 +327,46 @@ class Dataset(HDXObject):
         filestore_resources = list()
         if update_resources and old_resources:
             ignore_fields = ['package_id']
-            resource_names = set()
-            for resource in self.resources:
-                resource_name = resource['name']
-                resource_names.add(resource_name)
+            if update_resources_by_name:
+                resource_names = set()
+                for resource in self.resources:
+                    resource_name = resource['name']
+                    resource_names.add(resource_name)
+                    for old_resource in old_resources:
+                        if resource_name == old_resource['name']:
+                            logger.warning('Resource exists. Updating %s' % resource_name)
+                            merge_two_dictionaries(resource, old_resource)
+                            if old_resource.get_file_to_upload():
+                                resource.set_file_to_upload(old_resource.get_file_to_upload())
+                                filestore_resources.append(resource)
+                            resource.check_required_fields(ignore_fields=ignore_fields)
+                            break
                 for old_resource in old_resources:
-                    if resource_name == old_resource['name']:
-                        logger.warning('Resource exists. Updating %s' % resource_name)
+                    if not old_resource['name'] in resource_names:
+                        old_resource.check_required_fields(ignore_fields=ignore_fields)
+                        self.resources.append(old_resource)
+                        if old_resource.get_file_to_upload():
+                            filestore_resources.append(old_resource)
+            else:  # update resources by position
+                for i, old_resource in enumerate(old_resources):
+                    if len(self.resources) > i:
+                        old_resource_name = old_resource['name']
+                        logger.warning('Resource exists. Updating %s' % old_resource_name)
+                        resource = self.resources[i]
+                        resource_name = resource['name']
+                        if resource_name != old_resource_name:
+                            logger.warning('Changing resource name to: %s' % old_resource_name)
                         merge_two_dictionaries(resource, old_resource)
                         if old_resource.get_file_to_upload():
                             resource.set_file_to_upload(old_resource.get_file_to_upload())
                             filestore_resources.append(resource)
                         resource.check_required_fields(ignore_fields=ignore_fields)
-                        break
-            for old_resource in old_resources:
-                if not old_resource['name'] in resource_names:
-                    old_resource.check_required_fields(ignore_fields=ignore_fields)
-                    self.resources.append(old_resource)
-                    if old_resource.get_file_to_upload():
-                        filestore_resources.append(old_resource)
+                    else:
+                        old_resource.check_required_fields(ignore_fields=ignore_fields)
+                        self.resources.append(old_resource)
+                        if old_resource.get_file_to_upload():
+                            filestore_resources.append(old_resource)
+
         if self.resources:
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         self._save_to_hdx('update', 'id')
@@ -357,12 +379,13 @@ class Dataset(HDXObject):
                     merge_two_dictionaries(created_resource, resource.data)
                     break
 
-    def update_in_hdx(self, update_resources=True):
+    def update_in_hdx(self, update_resources=True, update_resources_by_name=True):
         # type: (Optional[bool]) -> None
         """Check if dataset exists in HDX and if so, update it
 
         Args:
             update_resources (Optional[bool]): Whether to update resources. Defaults to True.
+            update_resources_by_name (Optional[bool]): Compare resource names rather than position in list. Defaults to True.
 
         Returns:
             None
@@ -378,15 +401,18 @@ class Dataset(HDXObject):
             self._check_existing_object('dataset', 'name')
             if not self._dataset_load_from_hdx(self.data['name']):
                 raise HDXError('No existing dataset to update!')
-        self._dataset_merge_hdx_update(update_resources)
+        self._dataset_merge_hdx_update(update_resources=update_resources,
+                                       update_resources_by_name=update_resources_by_name)
         self.hxl_update()
 
-    def create_in_hdx(self, allow_no_resources=False):
+    def create_in_hdx(self, allow_no_resources=False, update_resources=True, update_resources_by_name=True):
         # type: (Optional[bool]) -> None
         """Check if dataset exists in HDX and if so, update it, otherwise create it
 
         Args:
             allow_no_resources (Optional[bool]): Whether to allow no resources. Defaults to False.
+            update_resources (Optional[bool]): Whether to update resources (if updating). Defaults to True.
+            update_resources_by_name (Optional[bool]): Compare resource names rather than position in list. Defaults to True.
 
         Returns:
             None
@@ -403,7 +429,8 @@ class Dataset(HDXObject):
                 loadedid = self.data['name']
         if loadedid:
             logger.warning('Dataset exists. Updating %s' % loadedid)
-            self._dataset_merge_hdx_update(True)
+            self._dataset_merge_hdx_update(update_resources=update_resources,
+                                           update_resources_by_name=update_resources_by_name)
             return
 
         filestore_resources = list()

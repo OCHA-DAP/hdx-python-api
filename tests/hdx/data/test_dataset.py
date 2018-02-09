@@ -102,13 +102,16 @@ def mockshow(url, datadict):
     if 'show' not in url:
         return MockResponse(404,
                             '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}')
-    result = json.dumps(dataset_resultdict)
     if 'resource_show' in url:
         result = json.dumps(TestDataset.resources_data[0])
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}' % result)
     else:
         if datadict['id'] == 'TEST1':
+            result = json.dumps(dataset_resultdict)
+            return MockResponse(200,
+                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}' % result)
+        if datadict['id'] == 'DatasetExist':
             result = json.dumps(dataset_resultdict)
             return MockResponse(200,
                                 '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}' % result)
@@ -300,8 +303,8 @@ class TestDataset:
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_create"}')
 
-                result = json.dumps(dataset_resultdict)
                 if datadict['name'] == 'MyDataset1':
+                    result = json.dumps(dataset_resultdict)
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_create"}' % result)
                 if datadict['name'] == 'MyDataset2':
@@ -310,7 +313,6 @@ class TestDataset:
                 if datadict['name'] == 'MyDataset3':
                     return MockResponse(200,
                                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_create"}')
-
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_create"}')
 
@@ -345,9 +347,15 @@ class TestDataset:
                                 if resource == resource2:
                                     del resultdictcopy['resources'][j]
                                     break
+                        resource['package_id'] = resultdictcopy['id']
 
-                    result = json.dumps(resultdictcopy)
                     if datadict['name'] == 'MyDataset1':
+                        result = json.dumps(resultdictcopy)
+                        return MockResponse(200,
+                                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}' % result)
+                    if datadict['name'] == 'DatasetExist':
+                        resultdictcopy['name'] = 'DatasetExist'
+                        result = json.dumps(resultdictcopy)
                         return MockResponse(200,
                                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}' % result)
                     if datadict['name'] == 'MyDataset2':
@@ -536,6 +544,7 @@ class TestDataset:
         dataset.create_in_hdx()
         os.unlink(file.name)
         assert len(dataset.resources) == 2
+        # Dataset creates that end up updating are in the test below
 
     def test_update_in_hdx(self, configuration, post_update):
         dataset = Dataset()
@@ -565,7 +574,13 @@ class TestDataset:
         with pytest.raises(HDXError):
             dataset.update_in_hdx()
 
+        # These dataset creates actually do updates
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
+        dataset = Dataset(dataset_data)
+        dataset['id'] = 'NOTEXIST'
+        dataset['name'] = 'DatasetExist'
+        dataset.create_in_hdx(allow_no_resources=True)
+        assert dataset['name'] == 'DatasetExist'
         dataset_data['name'] = 'MyDataset1'
         dataset_data['id'] = 'TEST1'
         dataset = Dataset(dataset_data)
@@ -573,6 +588,12 @@ class TestDataset:
         resource = Resource(resources_data[0])
         dataset.add_update_resources([resource, resource])
         dataset.create_in_hdx()
+        assert len(dataset.resources) == 2
+        dataset = Dataset(dataset_data)
+        resources_data = copy.deepcopy(TestDataset.resources_data)
+        resource = Resource(resources_data[0])
+        dataset.add_update_resources([resource, resource])
+        dataset.create_in_hdx(update_resources_by_name=False)
         assert dataset['id'] == 'TEST1'
         assert dataset['dataset_date'] == '03/23/2016'
         assert len(dataset.resources) == 2
@@ -592,6 +613,36 @@ class TestDataset:
         resource.set_file_to_upload(None)
         dataset.add_update_resource(resource)
         dataset.update_in_hdx()
+        assert len(dataset.resources) == 3
+        dataset = Dataset(dataset_data)
+        resources_data = copy.deepcopy(TestDataset.resources_data)
+        resource = Resource(resources_data[0])
+        dataset.add_update_resource(resource)
+        resource = Resource(resources_data[1])
+        dataset.add_update_resource(resource)
+        resource = Resource(resources_data[0])
+        resource['name'] = 'ResourcePosition'
+        resource.set_file_to_upload(file.name)
+        dataset.add_update_resource(resource)
+        resource = dataset.get_resources()[0]
+        resource['name'] = 'changed name'
+        resource.set_file_to_upload(file.name)
+        dataset.update_in_hdx(update_resources_by_name=True)
+        assert len(dataset.resources) == 4
+        dataset = Dataset(dataset_data)
+        resources_data = copy.deepcopy(TestDataset.resources_data)
+        resource = Resource(resources_data[0])
+        dataset.add_update_resource(resource)
+        resource = Resource(resources_data[1])
+        dataset.add_update_resource(resource)
+        resource = Resource(resources_data[0])
+        resource['name'] = 'ResourcePosition'
+        resource.set_file_to_upload(file.name)
+        dataset.add_update_resource(resource)
+        resource = dataset.get_resources()[0]
+        resource['name'] = 'changed name'
+        resource.set_file_to_upload(file.name)
+        dataset.update_in_hdx(update_resources_by_name=False)
         assert len(dataset.resources) == 3
         os.unlink(file.name)
 
@@ -678,6 +729,8 @@ class TestDataset:
         assert len(dataset.resources) == 2
         with pytest.raises(HDXError):
             dataset.add_update_resource(123)
+        with pytest.raises(HDXError):
+            dataset.add_update_resource('123')
         resources_data[0]['package_id'] = '123'
         with pytest.raises(HDXError):
             dataset.add_update_resources(resources_data)
@@ -881,6 +934,8 @@ class TestDataset:
         assert dataset['groups'] == [{'name': 'nepal-earthquake'}]
         with pytest.raises(HDXError):
             dataset.add_other_location('lala')
+        with pytest.raises(HDXError):
+            dataset.add_other_location('lala', alterror='nana')
         dataset['groups'] = [{'name': 'ken'}, {'name': 'MOZ'}, {'name': 'dza'}]
         dataset.remove_location('moz')
         assert dataset['groups'] == [{'name': 'ken'}, {'name': 'dza'}]
