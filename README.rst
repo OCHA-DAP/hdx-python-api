@@ -312,9 +312,12 @@ arguments ie.
 
     from hdx.hdx_configuration import Configuration
     ...
-    Configuration.create([configuration], [user_agent], [remoteckan], KEYWORD ARGUMENTS)
+    Configuration.create([configuration], [user_agent], [user_agent_config_yaml], [remoteckan], KEYWORD ARGUMENTS)
 
-You must supply **user_agent** (which can simply be the name of your project) if you do not supply **remoteckan**.
+If you do not supply **remoteckan**, you must supply **user_agent**
+(which can simply be the name of your project) or
+**user_agent_config_yaml** which should point to a YAML file
+containing a parameter **user_agent**.
 
 
 **KEYWORD ARGUMENTS** can be:

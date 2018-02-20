@@ -78,8 +78,8 @@ class Configuration(UserDict, object):
                 raise ConfigurationError('More than one HDX configuration given!')
         else:
             if not hdx_config_yaml:
-                logger.info('No HDX configuration parameter. Using default.')
                 hdx_config_yaml = script_dir_plus_file('hdx_configuration.yml', Configuration)
+                logger.info('No HDX configuration parameter. Using default configuration file: %s.' % hdx_config_yaml)
             logger.info('Loading HDX configuration from: %s' % hdx_config_yaml)
             hdx_config_dict = load_yaml(hdx_config_yaml)
 
@@ -117,8 +117,8 @@ class Configuration(UserDict, object):
             else:
                 hdx_key_file = kwargs.get('hdx_key_file', None)
                 if not hdx_key_file:
-                    logger.info('No HDX key or key file given. Using default key file path.')
                     hdx_key_file = Configuration.default_hdx_key_file
+                    logger.info('No HDX key or key file given. Using default key file: %s.' % hdx_key_file)
                 self.data['api_key'] = self.load_api_key(hdx_key_file)
 
         self.hdx_site = 'hdx_%s_site' % kwargs.get('hdx_site', 'test')
@@ -324,8 +324,8 @@ class Configuration(UserDict, object):
 
         """
         if not user_agent_config_yaml:
-            logger.info('No user agent or user agent config file given. Using default user agent config file path.')
             user_agent_config_yaml = Configuration.default_user_agent_config_yaml
+            logger.info('No user agent or user agent config file given. Using default user agent config file: %s.' % user_agent_config_yaml)
         if not isfile(user_agent_config_yaml):
             raise ConfigurationError("user_agent should be supplied in a YAML config file or directly as a parameter. It can be your project's name for example.")
         logger.info('Loading user agent config from: %s' % user_agent_config_yaml)
