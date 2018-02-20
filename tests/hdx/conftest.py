@@ -279,7 +279,7 @@ def locations():
 
 @pytest.fixture(scope='function')
 def configuration(hdx_key_file, project_config_yaml):
-    Configuration._create(hdx_key_file=hdx_key_file,
+    Configuration._create(user_agent='test', hdx_key_file=hdx_key_file,
                           project_config_yaml=project_config_yaml)
 
 

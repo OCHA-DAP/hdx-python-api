@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Configuration for HDX"""
+import requests
 import six
 
 from hdx.utilities.email import Email
@@ -13,8 +14,8 @@ else:
 
 import logging
 from base64 import b64decode
-from os.path import expanduser, join
-from typing import Optional
+from os.path import expanduser, join, isfile
+from typing import Optional, Any, Dict
 
 import ckanapi
 
@@ -48,6 +49,7 @@ class Configuration(UserDict, object):
 
     _configuration = None
     default_hdx_key_file = join(expanduser('~'), '.hdxkey')
+    default_user_agent_config_yaml = join(expanduser('~'), '.useragent.yml')
 
     def __init__(self, **kwargs):
         # type: (Any) -> None
@@ -122,6 +124,11 @@ class Configuration(UserDict, object):
         self.hdx_site = 'hdx_%s_site' % kwargs.get('hdx_site', 'test')
         if self.hdx_site not in self.data:
             raise ConfigurationError('%s not defined in configuration!' % self.hdx_site)
+
+    @staticmethod
+    def get_version():
+        version_file = open(script_dir_plus_file('version.txt', Configuration))
+        return version_file.read().strip()
 
     def set_read_only(self, read_only=True):
         # type: (bool) -> None
@@ -222,30 +229,39 @@ class Configuration(UserDict, object):
         kwargs['apikey'] = apikey
         return self.remoteckan().call_action(*args, **kwargs)
 
-    def create_remoteckan(self, session=get_session(method_whitelist=frozenset(['HEAD', 'TRACE', 'GET', 'POST', 'PUT',
-                                                                                'OPTIONS', 'DELETE']))):
-        # type: () -> ckanapi.RemoteCKAN
+    @staticmethod
+    def create_remoteckan(site_url, user_agent, user_agent_config_yaml,
+                          session=get_session(method_whitelist=frozenset(['HEAD', 'TRACE', 'GET', 'POST', 'PUT',
+                                                                          'OPTIONS', 'DELETE']))):
+        # type: (str, Optional[str], Optional[str], requests.Session) -> ckanapi.RemoteCKAN
         """
         Create remote CKAN instance from configuration
 
         Args:
-            session: requests Session object to use. Defaults to calling hdx.utilities.session.get_session()
+            site_url (str): Site url.
+            user_agent (Optional[str]): User agent string. HDXPythonLibrary/X.X.X- is prefixed.
+            user_agent_config_yaml (Optional[str]): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yml.
+            session (requests.Session): requests Session object to use. Defaults to calling hdx.utilities.session.get_session()
 
         Returns:
             ckanapi.RemoteCKAN: Remote CKAN instance
 
         """
-        version_file = open(script_dir_plus_file('version.txt', Configuration))
-        version = version_file.read().strip()
-        return ckanapi.RemoteCKAN(self.get_hdx_site_url(), session=session,
-                                  user_agent='HDXPythonLibrary/%s' % version)
+        prefix = 'HDXPythonLibrary/%s' % Configuration.get_version()
+        if not user_agent:
+            ua = Configuration.load_user_agent(prefix, user_agent_config_yaml)
+        else:
+            ua = '%s-%s' % (prefix, user_agent)
+        return ckanapi.RemoteCKAN(site_url, user_agent=ua, session=session)
 
-    def setup_remoteckan(self, remoteckan=None):
-        # type: (Optional[ckanapi.RemoteCKAN]) -> None
+    def setup_remoteckan(self, user_agent=None, user_agent_config_yaml=None, remoteckan=None):
+        # type: (Optional[str], Optional[str], Optional[ckanapi.RemoteCKAN]) -> None
         """
         Set up remote CKAN from provided CKAN or by creating from configuration
 
         Args:
+            user_agent (Optional[str]): User agent string. HDXPythonLibrary/X.X.X- is prefixed. Must be supplied if remoteckan is not.
+            user_agent_config_yaml (Optional[str]): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yml.
             remoteckan (Optional[ckanapi.RemoteCKAN]): CKAN instance. Defaults to setting one up from configuration.
 
         Returns:
@@ -253,7 +269,7 @@ class Configuration(UserDict, object):
 
         """
         if remoteckan is None:
-            self._remoteckan = self.create_remoteckan()
+            self._remoteckan = self.create_remoteckan(self.get_hdx_site_url(), user_agent, user_agent_config_yaml)
         else:
             self._remoteckan = remoteckan
 
@@ -292,6 +308,40 @@ class Configuration(UserDict, object):
             None
         """
         self._emailer = Email(**kwargs)
+
+    @staticmethod
+    def load_user_agent(prefix, user_agent_config_yaml):
+        # type: (str, str) -> str
+        """
+        Load user agent YAML file
+
+        Args:
+            prefix (str): Text to put at start of user agent
+            user_agent_yaml (str): Path to user agent YAML file
+
+        Returns:
+            str: user agent
+
+        """
+        if not user_agent_config_yaml:
+            logger.info('No user agent or user agent config file given. Using default user agent config file path.')
+            user_agent_config_yaml = Configuration.default_user_agent_config_yaml
+        if not isfile(user_agent_config_yaml):
+            raise ConfigurationError("user_agent should be supplied in a YAML config file or directly as a parameter. It can be your project's name for example.")
+        logger.info('Loading user agent config from: %s' % user_agent_config_yaml)
+        user_agent_config_dict = load_yaml(user_agent_config_yaml)
+        preprefix = user_agent_config_dict.get('preprefix')
+        if preprefix:
+            user_agent = '%s:' % preprefix
+        else:
+            user_agent = ''
+        if prefix:
+            user_agent = '%s%s-' % (user_agent, prefix)
+        ua = user_agent_config_dict.get('user_agent')
+        if not ua:
+            raise ConfigurationError("user_agent should be supplied in a YAML config file or directly as a parameter. It can be your project's name for example.")
+        user_agent = '%s%s' % (user_agent, ua)
+        return user_agent
 
     @staticmethod
     def load_api_key(path):
@@ -354,13 +404,15 @@ class Configuration(UserDict, object):
             cls._configuration = configuration
 
     @classmethod
-    def _create(cls, configuration=None, remoteckan=None, **kwargs):
-        # type: (Optional['Configuration'], Optional[ckanapi.RemoteCKAN], Any) -> str
+    def _create(cls, configuration=None, user_agent=None, user_agent_config_yaml=None, remoteckan=None, **kwargs):
+        # type: (Optional['Configuration'], Optional[str], Optional[str], Optional[ckanapi.RemoteCKAN], Any) -> str
         """
         Create HDX configuration
 
         Args:
             configuration (Optional[Configuration]): Configuration instance. Defaults to setting one up from passed arguments.
+            user_agent (Optional[str]): User agent string. HDXPythonLibrary/X.X.X- is prefixed. Must be supplied if remoteckan is not.
+            user_agent_config_yaml (Optional[str]): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yml.
             remoteckan (Optional[ckanapi.RemoteCKAN]): CKAN instance. Defaults to setting one up from configuration.
             **kwargs: See below
             hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
@@ -379,17 +431,19 @@ class Configuration(UserDict, object):
 
         """
         cls.setup(configuration, **kwargs)
-        cls._configuration.setup_remoteckan(remoteckan)
+        cls._configuration.setup_remoteckan(user_agent, user_agent_config_yaml, remoteckan)
         return cls._configuration.get_hdx_site_url()
 
     @classmethod
-    def create(cls, configuration=None, remoteckan=None, **kwargs):
-        # type: (Optional['Configuration'], Optional[ckanapi.RemoteCKAN], Any) -> str
+    def create(cls, configuration=None, user_agent=None, user_agent_config_yaml=None, remoteckan=None, **kwargs):
+        # type: (Optional['Configuration'], Optional[str], Optional[str], Optional[ckanapi.RemoteCKAN], Any) -> str
         """
         Create HDX configuration. Can only be called once (will raise an error if called more than once).
 
         Args:
             configuration (Optional[Configuration]): Configuration instance. Defaults to setting one up from passed arguments.
+            user_agent (Optional[str]): User agent string. HDXPythonLibrary/X.X.X- is prefixed. Must be supplied if remoteckan is not.
+            user_agent_config_yaml (Optional[str]): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yml.
             remoteckan (Optional[ckanapi.RemoteCKAN]): CKAN instance. Defaults to setting one up from configuration.
             **kwargs: See below
             hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
@@ -409,7 +463,8 @@ class Configuration(UserDict, object):
         """
         if cls._configuration is not None:
             raise ConfigurationError('Configuration already created!')
-        return cls._create(configuration=configuration, remoteckan=remoteckan, **kwargs)
+        return cls._create(configuration=configuration, user_agent=user_agent, user_agent_config_yaml=user_agent_config_yaml,
+                           remoteckan=remoteckan, **kwargs)
 
     @classmethod
     def delete(cls):

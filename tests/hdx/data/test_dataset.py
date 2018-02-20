@@ -514,7 +514,7 @@ class TestDataset:
             dataset.create_in_hdx()
 
         config = Configuration(hdx_read_only=True)
-        config.setup_remoteckan()
+        config.setup_remoteckan(user_agent='test')
         config.remoteckan().session = Configuration.read().remoteckan().session
         uniqueval = 'myconfig'
         config.unique = uniqueval

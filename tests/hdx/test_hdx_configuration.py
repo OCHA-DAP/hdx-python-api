@@ -26,6 +26,18 @@ class TestConfiguration:
     def project_config_json(self, configfolder):
         return join(configfolder, 'project_configuration.json')
 
+    @pytest.fixture(scope='class')
+    def user_agent_config_yaml(self, configfolder):
+        return join(configfolder, 'user_agent_config.yml')
+
+    @pytest.fixture(scope='class')
+    def user_agent_config2_yaml(self, configfolder):
+        return join(configfolder, 'user_agent_config2.yml')
+
+    @pytest.fixture(scope='class')
+    def user_agent_config_wrong_yaml(self, configfolder):
+        return join(configfolder, 'user_agent_config_wrong.yml')
+
     def test_init(self, hdx_key_file, hdx_config_yaml, hdx_config_json, project_config_json, project_config_yaml):
         default_key_file = Configuration.default_hdx_key_file
         Configuration.default_hdx_key_file = 'NOT EXIST'
@@ -78,7 +90,7 @@ class TestConfiguration:
                           project_config_json=project_config_json)
 
     def test_hdx_configuration_dict(self, hdx_key_file, project_config_yaml, mocksmtp):
-        Configuration._create(hdx_site='prod', hdx_key_file=hdx_key_file,
+        Configuration._create(user_agent='test', hdx_site='prod', hdx_key_file=hdx_key_file,
                               hdx_config_dict={
                                                  'hdx_prod_site': {
                                                      'url': 'https://data.humdata.org/',
@@ -148,8 +160,8 @@ hello there'''
         assert email.server.send_args == {'mail_options': ['a', 'b'], 'rcpt_options': [1, 2]}
 
     def test_hdx_configuration_json(self, hdx_key_file, hdx_config_json, project_config_yaml):
-        Configuration._create(hdx_key_file=hdx_key_file, hdx_config_json=hdx_config_json,
-                              project_config_yaml=project_config_yaml)
+        Configuration._create(user_agent='test', hdx_key_file=hdx_key_file,
+                              hdx_config_json=hdx_config_json, project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
             'param_1': 'ABC',
@@ -173,8 +185,8 @@ hello there'''
         assert Configuration.read() == expected_configuration
 
     def test_hdx_configuration_yaml(self, hdx_key_file, hdx_config_yaml, project_config_yaml):
-        Configuration._create(hdx_key_file=hdx_key_file,
-                             hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
+        Configuration._create(user_agent='test', hdx_key_file=hdx_key_file,
+                              hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
             'param_1': 'ABC',
@@ -199,7 +211,7 @@ hello there'''
         assert Configuration.read() == expected_configuration
 
     def test_project_configuration_dict(self, hdx_key_file):
-        Configuration._create(hdx_key_file=hdx_key_file)
+        Configuration._create(user_agent='test', hdx_key_file=hdx_key_file)
         expected_configuration = {
             'api_key': '12345',
             'hdx_prod_site': {
@@ -281,12 +293,12 @@ hello there'''
             ]},
         }
         assert Configuration.read() == expected_configuration
-        Configuration._create(hdx_key_file=hdx_key_file, project_config_dict={'abc': '123'})
+        Configuration._create(user_agent='test', hdx_key_file=hdx_key_file, project_config_dict={'abc': '123'})
         expected_configuration['abc'] = '123'
         assert Configuration.read() == expected_configuration
 
     def test_project_configuration_json(self, hdx_key_file, project_config_json):
-        Configuration._create(hdx_key_file=hdx_key_file, project_config_json=project_config_json)
+        Configuration._create(user_agent='test', hdx_key_file=hdx_key_file, project_config_json=project_config_json)
         expected_configuration = {
             'api_key': '12345',
             'hdx_prod_site': {
@@ -372,7 +384,7 @@ hello there'''
         assert Configuration.read() == expected_configuration
 
     def test_project_configuration_yaml(self, hdx_key_file, project_config_yaml):
-        Configuration._create(hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
+        Configuration._create(user_agent='test', hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
             'param_1': 'ABC',
@@ -458,9 +470,8 @@ hello there'''
         assert Configuration.read() == expected_configuration
 
     def test_get_hdx_key_site(self, hdx_key_file, project_config_yaml):
-        Configuration._create(hdx_site='prod', hdx_key_file=hdx_key_file,
-                              hdx_config_dict={},
-                              project_config_yaml=project_config_yaml)
+        Configuration._create(user_agent='test', hdx_site='prod', hdx_key_file=hdx_key_file,
+                              hdx_config_dict={}, project_config_yaml=project_config_yaml)
         actual_configuration = Configuration.read()
         assert actual_configuration.get_api_key() == '12345'
         assert actual_configuration.get_hdx_site_url() == 'https://data.humdata.org/'
@@ -469,16 +480,14 @@ hello there'''
     def test_set_hdx_key_value(self, empty_hdx_key_file, project_config_yaml):
         with pytest.raises(LoadError):
             Configuration.load_api_key(empty_hdx_key_file)
-        Configuration._create(hdx_site='prod', hdx_key='TEST_HDX_KEY',
-                              hdx_config_dict={},
-                              project_config_yaml=project_config_yaml)
+        Configuration._create(user_agent='test', hdx_site='prod', hdx_key='TEST_HDX_KEY',
+                              hdx_config_dict={}, project_config_yaml=project_config_yaml)
         configuration = Configuration.read()
         assert configuration.get_api_key() == 'TEST_HDX_KEY'
         configuration.set_api_key('NEW API KEY')
         assert configuration.get_api_key() == 'NEW API KEY'
-        Configuration._create(hdx_site='prod', hdx_read_only=True,
-                              hdx_config_dict={},
-                              project_config_yaml=project_config_yaml)
+        Configuration._create(user_agent='test', hdx_site='prod', hdx_read_only=True,
+                              hdx_config_dict={}, project_config_yaml=project_config_yaml)
         assert Configuration.read().get_api_key() is None
         configuration = Configuration.read()
         configuration.set_api_key('TEST API KEY')
@@ -492,33 +501,28 @@ hello there'''
         assert configuration.get_api_key() == 'NEW API KEY'
 
     def test_create_set_configuration(self, project_config_yaml):
-        Configuration._create(hdx_site='prod', hdx_key='TEST_HDX_KEY',
-                              hdx_config_dict={},
-                              project_config_yaml=project_config_yaml)
+        Configuration._create(user_agent='test', hdx_site='prod', hdx_key='TEST_HDX_KEY',
+                              hdx_config_dict={}, project_config_yaml=project_config_yaml)
         with pytest.raises(ConfigurationError):
-            Configuration.create(hdx_site='prod', hdx_key='TEST_HDX_KEY',
-                                 hdx_config_dict={},
-                                 project_config_yaml=project_config_yaml)
-        configuration = Configuration(hdx_site='test', hdx_key='OTHER_TEST_HDX_KEY',
-                                      hdx_config_dict={},
-                                      project_config_yaml=project_config_yaml)
+            Configuration.create(user_agent='test', hdx_site='prod', hdx_key='TEST_HDX_KEY',
+                                 hdx_config_dict={}, project_config_yaml=project_config_yaml)
+        configuration = Configuration(user_agent='test', hdx_site='test', hdx_key='OTHER_TEST_HDX_KEY',
+                                      hdx_config_dict={}, project_config_yaml=project_config_yaml)
         Configuration.setup(configuration)
         assert Configuration.read() == configuration
         Configuration.delete()
         with pytest.raises(ConfigurationError):
             Configuration.read()
-        Configuration.create(hdx_site='prod', hdx_key='TEST_HDX_KEY',
-                             hdx_config_dict={},
-                             project_config_yaml=project_config_yaml)
+        Configuration.create(user_agent='test', hdx_site='prod', hdx_key='TEST_HDX_KEY',
+                             hdx_config_dict={}, project_config_yaml=project_config_yaml)
         assert Configuration.read().get_api_key() == 'TEST_HDX_KEY'
 
     def test_remoteckan_validlocations(self, project_config_yaml):
-        Configuration._create(hdx_site='prod', hdx_key='TEST_HDX_KEY',
-                              hdx_config_dict={},
-                              project_config_yaml=project_config_yaml)
+        Configuration._create(user_agent='test', hdx_site='prod', hdx_key='TEST_HDX_KEY',
+                              hdx_config_dict={}, project_config_yaml=project_config_yaml)
         remoteckan = ckanapi.RemoteCKAN('http://lalala', apikey='12345',
                                         user_agent='HDXPythonLibrary/1.0')
-        Configuration.read().setup_remoteckan(remoteckan)
+        Configuration.read().setup_remoteckan(remoteckan=remoteckan)
         assert Configuration.read().remoteckan() == remoteckan
         remoteckan = ckanapi.RemoteCKAN('http://hahaha', apikey='54321',
                                         user_agent='HDXPythonLibrary/0.5')
@@ -533,3 +537,18 @@ hello there'''
         Configuration.delete()
         with pytest.raises(ConfigurationError):
             Configuration.read().remoteckan()
+
+    def test_user_agent(self, user_agent_config_yaml, user_agent_config2_yaml, user_agent_config_wrong_yaml, project_config_yaml):
+        Configuration._create(user_agent_config_yaml=user_agent_config_yaml, hdx_site='prod', hdx_key='TEST_HDX_KEY',
+                              hdx_config_dict={}, project_config_yaml=project_config_yaml)
+        version = Configuration.get_version()
+        assert Configuration.read().remoteckan().user_agent == 'lala:HDXPythonLibrary/%s-myua' % version
+        Configuration._create(user_agent_config_yaml=user_agent_config2_yaml, hdx_site='prod', hdx_key='TEST_HDX_KEY',
+                              hdx_config_dict={}, project_config_yaml=project_config_yaml)
+        assert Configuration.read().remoteckan().user_agent == 'HDXPythonLibrary/%s-myuseragent' % version
+        with pytest.raises(ConfigurationError):
+            Configuration._create(user_agent_config_yaml=user_agent_config_wrong_yaml, hdx_site='prod', hdx_key='TEST_HDX_KEY',
+                                  hdx_config_dict={}, project_config_yaml=project_config_yaml)
+        with pytest.raises(ConfigurationError):
+            Configuration._create(hdx_site='prod', hdx_key='TEST_HDX_KEY',
+                                  hdx_config_dict={}, project_config_yaml=project_config_yaml)
