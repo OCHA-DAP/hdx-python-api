@@ -187,7 +187,7 @@ On other OSs:
 
    ::
 
-       Configuration.create(hdx_site='prod', hdx_read_only=True)
+       Configuration.create(hdx_site='prod', user_agent='A_Quick_Example', hdx_read_only=True)
 
    If you want to write data, then for experimentation, do not use the production HDX server.
    Instead you can use one of the test servers. Assuming you have an API key stored in a file
@@ -195,7 +195,7 @@ On other OSs:
 
    ::
 
-       Configuration.create(hdx_site='test')
+       Configuration.create(hdx_site='test', user_agent='A_Quick_Example')
 
 #. Read this dataset `ACLED Conflict Data for Africa (Realtime -
    2016) <https://test-data.humdata.org/dataset/acled-conflict-data-for-africa-realtime-2016>`__

@@ -97,6 +97,7 @@ class Dataset(HDXObject):
             'create': 'package_create',
             'delete': 'package_delete',
             'search': 'package_search',
+            'reorder': 'package_resource_reorder',
             'list': 'package_list',
             'all': 'current_package_list_with_resources',
             'hxl': 'package_hxl_update'
@@ -215,6 +216,26 @@ class Dataset(HDXObject):
             hdx.data.resource.Resource: Resource object
         """
         return self.resources[index]
+
+    def reorder_resources(self, resource_ids):
+        # type: (List[str]) -> None
+        """Reorder resources in dataset according to provided list.
+        If only some resource ids are supplied then these are
+        assumed to be first and the other resources will stay in
+        their original order.
+
+        Args:
+            resource_ids (List[str]): List of resource ids
+
+        Returns:
+            None
+        """
+        dataset_id = self.data.get('id')
+        if not dataset_id:
+            raise HDXError('Dataset has no id! It must be read, created or updated first.')
+        data = {'id': dataset_id,
+                'order': resource_ids}
+        self._write_to_hdx('reorder', data, 'package_id')
 
     def update_from_yaml(self, path=join('config', 'hdx_dataset_static.yml')):
         # type: (str) -> None

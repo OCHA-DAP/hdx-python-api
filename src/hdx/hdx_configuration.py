@@ -327,7 +327,7 @@ class Configuration(UserDict, object):
             user_agent_config_yaml = Configuration.default_user_agent_config_yaml
             logger.info('No user agent or user agent config file given. Using default user agent config file: %s.' % user_agent_config_yaml)
         if not isfile(user_agent_config_yaml):
-            raise ConfigurationError("user_agent should be supplied in a YAML config file or directly as a parameter. It can be your project's name for example.")
+            raise ConfigurationError("User_agent should be supplied in a YAML config file or directly as a parameter. It can be your project's name for example.")
         logger.info('Loading user agent config from: %s' % user_agent_config_yaml)
         user_agent_config_dict = load_yaml(user_agent_config_yaml)
         preprefix = user_agent_config_dict.get('preprefix')

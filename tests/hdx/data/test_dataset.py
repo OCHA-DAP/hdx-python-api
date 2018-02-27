@@ -371,6 +371,27 @@ class TestDataset:
         Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope='function')
+    def post_reorder(self):
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                decodedata = data.decode('utf-8')
+                datadict = json.loads(decodedata)
+                if 'show' in url:
+                    return mockshow(url, datadict)
+                if 'reorder' not in url:
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "TEST ERROR: Not reorder", "__type": "TEST ERROR: Not Reorder Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_resource_reorder"}')
+                if datadict['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d':
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_resource_reorder"}' % decodedata)
+
+                return MockResponse(404,
+                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_resource_reorder"}')
+
+        Configuration.read().remoteckan().session = MockSession()
+
+    @pytest.fixture(scope='function')
     def post_delete(self):
         class MockSession(object):
             @staticmethod
@@ -738,6 +759,13 @@ class TestDataset:
             dataset.add_update_resources(123)
         with pytest.raises(HDXError):
             dataset.delete_resource('NOTEXIST')
+
+    def test_reorder_resources(self, configuration, post_reorder):
+        dataset = Dataset.read_from_hdx('TEST1')
+        dataset.reorder_resources(['3d777226-96aa-4239-860a-703389d16d1f', 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'])
+        del dataset['id']
+        with pytest.raises(HDXError):
+            dataset.reorder_resources(['3d777226-96aa-4239-860a-703389d16d1f', 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'])
 
     def test_search_in_hdx(self, configuration, search):
         datasets = Dataset.search_in_hdx('ACLED')
