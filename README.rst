@@ -326,7 +326,7 @@ containing a parameter **user_agent**.
 | Choose  | Argument              | Type           | Value                     | Default                 |
 |         |                       |                |                           |                         |
 +=========+=======================+================+===========================+=========================+
-|         | hdx\_site             | Optional[bool] | HDX site to use eg.       | test                    |
+|         | hdx\_site             | Optional[str]  | HDX site to use eg.       | test                    |
 |         |                       |                | prod, feature             |                         |
 +---------+-----------------------+----------------+---------------------------+-------------------------+
 | One of: | hdx\_read\_only       | bool           | Read only or read/write   | False                   |

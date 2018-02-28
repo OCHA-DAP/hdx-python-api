@@ -73,7 +73,7 @@ class Dataset(HDXObject):
     }
 
     def __init__(self, initial_data=None, configuration=None):
-        # type: (Optional[Dict], Optional[bool], Optional[Configuration]) -> None
+        # type: (Optional[Dict], Optional[Configuration]) -> None
         if not initial_data:
             initial_data = dict()
         super(Dataset, self).__init__(dict(), configuration=configuration)
@@ -165,12 +165,12 @@ class Dataset(HDXObject):
         raise HDXError('Type %s cannot be added as a resource!' % type(resource).__name__)
 
     def add_update_resources(self, resources, ignore_datasetid=False):
-        # type: (List[Union[hdx.data.resource.Resource,Dict,str]]) -> None
+        # type: (List[Union[hdx.data.resource.Resource,Dict,str]], bool) -> None
         """Add new or update existing resources with new metadata to the dataset
 
         Args:
             resources (List[Union[hdx.data.resource.Resource,Dict,str]]): A list of either resource ids or resources metadata from either Resource objects or dictionaries
-            ignore_datasetid (Optional[bool]): Whether to ignore dataset id in the resource
+            ignore_datasetid (bool): Whether to ignore dataset id in the resource. Defaults to False.
 
         Returns:
             None
@@ -309,13 +309,13 @@ class Dataset(HDXObject):
         return True
 
     def check_required_fields(self, ignore_fields=list(), allow_no_resources=False):
-        # type: (List[str], Optional[bool]) -> None
+        # type: (List[str], bool) -> None
         """Check that metadata for dataset and its resources is complete. The parameter ignore_fields
         should be set if required to any fields that should be ignored for the particular operation.
 
         Args:
             ignore_fields (List[str]): Fields to ignore. Default is [].
-            allow_no_resources (Optional[bool]): Whether to allow no resources. Defaults to False.
+            allow_no_resources (bool): Whether to allow no resources. Defaults to False.
 
         Returns:
             None
@@ -330,17 +330,19 @@ class Dataset(HDXObject):
                 ignore_fields = ['package_id']
                 resource.check_required_fields(ignore_fields=ignore_fields)
 
-    def _dataset_merge_hdx_update(self, update_resources, update_resources_by_name):
-        # type: (bool) -> None
+    def _dataset_merge_hdx_update(self, update_resources, update_resources_by_name, remove_additional_resources):
+        # type: (bool, bool, bool) -> None
         """Helper method to check if dataset or its resources exist and update them
 
         Args:
             update_resources (bool): Whether to update resources
             update_resources_by_name (bool): Compare resource names rather than position in list
+            remove_additional_resources (bool): Remove additional resources found in dataset (if updating)
 
         Returns:
             None
         """
+        # 'old_data' here is the data we want to use for updating while 'data' is the data read from HDX
         merge_two_dictionaries(self.data, self.old_data)
         if 'resources' in self.data:
             del self.data['resources']
@@ -362,12 +364,20 @@ class Dataset(HDXObject):
                                 filestore_resources.append(resource)
                             resource.check_required_fields(ignore_fields=ignore_fields)
                             break
+                old_resource_names = set()
                 for old_resource in old_resources:
-                    if not old_resource['name'] in resource_names:
+                    old_resource_name = old_resource['name']
+                    old_resource_names.add(old_resource_name)
+                    if not old_resource_name in resource_names:
                         old_resource.check_required_fields(ignore_fields=ignore_fields)
                         self.resources.append(old_resource)
                         if old_resource.get_file_to_upload():
                             filestore_resources.append(old_resource)
+                if remove_additional_resources:
+                    for i, resource in enumerate(self.resources):
+                        if not resource['name'] in old_resource_names:
+                            del self.resources[i]
+
             else:  # update resources by position
                 for i, old_resource in enumerate(old_resources):
                     if len(self.resources) > i:
@@ -387,6 +397,10 @@ class Dataset(HDXObject):
                         self.resources.append(old_resource)
                         if old_resource.get_file_to_upload():
                             filestore_resources.append(old_resource)
+                if remove_additional_resources:
+                    for i, resource in enumerate(self.resources):
+                        if len(old_resources) <= i:
+                            del self.resources[i]
 
         if self.resources:
             self.data['resources'] = self._convert_hdxobjects(self.resources)
@@ -400,13 +414,14 @@ class Dataset(HDXObject):
                     merge_two_dictionaries(created_resource, resource.data)
                     break
 
-    def update_in_hdx(self, update_resources=True, update_resources_by_name=True):
-        # type: (Optional[bool]) -> None
+    def update_in_hdx(self, update_resources=True, update_resources_by_name=True, remove_additional_resources=False):
+        # type: (bool, bool, bool) -> None
         """Check if dataset exists in HDX and if so, update it
 
         Args:
-            update_resources (Optional[bool]): Whether to update resources. Defaults to True.
-            update_resources_by_name (Optional[bool]): Compare resource names rather than position in list. Defaults to True.
+            update_resources (bool): Whether to update resources. Defaults to True.
+            update_resources_by_name (bool): Compare resource names rather than position in list. Defaults to True.
+            remove_additional_resources (bool): Remove additional resources found in dataset (if updating). Defaults to False.
 
         Returns:
             None
@@ -423,17 +438,20 @@ class Dataset(HDXObject):
             if not self._dataset_load_from_hdx(self.data['name']):
                 raise HDXError('No existing dataset to update!')
         self._dataset_merge_hdx_update(update_resources=update_resources,
-                                       update_resources_by_name=update_resources_by_name)
+                                       update_resources_by_name=update_resources_by_name,
+                                       remove_additional_resources=remove_additional_resources)
         self.hxl_update()
 
-    def create_in_hdx(self, allow_no_resources=False, update_resources=True, update_resources_by_name=True):
-        # type: (Optional[bool]) -> None
+    def create_in_hdx(self, allow_no_resources=False, update_resources=True, update_resources_by_name=True,
+                      remove_additional_resources=False):
+        # type: (bool, bool, bool, bool) -> None
         """Check if dataset exists in HDX and if so, update it, otherwise create it
 
         Args:
-            allow_no_resources (Optional[bool]): Whether to allow no resources. Defaults to False.
-            update_resources (Optional[bool]): Whether to update resources (if updating). Defaults to True.
-            update_resources_by_name (Optional[bool]): Compare resource names rather than position in list. Defaults to True.
+            allow_no_resources (bool): Whether to allow no resources. Defaults to False.
+            update_resources (bool): Whether to update resources (if updating). Defaults to True.
+            update_resources_by_name (bool): Compare resource names rather than position in list. Defaults to True.
+            remove_additional_resources (bool): Remove additional resources found in dataset (if updating). Defaults to False.
 
         Returns:
             None
@@ -451,7 +469,8 @@ class Dataset(HDXObject):
         if loadedid:
             logger.warning('Dataset exists. Updating %s' % loadedid)
             self._dataset_merge_hdx_update(update_resources=update_resources,
-                                           update_resources_by_name=update_resources_by_name)
+                                           update_resources_by_name=update_resources_by_name,
+                                           remove_additional_resources=remove_additional_resources)
             return
 
         filestore_resources = list()
@@ -947,13 +966,13 @@ class Dataset(HDXObject):
                                                      configuration=self.configuration) for x in countries]
 
     def add_country_location(self, country, exact=True, locations=None, use_live=True):
-        # type: (str, Optional[bool],Optional[List[str]]) -> bool
+        # type: (str, bool,Optional[List[str]]) -> bool
         """Add a country. If an iso 3 code is not provided, value is parsed and if it is a valid country name,
         converted to an iso 3 code. If the country is already added, it is ignored.
 
         Args:
             country (str): Country to add
-            exact (Optional[bool]): True for exact matching or False to allow fuzzy matching. Defaults to True.
+            exact (bool): True for exact matching or False to allow fuzzy matching. Defaults to True.
             locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
             use_live (bool): Try to get use latest country data from web rather than file in package. Defaults to True.
 
@@ -1004,13 +1023,13 @@ class Dataset(HDXObject):
                                                                           use_live=use_live), locations=locations)
 
     def add_other_location(self, location, exact=True, alterror=None, locations=None):
-        # type: (str, Optional[bool], Optional[str], Optional[List[str]]) -> bool
+        # type: (str, bool, Optional[str], Optional[List[str]]) -> bool
         """Add a location which is not a country or region. Value is parsed and compared to existing locations in
         HDX. If the location is already added, it is ignored.
 
         Args:
             location (str): Location to add
-            exact (Optional[bool]): True for exact matching or False to allow fuzzy matching. Defaults to True.
+            exact (bool): True for exact matching or False to allow fuzzy matching. Defaults to True.
             alterror (Optional[str]): Alternative error message to builtin if location not found. Defaults to None.
             locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
 
@@ -1208,11 +1227,11 @@ class Dataset(HDXObject):
         return self.data.get('is_requestdata_type', False)
 
     def set_requestable(self, requestable=True):
-        # type: (Optional[bool]) -> None
+        # type: (bool) -> None
         """Set the dataset to be of type requestable or not
 
         Args:
-            requestable (Optional[bool]): Set whether dataset is requestable. Defaults to True.
+            requestable (bool): Set whether dataset is requestable. Defaults to True.
 
         Returns:
             None

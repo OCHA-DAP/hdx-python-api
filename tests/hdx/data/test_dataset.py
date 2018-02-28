@@ -666,6 +666,24 @@ class TestDataset:
         dataset.update_in_hdx(update_resources_by_name=False)
         assert len(dataset.resources) == 3
         os.unlink(file.name)
+        dataset = Dataset(dataset_data)
+        resources_data = copy.deepcopy(TestDataset.resources_data)
+        resource = Resource(resources_data[0])
+        dataset.add_update_resource(resource)
+        dataset.update_in_hdx(remove_additional_resources=False)
+        assert len(dataset.resources) == 2
+        dataset = Dataset(dataset_data)
+        resources_data = copy.deepcopy(TestDataset.resources_data)
+        resource = Resource(resources_data[0])
+        dataset.add_update_resource(resource)
+        dataset.update_in_hdx(remove_additional_resources=True)
+        assert len(dataset.resources) == 1
+        dataset = Dataset(dataset_data)
+        resources_data = copy.deepcopy(TestDataset.resources_data)
+        resource = Resource(resources_data[0])
+        dataset.add_update_resource(resource)
+        dataset.update_in_hdx(update_resources_by_name=False, remove_additional_resources=True)
+        assert len(dataset.resources) == 1
 
     def test_delete_from_hdx(self, configuration, post_delete):
         dataset = Dataset.read_from_hdx('TEST1')

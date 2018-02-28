@@ -13,7 +13,7 @@ def script_dir(pyobject, follow_symlinks=True):
 
     Args:
         pyobject (Any): Any Python object in the script
-        follow_symlinks (Optional[bool]): Follow symlinks or not. Defaults to True.
+        follow_symlinks (bool): Follow symlinks or not. Defaults to True.
 
     Returns:
         str: Current script's directory
@@ -33,7 +33,7 @@ def script_dir_plus_file(filename, pyobject, follow_symlinks=True):
     Args:
         filename (str): Filename to append to directory path
         pyobject (Any): Any Python object in the script
-        follow_symlinks (Optional[bool]): Follow symlinks or not. Defaults to True.
+        follow_symlinks (bool): Follow symlinks or not. Defaults to True.
 
     Returns:
         str: Current script's directory and with filename appended
