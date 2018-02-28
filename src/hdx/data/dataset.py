@@ -375,7 +375,9 @@ class Dataset(HDXObject):
                             filestore_resources.append(old_resource)
                 if remove_additional_resources:
                     for i, resource in enumerate(self.resources):
-                        if not resource['name'] in old_resource_names:
+                        resource_name = resource['name']
+                        if not resource_name in old_resource_names:
+                            logger.warning('Removing additional resource %s!' % resource_name)
                             del self.resources[i]
 
             else:  # update resources by position
@@ -400,6 +402,7 @@ class Dataset(HDXObject):
                 if remove_additional_resources:
                     for i, resource in enumerate(self.resources):
                         if len(old_resources) <= i:
+                            logger.warning('Removing additional resource %s!' % resource['name'])
                             del self.resources[i]
 
         if self.resources:
