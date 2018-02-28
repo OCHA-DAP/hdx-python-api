@@ -583,18 +583,22 @@ simply call \ **create_in_hdx** eg.
 
 ::
 
-    dataset.create_in_hdx()
+    dataset.create_in_hdx(allow_no_resources, update_resources,
+                          update_resources_by_name,
+                          remove_additional_resources)
 
 Existing HDX objects can be updated by calling \ **update_in_hdx** eg.
 
 ::
 
-    dataset.update_in_hdx()
+    dataset.update_in_hdx(update_resources, update_resources_by_name,
+                          remove_additional_resources)
 
 You can delete HDX objects using \ **delete_from_hdx** and update an
 object that already exists in HDX with the method \ **update_in_hdx**.
-These do not take any parameters or return anything and throw exceptions
-for failures like the object to delete or update not existing.
+These take various boolean parameters that all have defaults and are
+documented in the API docs. They do not return anything and they
+throw exceptions for failures like the object to update not existing.
 
 Dataset Specific Operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
