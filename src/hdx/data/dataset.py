@@ -217,8 +217,8 @@ class Dataset(HDXObject):
         """
         return self.resources[index]
 
-    def reorder_resources(self, resource_ids):
-        # type: (List[str]) -> None
+    def reorder_resources(self, resource_ids, hxl_update=True):
+        # type: (List[str], bool) -> None
         """Reorder resources in dataset according to provided list.
         If only some resource ids are supplied then these are
         assumed to be first and the other resources will stay in
@@ -226,6 +226,7 @@ class Dataset(HDXObject):
 
         Args:
             resource_ids (List[str]): List of resource ids
+            hxl_update (bool): Whether to call package_hxl_update. Defaults to True.
 
         Returns:
             None
@@ -236,7 +237,8 @@ class Dataset(HDXObject):
         data = {'id': dataset_id,
                 'order': resource_ids}
         self._write_to_hdx('reorder', data, 'package_id')
-        self.hxl_update()
+        if hxl_update:
+            self.hxl_update()
 
     def update_from_yaml(self, path=join('config', 'hdx_dataset_static.yml')):
         # type: (str) -> None
@@ -331,14 +333,16 @@ class Dataset(HDXObject):
                 ignore_fields = ['package_id']
                 resource.check_required_fields(ignore_fields=ignore_fields)
 
-    def _dataset_merge_hdx_update(self, update_resources, update_resources_by_name, remove_additional_resources):
-        # type: (bool, bool, bool) -> None
+    def _dataset_merge_hdx_update(self, update_resources, update_resources_by_name,
+                                  remove_additional_resources, hxl_update):
+        # type: (bool, bool, bool, bool) -> None
         """Helper method to check if dataset or its resources exist and update them
 
         Args:
             update_resources (bool): Whether to update resources
             update_resources_by_name (bool): Compare resource names rather than position in list
             remove_additional_resources (bool): Remove additional resources found in dataset (if updating)
+            hxl_update (bool): Whether to call package_hxl_update. Defaults to True.
 
         Returns:
             None
@@ -425,16 +429,19 @@ class Dataset(HDXObject):
                     break
         self.init_resources()
         self.separate_resources()
-        self.hxl_update()
+        if hxl_update:
+            self.hxl_update()
 
-    def update_in_hdx(self, update_resources=True, update_resources_by_name=True, remove_additional_resources=False):
-        # type: (bool, bool, bool) -> None
+    def update_in_hdx(self, update_resources=True, update_resources_by_name=True,
+                      remove_additional_resources=False, hxl_update=True):
+        # type: (bool, bool, bool, bool) -> None
         """Check if dataset exists in HDX and if so, update it
 
         Args:
             update_resources (bool): Whether to update resources. Defaults to True.
             update_resources_by_name (bool): Compare resource names rather than position in list. Defaults to True.
             remove_additional_resources (bool): Remove additional resources found in dataset (if updating). Defaults to False.
+            hxl_update (bool): Whether to call package_hxl_update. Defaults to True.
 
         Returns:
             None
@@ -452,11 +459,12 @@ class Dataset(HDXObject):
                 raise HDXError('No existing dataset to update!')
         self._dataset_merge_hdx_update(update_resources=update_resources,
                                        update_resources_by_name=update_resources_by_name,
-                                       remove_additional_resources=remove_additional_resources)
+                                       remove_additional_resources=remove_additional_resources,
+                                       hxl_update=hxl_update)
 
     def create_in_hdx(self, allow_no_resources=False, update_resources=True, update_resources_by_name=True,
-                      remove_additional_resources=False):
-        # type: (bool, bool, bool, bool) -> None
+                      remove_additional_resources=False, hxl_update=True):
+        # type: (bool, bool, bool, bool, bool) -> None
         """Check if dataset exists in HDX and if so, update it, otherwise create it
 
         Args:
@@ -464,6 +472,7 @@ class Dataset(HDXObject):
             update_resources (bool): Whether to update resources (if updating). Defaults to True.
             update_resources_by_name (bool): Compare resource names rather than position in list. Defaults to True.
             remove_additional_resources (bool): Remove additional resources found in dataset (if updating). Defaults to False.
+            hxl_update (bool): Whether to call package_hxl_update. Defaults to True.
 
         Returns:
             None
@@ -482,7 +491,8 @@ class Dataset(HDXObject):
             logger.warning('Dataset exists. Updating %s' % loadedid)
             self._dataset_merge_hdx_update(update_resources=update_resources,
                                            update_resources_by_name=update_resources_by_name,
-                                           remove_additional_resources=remove_additional_resources)
+                                           remove_additional_resources=remove_additional_resources,
+                                           hxl_update=hxl_update)
             return
 
         filestore_resources = list()
@@ -503,7 +513,8 @@ class Dataset(HDXObject):
                     break
         self.init_resources()
         self.separate_resources()
-        self.hxl_update()
+        if hxl_update:
+            self.hxl_update()
 
     def delete_from_hdx(self):
         # type: () -> None
