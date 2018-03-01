@@ -375,11 +375,14 @@ class Dataset(HDXObject):
                         if old_resource.get_file_to_upload():
                             filestore_resources.append(old_resource)
                 if remove_additional_resources:
+                    resources_to_delete = list()
                     for i, resource in enumerate(self.resources):
                         resource_name = resource['name']
-                        if not resource_name in old_resource_names:
+                        if resource_name not in old_resource_names:
                             logger.warning('Removing additional resource %s!' % resource_name)
-                            del self.resources[i]
+                            resources_to_delete.append(i)
+                    for i in resources_to_delete:
+                        del self.resources[i]
 
             else:  # update resources by position
                 for i, old_resource in enumerate(old_resources):
@@ -401,10 +404,13 @@ class Dataset(HDXObject):
                         if old_resource.get_file_to_upload():
                             filestore_resources.append(old_resource)
                 if remove_additional_resources:
+                    resources_to_delete = list()
                     for i, resource in enumerate(self.resources):
                         if len(old_resources) <= i:
                             logger.warning('Removing additional resource %s!' % resource['name'])
-                            del self.resources[i]
+                            resources_to_delete.append(i)
+                    for i in resources_to_delete:
+                        del self.resources[i]
 
         if self.resources:
             self.data['resources'] = self._convert_hdxobjects(self.resources)
