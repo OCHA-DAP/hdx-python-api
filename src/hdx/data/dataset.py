@@ -423,6 +423,9 @@ class Dataset(HDXObject):
                     resource.update_in_hdx()
                     merge_two_dictionaries(created_resource, resource.data)
                     break
+        self.init_resources()
+        self.separate_resources()
+        self.hxl_update()
 
     def update_in_hdx(self, update_resources=True, update_resources_by_name=True, remove_additional_resources=False):
         # type: (bool, bool, bool) -> None
@@ -450,9 +453,6 @@ class Dataset(HDXObject):
         self._dataset_merge_hdx_update(update_resources=update_resources,
                                        update_resources_by_name=update_resources_by_name,
                                        remove_additional_resources=remove_additional_resources)
-        self.init_resources()
-        self.separate_resources()
-        self.hxl_update()
 
     def create_in_hdx(self, allow_no_resources=False, update_resources=True, update_resources_by_name=True,
                       remove_additional_resources=False):
@@ -483,8 +483,6 @@ class Dataset(HDXObject):
             self._dataset_merge_hdx_update(update_resources=update_resources,
                                            update_resources_by_name=update_resources_by_name,
                                            remove_additional_resources=remove_additional_resources)
-            self.init_resources()
-            self.separate_resources()
             return
 
         filestore_resources = list()
