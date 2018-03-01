@@ -381,7 +381,7 @@ class Dataset(HDXObject):
                         if resource_name not in old_resource_names:
                             logger.warning('Removing additional resource %s!' % resource_name)
                             resources_to_delete.append(i)
-                    for i in resources_to_delete:
+                    for i in sorted(resources_to_delete, reverse=True):
                         del self.resources[i]
 
             else:  # update resources by position
@@ -409,7 +409,7 @@ class Dataset(HDXObject):
                         if len(old_resources) <= i:
                             logger.warning('Removing additional resource %s!' % resource['name'])
                             resources_to_delete.append(i)
-                    for i in resources_to_delete:
+                    for i in sorted(resources_to_delete, reverse=True):
                         del self.resources[i]
 
         if self.resources:
