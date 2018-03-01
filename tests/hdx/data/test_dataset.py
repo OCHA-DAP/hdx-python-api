@@ -379,6 +379,8 @@ class TestDataset:
                 datadict = json.loads(decodedata)
                 if 'show' in url:
                     return mockshow(url, datadict)
+                if 'hxl' in url:
+                    return mockhxlupdate(url, datadict)
                 if 'reorder' not in url:
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "TEST ERROR: Not reorder", "__type": "TEST ERROR: Not Reorder Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_resource_reorder"}')

@@ -236,6 +236,7 @@ class Dataset(HDXObject):
         data = {'id': dataset_id,
                 'order': resource_ids}
         self._write_to_hdx('reorder', data, 'package_id')
+        self.hxl_update()
 
     def update_from_yaml(self, path=join('config', 'hdx_dataset_static.yml')):
         # type: (str) -> None
