@@ -229,11 +229,11 @@ class Configuration(UserDict, object):
         kwargs['apikey'] = apikey
         return self.remoteckan().call_action(*args, **kwargs)
 
-    @staticmethod
-    def create_remoteckan(site_url, user_agent, user_agent_config_yaml,
+    @classmethod
+    def create_remoteckan(cls, site_url, user_agent, user_agent_config_yaml,
                           session=get_session(method_whitelist=frozenset(['HEAD', 'TRACE', 'GET', 'POST', 'PUT',
-                                                                          'OPTIONS', 'DELETE']))):
-        # type: (str, Optional[str], Optional[str], requests.Session) -> ckanapi.RemoteCKAN
+                                                                          'OPTIONS', 'DELETE'])), **kwargs):
+        # type: (str, Optional[str], Optional[str], requests.Session, Any) -> ckanapi.RemoteCKAN
         """
         Create remote CKAN instance from configuration
 
@@ -251,11 +251,11 @@ class Configuration(UserDict, object):
         if not user_agent:
             ua = Configuration.load_user_agent(prefix, user_agent_config_yaml)
         else:
-            ua = '%s-%s' % (prefix, user_agent)
+            ua = cls._construct_user_agent(kwargs, prefix, user_agent)
         return ckanapi.RemoteCKAN(site_url, user_agent=ua, session=session)
 
-    def setup_remoteckan(self, user_agent=None, user_agent_config_yaml=None, remoteckan=None):
-        # type: (Optional[str], Optional[str], Optional[ckanapi.RemoteCKAN]) -> None
+    def setup_remoteckan(self, user_agent=None, user_agent_config_yaml=None, remoteckan=None, **kwargs):
+        # type: (Optional[str], Optional[str], Optional[ckanapi.RemoteCKAN], Any) -> None
         """
         Set up remote CKAN from provided CKAN or by creating from configuration
 
@@ -269,7 +269,8 @@ class Configuration(UserDict, object):
 
         """
         if remoteckan is None:
-            self._remoteckan = self.create_remoteckan(self.get_hdx_site_url(), user_agent, user_agent_config_yaml)
+            self._remoteckan = self.create_remoteckan(self.get_hdx_site_url(), user_agent, user_agent_config_yaml,
+                                                      **kwargs)
         else:
             self._remoteckan = remoteckan
 
@@ -310,7 +311,21 @@ class Configuration(UserDict, object):
         self._emailer = Email(**kwargs)
 
     @staticmethod
-    def load_user_agent(prefix, user_agent_config_yaml):
+    def _construct_user_agent(configdict, prefix, ua):
+        if not ua:
+            raise ConfigurationError("user_agent should be supplied in a YAML config file or directly as a parameter. It can be your project's name for example.")
+        preprefix = configdict.get('preprefix')
+        if preprefix:
+            user_agent = '%s:' % preprefix
+        else:
+            user_agent = ''
+        if prefix:
+            user_agent = '%s%s-' % (user_agent, prefix)
+        user_agent = '%s%s' % (user_agent, ua)
+        return user_agent
+
+    @classmethod
+    def load_user_agent(cls, prefix, user_agent_config_yaml):
         # type: (str, str) -> str
         """
         Load user agent YAML file
@@ -330,18 +345,8 @@ class Configuration(UserDict, object):
             raise ConfigurationError("User_agent should be supplied in a YAML config file or directly as a parameter. It can be your project's name for example.")
         logger.info('Loading user agent config from: %s' % user_agent_config_yaml)
         user_agent_config_dict = load_yaml(user_agent_config_yaml)
-        preprefix = user_agent_config_dict.get('preprefix')
-        if preprefix:
-            user_agent = '%s:' % preprefix
-        else:
-            user_agent = ''
-        if prefix:
-            user_agent = '%s%s-' % (user_agent, prefix)
         ua = user_agent_config_dict.get('user_agent')
-        if not ua:
-            raise ConfigurationError("user_agent should be supplied in a YAML config file or directly as a parameter. It can be your project's name for example.")
-        user_agent = '%s%s' % (user_agent, ua)
-        return user_agent
+        return cls._construct_user_agent(user_agent_config_dict, prefix, ua)
 
     @staticmethod
     def load_api_key(path):
@@ -431,7 +436,7 @@ class Configuration(UserDict, object):
 
         """
         cls.setup(configuration, **kwargs)
-        cls._configuration.setup_remoteckan(user_agent, user_agent_config_yaml, remoteckan)
+        cls._configuration.setup_remoteckan(user_agent, user_agent_config_yaml, remoteckan, **kwargs)
         return cls._configuration.get_hdx_site_url()
 
     @classmethod

@@ -546,6 +546,9 @@ hello there'''
         Configuration._create(user_agent_config_yaml=user_agent_config2_yaml, hdx_site='prod', hdx_key='TEST_HDX_KEY',
                               hdx_config_dict={}, project_config_yaml=project_config_yaml)
         assert Configuration.read().remoteckan().user_agent == 'HDXPythonLibrary/%s-myuseragent' % version
+        Configuration._create(user_agent='my_ua', preprefix='papa', hdx_site='prod', hdx_key='TEST_HDX_KEY',
+                              hdx_config_dict={}, project_config_yaml=project_config_yaml)
+        assert Configuration.read().remoteckan().user_agent == 'papa:HDXPythonLibrary/%s-my_ua' % version
         with pytest.raises(ConfigurationError):
             Configuration._create(user_agent_config_yaml=user_agent_config_wrong_yaml, hdx_site='prod', hdx_key='TEST_HDX_KEY',
                                   hdx_config_dict={}, project_config_yaml=project_config_yaml)
