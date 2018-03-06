@@ -312,6 +312,19 @@ class Configuration(UserDict, object):
 
     @staticmethod
     def _construct_user_agent(configdict, prefix, ua):
+        # type: (Dict, str, str) -> str
+        """
+        Construct user agent
+
+        Args:
+            configdict (str): Additional configuration for user agent
+            prefix (str): Text to put at start of user agent
+            user_agent_yaml (str): Path to user agent YAML file
+
+        Returns:
+            str: user agent
+
+        """
         if not ua:
             raise ConfigurationError("user_agent should be supplied in a YAML config file or directly as a parameter. It can be your project's name for example.")
         preprefix = configdict.get('preprefix')
