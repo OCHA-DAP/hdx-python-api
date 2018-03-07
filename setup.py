@@ -52,7 +52,7 @@ def get_readme():
 
 
 requirements = ['ckanapi>=4.1',
-                'hdx-python-country>=1.1.5',
+                'hdx-python-country>=1.1.6',
                 'ndg-httpsclient',
                 'pyasn1',
                 'pyOpenSSL',
