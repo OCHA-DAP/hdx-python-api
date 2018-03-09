@@ -3,7 +3,7 @@
 import copy
 import json
 import os
-from os import unlink
+from os import remove
 from os.path import join, basename
 
 import pytest
@@ -566,7 +566,7 @@ class TestResource:
         resource = Resource.read_from_hdx('74b74ae1-df0c-4716-829f-4f939a046811')
         resource2 = Resource.read_from_hdx('74b74ae1-df0c-4716-829f-4f939a046814')
         url, path = resource.download()
-        unlink(path)
+        remove(path)
         assert url == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
         assert basename(path) == 'MyResource1.csv'
         resource['url'] = ''

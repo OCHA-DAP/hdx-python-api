@@ -4,8 +4,8 @@
 import copy
 import datetime
 import json
-import os
 import tempfile
+from os import remove
 from os.path import join
 
 import pytest
@@ -565,7 +565,7 @@ class TestDataset:
         resource.set_file_to_upload(file.name)
         dataset.add_update_resource(resource)
         dataset.create_in_hdx()
-        os.unlink(file.name)
+        remove(file.name)
         assert len(dataset.resources) == 2
         # Dataset creates that end up updating are in the test below
 
@@ -667,7 +667,7 @@ class TestDataset:
         resource.set_file_to_upload(file.name)
         dataset.update_in_hdx(update_resources_by_name=False)
         assert len(dataset.resources) == 3
-        os.unlink(file.name)
+        remove(file.name)
         dataset = Dataset(dataset_data)
         resources_data = copy.deepcopy(TestDataset.resources_data)
         resource = Resource(resources_data[0])

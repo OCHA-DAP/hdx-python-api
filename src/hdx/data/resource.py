@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Resource class containing all logic for creating, checking, and updating resources."""
 import logging
-from os import unlink
+from os import remove
 from os.path import join
 from typing import Optional, List, Tuple, Dict, Union
 
@@ -350,7 +350,7 @@ class Resource(HDXObject):
                 raisefrom(HDXError, 'Upload to datastore of %s failed!' % url, e)
             finally:
                 if delete_after_download:
-                    unlink(path)
+                    remove(path)
 
     def create_datastore_from_dict_schema(self, data, delete_first=0, path=None):
         # type: (dict, int, Optional[str]) -> None
