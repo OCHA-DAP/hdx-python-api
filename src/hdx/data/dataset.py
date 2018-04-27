@@ -17,8 +17,8 @@ from six.moves import range
 import hdx.data.organization
 import hdx.data.resource
 import hdx.data.showcase
+import hdx.data.user
 from hdx.data.hdxobject import HDXObject, HDXError
-from hdx.data.user import User
 from hdx.hdx_configuration import Configuration
 from hdx.hdx_locations import Locations
 
@@ -1095,16 +1095,16 @@ class Dataset(HDXObject):
         return res
 
     def get_maintainer(self):
-        # type: () -> User
+        # type: () -> hdx.data.user.User
         """Get the dataset's maintainer.
 
          Returns:
              User: Dataset's maintainer
         """
-        return User.read_from_hdx(self.data['maintainer'], configuration=self.configuration)
+        return hdx.data.user.User.read_from_hdx(self.data['maintainer'], configuration=self.configuration)
 
     def set_maintainer(self, maintainer):
-        # type: (Union[User,Dict,str]) -> None
+        # type: (Union[hdx.data.user.User,Dict,str]) -> None
         """Set the dataset's maintainer.
 
          Args:
@@ -1112,9 +1112,9 @@ class Dataset(HDXObject):
          Returns:
              None
         """
-        if isinstance(maintainer, User) or isinstance(maintainer, dict):
+        if isinstance(maintainer, hdx.data.user.User) or isinstance(maintainer, dict):
             if 'id' not in maintainer:
-                maintainer = User.read_from_hdx(maintainer['name'], configuration=self.configuration)
+                maintainer = hdx.data.user.User.read_from_hdx(maintainer['name'], configuration=self.configuration)
             maintainer = maintainer['id']
         elif not isinstance(maintainer, str):
             raise HDXError('Type %s cannot be added as a maintainer!' % type(maintainer).__name__)

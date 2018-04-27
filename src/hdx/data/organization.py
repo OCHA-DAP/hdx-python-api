@@ -5,8 +5,8 @@ from os.path import join
 from typing import Optional, List, Dict, Union
 
 import hdx.data.dataset
+import hdx.data.user
 from hdx.data.hdxobject import HDXObject, HDXError
-from hdx.data.user import User
 from hdx.hdx_configuration import Configuration
 
 logger = logging.getLogger(__name__)
@@ -143,13 +143,13 @@ class Organization(HDXObject):
                 id = userdata.get('id')
                 if id is None:
                     id = userdata['name']
-                user = User.read_from_hdx(id, configuration=self.configuration)
+                user = hdx.data.user.User.read_from_hdx(id, configuration=self.configuration)
                 user['capacity'] = userdata['capacity']
                 users.append(user)
         return users
 
     def add_update_user(self, user, capacity=None):
-        # type: (Union[User,Dict,str],Optional[str]) -> None
+        # type: (Union[hdx.data.user.User,Dict,str],Optional[str]) -> None
         """Add new or update existing user in organization with new metadata. Capacity eg. member, admin
         must be supplied either within the User object or dictionary or using the capacity argument (which takes
         precedence).
@@ -163,10 +163,10 @@ class Organization(HDXObject):
 
         """
         if isinstance(user, str):
-            user = User.read_from_hdx(user, configuration=self.configuration)
+            user = hdx.data.user.User.read_from_hdx(user, configuration=self.configuration)
         elif isinstance(user, dict):
-            user = User(user, configuration=self.configuration)
-        if isinstance(user, User):
+            user = hdx.data.user.User(user, configuration=self.configuration)
+        if isinstance(user, hdx.data.user.User):
             users = self.data.get('users')
             if users is None:
                 users = list()
@@ -178,7 +178,7 @@ class Organization(HDXObject):
         raise HDXError('Type %s cannot be added as a user!' % type(user).__name__)
 
     def add_update_users(self, users, capacity=None):
-        # type: (List[Union[User,Dict,str]],Optional[str]) -> None
+        # type: (List[Union[hdx.data.user.User,Dict,str]],Optional[str]) -> None
         """Add new or update existing users in organization with new metadata. Capacity eg. member, admin
         must be supplied either within the User object or dictionary or using the capacity argument (which takes
         precedence).
@@ -196,7 +196,7 @@ class Organization(HDXObject):
             self.add_update_user(user, capacity)
 
     def remove_user(self, user):
-        # type: (Union[User,Dict,str]) -> bool
+        # type: (Union[hdx.data.user.User,Dict,str]) -> bool
         """Remove a user from the organization
 
         Args:

@@ -6,6 +6,7 @@ from os.path import join
 
 import pytest
 from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.loader import load_yaml
 
 from hdx.data.hdxobject import HDXError
 from hdx.data.user import User
@@ -29,6 +30,12 @@ resultdict = {
     'id': '9f3e9973-7dbe-4c65-8820-f48578e3ffea',
     'number_created_packages': 0
 }
+orgdict = load_yaml(join('tests', 'fixtures', 'organization_show_results.yml'))
+orgdict2 = copy.deepcopy(orgdict)
+del orgdict2['users']
+del orgdict2['packages']
+del orgdict2['extras']
+orglist = [orgdict2]
 
 result2dict = copy.deepcopy(resultdict)
 result2dict['email'] = 'aaa@bbb.com'
@@ -197,6 +204,28 @@ class TestUser:
             def post(url, data, headers, files, allow_redirects, auth):
                 datadict = json.loads(data.decode('utf-8'))
                 return mocklist(url)
+
+        Configuration.read().remoteckan().session = MockSession()
+
+    @pytest.fixture(scope='function')
+    def post_listorgs(self):
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth):
+                decodedata = data.decode('utf-8')
+                datadict = json.loads(decodedata)
+                if 'user' in url:
+                    if 'show' in url:
+                        return user_mockshow(url, datadict)
+                    elif 'list' in url:
+                        return MockResponse(200,
+                                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_list"}' % json.dumps(orglist))
+                elif 'organization' in url:
+                    if 'show' in url:
+                        result = json.dumps(orgdict)
+                        if datadict['id'] == 'b67e6c74-c185-4f43-b561-0e114a736f19' or datadict['id'] == 'TEST1':
+                            return MockResponse(200,
+                                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_show"}' % result)
 
         Configuration.read().remoteckan().session = MockSession()
 
@@ -376,3 +405,9 @@ Content-Transfer-Encoding: 7bit
         with pytest.raises(ValueError):
             User.email_users(list(), TestUser.subject, TestUser.text_body, sender=TestUser.sender,
                              mail_options=TestUser.mail_options, rcpt_options=TestUser.rcpt_options)
+
+    def test_get_organizations(self, configuration, post_listorgs):
+        user = User.read_from_hdx('9f3e9973-7dbe-4c65-8820-f48578e3ffea')
+        organizations = user.get_organizations()
+        assert organizations[0]['id'] == 'b67e6c74-c185-4f43-b561-0e114a736f19'
+

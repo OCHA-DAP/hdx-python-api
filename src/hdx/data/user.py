@@ -4,6 +4,7 @@ import logging
 from os.path import join
 from typing import Optional, List
 
+import hdx.data.organization
 from hdx.data.hdxobject import HDXObject
 from hdx.hdx_configuration import Configuration
 
@@ -37,7 +38,8 @@ class User(HDXObject):
             'update': 'user_update',
             'create': 'user_create',
             'delete': 'user_delete',
-            'list': 'user_list'
+            'list': 'user_list',
+            'listorgs': 'organization_list_for_user'
         }
 
     def update_from_yaml(self, path=join('config', 'hdx_user_static.yml')):
@@ -205,3 +207,23 @@ class User(HDXObject):
         if configuration is None:
             configuration = users[0].configuration
         configuration.emailer().send(recipients, subject, text_body, html_body=html_body, sender=sender, **kwargs)
+
+    def get_organizations(self, permission='read'):
+        # type: (str) -> List['Organization']
+        """Get organizations in HDX that this user is a member of.
+
+        Args:
+            permission (str): Permission to check for. Defaults to 'read'.
+
+        Returns:
+            List[Organization]: List of organizations in HDX that this user is a member of
+        """
+        success, result = self._read_from_hdx('user', self.data['name'], 'id', self.actions()['listorgs'],
+                                              permission=permission)
+        organizations = list()
+        if success:
+            for organizationdict in result:
+                organization = hdx.data.organization.Organization.read_from_hdx(organizationdict['id'])
+                organizations.append(organization)
+        return organizations
+
