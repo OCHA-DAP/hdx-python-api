@@ -384,7 +384,7 @@ class HDXObject(UserDict, object):
         """
         if objlist is None:
             return False
-        if isinstance(obj, str):
+        if isinstance(obj, six.string_types):
             obj_id = obj
         elif isinstance(obj, dict) or isinstance(obj, HDXObject):
             obj_id = obj.get(matchon)

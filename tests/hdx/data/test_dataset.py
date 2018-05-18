@@ -937,6 +937,14 @@ class TestDataset:
         dataset.add_tag('LALA')
         assert dataset['tags'] == [{'name': 'LALA'}]
         assert dataset.get_tags() == ['LALA']
+        dataset.add_tag(u'LALA')
+        assert dataset.get_tags() == ['LALA']
+        dataset.add_tag(u'HAHA')
+        assert dataset.get_tags() == ['LALA', u'HAHA']
+        dataset.remove_tag(u'LALA')
+        assert dataset.get_tags() == [u'HAHA']
+        dataset.add_tag('HAHA')
+        assert dataset.get_tags() == [u'HAHA']
 
     def test_get_add_location(self, locations, read):
         Country.countriesdata(use_live=False)
