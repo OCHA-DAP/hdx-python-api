@@ -623,13 +623,14 @@ class Dataset(HDXObject):
         return dataset._write_to_hdx('list', kwargs, 'id')
 
     @classmethod
-    def get_all_datasets(cls, configuration=None, page_size=1000, **kwargs):
-        # type: (Optional[Configuration], Any) -> List['Dataset']
+    def get_all_datasets(cls, configuration=None, page_size=1000, check_duplicates=True, **kwargs):
+        # type: (Optional[Configuration], int, bool, Any) -> List['Dataset']
         """Get all datasets in HDX
 
         Args:
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
             page_size (int): Size of page to return. Defaults to 1000.
+            check_duplicates (bool): Whether to check for duplicate datasets. Defaults to True.
             **kwargs: See below
             limit (int): Number of rows to return. Defaults to all datasets (sys.maxsize)
             offset (int): Offset in the complete result for where the set of returned datasets should begin
@@ -667,17 +668,18 @@ class Dataset(HDXObject):
                         break
                 else:
                     logger.debug(result)
-            names_list = [dataset['name'] for dataset in all_datasets]
-            names = set(names_list)
-            if len(names_list) != len(names):  # check for duplicates (shouldn't happen)
-                all_datasets = None
-                attempts += 1
-            # This check is no longer valid because of showcases being returned by package_list!
-            # elif total_rows == max_int:
-            #     all_names = set(Dataset.get_all_dataset_names())  # check dataset names match package_list
-            #     if names != all_names:
-            #         all_datasets = None
-            #         attempts += 1
+            if check_duplicates:
+                names_list = [dataset['name'] for dataset in all_datasets]
+                names = set(names_list)
+                if len(names_list) != len(names):  # check for duplicates (shouldn't happen)
+                    all_datasets = None
+                    attempts += 1
+                # This check is no longer valid because of showcases being returned by package_list!
+                # elif total_rows == max_int:
+                #     all_names = set(Dataset.get_all_dataset_names())  # check dataset names match package_list
+                #     if names != all_names:
+                #         all_datasets = None
+                #         attempts += 1
         if attempts == cls.max_attempts and all_datasets is None:
             raise HDXError('Maximum attempts reached for getting all datasets!')
         return all_datasets

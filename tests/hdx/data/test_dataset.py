@@ -811,6 +811,8 @@ class TestDataset:
             Dataset.get_all_datasets(limit=11)
         with pytest.raises(HDXError):
             Dataset.get_all_datasets(page_size=5)  # test repeated dataset (see mockall)
+        datasets = Dataset.get_all_datasets(page_size=5, check_duplicates=False)  # test repeated dataset (see mockall)
+        assert len(datasets) == 6
 
     def test_get_all_resources(self, configuration, search):
         datasets = Dataset.search_in_hdx('ACLED')
