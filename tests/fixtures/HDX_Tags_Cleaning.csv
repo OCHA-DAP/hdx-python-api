@@ -1,0 +1,3107 @@
+privately single,datasets,search,used in public,tag,action,final tags (semicolon separated),comments,Category/Concept/Theme
+,,,yes,noteid*,Delete,,"the cleanup script implements wildcards, so this will remove all the noteid tags",
+,244,Search,no,world bank,Delete,,,Organisation
+,221,Search,no,unesco,Delete,,,Organisation acronym
+,196,Search,no,world health organization,Delete,,,Organisation
+,195,Search,no,world health statistics,Delete,,,Health
+,172,Search,no,subnational,Delete,,,Administrative division
+,128,Search,no,worldpop,Delete,,,
+,127,Search,no,university of southampton,Delete,,,University
+,6,Search,yes,gin,Delete,,,location
+,44,Search,no,who,Delete,,,
+,43,Search,no,syrian arab republic,Delete,,,Location
+,29,Search,no,wb,Delete,,,Organisation acronym
+,28,Search,no,unicef,Delete,,,
+,27,Search,no,sudan,Delete,,,Location
+,25,Search,no,somalia,Delete,,,Location
+,23,Search,no,statistics,Delete,,,Statistics data
+,23,Search,no,yemen,Delete,,,Location
+,22,Search,no,undesa,Delete,,,Organisation acronym
+,22,Search,no,unocha,Delete,,,Organisation acronym
+,20,Search,no,yem,Delete,,,Country code iso3
+,18,Search,no,topline,Delete,,,
+,17,Search,no,south sudan,Delete,,,Location
+,17,Search,no,uganda,Delete,,,Location
+,15,Search,no,unicef sudan,Delete,,,
+,14,Search,no,sierra leone,Delete,,,Location
+,14,Search,no,unocha sudan,Delete,,,
+,14,Search,no,unsdit,Delete,,,
+,13,Search,no,trends,Delete,,,Health
+,13,Search,no,viet nam,Delete,,,Country name
+,12,Search,no,survival,Delete,,,Health
+,12,Search,no,unhcr,Delete,,,Organisation acronym
+,11,Search,no,undp,Delete,,,Organisation acronym
+,8,Search,no,codane,Delete,,,
+,8,Search,no,nrt,Delete,,,
+,8,Search,no,undp sudan,Delete,,,
+,8,Search,no,wfp,Delete,,,Organisation
+yes,1,Search,no,20 - 24 years,Delete,,Age range,
+,1,Search,yes,2008,Delete,,Time period,
+,1,Search,yes,2009,Delete,,Time period,
+,1,Search,yes,2010,Delete,,Time period,
+,1,Search,yes,2011,Delete,,Time period,
+,2,Search,yes,2012,Delete,,Time period,
+,1,Search,yes,2012 guatemala,Delete,,"Time Period, Place name",
+,2,Search,yes,2013,Delete,,Time period,
+,8,Search,yes,2014,Delete,,Time period,
+,5,Search,yes,2015,Delete,,Time period,
+,2,Search,yes,2016,Delete,,Time period,
+,3,Search,yes,2017,Delete,,Time period,
+yes,1,Search,no,25 - 29 years,Delete,,Age range,
+yes,1,Search,no,30 - 34 years,Delete,,Age range,
+yes,1,Search,no,35 - 39 years,Delete,,Age range,
+yes,1,Search,no,40 - 44 years,Delete,,Age range,
+yes,1,Search,no,43009,Delete,,.,
+yes,1,Search,no,43040,Delete,,.,
+yes,1,Search,no,45 - 49 years,Delete,,Age range,
+yes,1,Search,no,5 - 9 years old females,Delete,,SADD,
+yes,1,Search,no,aberdeen city,Delete,,Place name,
+yes,1,Search,no,aberdeenshire,Delete,,Place name,
+,4,Search,yes,abw,Delete,,Place name,Place name
+yes,1,Search,no,accessibility,Delete,,,
+yes,1,Search,no,accidente,Delete,,,
+yes,1,Search,no,acciones subversivas,Delete,,,
+,1,Search,yes,acled,Delete,,Organisation name,
+yes,1,Search,no,acted,Delete,,Organisation Name,
+,1,Search,yes,adamawa,Delete,,Place name,
+yes,1,Search,no,admin bdy,Delete,,Administrative divisions and boundaries,
+yes,1,Search,no,administrativa,Delete,,Administrative divisions and boundaries,
+yes,1,Search,no,adolescent fertility rate,Delete,,"Population group, Socioeconomic issues",
+yes,1,Search,no,aerodrome,Delete,,Transportation,
+,1,Search,yes,afd,Delete,,Organisation name,
+,1,Search,yes,afg,Delete,,Place name,
+,10,Search,yes,afghanistan,Delete,,Place name,
+,1,Search,yes,africa unity,Delete,,,
+,1,Search,yes,afrobarometer,Delete,,Organisation Name,
+,4,Search,yes,ago,Delete,,,
+yes,1,Search,no,agroclima,Delete,,,
+yes,1,Search,no,agroforestry,Delete,,,
+,4,Search,yes,aia,Delete,,,
+,4,Search,yes,aid,Delete,,,
+,3,Search,yes,aid data,Delete,,based on datasets,
+,1,Search,yes,airborne,Delete,,,
+yes,1,Search,no,ajk,Delete,,,
+,4,Search,yes,alb,Delete,,,
+yes,1,Search,no,albergues,Delete,,,
+,9,Search,yes,algeria,Delete,,,
+,1,Search,yes,altitude,Delete,,,
+,1,Search,yes,anc,Delete,,,
+,1,Search,yes,anc1,Delete,,,
+,1,Search,yes,anc4,Delete,,,
+,4,Search,yes,and,Delete,,,
+,2,Search,yes,angola,Delete,,,
+yes,1,Search,no,angus,Delete,,,
+,3,Search,yes,ant,Delete,,,
+,1,Search,yes,anthropometry,Delete,,,
+,2,Search,yes,antigen,Delete,,,
+yes,1,Search,no,antique map,Delete,,,
+yes,1,Search,no,antrim,Delete,,,
+,1,Search,yes,api,Delete,,,
+yes,1,Search,no,apm,Delete,,,
+yes,1,Search,no,applications,Delete,,,
+yes,1,Search,no,arabic translation,Delete,,,
+yes,1,Search,no,ards,Delete,,,
+,4,Search,yes,are,Delete,,,
+,3,Search,yes,area,Delete,,,
+,2,Search,yes,area of interest,Delete,,,
+,2,Search,yes,area-based,Delete,,,
+,3,Search,yes,area-based analysis,Delete,,,
+,4,Search,yes,arg,Delete,,,
+,1,Search,yes,argentina,Delete,,,
+,4,Search,yes,arm,Delete,,,
+yes,1,Search,no,armagh,Delete,,,
+yes,1,Search,no,armed action,Delete,,,
+yes,1,Search,no,armed hostilities,Delete,,,
+,4,Search,yes,armenia,Delete,,,
+yes,1,Search,no,art,Delete,,,
+,4,Search,yes,asm,Delete,,,
+,16,Search,yes,assessment,Delete,,,
+yes,1,Search,no,asset,Delete,,,
+,4,Search,yes,atg,Delete,,,
+,1,Search,yes,atlas,Delete,,,
+yes,1,Search,no,attack on civilians,Delete,,,
+,4,Search,yes,attendance,Delete,,multiple meanings in the datasets,
+,1,Search,yes,attendant,Delete,,,
+,4,Search,yes,aus,Delete,,,
+,4,Search,yes,aut,Delete,,,
+,4,Search,yes,aze,Delete,,,
+,2,Search,yes,azerbaijan,Delete,,,
+,2,Search,yes,azerbajan,Delete,,,
+,2,Search,yes,baidoa,Delete,,,
+yes,1,Search,no,ballymena,Delete,,,
+yes,1,Search,no,banbridge,Delete,,,
+,33,Search,yes,bangladesh,Delete,,,
+yes,1,Search,no,baringo,Delete,,,
+yes,1,Search,no,barnet,Delete,,,
+yes,1,Search,no,barnsley,Delete,,,
+,1,Search,yes,base de données,Delete,,,
+yes,1,Search,no,base map,Delete,,,
+yes,1,Search,no,basemap,Delete,,,
+yes,1,Search,no,bases,Delete,,,
+,1,Search,yes,bdd,Delete,,,
+,5,Search,yes,bdi,Delete,,,
+yes,1,Search,no,bedfordshire,Delete,,,
+,4,Search,yes,bel,Delete,,,
+yes,1,Search,no,belfast,Delete,,,
+,4,Search,yes,ben,Delete,,,
+,1,Search,yes,benin,Delete,,,
+yes,1,Search,no,bexley,Delete,,,
+,4,Search,yes,bfa,Delete,,,
+,4,Search,yes,bgd,Delete,,,
+,4,Search,yes,bgr,Delete,,,
+,4,Search,yes,bhr,Delete,,,
+,4,Search,yes,bhs,Delete,,,
+,4,Search,yes,bih,Delete,,,
+,1,Search,yes,bilateral co-operation,Delete,,,
+yes,1,Search,no,birmingham,Delete,,,
+yes,1,Search,no,birth rate,Delete,,,
+yes,1,Search,no,births attended by skilled personel,Delete,,,
+yes,1,Search,no,births not attended by skilled health personnel,Delete,,,
+yes,1,Search,no,blackpool,Delete,,,
+yes,1,Search,no,blaenau gwent,Delete,,,
+,4,Search,yes,blr,Delete,,,
+,4,Search,yes,blz,Delete,,,
+,4,Search,yes,bmu,Delete,,,
+,1,Search,yes,bodily fluid,Delete,,,
+,4,Search,yes,bol,Delete,,,
+,1,Search,yes,boletin,Delete,,,
+,1,Search,yes,boletín,Delete,,,
+yes,1,Search,no,bolton,Delete,,,
+,2,Search,yes,bomet,Delete,,,
+,1,Search,yes,border,Delete,,,
+,1,Search,yes,borders,Delete,,,
+,1,Search,yes,borno,Delete,,,
+,1,Search,yes,borno state,Delete,,,
+,1,Search,yes,botswana,Delete,,,
+yes,1,Search,no,boys per 100 girls,Delete,,,
+,4,Search,yes,bra,Delete,,,
+yes,1,Search,no,bradford,Delete,,,
+,2,Search,yes,brazil,Delete,,,
+,4,Search,yes,brb,Delete,,,
+yes,1,Search,no,brent,Delete,,,
+yes,1,Search,no,bridgend,Delete,,,
+,4,Search,yes,brn,Delete,,,
+yes,1,Search,no,bromley,Delete,,,
+,4,Search,yes,btn,Delete,,,
+yes,1,Search,no,buckingham,Delete,,,
+,2,Search,yes,bulletin,Delete,,,
+yes,1,Search,no,burial,Delete,,,
+yes,1,Search,no,burkina,Delete,,,
+,12,Search,yes,burkina faso,Delete,,,
+,9,Search,yes,burundi,Delete,,,
+yes,1,Search,no,bury,Delete,,,
+,1,Search,yes,bus,Delete,,,
+,1,Search,yes,business,Delete,,,
+,4,Search,yes,bwa,Delete,,,
+yes,1,Search,no,cabecera municipal,Delete,,,
+yes,1,Search,no,cabeceras municipales,Delete,,,
+,4,Search,yes,cabo verde,Delete,,,
+yes,1,Search,no,caerphilly,Delete,,,
+,4,Search,yes,caf,Delete,,,
+yes,1,Search,no,calderdale,Delete,,,
+,1,Search,yes,calles,Delete,,,
+,7,Search,yes,cameroon,Delete,,,
+,1,Search,yes,caminos,Delete,,,
+,4,Search,yes,can,Delete,,,
+,1,Search,yes,canton,Delete,,,
+yes,1,Search,no,cap haitien,Delete,,,
+,1,Search,yes,capability,Delete,,,
+yes,1,Search,no,capacity,Delete,,,
+,1,Search,yes,cape verde,Delete,,,
+,9,Search,yes,capitals,Delete,,,
+,8,Search,yes,car,Delete,,,
+yes,1,Search,no,cardiff,Delete,,,
+,6,Search,yes,care,Delete,,,
+,1,Search,yes,care seeking,Delete,,,
+,6,Search,yes,careseeking,Delete,,,
+,3,Search,yes,caritas,Delete,,,
+,5,Search,yes,caritas australia,Delete,,,
+yes,1,Search,no,caritas crs nepal,Delete,,,
+yes,1,Search,no,caritas nepal,Delete,,,
+,1,Search,yes,carreteras,Delete,,,
+,1,Search,yes,category,Delete,,,
+yes,1,Search,no,catholic relief services,Delete,,,
+yes,1,Search,no,cauca,Delete,,,
+,1,Search,yes,cbpf,Delete,,,
+,3,Search,yes,ccc,Delete,,,
+,7,Search,no,sisben,Delete,,org name,N/A
+yes,1,Search,no,ccy area,Delete,,,
+yes,1,Search,no,ce-20150402-yem,Delete,,Emergency id,
+,1,Search,yes,central darfur,Delete,,Place name,
+yes,1,Search,no,ceredigion,Delete,,,
+,8,Search,yes,cerf,Delete,,Orgnisation name,
+,8,Search,yes,chad,Delete,,Place name,
+yes,1,Search,no,charcoal,Delete,,Energy,
+,4,Search,yes,che,Delete,,,
+,2,Search,yes,check,Delete,,Health,
+yes,1,Search,no,cheshire,Delete,,Place name,
+yes,1,Search,no,child population,Delete,,,
+yes,1,Search,no,child sex ratio,Delete,,,
+,1,Search,yes,chile,Delete,,Place name,
+,4,Search,yes,chl,Delete,,,
+,4,Search,yes,chn,Delete,,,
+,1,Search,yes,cidh,Delete,,Organisation name,
+,1,Search,yes,cisp,Delete,,Organisation name,
+,10,Search,yes,cities,Delete,,,
+,1,Search,yes,city council,Delete,,,
+,4,Search,yes,civ,Delete,,,
+yes,1,Search,no,civilians,Delete,,,
+,1,Search,yes,classification,Delete,,HXL,
+,1,Search,yes,clean,Delete,,,
+yes,1,Search,no,climatología,Delete,,,
+,4,Search,yes,cmr,Delete,,,
+yes,1,Search,no,coca,Delete,,,
+yes,1,Search,no,cod fod perú,Delete,,,
+,7,Search,no,sub-national data,Delete,,,Administrative division
+,1,Search,yes,codes,Delete,,Type of data,
+,4,Search,yes,código municipal,Delete,,,
+,4,Search,yes,cog,Delete,,Place name,
+,4,Search,yes,cok,Delete,,,
+,15,Search,yes,col,Delete,,,
+yes,1,Search,no,coleraine,Delete,,,
+yes,1,Search,no,collateral victims,Delete,,,
+,60,Search,yes,colombia,Delete,,Place name,
+,4,Search,yes,com,Delete,,Place name,
+,1,Search,yes,communication,Delete,,based on dataset,
+yes,1,Search,no,communications,Delete,,,
+,2,Search,yes,communities,Delete,,Groups of interest,
+yes,1,Search,no,comoros,Delete,,Place Name,
+,2,Search,yes,completion,Delete,,Education,
+yes,1,Search,no,compte rendu,Delete,,,
+yes,1,Search,no,comptes rendus,Delete,,,
+yes,1,Search,no,conflicts,Delete,,,Conflict
+,4,Search,yes,congo,Delete,,,Location
+yes,1,Search,no,conservancy overview,Delete,,,
+yes,1,Search,no,conservation,Delete,,,
+yes,1,Search,no,consortium,Delete,,,
+,1,Search,yes,constituency,Delete,,,
+yes,1,Search,no,contact list,Delete,,,Coordination
+,1,Search,yes,context analysis,Delete,,,
+,1,Search,yes,continuation,Delete,,,
+,1,Search,yes,continuous,Delete,,,
+yes,1,Search,no,contours,Delete,,,
+yes,1,Search,no,contraceptive use,Delete,,,
+yes,1,Search,no,contraceptives,Delete,,,
+yes,1,Search,no,conwy,Delete,,,
+yes,1,Search,no,cookstown,Delete,,,
+,1,Search,yes,copernicus,Delete,,,
+yes,1,Search,no,cornwall,Delete,,,
+yes,1,Search,no,corregimientos,Delete,,,
+yes,1,Search,no,costs of damage,Delete,,,
+,1,Search,yes,cote divoire,Delete,,,Location
+,1,Search,yes,counties,Delete,,,
+,2,Search,yes,county,Delete,,,
+yes,1,Search,no,county expenditure,Delete,,,
+yes,1,Search,no,coventry,Delete,,,
+,4,Search,yes,coverage,Delete,,,
+,4,Search,yes,cpv,Delete,,,Location
+yes,1,Search,no,craigavon,Delete,,,
+,11,Search,yes,cred,Delete,,,
+,4,Search,yes,cri,Delete,,,Location
+,2,Search,yes,crisis,Delete,,,
+,2,Search,yes,crisis humanitaria,Delete,,,
+,230,Search,yes,crowdsourced,Delete,,,
+yes,1,Search,no,crowdsourcing,Delete,,,
+yes,1,Search,no,croydon,Delete,,,
+yes,1,Search,no,crs,Delete,,,Organization
+yes,1,Search,no,crs nepal,Delete,,,Organization
+yes,1,Search,no,crude birth rate,Delete,,,
+yes,1,Search,no,crude death rate,Delete,,,
+,1,Search,yes,csa,Delete,,,
+,4,Search,yes,cub,Delete,,,Location
+,5,Search,yes,cuba,Delete,,,Location
+yes,1,Search,no,cultivos ilicitos,Delete,,,
+,1,Search,yes,cultura,Delete,,,
+yes,1,Search,no,cumbria,Delete,,,
+,1,Search,yes,cure,Delete,,,
+,1,Search,yes,cwob,Delete,,,
+,4,Search,yes,cym,Delete,,,
+,4,Search,yes,cyp,Delete,,,
+,4,Search,yes,cze,Delete,,,Location
+,1,Search,yes,dac,Delete,,,
+,2,Search,yes,dana,Delete,,,
+,1,Search,yes,dane,Delete,,,
+yes,1,Search,no,darfur 3w,Delete,,,
+yes,1,Search,no,darlington,Delete,,,Location
+,6,Search,yes,data,Delete,,,
+,1,Search,yes,data base,Delete,,,
+,216,Search,yes,data lab nairobi,Delete,,,
+,1,Search,yes,data-lab nairobi,Delete,,,
+,6,Search,yes,data-ug,Delete,,,
+,1,Search,yes,dcsa,Delete,,,
+yes,1,Search,no,deaths per 1000 live births,Delete,,,
+,3,Search,yes,delito,Delete,,,
+,6,Search,yes,dem,Delete,,,
+yes,1,Search,no,democratic republic of congo,Delete,,,Location
+,1,Search,yes,democratic republic of the congo,Delete,,,Location
+,1,Search,yes,densidad,Delete,,,
+yes,1,Search,no,deodata,Delete,,,
+,2,Search,yes,departamental,Delete,,,
+,16,Search,yes,departamento,Delete,,,
+yes,1,Search,no,departamentos,Delete,,,
+,1,Search,yes,département,Delete,,,
+yes,1,Search,no,derby,Delete,,,
+yes,1,Search,no,derbyshire,Delete,,,
+yes,1,Search,no,derry,Delete,,,
+yes,1,Search,no,desarrollo humano,Delete,,,
+yes,1,Search,no,desinventar,Delete,,,
+yes,1,Search,no,deslizamientos,Delete,,,
+,1,Search,yes,destination,Delete,,,
+,4,Search,yes,deu,Delete,,,Location
+,25,Search,yes,development,Delete,,,
+yes,1,Search,no,devon,Delete,,,
+,3,Search,yes,devtrac,Delete,,,
+,4,Search,yes,dhn,Delete,,,
+yes,1,Search,no,dhnb,Delete,,,
+,1,Search,yes,dhs,Delete,,,
+,1,Search,yes,diálogos de paz,Delete,,,
+,2,Search,yes,diffa,Delete,,,Location
+,7,Search,yes,digicel haiti,Delete,,,
+,3,Search,yes,dijin,Delete,,,
+,1,Search,yes,dineo,Delete,,,
+,272,Search,yes,disaster,Delete,,"applied to a wide variety of things, not meaningful.",
+,1,Search,yes,disaster and age,Delete,,,
+,1,Search,yes,disaster management,Delete,,,
+yes,1,Search,no,disaster profile,Delete,,,
+,1,Search,yes,discipline,Delete,,,
+yes,1,Search,no,distance,Delete,,,
+yes,1,Search,no,distance hq,Delete,,,
+yes,1,Search,no,district boundary,Delete,,,
+yes,1,Search,no,división,Delete,,,
+,4,Search,yes,dji,Delete,,,Location
+,2,Search,yes,djibouti,Delete,,,Location
+,4,Search,yes,dma,Delete,,,
+,4,Search,yes,dnk,Delete,,,Location
+,1,Search,yes,dnp,Delete,,,
+yes,1,Search,no,document,Delete,,,
+,4,Search,yes,dom,Delete,,,
+,1,Search,yes,domain,Delete,,,
+,14,Search,yes,dominica,Delete,,,Location
+yes,1,Search,no,doncaster,Delete,,,
+,2,Search,yes,donor,Delete,,,
+yes,1,Search,no,dorset,Delete,,,
+yes,1,Search,no,down,Delete,,,
+yes,1,Search,no,dpko,Delete,,,
+yes,1,Search,no,dpt3,Delete,,,
+yes,1,Search,no,dpt3 immunization rate,Delete,,,
+yes,1,Search,no,drinking water,Delete,,,
+,1,Search,yes,droga,Delete,,,
+,1,Search,yes,dromic,Delete,,,
+yes,1,Search,no,dudley,Delete,,,
+yes,1,Search,no,durham,Delete,,,
+,4,Search,yes,dza,Delete,,,Location
+yes,1,Search,no,ealing,Delete,,,
+yes,1,Search,no,east darfur state,Delete,,,
+yes,1,Search,no,east timor,Delete,,,
+yes,1,Search,no,ebola crisis,Delete,,,
+yes,1,Search,no,ebola treatment center,Delete,,,
+,2,Search,yes,ec,Delete,,,
+yes,1,Search,no,ecowas,Delete,,,
+,4,Search,yes,ecu,Delete,,,Location
+,16,Search,yes,ecuador,Delete,,,
+,1,Search,yes,ecudador,Delete,,,
+,4,Search,yes,edad,Delete,,,
+yes,1,Search,no,edinburgh,Delete,,,Location
+yes,1,Search,no,education paygap,Delete,,,
+,1,Search,yes,eged,Delete,,,
+,4,Search,yes,egy,Delete,,,Location
+,1,Search,yes,egypt,Delete,,,
+,1,Search,yes,ehc,Delete,,,
+,1,Search,yes,eih,Delete,,,
+yes,1,Search,no,eilan siar,Delete,,,
+yes,1,Search,no,elderly population,Delete,,,
+yes,1,Search,no,elephant mortality,Delete,,,
+,11,Search,yes,emdat,Delete,,,
+,7,Search,yes,emergency,Delete,,,
+,1,Search,yes,emergency assistance,Delete,,,
+yes,1,Search,no,emergency map,Delete,,,
+,1,Search,yes,emergency response nepal,Delete,,,
+yes,1,Search,no,energy production,Delete,,,
+yes,1,Search,no,enfield,Delete,,,
+,1,Search,yes,english,Delete,,,
+yes,1,Search,no,english-arabic,Delete,,,
+yes,1,Search,no,enrollment levels,Delete,,,
+yes,1,Search,no,enrollment rates,Delete,,,
+yes,1,Search,no,eq20160919tza,Delete,,,
+,1,Search,yes,equatorial guinea,Delete,,,Location
+,3,Search,yes,erf,Delete,,,
+,4,Search,yes,eri,Delete,,,Location
+,2,Search,yes,eritrea,Delete,,,
+yes,1,Search,no,escalas,Delete,,,
+,1,Search,yes,esfni,Delete,,,
+yes,1,Search,no,esguardos,Delete,,,
+,4,Search,yes,esh,Delete,,,Location
+,4,Search,yes,esp,Delete,,,Location
+yes,1,Search,no,essex,Delete,,,Location
+,4,Search,yes,est,Delete,,,Location
+,4,Search,yes,eth,Delete,,,Location
+,8,Search,yes,ethiopia,Delete,,,Location
+,8,Search,yes,etu,Delete,,,
+yes,1,Search,no,etu locs 31 oct,Delete,,,
+,1,Search,yes,events,Delete,,,
+yes,1,Search,no,example,Delete,,,
+yes,1,Search,no,experience,Delete,,,
+,1,Search,yes,expert survey,Delete,,,
+yes,1,Search,no,explosion,Delete,,,
+yes,1,Search,no,extortion,Delete,,,
+yes,1,Search,no,facilities_capacity,Delete,,,
+yes,1,Search,no,falkirk,Delete,,,
+,4,Search,yes,fao,Delete,,,
+yes,1,Search,no,farc-ep,Delete,,,
+,1,Search,yes,fata,Delete,,,
+yes,1,Search,no,female contraceptive prevalence rate,Delete,,,
+,1,Search,yes,femicide,Delete,,,
+yes,1,Search,no,fermanagh,Delete,,,
+yes,1,Search,no,fertility rates,Delete,,,
+yes,1,Search,no,fife,Delete,,,
+yes,1,Search,no,figures,Delete,,,
+,4,Search,yes,fin,Delete,,,Location
+,1,Search,yes,first line,Delete,,,
+,4,Search,yes,fji,Delete,,,Location
+yes,1,Search,no,flintshire,Delete,,,place name
+,4,Search,yes,flk,Delete,,,place name
+,11,Search,yes,flow,Delete,,,
+,1,Search,yes,flowminder,Delete,,,organization name
+,30,Search,yes,fod,Delete,,,
+,1,Search,yes,fods,Delete,,,
+,1,Search,yes,fokontany,Delete,,,
+,2,Search,yes,food crisis,Delete,,based on datasets,
+yes,1,Search,no,food nutrition,Delete,,,humanitarian sector
+yes,1,Search,no,food security cluster,Delete,,,humanitarian sector
+,4,Search,yes,fra,Delete,,,location
+,1,Search,yes,france,Delete,,,
+,1,Search,yes,french,Delete,,,
+,1,Search,yes,french co-operation,Delete,,,
+,4,Search,yes,fro,Delete,,,place name
+,1,Search,yes,fsc,Delete,,,humanitarian sector
+,4,Search,yes,fsm,Delete,,,place name
+,3,Search,yes,fxx,Delete,,,
+,4,Search,yes,gab,Delete,,,location
+,1,Search,yes,gabon,Delete,,,
+,4,Search,yes,gambia,Delete,,,location
+yes,1,Search,no,garrissa,Delete,,,
+yes,1,Search,no,gateshead,Delete,,,location
+,4,Search,yes,gbr,Delete,,,location
+,1,Search,yes,gdl,Delete,,,
+yes,1,Search,no,gdp per capita,Delete,,,
+,1,Search,yes,gedaref,Delete,,,
+,5,Search,yes,gedo,Delete,,,
+,3,Search,yes,genital,Delete,,,
+,4,Search,yes,geo,Delete,,,location
+yes,1,Search,no,geoda,Delete,,,data type
+yes,1,Search,no,geografía,Delete,,,
+,2,Search,yes,georgia,Delete,,,location
+yes,1,Search,no,geoscientific,Delete,,,
+yes,1,Search,no,geoscientific information,Delete,,,
+yes,1,Search,no,geosinager,Delete,,,
+,4,Search,yes,gha,Delete,,,location
+,1,Search,yes,ghana,Delete,,,location
+,4,Search,yes,gib,Delete,,,location
+,1,Search,yes,gini,Delete,,,
+,1,Search,yes,girlchild,Delete,,,
+yes,1,Search,no,gis data,Delete,,,data type
+,19,Search,yes,global,Delete,,non sense,
+,195,Search,yes,global health estimates,Delete,,,
+yes,1,Search,no,glossary of terms,Delete,,,
+,3,Search,yes,glp,Delete,,,location
+,4,Search,yes,gmb,Delete,,,location
+,4,Search,yes,gnb,Delete,,,location
+,1,Search,yes,gnp,Delete,,,
+,4,Search,yes,gnq,Delete,,,location
+,1,Search,yes,goal 16,Delete,,,
+,1,Search,yes,goal16,Delete,,,SDG
+yes,1,Search,no,gorkha district,Delete,,,
+,7,Search,yes,goverment data,Delete,,,
+,11,Search,yes,government,Delete,,,
+,29,Search,yes,government data,Delete,,,
+yes,1,Search,no,government loan,Delete,,,
+yes,1,Search,no,gps coordinates,Delete,,,GPS data
+,1,Search,yes,gps garmin,Delete,,,GPS data
+,4,Search,yes,grc,Delete,,,location
+,4,Search,yes,grd,Delete,,,location
+,2,Search,yes,greece,Delete,,,location
+,1,Search,yes,grid,Delete,,,
+,4,Search,yes,grl,Delete,,,location
+,214,Search,yes,growth,Delete,,,
+,4,Search,yes,gtm,Delete,,,location
+,3,Search,yes,guatemala,Delete,,,location
+,3,Search,yes,guf,Delete,,,location
+,15,Search,yes,guinea,Delete,,,location
+,1,Search,yes,guinea-bissau,Delete,,,location
+,3,Search,yes,guinée,Delete,,,
+,4,Search,yes,gum,Delete,,,location
+,4,Search,yes,guy,Delete,,,location
+yes,1,Search,no,gwynedd,Delete,,,
+yes,1,Search,no,hackney,Delete,,,disease
+,18,Search,yes,haiti,Delete,,,location
+,3,Search,yes,haiti crisis,Delete,,,
+yes,1,Search,no,halton,Delete,,,
+yes,1,Search,no,hampshire,Delete,,,location
+,1,Search,yes,hargeisa,Delete,,,
+yes,1,Search,no,haringey,Delete,,,
+yes,1,Search,no,harrow,Delete,,,
+yes,1,Search,no,hartlepool,Delete,,,
+yes,1,Search,no,havering,Delete,,,
+,7,Search,yes,hdx connect,Delete,,,
+,7,Search,yes,hdxconnect,Delete,,,
+,195,Search,yes,health equity monitor,Delete,,,health
+yes,1,Search,no,health facility,Delete,,,health
+,1,Search,yes,health officials,Delete,,,
+yes,1,Search,no,health sector,Delete,,,health
+yes,1,Search,no,health services mapping,Delete,,,health
+,1,Search,yes,hectareas,Delete,,,
+yes,1,Search,no,hertford,Delete,,,
+yes,1,Search,no,hidrometría,Delete,,,
+yes,1,Search,no,highland,Delete,,,
+yes,1,Search,no,highways,Delete,,,
+yes,1,Search,no,hillingdon,Delete,,,
+yes,1,Search,no,him,Delete,,,
+yes,1,Search,no,his,Delete,,,
+,1,Search,yes,historical,Delete,,,
+,1,Search,yes,hitos,Delete,,,
+,3,Search,yes,hkg,Delete,,,location
+,4,Search,yes,hnd,Delete,,,location
+,1,Search,yes,hoa,Delete,,,
+,4,Search,yes,home,Delete,,,
+,1,Search,yes,honduras,Delete,,,location
+,10,Search,yes,hot,Delete,,,
+,2,Search,yes,hotspot,Delete,,,
+yes,1,Search,no,hounslow,Delete,,,
+yes,1,Search,no,house type,Delete,,,
+yes,1,Search,no,household size,Delete,,,
+,3,Search,yes,households,Delete,,,
+yes,1,Search,no,hq,Delete,,,
+,1,Search,yes,hrrp,Delete,,,
+,4,Search,yes,hrv,Delete,,,location
+,4,Search,yes,hti,Delete,,,location
+,1,Search,yes,human development,Delete,,,humanitarian development
+yes,1,Search,no,human wildlife conflict,Delete,,,
+,18,Search,yes,humanitarian,Delete,,,humanitarian
+,1,Search,yes,humanitarian action,Delete,,,humanitarian aid
+,2,Search,yes,humanitarian aid,Delete,,,humanitarian service
+,3,Search,yes,humanitarian crisis,Delete,,,humanitarian service
+yes,1,Search,no,humanitarian fundind,Delete,,,humanitarian service
+yes,1,Search,no,humanitarian incidents,Delete,,,
+,2,Search,yes,humanitarian organization,Delete,,,
+yes,1,Search,no,humanitarian situation,Delete,,,
+yes,1,Search,no,humanitarian terms,Delete,,,
+yes,1,Search,no,humanitatian needs overview,Delete,,,
+,4,Search,yes,hun,Delete,,,location
+yes,1,Search,no,huracanpatricia,Delete,,,hurricane
+,2,Search,yes,iamp,Delete,,,
+,2,Search,yes,iasc,Delete,,,
+yes,1,Search,no,ibague,Delete,,,
+,173,Search,yes,idmc,Delete,,,
+,4,Search,yes,idn,Delete,,,location
+,4,Search,yes,ifrc,Delete,,,
+,6,Search,no,etc,Delete,,,
+yes,1,Search,no,illness,Delete,,,health
+yes,1,Search,no,ilngwesi,Delete,,,
+,1,Search,yes,im,Delete,,,
+yes,1,Search,no,images,Delete,,,raster data
+,1,Search,yes,imci,Delete,,,
+yes,1,Search,no,imf,Delete,,,
+yes,1,Search,no,improved water sources,Delete,,,health
+,3,Search,yes,imwg,Delete,,,
+,21,Search,yes,imwg sudan,Delete,,,
+,1,Search,yes,inadequate,Delete,,,
+,1,Search,yes,incidentes 2012,Delete,,,
+yes,1,Search,no,income gendergap,Delete,,,indicator
+,1,Search,yes,income gini,Delete,,,indicator
+yes,1,Search,no,income paygap,Delete,,,
+,4,Search,yes,ind,Delete,,,location
+,6,Search,yes,indice,Delete,,,indice
+yes,1,Search,no,índice gini,Delete,,,indicator
+yes,1,Search,no,indigena,Delete,,,
+yes,1,Search,no,indígenas,Delete,,,
+,4,Search,yes,indonesia,Delete,,,location
+,2,Search,yes,inform,Delete,,,
+yes,1,Search,no,informal settlement,Delete,,,
+yes,1,Search,no,informal tented settlements,Delete,,,
+,1,Search,yes,information management working group,Delete,,,
+,1,Search,yes,information management working group - sudan,Delete,,,
+yes,1,Search,no,ingo,Delete,,,
+,1,Search,yes,inpc,Delete,,,
+yes,1,Search,no,ins,Delete,,,
+,1,Search,yes,inso,Delete,,,
+yes,1,Search,no,integrated development project,Delete,,,
+,1,Search,yes,intentions monitoring,Delete,,,
+yes,1,Search,no,internal displaced people,Delete,,,displacement
+,1,Search,yes,international,Delete,,,
+yes,1,Search,no,international displacement monitoring centre,Delete,,,
+,1,Search,yes,international organization for migration,Delete,,,
+,1,Search,yes,international peace institute,Delete,,,
+yes,1,Search,no,intra-municipality idps,Delete,,,displacement
+yes,1,Search,no,inundaciones,Delete,,,
+,1,Search,yes,inventory,Delete,,,
+yes,1,Search,no,inverclyde,Delete,,,
+,24,Search,yes,iom,Delete,,,Organization
+yes,1,Search,no,iom libya,Delete,,,
+,1,Search,yes,ional presence 5,Delete,,,
+,1,Search,yes,ipi,Delete,,,
+,1,Search,yes,iran,Delete,,,Location
+,33,Search,yes,iraq,Delete,,,Location
+,30,Search,yes,iraq crisis,Delete,,,Crisis
+,4,Search,yes,irl,Delete,,,Location
+,4,Search,yes,irn,Delete,,,Location
+,4,Search,yes,irq,Delete,,,Location
+,1,Search,yes,irsh,Delete,,,
+,1,Search,yes,is,Delete,,,
+,4,Search,yes,isl,Delete,,,Location
+yes,1,Search,no,islington,Delete,,,
+,4,Search,yes,isr,Delete,,,Location
+,4,Search,yes,ita,Delete,,,Location
+,1,Search,yes,italy,Delete,,,Location
+,3,Search,yes,itn,Delete,,,
+,2,Search,yes,itos,Delete,,,
+yes,1,Search,no,its,Delete,,,
+,5,Search,yes,ivory coast,Delete,,,Location
+,4,Search,yes,jam,Delete,,,Location
+,1,Search,yes,jccp,Delete,,,
+,2,Search,yes,joint reporting form,Delete,,,
+,4,Search,yes,jor,Delete,,,Location
+,1,Search,yes,jordan,Delete,,,Location
+,1,Search,yes,jowhar district conflict and security assessment - 2015,Delete,,,
+,4,Search,yes,jpn,Delete,,,Location
+,1,Search,yes,json,Delete,,,Data Type
+yes,1,Search,no,kalama,Delete,,,
+yes,1,Search,no,kampala,Delete,,,
+,1,Search,yes,kasai,Delete,,,Location
+,3,Search,yes,kasese,Delete,,,
+yes,1,Search,no,kashmir,Delete,,,
+yes,1,Search,no,kathmandu,Delete,,,Location
+yes,1,Search,no,kathmandu valley,Delete,,,
+,4,Search,yes,kaz,Delete,,,Location
+,3,Search,yes,kazakhstan,Delete,,,Location
+yes,1,Search,no,kdhs2014,Delete,,,
+,5,Search,yes,ken,Delete,,,Location
+yes,1,Search,no,kensington,Delete,,,
+yes,1,Search,no,kent,Delete,,,
+,1,Search,yes,kenya country office,Delete,,,
+,6,Search,no,igac,Delete,,,
+yes,1,Search,no,key,Delete,,,
+,4,Search,yes,kgz,Delete,,,Location
+,4,Search,yes,khm,Delete,,,Location
+,1,Search,yes,kibera,Delete,,,Location
+,4,Search,yes,kir,Delete,,,Location
+yes,1,Search,no,kirklees,Delete,,,
+,2,Search,yes,kismayo,Delete,,,Location
+,4,Search,yes,kna,Delete,,,Location
+yes,1,Search,no,knowsley,Delete,,,
+,1,Search,yes,koatuu,Delete,,,Location
+,4,Search,yes,kor,Delete,,,Location
+,1,Search,yes,kp,Delete,,,Location
+,1,Search,yes,kp-fata,Delete,,,Location
+,3,Search,yes,kri,Delete,,,
+,4,Search,yes,kwt,Delete,,,Location
+,3,Search,yes,kyrgyzstan,Delete,,,Location
+yes,1,Search,no,laboratory,Delete,,,
+,1,Search,yes,lagos,Delete,,,Location
+yes,1,Search,no,lake chad crisis funding,Delete,,,
+yes,1,Search,no,lambeth,Delete,,,
+yes,1,Search,no,lamivady,Delete,,,
+yes,1,Search,no,lancashire,Delete,,,
+,2,Search,yes,land,Delete,,,
+yes,1,Search,no,land use pressure,Delete,,,
+,1,Search,yes,landed area,Delete,,,
+,4,Search,yes,lao,Delete,,,Location
+,5,Search,yes,lao pdr,Delete,,,
+yes,1,Search,no,larne,Delete,,,
+,1,Search,yes,lawin,Delete,,,
+yes,1,Search,no,laziness,Delete,,,
+yes,1,Search,no,lazy,Delete,,,
+,4,Search,yes,lbn,Delete,,,Location
+,5,Search,yes,lbr,Delete,,,Location
+,4,Search,yes,lby,Delete,,,Location
+,4,Search,yes,lca,Delete,,,Location
+,1,Search,yes,lcb,Delete,,,Location
+,17,Search,yes,lebanon,Delete,,,Location
+yes,1,Search,no,lecciones aprendidas,Delete,,,
+yes,1,Search,no,leeds,Delete,,,
+yes,1,Search,no,leicester,Delete,,,
+,1,Search,yes,lesotho,Delete,,,
+yes,1,Search,no,level 0,Delete,,,
+yes,1,Search,no,level 1,Delete,,,
+yes,1,Search,no,level 2,Delete,,,
+yes,1,Search,no,lewisham,Delete,,,
+,1,Search,yes,lga,Delete,,,Location
+,1,Search,yes,lgas,Delete,,,
+,14,Search,yes,liberia,Delete,,,Location
+,6,Search,yes,libya,Delete,,,Location
+,3,Search,yes,libyan arab jamahiriya,Delete,,,
+,4,Search,yes,lie,Delete,,,Location
+yes,1,Search,no,limite,Delete,,,
+yes,1,Search,no,lincolnshire,Delete,,,
+,3,Search,yes,lira,Delete,,,
+yes,1,Search,no,lisburn,Delete,,,
+yes,1,Search,no,liste de contacts,Delete,,,
+yes,1,Search,no,literacy rates,Delete,,,
+yes,1,Search,no,live births per woman,Delete,,,
+yes,1,Search,no,livelihood responsibilities,Delete,,,
+yes,1,Search,no,liverpool,Delete,,,
+yes,1,Search,no,livestock numbers,Delete,,,
+,4,Search,yes,lka,Delete,,,Location
+,6,Search,yes,location,Delete,,,
+,1,Search,yes,location assessment - dtm,Delete,,,
+,1,Search,yes,location assessment data,Delete,,,
+,2,Search,yes,locations,Delete,,,
+yes,1,Search,no,locs,Delete,,,
+,1,Search,yes,loma,Delete,,,
+,9,Search,yes,loss,Delete,,,
+,7,Search,yes,lsib,Delete,,,
+,4,Search,yes,lso,Delete,,,Location
+,4,Search,yes,ltu,Delete,,,Location
+yes,1,Search,no,luton,Delete,,,
+,4,Search,yes,lux,Delete,,,Location
+,4,Search,yes,lva,Delete,,,Location
+,3,Search,yes,mac,Delete,,,Location
+yes,1,Search,no,machine learning,Delete,,,
+,6,Search,yes,madagascar,Delete,,,Location
+yes,1,Search,no,maize,Delete,,,
+yes,1,Search,no,malaria cases per 100000,Delete,,,
+,2,Search,yes,malawi,Delete,,,Location
+yes,1,Search,no,male population,Delete,,,
+,27,Search,yes,mali,Delete,,,Location
+yes,1,Search,no,mam,Delete,,,
+yes,1,Search,no,manchester,Delete,,,
+,1,Search,yes,mantiqua,Delete,,,
+,340,Search,yes,map,Delete,,,
+,1,Search,yes,mapa,Delete,,,
+,2,Search,yes,maps,Delete,,,
+,4,Search,yes,mar,Delete,,,Location
+,2,Search,yes,marawi,Delete,,,Location
+yes,1,Search,no,marine,Delete,,,
+,1,Search,yes,marocco,Delete,,,Location
+,1,Search,yes,mass communications,Delete,,,
+,1,Search,yes,mass events,Delete,,,
+,1,Search,yes,material,Delete,,,
+yes,1,Search,no,maternal mortality rate,Delete,,,
+,14,Search,yes,mauritania,Delete,,,Location
+,1,Search,yes,mauritanie,Delete,,,Location
+,1,Search,yes,mauritius,Delete,,,Location
+,4,Search,yes,mco,Delete,,,Location
+,4,Search,yes,mda,Delete,,,Location
+,4,Search,yes,mdv,Delete,,,Location
+yes,1,Search,no,meassurement and evaluation,Delete,,,
+,1,Search,yes,medair,Delete,,,
+yes,1,Search,no,media ambiente,Delete,,,
+,1,Search,yes,medical research,Delete,,,
+yes,1,Search,no,medway,Delete,,,
+yes,1,Search,no,meeting,Delete,,,
+yes,1,Search,no,melako,Delete,,,
+yes,1,Search,no,mensual,Delete,,,
+yes,1,Search,no,mental,Delete,,,
+yes,1,Search,no,mental illness,Delete,,,
+yes,1,Search,no,merton,Delete,,,
+,1,Search,yes,metadata,Delete,,,
+,4,Search,yes,mex,Delete,,,Location
+,17,Search,yes,mexico,Delete,,,Location
+,4,Search,yes,mhl,Delete,,,Location
+,1,Search,yes,mhr,Delete,,,
+yes,1,Search,no,microfinance,Delete,,,
+yes,1,Search,no,mid-year population,Delete,,,
+yes,1,Search,no,midlothian,Delete,,,
+,36,Search,yes,migration-processing,Delete,,,Movement
+yes,1,Search,no,migrations,Delete,,,
+,1,Search,yes,mindanao,Delete,,,
+,1,Search,yes,mine action,Delete,,,
+yes,1,Search,no,mineria,Delete,,,
+,1,Search,yes,ministry of health,Delete,,,
+yes,1,Search,no,mintiqua,Delete,,,
+yes,1,Search,no,minutes,Delete,,,
+,1,Search,yes,missingmaps,Delete,,,
+,4,Search,yes,mkd,Delete,,,Location
+,4,Search,yes,mli,Delete,,,Location
+,4,Search,yes,mlt,Delete,,,Location
+yes,1,Search,no,mmi,Delete,,,
+,4,Search,yes,mmr,Delete,,,Location
+,4,Search,yes,mne,Delete,,,Location
+,4,Search,yes,mng,Delete,,,Location
+,4,Search,yes,mnp,Delete,,,Location
+,2,Search,yes,mobile,Delete,,,
+,4,Search,yes,mobility constraints,Delete,,based on datasets,Movement
+,3,Search,yes,model,Delete,,,
+yes,1,Search,no,monsoon,Delete,,,
+,1,Search,yes,moph lebanon,Delete,,,
+yes,1,Search,no,moray,Delete,,,
+yes,1,Search,no,mortalidad y desnutrición,Delete,,,
+,1,Search,yes,mosul,Delete,,,Location
+yes,1,Search,no,mothers,Delete,,,
+,4,Search,yes,moz,Delete,,,Location
+,3,Search,yes,mozambique,Delete,,,Location
+,2,Search,yes,mozambique floods,Delete,,,
+,1,Search,yes,mpi,Delete,,,
+,4,Search,yes,mrt,Delete,,,Location
+,3,Search,yes,msna,Delete,,,
+,4,Search,yes,msr,Delete,,,Location
+,3,Search,yes,mtq,Delete,,,Location
+yes,1,Search,no,muhalla,Delete,,,
+,1,Search,yes,multiple indicators,Delete,,,
+,5,Search,yes,municipal,Delete,,,Location
+,4,Search,yes,municipalities,Delete,,,
+yes,1,Search,no,municpio,Delete,,,
+,4,Search,yes,mus,Delete,,,Location
+,2,Search,yes,muse,Delete,,,
+,3,Search,yes,mutilation,Delete,,,Health
+,4,Search,yes,mwi,Delete,,,Location
+,15,Search,yes,myanmar,Delete,,,Location
+,4,Search,yes,mys,Delete,,,Location
+,3,Search,yes,myt,Delete,,,Location
+yes,1,Search,no,nakuprat gotu,Delete,,,
+,4,Search,yes,nam,Delete,,,Location
+,2,Search,yes,namibia,Delete,,,Location
+,2,Search,yes,natal,Delete,,,
+,1,Search,yes,national,Delete,,,
+,1,Search,yes,national accounts,Delete,,,
+yes,1,Search,no,national budget,Delete,,,
+,1,Search,yes,navigation,Delete,,,
+,1,Search,yes,nbi,Delete,,,
+,4,Search,yes,ncl,Delete,,,Location
+,1,Search,yes,nct,Delete,,,
+yes,1,Search,no,neath port tabot,Delete,,,
+yes,1,Search,no,nelum valley,Delete,,,Location
+,39,Search,yes,nepal,Delete,,,Location
+,1,Search,yes,nepal crisis,Delete,,,
+yes,1,Search,no,nepal earthquake 2015,Delete,,,
+yes,1,Search,no,nepal eathquake,Delete,,,
+,4,Search,yes,ner,Delete,,,Location
+,1,Search,yes,nethope,Delete,,,
+yes,1,Search,no,network,Delete,,,
+yes,1,Search,no,newham,Delete,,,
+yes,1,Search,no,newport,Delete,,,
+,4,Search,yes,nfk,Delete,,,Location
+,8,Search,yes,nga,Delete,,,Location
+,224,Search,yes,ngo,Delete,,,Organization Type
+,1,Search,yes,ngosafety,Delete,,,
+,4,Search,yes,nic,Delete,,,Location
+,10,Search,yes,niger,Delete,,,Location
+,21,Search,yes,nigeria,Delete,,,Location
+,1,Search,yes,nino-3.4,Delete,,,
+,4,Search,yes,niu,Delete,,,Location
+,4,Search,yes,nld,Delete,,,Location
+,431,Search,yes,nodeid*,Delete,,,
+,1,Search,yes,nogi,Delete,,,
+,4,Search,yes,nor,Delete,,,Location
+yes,1,Search,no,norfolk,Delete,,,
+yes,1,Search,no,norte de santander,Delete,,,
+,1,Search,yes,north darfur,Delete,,,
+yes,1,Search,no,north darfur state,Delete,,,Location
+,4,Search,yes,npl,Delete,,,Location
+,1,Search,yes,npm,Delete,,,Data Type
+yes,1,Search,no,nrt area,Delete,,,
+yes,1,Search,no,nrtt,Delete,,,
+,4,Search,yes,nru,Delete,,,Location
+,4,Search,yes,nzl,Delete,,,Location
+,1,Search,yes,obf,Delete,,,
+,1,Search,yes,oblast,Delete,,,
+,1,Search,yes,observatory,Delete,,,
+yes,1,Search,no,occupancy,Delete,,,
+,12,Search,yes,ocha,Delete,,,Organization
+,2,Search,yes,ocha mali,Delete,,,Organization
+yes,1,Search,no,ocha somalia,Delete,,,
+,2,Search,yes,ocha sudan,Delete,,,Organization
+,2,Search,yes,ocvp,Delete,,,
+,2,Search,yes,oda,Delete,,,
+,1,Search,yes,offline,Delete,,,
+yes,1,Search,no,old age support ratio,Delete,,,
+yes,1,Search,no,oldham,Delete,,,
+yes,1,Search,no,omagh,Delete,,,
+,4,Search,yes,omn,Delete,,,Location
+,2,Search,yes,ong,Delete,,,Organization Type
+,2,Search,yes,online,Delete,,,
+,1,Search,yes,open access,Delete,,,Open data
+,5,Search,yes,open street map,Delete,,,Open data
+,507,Search,yes,openstreetmap,Delete,,,Open data
+yes,1,Search,no,ops,Delete,,,N/A
+,2,Search,yes,organisations,Delete,,Doesnt provide special uniqueness as a search item,N/A
+,1,Search,yes,organization type,Delete,,Doesnt provide special uniqueness as a search item,N/A
+,1,Search,yes,organizational processes,Delete,,Doesnt provide special uniqueness as a search item,N/A
+,1,Search,yes,origin,Delete,,Doesnt provide special uniqueness as a search item,N/A
+,8,Search,yes,ors,Delete,,multiple meanings,Health
+,500,Search,yes,osm,Delete,,,Open data
+,10,Search,yes,other,Delete,,Doesnt provide special uniqueness as a search item,N/A
+,195,Search,yes,other stis,Delete,,Doesnt provide special uniqueness as a search item,N/A
+yes,1,Search,no,output,Delete,,,N/A
+yes,1,Search,no,outputindicators,Delete,,,Evaluations
+,2,Search,yes,ownership,Delete,,Doesnt provide special uniqueness as a search item,N/A
+yes,1,Search,no,p-codes,Delete,,,Geographical
+,4,Search,yes,pak,Delete,,,N/A
+,7,Search,yes,pakistan,Delete,,,Location
+,2,Search,yes,palestine,Delete,,,Location
+,1,Search,yes,palestinian gatherings,Delete,,No obvious meaning and unlikely to be used as a search item,N/A
+,1,Search,yes,palestinian in lebanon,Delete,,,"Places, Refugees"
+,4,Search,yes,pan,Delete,,,N/A
+,1,Search,yes,parish,Delete,,,Location
+yes,1,Search,no,parks,Delete,,,NA
+yes,1,Search,no,parques nacionales,Delete,,,N/A
+yes,1,Search,no,patent,Delete,,,N/A
+yes,1,Search,no,paths,Delete,,,N/A
+,3,Search,yes,paz,Delete,,,N/A
+,4,Search,yes,pcn,Delete,,,N/A
+,29,Search,yes,pcode,Delete,,,Geographical
+,3,Search,yes,pcodes,Delete,,,Geographical
+,1,Search,yes,pdi,Delete,,,N/A
+,1,Search,yes,peaceful societies,Delete,,,Political stability
+,1,Search,yes,people,Delete,,,N/A
+,4,Search,yes,per,Delete,,,N/A
+yes,1,Search,no,perception data,Delete,,,Surveys
+,5,Search,yes,peru,Delete,,,Location
+,12,Search,yes,philippines,Delete,,,Location
+,1,Search,yes,phillippines,Delete,,,Location
+,4,Search,yes,phl,Delete,,,N/A
+yes,1,Search,no,phones,Delete,,,Communication
+,1,Search,yes,photos,Delete,,,N/A
+yes,1,Search,no,physicians,Delete,,,Health
+,1,Search,yes,pib,Delete,,No obvious meaning and unlikely to be used as a search item,N/A
+,1,Search,yes,pidp,Delete,,No obvious meaning and unlikely to be used as a search item,N/A
+yes,1,Search,no,pike,Delete,,,N/A
+,6,Search,yes,places,Delete,,Too general a term to be regarded as a tag,Location
+yes,1,Search,no,pluviometría,Delete,,,N/A
+,4,Search,yes,plw,Delete,,,N/A
+yes,1,Search,no,plymouth,Delete,,,Location
+,2,Search,yes,pnc,Delete,,No obvious meaning and unlikely to be used as a search item,N/A
+,4,Search,yes,png,Delete,,,Location
+yes,1,Search,no,poaching,Delete,,,Wildlife
+,10,Search,yes,point,Delete,,,Geographical
+,4,Search,yes,pol,Delete,,,Location
+,1,Search,yes,pool,Delete,,No obvious meaning and unlikely to be used as a search item,N/A
+yes,1,Search,no,poole,Delete,,,N/A
+,1,Search,yes,poor,Delete,,Ambiguous term,N/A
+yes,1,Search,no,population exposure,Delete,,,Population
+yes,1,Search,no,population sex ratio,Delete,,,Population
+,2,Search,yes,post,Delete,,Ambiguous term,N/A
+yes,1,Search,no,poverty gap ratio,Delete,,,Poverty
+yes,1,Search,no,power plants,Delete,,,Energy
+yes,1,Search,no,powys,Delete,,,N/A
+,1,Search,yes,ppe,Delete,,No obvious meaning and unlikely to be used as a search item,N/A
+yes,1,Search,no,pplp,Delete,,No obvious meaning and unlikely to be used as a search item,N/A
+,1,Search,yes,ppp,Delete,,No obvious meaning and unlikely to be used as a search item,N/A
+yes,1,Search,no,prc,Delete,,,N/A
+yes,1,Search,no,pre-disaster indicators,Delete,,,Emergence response
+,1,Search,yes,preparadness,Delete,,,Emergence response
+,1,Search,yes,prepared,Delete,,,Emergence response
+,1,Search,yes,preparednes,Delete,,,Emergence response
+yes,1,Search,no,presence,Delete,,,N/A
+,1,Search,yes,presencia farc,Delete,,,N/A
+,2,Search,yes,prevalence,Delete,,,Health
+,1,Search,yes,prevention,Delete,,,Health
+,1,Search,yes,preventive,Delete,,,Health
+,6,Search,yes,pri,Delete,,No obvious meaning and unlikely to be used as a search item,N/A
+,3,Search,yes,primary,Delete,,Ambiguous term,N/A
+yes,1,Search,no,priorityindex,Delete,,,
+,4,Search,yes,prk,Delete,,,N/A
+,1,Search,yes,profilage,Delete,,,
+,1,Search,yes,projection,Delete,,,Geographical
+,1,Search,yes,projections,Delete,,,
+yes,1,Search,no,province boundary,Delete,,,Admin Boundaries
+,2,Search,yes,provinces,Delete,,,Admin Boundaries
+,1,Search,yes,provincial,Delete,,,Admin Boundaries
+,4,Search,yes,prt,Delete,,,N/A
+,4,Search,yes,pry,Delete,,,N/A
+,4,Search,yes,pse,Delete,,,N/A
+,1,Search,yes,pu-ami,Delete,,No obvious meaning and unlikely to be used as a search item,N/A
+yes,1,Search,no,public finance,Delete,,,Economy
+,1,Search,yes,public sector,Delete,,,Economy
+,1,Search,yes,puerto,Delete,,Ambiguous term,N/A
+,4,Search,yes,puerto rico,Delete,,,Location
+,1,Search,yes,puerto vallarta,Delete,,,Location
+,1,Search,yes,punjab,Delete,,,Location
+,3,Search,yes,pyf,Delete,,No obvious meaning and unlikely to be used as a search item,N/A
+,4,Search,yes,qat,Delete,,,Location
+,2,Search,yes,qfqo,Delete,,No obvious meaning and unlikely to be used as a search item,N/A
+yes,1,Search,no,quake,Delete,,,Geographical
+,1,Search,yes,rada,Delete,,,N/A
+,2,Search,yes,radio,Delete,,,Communication
+yes,1,Search,no,rain,Delete,,,Weather
+,2,Search,yes,random,Delete,,No obvious meaning and unlikely to be used as a search item,N/A
+,2,Search,yes,random domain intercept technology,Delete,,,N/A
+yes,1,Search,no,rangers,Delete,,,N/A
+,1,Search,yes,rank,Delete,,Ambiguous term,N/A
+yes,1,Search,no,rasuwa district,Delete,,,Location
+,1,Search,yes,ratings,Delete,,,Survey
+,2,Search,yes,rdc,Delete,,No obvious meaning and unlikely to be used as a search item,N/A
+,2,Search,yes,rdit,Delete,,No obvious meaning and unlikely to be used as a search item,N/A
+,1,Search,yes,reach,Delete,,,Refugees
+yes,1,Search,no,real-time,Delete,,,N/A
+,1,Search,yes,red cross,Delete,,,Organization
+,1,Search,yes,red sea state,Delete,,,
+yes,1,Search,no,redbridge,Delete,,,
+,2,Search,yes,reference,Delete,,Ambiguos,N/A
+yes,1,Search,no,reforestation,Delete,,,
+,17,Search,yes,region,Delete,,Ambiguous term,N/A
+,1,Search,yes,region 01,Delete,,Ambiguous term,N/A
+,1,Search,yes,región 02,Delete,,Ambiguous term,N/A
+,1,Search,yes,región 03,Delete,,Ambiguous term,N/A
+,5,Search,yes,regional,Delete,,,
+,1,Search,yes,regional constituency,Delete,,Ambiguous term,
+,1,Search,yes,regional governance,Delete,,,
+,1,Search,yes,regions,Delete,,,
+,1,Search,yes,registrations,Delete,,Ambiguous,N/A
+yes,1,Search,no,registry,Delete,,,
+,1,Search,yes,relationships,Delete,,Ambiguous term,N/A
+,1,Search,yes,report,Delete,,Ambiguous term,N/A
+,232,Search,yes,reports,Delete,,,
+,7,Search,yes,request access,Delete,,,
+,1,Search,yes,research,Delete,,,
+yes,1,Search,no,resguardo indigena,Delete,,,N/A
+,1,Search,yes,resilience and age,Delete,,,
+,1,Search,yes,resources,Delete,,,
+,1,Search,yes,response monitoring,Delete,,,
+,1,Search,yes,response rate,Delete,,,
+,3,Search,yes,reu,Delete,,,N/A
+yes,1,Search,no,réunion,Delete,,,N/A
+yes,1,Search,no,rgph2014,Delete,,,N/A
+,1,Search,yes,rich,Delete,,Ambiguous term,N/A
+,1,Search,yes,risk counties,Delete,,,
+,2,Search,yes,riwi,Delete,,,N/A
+yes,1,Search,no,road fatalities,Delete,,,
+yes,1,Search,no,road safety,Delete,,,Transport network
+yes,1,Search,no,rochdale,Delete,,,N/A
+,3,Search,yes,rom,Delete,,,
+,1,Search,yes,rou,Delete,,No obvious meaning and unlikely to be used as a search item,N/A
+,1,Search,yes,route,Delete,,,
+yes,1,Search,no,rowca,Delete,,,
+yes,1,Search,no,rural electrification,Delete,,,Economic development
+,4,Search,yes,rus,Delete,,,N/A
+yes,1,Search,no,rutland,Delete,,,
+,234,Search,yes,rw,Delete,,Can we use full term - Reliefweb?,
+,4,Search,yes,rwa,Delete,,,
+,2,Search,yes,rwanda,Delete,,,
+yes,1,Search,no,s-comms,Delete,,,N/A
+,1,Search,yes,sad,Delete,,Ambiguous term,N/A
+,1,Search,yes,safeenergy,Delete,,,
+yes,1,Search,no,sahel operation,Delete,,,
+yes,1,Search,no,salford,Delete,,,
+,1,Search,yes,salgar,Delete,,,
+,1,Search,yes,salt,Delete,,,
+,2,Search,yes,sample,Delete,,,Survey
+,1,Search,yes,sampling survey,Delete,,,Survey
+,2,Search,yes,sampling survey in nepal,Delete,,,Survey
+yes,1,Search,no,sandwell,Delete,,,
+,4,Search,yes,sau,Delete,,,N/A
+,6,Search,yes,sbtf,Delete,,,
+,4,Search,yes,sdn,Delete,,,
+yes,1,Search,no,secal,Delete,,,
+,3,Search,yes,secondary,Delete,,Ambiguous term,N/A
+,2,Search,yes,sector,Delete,,,N/A
+,1,Search,yes,sectors,Delete,,Ambiguous term,N/A
+yes,1,Search,no,sede administrativa,Delete,,,N/A
+,2,Search,yes,seekers,Delete,,,N/A
+yes,1,Search,no,sefton,Delete,,,N/A
+,4,Search,yes,sen,Delete,,,N/A
+,1,Search,yes,sendai framework,Delete,,,N/A
+,9,Search,yes,senegal,Delete,,,Location
+,1,Search,yes,sennar state,Delete,,,Location
+,1,Search,yes,sentiment,Delete,,,
+yes,1,Search,no,sera,Delete,,,N/A
+,1,Search,yes,serbia,Delete,,,Location
+,4,Search,yes,sgp,Delete,,No obvious meaning and unlikely to be used as a search item,N/A
+yes,1,Search,no,shape files,Delete,,,Geographical
+yes,1,Search,no,sheffield,Delete,,,N/A
+,1,Search,yes,sheikh district conflict and security assessment - 2015,Delete,,,N/A
+yes,1,Search,no,shoreline,Delete,,,Geographical
+yes,1,Search,no,shp,Delete,,,Geographical
+yes,1,Search,no,sickness,Delete,,,Health
+yes,1,Search,no,sierra lone,Delete,,,Location
+yes,1,Search,no,sigot,Delete,,,N/A
+yes,1,Search,no,sinager,Delete,,,N/A
+yes,1,Search,no,sinóptica,Delete,,,N/A
+,5,Search,no,42887,Delete,,.,
+yes,1,Search,no,sismo,Delete,,,N/A
+yes,1,Search,no,site assessment-dtm,Delete,,,Assessment
+yes,1,Search,no,situacion humanitaria,Delete,,,N/A
+,5,Search,no,herams,Delete,,,
+,5,Search,no,sle,Delete,,,N/A
+yes,1,Search,no,skilled,Delete,,,Health
+,5,Search,no,ssd,Delete,,,Country code iso3
+,5,Search,no,support,Delete,,,
+yes,1,Search,no,sleeping,Delete,,,Health
+yes,1,Search,no,slopes,Delete,,,Geography
+yes,1,Search,no,slough,Delete,,,N/A
+,5,Search,no,tanzania,Delete,,,Location
+yes,1,Search,no,small arms and light weapons,Delete,,,Political stability
+,5,Search,no,venezuela,Delete,,,Location
+,5,Search,no,who sudan,Delete,,,
+yes,1,Search,no,snowline,Delete,,,Geographical
+yes,1,Search,no,social,Delete,,,N/A
+yes,1,Search,no,social development center,Delete,,,Economy
+yes,1,Search,no,social pension,Delete,,,Economy
+yes,1,Search,no,sociedad,Delete,,,N/A
+yes,1,Search,no,sociodemográfico,Delete,,,N/A
+yes,1,Search,no,soil,Delete,,,n/a
+yes,1,Search,no,solar,Delete,,,Energy
+yes,1,Search,no,solidarites international,Delete,,,Organisation name
+yes,1,Search,no,solihull,Delete,,,Location
+yes,1,Search,no,soluciones duraderas,Delete,,,
+yes,1,Search,no,somalia 2015,Delete,,,Location and time period
+yes,1,Search,no,somalia conflict and security assessment - 2015,Delete,,,n/a
+yes,1,Search,no,somalia conflict and security assessment report,Delete,,,n/a
+yes,1,Search,no,somalia schools,Delete,,,Education
+yes,1,Search,no,somerset,Delete,,,Location
+yes,1,Search,no,sources,Delete,,,n/a
+yes,1,Search,no,sous collines,Delete,,,n/a
+yes,1,Search,no,sous-préfecture,Delete,,,n/a
+yes,1,Search,no,south darfur state,Delete,,,Location
+yes,1,Search,no,south kordofan,Delete,,,Location
+yes,1,Search,no,south sudan w,Delete,,,Location
+yes,1,Search,no,south sudanese refugees,Delete,,,Location
+yes,1,Search,no,spain,Delete,,,Location
+yes,1,Search,no,spatial,Delete,,,Geodata
+yes,1,Search,no,species sightings,Delete,,,n/a
+yes,1,Search,no,sports,Delete,,,n/a
+yes,1,Search,no,srf,Delete,,,Report
+yes,1,Search,no,srtm,Delete,,,Geology
+,4,Search,no,shn,Delete,,,N/A
+yes,1,Search,no,sst,Delete,,,
+yes,1,Search,no,st. helens,Delete,,,Location
+yes,1,Search,no,standard,Delete,,,
+,4,Search,no,sjm,Delete,,,N/A
+yes,1,Search,no,standby task force,Delete,,,Organisation
+yes,1,Search,no,staple,Delete,,,
+yes,1,Search,no,state,Delete,,,
+,4,Search,no,slb,Delete,,,N/A
+yes,1,Search,no,station,Delete,,,
+,4,Search,no,slv,Delete,,,N/A
+yes,1,Search,no,statistic data,Delete,,,Data type
+,4,Search,no,smr,Delete,,,N/A
+yes,1,Search,no,still birth,Delete,,,
+yes,1,Search,no,stirling,Delete,,,n/a
+yes,1,Search,no,stock,Delete,,,Market trends
+yes,1,Search,no,stockpile,Delete,,,
+yes,1,Search,no,stockpile management,Delete,,,
+yes,1,Search,no,stockport,Delete,,,Location
+yes,1,Search,no,storm surge,Delete,,,
+,4,Search,no,som,Delete,,,Location
+yes,1,Search,no,strabane,Delete,,,Location
+yes,1,Search,no,stress,Delete,,,
+yes,1,Search,no,sub district,Delete,,,Administrative division
+,4,Search,no,srb,Delete,,,Country code iso3
+,4,Search,no,stp,Delete,,,Country code iso3
+,4,Search,no,sub national data,Delete,,,Administrative division
+,4,Search,no,sur,Delete,,,Country code iso3
+,4,Search,no,svk,Delete,,,Country code iso3
+yes,1,Search,no,sudan 3w,Delete,,,
+yes,1,Search,no,sudan imwg,Delete,,,
+yes,1,Search,no,suffolk,Delete,,,Location
+yes,1,Search,no,suicidios,Delete,,,
+yes,1,Search,no,sunderland,Delete,,,Location
+yes,1,Search,no,supervision,Delete,,,
+yes,1,Search,no,supply route,Delete,,,
+,4,Search,no,svn,Delete,,,Country code iso3
+,4,Search,no,swe,Delete,,,Country code iso3
+yes,1,Search,no,surface area,Delete,,,
+yes,1,Search,no,surgery,Delete,,,Health
+yes,1,Search,no,surrey,Delete,,,Location
+,4,Search,no,swz,Delete,,,Country code iso3
+yes,1,Search,no,sutton,Delete,,,Location
+,4,Search,no,syc,Delete,,,Country code iso3
+,4,Search,no,syr,Delete,,,Location
+yes,1,Search,no,swansea,Delete,,,Location
+,4,Search,no,tca,Delete,,,Country code iso3
+yes,1,Search,no,swindon,Delete,,,Location
+,4,Search,no,tcd,Delete,,,Country code iso3
+,4,Search,no,tgo,Delete,,,Country code iso3
+,4,Search,no,tha,Delete,,,Country code iso3
+,4,Search,no,tjk,Delete,,,Country code iso3
+,4,Search,no,tkl,Delete,,,Country code iso3
+yes,1,Search,no,syrian refugees collective centers,Delete,,,
+,4,Search,no,tkm,Delete,,,Country code iso3
+yes,1,Search,no,tameside,Delete,,,Location
+,4,Search,no,ton,Delete,,,Country code iso3
+yes,1,Search,no,taraba,Delete,,,Location
+yes,1,Search,no,target,Delete,,,
+yes,1,Search,no,target and results,Delete,,,
+yes,1,Search,no,tarp,Delete,,,n/a
+yes,1,Search,no,tasa de cambio,Delete,,,
+yes,1,Search,no,tasa de crecimiento,Delete,,,
+yes,1,Search,no,tasa de desempleo,Delete,,,
+yes,1,Search,no,tc-2015-000152-yem,Delete,,,Report code
+yes,1,Search,no,tc20151103yem,Delete,,,Report code
+yes,1,Search,no,tc20160418syc,Delete,,,Report code
+,4,Search,no,tto,Delete,,,Country code iso3
+,4,Search,no,tun,Delete,,,Country code iso3
+yes,1,Search,no,tdps,Delete,,,Displacement
+yes,1,Search,no,techo,Delete,,,Organisation
+yes,1,Search,no,telefonía,Delete,,,
+yes,1,Search,no,telefono,Delete,,,
+,4,Search,no,tur,Delete,,,Country code iso3
+yes,1,Search,no,tents,Delete,,,
+yes,1,Search,no,terremoto 2012 guatemala,Delete,,,Earthquake
+yes,1,Search,no,terreno,Delete,,,
+yes,1,Search,no,territorial,Delete,,,
+yes,1,Search,no,territorio,Delete,,,
+yes,1,Search,no,territory,Delete,,,
+yes,1,Search,no,tertiary institutions,Delete,,,Institution
+yes,1,Search,no,testing,Delete,,,Health
+,4,Search,no,tuv,Delete,,,Country code iso3
+,4,Search,no,tza,Delete,,,Country code iso3
+,4,Search,no,uga,Delete,,,Country code iso3
+yes,1,Search,no,thesaurus,Delete,,,
+yes,1,Search,no,third country national,Delete,,,Migration
+yes,1,Search,no,thurrock,Delete,,,Location
+yes,1,Search,no,tiff,Delete,,,File format
+yes,1,Search,no,time,Delete,,,
+yes,1,Search,no,timing,Delete,,,
+yes,1,Search,no,titulos mineros,Delete,,,
+,4,Search,no,ukr,Delete,,,Country code iso3
+,4,Search,no,umaic,Delete,,,Organisation
+,4,Search,no,ury,Delete,,,Country code iso3
+yes,1,Search,no,tls,Delete,,,Country code iso3
+,4,Search,no,usa,Delete,,,Location
+,4,Search,no,uzb,Delete,,,Country code iso3
+,4,Search,no,vat,Delete,,,
+,4,Search,no,vct,Delete,,,Country code iso3 
+yes,1,Search,no,topojson,Delete,,,File format
+yes,1,Search,no,toponimia,Delete,,,
+yes,1,Search,no,torbay,Delete,,,Location
+yes,1,Search,no,torfaen,Delete,,,Location
+yes,1,Search,no,tormenta electrica,Delete,,,
+yes,1,Search,no,tornado,Delete,,,
+yes,1,Search,no,total annual rainfall,Delete,,,
+yes,1,Search,no,total mid-year population,Delete,,,
+yes,1,Search,no,total migrants,Delete,,,
+yes,1,Search,no,total monthly rainfall,Delete,,,
+yes,1,Search,no,tracks,Delete,,,
+yes,1,Search,no,trading,Delete,,,
+yes,1,Search,no,trafford,Delete,,,Location
+yes,1,Search,no,training,Delete,,,
+yes,1,Search,no,transmit,Delete,,,Health
+yes,1,Search,no,transportaion,Delete,,,Transport
+yes,1,Search,no,trasporte,Delete,,,
+yes,1,Search,no,travel,Delete,,,
+yes,1,Search,no,travel distance,Delete,,,
+,4,Search,no,ven,Delete,,,Country code iso3
+yes,1,Search,no,try,Delete,,,
+,4,Search,no,vgb,Delete,,,
+yes,1,Search,no,tuberculosis prevalence,Delete,,,Health
+,4,Search,no,vir,Delete,,,Country code iso3
+yes,1,Search,no,tunisia,Delete,,,Country name
+,4,Search,no,vnm,Delete,,,Country code iso3
+,4,Search,no,vut,Delete,,,Country code iso3
+yes,1,Search,no,turkmenistan,Delete,,,Country name
+yes,1,Search,no,tutorial,Delete,,,n/a
+,4,Search,no,wsm,Delete,,,
+yes,1,Search,no,tyhpoon chapala,Delete,,,Typhoon
+yes,1,Search,no,typhoon maysak,Delete,,,Typhoon
+yes,1,Search,no,typhoon nina,Delete,,,Typhoon
+yes,1,Search,no,typhoon nona,Delete,,,Typhoon
+yes,1,Search,no,typhoonlawin,Delete,,,Typhoon
+,4,Search,no,zaf,Delete,,,Country code iso3
+yes,1,Search,no,uav,Delete,,,
+yes,1,Search,no,uems,Delete,,,
+,4,Search,no,zmb,Delete,,,Country code iso3
+,4,Search,no,zwe,Delete,,,Country code iso3
+yes,1,Search,no,uk,Delete,,,Location
+yes,1,Search,no,ukraine,Delete,,,Location
+yes,1,Search,no,ukraine admin level,Delete,,,Location
+yes,1,Search,no,ukraine boundary,Delete,,,Location
+yes,1,Search,no,un-spider,Delete,,,Platform
+yes,1,Search,no,unama regions,Delete,,,Organisation
+yes,1,Search,no,under 5 mortality,Delete,,,Child
+yes,1,Search,no,underweight babies,Delete,,,Health
+yes,1,Search,no,undoc,Delete,,,Organisation acronym
+yes,1,Search,no,unearmarked,Delete,,,
+yes,1,Search,no,union council,Delete,,,
+yes,1,Search,no,united kingdom,Delete,,,Location
+yes,1,Search,no,united nations department of economic and social affairs,Delete,,,Organisation acronym
+,3,Search,no,ccy,Delete,,,
+yes,1,Search,no,unjlc,Delete,,,Organisation acronym
+yes,1,Search,no,unmeer,Delete,,,Organisation acronym
+,3,Search,no,dashboard,Delete,,,
+,3,Search,no,dod,Delete,,,
+,3,Search,no,kenya government,Delete,,,Organization
+yes,1,Search,no,unplanned explosion,Delete,,,
+yes,1,Search,no,unprocessed data,Delete,,,
+,3,Search,no,nairobi,Delete,,,Location
+,3,Search,no,spm,Delete,,,Location
+yes,1,Search,no,urban and female population,Delete,,,
+yes,1,Search,no,urbanisation,Delete,,,
+,3,Search,no,srp 2015,Delete,,,
+,3,Search,no,syria,Delete,,,Location
+yes,1,Search,no,usg,Delete,,,
+yes,1,Search,no,usgs,Delete,,,
+yes,1,Search,no,uxo,Delete,,,
+,3,Search,no,tajikistan,Delete,,,Location
+yes,1,Search,no,validation,Delete,,,
+,3,Search,no,tfpm,Delete,,,Working group
+yes,1,Search,no,vanuatu,Delete,,,Location
+,3,Search,no,tmp,Delete,,,Country code iso3
+,3,Search,no,urban analysis,Delete,,,
+yes,1,Search,no,vector data,Delete,,,Data type
+yes,1,Search,no,vegetation restoration,Delete,,,Vegetation
+,3,Search,no,wlf,Delete,,,
+yes,1,Search,no,vendaval,Delete,,,
+,3,Search,no,xls,Delete,,,File format
+yes,1,Search,no,vias,Delete,,,
+yes,1,Search,no,videos,Delete,,,
+yes,1,Search,no,village,Delete,,,
+yes,1,Search,no,village council,Delete,,,
+yes,1,Search,no,vinta,Delete,,,
+yes,1,Search,no,violencia,Delete,,,
+yes,1,Search,no,violencia interpersonal,Delete,,,
+yes,1,Search,no,violencia sexual,Delete,,,
+yes,1,Search,no,violent,Delete,,,
+yes,1,Search,no,vitamin a,Delete,,,Health
+yes,1,Search,no,viviendas de emergencia,Delete,,,
+yes,1,Search,no,volunteers,Delete,,,
+yes,1,Search,no,vulnerable,Delete,,,
+yes,1,Search,no,vulnerable populations,Delete,,,
+yes,1,Search,no,w-comms,Delete,,,Organisation
+yes,1,Search,no,wad,Delete,,,
+yes,1,Search,no,wakefield,Delete,,,Location
+yes,1,Search,no,wall,Delete,,,
+yes,1,Search,no,walsall,Delete,,,Location
+,3,Search,no,test,Delete,,,
+yes,1,Search,no,wash clsuter,Delete,,,WASH
+yes,1,Search,no,wash cluster,Delete,,,WASH
+yes,1,Search,no,waste disposal,Delete,,,WASH
+yes,1,Search,no,wastewater,Delete,,,WASH
+yes,1,Search,no,water access,Delete,,,Water
+yes,1,Search,no,water balance,Delete,,,Water
+yes,1,Search,no,water fund,Delete,,,Water
+yes,1,Search,no,water points,Delete,,,Water
+yes,1,Search,no,water prices,Delete,,,Water
+yes,1,Search,no,watercourses,Delete,,,Water
+yes,1,Search,no,waterways,Delete,,,Water
+,3,Search,no,un,Delete,,,Organisation
+yes,1,Search,no,wca,Delete,,,Location
+yes,1,Search,no,web service,Delete,,,
+yes,1,Search,no,web services,Delete,,,
+yes,1,Search,no,webservices,Delete,,,
+yes,1,Search,no,website,Delete,,,
+yes,1,Search,no,welfare,Delete,,,
+yes,1,Search,no,west kordofan,Delete,,,Location
+yes,1,Search,no,wetlands,Delete,,,Location
+yes,1,Search,no,what,Delete,,,
+yes,1,Search,no,where,Delete,,,
+yes,1,Search,no,white nile,Delete,,,
+yes,1,Search,no,who does what where when and for whom,Delete,,,
+yes,1,Search,no,who is doing what and where,Delete,,,
+yes,1,Search,no,who what where,Delete,,,
+yes,1,Search,no,wifi,Delete,,,
+yes,1,Search,no,wigan,Delete,,,Location
+yes,1,Search,no,wildlife comms,Delete,,,
+yes,1,Search,no,wildlife sightings,Delete,,,
+yes,1,Search,no,wiltshire,Delete,,,Location
+yes,1,Search,no,wirral,Delete,,,Location
+yes,1,Search,no,world  population sex ratio,Delete,,,
+yes,1,Search,no,world aero data,Delete,,,
+yes,1,Search,no,world food program - sudan,Delete,,,Organisation
+yes,1,Search,no,world food program sudan,Delete,,,Organisation
+yes,1,Search,no,world humanitarian data and trends,Delete,,,
+yes,1,Search,no,world population,Delete,,,
+yes,1,Search,no,wp,Delete,,,
+yes,1,Search,no,wrexham,Delete,,,
+yes,1,Search,no,xlsx,Delete,,,File format
+yes,1,Search,no,yellow house,Delete,,,
+yes,1,Search,no,yellowfever,Delete,,,
+yes,1,Search,no,yobe,Delete,,,Location
+yes,1,Search,no,york,Delete,,,
+yes,1,Search,no,youth,Delete,,,
+yes,1,Search,no,zaatari,Delete,,,Camp Location
+yes,1,Search,no,zaatari camp,Delete,,,
+yes,1,Search,no,zambia,Delete,,,Location
+yes,1,Search,no,zikaupdate,Delete,,,
+yes,1,Search,no,zimbabwe,Delete,,,Country name
+yes,1,Search,no,zonas verdales,Delete,,,
+yes,1,Search,no,zvtn,Delete,,,
+,2,Search,no,42948,Delete,,.,
+,2,Search,no,austria,Delete,,,
+,2,Search,no,data lab,Delete,,,
+,2,Search,no,ecde,Delete,,,
+,2,Search,no,emergency response in nepal,Delete,,,
+,2,Search,no,ict,Delete,,,
+,2,Search,no,kisumu,Delete,,,
+,2,Search,no,lessons learned,Delete,,,
+,2,Search,no,national data,Delete,,,
+,2,Search,no,situation and response,Delete,,,N/A
+,2,Search,no,smart,Delete,,Ambiguous term,N/A
+,2,Search,no,snapshot,Delete,,,Assesment
+,2,Search,no,south darfur,Delete,,,Location
+,2,Search,no,standards,Delete,,,
+,2,Search,no,state of conservancies,Delete,,,
+,2,Search,no,statistic,Delete,,,Statistics data
+,2,Search,no,sub national,Delete,,,Administrative division
+,2,Search,no,tembin,Delete,,,Tropical Cyclone
+,2,Search,no,togo,Delete,,,Country name
+,2,Search,no,turkey,Delete,,,Country name
+,2,Search,no,unhas,Delete,,,Organisation acronym
+,2,Search,no,unhcr niger,Delete,,,
+,2,Search,no,united states,Delete,,,Location
+,2,Search,no,unosat,Delete,,,Organisation acronym
+,2,Search,no,vam,Delete,,,
+,2,Search,no,ward,Delete,,,
+,2,Search,no,wards,Delete,,,
+,2,Search,no,wilaya,Delete,,,
+,2,Search,no,world,Delete,,,
+,,Search,,2018,Delete,,,
+,,Search,,4ps,Delete,,,
+,,Search,,addis ababa,Delete,,,
+,,Search,,aerial,Delete,,,
+,,Search,,ambulances,Delete,,,
+,,Search,,august 2017,Delete,,,
+,,Search,,barangay,Delete,,,
+,,Search,,barrios,Delete,,,
+,,Search,,bauchi,Delete,,,
+,,Search,,benue,Delete,,,
+,,Search,,bolilvia,Delete,,,
+,,Search,,bubanza,Delete,,,
+,,Search,,bujumbura marie,Delete,,,
+,,Search,,bujumbura rural,Delete,,,
+,,Search,,bururi,Delete,,,
+,,Search,,cankuzo,Delete,,,
+,,Search,,cibitoke,Delete,,,
+,,Search,,ciclon,Delete,,,
+,,Search,,core data,Delete,,,
+,,Search,,costa rica,Delete,,,
+,,Search,,cotedivoire,Delete,,,
+,,Search,,cpie,Delete,,,
+,,Search,,culverts,Delete,,,
+,,Search,,daily lives,Delete,,,
+,,Search,,dam,Delete,,,
+,,Search,,description,Delete,,,
+,,Search,,diamare,Delete,,,
+,,Search,,disable,Delete,,,
+,,Search,,dominican republic,Delete,,,
+,,Search,,drc,Delete,,,
+,,Search,,drone,Delete,,,
+,,Search,,drones,Delete,,,
+,,Search,,eie,Delete,,,
+,,Search,,el salvador,Delete,,,
+,,Search,,february,Delete,,,
+,,Search,,february 2018,Delete,,,
+,,Search,,fewsnet,Delete,,,
+,,Search,,gitega,Delete,,,
+,,Search,,gombe,Delete,,,
+,,Search,,ground truth solutions,Delete,,,
+,,Search,,guinea bissau,Delete,,,
+,,Search,,guyana,Delete,,,
+,,Search,,internation organization for migration,Delete,,,
+,,Search,,iom_npm,Delete,,,
+,,Search,,january,Delete,,,
+,,Search,,june 2017,Delete,,,
+,,Search,,kaduna,Delete,,,
+,,Search,,kano,Delete,,,
+,,Search,,karuzi,Delete,,,
+,,Search,,kayanza,Delete,,,
+,,Search,,kirundo,Delete,,,
+,,Search,,kutupalong,Delete,,,
+,,Search,,leda,Delete,,,
+,,Search,,live service,Delete,,,
+,,Search,,logone-et-chari,Delete,,,
+,,Search,,majhee,Delete,,,
+,,Search,,makamba,Delete,,,
+,,Search,,malta,Delete,,,
+,,Search,,march,Delete,,,
+,,Search,,march 2018,Delete,,,
+,,Search,,mayo-danay,Delete,,,
+,,Search,,mayo-sava,Delete,,,
+,,Search,,mayo-tsanaga,Delete,,,
+,,Search,,moas,Delete,,,
+,,Search,,mongolia,Delete,,,
+,,Search,,municipality,Delete,,,
+,,Search,,muramvya,Delete,,,
+,,Search,,muyinga,Delete,,,
+,,Search,,mwaro,Delete,,,
+,,Search,,nasarawa,Delete,,,
+,,Search,,ngozi,Delete,,,
+,,Search,,nicaragua,Delete,,,
+,,Search,,october 2017,Delete,,,
+,,Search,,papua new guinea,Delete,,,
+,,Search,,région,Delete,,,
+,,Search,,round2,Delete,,,
+,,Search,,rutana,Delete,,,
+,,Search,,ruyigi,Delete,,,
+,,Search,,sénégal,Delete,,,
+,,Search,,sequía,Delete,,,
+,,Search,,somali,Delete,,,
+,,Search,,source  iom_npm,Delete,,,
+,,Search,,status,Delete,,,
+,,Search,,sw maps,Delete,,,
+,,Search,,talla,Delete,,,
+,,Search,,unchiprang,Delete,,,
+,,Search,,venezuelan,Delete,,,
+,,Search,,venezuelans,Delete,,,
+,,Search,,vensit,Delete,,,
+,,Search,,zamfara,Delete,,,
+,1,Search,yes,chil,Fix spelling,children,,
+,1,Search,yes,citizen,Fix spelling,citizens,,
+,1,Search,yes,displacent,Fix spelling,displacement,,
+,1,Search,yes,gedoata,Fix spelling,geodata,,data type
+,1,Search,yes,communauty care center,Fix spelling,health facilities,,
+,1,Search,yes,health facilites,Fix spelling,health facilities,,health
+,1,Search,yes,humanitarian needs overvew,Fix spelling,humanitarian needs overview,,
+,1,Search,yes,humnitarian needs overview,Fix spelling,humanitarian needs overview,,
+,1,Search,yes,humanitarain profile,Fix spelling,humanitarian profile,,
+,1,Search,yes,infanct mortality,Fix spelling,infant mortality,,
+,1,Search,yes,nutririon,Fix spelling,nutrition,,Cluster
+,1,Search,yes,nutriton,Fix spelling,nutrition,,Cluster
+,1,Search,yes,poplulation,Fix spelling,population,,Population
+,1,Search,yes,pocerty,Fix spelling,poverty,,N/A
+,1,Search,yes,school enrolment,Fix spelling,school enrollment,,Education
+,3,Search,no,tranport,Fix spelling,transportation,,Transport
+,2,Search,no,urban search and rescu - usar,Fix spelling,urban search and rescue - usar,,
+,2,Search,no,vulcano,Fix spelling,volcanos,,
+,4,Search,yes,3 word address,Merge,3-word addresses;geodata,Location,Location
+,1,Search,yes,addresses,Merge,3-word addresses;geodata,,
+,1,Search,yes,3w operat,Merge,3w,3W,
+,1,Search,yes,3ws,Merge,3w,3W,
+,15,Search,yes,4w,Merge,3w,,
+,1,Search,yes,4ws,Merge,3w,,
+,12,Search,yes,5w,Merge,3w,,
+,2,Search,yes,physicians density,Merge,access to healthcare,,Health
+,4,Search,yes,access to safewater,Merge,access to water,Humanitarian Issue,Humanitarian Issue
+,1,Search,yes,drinking,Merge,access to water,,
+,2,Search,yes,safe water,Merge,access to water,,
+,1,Search,yes,acronyms,Merge,acronyms;vocabulary - taxonomy,Description of data,
+,1,Search,yes,activities,Merge,activities - projects,,
+,1,Search,yes,projects,Merge,activities - projects,,
+,5,Search,yes,administration,Merge,administrative divisions,Administrative divisions and boundaries,
+,2,Search,yes,adminstrative boundaries,Merge,administrative divisions,Administrative divisions and boundaries,
+,1,Search,yes,adm lvl,Merge,administrative divisions,Administrative divisions and boundaries,
+,1,Search,yes,adm_5,Merge,administrative divisions,Administrative divisions and boundaries,
+,1,Search,yes,admin 1,Merge,administrative divisions,Administrative divisions and boundaries,
+,1,Search,yes,admin 2,Merge,administrative divisions,Administrative divisions and boundaries,
+,1,Search,yes,admin 3,Merge,administrative divisions,Administrative divisions and boundaries,
+,1,Search,yes,admin names,Merge,administrative divisions,Administrative divisions and boundaries,
+,2,Search,yes,adm0,Merge,administrative divisions,Administrative divisions and boundaries,
+,2,Search,yes,adm1,Merge,administrative divisions,Administrative divisions and boundaries,
+,3,Search,yes,adm2,Merge,administrative divisions,Administrative divisions and boundaries,
+,2,Search,yes,adm3,Merge,administrative divisions,Administrative divisions and boundaries,
+,2,Search,yes,adm4,Merge,administrative divisions,Administrative divisions and boundaries,
+,11,Search,yes,admin,Merge,administrative divisions,Administrative divisions and boundaries,
+,8,Search,yes,admin boundaries,Merge,administrative divisions,Administrative divisions and boundaries,
+,19,Search,yes,admin units,Merge,administrative divisions,Administrative divisions and boundaries,
+,4,Search,yes,admin1,Merge,administrative divisions,Administrative divisions and boundaries,Administrative divisions and boundaries
+,2,Search,yes,admin2,Merge,administrative divisions,Administrative divisions and boundaries,
+,6,Search,yes,adminisitrative boundaries,Merge,administrative divisions,Administrative divisions and boundaries,
+,275,Search,yes,administrative boundaries,Merge,administrative divisions,Administrative divisions and boundaries,
+,3,Search,yes,administrative boundary,Merge,administrative divisions,Administrative divisions and boundaries,
+,1,Search,yes,amnistrative boundaries,Merge,administrative divisions,,
+,6,Search,yes,boundary,Merge,administrative divisions,,
+,1,Search,yes,cadastral,Merge,administrative divisions,based on the dataset contents,
+,1,Search,yes,collines,Merge,administrative divisions,Name of administrative level,
+,2,Search,yes,communes,Merge,administrative divisions,Name of administrative level,
+,1,Search,yes,district,Merge,administrative divisions,,
+,221,Search,no,socioeconomic,Merge,socioeconomics,,Economy
+,3,Search,yes,districts,Merge,administrative divisions,,
+,2,Search,yes,distrito,Merge,administrative divisions,,
+,1,Search,yes,división política,Merge,administrative divisions,,
+,17,Search,yes,municipio,Merge,administrative divisions,,Location
+,13,Search,yes,province,Merge,administrative divisions,,Admin Boundaries
+,2,Search,yes,international boundaries,Merge,administrative divisions;countries;international boundaries,,administrative boundaries
+,8,Search,yes,adolescent,Merge,adolescents,,
+,1,Search,yes,adult,Merge,adults,Population group,
+,2,Search,yes,affected communities,Merge,affected,,
+,1,Search,yes,affected persons,Merge,affected persons,,
+,3,Search,yes,people affected,Merge,affected population,,Emergence response
+,1,Search,yes,african,Merge,africa,,
+,9,Search,yes,african countries,Merge,africa,,
+,1,Search,yes,africa health,Merge,africa;health,,
+,2,Search,yes,crop production,Merge,agricultural production,,
+,3,Search,yes,aid worker security,Merge,aid workers security,,
+,1,Search,yes,aerodromes,Merge,airports,Transportation,
+,2,Search,yes,global appeals,Merge,appeals,,
+,1,Search,yes,explosive violence,Merge,armed violence,,
+,1,Search,yes,gbav,Merge,armed violence,,
+,4,Search,yes,people targeted,Merge,assistance targets,,Emergence response
+,3,Search,yes,asylum,Merge,asylum-seekers,,
+,2,Search,yes,asylum seekers,Merge,asylum-seekers,,
+,1,Search,yes,attack rate,Merge,attacks,,
+,1,Search,yes,avalanche,Merge,avalanches,,
+,3,Search,yes,baseline data,Merge,baseline,,
+,8,Search,yes,baseline-data,Merge,baseline,,
+,54,Search,yes,baseline-dtm,Merge,baseline;displacement,,
+,4,Search,yes,birth,Merge,births,,
+,1,Search,yes,live births,Merge,births,,
+,1,Search,yes,low birthweight,Merge,births,,
+,1,Search,yes,proportion of births attended by skilled health personnel,Merge,births;healthcare,,Health
+,1,Search,yes,crossing points,Merge,border crossings,,
+,1,Search,yes,point of entry,Merge,border crossings,,Geographical
+,1,Search,yes,bridges,Merge,bridges;transportation;infrastructure,,
+,122,Search,yes,building,Merge,buildings,,
+,4,Search,yes,buildings,Merge,buildings,,
+,1,Search,yes,built-up areas,Merge,built-up areas;land cover,,
+,1,Search,yes,c-section,Merge,c-section - caesarean delivery,,
+,1,Search,yes,caesarian,Merge,c-section - caesarean delivery,,
+,46,Search,yes,camp,Merge,camps,,
+,1,Search,yes,camps in lebanon,Merge,camps,,
+,2,Search,yes,capital,Merge,capitals,,
+,6,Search,yes,capital cities,Merge,capitals;populated places,,
+,184,Search,yes,cash,Merge,cash assistance,,
+,1,Search,yes,cash atlas,Merge,cash assistance,,
+,1,Search,yes,cash programming,Merge,cash assistance,,
+,4,Search,yes,cash transfer,Merge,cash assistance,,
+,1,Search,yes,cash transfer programme,Merge,cash assistance,,
+,4,Search,yes,cash transfers,Merge,cash assistance,,
+,11,Search,yes,injured,Merge,casualties,,
+,3,Search,yes,camp coordination and management,Merge,camp coordination and management - ccm,,
+,10,Search,yes,cccm,Merge,camp coordination and management - ccm,,
+,1,Search,yes,child immunization,Merge,child immunization;vaccination - immunization,,
+,3,Search,yes,emtct,Merge,child immunization;vaccination - immunization,,
+,1,Search,yes,marriage,Merge,child marriage,,
+,54,Search,yes,child,Merge,children,,
+,1,Search,yes,child statistics,Merge,children,,
+,1,Search,yes,childhood,Merge,children,,
+,199,Search,yes,child health,Merge,children;health,,
+,6,Search,yes,child protection,Merge,children;protection,,
+,1,Search,yes,children o -59,Merge,children;under 5,,
+,3,Search,yes,cholera bulletin,Merge,cholera,,
+,3,Search,yes,cholera data,Merge,cholera,,
+,214,Search,no,trade,Merge,international trade,,
+,4,Search,yes,cholera response,Merge,cholera,,
+,3,Search,yes,cholera sitrep,Merge,cholera,,
+,2,Search,yes,bulletin cholera,Merge,cholera;disease,,
+,14,Search,yes,cholera,Merge,cholera;disease,Disease name,
+,1,Search,yes,cholera eastern and southern africa region,Merge,cholera;eastern africa;southern africa,,
+,1,Search,yes,cholera cases and deaths,Merge,cholera;fatalities;disease cases,,
+,3,Search,yes,cholera horn of africa,Merge,cholera;horn of africa,,
+,1,Search,yes,cholera outbreaks,Merge,cholera;outbreaks;disease,,
+,1,Search,yes,city,Merge,cities,,
+,1,Search,yes,cliamate change,Merge,climate,,
+,2,Search,yes,clima,Merge,climate,,
+,364,Search,yes,climate change,Merge,climate,,
+,1,Search,yes,climatic change,Merge,climate,,
+,1,Search,yes,climatology,Merge,climate,,
+,1,Search,yes,climatic zones,Merge,climate;geodata;west africa,,
+,11,Search,yes,cluster,Merge,cluster system,,
+,1,Search,yes,cluster framework,Merge,cluster system,,
+,1,Search,yes,humanitarian clusters,Merge,cluster system,,humanitarian service
+,862,Search,yes,cod,Merge,common operational dataset - cod,Type of data,
+,31,Search,yes,cods,Merge,common operational dataset - cod,,
+,2,Search,yes,common operational dataset,Merge,common operational dataset - cod,,
+,1,Search,yes,common operational datasets,Merge,common operational dataset - cod,,
+,1,Search,yes,cod-ps,Merge,common operational dataset - cod;population,,
+,1,Search,yes,cods-ps,Merge,common operational dataset - cod;population,,
+,3,Search,yes,extreme winter,Merge,cold wave,using glide terminology,
+,1,Search,yes,commodity,Merge,commodities,,
+,3,Search,yes,chf,Merge,common humanitarian fund;funding,,
+,1,Search,yes,communication with communities,Merge,communicating with communities,,
+,6,Search,yes,cwc,Merge,communicating with communities,,
+,2,Search,yes,attitude,Merge,community perceptions,,
+,3,Search,yes,community engagement,Merge,community perceptions,,
+,3,Search,yes,opinion,Merge,community perceptions,,Opinions
+,1,Search,yes,opinions,Merge,community perceptions,,Opinions
+,1,Search,yes,patriotism,Merge,community perceptions,,N/A
+,1,Search,yes,perception,Merge,community perceptions,,Surveys
+,1,Search,yes,perception survey,Merge,community perceptions,,Surveys
+,2,Search,yes,perceptions,Merge,community perceptions,,Surveys
+,214,Search,no,social protection,Merge,protection,,Economy
+,2,Search,yes,confidence,Merge,confidence in government,,
+,1,Search,yes,confinament,Merge,confinement,,
+,1,Search,yes,ataques a objetivos ilícitos de guerra,Merge,conflict,,
+,1,Search,yes,clan feud,Merge,conflicts,Conflict,
+,51,Search,yes,conflict,Merge,conflicts,,Conflict
+,1,Search,yes,conflict events,Merge,conflicts,,Conflict
+,1,Search,yes,conflit,Merge,conflicts,,Conflict
+,1,Search,yes,garowe district conflict and security assessment - 2015,Merge,conflicts;security,,
+,1,Search,yes,contact,Merge,contacts,,Coordination
+,1,Search,yes,contact information,Merge,contacts,,Coordination
+,2,Search,yes,contour line,Merge,contour lines,,
+,1,Search,yes,contraceptive prevalence rate,Merge,contraception,,
+,1,Search,yes,contributions,Merge,contribution,,
+,1,Search,yes,contribution,Merge,contributions;funding,,
+,1,Search,yes,cookstove,Merge,cookstoves,,
+,1,Search,yes,latitude,Merge,coordinates,,
+,1,Search,yes,longitude,Merge,coordinates,,
+,1,Search,yes,coordinat,Merge,coordination,,
+,4,Search,yes,coping,Merge,coping strategies,,
+,2,Search,yes,lack of coping capacity,Merge,coping strategies,,
+,1,Search,yes,reduced coping stragies index,Merge,coping strategies;index,,
+,1,Search,yes,reduced coping strategies index,Merge,coping strategies;index,,
+,2,Search,yes,country,Merge,countries,,
+,1,Search,yes,countrynames,Merge,countries,,
+,1,Search,yes,cox bazar,Merge,coxs bazar,,Location
+,1,Search,yes,crowdmap,Merge,crowdsourced,,
+,1,Search,yes,heritage sites,Merge,cultural sites,,
+,196,Search,no,tuberculosis,Merge,tuberculosis;disease,,Health
+,15,Search,yes,cyclone,Merge,cyclones - hurricanes - typhoons,,
+,9,Search,yes,hurricane,Merge,cyclones - hurricanes - typhoons,,hurricane
+,195,Search,no,socioeconomic statistics,Merge,socioeconomics,,Economy
+,195,Search,no,sustainable development goals,Merge,sustainable development goals;sdg,,Development
+,2,Search,yes,damages,Merge,cost of damage,,
+,21,Search,yes,damage,Merge,damage assessment,,
+,9,Search,yes,damaged houses,Merge,damage assessment,,
+,6,Search,yes,destroyed houses,Merge,damage assessment,,
+,1,Search,yes,shelter damage,Merge,damage assessment,,Shelter
+,2,Search,yes,east darfur,Merge,darfur,,
+,6,Search,yes,age,Merge,demographics,,
+,416,Search,yes,demographic,Merge,demographics,,
+,8,Search,yes,demography,Merge,demographics,,
+,1,Search,yes,old age dependency ratio,Merge,demographics,,
+,1,Search,yes,population pyramid,Merge,demographics,,Population
+,1,Search,yes,age structure,Merge,demographics;age structure,,
+,138,Search,yes,population statistics,Merge,demographics;population,,Population
+,1,Search,yes,deportees,Merge,deportees;population movement,,
+,1,Search,yes,disabilitty,Merge,disability,,
+,1,Search,yes,disabled,Merge,disability,,
+,2,Search,yes,people with disabilities,Merge,disability,,Demography
+,2,Search,yes,sex,Merge,disaggregated by sex,,Survey
+,1,Search,yes,physical illness,Merge,disease,,Health
+,2,Search,yes,cases,Merge,disease cases,,
+,7,Search,yes,diarrhoea,Merge,disease;diarrhoea,,
+,1,Search,yes,contagion,Merge,disease;infectious disease,,
+,1,Search,yes,contagious,Merge,disease;infectious disease,,
+,3,Search,yes,idp camps,Merge,displaced persons locations,,displacement
+,1,Search,yes,idp settlement,Merge,displaced persons locations,,displacement
+,1,Search,yes,idp site,Merge,displaced persons locations,,displacement
+,3,Search,yes,refugee camp,Merge,displaced persons locations;camps,,Refugees
+,4,Search,yes,refugee camps,Merge,displaced persons locations;camps,,Refugees
+,1,Search,yes,idp settlement assessment,Merge,displaced persons locations;needs assessment,,displacement
+,2,Search,yes,desplazados,Merge,displacement,,
+,1,Search,yes,despojamiento,Merge,displacement,,
+,7,Search,yes,displaced,Merge,displacement,,
+,2,Search,yes,displaced people,Merge,displacement,,
+,1,Search,yes,displaced population,Merge,displacement,,
+,11,Search,yes,displacements,Merge,displacement,,
+,30,Search,yes,dtm,Merge,displacement,,
+,1,Search,yes,forced displaced population,Merge,displacement,,
+,1,Search,yes,forced displacement,Merge,displacement,,
+,1,Search,yes,prolonged displacement,Merge,displacement,,Displacement
+,13,Search,yes,desplazamiento,Merge,displacement;desplazamiento,,
+,1,Search,yes,dtm eastern and southern africa,Merge,displacement;eastern africa;southern africa,,
+,1,Search,yes,distribution,Merge,distributions,,
+,1,Search,yes,drought risk,Merge,drought;disaster risk,,
+,219,Search,yes,drr,Merge,disaster risk reduction - drr,,
+,4,Search,yes,learning,Merge,early learning,checked the datasets,
+,87,Search,yes,earthquake,Merge,earthquakes,,
+,1,Search,yes,earthquake risk,Merge,earthquakes;disaster risk,,
+,4,Search,yes,east africa,Merge,eastern africa,,
+,1,Search,yes,east-africa,Merge,eastern africa,,
+,5,Search,yes,eastern and southern africa,Merge,eastern africa;southern africa,,
+,1,Search,yes,ipc eastern and southern africa,Merge,eastern africa;southern africa,,
+,1,Search,yes,evd,Merge,ebola,,
+,99,Search,yes,ebola,Merge,ebola;disease,,Crisis
+,1,Search,yes,ebola treatment,Merge,ebola;disease,,
+,2,Search,yes,ebola treatment centers,Merge,ebola;health facilities,,
+,1,Search,yes,ebola treatment centres,Merge,ebola;health facilities,,
+,1,Search,yes,assets,Merge,economics,,
+,1,Search,yes,economia,Merge,economics,,
+,2,Search,yes,economic,Merge,economics,,
+,2,Search,yes,economic stock,Merge,economics,,
+,345,Search,yes,economy,Merge,economics,,
+,1,Search,yes,purchasing power parity,Merge,economics,,Economy
+,1,Search,yes,economically active population,Merge,economics;demographics,,
+,1,Search,yes,educativo,Merge,education,,
+,1,Search,yes,cluster education,Merge,education cluster,,
+,1,Search,yes,pupils teachers ratio,Merge,education;educators - teachers,,Education
+,1,Search,yes,learning levels,Merge,educational attainment,,
+,1,Search,yes,schooling,Merge,educational attainment,,Education
+,2,Search,yes,schooling status,Merge,educational attainment,,Education
+,1,Search,yes,secondary school teachers,Merge,educators - teachers,,Education
+,2,Search,yes,el niño,Merge,el nino,,
+,1,Search,yes,el niño phenomenon,Merge,el nino,,
+,1,Search,yes,el-nino,Merge,el nino,,
+,4,Search,yes,elnino,Merge,el nino,,
+,2,Search,yes,older persons,Merge,elderly,,
+,1,Search,yes,kenya elections,Merge,elections,,
+,1,Search,yes,electricidad,Merge,electricity;utilities,,
+,5,Search,yes,electricity,Merge,electricity;utilities,,
+,45,Search,yes,hypsography,Merge,elevation,,
+,1,Search,yes,embera people,Merge,embera,,
+,1,Search,yes,crude oil,Merge,energy,,
+,1,Search,yes,enrollment ratio,Merge,enrollment,,
+,2,Search,yes,enrolment,Merge,enrollment,,
+,1,Search,yes,environment conservation,Merge,environment,,
+,1,Search,yes,epi,Merge,epidemics - outbreaks,,
+,8,Search,yes,epidemic,Merge,epidemics - outbreaks,,
+,1,Search,yes,epidemiologicalsurvey,Merge,epidemics - outbreaks,,
+,1,Search,yes,disease incidence,Merge,epidemiology,,
+,1,Search,yes,disease transmission,Merge,epidemiology,,
+,11,Search,yes,eq-2016-000035-ecu,Merge,eq-2016-000035-ecu;earthquakes,,
+,4,Search,yes,eq20171112irq,Merge,eq-2017-1112-irq;earthquakes,,
+,1,Search,yes,shelling,Merge,explosive violence;armed violence,,N/A
+,1,Search,yes,facility,Merge,facilities,,
+,1,Search,yes,facility mapping,Merge,facilities,,
+,1,Search,yes,family,Merge,families,,
+,1,Search,yes,cfr,Merge,fatalities,,
+,1,Search,yes,death,Merge,fatalities,,
+,42,Search,yes,deaths,Merge,fatalities,,
+,4,Search,yes,killed,Merge,fatalities,,
+,1,Search,yes,case fatality rate,Merge,fatalities;disease cases,,
+,1,Search,yes,case fatality ratio,Merge,fatalities;disease cases,,
+,1,Search,yes,outpatient morbidity,Merge,fatalities;healthcare,,Health
+,1,Search,yes,fatalities from security incidents,Merge,fatalities;security incidents,,
+,3,Search,yes,cutting,Merge,female genital mutilation and cutting - fgmc,,
+,2,Search,yes,fgm,Merge,female genital mutilation and cutting - fgmc,,
+,2,Search,yes,fgmc,Merge,female genital mutilation and cutting - fgmc,,
+,1,Search,yes,financial performance,Merge,finance,,
+,1,Search,yes,financials,Merge,finance,,
+,1,Search,yes,interest rates,Merge,finance,,
+,1,Search,yes,loan,Merge,finance,,
+,1,Search,yes,loans,Merge,finance,,
+,122,Search,no,waterbodies,Merge,water bodies,,Water
+,90,Search,no,wash,Merge,wash;water sanitation and hygiene,,WASH
+,9,Search,yes,financial service providers,Merge,financial institutions,,
+,2,Search,yes,bank,Merge,financial institutions;banks,,
+,6,Search,yes,financial tracking,Merge,financial tracking service - fts;funding;humanitarian funding,,
+,1,Search,yes,financial tracking service,Merge,financial tracking service - fts;funding;humanitarian funding,,
+,8,Search,yes,fire,Merge,fires,,
+,4,Search,yes,fl20061118som,Merge,fl-2006-1118-som;floods,,disaster
+,1,Search,yes,fl20070424chn,Merge,fl-2007-0424-chn;floods,,disaster
+,1,Search,yes,fl20070525gha,Merge,fl-2007-0525-gha;floods,,disaster
+,2,Search,yes,fl20070701uga,Merge,fl-2007-0701-uga;floods,,disaster
+,4,Search,yes,fl20070710sdn,Merge,fl-2007-0710-sdn;floods,,disaster
+,1,Search,yes,fl20070802bgd,Merge,fl-2007-0802-bgd;floods,,disaster
+,3,Search,yes,fl20080118bol,Merge,fl-2008-0118-bol;floods,,disaster
+,5,Search,yes,fl20080201nam,Merge,fl-2008-0201-nam;floods,,disaster
+,1,Search,yes,fl20080301ecu,Merge,fl-2008-0301-ecu;floods,,disaster
+,2,Search,yes,fl20080320ago,Merge,fl-2008-0320-ago;floods,,disaster
+,1,Search,yes,fl20080824khm,Merge,fl-2008-0824-khm;floods,,disaster
+,2,Search,yes,fl20081015gtm,Merge,fl-2008-1015-gtm;floods,,disaster
+,2,Search,yes,fl20081024hnd,Merge,fl-2008-1024-hnd;floods,,disaster
+,1,Search,yes,fl20081110ken,Merge,fl-2008-1110-ken;floods,,disaster
+,1,Search,yes,fl20090310ecu,Merge,fl-2009-0310-ecu;floods,,disaster
+,4,Search,yes,fl20090312nam,Merge,fl-2009-0312-nam;floods,,disaster
+,2,Search,yes,fl20090708ben,Merge,fl-2009-0708-ben;floods,,disaster
+,2,Search,yes,fl20090805ner,Merge,fl-2009-0805-ner;floods,,disaster
+,1,Search,yes,fl20090901sen,Merge,fl-2009-0901-sen;floods,,disaster
+,16,Search,yes,fl20100802pak,Merge,fl-2010-0802-pak;floods,,disaster
+,5,Search,yes,fl20101124col,Merge,fl-2010-1124-col;floods,,disaster
+,6,Search,yes,fl20110822pak,Merge,fl-2011-0822-pak;floods,,disaster
+,2,Search,yes,fl20111007tha,Merge,fl-2011-1007-tha;floods,,disaster
+,8,Search,yes,fl20111012khm,Merge,fl-2011-1012-khm;floods,,disaster
+,1,Search,yes,fl20120822sen,Merge,fl-2012-0822-sen;floods,,disaster
+,6,Search,yes,fl20120917pak,Merge,fl-2012-0917-pak;floods,,disaster
+,1,Search,yes,fl20120924ssd,Merge,fl-2012-0924-ssd;floods,,disaster
+,5,Search,yes,fl20130121moz,Merge,fl-2013-0121-moz;floods,,disaster
+,2,Search,yes,fl20130805mmr,Merge,fl-2013-0805-mmr;floods,,disaster
+,5,Search,yes,fl20130806sdn,Merge,fl-2013-0806-sdn;floods,,disaster
+,7,Search,yes,fl20130822pak,Merge,fl-2013-0822-pak;floods,,disaster
+,6,Search,yes,fl20131021khm,Merge,fl-2013-1021-khm;floods,,disaster
+,2,Search,yes,fl20140207zwe,Merge,fl-2014-0207-zwe;floods,,disaster
+,3,Search,yes,fl20140207zwe,Merge,fl-2014-0207-zwe;floods,,disaster
+,3,Search,yes,fl20140213bol,Merge,fl-2014-0213-bol;floods,,disaster
+,3,Search,yes,fl20140213bol,Merge,fl-2014-0213-bol;floods,,disaster
+,1,Search,yes,fl20140405slb,Merge,fl-2014-0405-slb;floods,,disaster
+,1,Search,yes,fl20140405slb,Merge,fl-2014-0405-slb;floods,,disaster
+,6,Search,yes,fl20140430afg,Merge,fl-2014-0430-afg;floods,,disaster
+,9,Search,yes,fl20140430afg,Merge,fl-2014-0430-afg;floods,,disaster
+,3,Search,yes,fl20140803sdn,Merge,fl-2014-0803-sdn;floods,,disaster
+,5,Search,yes,fl20140803sdn,Merge,fl-2014-0803-sdn;floods,,disaster
+,4,Search,yes,fl20140910pak,Merge,fl-2014-0910-pak;floods,,disaster
+,5,Search,yes,fl20140910pak,Merge,fl-2014-0910-pak;floods,,disaster
+,2,Search,yes,fl20141229lka,Merge,fl-2014-1229-lka;floods,,disaster
+,2,Search,yes,fl20141230lka,Merge,fl-2014-1230-lka;floods,,disaster
+,19,Search,yes,fl-2015-000089-mmr,Merge,fl-2015-000089-mmr;floods,,disaster
+,4,Search,yes,fl-2015-000098-vnm,Merge,fl-2015-000098-vnm;floods,,disaster
+,4,Search,yes,fl-2015-000145-som,Merge,fl-2015-000145-som;floods,,disaster
+,7,Search,yes,fl20150112moz,Merge,fl-2015-0112-moz;floods,,disaster
+,13,Search,yes,fl20150703mmr,Merge,fl-2015-0703-mmr;floods,,disaster
+,2,Search,yes,fl20150723pak,Merge,fl-2015-0723-pak;floods,,disaster
+,4,Search,yes,fl20150723pak,Merge,fl-2015-0723-pak;floods,,disaster
+,2,Search,yes,fl20150730vnm,Merge,fl-2015-0730-vnm;floods,,disaster
+,4,Search,yes,fl20150730vnm,Merge,fl-2015-0730-vnm;floods,,disaster
+,2,Search,yes,fl20151123ind,Merge,fl-2015-1123-ind;floods,,disaster
+,4,Search,yes,fl20160714mmr,Merge,fl-2016-0714-mmr;floods,,disaster
+,6,Search,yes,fl20160725bgd,Merge,fl-2016-0725-bgd;floods,,disaster
+,13,Search,yes,fl20160808sdn,Merge,fl-2016-0808-sdn;floods,,disaster
+yes,1,Search,no,fl20160924idn,Merge,fl-2016-0924-idn;floods,,disaster
+,8,Search,yes,fl20161109vnm,Merge,fl-2016-1109-vnm;floods,,disaster
+,2,Search,yes,fl20170118moz,Merge,fl-2017-0118-moz;floods,,disaster
+,1,Search,yes,fl20170323nam,Merge,fl-2017-0323-nam;floods,,disaster
+,1,Search,yes,fl20170418irn,Merge,fl-2017-0418-irn;floods,,disaster
+,3,Search,yes,fl20170424hti,Merge,fl-2017-0424-hti;floods,,disaster
+,1,Search,yes,fl20170607phl,Merge,fl-2017-0607-phl;floods,,disaster
+,4,Search,yes,fl20170815bgd,Merge,fl-2017-0815-bgd;floods,,disaster
+,2,Search,yes,fl20170815sle,Merge,fl-2017-0815-sle;floods,,disaster
+,1,Search,yes,fl20170828ner,Merge,fl-2017-0828-ner;floods,,disaster
+,1,Search,yes,fl20170831uga,Merge,fl-2017-0831-uga;floods,,disaster
+,1,Search,yes,fl20170926tcd,Merge,fl-2017-0926-tcd;floods,,disaster
+,1,Search,yes,fl20171025gtm,Merge,fl-2017-1025-gtm;floods,,disaster
+,4,Search,yes,fl20171106vnm,Merge,fl-2017-1106-vnm;floods,,disaster
+,1,Search,yes,fl20171211vnm,Merge,fl-2017-1211-vnm;floods,,disaster
+,4,Search,yes,flash flood,Merge,floods,,disaster
+,133,Search,yes,flood,Merge,floods,,disaster
+,3,Search,yes,flooding,Merge,floods,,disaster
+,1,Search,yes,food insecurity,Merge,food security,,humanitarian sector
+,1,Search,yes,agricultural and food production index,Merge,food security;food production;agricultural production;index,Agriculture,
+,1,Search,yes,food for education,Merge,food;education,,humanitarian sector
+,1,Search,yes,gas,Merge,fuel,,logistic
+,1,Search,yes,lpg,Merge,fuel,,
+,3,Search,yes,allocations,Merge,funding,,
+,1,Search,yes,assistance,Merge,funding,,
+,1,Search,yes,development assistance,Merge,funding,,
+,3,Search,yes,donor funding,Merge,funding,,
+,1,Search,yes,donors,Merge,funding,,
+,1,Search,yes,fund,Merge,funding,,humanitarian service
+,2,Search,yes,grants,Merge,funding,,
+,1,Search,yes,grants for funding,Merge,funding,,
+,1,Search,yes,pool fund,Merge,funding,,Funding
+,1,Search,yes,pooled funds,Merge,funding,,Funding
+,1,Search,yes,pooled-fund,Merge,funding,,Funding
+,1,Search,yes,hac,Merge,funding;appeals,,
+,1,Search,yes,gbv,Merge,gender-based violence - gbv,,
+,1,Search,yes,gender based violence,Merge,gender-based violence - gbv,,
+,45,Search,no,terrain,Merge,elevation,,
+,1,Search,yes,gender inequality index,Merge,gender;inequality;index,,
+,1,Search,yes,gender parity index in primary,Merge,gender;inequality;index,,indicator
+,1,Search,yes,gender parity index in secondary,Merge,gender;inequality;index,,indicator
+,14,Search,yes,boundaries,Merge,geodata,,
+,27,Search,yes,coordinates,Merge,geodata,,
+,311,Search,yes,geodatabase,Merge,geodata,,data format
+,7,Search,yes,geojson,Merge,geodata,,data format
+,26,Search,yes,geonode,Merge,geodata,,
+,1,Search,yes,geotiff,Merge,geodata,,
+,36,Search,yes,gis,Merge,geodata,,data type
+,2,Search,yes,gisdata,Merge,geodata,,data type
+,5,Search,yes,kml,Merge,geodata,,
+,3,Search,yes,kmz,Merge,geodata,,Data Type
+,1,Search,yes,line,Merge,geodata,,
+,197,Search,yes,lines,Merge,geodata,,
+,245,Search,yes,points,Merge,geodata,,Geographical
+,333,Search,yes,polygon,Merge,geodata,,Location
+,4,Search,yes,polygons,Merge,geodata,,Location
+,1,Search,yes,polylines,Merge,geodata,,Location
+,44,Search,yes,raster,Merge,geodata,,Geographical
+,346,Search,yes,shapefile,Merge,geodata,,Geographical
+,57,Search,yes,shapefiles,Merge,geodata,,Geographical
+,1,Search,yes,gdb,Merge,geodatabase,,data format
+,4,Search,yes,gam,Merge,global acute malnutrition - gam,,
+,1,Search,yes,global acute malnutrition,Merge,global acute malnutrition - gam,,
+,4,Search,yes,acute malnutrition,Merge,global acute malnutrition - gam;severe acute malnutrition - sam,"If you look at the datasets, they are gam and sam",Food Security
+,1,Search,yes,county budgets,Merge,government expenditure,,
+,1,Search,yes,green area per capita,Merge,green area;land cover,,
+,7,Search,yes,gdp,Merge,gross domestic product - gdp,,
+,2,Search,yes,gross domestic product,Merge,gross domestic product - gdp,,
+,3,Search,yes,gni,Merge,gross national income - gni,,indicator
+,1,Search,yes,harzadous locations,Merge,hazardous areas;hazards - risk,,
+,225,Search,yes,hazard,Merge,hazards - risk,,
+,1,Search,yes,hazard and exposure,Merge,hazards - risk,,
+,1,Search,yes,hazards,Merge,hazards - risk,,
+,1,Search,yes,multi-hazard,Merge,hazards - risk,,
+,222,Search,yes,risk,Merge,hazards - risk,,
+,1,Search,yes,risk management,Merge,hazards - risk,,
+,1,Search,yes,risk mapping,Merge,hazards - risk,,
+,1,Search,yes,river erosion risk,Merge,hazards - risk;erosion,,
+,2,Search,yes,flood risk,Merge,hazards - risk;floods,,disaster
+,1,Search,yes,risk spots,Merge,hazards - risk;hazardous areas,,
+,1,Search,yes,health emergency,Merge,health,,health
+,1,Search,yes,health in kenya,Merge,health,,health
+,1,Search,yes,health indicator,Merge,health,,health
+,1,Search,yes,health indicators,Merge,health,,health
+,1,Search,yes,health resources,Merge,health,,health
+,1,Search,yes,physical health,Merge,health,,Health
+,1,Search,yes,public health,Merge,health,,Health
+,1,Search,yes,health boundaries,Merge,health districts,,health
+,1,Search,yes,health district,Merge,health districts,,health
+,2,Search,yes,clinic,Merge,health facilities,Health,
+,2,Search,yes,health center,Merge,health facilities,,health
+,1,Search,yes,health centers,Merge,health facilities,,health
+,2,Search,yes,health centres,Merge,health facilities,,health
+,1,Search,yes,health infrastructure,Merge,health facilities,,health
+,1,Search,yes,health posts,Merge,health facilities,,
+,64,Search,yes,healthsites,Merge,health facilities,,health
+,2,Search,yes,hospital,Merge,health facilities,,health
+,1,Search,yes,hospitals,Merge,health facilities,,health
+,1,Search,yes,lebanon health centers,Merge,health facilities,,
+,1,Search,yes,lebanon phc,Merge,health facilities,,
+,1,Search,yes,medical store,Merge,health facilities,,
+,1,Search,yes,phc,Merge,health facilities,,Health
+,3,Search,yes,facilities_capacity health_facilities,Merge,health facilities capacity,,
+,1,Search,yes,medical personel,Merge,health workers,,
+,1,Search,yes,health epidemic,Merge,health;epidemics - outbreaks,,health
+,1,Search,yes,obstetrics,Merge,health;fistula,,
+,1,Search,yes,healt service,Merge,healthcare,,health
+,1,Search,yes,health and care,Merge,healthcare,,health
+,1,Search,yes,health care,Merge,healthcare,,health
+,1,Search,yes,long term care,Merge,healthcare,,
+,1,Search,yes,paedriatic,Merge,healthcare,,Health
+,1,Search,yes,secondary health care,Merge,healthcare,,Health
+,1,Search,yes,community health workers,Merge,healthcare;health workers,,
+,1,Search,yes,helicopter,Merge,helicopter landing zone - hlz,,
+,3,Search,yes,hiv prevalence,Merge,hiv - aids,,
+,2,Search,yes,homeless,Merge,homelessness,,
+,4,Search,yes,homicide,Merge,homicides;crime,,
+,2,Search,yes,homicide rate,Merge,homicides;crime,,indicator
+,2,Search,yes,homicides,Merge,homicides;crime,,
+,2,Search,yes,household expenditure,Merge,household budgets,,
+,2,Search,yes,household income,Merge,household budgets,,
+,1,Search,yes,income levels,Merge,household budgets,,
+,1,Search,yes,expenditures,Merge,household expenditure,,
+,7,Search,yes,household,Merge,households,,
+,43,Search,yes,hdi,Merge,human development;index,,
+,1,Search,yes,human development index,Merge,human development;index,,humanitarian development
+,1,Search,yes,discrimination and abuse,Merge,human rights,,
+,3,Search,yes,access,Merge,humanitarian access,Humanitarian Access,
+,22,Search,yes,hno,Merge,humanitarian needs overview - hno,,
+,4,Search,yes,humanitarian needs overview,Merge,humanitarian needs overview - hno,,
+,4,Search,yes,hrp,Merge,humanitarian response plan - hrp,,Humanitarian response plan
+,4,Search,yes,cyclone irma,Merge,hurricane irma;cyclones - hurricanes - typhoons,,
+,9,Search,yes,hurricane irma,Merge,hurricane irma;cyclones - hurricanes - typhoons,,hurricane
+,4,Search,yes,hurricaneirma,Merge,hurricane irma;cyclones - hurricanes - typhoons,,hurricane
+,8,Search,yes,irma,Merge,hurricane irma;cyclones - hurricanes - typhoons,,Disaster
+,5,Search,yes,hurricane maria,Merge,hurricane maria;cyclones - hurricanes - typhoons,,hurricane
+,5,Search,yes,maria,Merge,hurricane maria;cyclones - hurricanes - typhoons,,Disaster
+,1,Search,yes,hurricanemathew,Merge,hurricane matthew;cyclones - hurricanes - typhoons,,hurricane
+,40,Search,yes,hurricanematthew,Merge,hurricane matthew;cyclones - hurricanes - typhoons,,hurricane
+,1,Search,yes,matthew,Merge,hurricane matthew;cyclones - hurricanes - typhoons,,
+,1,Search,yes,patricia,Merge,hurricane patricia,,Hurricanne
+,19,Search,yes,huracan patricia,Merge,hurricane patricia;cyclones - hurricanes - typhoons,,hurricane
+,1,Search,yes,hurricane patriicia,Merge,hurricane patricia;cyclones - hurricanes - typhoons,,hurricane
+,540,Search,yes,idp,Merge,internally displaced persons - idp,,displacement
+,448,Search,yes,idps,Merge,internally displaced persons - idp,,displacement
+,2,Search,yes,image,Merge,imagery,,raster data
+,4,Search,yes,satellite,Merge,imagery,,Communications
+,1,Search,yes,ieds,Merge,improvised explosive devices - ied,,
+,1,Search,yes,improvised explosive devices,Merge,improvised explosive devices - ied,,
+,1,Search,yes,desastres 2012,Merge,incidents of disaster,,
+,1,Search,yes,disaster atlas,Merge,incidents of disaster,,
+,14,Search,yes,disasters,Merge,incidents of disaster,,
+,8,Search,yes,natural disaster,Merge,incidents of disaster,,Disaster Type
+,15,Search,yes,natural disasters,Merge,incidents of disaster,,Disaster Type
+,1,Search,yes,pakistan presidential disaster declarations,Merge,incidents of disaster,,N/A
+,1,Search,yes,indigenous,Merge,indigenous people,,
+,1,Search,yes,equality,Merge,inequality,,
+,42,Search,no,water sanitation and hygiene,Merge,wash;water sanitation and hygiene,,Water
+,1,Search,yes,nenatal mortality,Merge,infant mortality,,
+,1,Search,yes,infectious,Merge,infectious disease,,
+,195,Search,yes,infectious diseases,Merge,infectious disease;disease,,
+,3,Search,yes,infectious disease,Merge,infectious diseases,,health
+,2,Search,yes,informal settlements,Merge,informal settlements;populated places,,
+,4,Search,yes,insecticide,Merge,insecticide treated nets;vector control,,
+,6,Search,yes,ipc,Merge,integrated phase classification - ipc,,Cluster
+,386,Search,yes,internally displaced,Merge,internally displaced persons,,displacement
+,5,Search,yes,internally displaced people,Merge,internally displaced persons,,
+,5,Search,yes,foreign aid,Merge,international aid,,
+,1,Search,yes,international assistance,Merge,international aid,,
+,1,Search,yes,foreign trade,Merge,international trade,,
+,37,Search,no,donor aid,Merge,funding,,
+,1,Search,yes,islands name,Merge,islands,,
+,1,Search,yes,kidnapping,Merge,kidnappings,,
+,1,Search,yes,la-nina,Merge,la nina,,
+,36,Search,no,tropical cyclone,Merge,cyclones - hurricanes - typhoons,,Tropical Cyclone
+,1,Search,yes,land ownership in somaliland,Merge,land tenure,,
+,1,Search,yes,landuse,Merge,land use,,
+,1,Search,yes,antipersonnel mines,Merge,landmines,,
+,1,Search,yes,land mines,Merge,landmines,,
+,1,Search,yes,mines,Merge,landmines,,
+,4,Search,yes,land slide,Merge,landslides,,Disaster Type
+,13,Search,yes,landslide,Merge,landslides,,Disaster Type
+,1,Search,yes,latrine,Merge,latrines,,
+,1,Search,yes,light,Merge,lighting,,
+,2,Search,yes,reading,Merge,literacy,,Education
+,1,Search,yes,livelihood,Merge,livelihoods,,
+,6,Search,yes,logistic,Merge,logistics,,
+,1,Search,yes,port statistics,Merge,logistics;international trade,,Transport
+,1,Search,yes,act,Merge,malaria first line treatment;artemisinin-based combination therapy - act,Health,
+,217,Search,yes,malaria,Merge,malaria;disease,,Health
+,1,Search,yes,chronique malnutrition,Merge,malnutrition,,
+,1,Search,yes,gcm,Merge,malnutrition,,
+,29,Search,no,war,Merge,conflicts,,
+,9,Search,yes,market,Merge,markets,,Location
+,9,Search,yes,mother,Merge,maternal,,
+,4,Search,yes,measles,Merge,measles;disease,,Health
+,1,Search,yes,immigrants,Merge,migration,,displacement
+,1,Search,yes,migrant,Merge,migration,,
+,1,Search,yes,migratory,Merge,migration,,
+,195,Search,yes,millennium development goals mdgs,Merge,millennium development goals - mdg,,
+,2,Search,yes,minor,Merge,minors,,
+,2,Search,yes,desaparecidos,Merge,missing persons,,
+,2,Search,yes,desparicion forzada,Merge,missing persons,,
+,1,Search,yes,bed nets,Merge,mosquito nets,,
+,1,Search,yes,bed-nets,Merge,mosquito nets,,
+,4,Search,yes,mosquito net,Merge,mosquito nets,,
+,1,Search,yes,assessment status,Merge,needs assessment,,
+,2,Search,yes,assessments,Merge,needs assessment,,
+,1,Search,yes,basic needs,Merge,needs assessment,,
+,2,Search,yes,information needs assessment,Merge,needs assessment,,
+,2,Search,yes,need,Merge,needs assessment,,
+,6,Search,yes,needs,Merge,needs assessment,,
+,1,Search,yes,needs assessments,Merge,needs assessment,,
+,1,Search,yes,community assessment,Merge,needs assessment,,
+,5,Search,yes,needs and response,Merge,needs assessment;3w,,
+,4,Search,yes,nfi,Merge,non-food items - nfi,,Cluster
+,2,Search,yes,non food items,Merge,non-food items - nfi,,
+,1,Search,yes,dietary statistics,Merge,nutrition,,
+,36,Search,yes,food and nutrition,Merge,nutrition,,humanitarian sector
+,1,Search,yes,nutrition sector - sudan,Merge,nutrition,,
+,1,Search,yes,nutrition sector sudan,Merge,nutrition,,Cluster
+,2,Search,yes,nutritional status of children,Merge,nutrition;children,,
+,1,Search,yes,office,Merge,office locations,,
+,2,Search,yes,ort,Merge,oral rehydration treatment - ort,,Health
+,10,Search,yes,outbreak,Merge,outbreaks;disease,,Health
+,1,Search,yes,population in need,Merge,people in need;estimate,,Population
+,124,Search,yes,poi,Merge,points of interest - poi,,Geographical
+,122,Search,yes,sustainable development goals - sdg;elderly,Merge,points of interest - poi,,Geographical
+,1,Search,yes,polling centres,Merge,polling stations,,Elections
+,1,Search,yes,darfur localities,Merge,populated places,,
+,2,Search,yes,hamlets,Merge,populated places,,
+,1,Search,yes,place name,Merge,populated places,,Location
+,2,Search,yes,placenames,Merge,populated places,,Location
+,12,Search,yes,settlement,Merge,populated places,,settlements
+,98,Search,yes,settlements,Merge,populated places,,settlements
+yes,1,Search,no,population data,Merge,population,,Population
+,1,Search,yes,population per constituency,Merge,population,,Population
+,1,Search,yes,daadab movements,Merge,population movement,,
+,3,Search,yes,flow monitoring - dtm,Merge,population movement,,
+,6,Search,yes,mobility,Merge,population movement,,Movement
+,12,Search,yes,movement,Merge,population movement,,Movement
+,8,Search,yes,population movements,Merge,population movement,,Population
+,1,Search,yes,binational mixed migration crisis,Merge,population movement;migration,,
+,10,Search,yes,ports,Merge,ports;transportation;infrastructure,,Transport
+,1,Search,yes,lived poverty,Merge,poverty,,
+,1,Search,yes,poverty assesment,Merge,poverty,,Poverty
+,1,Search,yes,multi-dimensional poverty index,Merge,poverty;index,,
+,4,Search,yes,multidimensional poverty index,Merge,poverty;index,,
+,4,Search,yes,pregnancy,Merge,pregnancies,,Population
+,2,Search,yes,pregnant,Merge,pregnancy,,Population
+,1,Search,yes,price,Merge,prices,,Economy
+,5,Search,yes,market monitoring,Merge,prices;markets,,
+,9,Search,yes,priority index,Merge,priorities;index,,
+,1,Search,yes,natural parks,Merge,protected areas,,
+,1,Search,yes,radio stations,Merge,radio stations;telecommunications;infrastructure,,Communication
+,2,Search,yes,railroads,Merge,railways;transportation,,Transport Network
+,1,Search,yes,railway,Merge,railways;transportation,,Transport Network
+,11,Search,yes,railways,Merge,railways;transportation,,Transport Network
+,1,Search,yes,raiways,Merge,railways;transportation,,N/A
+,1,Search,yes,accumulated rainfall,Merge,rainfall,,
+,4,Search,yes,rainfall,Merge,rainfall;climate,,Weather
+,1,Search,yes,random sampling,Merge,random sample,,Survey
+,1,Search,yes,afghan refugees,Merge,refugees,"Place name, Population group",
+,1,Search,yes,malian refugees,Merge,refugees,,
+,1,Search,yes,palestine refugees,Merge,refugees,,Refugees
+,5,Search,yes,palestinian refugees,Merge,refugees,,Refugees
+,475,Search,yes,refugee,Merge,refugees,,Refugees
+,1,Search,yes,refugee congolese,Merge,refugees,,Refugees
+,1,Search,yes,refugees assisted by unhcr,Merge,refugees,,Refugees
+,20,Search,no,tropical storm,Merge,cyclones - hurricanes - typhoons,,Tropical Storm
+,20,Search,no,site assessment - dtm,Merge,site assessment,,Assessment
+,1,Search,yes,palestine refugee camps,Merge,refugees;camps;displaced persons locations,,Refugees
+,1,Search,yes,palestine refugee camps in lebanon,Merge,refugees;camps;displaced persons locations,,Refugees
+,1,Search,yes,palestine refugee schools,Merge,refugees;education facilities,,Refugees
+,1,Search,yes,refugees and migrants,Merge,refugees;migration,,Refugees
+,390,Search,yes,returned,Merge,returnees,,Displacement
+,2,Search,yes,returned idps,Merge,returnees,,Displacement
+,8,Search,yes,returnee,Merge,returnees,,Refugees
+,1,Search,yes,returns,Merge,returnees,,Refugees
+,1,Search,yes,river networks,Merge,rivers;hydrography;water bodies,,Transport network
+,2,Search,yes,river network,Merge,rivers;hydrography;water bodies;geodata,,Transport network
+,7,Search,yes,river,Merge,rivers;water bodies;hydrography,,
+,183,Search,yes,rivers,Merge,rivers;water bodies;hydrography,,Transport network
+,2,Search,yes,paved roads,Merge,roads;transportation,,Transport network
+,1,Search,yes,road network,Merge,roads;transportation,,Transport network
+,172,Search,yes,roads,Merge,roads;transportation,,Transport network
+,1,Search,yes,roads network,Merge,roads;transportation,,Transport network
+,2,Search,yes,road,Merge,roads;transportation;geodata,,Transport network
+,8,Search,yes,road networks,Merge,roads;transportation;infrastructure;geodata,,Transport network
+,1,Search,yes,impassable road,Merge,roads;transportation;practicability;logistics,,logistic
+,22,Search,yes,rohingya,Merge,rohingya crisis,,Location
+,1,Search,yes,rohingya refugee,Merge,rohingya crisis;refugees,,Refugees
+,1,Search,yes,enrollment,Merge,school enrollment,,
+,1,Search,yes,gross enrolment ratio in primary,Merge,school enrollment,,
+,1,Search,yes,gross enrolment ratio in secondary,Merge,school enrollment,,
+,1,Search,yes,high school enrollment,Merge,school enrollment,,
+,1,Search,yes,primary school enrollment,Merge,school enrollment,,Education
+,1,Search,yes,secondary school enrollment,Merge,school enrollment,,Education
+,1,Search,yes,public schools,Merge,school facilities,,Education
+,7,Search,yes,school,Merge,schools,,Education
+,55,Search,yes,insecurity,Merge,security,,
+,1,Search,yes,incidents,Merge,security incidents,,
+,5,Search,yes,sam,Merge,severe acute malnutrition - sam,,
+,1,Search,yes,severe acute malnutrition,Merge,severe acute malnutrition - sam,,Nutrition
+,1,Search,yes,most affected districts,Merge,severity,,
+,8,Search,yes,severity index,Merge,severity;index,,Survey
+,2,Search,yes,shake,Merge,shaking,,N/A
+,1,Search,yes,shakemap,Merge,shaking,,Security
+,1,Search,yes,shelter evaluation,Merge,shelter,,Shelter
+,1,Search,yes,sheltering,Merge,shelter,,Shelter
+,1,Search,yes,heavey snowfall,Merge,snowfall,,disaster
+,3,Search,yes,heavy snowfall,Merge,snowfall,,disaster
+,1,Search,yes,sdc,Merge,social development centers,,
+,1,Search,yes,sdcs,Merge,social development centers,,
+,1,Search,yes,city product per capita,Merge,socioeconomic,,
+,17,Search,no,transport,Merge,transportation,,Transport
+,17,Search,no,under-fives,Merge,under 5,,Age range
+,2,Search,yes,household survey,Merge,survey;households,,survey data
+,2,Search,yes,durable solutions,Merge,sustainability,,
+,1,Search,yes,sdgs,Merge,sustainable development goals - sdg,,
+,1,Search,yes,sdgs and older persons,Merge,sustainable development goals - sdg;elderly,,
+,12,Search,no,perceptual data,Merge,community perceptions,,Surveys
+,12,Search,no,zika,Merge,zika;disease,,Health
+,10,Search,yes,mobile phone,Merge,telecommunication,,
+,1,Search,yes,sea surface temperature,Merge,temperature;climate,,Weather
+,1,Search,yes,footpaths,Merge,transportation;footpaths;geodata,,logistic
+,4,Search,yes,forest cover,Merge,transportation;footpaths;geodata,,
+,1,Search,yes,ferry,Merge,transportation;infrastructure;geodata;ferries,,
+,1,Search,yes,sdi-t,Merge,transportation;logistics,,
+,1,Search,yes,sdit,Merge,transportation;logistics,,
+,11,Search,no,female population,Merge,female population;population,,
+,1,Search,yes,haima,Merge,typhoon haima;cyclones - hurricanes - typhoons,,hurricane
+,10,Search,no,division administrativa,Merge,administrative divisions;division administrativa,,
+,3,Search,yes,haiyan,Merge,typhoon haiyan;cyclones - hurricanes - typhoons,,hurricane
+,10,Search,no,typhoon,Merge,cyclones - hurricanes - typhoons,,Typhoon
+,9,Search,yes,hagupit,Merge,typhoon ruby hagupit;cyclones - hurricanes - typhoons,,hurricane
+,10,Search,yes,ruby,Merge,typhoon ruby hagupit;cyclones - hurricanes - typhoons,,
+,10,Search,no,mixed migration platform,Merge,migration,,
+,10,Search,no,villages,Merge,populated places,,
+,10,Search,no,water price monitoring,Merge,water prices,,Water
+,1,Search,yes,desocupación,Merge,unemployment,,
+,1,Search,yes,area urbana,Merge,urban areas;land use,,
+,10,Search,no,watsan,Merge,water and sanitation - watsan,,Water
+,10,Search,no,tc20170918dma,Merge,tc-2017-0918-dma,,Report code
+,14,Search,yes,immunization,Merge,vaccination - immunization,,health
+,1,Search,yes,immunization coverage,Merge,vaccination - immunization,,health
+,1,Search,yes,fully immunized under 1,Merge,vaccination - immunization;under 1,,health
+,1,Search,yes,masacre,Merge,violence,,
+,1,Search,yes,lethal violence,Merge,violence;fatalities,,
+,9,Search,no,taxonomy,Merge,taxonomy - vocabulary,,
+,9,Search,no,under five,Merge,under 5,,Age range
+,9,Search,no,west and central africa,Merge,west africa;central africa,,Location
+yes,1,Search,no,world water bodies,Merge,water bodies;hydrography;geodata,,
+,39,Search,yes,lakes,Merge,water bodies;hydrography;rivers,,Location
+,8,Search,no,financial behaviors,Merge,financial behavior,,
+,8,Search,no,financial lives,Merge,financial behavior,,
+,8,Search,no,towns,Merge,populated places,,
+,8,Search,no,syrian refugees,Merge,refugees,,Refugees
+,1,Search,yes,explosive weapons,Merge,weapons,,
+,1,Search,yes,firearm,Merge,weapons,,
+,2,Search,yes,meteorology,Merge,weather,,
+,2,Search,yes,gusts,Merge,wind speed,,
+,94,Search,yes,nepal earthquake,Merge,nepal earthquake 2015,,Crisis
+,8,Search,no,tc20141204phl,Merge,tc-2014-1204-phl,,Report code
+,7,Search,no,tc20161003hti,Merge,tc-2016-1003-hti,,Report code
+,6,Search,no,undernutrition,Merge,malnutrition,,Nutrition
+,6,Search,no,site assessment data,Merge,site assessment,,Assessment
+,6,Search,no,tc20170529bgd,Merge,tc-2017-0529-bgd;cyclones - hurricanes - typhoons,,Report code
+,6,Search,no,typhoonhaima,Merge,typhoon haima;cyclones - hurricanes - typhoons,,Typhoon
+,216,Search,yes,fts,Merge,financial tracking service - fts;funding;humanitarian funding,,organization name
+,6,Search,no,water price,Merge,water prices,,Water
+,6,Search,no,young,Merge,youth,,
+yes,1,Search,no,kathmandu usar,Merge,urban search and rescue - usar,,
+,4,Search,yes,mdg,Merge,millennium development goals - mdg,,Location
+,5,Search,no,who does what where,Merge,3w,,
+,1,Search,yes,nfis,Merge,non-food items - nfi,,Cluster
+,5,Search,no,tcwinston,Merge,cyclone winston;cyclones - hurricanes - typhoons,,
+yes,1,Search,no,shelters,Merge,shelter and gathering locations,,Shelter
+,5,Search,no,tc20161005cub,Merge,tc-2016-1005-cub;cyclones - hurricanes - typhoons,,Report code
+,5,Search,no,tc20170731lao,Merge,tc-2017-0731-lao;cyclones - hurricanes - typhoons,,Report code
+,4,Search,no,what3words,Merge,3-word addresses;geodata,,
+,4,Search,no,income gap,Merge,inequality;economics,,
+,4,Search,no,vegetation,Merge,land cover,,Vegetation
+,4,Search,no,taxonomies,Merge,taxonomy - vocabulary,,
+,4,Search,no,vocabulary,Merge,taxonomy - vocabulary,,
+,4,Search,no,water bodies,Merge,water bodies;hydrography,,Water
+,3,Search,no,financial,Merge,finance,,
+,3,Search,no,gender paygap,Merge,gender;inequality,,gender
+,3,Search,no,humanitarian projects funding,Merge,humanitarian funding,,
+,3,Search,no,people living with disabilities,Merge,people with disabilities,,Demography
+,3,Search,no,urbanization,Merge,urbanisation,,
+,3,Search,no,vaccination,Merge,vaccination - immunization,,Health
+,3,Search,no,volcano,Merge,volcanos,,
+,3,Search,no,tc20141204phl,Merge,tc-2014-1204-phl,,Report code
+,3,Search,no,tc20170306mdg,Merge,tc-2017-0306-mdg,,Report code
+,2,Search,no,administrative,Merge,administrative divisions,Administrative divisions and boundaries,
+,2,Search,no,district map,Merge,administrative divisions,,
+,2,Search,no,target and response,Merge,assistance targets,,
+,2,Search,no,cholera in yemen,Merge,cholera,,
+,2,Search,no,costs of damages,Merge,cost of damage,,
+,2,Search,no,tc winston,Merge,cyclone winston;cyclones - hurricanes - typhoons,,Tropical Cyclones
+,2,Search,no,storm,Merge,cyclones - hurricanes - typhoons,,
+,2,Search,no,transmission,Merge,disease transmission,,Health
+,2,Search,no,early childhood development,Merge,early childhood,,
+,2,Search,no,hurricanepatricia,Merge,hurricane patricia;cyclones - hurricanes - typhoons,,hurricane
+,2,Search,no,humanitarian presence,Merge,operational presence,,
+,2,Search,no,conservancies,Merge,protected areas,,
+,2,Search,no,train,Merge,railways;transportation,,Railways
+,2,Search,no,syrian refugees in lebanon,Merge,refugees,,
+,2,Search,no,socio-economic,Merge,socioeconomics,,Economy
+,2,Search,no,stigma,Merge,stigma,,
+,2,Search,no,survey data,Merge,survey,,Survey
+,2,Search,no,survey-data,Merge,survey,,Survey
+,2,Search,no,toilet,Merge,toilets,,WASH
+,2,Search,no,transportation network,Merge,transportation;geodata,,Transport
+,2,Search,no,tsunami,Merge,tsunamis,,
+,2,Search,no,typhoon haima,Merge,typhoon haima;cyclones - hurricanes - typhoons,,Typhoon
+,2,Search,no,typhoon haiyan,Merge,typhoon haiyan;cyclones - hurricanes - typhoons,,Typhoon
+,2,Search,no,under one,Merge,under 1,,Age range
+,3,Search,yes,ce20120731mli,Merge,ce-2012-0731-mli,Emergency id,
+,8,Search,yes,ce20130326mmr,Merge,ce-2013-0326-mmr,Emergency id,
+,79,Search,yes,ce20130604syr,Merge,ce-2013-0604-syr,Emergency id,
+,14,Search,yes,ce20130710som,Merge,ce-2013-0710-som,Emergency id,
+,3,Search,yes,ce20131107cod,Merge,ce-2013-1107-cod,Emergency id,
+,11,Search,yes,ce20131212caf,Merge,ce-2013-1212-caf,Emergency id,
+,47,Search,yes,ce20131218ssd,Merge,ce-2013-1218-ssd,Emergency id,
+,33,Search,yes,ce20140613irq,Merge,ce-2014-0613-irq,Emergency id,
+,4,Search,yes,ce20140617nga,Merge,ce-2014-0617-nga,Emergency id,
+,17,Search,yes,ce20140715pse,Merge,ce-2014-0715-pse,Emergency id,
+,7,Search,yes,ce20150402yem,Merge,ce-2015-0402-yem,Emergency id,
+,6,Search,yes,ce20150814lby,Merge,ce-2015-0814-lby,Emergency id,
+,1,Search,yes,ce20160204moz,Merge,ce-2016-0204-moz,Emergency id,
+,2,Search,yes,enso,Merge,el nino southern oscillation - enso,,
+,1,Search,yes,eq20110311jpn,Merge,eq-2011-0311-jpn,,
+,1,Search,yes,eq20170908mex,Merge,eq-2017-0908-mex,,
+,13,Search,yes,eq20170919mex,Merge,eq-2017-0919-mex,,
+,2,Search,yes,ethnic groups,Merge,ethnic groups;demographics,,
+,2,Search,no,water sources,Merge,water points - water sources,,Water
+,8,Search,yes,fr20170712dza,Merge,fr-2017-0712-dza,,
+,19,Search,yes,hiv,Merge,hiv - aids,,
+,17,Search,yes,iati,Merge,international aid transparency initiative - iati,,
+,2,Search,no,waterpoints,Merge,water points - water sources,,Water
+,2,Search,no,windspeeds,Merge,wind speed,,
+,3,Search,yes,ls20100518pak,Merge,ls-2010-0518-pak,,
+,4,Search,yes,ls20170403col,Merge,ls-2017-0403-col,,
+,4,Search,yes,ot20130511ssd,Merge,ot-2013-0511-ssd,,N/A
+,6,Search,yes,ot20151123idn,Merge,ot-2015-1123-idn,,N/A
+,3,Search,yes,rc20140709sdn,Merge,rc-2014-0709-sdn,,N/A
+,102,Search,yes,sadd,Merge,sex and age disaggregated data - sadd,,
+,2,Search,no,st20150107pse,Merge,st-2015-0107-pse,,
+,2,Search,no,tc20121030hti,Merge,tc-2012-1030-hti,,Report code
+,2,Search,no,vo20141124cpv,Merge,vo-2014-1124-cpv,,Dataset code
+,,Search,,access restrictions,Merge,humanitarian access,,
+,,Search,,aid worker,Merge,aid workers,,
+,,Search,,armed actions,Merge,armed violence,,
+,,Search,,attacks against civilians,Merge,attacks on civilians,,
+,,Search,,beneficiary,Merge,beneficiaries,,
+,,Search,,boundary polygons,Merge,administrative divisions,,
+,,Search,,camp facilities,Merge,camps,,
+,,Search,,camp mapping,Merge,camps,,
+,,Search,,car refugees,Merge,refugees,,
+,,Search,,cbi,Merge,cash assistance,,
+,,Search,,cbr,Merge,cash assistance,,
+,,Search,,child headed,Merge,children;protection,,
+,,Search,,cic,Merge,camp facilities,,
+,,Search,,clinics,Merge,health facilities,,
+,,Search,,common operational database,Merge,common operational dataset - cod;administrative divisions,,
+,,Search,,community perception,Merge,community perceptions,,
+,,Search,,construction,Merge,construction materials,,
+,,Search,,coxs_bazar,Merge,coxs bazar,,
+,,Search,,cxbs bazar,Merge,coxs bazar,,
+,,Search,,drone-imagery,Merge,imagery,,
+,,Search,,employment,Merge,employment,,
+,,Search,,eq20110311jpn,Merge,eq-2011-0311-jpn,,
+,,Search,,fl20061118som,Merge,fl-2006-1118-som,,
+,,Search,,fl20070424chn,Merge,fl-2007-0424-chn,,
+,,Search,,fl20070525gha,Merge,fl-2007-0525-gha,,
+,,Search,,fl20070701uga,Merge,fl-2007-0701-uga,,
+,,Search,,fl20070710sdn,Merge,fl-2007-0710-sdn,,
+,,Search,,fl20070802bgd,Merge,fl-2007-0802-bgd,,
+,,Search,,fl20080118bol,Merge,fl-2008-0118-bol,,
+,,Search,,fl20080201nam,Merge,fl-2008-0201-nam,,
+,,Search,,fl20080301ecu,Merge,fl-2008-0301-ecu,,
+,,Search,,fl20080320ago,Merge,fl-2008-0320-ago,,
+,,Search,,fl20080824khm,Merge,fl-2008-0824-khm,,
+,,Search,,fl20081015gtm,Merge,fl-2008-1015-gtm,,
+,,Search,,fl20081024hnd,Merge,fl-2008-1024-hnd,,
+,,Search,,fl20081110ken,Merge,fl-2008-1110-ken,,
+,,Search,,fl20090310ecu,Merge,fl-2009-0310-ecu,,
+,,Search,,fl20090312nam,Merge,fl-2009-0312-nam,,
+,,Search,,fl20090708ben,Merge,fl-2009-0708-ben,,
+,,Search,,fl20090805ner,Merge,fl-2009-0805-ner,,
+,,Search,,fl20090901sen,Merge,fl-2009-0901-sen,,
+,,Search,,fl20100802pak,Merge,fl-2010-0802-pak,,
+,,Search,,fl20101124col,Merge,fl-2010-1124-col,,
+,,Search,,fl20110822pak,Merge,fl-2011-0822-pak,,
+,,Search,,fl20111007tha,Merge,fl-2011-1007-tha,,
+,,Search,,fl20111012khm,Merge,fl-2011-1012-khm,,
+,,Search,,fl20120822sen,Merge,fl-2012-0822-sen,,
+,,Search,,fl20120917pak,Merge,fl-2012-0917-pak,,
+,,Search,,fl20120924ssd,Merge,fl-2012-0924-ssd,,
+,,Search,,fl20130121moz,Merge,fl-2013-0121-moz,,
+,,Search,,fl20130805mmr,Merge,fl-2013-0805-mmr,,
+,,Search,,fl20130806sdn,Merge,fl-2013-0806-sdn,,
+,,Search,,fl20130822pak,Merge,fl-2013-0822-pak,,
+,,Search,,fl20131021khm,Merge,fl-2013-1021-khm,,
+,,Search,,fl20140207zwe,Merge,fl-2014-0207-zwe,,
+,,Search,,fl20140213bol,Merge,fl-2014-0213-bol,,
+,,Search,,fl20140405slb,Merge,fl-2014-0405-slb,,
+,,Search,,fl20140430afg,Merge,fl-2014-0430-afg,,
+,,Search,,fl20140803sdn,Merge,fl-2014-0803-sdn,,
+,,Search,,fl20140910pak,Merge,fl-2014-0910-pak,,
+,,Search,,fl20141229lka,Merge,fl-2014-1229-lka,,
+,,Search,,fl20150703mmr,Merge,fl-2015-0703-mmr,,
+,,Search,,fl20150723pak,Merge,fl-2015-0723-pak,,
+,,Search,,fl20150730vnm,Merge,fl-2015-0730-vnm,,
+,,Search,,ls20100518pak,Merge,ls-2010-0518-pak,,
+,,Search,,tc20121030hti,Merge,tc-2012-1030-hti,,
+,,Search,,tc20141204phl,Merge,tc-2014-1204-phl,,
+,,Search,,tc20180103mdg,Merge,tc-2018-0103-mdg,,
+,1,Search,yes,delimitaciones,Non English,administrative divisions,,
+,1,Search,yes,limite internacional,Non English,administrative divisions;international boundaries,,
+,1,Search,yes,cultivos coca,Non English,agricultural production,,
+,1,Search,yes,aeropuerto,Non English,airports,Transportation,
+,1,Search,yes,acciones bélicas,Non English,attacks,,
+,1,Search,yes,atentados,Non English,attacks,,
+,1,Search,yes,ataques contra la poblacion civil,Non English,attacks on civilians,,
+,1,Search,yes,avalancha,Non English,avalanches,,
+,1,Search,yes,indicadores caseload,Non English,caseload,,
+,1,Search,yes,censos,Non English,census,,
+,7,Search,yes,confinamiento,Non English,confinement,,
+,1,Search,yes,conflicto,Non English,conflicts,,Conflict
+,1,Search,yes,conflicto armado,Non English,conflicts,,Conflict
+,1,Search,yes,conflictoarmado,Non English,conflicts,,Conflict
+,1,Search,yes,discapacitad,Non English,disability,,
+,1,Search,yes,sexo,Non English,disaggregated by sex,,N/A
+,1,Search,yes,contaminacion,Non English,disease;infectious disease,,
+,1,Search,yes,economico,Non English,economics,,
+,3,Search,yes,educación,Non English,education,,
+,1,Search,yes,inundacion,Non English,floods,,
+,1,Search,yes,helipuerto,Non English,helicopter landing zone - hlz,,
+,1,Search,yes,hidrografia,Non English,hydrography,,
+,1,Search,yes,hydrologie,Non English,hydrology,,
+,1,Search,yes,guatemala desastres,Non English,incidents of disaster,,disaster
+,1,Search,yes,mortalidad infantil,Non English,infant mortality,,
+,1,Search,yes,mortalité infantile,Non English,infant mortality,,
+,1,Search,yes,islas,Non English,islands,,
+,1,Search,yes,deslaves,Non English,landslides,,
+,1,Search,yes,analfabetismo,Non English,literacy,,
+,1,Search,yes,ocupación,Non English,livelihoods,,
+,1,Search,yes,migracion,Non English,migration,,
+,4,Search,yes,desapariciones,Non English,missing persons,,
+,1,Search,yes,morbilidad,Non English,mortality,,
+,1,Search,yes,aldeas,Non English,populated places,,
+,1,Search,yes,asentamientos,Non English,populated places,,
+,1,Search,yes,servicios publicos,Non English,public services,,N/A
+,1,Search,yes,capacidad de respuesta,Non English,operational capacity,,
+,1,Search,yes,riviere,Non English,rivers;hydrography;water bodies,,N/A
+,1,Search,yes,asistencia escolar,Non English,school attendance,,
+,14,Search,no,vereda,Non English,,,
+,1,Search,yes,amenazas,Non English,threats,,
+,1,Search,yes,formation,Non English,training,,
+,12,Search,no,terremoto,Non English,,,Earthquake
+,1,Search,yes,desempleo,Non English,unemployment,,
+,9,Search,no,vivienda,Non English,,,
+,1,Search,yes,cuerpos de agua,Non English,water bodies;hydrography,,
+,1,Search,yes,cota,Non English,water bodies;hydrography;rivers,,
+,1,Search,yes,puntos de agua,Non English,water points - water sources,,N/A
+,8,Search,no,divipola,Non English,,,
+,1,Search,yes,acueducto,Non English,,,
+,7,Search,no,tendencias humanitarias,Non English,,,
+,4,Search,no,victimas,Non English,,,
+,3,Search,no,límites,Non English,,,
+,3,Search,no,tasa de homicidios,Non English,,,
+,3,Search,no,volcan,Non English,,,
+,1,Search,yes,abandonamiento forzoso,Non English,,forced displacement,
+,1,Search,yes,abandono forzoso,Non English,,forced displacement,
+,3,Search,yes,acceso,Non English,,Humanitarian Access,
+,3,Search,yes,acciones belicas,Non English,,,
+,3,Search,yes,agua,Non English,,,
+,2,Search,yes,alcantarillado,Non English,,,
+,1,Search,yes,alertas,Non English,,,
+,1,Search,yes,alumnos,Non English,,,
+,3,Search,yes,amenaza,Non English,,,
+,2,Search,yes,antioquia,Non English,,,
+,2,Search,yes,arroyo,Non English,,,
+,3,Search,yes,artefactos explosivos,Non English,,,
+,2,Search,yes,baladiya,Non English,,,
+,1,Search,yes,brechas,Non English,,,
+,3,Search,yes,cadre harmonisé,Non English,,,
+,2,Search,yes,calidad de vida,Non English,,,
+,1,Search,yes,capas,Non English,,,
+,5,Search,yes,censo,Non English,,,
+,1,Search,yes,centres de santé,Non English,,,
+,1,Search,yes,centro poblado,Non English,,,
+,1,Search,yes,centros de salud,Non English,,,
+,1,Search,yes,centros educativos,Non English,,,
+,1,Search,yes,centros educativos rurales,Non English,,,
+,1,Search,yes,centros educativos urbanos,Non English,,,
+,1,Search,yes,cercas,Non English,,,
+,1,Search,yes,cerro,Non English,,,
+,1,Search,yes,comunicacion,Non English,,,
+,11,Search,yes,comunidad,Non English,,,
+,2,Search,yes,comunidades,Non English,,,
+,1,Search,yes,cordillera,Non English,,,
+,1,Search,yes,dependencia economica,Non English,,,
+,1,Search,yes,derechos humanos,Non English,,,
+,5,Search,yes,desastres,Non English,,,
+,8,Search,yes,desastres naturales,Non English,,,
+,1,Search,yes,deslizamiento,Non English,,,
+,2,Search,yes,emergencia,Non English,,,
+,2,Search,yes,emergencias,Non English,,,
+,1,Search,yes,emergencias 2012,Non English,,,
+,1,Search,yes,emergencias guatemala,Non English,,,
+,1,Search,yes,empleo,Non English,,,
+,3,Search,yes,energia,Non English,,,
+,1,Search,yes,epidémiologie,Non English,,,
+,2,Search,yes,escuelas,Non English,,,
+,1,Search,yes,establecimientos de salud,Non English,,,
+,1,Search,yes,estadisticas,Non English,,,
+,1,Search,yes,estrato,Non English,,,
+,2,Search,yes,etnia,Non English,,,
+,1,Search,yes,explosivos,Non English,,,
+,1,Search,yes,extensión,Non English,,,
+,1,Search,yes,extorcion,Non English,,,
+,2,Search,yes,extorsion,Non English,,,
+,1,Search,yes,extorsiones,Non English,,,
+,1,Search,yes,extranjero,Non English,,,
+,1,Search,yes,finanaciacion,Non English,,,
+,1,Search,yes,fisiografia,Non English,,,
+,1,Search,yes,focalizacion,Non English,,,
+,2,Search,yes,frontera,Non English,,,
+,1,Search,yes,fuego,Non English,,,
+,1,Search,yes,fuente de agua,Non English,,,
+,1,Search,yes,gasoductos,Non English,,,
+,1,Search,yes,genero,Non English,,,
+,1,Search,yes,geodesica,Non English,,,
+,1,Search,yes,geonada,Non English,,,
+,1,Search,yes,granizada,Non English,,,
+,1,Search,yes,guerra,Non English,,,
+,1,Search,yes,hacinamiento,Non English,,,
+,1,Search,yes,hermosillo,Non English,,,
+,3,Search,yes,hombres,Non English,,,
+,3,Search,yes,homicidio,Non English,,,
+,8,Search,yes,homicidios,Non English,,,
+,1,Search,yes,hostigamiento,Non English,,,
+,1,Search,yes,inasistencia escolar,Non English,,,
+,1,Search,yes,incendio estructural,Non English,,,
+,1,Search,yes,incendio forestal,Non English,,,
+,1,Search,yes,incidentes,Non English,,,
+,1,Search,yes,indicadores humanitarios,Non English,,,
+,1,Search,yes,indice de precios al consumidor,Non English,,,
+,1,Search,yes,indice de riesgo situación humanitaria,Non English,,,
+,2,Search,yes,indigenas,Non English,,,
+,1,Search,yes,industria,Non English,,,
+,2,Search,yes,inflación,Non English,,,
+,1,Search,yes,infograma,Non English,,,
+,6,Search,yes,infraestructura,Non English,,,
+,1,Search,yes,institucional,Non English,,,
+,1,Search,yes,inversión pública,Non English,,,
+,1,Search,yes,la guajira,Non English,,,
+,1,Search,yes,laderas,Non English,,,
+,1,Search,yes,lagunas,Non English,,,
+,2,Search,yes,libertad,Non English,,,
+,8,Search,yes,limites,Non English,,,
+,3,Search,yes,limites administrativos,Non English,,,
+,1,Search,yes,lluvias,Non English,,,
+,1,Search,yes,lluvias 2012,Non English,,,
+,1,Search,yes,maestros,Non English,,,
+,1,Search,yes,maladies,Non English,,,
+,1,Search,yes,masculinidad,Non English,,,
+,4,Search,yes,medicina legal,Non English,,,Health
+,8,Search,yes,minas,Non English,,,
+,1,Search,yes,ministère de la santé,Non English,,,
+,1,Search,yes,ministry of education,Non English,,,
+,1,Search,yes,motalidad,Non English,,,
+,1,Search,yes,movilizacion social,Non English,,,
+,1,Search,yes,movimientos de tierra,Non English,,,
+,1,Search,yes,muelle,Non English,,,
+,3,Search,yes,mujeres,Non English,,,
+,9,Search,yes,municipios,Non English,,,Location
+,2,Search,yes,necesidades,Non English,,,
+,1,Search,yes,necesidades basicas insatisfechas,Non English,,,
+,1,Search,yes,nevado,Non English,,,
+,1,Search,yes,niñez,Non English,,,
+,1,Search,yes,nivel,Non English,,,
+,1,Search,yes,nivel de vida,Non English,,,
+,1,Search,yes,oleoductos,Non English,,,
+,1,Search,yes,paro,Non English,,,N/A
+,1,Search,yes,personas discapacitadas,Non English,,,N/A
+,1,Search,yes,plebiscito,Non English,,,N/A
+,1,Search,yes,pmaesa,Non English,,,N/A
+,8,Search,yes,poblacion,Non English,,,N/A
+,5,Search,yes,población,Non English,,,N/A
+,2,Search,yes,pobreza,Non English,,,N/A
+,1,Search,yes,precio barril,Non English,,,N/A
+,1,Search,yes,presas,Non English,,,N/A
+,10,Search,yes,proteccion,Non English,,,N/A
+,1,Search,yes,proteccion a la niñez,Non English,,,N/A
+,2,Search,yes,provincia,Non English,,,Admin Boundaries
+,1,Search,yes,proyeccion,Non English,,,N/A
+,3,Search,yes,proyección,Non English,,,N/A
+,2,Search,yes,proyecciones poblacionales,Non English,,,N/A
+,1,Search,yes,quebradas,Non English,,,N/A
+,1,Search,yes,raion,Non English,,,N/A
+,2,Search,yes,recoleccion de basuras,Non English,,,N/A
+,3,Search,yes,refugio,Non English,,,Refugees
+,1,Search,yes,respuesta,Non English,,,N/A
+,1,Search,yes,restitucion dde tierras,Non English,,,N/A
+,1,Search,yes,restitucion de tierras,Non English,,,N/A
+,1,Search,yes,restos arqueologicos,Non English,,,N/A
+,1,Search,yes,restriccion al acceso,Non English,,,N/A
+,1,Search,yes,restricciones,Non English,,,N/A
+,1,Search,yes,restricciones acceso,Non English,,,N/A
+,1,Search,yes,restricciones de acceso,Non English,,,N/A
+,1,Search,yes,retornos,Non English,,,N/A
+,1,Search,yes,reubicaciones,Non English,,,N/A
+,4,Search,yes,riesgo,Non English,,,N/A
+,1,Search,yes,rios,Non English,,,N/A
+,4,Search,yes,salud,Non English,,,N/A
+,2,Search,yes,santé,Non English,,,N/A
+,1,Search,yes,sectores,Non English,,,N/A
+,4,Search,yes,secuestro,Non English,,,N/A
+,4,Search,yes,secuestros,Non English,,,N/A
+,1,Search,yes,senderos,Non English,,,N/A
+,1,Search,yes,sequia,Non English,,,N/A
+,6,Search,yes,servicios,Non English,,,N/A
+,2,Search,no,centros poblados,Non English,,,
+,2,Search,no,lac chad,Non English,,,Location
+,2,Search,no,vegetacion,Non English,,,
+,2,Search,no,veredas,Non English,,,
+,2,Search,no,vulnerabilidad,Non English,,,
+,,Search,,acceso a alimentos,Non English,,,
+,,Search,,acceso a electricidad,Non English,,,
+,,Search,,ambiente,Non English,,,
+,,Search,,capacidad,Non English,,,
+,,Search,,chomage,Non English,unemployment,,
+,,Search,,communes dintervention,Non English,,,
+,,Search,,deces,Non English,,,
+,,Search,,desnutrición aguda,Non English,,,
+,,Search,,desnutrición crónica,Non English,,,
+,,Search,,enfermedades,Non English,,,
+,,Search,,escolares,Non English,,,
+,,Search,,etablissement scolaire,Non English,,,
+,,Search,,fécondité,Non English,,,
+,,Search,,genre,Non English,,,
+,,Search,,gestión,Non English,,,
+,,Search,,inseguridad alimentaria,Non English,,,
+,,Search,,marejadas,Non English,,,
+,,Search,,médicos,Non English,,,
+,,Search,,milieu de résidence,Non English,,,
+,,Search,,mortalidad materna,Non English,,,
+,,Search,,naissance,Non English,,,
+,,Search,,noticas,Non English,,,
+,,Search,,reducción de riesgo,Non English,,,
+,,Search,,répartition,Non English,,,
+,,Search,,salaire,Non English,,,
+,,Search,,saneamiento,Non English,,,
+,,Search,,sarampión,Non English,,,
+,,Search,,terremotos,Non English,,,
+,,Search,,vacunación,Non English,,,
+,504,Search,no,transportation,OK,,,Transport
+,392,Search,no,stateless persons,OK,,,
+,221,Search,no,sustainable development,OK,,,Development
+,213,Search,no,social development,OK,,,Economy
+,213,Search,no,urban development,OK,,,Development
+,195,Search,no,substance use,OK,,,
+,195,Search,no,tobacco,OK,,,Health
+,128,Search,no,weather,OK,,,
+,73,Search,no,water,OK,,,Water
+,196,Search,yes,hiv - aids,OK,,,health
+,153,Search,yes,shelter,OK,,,Shelter
+,12,Search,no,women,OK,,,Gender
+,11,Search,no,treatment,OK,,,Health
+,10,Search,no,water and sanitation,OK,,,Water
+,9,Search,no,under 5,OK,,,Age range
+,9,Search,no,vulnerability,OK,,,
+,2,Search,yes,coxs bazar,OK,,,Location
+,8,Search,no,financial inclusion,OK,,,
+,8,Search,no,tc-2016-000014-fji,OK,,,Report code
+,6,Search,no,symptoms,OK,,,Health
+,6,Search,no,wealth,OK,,,
+,6,Search,no,west africa,OK,,,Location
+,5,Search,no,urban,OK,,,
+,5,Search,no,women empowerment,OK,,,
+,4,Search,no,disabilities,OK,,,
+,4,Search,no,technology,OK,,,
+,4,Search,no,yemen crisis,OK,,,
+,3,Search,no,toilets,OK,,,WASH
+,3,Search,no,ushahidi,OK,,,Organisation acronym
+,3,Search,no,violence,OK,,,
+,3,Search,no,virus,OK,,,Health
+,3,Search,no,water treatment,OK,,,Water
+,3,Search,no,zinc,OK,,,
+,317,Search,yes,3w,OK,,3W,
+,2,Search,yes,absentee population,OK,,Population group,
+,2,Search,yes,access to electricity,OK,,Humanitarian Issue,
+,7,Search,yes,access to health services,OK,,Humanitarian Issue,
+,6,Search,yes,access to improved water sources,OK,,Humanitarian Issue,
+,5,Search,yes,access to water,OK,,Humanitarian Issue,
+,3,Search,yes,adolescents,OK,,Population group,
+,8,Search,yes,affected,OK,,Population group,
+,36,Search,yes,affected persons locations,OK,,,
+,10,Search,yes,affected population,OK,,,
+,26,Search,yes,africa,OK,,Place name,
+,1,Search,yes,ageing,OK,,,
+,276,Search,yes,agriculture,OK,,,
+,213,Search,yes,aid effectiveness,OK,,,
+,3,Search,yes,aid workers,OK,,,
+,2,Search,yes,aid workers security,OK,,,
+,17,Search,yes,aids,OK,hiv - aids,Disease,
+,1,Search,yes,air strikes,OK,,,
+,269,Search,yes,airports,OK,,,
+,1,Search,yes,amenities,Ok,,,
+,4,Search,yes,americas,OK,,,
+,2,Search,yes,antenatal care,OK,,,
+,1,Search,yes,appeals,OK,,,
+,3,Search,yes,armed violence,OK,,,
+,393,Search,yes,asylum-seekers,OK,,,
+,1,Search,yes,attitudes,OK,,,
+,6,Search,yes,avalanches,OK,,,
+,238,Search,yes,aviation,OK,,,
+,358,Search,yes,baseline,OK,,,
+,1,Search,yes,beneficiaries,OK,,,
+,4,Search,yes,biomass,OK,,,
+,12,Search,yes,births,OK,,,
+,2,Search,yes,border crossings,OK,,,
+,1,Search,yes,boys,OK,,,
+,2,Search,yes,budget,OK,,,
+,3,Search,yes,camps,OK,,,
+,2,Search,yes,caribbean,OK,,,
+,12,Search,yes,caseload,OK,,,
+,11,Search,yes,casualties,OK,,,
+,43,Search,yes,census,OK,,,
+,2,Search,yes,central african republic,OK,,Place name,
+,2,Search,yes,chikungunya,OK,,Disease name,
+,2,Search,yes,child labour,OK,,,
+,20,Search,yes,children,OK,,,
+,23,Search,yes,climate,OK,,Climate,
+,4,Search,yes,commodities,OK,,,
+,6,Search,yes,community perceptions,OK,,Type of survey,
+,233,Search,yes,complex emergency,OK,,,
+,1,Search,yes,confidence in government,OK,,,
+,3,Search,yes,confinement,OK,,,
+,2,Search,yes,connectivity,OK,,,
+,4,Search,yes,consumption,OK,,,
+,2,Search,yes,contacts,OK,,,Coordination
+,2,Search,yes,cookstoves,OK,,,
+,10,Search,yes,coordination,OK,,,
+,2,Search,yes,corruption,OK,,,
+,1,Search,yes,countries,OK,,,
+,4,Search,yes,crime,OK,,,
+,1,Search,yes,cultural sites,OK,,,
+,1,Search,yes,cyclone megh,OK,,,
+,18,Search,yes,cyclone pam,OK,,,
+,16,Search,yes,damage assessment,OK,,,
+,10,Search,yes,darfur,OK,,,Crisis
+,4,Search,yes,delivery care,OK,,,
+,31,Search,yes,demographics,OK,,,
+,1,Search,yes,diagnostic,OK,,,
+,1,Search,yes,dignity,OK,,,
+,1,Search,yes,diplacement,OK,,,
+,7,Search,yes,disability,OK,,,
+,1,Search,yes,disease,OK,,,
+,330,Search,yes,displacement,OK,,,
+,10,Search,yes,drought,OK,,,
+,4,Search,yes,early childhood,OK,,,
+,1,Search,yes,early recovery,OK,,,
+,3,Search,yes,earthquakes,OK,,,
+,9,Search,yes,eastern africa,OK,,,
+,3,Search,yes,economics,OK,,,
+,384,Search,yes,education,OK,,,
+,109,Search,yes,el nino,OK,,,
+,3,Search,yes,elderly,OK,,,
+,8,Search,yes,elections,OK,,,
+,51,Search,yes,elevation,OK,,,
+,2,Search,yes,emergency response,OK,,,
+,11,Search,yes,emergency telecommunications,OK,,,
+,2,Search,yes,enawo,OK,,,
+,220,Search,yes,energy,OK,,,
+,1,Search,yes,energy efficiency,OK,,,
+,224,Search,yes,environment,OK,,,
+,4,Search,yes,epidemics,OK,,,
+,63,Search,yes,eq-2015-000048-npl,OK,,,
+,7,Search,yes,eq-2015-000147-afg,OK,,,
+,1,Search,yes,erosion,OK,,,
+,1,Search,yes,estimation,OK,,,
+,1,Search,yes,ethanol,OK,,,
+,9,Search,yes,europe,OK,,,
+,2,Search,yes,european commission,OK,,,
+,1,Search,yes,evacuation,OK,,,
+,1,Search,yes,evacuees,OK,,,
+,1,Search,yes,evapotranspiration,OK,,,
+,1,Search,yes,exchange rates,OK,,,
+,1,Search,yes,explosive remnants of war,OK,,,
+,217,Search,yes,exposure,OK,,,
+,213,Search,yes,external debt,OK,,,
+,354,Search,yes,facilities,OK,,,
+,2,Search,yes,famine,OK,,,
+,3,Search,yes,feedback,OK,,,
+,3,Search,yes,feeding,OK,,,
+,14,Search,yes,feeding centers,OK,,,
+,8,Search,yes,female,OK,,,
+,1,Search,yes,fertilizers,OK,,,
+,2,Search,yes,fever,OK,,,
+,2,Search,yes,finance,OK,,,
+,214,Search,yes,financial sector,OK,,,
+,1,Search,yes,sustainable development goals - sdg,OK,,,
+,1,Search,yes,firewood,OK,,,
+,1,Search,yes,fistula,OK,,,
+,15,Search,yes,floods,OK,,,disaster
+,177,Search,yes,food,OK,,,humanitarian sector
+,2,Search,yes,food consumption,OK,,,humanitarian sector
+,4,Search,yes,food prices,OK,,,humanitarian sector
+,69,Search,yes,food security,OK,,,humanitarian sector
+,1,Search,yes,forecast,OK,,,
+,4,Search,yes,fuel,OK,,,logistic
+,38,Search,yes,funding,OK,,,
+,238,Search,yes,gender,OK,,,
+,2140,Search,yes,geodata,OK,,,data type
+,2,Search,yes,girls,OK,,,
+,3,Search,yes,governance,OK,,,
+,3,Search,yes,gross national income,OK,,,
+,1,Search,yes,hand washing,OK,,,
+,642,Search,yes,health,OK,,,health
+,32,Search,yes,health facilities,OK,,,health
+,195,Search,yes,health financing,OK,,,health
+,195,Search,yes,health systems,OK,,,health
+,2,Search,yes,healthcare,OK,,,health
+,5,Search,yes,horn of africa,OK,,,location
+,2,Search,yes,host community,Merge,host communities,,
+,2,Search,yes,housing,OK,,,
+,1,Search,yes,human rights,OK,,,human rights
+,5,Search,yes,humanitarian access,OK,,,humanitarian service
+,6,Search,yes,humanitarian assistance,OK,,,humanitarian service
+,302,Search,yes,humanitarian funding,OK,,,humanitarian service
+,7,Search,yes,humanitarian organisations,OK,,,
+,42,Search,yes,humanitarian profile,OK,,,
+,1,Search,yes,humanitarian response,OK,,,
+,1,Search,yes,humanitarian response plan,OK,,,
+,8,Search,yes,humanitarian trends,OK,,,
+,2,Search,yes,hunger,OK,,,
+,41,Search,yes,hurricane matthew,OK,,,hurricane
+,18,Search,yes,hurricane patricia,OK,,,hurricane
+,1113,Search,yes,hxl,OK,,,hxl
+,1,Search,yes,hydrography,OK,,,hydrography
+,220,Search,yes,hydrology,OK,,,hydrology
+,20,Search,yes,hygiene,OK,,,hygiene
+,2,Search,yes,imagery,OK,,,raster data
+,1,Search,yes,impact,OK,,,impact
+,3,Search,yes,improved sanitation facilities,OK,,,health
+,2,Search,yes,income,OK,,,
+,2,Search,yes,index,OK,,,
+,634,Search,yes,indicators,OK,,,indicator
+,1,Search,yes,inequality,OK,,,inequality
+,5,Search,yes,infant,OK,,,
+,1,Search,yes,infant health,OK,,,
+,3,Search,yes,infants,OK,,,
+,342,Search,yes,infrastructure,OK,,,
+,5,Search,yes,injuries,OK,,,
+,1,Search,yes,inputs,OK,,,
+,3,Search,yes,internally displaced persons,OK,,,
+,1,Search,yes,international aid,OK,,,
+,1,Search,yes,international trade,OK,,,
+,2,Search,yes,internet,OK,,,
+,1,Search,yes,iodine,OK,,,Health
+,1,Search,yes,iom dtm,OK,,,Data Type
+,1,Search,yes,irrigation,OK,,,
+,1,Search,yes,islands,OK,,,
+,26,Search,yes,kenya,OK,,,Location
+,2,Search,yes,key figures,OK,,,
+,1,Search,yes,key informant interviews,OK,,,
+,1,Search,yes,kidnappings,OK,,,
+,215,Search,yes,labor,OK,,,
+,1,Search,yes,labour,OK,,,
+,7,Search,yes,lake chad,OK,,,Location
+,4,Search,yes,lake chad basin,OK,,,Location
+,19,Search,yes,lake chad basin crisis,OK,,,Crisis
+,2,Search,yes,land cover,OK,,,
+,4,Search,yes,land use,OK,,,
+,4,Search,yes,landmines,OK,,,
+,4,Search,yes,literacy,OK,,,
+,5,Search,yes,livelihoods,OK,,,
+,5,Search,yes,livestock,OK,,,
+,45,Search,yes,logistics,OK,,,Cluster
+,2,Search,yes,logistics cluster,OK,,,Cluster
+,5,Search,yes,male,OK,,,
+,7,Search,yes,malnutrition,OK,,,Health
+,1,Search,yes,markets,OK,,,
+,15,Search,yes,maternal,OK,,,Health
+,1,Search,yes,maternal health,OK,,,
+,2,Search,yes,maternal mortality,OK,,,Health
+,1,Search,yes,media,OK,,,
+,4,Search,yes,medical,OK,,,Health
+,195,Search,yes,medical equipment,OK,,,
+,2,Search,yes,medicine,OK,,,Health
+,10,Search,yes,mediterranean,OK,,,Location
+,1,Search,yes,men,OK,,,
+,3,Search,yes,meningitis,OK,,,Health
+,196,Search,yes,mental health,OK,,,Health
+,11,Search,yes,migrants,OK,,,Movement
+,10,Search,yes,migration,OK,,,Movement
+,213,Search,yes,mining,OK,,,
+,2,Search,yes,mobile network,OK,,,
+,5,Search,yes,mobile phones,OK,,,
+,15,Search,yes,monitoring,OK,,,
+,212,Search,yes,mortality,OK,,,Health
+,1,Search,yes,mortality rate,OK,,,
+,1,Search,yes,mosquito nets,OK,,,
+,1,Search,yes,movement restrictions,OK,,,
+,2,Search,yes,multi-cluster,OK,,,
+,7,Search,yes,needs assessment,OK,,,
+,2,Search,yes,neighborhoods,OK,,,Location
+,2,Search,yes,neonatal,OK,,,
+,2,Search,yes,newborn,OK,,,
+,15,Search,yes,nigeria crisis,OK,,,Crisis
+,49,Search,yes,nutrition,OK,,,Cluster
+,7,Search,yes,open data,OK,,,Open data
+,2,Search,yes,open defecation,OK,,,WASH
+,7,Search,yes,operational capacity,OK,,,3W
+,10,Search,yes,operational presence,OK,,,3W
+,2,Search,yes,out-of-school,OK,,,Education
+,2,Search,yes,outbreaks,OK,,,Health
+,2,Search,yes,output indicators,OK,,,Evaluations
+,2,Search,yes,peace,OK,,,Political stability
+,1,Search,yes,peacekeeping,OK,,,Political stability
+,28,Search,yes,people in need,OK,,,Emergence response
+,1,Search,yes,people reached,OK,,,Emergence response
+,1,Search,yes,petroleum,OK,,,Energy
+,2,Search,yes,pneumonia,OK,,,Health
+,28,Search,yes,political violence,OK,,,Political stability
+,1,Search,yes,politics,OK,,,Elections
+,1,Search,yes,polling stations,OK,,,Elections
+,110,Search,yes,populated places,OK,,,Population
+,695,Search,yes,population,OK,,,Population
+,2,Search,yes,population affected,OK,,,Population
+,6,Search,yes,population density,OK,,,Population
+,3,Search,yes,population movement,OK,,,Population
+,1,Search,yes,population places,OK,,,Population
+,238,Search,yes,poverty,OK,,,Poverty
+,84,Search,yes,precipitation,OK,,,Weather
+,1,Search,yes,pregnancies,OK,,,Population
+,572,Search,yes,preparedness,OK,,,Emergence response
+,4,Search,yes,prices,OK,,,Economy
+,2,Search,yes,primary health care,OK,,,Health
+,2,Search,yes,primary schools,OK,,,Education
+,213,Search,yes,private sector,OK,,,Economy
+,7,Search,yes,profiling,OK,,,
+,453,Search,yes,protection,OK,,,Emergency response
+,1,Search,yes,protection of civilians,OK,,,Emergency response
+,28,Search,yes,protests,OK,,,Political stability
+,1,Search,yes,random sample,OK,,,Survey
+,3,Search,yes,reconstruction,OK,,,
+,4,Search,yes,recovery,OK,,,
+,35,Search,yes,refugees,OK,,,Refugees
+,1,Search,yes,religion,OK,,,
+,3,Search,yes,remote sensing,OK,,,
+,1,Search,yes,resilience,OK,,,
+,4,Search,yes,response,OK,,,
+,391,Search,yes,returned refugees,OK,,,Refugees
+,6,Search,yes,returnees,OK,,,Refugees
+,2,Search,yes,rohingya crisis,OK,,,Crisis
+,3,Search,yes,rumors,OK,,,
+,1,Search,yes,rural,OK,,,
+,213,Search,yes,rural development,OK,,,Economic development
+,18,Search,yes,sahel,OK,,,
+,3,Search,yes,sample survey,OK,,,Survey
+,36,Search,yes,sanitation,OK,,,WASH
+,2,Search,yes,school attendance,OK,,,Education
+,9,Search,yes,schools,OK,,,Education
+,113,Search,yes,security,OK,,,Security
+,1,Search,yes,security incidents,OK,,,Security
+,2,Search,yes,severity,OK,,,Survey
+,1,Search,yes,sexual violence,OK,,,Demographic
+,4,Search,yes,shelter cluster,OK,,,Shelter
+,2,Search,no,klanndestan,OK,,used for trainings,
+,2,Search,no,libya crisis,OK,,,Crisis
+,2,Search,no,polio,OK,,,Health
+,2,Search,no,social norms,OK,,,society
+,2,Search,no,southern africa,OK,,,Location
+,2,Search,no,survey,OK,,,Survey
+,2,Search,no,tc-2015-000149-yem,OK,,,Report code
+,2,Search,no,telecommunication,OK,,,Telecommunication
+,2,Search,no,temperature,OK,,,Climate
+,2,Search,no,tourism,OK,,,
+,2,Search,no,travel time,OK,,,
+,2,Search,no,under 1,OK,,,Age range
+,2,Search,no,underaged,OK,,,Child
+,2,Search,no,urban profiling,OK,,,
+,2,Search,no,victims,OK,,,
+,2,Search,no,violent deaths,OK,,,
+,2,Search,no,water monitoring,OK,,,Water
+,2,Search,no,windspeed,OK,,,
+,,Search,,diaspora,OK,,,
+,,Search,,shelter and gathering locations,OK,,,
+,,Search,,cholera outbreak,Merge,cholera;outbreaks;disease,,
+,,Search,,cholera outbreak in southern africa,Merge,cholera;outbreaks;disease;southern africa,,
+,,Search,,cholera outbreak in the horn of africa,Merge,cholera;outbreaks;disease;horn of africa,,
+,,Search,,cholera outbreaks eastern and southern africa region,Merge,cholera;outbreaks;disease;eastern africa;southern africa,,
+,,Search,,cholera outbreaks in eastern africa,Merge,cholera;outbreaks;disease;eastern africa,,
+,,Search,,cholera outbreaks in southern africa,Merge,cholera;outbreaks;disease;southern africa,,
+,,Search,,cholera outbreaks in the horn of africa,Merge,cholera;outbreaks;disease;horn of africa,,
+,,Search,,evaluation,Merge,monitoring and evaluation,,
+,,Search,,facilities for upgrade,Merge,camp facilities,,
+,,Search,,fatality,Merge,fatalities,,
+,,Search,,female headed,Merge,demographics;protection;women,,
+,,Search,,financial services,Merge,financial institutions,,
+,,Search,,flowmonitoring,Merge,population movement,,
+,,Search,,gazeteer,Merge,gazetteer,,
+,,Search,,gazetteer,OK,,,
+,,Search,,highlands,Delete,,,
+,,Search,,hiv aids,Merge,hiv - aids,,
+,,Search,,host,Merge,host communities,,
+,,Search,,humanitarian operational capacity,Merge,operational capacity,,
+,,Search,,humanitarian operational presence,Merge,operational presence,,
+,,Search,,humanitarian organisation,Delete,,,
+,,Search,,inneed,Merge,people in need,,
+,,Search,,internal displacement,Merge,internally displaced persons - idp,,
+,,Search,,iraqi refugees,Merge,refugees,,
+,,Search,,job,Merge,employment,,
+,,Search,,mandate,Delete,,,
+,,Search,,meta,Delete,,,
+,,Search,,military,OK,,,
+,,Search,,mine victims,Merge,victims of landmines and explosive remnants of war,,
+,,Search,,missions,Delete,,,
+,,Search,,mobile money,Merge,cash assistance,,
+,,Search,,mobility tracking,Merge,population movement,,
+,,Search,,natrual hazard,Merge,hazards - risk,,
+,,Search,,ngo security,Merge,aid workers security,,
+,,Search,,offices,Merge,office locations,,
+,,Search,,personnel,Merge,response capacity,,
+,,Search,,peso,Delete,,,
+,,Search,,places of worship,Merge,religious facilities,,
+,,Search,,plateau,Delete,,,
+,,Search,,points of interest,Merge,points of interest - poi,,
+,,Search,,police,OK,,,
+,,Search,,programming,Delete,,,
+,,Search,,psgc,Delete,,,
+,,Search,,registration,Delete,,,
+,,Search,,resident population,Merge,host communities,,
+,,Search,,rgphae,Delete,,,
+,,Search,,rohingya displacement,Merge,rohingya crisis,,
+,,Search,,rohingya refugee response,Merge,rohingya crisis,,
+,,Search,,rohingya refugees,Merge,refugees,,
+,,Search,,roof,Delete,,,
+,,Search,,rumonge,Delete,,,
+,,Search,,salary,Merge,employment,,
+,,Search,,sdg,Merge,sustainable development goals - sdg,,
+,,Search,,service,Merge,services,,
+,,Search,,services,OK,,,
+,,Search,,shops,Merge,shop locations,,
+,,Search,,shorelines,OK,,,
+,,Search,,solo parent,Merge,single parents,,
+,,Search,,targeted,Merge,assistance targets,,
+,,Search,,teknaf,Delete,,,
+,,Search,,troops,Merge,military,,
+,,Search,,uganda refugee response,Delete,,,
+,,Search,,ungrd,Delete,,,
+,,Search,,unicef esaro,Delete,,,
+,,Search,,usar,Merge,urban search and rescue - usar,,
+,,Search,,value,Delete,,,
+,,Search,,wash sector,Merge,wash;water sanitation and hygiene,,
+,,Search,,xchange,Merge,exchange rates,,
+,,Search,,eq20110311jpn ,Merge,eq-2011-0311-jpn,,
+,,Search,,fl20061118som ,Merge,fl-2006-1118-som,,
+,,Search,,fl20070424chn ,Merge,fl-2007-0424-chn,,
+,,Search,,fl20070525gha ,Merge,fl-2007-0525-gha,,
+,,Search,,fl20070701uga ,Merge,fl-2007-0701-uga,,
+,,Search,,fl20070710sdn ,Merge,fl-2007-0710-sdn,,
+,,Search,,fl20070802bgd ,Merge,fl-2007-0802-bgd,,
+,,Search,,fl20080118bol ,Merge,fl-2008-0118-bol,,
+,,Search,,fl20080201nam ,Merge,fl-2008-0201-nam,,
+,,Search,,fl20080301ecu ,Merge,fl-2008-0301-ecu,,
+,,Search,,fl20080320ago ,Merge,fl-2008-0320-ago,,
+,,Search,,fl20080824khm ,Merge,fl-2008-0824-khm,,
+,,Search,,fl20081015gtm ,Merge,fl-2008-1015-gtm,,
+,,Search,,fl20081024hnd ,Merge,fl-2008-1024-hnd,,
+,,Search,,fl20081110ken ,Merge,fl-2008-1110-ken,,
+,,Search,,fl20090310ecu ,Merge,fl-2009-0310-ecu,,
+,,Search,,fl20090312nam ,Merge,fl-2009-0312-nam,,
+,,Search,,fl20090708ben ,Merge,fl-2009-0708-ben,,
+,,Search,,fl20090805ner ,Merge,fl-2009-0805-ner,,
+,,Search,,fl20090901sen ,Merge,fl-2009-0901-sen,,
+,,Search,,fl20100802pak ,Merge,fl-2010-0802-pak,,
+,,Search,,fl20101124col ,Merge,fl-2010-1124-col,,
+,,Search,,fl20110822pak ,Merge,fl-2011-0822-pak,,
+,,Search,,fl20111007tha ,Merge,fl-2011-1007-tha,,
+,,Search,,fl20111012khm ,Merge,fl-2011-1012-khm,,
+,,Search,,fl20120822sen ,Merge,fl-2012-0822-sen,,
+,,Search,,fl20120917pak ,Merge,fl-2012-0917-pak,,
+,,Search,,fl20120924ssd ,Merge,fl-2012-0924-ssd,,
+,,Search,,fl20130121moz ,Merge,fl-2013-0121-moz,,
+,,Search,,fl20130805mmr ,Merge,fl-2013-0805-mmr,,
+,,Search,,fl20130806sdn ,Merge,fl-2013-0806-sdn,,
+,,Search,,fl20130822pak ,Merge,fl-2013-0822-pak,,
+,,Search,,fl20131021khm ,Merge,fl-2013-1021-khm,,
+,,Search,,fl20140207zwe ,Merge,fl-2014-0207-zwe,,
+,,Search,,fl20140213bol ,Merge,fl-2014-0213-bol,,
+,,Search,,fl20140405slb ,Merge,fl-2014-0405-slb,,
+,,Search,,fl20140430afg ,Merge,fl-2014-0430-afg,,
+,,Search,,fl20140803sdn ,Merge,fl-2014-0803-sdn,,
+,,Search,,fl20140910pak ,Merge,fl-2014-0910-pak,,
+,,Search,,fl20141229lka ,Merge,fl-2014-1229-lka,,
+,,Search,,fl20150703mmr ,Merge,fl-2015-0703-mmr,,
+,,Search,,fl20150723pak ,Merge,fl-2015-0723-pak,,
+,,Search,,fl20150730vnm ,Merge,fl-2015-0730-vnm,,
+,,Search,,ls20100518pak ,Merge,ls-2010-0518-pak,,
+,,Search,,tc20121030hti ,Merge,tc-2012-1030-hti,,
+,,Search,,tc20141204phl ,Merge,tc-2014-1204-phl,,
