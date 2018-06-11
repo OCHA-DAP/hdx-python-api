@@ -1,2 +1,2 @@
 # Collector specific configuration
-param_1: "ABC"
+tags_cleanup_url: "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/HDX_Tags_Cleaning.csv"

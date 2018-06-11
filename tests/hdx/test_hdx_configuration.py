@@ -102,7 +102,7 @@ class TestConfiguration:
                               project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
-            'param_1': 'ABC',
+            'tags_cleanup_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/HDX_Tags_Cleaning.csv',
             'hdx_prod_site': {
                 'url': 'https://data.humdata.org/',
                 'username': None,
@@ -164,7 +164,7 @@ hello there'''
                               hdx_config_json=hdx_config_json, project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
-            'param_1': 'ABC',
+            'tags_cleanup_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/HDX_Tags_Cleaning.csv',
             'hdx_prod_site': {
                 'url': 'https://data.humdata.org/',
                 'username': None,
@@ -189,7 +189,7 @@ hello there'''
                               hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
-            'param_1': 'ABC',
+            'tags_cleanup_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/HDX_Tags_Cleaning.csv',
             'hdx_prod_site': {
                 'url': 'https://data.humdata.org/',
                 'username': None,
@@ -291,6 +291,7 @@ hello there'''
                 'title',
                 'view_type',
             ]},
+            'tags_cleanup_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTyUP_oS878LihWM7iR0qry0OZP44BKyVXc1P_SoM0FEvbVGdOQxxlQvBWT_vwwGNaAbmuSeTg1FwuP/pub?gid=346948259&single=true&output=csv'
         }
         assert Configuration.read() == expected_configuration
         Configuration._create(user_agent='test', hdx_key_file=hdx_key_file, project_config_dict={'abc': '123'})
@@ -380,6 +381,7 @@ hello there'''
                 'title',
                 'view_type',
             ]},
+            'tags_cleanup_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTyUP_oS878LihWM7iR0qry0OZP44BKyVXc1P_SoM0FEvbVGdOQxxlQvBWT_vwwGNaAbmuSeTg1FwuP/pub?gid=346948259&single=true&output=csv'
         }
         assert Configuration.read() == expected_configuration
 
@@ -387,7 +389,7 @@ hello there'''
         Configuration._create(user_agent='test', hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
         expected_configuration = {
             'api_key': '12345',
-            'param_1': 'ABC',
+            'tags_cleanup_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/HDX_Tags_Cleaning.csv',
             'hdx_prod_site': {
                 'url': 'https://data.humdata.org/',
                 'username': None,

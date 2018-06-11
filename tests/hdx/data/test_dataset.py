@@ -1111,3 +1111,19 @@ class TestDataset:
             dataset.remove_filetype('csv')
         assert dataset.get_filetypes() == ['xlsx', 'csv']
 
+    def test_clean_dataset_tags(self, configuration, read):
+        dataset = Dataset.read_from_hdx('TEST1')
+        assert dataset.get_tags() == ['conflict', 'political violence']
+        assert dataset.clean_dataset_tags() is False
+        dataset.remove_tag('conflict')
+        assert dataset.get_tags() == ['political violence']
+        assert dataset.clean_dataset_tags() is False
+        dataset.add_tags(['nodeid123', 'transportation'])
+        assert dataset.clean_dataset_tags() is True
+        assert dataset.get_tags() == ['political violence', 'transportation']
+        dataset.add_tags(['geodata', 'points'])
+        assert dataset.clean_dataset_tags() is True
+        assert dataset.get_tags() == ['political violence', 'transportation', 'geodata']
+        dataset.add_tag('financial')
+        assert dataset.clean_dataset_tags() is True
+        assert dataset.get_tags() == ['political violence', 'transportation', 'geodata', 'finance']
