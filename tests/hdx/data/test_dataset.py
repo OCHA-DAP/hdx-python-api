@@ -19,6 +19,7 @@ from hdx.data.organization import Organization
 from hdx.data.resource import Resource
 from hdx.data.user import User
 from hdx.hdx_configuration import Configuration
+from hdx.hdx_tagscleanup import Tags
 from . import MockResponse, user_data, organization_data
 from .test_organization import organization_mockshow
 from .test_showcase import showcase_resultdict
@@ -1112,18 +1113,29 @@ class TestDataset:
         assert dataset.get_filetypes() == ['xlsx', 'csv']
 
     def test_clean_dataset_tags(self, configuration, read):
+        Tags.set_tagsdict(None)
+        Tags.set_wildcard_tags(None)
+        Tags.tagscleanupdicts(failchained=False)
         dataset = Dataset.read_from_hdx('TEST1')
         assert dataset.get_tags() == ['conflict', 'political violence']
-        assert dataset.clean_dataset_tags() is False
-        dataset.remove_tag('conflict')
+        assert dataset.clean_dataset_tags() == (True, False)
+        dataset.remove_tag('conflicts')
         assert dataset.get_tags() == ['political violence']
-        assert dataset.clean_dataset_tags() is False
+        assert dataset.clean_dataset_tags() == (False, False)
         dataset.add_tags(['nodeid123', 'transportation'])
-        assert dataset.clean_dataset_tags() is True
+        assert dataset.clean_dataset_tags() == (True, False)
         assert dataset.get_tags() == ['political violence', 'transportation']
         dataset.add_tags(['geodata', 'points'])
-        assert dataset.clean_dataset_tags() is True
+        assert dataset.clean_dataset_tags() == (True, False)
         assert dataset.get_tags() == ['political violence', 'transportation', 'geodata']
         dataset.add_tag('financial')
-        assert dataset.clean_dataset_tags() is True
+        assert dataset.clean_dataset_tags() == (True, False)
         assert dataset.get_tags() == ['political violence', 'transportation', 'geodata', 'finance']
+        dataset.add_tag('addresses')
+        assert dataset.clean_dataset_tags() == (False, True)
+        dataset.remove_tag('addresses')
+        dataset.add_tag('cultivos coca')
+        assert dataset.clean_dataset_tags() == (False, True)
+        dataset.remove_tag('cultivos coca')
+        dataset.add_tag('atentados')
+        assert dataset.clean_dataset_tags() == (True, False)

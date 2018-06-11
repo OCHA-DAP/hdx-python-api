@@ -13,7 +13,6 @@ from hdx.location.country import Country
 from hdx.utilities import is_valid_uuid
 from hdx.utilities import raisefrom
 from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.downloader import Download
 from six.moves import range
 
 import hdx.data.organization
@@ -23,6 +22,7 @@ import hdx.data.user
 from hdx.data.hdxobject import HDXObject, HDXError
 from hdx.hdx_configuration import Configuration
 from hdx.hdx_locations import Locations
+from hdx.hdx_tagscleanup import Tags
 
 logger = logging.getLogger(__name__)
 
@@ -73,8 +73,6 @@ class Dataset(HDXObject):
         'annually': '365',
         'yearly': '365'
     }
-    tags_dict = None
-    wildcard_tags = None
 
     def __init__(self, initial_data=None, configuration=None):
         # type: (Optional[Dict], Optional[Configuration]) -> None
@@ -1375,46 +1373,29 @@ class Dataset(HDXObject):
             raise NotRequestableError('remove_filetype is only applicable to requestable datasets!')
         return self._remove_string_from_commastring('file_types', filetype)
 
-    def clean_dataset_tags(self, url=None, keycolumn=5):
-        # type: (Optional[str], int) -> bool
+    def clean_dataset_tags(self):
+        # type: (Optional[str], int) -> Tuple[bool, bool]
         """Clean dataset tags according to tags cleanup spreadsheet and return if any changes occurred
 
-        Args:
-            url (Optional[str]): Url of tags cleanup spreadsheet. Defaults to None (internal configuration parameter).
-            keycolumn (int): Column number of tag column in spreadsheet
-
         Returns:
-            bool: True if tags changed or False if not
+            Tuple[bool, bool]: Returns (True if tags changed or False if not, True if error or False if not)
         """
-        if not Dataset.tags_dict:
-            with Download() as downloader:
-                if url is None:
-                    url = self.configuration['tags_cleanup_url']
-                Dataset.tags_dict = downloader.download_tabular_rows_as_dicts(url, keycolumn=keycolumn)
-
-                Dataset.wildcard_tags = list()
-                for tag in Dataset.tags_dict.keys():
-                    if '*' in tag:
-                        Dataset.wildcard_tags.append(tag)
+        tags_dict, wildcard_tags = Tags.tagscleanupdicts()
 
         def delete_tag(tag):
             logger.info('%s - Deleting tag %s!' % (self.data['name'], tag))
-            self.remove_tag(tag)
-            return True
+            return self.remove_tag(tag), False
 
         def update_tag(tag, final_tags, wording, remove_existing=True):
             text = '%s - %s: %s -> ' % (self.data['name'], wording, tag)
             if not final_tags:
-                if remove_existing:
-                    logger.error('%snothing!' % text)
-                else:
-                    logger.warning('%snothing!' % text)
-                return False
+                logger.error('%snothing!' % text)
+                return False, True
             tags_lower_five = final_tags[:5].lower()
             if tags_lower_five == 'merge' or tags_lower_five == 'split' or (
                     ';' not in final_tags and len(final_tags) > 50):
                 logger.error('%s%s - Invalid final tag!' % (text, final_tags))
-                return False
+                return False, True
             if remove_existing:
                 self.remove_tag(tag)
             tags = ', '.join(self.get_tags())
@@ -1423,44 +1404,44 @@ class Dataset(HDXObject):
             else:
                 logger.warning(
                     '%s%s - At least one of the tags already exists! Dataset tags: %s' % (text, final_tags, tags))
-            return True
+            return True, False
 
         def do_action(tag, tags_dict_key):
-            whattodo = Dataset.tags_dict[tags_dict_key]
+            whattodo = tags_dict[tags_dict_key]
             action = whattodo[u'action']
             final_tags = whattodo[u'final tags (semicolon separated)']
             if action == u'Delete':
-                changed = delete_tag(tag)
+                changed, error = delete_tag(tag)
             elif action == u'Merge':
-                changed = update_tag(tag, final_tags, 'Merging')
+                changed, error = update_tag(tag, final_tags, 'Merging')
             elif action == u'Fix spelling':
-                changed = update_tag(tag, final_tags, 'Fixing spelling')
+                changed, error = update_tag(tag, final_tags, 'Fixing spelling')
             elif action == u'Non English':
-                changed = update_tag(tag, final_tags, 'Anglicising', remove_existing=False)
+                changed, error = update_tag(tag, final_tags, 'Anglicising', remove_existing=False)
             else:
                 changed = False
-            return changed
+                error = False
+            return changed, error
 
         def process_tag(tag):
-            changed_tag = False
-            if tag in Dataset.tags_dict.keys():
-                if do_action(tag, tag):
-                    changed_tag = True
+            changed = False
+            error = False
+            if tag in tags_dict.keys():
+                changed, error = do_action(tag, tag)
             else:
-                for wildcard_tag in Dataset.wildcard_tags:
+                for wildcard_tag in wildcard_tags:
                     if fnmatch.fnmatch(tag, wildcard_tag):
-                        if do_action(tag, wildcard_tag):
-                            changed_tag = True
-            return changed_tag
+                        changed, error = do_action(tag, wildcard_tag)
+                        break
+            return changed, error
 
-        changed = False
+        anychange = False
+        anyerror = False
         for tag in self.get_tags():
-            if process_tag(tag):
-                changed = True
-        if changed:
-            for tag in self.get_tags():  # detect accidental chaining of two rules eg. war->conflicts, delete conflicts
-                if process_tag(tag):
-                    logger.error('Rule chaining detected! Will not update tags.')
-                    changed = False
+            changed, error = process_tag(tag)
+            if changed:
+                anychange = True
+            if error:
+                anyerror = True
 
-        return changed
+        return anychange, anyerror
