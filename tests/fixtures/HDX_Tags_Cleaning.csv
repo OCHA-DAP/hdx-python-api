@@ -2418,7 +2418,7 @@ yes,1,Search,no,shelters,Merge,shelter and gathering locations,,Shelter
 ,,Search,,tc20180103mdg,Merge,tc-2018-0103-mdg,,
 ,1,Search,yes,delimitaciones,Non English,administrative divisions,,
 ,1,Search,yes,limite internacional,Non English,administrative divisions;international boundaries,,
-,1,Search,yes,cultivos coca,Non English,agricultural production,,
+,1,Search,yes,cultivos coca,Non English,,,
 ,1,Search,yes,aeropuerto,Non English,airports,Transportation,
 ,1,Search,yes,acciones bélicas,Non English,attacks,,
 ,1,Search,yes,atentados,Non English,attacks,,
