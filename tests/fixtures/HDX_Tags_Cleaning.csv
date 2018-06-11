@@ -1543,7 +1543,7 @@ yes,1,Search,no,zvtn,Delete,,,
 ,2,Search,no,urban search and rescu - usar,Fix spelling,urban search and rescue - usar,,
 ,2,Search,no,vulcano,Fix spelling,volcanos,,
 ,4,Search,yes,3 word address,Merge,3-word addresses;geodata,Location,Location
-,1,Search,yes,addresses,Merge,3-word addresses;geodata,,
+,1,Search,yes,addresses,Merge,,,
 ,1,Search,yes,3w operat,Merge,3w,3W,
 ,1,Search,yes,3ws,Merge,3w,3W,
 ,15,Search,yes,4w,Merge,3w,,
