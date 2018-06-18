@@ -2302,7 +2302,7 @@ yes,1,Search,no,shelters,Merge,shelter and gathering locations,,Shelter
 ,2,Search,no,early childhood development,Merge,early childhood,,
 ,2,Search,no,hurricanepatricia,Merge,hurricane patricia;cyclones - hurricanes - typhoons,,hurricane
 ,2,Search,no,humanitarian presence,Merge,operational presence,,
-,2,Search,no,conservancies,Merge,protected areas,,
+,2,Search,no,conservancies,Merge,protected areas asdas a das das asdas asd as asd asd asd asd asd ads asd as aaa,,
 ,2,Search,no,train,Merge,railways;transportation,,Railways
 ,2,Search,no,syrian refugees in lebanon,Merge,refugees,,
 ,2,Search,no,socio-economic,Merge,socioeconomics,,Economy
@@ -2338,7 +2338,7 @@ yes,1,Search,no,shelters,Merge,shelter and gathering locations,,Shelter
 ,19,Search,yes,hiv,Merge,hiv - aids,,
 ,17,Search,yes,iati,Merge,international aid transparency initiative - iati,,
 ,2,Search,no,waterpoints,Merge,water points - water sources,,Water
-,2,Search,no,windspeeds,Merge,wind speed,,
+,2,Search,no,windspeeds,Fix spelling,wind speed,,
 ,3,Search,yes,ls20100518pak,Merge,ls-2010-0518-pak,,
 ,4,Search,yes,ls20170403col,Merge,ls-2017-0403-col,,
 ,4,Search,yes,ot20130511ssd,Merge,ot-2013-0511-ssd,,N/A
