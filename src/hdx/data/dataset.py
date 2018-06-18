@@ -140,6 +140,26 @@ class Dataset(HDXObject):
         self.resources = list()
         """:type : List[hdx.data.resource.Resource]"""
 
+    def _get_resource_from_obj(self, resource):
+        # type: (Union[hdx.data.resource.Resource,Dict,str]) -> hdx.data.resource.Resource
+        """Add new or update existing resource in dataset with new metadata
+
+        Args:
+            resource (Union[hdx.data.resource.Resource,Dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
+
+        Returns:
+            hdx.data.resource.Resource: Resource object
+        """
+        if isinstance(resource, str):
+            if is_valid_uuid(resource) is False:
+                raise HDXError('%s is not a valid resource id!' % resource)
+            resource = hdx.data.resource.Resource.read_from_hdx(resource, configuration=self.configuration)
+        elif isinstance(resource, dict):
+            resource = hdx.data.resource.Resource(resource, configuration=self.configuration)
+        if not isinstance(resource, hdx.data.resource.Resource):
+            raise HDXError('Type %s cannot be added as a resource!' % type(resource).__name__)
+        return resource
+
     def add_update_resource(self, resource, ignore_datasetid=False):
         # type: (Union[hdx.data.resource.Resource,Dict,str], bool) -> None
         """Add new or update existing resource in dataset with new metadata
@@ -151,20 +171,12 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        if isinstance(resource, str):
-            if is_valid_uuid(resource) is False:
-                raise HDXError('%s is not a valid resource id!' % resource)
-            resource = hdx.data.resource.Resource.read_from_hdx(resource, configuration=self.configuration)
-        elif isinstance(resource, dict):
-            resource = hdx.data.resource.Resource(resource, configuration=self.configuration)
-        if isinstance(resource, hdx.data.resource.Resource):
-            if 'package_id' in resource:
-                if not ignore_datasetid:
-                    raise HDXError('Resource %s being added already has a dataset id!' % (resource['name']))
-            resource_updated = self._addupdate_hdxobject(self.resources, 'name', resource)
-            resource_updated.set_file_to_upload(resource.get_file_to_upload())
-            return
-        raise HDXError('Type %s cannot be added as a resource!' % type(resource).__name__)
+        resource = self._get_resource_from_obj(resource)
+        if 'package_id' in resource:
+            if not ignore_datasetid:
+                raise HDXError('Resource %s being added already has a dataset id!' % (resource['name']))
+        resource_updated = self._addupdate_hdxobject(self.resources, 'name', resource)
+        resource_updated.set_file_to_upload(resource.get_file_to_upload())
 
     def add_update_resources(self, resources, ignore_datasetid=False):
         # type: (List[Union[hdx.data.resource.Resource,Dict,str]], bool) -> None
@@ -1445,3 +1457,28 @@ class Dataset(HDXObject):
                 anyerror = True
 
         return anychange, anyerror
+
+    def set_quickchart_resource(self, resource):
+        # type: (Optional[str], int) -> bool
+        """Set the resource that will be used for displaying QuickCharts in dataset preview
+
+        Args:
+            resource (Union[hdx.data.resource.Resource,Dict,str,int]): Either resource id, resource metadata from a Resource object or a dictionary or position
+
+        Returns:
+            bool: Returns True if resource for QuickCharts in dataset preview set or False if not
+        """
+        if isinstance(resource, int) and not isinstance(resource, bool):
+            resource = self.get_resources()[resource]
+        if isinstance(resource, hdx.data.resource.Resource) or isinstance(resource, dict):
+            resource = resource['id']
+        elif not isinstance(resource, str):
+            raise hdx.data.hdxobject.HDXError('Resource id cannot be found in type %s!' % type(resource).__name__)
+        if is_valid_uuid(resource) is False:
+            raise hdx.data.hdxobject.HDXError('%s is not a valid resource id!' % resource)
+        for dataset_resource in self.resources:
+            if dataset_resource['id'] == resource:
+                dataset_resource['dataset_preview_enabled'] = 'True'
+                self.data['dataset_preview'] = 'resource_id'
+            else:
+                dataset_resource['dataset_preview_enabled'] = 'False'

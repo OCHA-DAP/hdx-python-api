@@ -19,7 +19,7 @@ from hdx.data.organization import Organization
 from hdx.data.resource import Resource
 from hdx.data.user import User
 from hdx.hdx_configuration import Configuration
-from hdx.hdx_tagscleanup import Tags
+from hdx.hdx_tagscleanup import Tags, ChainRuleError
 from . import MockResponse, user_data, organization_data
 from .test_organization import organization_mockshow
 from .test_showcase import showcase_resultdict
@@ -1112,6 +1112,10 @@ class TestDataset:
             dataset.remove_filetype('csv')
         assert dataset.get_filetypes() == ['xlsx', 'csv']
 
+    def test_chainrule_error(self, configuration, read):
+        with pytest.raises(ChainRuleError):
+            Tags.tagscleanupdicts(failchained=True)
+
     def test_clean_dataset_tags(self, configuration, read):
         Tags.set_tagsdict(None)
         Tags.set_wildcard_tags(None)
@@ -1139,3 +1143,41 @@ class TestDataset:
         dataset.remove_tag('cultivos coca')
         dataset.add_tag('atentados')
         assert dataset.clean_dataset_tags() == (True, False)
+        assert dataset.get_tags() == ['political violence', 'transportation', 'geodata', 'finance', 'atentados', 'attacks']
+        dataset.remove_tag('atentados')
+        dataset.remove_tag('attacks')
+        dataset.add_tag('windspeeds')
+        assert dataset.clean_dataset_tags() == (True, False)
+        assert dataset.get_tags() == ['political violence', 'transportation', 'geodata', 'finance', 'wind speed']
+        dataset.add_tag('chil')
+        assert dataset.clean_dataset_tags() == (True, False)
+        assert dataset.get_tags() == ['political violence', 'transportation', 'geodata', 'finance', 'wind speed', 'children']
+        dataset.remove_tag('children')
+        dataset.add_tag('conservancies')
+        assert dataset.clean_dataset_tags() == (False, True)
+        assert dataset.get_tags() == ['political violence', 'transportation', 'geodata', 'finance', 'wind speed', 'conservancies']
+        dataset.remove_tag('conservancies')
+
+    def test_set_quickchart_resource(self, configuration, read):
+        dataset = Dataset.read_from_hdx('TEST1')
+        assert 'dataset_preview' not in dataset
+        dataset.set_quickchart_resource('3d777226-96aa-4239-860a-703389d16d1f')
+        assert dataset['dataset_preview'] == 'resource_id'
+        resources = dataset.get_resources()
+        assert resources[0]['dataset_preview_enabled'] == 'False'
+        assert resources[1]['dataset_preview_enabled'] == 'True'
+        dataset.set_quickchart_resource(resources[0])
+        assert resources[0]['dataset_preview_enabled'] == 'True'
+        assert resources[1]['dataset_preview_enabled'] == 'False'
+        dataset.set_quickchart_resource(resources[1].data)
+        assert resources[0]['dataset_preview_enabled'] == 'False'
+        assert resources[1]['dataset_preview_enabled'] == 'True'
+        dataset.set_quickchart_resource(0)
+        assert resources[0]['dataset_preview_enabled'] == 'True'
+        assert resources[1]['dataset_preview_enabled'] == 'False'
+        with pytest.raises(HDXError):
+            dataset.set_quickchart_resource('12345')
+        with pytest.raises(HDXError):
+            dataset.set_quickchart_resource(True)
+
+
