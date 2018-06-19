@@ -501,7 +501,7 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        self._read_from_hdx('resource', self.data['id'], action=self.actions()['patch'])
+        self._write_to_hdx('patch', self.data, 'id')
 
     def get_resource_views(self):
         # type: () -> List[ResourceView]
