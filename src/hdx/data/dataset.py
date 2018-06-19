@@ -1458,7 +1458,7 @@ class Dataset(HDXObject):
 
         return anychange, anyerror
 
-    def dataset_preview_off(self):
+    def preview_off(self):
         # type: () -> None
         """Set dataset preview off
 

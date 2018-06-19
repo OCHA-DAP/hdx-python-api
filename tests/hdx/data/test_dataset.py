@@ -1178,7 +1178,7 @@ class TestDataset:
         assert dataset.set_quickchart_resource('12345') is False
         with pytest.raises(HDXError):
             dataset.set_quickchart_resource(True)
-        dataset.dataset_preview_off()
+        dataset.preview_off()
         assert dataset['dataset_preview'] == 'no_preview'
         assert resources[0]['dataset_preview_enabled'] == 'False'
         assert resources[1]['dataset_preview_enabled'] == 'False'
