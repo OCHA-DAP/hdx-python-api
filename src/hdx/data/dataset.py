@@ -1469,6 +1469,15 @@ class Dataset(HDXObject):
         for resource in self.resources:
             resource.disable_dataset_preview()
 
+    def preview_resource(self):
+        # type: () -> None
+        """Set dataset preview on for an unspecified resource
+
+        Returns:
+            None
+        """
+        self.data['dataset_preview'] = 'resource_id'
+
     def set_quickchart_resource(self, resource):
         # type: (Union[hdx.data.resource.Resource,Dict,str,int]) -> bool
         """Set the resource that will be used for displaying QuickCharts in dataset preview
@@ -1497,7 +1506,7 @@ class Dataset(HDXObject):
         for dataset_resource in self.resources:
             if dataset_resource[search] == resource:
                 dataset_resource.enable_dataset_preview()
-                self.data['dataset_preview'] = 'resource_id'
+                self.preview_resource()
                 changed = True
             else:
                 dataset_resource.disable_dataset_preview()
