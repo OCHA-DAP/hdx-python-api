@@ -608,3 +608,22 @@ class Resource(HDXObject):
                 if not found:
                     raise HDXError('No resource views have title %s in this resource!' % title)
         resource_view.delete_from_hdx()
+
+    def enable_dataset_preview(self):
+        # type: () -> None
+        """Enable dataset preview of resource
+
+        Returns:
+            None
+        """
+        self.data['dataset_preview_enabled'] = 'True'
+
+    def disable_dataset_preview(self):
+        # type: () -> None
+        """Disable dataset preview of resource
+
+        Returns:
+            None
+        """
+        self.data['dataset_preview_enabled'] = 'False'
+

@@ -1458,12 +1458,23 @@ class Dataset(HDXObject):
 
         return anychange, anyerror
 
+    def dataset_preview_off(self):
+        # type: () -> None
+        """Set dataset preview off
+
+        Returns:
+            None
+        """
+        self.data['dataset_preview'] = 'no_preview'
+        for resource in self.resources:
+            resource.disable_dataset_preview()
+
     def set_quickchart_resource(self, resource):
-        # type: (Optional[str], int) -> bool
+        # type: (Union[hdx.data.resource.Resource,Dict,str,int]) -> bool
         """Set the resource that will be used for displaying QuickCharts in dataset preview
 
         Args:
-            resource (Union[hdx.data.resource.Resource,Dict,str,int]): Either resource id, resource metadata from a Resource object or a dictionary or position
+            resource (Union[hdx.data.resource.Resource,Dict,str,int]): Either resource id or name, resource metadata from a Resource object or a dictionary or position
 
         Returns:
             bool: Returns True if resource for QuickCharts in dataset preview set or False if not
@@ -1471,14 +1482,23 @@ class Dataset(HDXObject):
         if isinstance(resource, int) and not isinstance(resource, bool):
             resource = self.get_resources()[resource]
         if isinstance(resource, hdx.data.resource.Resource) or isinstance(resource, dict):
-            resource = resource['id']
+            res = resource.get('id')
+            if res is None:
+                resource = resource['name']
+            else:
+                resource = res
         elif not isinstance(resource, str):
             raise hdx.data.hdxobject.HDXError('Resource id cannot be found in type %s!' % type(resource).__name__)
-        if is_valid_uuid(resource) is False:
-            raise hdx.data.hdxobject.HDXError('%s is not a valid resource id!' % resource)
+        if is_valid_uuid(resource) is True:
+            search = 'id'
+        else:
+            search = 'name'
+        changed = False
         for dataset_resource in self.resources:
-            if dataset_resource['id'] == resource:
-                dataset_resource['dataset_preview_enabled'] = 'True'
+            if dataset_resource[search] == resource:
+                dataset_resource.enable_dataset_preview()
                 self.data['dataset_preview'] = 'resource_id'
+                changed = True
             else:
-                dataset_resource['dataset_preview_enabled'] = 'False'
+                dataset_resource.disable_dataset_preview()
+        return changed

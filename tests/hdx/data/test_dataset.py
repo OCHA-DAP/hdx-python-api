@@ -1161,23 +1161,34 @@ class TestDataset:
     def test_set_quickchart_resource(self, configuration, read):
         dataset = Dataset.read_from_hdx('TEST1')
         assert 'dataset_preview' not in dataset
-        dataset.set_quickchart_resource('3d777226-96aa-4239-860a-703389d16d1f')
+        assert dataset.set_quickchart_resource('3d777226-96aa-4239-860a-703389d16d1f') is True
         assert dataset['dataset_preview'] == 'resource_id'
         resources = dataset.get_resources()
         assert resources[0]['dataset_preview_enabled'] == 'False'
         assert resources[1]['dataset_preview_enabled'] == 'True'
-        dataset.set_quickchart_resource(resources[0])
+        assert dataset.set_quickchart_resource(resources[0]) is True
         assert resources[0]['dataset_preview_enabled'] == 'True'
         assert resources[1]['dataset_preview_enabled'] == 'False'
-        dataset.set_quickchart_resource(resources[1].data)
+        assert dataset.set_quickchart_resource(resources[1].data) is True
         assert resources[0]['dataset_preview_enabled'] == 'False'
         assert resources[1]['dataset_preview_enabled'] == 'True'
-        dataset.set_quickchart_resource(0)
+        assert dataset.set_quickchart_resource(0) is True
         assert resources[0]['dataset_preview_enabled'] == 'True'
         assert resources[1]['dataset_preview_enabled'] == 'False'
-        with pytest.raises(HDXError):
-            dataset.set_quickchart_resource('12345')
+        assert dataset.set_quickchart_resource('12345') is False
         with pytest.raises(HDXError):
             dataset.set_quickchart_resource(True)
+        dataset.dataset_preview_off()
+        assert dataset['dataset_preview'] == 'no_preview'
+        assert resources[0]['dataset_preview_enabled'] == 'False'
+        assert resources[1]['dataset_preview_enabled'] == 'False'
+        assert dataset.set_quickchart_resource('Resource2') is True
+        assert dataset['dataset_preview'] == 'resource_id'
+        assert resources[0]['dataset_preview_enabled'] == 'False'
+        assert resources[1]['dataset_preview_enabled'] == 'True'
+        assert dataset.set_quickchart_resource({'name': 'Resource1'}) is True
+        assert dataset['dataset_preview'] == 'resource_id'
+        assert resources[0]['dataset_preview_enabled'] == 'True'
+        assert resources[1]['dataset_preview_enabled'] == 'False'
 
 
