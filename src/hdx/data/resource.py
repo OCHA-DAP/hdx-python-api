@@ -261,7 +261,7 @@ class Resource(HDXObject):
         if format not in filename:
             filename = '%s%s' % (filename, format)
         with Download() as downloader:
-            path = downloader.download_file(url, folder=folder, filename=filename)
+            path = downloader.download_file(url, folder, filename)
             return url, path
 
     def delete_datastore(self):
