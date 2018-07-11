@@ -1,4 +1,4 @@
-FROM unocha/alpine-base-python3
+FROM unocha/alpine-base:latest
 
 MAINTAINER Michael Rans <rans@email.com>
 
