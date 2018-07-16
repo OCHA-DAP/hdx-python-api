@@ -972,7 +972,7 @@ class Dataset(HDXObject):
             tags (List[str]): list of tags to add
 
         Returns:
-            bool: True if all tags added or False if any already present.
+            bool: True if all tags added or False if any already present
         """
         return self._add_tags(tags)
 
@@ -987,6 +987,30 @@ class Dataset(HDXObject):
             bool: True if tag removed or False if not
         """
         return self._remove_hdxobject(self.data.get('tags'), tag, matchon='name')
+
+    def is_subnational(self):
+        # type: () -> bool
+        """Return if the dataset is subnational
+
+        Returns:
+            bool: True if the dataset is subnational, False if not
+        """
+        return self.data['subnational'] == '1'
+
+    def set_subnational(self, subnational):
+        # type: (bool) -> None
+        """Set if dataset is subnational or national
+
+        Args:
+            subnational (bool): True for subnational, False for national
+
+        Returns:
+            None
+        """
+        if subnational:
+            self.data['subnational'] = '1'
+        else:
+            self.data['subnational'] = '0'
 
     def get_location(self, locations=None):
         # type: (Optional[List[str]]) -> List[str]

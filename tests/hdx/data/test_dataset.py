@@ -949,6 +949,17 @@ class TestDataset:
         dataset.add_tag('HAHA')
         assert dataset.get_tags() == [u'HAHA']
 
+    def test_is_set_subnational(self, read):
+        dataset = Dataset.read_from_hdx('TEST1')
+        assert dataset['subnational'] == '1'
+        assert dataset.is_subnational() is True
+        dataset.set_subnational(False)
+        assert dataset['subnational'] == '0'
+        assert dataset.is_subnational() is False
+        dataset.set_subnational(True)
+        assert dataset['subnational'] == '1'
+        assert dataset.is_subnational() is True
+
     def test_get_add_location(self, locations, read):
         Country.countriesdata(use_live=False)
         dataset = Dataset.read_from_hdx('TEST1')
