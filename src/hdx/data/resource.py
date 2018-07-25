@@ -141,18 +141,14 @@ class Resource(HDXObject):
         """
         self.file_to_upload = file_to_upload
 
-    def check_required_fields(self, ignore_fields=list()):
-        # type: (List[str]) -> None
-        """Check that metadata for resource is complete and add resource_type and url_type if not supplied.
-        The parameter ignore_fields should be set if required to any fields that should be ignored for the particular
-        operation.
-
-        Args:
-            ignore_fields (List[str]): Fields to ignore. Default is [].
+    def check_url_filetoupload(self):
+        # type: () -> bool
+        """Check if url or file to upload provided for resource and add resource_type and url_type if not supplied.
 
         Returns:
-            None
+            bool: Whether url field and file_to_upload are both populated
         """
+        url_file_to_upload = False
         if self.file_to_upload is None:
             if 'url' in self.data:
                 if 'resource_type' not in self.data:
@@ -162,15 +158,44 @@ class Resource(HDXObject):
             else:
                 raise HDXError('Either a url or a file to upload must be supplied!')
         else:
-            if 'url' not in self.data:
-                self.data['url'] = 'ignore'  # must be set even though overwritten
+            if 'url' in self.data:
+                url_file_to_upload = True
             if 'resource_type' not in self.data:
                 self.data['resource_type'] = 'file.upload'
             if 'url_type' not in self.data:
                 self.data['url_type'] = 'upload'
             if 'tracking_summary' in self.data:
                 del self.data['tracking_summary']
+        return url_file_to_upload
+
+    def check_required_fields(self, ignore_fields=list()):
+        # type: (List[str]) -> None
+        """Check that metadata for resource is complete. The parameter ignore_fields should be set if required to
+        any fields that should be ignored for the particular operation.
+
+        Args:
+            ignore_fields (List[str]): Fields to ignore. Default is [].
+
+        Returns:
+            None
+        """
+        self.check_url_filetoupload()
         self._check_required_fields('resource', ignore_fields)
+
+    def _remove_url(self, url_file_to_upload):
+        # type: (bool) -> None
+        """If input parameter is True, remove url from data.
+
+        Args:
+            url_file_to_upload (bool): Whether to remove url
+
+        Returns:
+            None
+        """
+        if url_file_to_upload:
+            logger.warning(
+                'Either a url or a file to upload must be supplied not both! Deleting url from resource %s!' % id)
+            del self.data['url']
 
     def update_in_hdx(self):
         # type: () -> None
@@ -179,6 +204,7 @@ class Resource(HDXObject):
         Returns:
             None
         """
+        self._remove_url(self.check_url_filetoupload())
         self._update_in_hdx('resource', 'id', self.file_to_upload)
 
     def create_in_hdx(self):
@@ -188,7 +214,17 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        self._create_in_hdx('resource', 'id', 'name', self.file_to_upload)
+        url_file_to_upload = self.check_url_filetoupload()
+        id = self.data.get('id')
+        if id and self._load_from_hdx('resource', id):
+            logger.warning('%s exists. Updating %s' % ('resource', id))
+            self._remove_url(url_file_to_upload)
+            self._merge_hdx_update('resource', 'id', self.file_to_upload)
+        else:
+            if url_file_to_upload:
+                raise HDXError('Either a url or a file to upload must be supplied not both!')
+            self._check_required_fields('resource', list())
+            self._save_to_hdx('create', 'name', self.file_to_upload)
 
     def delete_from_hdx(self):
         # type: () -> None

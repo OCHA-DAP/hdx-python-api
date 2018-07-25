@@ -264,8 +264,13 @@ hello there'''
                 'file_types',
                 'num_of_rows'
             ]},
-            'resource': {'required_fields': ['package_id', 'name', 'format', 'url', 'description',
-                                             'url_type', 'resource_type']},
+            'resource': {'required_fields': [
+                'package_id',
+                'name',
+                'format',
+                'description',
+                'url_type',
+                'resource_type']},
             'showcase': {'required_fields': [
                 'name',
                 'title',
@@ -353,9 +358,13 @@ hello there'''
                 'file_types',
                 'num_of_rows'
             ]},
-            'resource': {'required_fields': ['package_id', 'name', 'format', 'url', 'description',
-                                             'url_type', 'resource_type'
-                                             ]},
+            'resource': {'required_fields': [
+                'package_id',
+                'name',
+                'format',
+                'description',
+                'url_type',
+                'resource_type']},
             'showcase': {'required_fields': [
                 'name',
                 'title',
@@ -440,9 +449,13 @@ hello there'''
                 'file_types',
                 'num_of_rows'
             ]},
-            'resource': {'required_fields': ['package_id', 'name', 'format', 'url', 'description',
-                                             'url_type', 'resource_type'
-                                             ]},
+            'resource': {'required_fields': [
+                'package_id',
+                'name',
+                'format',
+                'description',
+                'url_type',
+                'resource_type']},
             'showcase': {'required_fields': [
                 'name',
                 'title',

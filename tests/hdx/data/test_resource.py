@@ -414,12 +414,22 @@ class TestResource:
         with pytest.raises(HDXError):
             Resource.read_from_hdx('ABC')
 
+    def test_check_url_filetoupload(self, configuration):
+        resource_data = copy.deepcopy(TestResource.resource_data)
+        resource = Resource(resource_data)
+        url_filetoupload = resource.check_url_filetoupload()
+        assert url_filetoupload is False
+        resource.set_file_to_upload('abc')
+        url_filetoupload = resource.check_url_filetoupload()
+        assert url_filetoupload is True
+        del resource['url']
+        url_filetoupload = resource.check_url_filetoupload()
+        assert url_filetoupload is False
+
     def test_check_required_fields(self, configuration):
         resource_data = copy.deepcopy(TestResource.resource_data)
         resource = Resource(resource_data)
-        resource.check_required_fields()
-        del resource['url']
-        resource.set_file_to_upload('abc')
+        resource.check_url_filetoupload()
         resource.check_required_fields()
 
     def test_create_in_hdx(self, configuration, post_create):
@@ -445,6 +455,9 @@ class TestResource:
         filetoupload = join('tests', 'fixtures', 'test_data.csv')
         resource.set_file_to_upload(filetoupload)
         assert resource.get_file_to_upload() == filetoupload
+        with pytest.raises(HDXError):
+            resource.create_in_hdx()
+        del resource['url']
         resource.create_in_hdx()
         assert resource['url_type'] == 'upload'
         assert resource['resource_type'] == 'file.upload'
@@ -502,7 +515,7 @@ class TestResource:
         with pytest.raises(HDXError):
             resource.update_in_hdx()
 
-        resource.data = None
+        resource.data = dict()
         with pytest.raises(HDXError):
             resource.update_in_hdx()
 

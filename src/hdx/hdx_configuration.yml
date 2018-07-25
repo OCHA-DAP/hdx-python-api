@@ -50,7 +50,6 @@ resource:
     - package_id
     - name
     - format
-    - url
     - description
     - url_type
     - resource_type
