@@ -194,7 +194,7 @@ class Resource(HDXObject):
         """
         if url_file_to_upload:
             logger.warning(
-                'Either a url or a file to upload must be supplied not both! Deleting url from resource %s!' % id)
+                'Either a url or a file to upload must be supplied not both! Deleting url from resource %s!' % self.data['id'])
             del self.data['url']
 
     def update_in_hdx(self):
