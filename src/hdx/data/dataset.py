@@ -381,6 +381,8 @@ class Dataset(HDXObject):
                             if old_resource.get_file_to_upload():
                                 resource.set_file_to_upload(old_resource.get_file_to_upload())
                                 filestore_resources.append(resource)
+                                if 'url' not in resource:
+                                    resource['url'] = 'ignore'
                             resource.check_required_fields(ignore_fields=ignore_fields)
                             break
                 old_resource_names = set()
@@ -392,6 +394,8 @@ class Dataset(HDXObject):
                         self.resources.append(old_resource)
                         if old_resource.get_file_to_upload():
                             filestore_resources.append(old_resource)
+                            if 'url' not in old_resource:
+                                old_resource['url'] = 'ignore'
                 if remove_additional_resources:
                     resources_to_delete = list()
                     for i, resource in enumerate(self.resources):
@@ -415,12 +419,16 @@ class Dataset(HDXObject):
                         if old_resource.get_file_to_upload():
                             resource.set_file_to_upload(old_resource.get_file_to_upload())
                             filestore_resources.append(resource)
+                            if 'url' not in resource:
+                                resource['url'] = 'ignore'
                         resource.check_required_fields(ignore_fields=ignore_fields)
                     else:
                         old_resource.check_required_fields(ignore_fields=ignore_fields)
                         self.resources.append(old_resource)
                         if old_resource.get_file_to_upload():
                             filestore_resources.append(old_resource)
+                            if 'url' not in old_resource:
+                                old_resource['url'] = 'ignore'
                 if remove_additional_resources:
                     resources_to_delete = list()
                     for i, resource in enumerate(self.resources):
@@ -516,6 +524,8 @@ class Dataset(HDXObject):
                 resource.check_required_fields(ignore_fields=ignore_fields)
                 if resource.get_file_to_upload():
                     filestore_resources.append(resource)
+                    if 'url' not in resource:
+                        resource['url'] = 'ignore'
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         self._save_to_hdx('create', 'name')
         for resource in filestore_resources:
