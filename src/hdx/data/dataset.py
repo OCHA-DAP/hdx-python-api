@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Dataset class containing all logic for creating, checking, and updating datasets and associated resources.
 """
-import copy
 import fnmatch
 import logging
 import sys
@@ -348,72 +347,6 @@ class Dataset(HDXObject):
                 ignore_fields = ['package_id']
                 resource.check_required_fields(ignore_fields=ignore_fields)
 
-    def _append_resource(self, filestore_resources, resource):
-        # type: (List[hdx.data.Resource], hdx.data.Resource) -> None
-        """Helper method to append resources adding a url for file upload resources (which will be replaced)
-
-        Args:
-            filestore_resources (List[hdx.data.Resource]): List of file upload resources
-            resource (hdx.data.Resource): Resource to append
-
-        Returns:
-            None
-        """
-        if resource.get_file_to_upload():
-            filestore_resources.append(resource)
-            if 'url' in resource.data:
-                resource_data = resource.data
-            else:
-                resource_data = copy.deepcopy(resource.data)
-                resource_data['url'] = 'ignore'
-        else:
-            resource_data = resource.data
-        self.data['resources'].append(resource_data)
-
-    def _merge_add_old_resource(self, old_resource, ignore_fields, filestore_resources):
-        # type: (hdx.data.Resource, List[str], List[hdx.data.Resource]) -> None
-        """Helper method to append old resources
-
-        Args:
-            resource (hdx.data.Resource): Resource to append
-            ignore_fields (List[str]): Fields to ignore
-            filestore_resources (List[hdx.data.Resource]): List of file upload resources
-
-        Returns:
-            None
-        """
-        old_resource.check_required_fields(ignore_fields=ignore_fields)
-        self.resources.append(old_resource)
-        self._append_resource(filestore_resources, old_resource)
-
-    def _merge_add_resource(self, resource, old_resource, filestore_resources, ignore_fields):
-        # type: (hdx.data.Resource, hdx.data.Resource, List[hdx.data.Resource], List[str]) -> None
-        """Helper method to append old resources
-
-        Args:
-            resource (hdx.data.Resource): Resource to append
-            old_resource (hdx.data.Resource): Old resource to check file upload
-            filestore_resources (List[hdx.data.Resource]): List of file upload resources
-            ignore_fields (List[str]): Fields to ignore
-
-        Returns:
-            None
-        """
-        merge_two_dictionaries(resource, old_resource)
-        file_to_upload = old_resource.get_file_to_upload()
-        if file_to_upload:
-            resource.set_file_to_upload(file_to_upload)
-            filestore_resources.append(resource)
-            if 'url' in resource.data:
-                resource_data = resource.data
-            else:
-                resource_data = copy.deepcopy(resource.data)
-                resource_data['url'] = 'ignore'
-        else:
-            resource_data = resource.data
-        resource.check_required_fields(ignore_fields=ignore_fields)
-        self.data['resources'].append(resource_data)
-
     def _dataset_merge_hdx_update(self, update_resources, update_resources_by_name,
                                   remove_additional_resources, hxl_update):
         # type: (bool, bool, bool, bool) -> None
@@ -436,7 +369,6 @@ class Dataset(HDXObject):
         filestore_resources = list()
         if update_resources and old_resources:
             ignore_fields = ['package_id']
-            self.data['resources'] = list()
             if update_resources_by_name:
                 resource_names = set()
                 for resource in self.resources:
@@ -445,25 +377,32 @@ class Dataset(HDXObject):
                     for old_resource in old_resources:
                         if resource_name == old_resource['name']:
                             logger.warning('Resource exists. Updating %s' % resource_name)
-                            self._merge_add_resource(resource, old_resource, filestore_resources, ignore_fields)
+                            merge_two_dictionaries(resource, old_resource)
+                            if old_resource.get_file_to_upload():
+                                resource.set_file_to_upload(old_resource.get_file_to_upload())
+                                filestore_resources.append(resource)
+                                if 'url' not in resource:
+                                    resource['url'] = 'ignore'
+                            resource.check_required_fields(ignore_fields=ignore_fields)
                             break
                 old_resource_names = set()
                 for old_resource in old_resources:
                     old_resource_name = old_resource['name']
                     old_resource_names.add(old_resource_name)
                     if not old_resource_name in resource_names:
-                        self._merge_add_old_resource(old_resource, ignore_fields, filestore_resources)
-                resources_to_delete = list()
-                for i, resource in enumerate(self.resources):
-                    resource_name = resource['name']
-                    if resource_name not in old_resource_names:
-                        if remove_additional_resources:
+                        old_resource.check_required_fields(ignore_fields=ignore_fields)
+                        self.resources.append(old_resource)
+                        if old_resource.get_file_to_upload():
+                            filestore_resources.append(old_resource)
+                            if 'url' not in old_resource:
+                                old_resource['url'] = 'ignore'
+                if remove_additional_resources:
+                    resources_to_delete = list()
+                    for i, resource in enumerate(self.resources):
+                        resource_name = resource['name']
+                        if resource_name not in old_resource_names:
                             logger.warning('Removing additional resource %s!' % resource_name)
                             resources_to_delete.append(i)
-                        else:
-                            resource.check_required_fields(ignore_fields=ignore_fields)
-                            self.data['resources'].append(resource.data)
-                if remove_additional_resources:
                     for i in sorted(resources_to_delete, reverse=True):
                         del self.resources[i]
 
@@ -476,22 +415,31 @@ class Dataset(HDXObject):
                         logger.warning('Resource exists. Updating %s' % resource_name)
                         if resource_name != old_resource_name:
                             logger.warning('Changing resource name to: %s' % old_resource_name)
-                        self._merge_add_resource(resource, old_resource, filestore_resources, ignore_fields)
+                        merge_two_dictionaries(resource, old_resource)
+                        if old_resource.get_file_to_upload():
+                            resource.set_file_to_upload(old_resource.get_file_to_upload())
+                            filestore_resources.append(resource)
+                            if 'url' not in resource:
+                                resource['url'] = 'ignore'
+                        resource.check_required_fields(ignore_fields=ignore_fields)
                     else:
-                        self._merge_add_old_resource(old_resource, ignore_fields, filestore_resources)
-                resources_to_delete = list()
-                for i, resource in enumerate(self.resources):
-                    if len(old_resources) <= i:
-                        if remove_additional_resources:
+                        old_resource.check_required_fields(ignore_fields=ignore_fields)
+                        self.resources.append(old_resource)
+                        if old_resource.get_file_to_upload():
+                            filestore_resources.append(old_resource)
+                            if 'url' not in old_resource:
+                                old_resource['url'] = 'ignore'
+                if remove_additional_resources:
+                    resources_to_delete = list()
+                    for i, resource in enumerate(self.resources):
+                        if len(old_resources) <= i:
                             logger.warning('Removing additional resource %s!' % resource['name'])
                             resources_to_delete.append(i)
-                        else:
-                            resource.check_required_fields(ignore_fields=ignore_fields)
-                            self.data['resources'].append(resource.data)
-                if remove_additional_resources:
                     for i in sorted(resources_to_delete, reverse=True):
                         del self.resources[i]
 
+        if self.resources:
+            self.data['resources'] = self._convert_hdxobjects(self.resources)
         self._save_to_hdx('update', 'id')
 
         for resource in filestore_resources:
@@ -573,10 +521,13 @@ class Dataset(HDXObject):
         filestore_resources = list()
         if self.resources:
             ignore_fields = ['package_id']
-            self.data['resources'] = list()
             for resource in self.resources:
                 resource.check_required_fields(ignore_fields=ignore_fields)
-                self._append_resource(filestore_resources, resource)
+                if resource.get_file_to_upload():
+                    filestore_resources.append(resource)
+                    if 'url' not in resource:
+                        resource['url'] = 'ignore'
+            self.data['resources'] = self._convert_hdxobjects(self.resources)
         self._save_to_hdx('create', 'name')
         for resource in filestore_resources:
             for created_resource in self.data['resources']:
