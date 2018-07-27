@@ -485,7 +485,6 @@ class Dataset(HDXObject):
         if self.resources:
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         self._save_to_hdx('update', 'id')
-
         self._add_filestore_resources(filestore_resources, hxl_update)
 
     def update_in_hdx(self, update_resources=True, update_resources_by_name=True,
