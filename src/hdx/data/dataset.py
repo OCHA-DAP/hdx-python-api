@@ -498,6 +498,7 @@ class Dataset(HDXObject):
             for created_resource in self.data['resources']:
                 if resource['name'] == created_resource['name']:
                     merge_two_dictionaries(resource.data, created_resource)
+                    del resource['url']
                     resource.update_in_hdx()
                     merge_two_dictionaries(created_resource, resource.data)
                     break
@@ -581,6 +582,7 @@ class Dataset(HDXObject):
             for created_resource in self.data['resources']:
                 if resource['name'] == created_resource['name']:
                     merge_two_dictionaries(resource.data, created_resource)
+                    del resource['url']
                     resource.update_in_hdx()
                     merge_two_dictionaries(created_resource, resource.data)
                     break
