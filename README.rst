@@ -71,9 +71,15 @@ Assuming you are using a desktop browser, the API key is obtained by:
 #. Scroll down to the bottom of the profile page
 #. Copy the API key which will be of the form:
    xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-#. To make an API key file, paste the API key into a text file
-#. Save the text file with filename **.hdxkey** in the current user's
-   home directory
+#. You can either:
+    a. Pass this key as a parameter or within a dictionary
+    b. Create a JSON or YAML file. The default path is
+       **.hdx_configuration.yml** in the current user's
+       home directory. Then put in the YAML file:
+
+    ::
+
+       hdx_key: "HDX API KEY"
 
 Installing the Library
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -127,7 +133,7 @@ that your Python install is not modified.
    ::
 
        cd ~
-       echo xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx > .hdxkey
+       echo "hdx_key: \"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\"" > .hdx_configuration.yml
 
 #. If you are using the Docker image, you can jump to step 7, otherwise
    install virtualenv if not installed:
