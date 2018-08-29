@@ -403,7 +403,7 @@ class TestDataset:
                 datadict = json.loads(decodedata)
                 if 'show' in url:
                     return mockshow(url, datadict)
-                if 'delete' not in url:
+                if 'purge' not in url and 'delete' not in url:
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "TEST ERROR: Not delete", "__type": "TEST ERROR: Not Delete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_delete"}')
                 if 'resource' in url:

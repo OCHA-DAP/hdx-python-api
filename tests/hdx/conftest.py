@@ -20,8 +20,8 @@ def configfolder(fixturesfolder):
 
 
 @pytest.fixture(scope='session')
-def hdx_key_file():
-    return join('tests', 'fixtures', '.hdxkey')
+def hdx_config_yaml():
+    return join('tests', 'fixtures', 'config', 'hdx_config.yml')
 
 
 @pytest.fixture(scope='session')
@@ -278,8 +278,8 @@ def locations():
 
 
 @pytest.fixture(scope='function')
-def configuration(hdx_key_file, project_config_yaml):
-    Configuration._create(user_agent='test', hdx_key_file=hdx_key_file,
+def configuration(hdx_config_yaml, project_config_yaml):
+    Configuration._create(user_agent='test', hdx_config_yaml=hdx_config_yaml,
                           project_config_yaml=project_config_yaml)
 
 

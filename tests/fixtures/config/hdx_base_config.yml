@@ -1,0 +1,23 @@
+# HDX configuration
+hdx_prod_site:
+  url: "https://data.humdata.org/"
+  username: ~
+  password: ~
+hdx_test_site:
+  url: "https://test-data.humdata.org/"
+  username: 'lala'
+  password: 'lalala'
+dataset:
+  required_fields:
+    - name
+    - title
+    - dataset_date
+resource:
+  required_fields:
+    - package_id
+    - name
+    - description
+showcase:
+  required_fields:
+    - name
+    - title

@@ -15,12 +15,12 @@ from hdx.facades.simple import facade
 
 
 class TestSimple:
-    def test_facade(self, hdx_key_file, project_config_yaml):
+    def test_facade(self, hdx_config_yaml, project_config_yaml):
         testresult.actual_result = None
-        facade(my_testfn, user_agent='test', hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
-        assert testresult.actual_result == 'https://test-data.humdata.org/'
+        facade(my_testfn, user_agent='test', hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
+        assert testresult.actual_result == 'https://data.humdata.org/'
 
-    def test_exception(self, hdx_key_file, project_config_yaml):
+    def test_exception(self, hdx_config_yaml, project_config_yaml):
         testresult.actual_result = None
         with pytest.raises(ValueError):
-            facade(my_excfn, user_agent='test', hdx_key_file=hdx_key_file, project_config_yaml=project_config_yaml)
+            facade(my_excfn, user_agent='test', hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)

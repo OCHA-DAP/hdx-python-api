@@ -20,7 +20,7 @@ from typing import Optional, Any, Dict
 import ckanapi
 
 from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.loader import load_yaml, load_json, load_file_to_str
+from hdx.utilities.loader import load_yaml, load_json
 from hdx.utilities.path import script_dir_plus_file
 
 logger = logging.getLogger(__name__)
@@ -38,18 +38,22 @@ class Configuration(UserDict, object):
         hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
         hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
         hdx_key (Optional[str]): Your HDX key. Ignored if hdx_read_only = True.
-        hdx_key_file (Optional[str]): Path to HDX key file. Ignored if hdx_read_only = True or hdx_key supplied. Defaults to ~/.hdxkey.
-        hdx_config_dict (dict): HDX configuration dictionary OR
+        hdx_config_dict (dict): HDX configuration dictionary to use instead of above 3 parameters OR
         hdx_config_json (str): Path to JSON HDX configuration OR
-        hdx_config_yaml (str): Path to YAML HDX configuration. Defaults to library's internal hdx_configuration.yml.
+        hdx_config_yaml (str): Path to YAML HDX configuration
         project_config_dict (dict): Project configuration dictionary OR
         project_config_json (str): Path to JSON Project configuration OR
         project_config_yaml (str): Path to YAML Project configuration
+        hdx_base_config_dict (dict): HDX base configuration dictionary OR
+        hdx_base_config_json (str): Path to JSON HDX base configuration OR
+        hdx_base_config_yaml (str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yml.
     """
 
     _configuration = None
-    default_hdx_key_file = join(expanduser('~'), '.hdxkey')
-    default_user_agent_config_yaml = join(expanduser('~'), '.useragent.yml')
+    home_folder = expanduser('~')
+    default_hdx_base_config_yaml = script_dir_plus_file('hdx_base_configuration.yml', ConfigurationError)
+    default_hdx_config_yaml = join(home_folder, '.hdx_configuration.yml')
+    default_user_agent_config_yaml = join(home_folder, '.useragent.yml')
 
     def __init__(self, **kwargs):
         # type: (Any) -> None
@@ -57,6 +61,31 @@ class Configuration(UserDict, object):
 
         self._remoteckan = None
         self._emailer = None
+
+        hdx_base_config_found = False
+        hdx_base_config_dict = kwargs.get('hdx_base_config_dict', None)
+        if hdx_base_config_dict:
+            hdx_base_config_found = True
+            logger.info('Loading HDX base configuration from dictionary')
+
+        hdx_base_config_json = kwargs.get('hdx_base_config_json', '')
+        if hdx_base_config_json:
+            if hdx_base_config_found:
+                raise ConfigurationError('More than one HDX base configuration given!')
+            hdx_base_config_found = True
+            logger.info('Loading HDX base configuration from: %s' % hdx_base_config_json)
+            hdx_base_config_dict = load_json(hdx_base_config_json)
+
+        hdx_base_config_yaml = kwargs.get('hdx_base_config_yaml', '')
+        if hdx_base_config_found:
+            if hdx_base_config_yaml:
+                raise ConfigurationError('More than one HDX base configuration given!')
+        else:
+            if not hdx_base_config_yaml:
+                hdx_base_config_yaml = Configuration.default_hdx_base_config_yaml
+                logger.info('No HDX base configuration parameter. Using default base configuration file: %s.' % hdx_base_config_yaml)
+            logger.info('Loading HDX base configuration from: %s' % hdx_base_config_yaml)
+            hdx_base_config_dict = load_yaml(hdx_base_config_yaml)
 
         hdx_config_found = False
         hdx_config_dict = kwargs.get('hdx_config_dict', None)
@@ -78,10 +107,18 @@ class Configuration(UserDict, object):
                 raise ConfigurationError('More than one HDX configuration given!')
         else:
             if not hdx_config_yaml:
-                hdx_config_yaml = script_dir_plus_file('hdx_configuration.yml', Configuration)
-                logger.info('No HDX configuration parameter. Using default configuration file: %s.' % hdx_config_yaml)
-            logger.info('Loading HDX configuration from: %s' % hdx_config_yaml)
-            hdx_config_dict = load_yaml(hdx_config_yaml)
+                hdx_config_yaml = Configuration.default_hdx_config_yaml
+                if isfile(hdx_config_yaml):
+                    logger.info('No HDX configuration parameter. Using default configuration file: %s.' % hdx_config_yaml)
+                else:
+                    logger.info('No HDX configuration parameter and no configuration file at default path: %s.' % hdx_config_yaml)
+                    hdx_config_yaml = None
+                    hdx_config_dict = dict()
+            if hdx_config_yaml:
+                logger.info('Loading HDX configuration from: %s' % hdx_config_yaml)
+                hdx_config_dict = load_yaml(hdx_config_yaml)
+
+        self.data = merge_two_dictionaries(hdx_base_config_dict, hdx_config_dict)
 
         project_config_found = False
         project_config_dict = kwargs.get('project_config_dict', None)
@@ -108,20 +145,14 @@ class Configuration(UserDict, object):
             else:
                 project_config_dict = dict()
 
-        self.data = merge_two_dictionaries(hdx_config_dict, project_config_dict)
+        self.data = merge_two_dictionaries(hdx_base_config_dict, project_config_dict)
 
-        self.hdx_read_only = kwargs.get('hdx_read_only', False)
-        if not self.hdx_read_only:
-            if 'hdx_key' in kwargs:
-                self.data['api_key'] = kwargs.get('hdx_key')
-            else:
-                hdx_key_file = kwargs.get('hdx_key_file', None)
-                if not hdx_key_file:
-                    hdx_key_file = Configuration.default_hdx_key_file
-                    logger.info('No HDX key or key file given. Using default key file: %s.' % hdx_key_file)
-                self.data['api_key'] = self.load_api_key(hdx_key_file)
-
-        self.hdx_site = 'hdx_%s_site' % kwargs.get('hdx_site', 'test')
+        self.hdx_read_only = kwargs.get('hdx_read_only', self.data.get('hdx_read_only', False))
+        logger.info('Read only access to HDX: %s' % str(self.hdx_read_only))
+        self.hdx_key = kwargs.get('hdx_key', self.data.get('hdx_key'))
+        if not self.hdx_key and not self.hdx_read_only:
+            raise ConfigurationError('No HDX API key supplied as a parameter or in configuration!')
+        self.hdx_site = 'hdx_%s_site' % kwargs.get('hdx_site', self.data.get('hdx_site', 'test'))
         if self.hdx_site not in self.data:
             raise ConfigurationError('%s not defined in configuration!' % self.hdx_site)
 
@@ -154,7 +185,7 @@ class Configuration(UserDict, object):
             None
 
         """
-        self.data['api_key'] = apikey
+        self.hdx_key = apikey
 
     def get_api_key(self):
         # type: () -> Optional[str]
@@ -167,7 +198,7 @@ class Configuration(UserDict, object):
         """
         if self.hdx_read_only:
             return None
-        return self.data['api_key']
+        return self.hdx_key
 
     def get_hdx_site_url(self):
         # type: () -> str
@@ -322,10 +353,10 @@ class Configuration(UserDict, object):
         Args:
             configdict (str): Additional configuration for user agent
             prefix (str): Text to put at start of user agent
-            user_agent_yaml (str): Path to user agent YAML file
+            ua (str): Custom user agent text
 
         Returns:
-            str: user agent
+            str: Full user agent string
 
         """
         if not ua:
@@ -348,7 +379,7 @@ class Configuration(UserDict, object):
 
         Args:
             prefix (str): Text to put at start of user agent
-            user_agent_yaml (str): Path to user agent YAML file
+            user_agent_config_yaml (str): Path to user agent YAML file
             user_agent_lookup (Optional[str]): Lookup key for YAML. Ignored if user_agent supplied.
 
         Returns:
@@ -368,23 +399,6 @@ class Configuration(UserDict, object):
             raise ConfigurationError("No user agent information read from: %s" % user_agent_config_yaml)
         ua = user_agent_config_dict.get('user_agent')
         return cls._construct_user_agent(user_agent_config_dict, prefix, ua)
-
-    @staticmethod
-    def load_api_key(path):
-        # type: (str) -> str
-        """
-        Load HDX api key
-
-        Args:
-            path (str): Path to HDX key
-
-        Returns:
-            str: HDX api key
-
-        """
-        logger.info('Loading HDX api key from: %s' % path)
-        apikey = load_file_to_str(path)
-        return apikey
 
     @classmethod
     def read(cls):
@@ -412,13 +426,15 @@ class Configuration(UserDict, object):
             hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
             hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
             hdx_key (Optional[str]): Your HDX key. Ignored if hdx_read_only = True.
-            hdx_key_file (Optional[str]): Path to HDX key file. Ignored if hdx_read_only = True or hdx_key supplied. Defaults to ~/.hdxkey.
-            hdx_config_dict (dict): HDX configuration dictionary OR
+            hdx_config_dict (dict): HDX configuration dictionary to use instead of above 3 parameters OR
             hdx_config_json (str): Path to JSON HDX configuration OR
-            hdx_config_yaml (str): Path to YAML HDX configuration. Defaults to library's internal hdx_configuration.yml.
+            hdx_config_yaml (str): Path to YAML HDX configuration
             project_config_dict (dict): Project configuration dictionary OR
             project_config_json (str): Path to JSON Project configuration OR
             project_config_yaml (str): Path to YAML Project configuration
+            hdx_base_config_dict (dict): HDX base configuration dictionary OR
+            hdx_base_config_json (str): Path to JSON HDX base configuration OR
+            hdx_base_config_yaml (str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yml.
 
         Returns:
             None
@@ -430,7 +446,7 @@ class Configuration(UserDict, object):
             cls._configuration = configuration
 
     @classmethod
-    def _create(cls, configuration=None, user_agent=None, user_agent_config_yaml=None, user_agent_lookup = None,
+    def _create(cls, configuration=None, user_agent=None, user_agent_config_yaml=None, user_agent_lookup=None,
                 remoteckan=None, **kwargs):
         # type: (Optional['Configuration'], Optional[str], Optional[str], Optional[str], Optional[ckanapi.RemoteCKAN], Any) -> str
         """
@@ -446,13 +462,15 @@ class Configuration(UserDict, object):
             hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
             hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
             hdx_key (Optional[str]): Your HDX key. Ignored if hdx_read_only = True.
-            hdx_key_file (Optional[str]): Path to HDX key file. Ignored if hdx_read_only = True or hdx_key supplied. Defaults to ~/.hdxkey.
-            hdx_config_dict (dict): HDX configuration dictionary OR
+            hdx_config_dict (dict): HDX configuration dictionary to use instead of above 3 parameters OR
             hdx_config_json (str): Path to JSON HDX configuration OR
-            hdx_config_yaml (str): Path to YAML HDX configuration. Defaults to library's internal hdx_configuration.yml.
+            hdx_config_yaml (str): Path to YAML HDX configuration
             project_config_dict (dict): Project configuration dictionary OR
             project_config_json (str): Path to JSON Project configuration OR
             project_config_yaml (str): Path to YAML Project configuration
+            hdx_base_config_dict (dict): HDX base configuration dictionary OR
+            hdx_base_config_json (str): Path to JSON HDX base configuration OR
+            hdx_base_config_yaml (str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yml.
 
         Returns:
             str: HDX site url
@@ -463,7 +481,7 @@ class Configuration(UserDict, object):
         return cls._configuration.get_hdx_site_url()
 
     @classmethod
-    def create(cls, configuration=None, user_agent=None, user_agent_config_yaml=None, user_agent_lookup = None,
+    def create(cls, configuration=None, user_agent=None, user_agent_config_yaml=None, user_agent_lookup=None,
                remoteckan=None, **kwargs):
         # type: (Optional['Configuration'], Optional[str], Optional[str], Optional[str], Optional[ckanapi.RemoteCKAN], Any) -> str
         """
@@ -476,16 +494,18 @@ class Configuration(UserDict, object):
             user_agent_lookup (Optional[str]): Lookup key for YAML. Ignored if user_agent supplied.
             remoteckan (Optional[ckanapi.RemoteCKAN]): CKAN instance. Defaults to setting one up from configuration.
             **kwargs: See below
-            hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
+            hdx_site (str): HDX site to use eg. prod, test.
             hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
             hdx_key (Optional[str]): Your HDX key. Ignored if hdx_read_only = True.
-            hdx_key_file (Optional[str]): Path to HDX key file. Ignored if hdx_read_only = True or hdx_key supplied. Defaults to ~/.hdxkey.
-            hdx_config_dict (dict): HDX configuration dictionary OR
+            hdx_config_dict (dict): HDX configuration dictionary to use instead of above 3 parameters OR
             hdx_config_json (str): Path to JSON HDX configuration OR
-            hdx_config_yaml (str): Path to YAML HDX configuration. Defaults to library's internal hdx_configuration.yml.
+            hdx_config_yaml (str): Path to YAML HDX configuration
             project_config_dict (dict): Project configuration dictionary OR
             project_config_json (str): Path to JSON Project configuration OR
             project_config_yaml (str): Path to YAML Project configuration
+            hdx_base_config_dict (dict): HDX base configuration dictionary OR
+            hdx_base_config_json (str): Path to JSON HDX base configuration OR
+            hdx_base_config_yaml (str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yml.
 
         Returns:
             str: HDX site url
@@ -494,7 +514,7 @@ class Configuration(UserDict, object):
         if cls._configuration is not None:
             raise ConfigurationError('Configuration already created!')
         return cls._create(configuration=configuration, user_agent=user_agent,
-                           user_agent_config_yaml=user_agent_config_yaml, user_agent_lookup = user_agent_lookup,
+                           user_agent_config_yaml=user_agent_config_yaml, user_agent_lookup=user_agent_lookup,
                            remoteckan=remoteckan, **kwargs)
 
     @classmethod
