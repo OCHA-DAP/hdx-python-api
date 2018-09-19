@@ -339,7 +339,7 @@ class TestResource:
                 datadict = json.loads(decodedata)
                 if 'show' in url:
                     return mockshow(url, datadict)
-                if 'create' not in url and 'insert' not in url and 'upsert' not in url and 'delete' not in url:
+                if 'create' not in url and 'insert' not in url and 'upsert' not in url and 'delete' not in url and 'search' not in url:
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "TEST ERROR: Not create or delete", "__type": "TEST ERROR: Not Create or Delete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_action"}')
                 if 'delete' in url and datadict['resource_id'] == 'datastore_unknown_resource':
@@ -352,7 +352,10 @@ class TestResource:
                 if 'create' in url and datadict['resource_id'] == 'datastore_unknown_resource':
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}')
-                if ('create' in url or 'insert' in url or 'upsert' in url) and datadict[
+                if 'search' in url and datadict['resource_id'] == 'datastore_unknown_resource':
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}')
+                if ('create' in url or 'insert' in url or 'upsert' in url or 'search' in url) and datadict[
                     'resource_id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5':
                     TestResource.datastore = 'create'
                     return MockResponse(200,
@@ -627,6 +630,10 @@ class TestResource:
         resource.update_datastore_from_json_schema(topline_json, path=filefordatastore)
         assert TestResource.datastore == 'create'
         TestResource.datastore = None
+        assert resource.has_datastore() is True
+        assert TestResource.datastore == 'create'
+        TestResource.datastore = None
+        assert resource2.has_datastore() is False
         TestResource.datastore = None
         filefordatastore = join('tests', 'fixtures', 'datastore', 'ACLED-All-Africa-File_20170101-to-20170708.xlsx')
         resource.update_datastore(path=filefordatastore)

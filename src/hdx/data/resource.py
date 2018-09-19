@@ -51,7 +51,8 @@ class Resource(HDXObject):
             'datastore_delete': 'datastore_delete',
             'datastore_create': 'datastore_create',
             'datastore_insert': 'datastore_insert',
-            'datastore_upsert': 'datastore_upsert'
+            'datastore_upsert': 'datastore_upsert',
+            'datastore_search': 'datastore_search'
         }
 
     def update_from_yaml(self, path=join('config', 'hdx_resource_static.yml')):
@@ -313,10 +314,26 @@ class Resource(HDXObject):
         if not success:
             logger.debug(result)
 
+    def has_datastore(self):
+        # type: () -> bool
+        """Check if teh resource has a datastore.
+
+        Returns:
+            bool: Whether the resource has a datastore or not
+        """
+        success, result = self._read_from_hdx('datastore', self.data['id'], 'resource_id',
+                                              self.actions()['datastore_search'])
+        if not success:
+            logger.debug(result)
+        else:
+            if result:
+                return True
+        return False
+
     def create_datastore(self, schema=None, primary_key=None,
                          delete_first=0, path=None):
         # type: (Optional[List[Dict]], Optional[str], int, Optional[str]) -> None
-        """For csvs, create a resource in the HDX datastore which enables data preview in HDX. If no schema is provided
+        """For tabular data, create a resource in the HDX datastore which enables data preview in HDX. If no schema is provided
         all fields are assumed to be text. If path is not supplied, the file is first downloaded from HDX.
 
         Args:
@@ -390,7 +407,7 @@ class Resource(HDXObject):
 
     def create_datastore_from_dict_schema(self, data, delete_first=0, path=None):
         # type: (dict, int, Optional[str]) -> None
-        """For csvs, create a resource in the HDX datastore which enables data preview in HDX from a dictionary
+        """For tabular data, create a resource in the HDX datastore which enables data preview in HDX from a dictionary
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
         If path is not supplied, the file is first downloaded from HDX.
 
@@ -409,7 +426,7 @@ class Resource(HDXObject):
     def create_datastore_from_yaml_schema(self, yaml_path, delete_first=0,
                                           path=None):
         # type: (str, Optional[int], Optional[str]) -> None
-        """For csvs, create a resource in the HDX datastore which enables data preview in HDX from a YAML file
+        """For tabular data, create a resource in the HDX datastore which enables data preview in HDX from a YAML file
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
         If path is not supplied, the file is first downloaded from HDX.
 
@@ -426,7 +443,7 @@ class Resource(HDXObject):
 
     def create_datastore_from_json_schema(self, json_path, delete_first=0, path=None):
         # type: (str, int, Optional[str]) -> None
-        """For csvs, create a resource in the HDX datastore which enables data preview in HDX from a JSON file
+        """For tabular data, create a resource in the HDX datastore which enables data preview in HDX from a JSON file
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
         If path is not supplied, the file is first downloaded from HDX.
 
@@ -443,7 +460,7 @@ class Resource(HDXObject):
 
     def create_datastore_for_topline(self, delete_first=0, path=None):
         # type: (int, Optional[str]) -> None
-        """For csvs, create a resource in the HDX datastore which enables data preview in HDX using the built in
+        """For tabular data, create a resource in the HDX datastore which enables data preview in HDX using the built in
         YAML definition for a topline. If path is not supplied, the file is first downloaded from HDX.
 
         Args:
@@ -459,7 +476,7 @@ class Resource(HDXObject):
     def update_datastore(self, schema=None, primary_key=None,
                          path=None):
         # type: (Optional[List[Dict]], Optional[str], Optional[str]) -> None
-        """For csvs, update a resource in the HDX datastore which enables data preview in HDX. If no schema is provided
+        """For tabular data, update a resource in the HDX datastore which enables data preview in HDX. If no schema is provided
         all fields are assumed to be text. If path is not supplied, the file is first downloaded from HDX.
 
         Args:
@@ -474,7 +491,7 @@ class Resource(HDXObject):
 
     def update_datastore_from_dict_schema(self, data, path=None):
         # type: (dict, Optional[str]) -> None
-        """For csvs, update a resource in the HDX datastore which enables data preview in HDX from a dictionary
+        """For tabular data, update a resource in the HDX datastore which enables data preview in HDX from a dictionary
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
         If path is not supplied, the file is first downloaded from HDX.
 
@@ -489,7 +506,7 @@ class Resource(HDXObject):
 
     def update_datastore_from_yaml_schema(self, yaml_path, path=None):
         # type: (str, Optional[str]) -> None
-        """For csvs, update a resource in the HDX datastore which enables data preview in HDX from a YAML file
+        """For tabular data, update a resource in the HDX datastore which enables data preview in HDX from a YAML file
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
         If path is not supplied, the file is first downloaded from HDX.
 
@@ -504,7 +521,7 @@ class Resource(HDXObject):
 
     def update_datastore_from_json_schema(self, json_path, path=None):
         # type: (str, Optional[str]) -> None
-        """For csvs, update a resource in the HDX datastore which enables data preview in HDX from a JSON file
+        """For tabular data, update a resource in the HDX datastore which enables data preview in HDX from a JSON file
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
         If path is not supplied, the file is first downloaded from HDX.
 
@@ -519,7 +536,7 @@ class Resource(HDXObject):
 
     def update_datastore_for_topline(self, path=None):
         # type: (Optional[str]) -> None
-        """For csvs, update a resource in the HDX datastore which enables data preview in HDX using the built in YAML
+        """For tabular data, update a resource in the HDX datastore which enables data preview in HDX using the built in YAML
         definition for a topline. If path is not supplied, the file is first downloaded from HDX.
 
         Args:
