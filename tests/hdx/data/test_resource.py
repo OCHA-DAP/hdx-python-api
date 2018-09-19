@@ -355,6 +355,9 @@ class TestResource:
                 if 'search' in url and datadict['resource_id'] == 'datastore_unknown_resource':
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}')
+                if 'search' in url and datadict['resource_id'] == '_table_metadata':
+                    return MockResponse(200,
+                                        '{"success": true, "result": {"include_total": true, "resource_id": "_table_metadata", "fields": [{"type": "int", "id": "_id"}, {"type": "name", "id": "name"}, {"type": "oid", "id": "oid"}, {"type": "name", "id": "alias_of"}], "records_format": "objects", "records": [{"_id":"f9cd60f3d7f2f6d0","name":"f9228459-d808-4b51-948f-68a5850abfde","oid":"919290","alias_of":null},{"_id":"7ae63490de9b7d7b","name":"af618a0b-09b8-42c8-836f-2be597e1ea34","oid":"135294","alias_of":null},{"_id":"1dc37f4e89988644","name":"748b40dd-7bd3-40a3-941b-e76f0bfbe0eb","oid":"117144","alias_of":null},{"_id":"2a554a61bd366206","name":"91c78d24-eab3-40b5-ba91-6b29bcda7178","oid":"116963","alias_of":null},{"_id":"fd787575143afe90","name":"9320cfce-4620-489a-bcbe-25c73867d4fc","oid":"107430","alias_of":null},{"_id":"a70093abd230f647","name":"b9d2eb36-e65c-417a-bc28-f4dadb149302","oid":"107409","alias_of":null},{"_id":"95fbdd2d06c07aea","name":"ca6a0891-8395-4d58-9168-6c44e17e0193","oid":"107385","alias_of":null}], "limit": 10000, "_links": {"start": "/api/action/datastore_search?limit=10000&resource_id=_table_metadata", "next": "/api/action/datastore_search?offset=10000&limit=10000&resource_id=_table_metadata"}, "total": 7}}')
                 if ('create' in url or 'insert' in url or 'upsert' in url or 'search' in url) and datadict[
                     'resource_id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5':
                     TestResource.datastore = 'create'
@@ -592,6 +595,8 @@ class TestResource:
             resource2.download()
 
     def test_datastore(self, configuration, post_datastore, topline_yaml, topline_json):
+        resource_ids = Resource.get_all_resource_ids_in_datastore()
+        assert resource_ids == ['f9228459-d808-4b51-948f-68a5850abfde', 'af618a0b-09b8-42c8-836f-2be597e1ea34', '748b40dd-7bd3-40a3-941b-e76f0bfbe0eb', '91c78d24-eab3-40b5-ba91-6b29bcda7178', '9320cfce-4620-489a-bcbe-25c73867d4fc', 'b9d2eb36-e65c-417a-bc28-f4dadb149302', 'ca6a0891-8395-4d58-9168-6c44e17e0193']
         resource = Resource.read_from_hdx('74b74ae1-df0c-4716-829f-4f939a046811')
         resource2 = Resource.read_from_hdx('74b74ae1-df0c-4716-829f-4f939a046815')
         TestResource.datastore = None

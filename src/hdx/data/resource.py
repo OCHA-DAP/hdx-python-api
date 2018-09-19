@@ -301,22 +301,31 @@ class Resource(HDXObject):
             path = downloader.download_file(url, folder, filename)
             return url, path
 
-    def delete_datastore(self):
-        # type: () -> None
-        """Delete a resource from the HDX datastore
+    @staticmethod
+    def get_all_resource_ids_in_datastore(configuration=None):
+        # type: (Optional[Configuration]) -> List[str]
+        """Get list of resources that have a datastore returning their ids.
+
+        Args:
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
-            None
+            List[str]: List of resource ids that are in the datastore
         """
-        success, result = self._read_from_hdx('datastore', self.data['id'], 'resource_id',
-                                              self.actions()['datastore_delete'],
-                                              force=True)
+        resource = Resource(configuration=configuration)
+        success, result = resource._read_from_hdx('datastore', '_table_metadata', 'resource_id',
+                                                  Resource.actions()['datastore_search'], limit=10000)
+        resource_ids = list()
         if not success:
             logger.debug(result)
+        else:
+            for record in result['records']:
+                resource_ids.append(record['name'])
+        return resource_ids
 
     def has_datastore(self):
         # type: () -> bool
-        """Check if teh resource has a datastore.
+        """Check if the resource has a datastore.
 
         Returns:
             bool: Whether the resource has a datastore or not
@@ -329,6 +338,19 @@ class Resource(HDXObject):
             if result:
                 return True
         return False
+
+    def delete_datastore(self):
+        # type: () -> None
+        """Delete a resource from the HDX datastore
+
+        Returns:
+            None
+        """
+        success, result = self._read_from_hdx('datastore', self.data['id'], 'resource_id',
+                                              self.actions()['datastore_delete'],
+                                              force=True)
+        if not success:
+            logger.debug(result)
 
     def create_datastore(self, schema=None, primary_key=None,
                          delete_first=0, path=None):
