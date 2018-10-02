@@ -389,12 +389,13 @@ class Dataset(HDXObject):
             if 'url' not in new_resource:
                 new_resource['url'] = 'ignore'
 
-    def _add_filestore_resources(self, filestore_resources, hxl_update):
+    def _add_filestore_resources(self, filestore_resources, create_default_views, hxl_update):
         # type: (List[hdx.data.Resource], bool) -> None
         """Helper method to create files in filestore by updating resources.
 
         Args:
             filestore_resources (List[hdx.data.Resource]): List of resources that use filestore (to be appended to)
+            create_default_views (bool): Whether to call package_create_default_resource_views.
             hxl_update (bool): Whether to call package_hxl_update.
 
         Returns:
@@ -410,12 +411,13 @@ class Dataset(HDXObject):
                     break
         self.init_resources()
         self.separate_resources()
-        self.create_default_views()
+        if create_default_views:
+            self.create_default_views()
         if hxl_update:
             self.hxl_update()
 
     def _dataset_merge_hdx_update(self, update_resources, update_resources_by_name,
-                                  remove_additional_resources, hxl_update):
+                                  remove_additional_resources, create_default_views, hxl_update):
         # type: (bool, bool, bool, bool) -> None
         """Helper method to check if dataset or its resources exist and update them
 
@@ -423,6 +425,7 @@ class Dataset(HDXObject):
             update_resources (bool): Whether to update resources
             update_resources_by_name (bool): Compare resource names rather than position in list
             remove_additional_resources (bool): Remove additional resources found in dataset (if updating)
+            create_default_views (bool): Whether to call package_create_default_resource_views.
             hxl_update (bool): Whether to call package_hxl_update.
 
         Returns:
@@ -488,17 +491,18 @@ class Dataset(HDXObject):
         if self.resources:
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         self._save_to_hdx('update', 'id')
-        self._add_filestore_resources(filestore_resources, hxl_update)
+        self._add_filestore_resources(filestore_resources, create_default_views, hxl_update)
 
     def update_in_hdx(self, update_resources=True, update_resources_by_name=True,
-                      remove_additional_resources=False, hxl_update=True):
+                      remove_additional_resources=False, create_default_views=True, hxl_update=True):
         # type: (bool, bool, bool, bool) -> None
         """Check if dataset exists in HDX and if so, update it
 
         Args:
             update_resources (bool): Whether to update resources. Defaults to True.
             update_resources_by_name (bool): Compare resource names rather than position in list. Defaults to True.
-            remove_additional_resources (bool): Remove additional resources found in dataset (if updating). Defaults to False.
+            remove_additional_resources (bool): Remove additional resources found in dataset. Defaults to False.
+            create_default_views (bool): Whether to call package_create_default_resource_views. Defaults to True.
             hxl_update (bool): Whether to call package_hxl_update. Defaults to True.
 
         Returns:
@@ -518,10 +522,11 @@ class Dataset(HDXObject):
         self._dataset_merge_hdx_update(update_resources=update_resources,
                                        update_resources_by_name=update_resources_by_name,
                                        remove_additional_resources=remove_additional_resources,
+                                       create_default_views=create_default_views,
                                        hxl_update=hxl_update)
 
     def create_in_hdx(self, allow_no_resources=False, update_resources=True, update_resources_by_name=True,
-                      remove_additional_resources=False, hxl_update=True):
+                      remove_additional_resources=False, create_default_views=True, hxl_update=True):
         # type: (bool, bool, bool, bool, bool) -> None
         """Check if dataset exists in HDX and if so, update it, otherwise create it
 
@@ -530,6 +535,7 @@ class Dataset(HDXObject):
             update_resources (bool): Whether to update resources (if updating). Defaults to True.
             update_resources_by_name (bool): Compare resource names rather than position in list. Defaults to True.
             remove_additional_resources (bool): Remove additional resources found in dataset (if updating). Defaults to False.
+            create_default_views (bool): Whether to call package_create_default_resource_views (if updating). Defaults to True.
             hxl_update (bool): Whether to call package_hxl_update. Defaults to True.
 
         Returns:
@@ -550,6 +556,7 @@ class Dataset(HDXObject):
             self._dataset_merge_hdx_update(update_resources=update_resources,
                                            update_resources_by_name=update_resources_by_name,
                                            remove_additional_resources=remove_additional_resources,
+                                           create_default_views=create_default_views,
                                            hxl_update=hxl_update)
             return
 
@@ -564,7 +571,7 @@ class Dataset(HDXObject):
                         resource['url'] = 'ignore'
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         self._save_to_hdx('create', 'name')
-        self._add_filestore_resources(filestore_resources, hxl_update)
+        self._add_filestore_resources(filestore_resources, False, hxl_update)
 
     def delete_from_hdx(self):
         # type: () -> None
