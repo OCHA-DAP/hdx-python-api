@@ -24,6 +24,7 @@ from . import MockResponse, user_data, organization_data
 from .test_organization import organization_mockshow
 from .test_showcase import showcase_resultdict
 from .test_user import user_mockshow
+from .test_resource_view import resource_view_list
 
 resulttags = [{'state': 'active', 'display_name': 'conflict', 'vocabulary_id': None,
                'id': '1dae41e5-eacd-4fa5-91df-8d80cf579e53', 'name': 'conflict'},
@@ -296,6 +297,10 @@ class TestDataset:
                     return mockshow(url, datadict)
                 if 'hxl' in url:
                     return mockhxlupdate(url, datadict)
+                if 'default' in url:
+                    result = json.dumps(resource_view_list)
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_create_default_resource_views"}' % result)
                 if 'resource' in url:
                     result = json.dumps(TestDataset.resources_data[0])
                     return MockResponse(200,
@@ -332,6 +337,10 @@ class TestDataset:
                     return mockshow(url, datadict)
                 if 'hxl' in url:
                     return mockhxlupdate(url, datadict)
+                if 'default' in url:
+                    result = json.dumps(resource_view_list)
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_create_default_resource_views"}' % result)
                 if 'resource' in url:
                     result = json.dumps(TestDataset.resources_data[0])
                     return MockResponse(200,
