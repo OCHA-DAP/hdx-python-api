@@ -712,8 +712,11 @@ class Dataset(HDXObject):
                 kwargs['limit'] = rows
                 result = dataset._write_to_hdx('all', kwargs, 'id')
                 datasets = list()
-                if result:
+                if isinstance(result, list):
                     no_results = len(result)
+                    if no_results == 0 and page == 0:
+                        all_datasets = None
+                        break
                     for datasetdict in result:
                         dataset = Dataset(configuration=configuration)
                         dataset.old_data = dict()
@@ -725,7 +728,9 @@ class Dataset(HDXObject):
                         break
                 else:
                     logger.debug(result)
-            if check_duplicates:
+            if all_datasets is None:
+                attempts += 1
+            elif check_duplicates:
                 names_list = [dataset['name'] for dataset in all_datasets]
                 names = set(names_list)
                 if len(names_list) != len(names):  # check for duplicates (shouldn't happen)
