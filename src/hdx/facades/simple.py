@@ -4,7 +4,7 @@ import logging
 
 from hdx.utilities.easy_logging import setup_logging
 
-from hdx.facades import logging_kwargs, environment_variables
+from hdx.facades import logging_kwargs
 from hdx.hdx_configuration import Configuration
 
 logger = logging.getLogger(__name__)
@@ -26,7 +26,6 @@ def facade(projectmainfn, **kwargs):
     #
     # Setting up configuration
     #
-    kwargs = environment_variables(**kwargs)
     site_url = Configuration._create(**kwargs)
 
     logger.info('--------------------------------------------------')

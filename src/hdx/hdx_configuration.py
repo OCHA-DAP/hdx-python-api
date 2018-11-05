@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """Configuration for HDX"""
+import os
+
 import requests
 import six
 
@@ -445,6 +447,37 @@ class Configuration(UserDict, object):
         else:
             cls._configuration = configuration
 
+    @staticmethod
+    def _environment_variables(**kwargs):
+        # type: (Any) -> Any
+        """
+        Overwrite keyword arguments with environment variables
+
+        Args:
+            **kwargs: See below
+            hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
+            hdx_key (Optional[str]): Your HDX key. Ignored if hdx_read_only = True.
+            user_agent (Optional[str]): User agent string.
+
+        Returns:
+            kwargs: Changed keyword arguments
+
+        """
+
+        hdx_key = os.getenv('HDX_KEY')
+        if hdx_key is not None:
+            kwargs['hdx_key'] = hdx_key
+        user_agent = os.getenv('USER_AGENT')
+        if user_agent is not None:
+            kwargs['user_agent'] = user_agent
+        preprefix = os.getenv('PREPREFIX')
+        if preprefix is not None:
+            kwargs['preprefix'] = preprefix
+        hdx_site = os.getenv('HDX_SITE')
+        if hdx_site is not None:
+            kwargs['hdx_site'] = hdx_site
+        return kwargs
+
     @classmethod
     def _create(cls, configuration=None, user_agent=None, user_agent_config_yaml=None, user_agent_lookup=None,
                 remoteckan=None, **kwargs):
@@ -476,6 +509,10 @@ class Configuration(UserDict, object):
             str: HDX site url
 
         """
+        kwargs = cls._environment_variables(**kwargs)
+        if 'user_agent' in kwargs:
+            user_agent = kwargs['user_agent']
+            del kwargs['user_agent']
         cls.setup(configuration, **kwargs)
         cls._configuration.setup_remoteckan(user_agent, user_agent_config_yaml, user_agent_lookup, remoteckan, **kwargs)
         return cls._configuration.get_hdx_site_url()
