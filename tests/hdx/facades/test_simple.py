@@ -53,6 +53,10 @@ class TestSimple:
         monkeypatch.setenv('HDX_SITE', my_test_hdxsite)
         facade(my_testfn, hdx_site='feature', user_agent=my_user_agent, hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
         assert testresult.actual_result == 'https://%s-data.humdata.org/' % my_test_hdxsite
+        my_test_hdxurl = 'http://other-data.humdata.org'
+        monkeypatch.setenv('HDX_URL', my_test_hdxurl)
+        facade(my_testfn, hdx_site='feature', user_agent=my_user_agent, hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
+        assert testresult.actual_result == my_test_hdxurl
 
     def test_exception(self, hdx_config_yaml, project_config_yaml):
         testresult.actual_result = None

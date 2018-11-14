@@ -125,8 +125,6 @@ class TestConfiguration:
                               hdx_base_config_dict={
                                                  'hdx_prod_site': {
                                                      'url': 'https://data.humdata.org/',
-                                                     'username': None,
-                                                     'password': None
                                                  },
                                                  'XYZ': {'567': 987}
                                              },
@@ -138,8 +136,6 @@ class TestConfiguration:
             'tags_cleanup_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/HDX_Tags_Cleaning.csv',
             'hdx_prod_site': {
                 'url': 'https://data.humdata.org/',
-                'username': None,
-                'password': None
             },
             'XYZ': {'567': 987}
         }
@@ -202,8 +198,6 @@ hello there'''
             'tags_cleanup_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/HDX_Tags_Cleaning.csv',
             'hdx_prod_site': {
                 'url': 'https://data.humdata.org/',
-                'username': None,
-                'password': None
             },
             'hdx_test_site': {
                 'url': 'https://test-data.humdata.org/',
@@ -229,8 +223,6 @@ hello there'''
             'tags_cleanup_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/HDX_Tags_Cleaning.csv',
             'hdx_prod_site': {
                 'url': 'https://data.humdata.org/',
-                'username': None,
-                'password': None
             },
             'hdx_test_site': {
                 'url': 'https://test-data.humdata.org/',
@@ -255,8 +247,6 @@ hello there'''
             'hdx_key': '12345',
             'hdx_prod_site': {
                 'url': 'https://data.humdata.org/',
-                'username': None,
-                'password': None
             },
             'hdx_demo_site': {
                 'url': 'https://demo-data.humdata.org/',
@@ -350,8 +340,6 @@ hello there'''
             'hdx_key': '12345',
             'hdx_prod_site': {
                 'url': 'https://data.humdata.org/',
-                'username': None,
-                'password': None
             },
             'hdx_demo_site': {
                 'url': 'https://demo-data.humdata.org/',
@@ -444,8 +432,6 @@ hello there'''
             'tags_cleanup_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/HDX_Tags_Cleaning.csv',
             'hdx_prod_site': {
                 'url': 'https://data.humdata.org/',
-                'username': None,
-                'password': None
             },
             'hdx_demo_site': {
                 'url': 'https://demo-data.humdata.org/',

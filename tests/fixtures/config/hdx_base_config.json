@@ -1,8 +1,6 @@
 {
   "hdx_prod_site": {
-    "url": "https://data.humdata.org/",
-    "username": null,
-    "password": null
+    "url": "https://data.humdata.org/"
   },
   "hdx_test_site": {
     "url": "https://test-data.humdata.org/",

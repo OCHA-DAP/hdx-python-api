@@ -37,6 +37,7 @@ class Configuration(UserDict, object):
 
     Args:
         **kwargs: See below
+        hdx_url (Optional[str]): HDX url to use. Overrides hdx_site.
         hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
         hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
         hdx_key (Optional[str]): Your HDX key. Ignored if hdx_read_only = True.
@@ -154,9 +155,14 @@ class Configuration(UserDict, object):
         self.hdx_key = kwargs.get('hdx_key', self.data.get('hdx_key'))
         if not self.hdx_key and not self.hdx_read_only:
             raise ConfigurationError('No HDX API key supplied as a parameter or in configuration!')
-        self.hdx_site = 'hdx_%s_site' % kwargs.get('hdx_site', self.data.get('hdx_site', 'test'))
-        if self.hdx_site not in self.data:
-            raise ConfigurationError('%s not defined in configuration!' % self.hdx_site)
+        hdx_url = kwargs.get('hdx_url', self.data.get('hdx_url'))
+        if hdx_url:
+            self.hdx_site = 'hdx_custom_site'
+            self.data[self.hdx_site] = {'url': hdx_url}
+        else:
+            self.hdx_site = 'hdx_%s_site' % kwargs.get('hdx_site', self.data.get('hdx_site', 'test'))
+            if self.hdx_site not in self.data:
+                raise ConfigurationError('%s not defined in configuration!' % self.hdx_site)
 
     @staticmethod
     def get_version():
@@ -223,7 +229,7 @@ class Configuration(UserDict, object):
 
         """
         site = self.data[self.hdx_site]
-        username = site['username']
+        username = site.get('username')
         if username:
             return b64decode(username).decode('utf-8'), b64decode(site['password']).decode('utf-8')
         else:
@@ -425,6 +431,7 @@ class Configuration(UserDict, object):
         Args:
             configuration (Optional[Configuration]): Configuration instance. Defaults to setting one up from passed arguments.
             **kwargs: See below
+            hdx_url (Optional[str]): HDX url to use. Overrides hdx_site.
             hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
             hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
             hdx_key (Optional[str]): Your HDX key. Ignored if hdx_read_only = True.
@@ -455,6 +462,7 @@ class Configuration(UserDict, object):
 
         Args:
             **kwargs: See below
+            hdx_url (Optional[str]): HDX url to use. Overrides hdx_site.
             hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
             hdx_key (Optional[str]): Your HDX key. Ignored if hdx_read_only = True.
             user_agent (Optional[str]): User agent string.
@@ -473,9 +481,13 @@ class Configuration(UserDict, object):
         preprefix = os.getenv('PREPREFIX')
         if preprefix is not None:
             kwargs['preprefix'] = preprefix
-        hdx_site = os.getenv('HDX_SITE')
-        if hdx_site is not None:
-            kwargs['hdx_site'] = hdx_site
+        hdx_url = os.getenv('HDX_URL')
+        if hdx_url is not None:
+            kwargs['hdx_url'] = hdx_url
+        else:
+            hdx_site = os.getenv('HDX_SITE')
+            if hdx_site is not None:
+                kwargs['hdx_site'] = hdx_site
         return kwargs
 
     @classmethod
@@ -492,6 +504,7 @@ class Configuration(UserDict, object):
             user_agent_lookup (Optional[str]): Lookup key for YAML. Ignored if user_agent supplied.
             remoteckan (Optional[ckanapi.RemoteCKAN]): CKAN instance. Defaults to setting one up from configuration.
             **kwargs: See below
+            hdx_url (Optional[str]): HDX url to use. Overrides hdx_site.
             hdx_site (Optional[str]): HDX site to use eg. prod, test. Defaults to test.
             hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
             hdx_key (Optional[str]): Your HDX key. Ignored if hdx_read_only = True.
@@ -531,6 +544,7 @@ class Configuration(UserDict, object):
             user_agent_lookup (Optional[str]): Lookup key for YAML. Ignored if user_agent supplied.
             remoteckan (Optional[ckanapi.RemoteCKAN]): CKAN instance. Defaults to setting one up from configuration.
             **kwargs: See below
+            hdx_url (Optional[str]): HDX url to use. Overrides hdx_site.
             hdx_site (str): HDX site to use eg. prod, test.
             hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
             hdx_key (Optional[str]): Your HDX key. Ignored if hdx_read_only = True.
