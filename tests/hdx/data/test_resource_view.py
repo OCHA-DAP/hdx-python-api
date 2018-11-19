@@ -71,7 +71,7 @@ class TestResourceView:
     def read(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 return resource_view_mockshow(url, datadict)
 
@@ -81,7 +81,7 @@ class TestResourceView:
     def post_create(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 if 'show' in url:
                     return resource_view_mockshow(url, datadict)
@@ -111,7 +111,7 @@ class TestResourceView:
     def post_update(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 if 'show' in url:
                     return resource_view_mockshow(url, datadict)
@@ -143,7 +143,7 @@ class TestResourceView:
     def post_delete(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 decodedata = data.decode('utf-8')
                 datadict = json.loads(decodedata)
                 if 'show' in url:
@@ -164,7 +164,7 @@ class TestResourceView:
     def post_list(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 return resource_view_mocklist(url, datadict)
 

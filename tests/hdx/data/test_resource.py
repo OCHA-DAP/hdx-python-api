@@ -220,7 +220,7 @@ class TestResource:
     def read(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 return mockshow(url, datadict)
 
@@ -230,7 +230,7 @@ class TestResource:
     def post_create(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 if isinstance(data, dict):
                     datadict = {k.decode('utf8'): v.decode('utf8') for k, v in data.items()}
                 else:
@@ -271,7 +271,7 @@ class TestResource:
     def post_update(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 if isinstance(data, dict):
                     datadict = {k.decode('utf8'): v.decode('utf8') for k, v in data.items()}
                 else:
@@ -313,7 +313,7 @@ class TestResource:
     def post_delete(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 decodedata = data.decode('utf-8')
                 datadict = json.loads(decodedata)
                 if 'show' in url:
@@ -334,7 +334,7 @@ class TestResource:
     def post_datastore(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 decodedata = data.decode('utf-8')
                 datadict = json.loads(decodedata)
                 if 'show' in url:
@@ -372,7 +372,7 @@ class TestResource:
     def post_patch(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 return mockpatch(url, datadict)
 
@@ -382,7 +382,7 @@ class TestResource:
     def post_dataset(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 return mockdataset(url, datadict)
 
@@ -392,7 +392,7 @@ class TestResource:
     def search(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 return mocksearch(url, datadict)
 
@@ -402,7 +402,7 @@ class TestResource:
     def post_resourceview(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 decodedata = data.decode('utf-8')
                 return mockresourceview(url, decodedata)
 

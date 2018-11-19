@@ -17,7 +17,7 @@ else:
 import logging
 from base64 import b64decode
 from os.path import expanduser, join, isfile
-from typing import Optional, Any, Dict
+from typing import Optional, Any, Dict, Tuple
 
 import ckanapi
 
@@ -220,12 +220,12 @@ class Configuration(UserDict, object):
         return self.data[self.hdx_site]['url']
 
     def _get_credentials(self):
-        # type: () -> tuple
+        # type: () -> Tuple[str, str]
         """
         Return HDX site username and password
 
         Returns:
-            tuple: HDX site username and password
+            Optional[Tuple[str, str]]: HDX site username and password or None
 
         """
         site = self.data[self.hdx_site]
@@ -233,7 +233,7 @@ class Configuration(UserDict, object):
         if username:
             return b64decode(username).decode('utf-8'), b64decode(site['password']).decode('utf-8')
         else:
-            return '', ''
+            return None
 
     def remoteckan(self):
         # type: () -> ckanapi.RemoteCKAN
@@ -262,7 +262,9 @@ class Configuration(UserDict, object):
 
         """
         requests_kwargs = kwargs.get('requests_kwargs', dict())
-        requests_kwargs['auth'] = self._get_credentials()
+        credentials = self._get_credentials()
+        if credentials:
+            requests_kwargs['auth'] = credentials
         kwargs['requests_kwargs'] = requests_kwargs
         apikey = kwargs.get('apikey', self.get_api_key())
         kwargs['apikey'] = apikey

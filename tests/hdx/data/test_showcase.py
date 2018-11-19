@@ -106,7 +106,7 @@ class TestShowcase:
     def read(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 if 'association_delete' in url:
                     TestShowcase.association = 'delete'
@@ -125,7 +125,7 @@ class TestShowcase:
     def post_create(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 if url.endswith('show') or 'list' in url:
                     return mockshow(url, datadict)
@@ -153,7 +153,7 @@ class TestShowcase:
     def post_update(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 if url.endswith('show') or 'list' in url:
                     return mockshow(url, datadict)
@@ -183,7 +183,7 @@ class TestShowcase:
     def post_delete(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 decodedata = data.decode('utf-8')
                 datadict = json.loads(decodedata)
                 if url.endswith('show') or 'list' in url:

@@ -519,7 +519,7 @@ hello there'''
         actual_configuration = Configuration.read()
         assert actual_configuration.get_api_key() == '12345'
         assert actual_configuration.get_hdx_site_url() == 'https://data.humdata.org/'
-        assert actual_configuration._get_credentials() == ('', '')
+        assert actual_configuration._get_credentials() is None
 
     def test_set_hdx_key_value(self, project_config_yaml):
         Configuration._create(user_agent='test', hdx_site='prod', hdx_key='TEST_HDX_KEY',

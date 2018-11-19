@@ -70,7 +70,7 @@ class TestOrganization:
     def read(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 return organization_mockshow(url, datadict)
 
@@ -80,7 +80,7 @@ class TestOrganization:
     def post_create(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 if 'show' in url:
                     return organization_mockshow(url, datadict)
@@ -108,7 +108,7 @@ class TestOrganization:
     def post_update(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 if 'show' in url:
                     return organization_mockshow(url, datadict)
@@ -138,7 +138,7 @@ class TestOrganization:
     def post_delete(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 decodedata = data.decode('utf-8')
                 datadict = json.loads(decodedata)
                 if 'show' in url:
@@ -159,7 +159,7 @@ class TestOrganization:
     def post_list(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 return mocklist(url)
 
@@ -169,7 +169,7 @@ class TestOrganization:
     def user_read(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 return user_mockshow(url, datadict)
 
@@ -179,7 +179,7 @@ class TestOrganization:
     def datasets_get(self):
         class MockSession(object):
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth):
+            def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 return mockgetdatasets(url, datadict)
 
