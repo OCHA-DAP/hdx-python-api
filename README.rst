@@ -210,13 +210,12 @@ On other OSs:
 
        Configuration.create(hdx_site='test', user_agent='A_Quick_Example')
 
-#. Read this dataset `ACLED Conflict Data for Africa (Realtime -
-   2016) <https://test-data.humdata.org/dataset/acled-conflict-data-for-africa-realtime-2016>`__
+#. Read this dataset `ACLED Conflict Data for Africa 1997-2016 <https://data.humdata.org/dataset/acled-conflict-data-for-africa-1997-lastyear>`__
    from HDX and view the date of the dataset:
 
    ::
 
-       dataset = Dataset.read_from_hdx('acled-conflict-data-for-africa-realtime-2016')
+       dataset = Dataset.read_from_hdx('acled-conflict-data-for-africa-1997-lastyear')
        print(dataset.get_dataset_date())
 
 #. If you have an API key, as a test, change the dataset date:
