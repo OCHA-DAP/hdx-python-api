@@ -297,7 +297,7 @@ class Resource(HDXObject):
         format = '.%s' % self.data['format']
         if format not in filename:
             filename = '%s%s' % (filename, format)
-        with Download() as downloader:
+        with Download(full_agent=self.configuration._remoteckan.user_agent) as downloader:
             path = downloader.download_file(url, folder, filename)
             return url, path
 
@@ -390,7 +390,7 @@ class Resource(HDXObject):
                     row[i] = str(val)
                 yield (number, headers, row)
 
-        with Download() as downloader:
+        with Download(full_agent=self.configuration._remoteckan.user_agent) as downloader:
             try:
                 stream = downloader.get_tabular_stream(path, headers=1, post_parse=[convert_to_text],
                                                        bytes_sample_size=1000000)

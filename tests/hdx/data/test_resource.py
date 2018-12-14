@@ -10,6 +10,7 @@ import pytest
 import six
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.downloader import DownloadError
+from hdx.utilities.useragent import UserAgent
 
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource

@@ -4,9 +4,12 @@ from os.path import join
 
 import ckanapi
 import pytest
+from hdx.utilities.downloader import Download
 from hdx.utilities.loader import LoadError
+from hdx.utilities.useragent import UserAgentError
 
 from hdx.hdx_configuration import Configuration, ConfigurationError
+from hdx.version import get_api_version
 
 
 class TestConfiguration:
@@ -568,7 +571,8 @@ hello there'''
         assert Configuration.read().remoteckan() == remoteckan
         remoteckan = ckanapi.RemoteCKAN('http://hahaha', apikey='54321',
                                         user_agent='HDXPythonLibrary/0.5')
-        Configuration._create(remoteckan=remoteckan,
+        Configuration._create(user_agent='test',
+                              remoteckan=remoteckan,
                               hdx_site='prod', hdx_key='TEST_HDX_KEY',
                               hdx_base_config_dict={},
                               project_config_yaml=project_config_yaml)
@@ -584,7 +588,7 @@ hello there'''
                         empty_yaml, user_agent_config_wrong_yaml, project_config_yaml):
         Configuration._create(user_agent_config_yaml=user_agent_config_yaml, hdx_site='prod', hdx_key='TEST_HDX_KEY',
                               hdx_base_config_dict={}, project_config_yaml=project_config_yaml)
-        version = Configuration.get_version()
+        version = get_api_version()
         assert Configuration.read().remoteckan().user_agent == 'lala:HDXPythonLibrary/%s-myua' % version
         Configuration._create(user_agent_config_yaml=user_agent_config2_yaml, hdx_site='prod', hdx_key='TEST_HDX_KEY',
                               hdx_base_config_dict={}, project_config_yaml=project_config_yaml)
@@ -598,16 +602,17 @@ hello there'''
         Configuration._create(user_agent='my_ua', preprefix='papa', hdx_site='prod', hdx_key='TEST_HDX_KEY',
                               hdx_base_config_dict={}, project_config_yaml=project_config_yaml)
         assert Configuration.read().remoteckan().user_agent == 'papa:HDXPythonLibrary/%s-my_ua' % version
-        with pytest.raises(ConfigurationError):
+        with pytest.raises(UserAgentError):
             Configuration._create(user_agent_config_yaml=user_agent_config3_yaml, user_agent_lookup='fail',
                                   hdx_site='prod', hdx_key='TEST_HDX_KEY',
                                   hdx_base_config_dict={}, project_config_yaml=project_config_yaml)
         with pytest.raises(LoadError):
             Configuration._create(user_agent_config_yaml=empty_yaml, hdx_site='prod', hdx_key='TEST_HDX_KEY',
                                   hdx_base_config_dict={}, project_config_yaml=project_config_yaml)
-        with pytest.raises(ConfigurationError):
+        with pytest.raises(UserAgentError):
             Configuration._create(user_agent_config_yaml=user_agent_config_wrong_yaml, hdx_site='prod', hdx_key='TEST_HDX_KEY',
                                   hdx_base_config_dict={}, project_config_yaml=project_config_yaml)
-        with pytest.raises(ConfigurationError):
+        with pytest.raises(UserAgentError):
             Configuration._create(hdx_site='prod', hdx_key='TEST_HDX_KEY',
                                   hdx_base_config_dict={}, project_config_yaml=project_config_yaml)
+

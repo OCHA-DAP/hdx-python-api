@@ -36,10 +36,10 @@ class Tags(object):
             Tuple[Dict,List]: Returns (Tags dictionary, Wildcard tags list)
         """
         if not Tags._tags_dict:
-            with Download() as downloader:
+            if configuration is None:
+                configuration = Configuration.read()
+            with Download(full_agent=configuration._remoteckan.user_agent) as downloader:
                 if url is None:
-                    if configuration is None:
-                        configuration = Configuration.read()
                     url = configuration['tags_cleanup_url']
                 Tags._tags_dict = downloader.download_tabular_rows_as_dicts(url, keycolumn=keycolumn)
                 keys = Tags._tags_dict.keys()

@@ -2,8 +2,11 @@
 """Simple Facade Tests"""
 from os.path import join
 
+from hdx.utilities.useragent import UserAgentError
+
 from hdx.facades import logging_kwargs
 from hdx.hdx_configuration import ConfigurationError, Configuration
+from hdx.version import get_api_version
 
 logging_kwargs.update({
     'smtp_config_yaml': join('tests', 'fixtures', 'config', 'smtp_config.yml'),
@@ -21,22 +24,23 @@ class TestSimple:
         testresult.actual_result = None
         facade(my_testfn, user_agent=my_user_agent, hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
         assert testresult.actual_result == 'https://data.humdata.org/'
+        version = get_api_version()
         testresult.actual_result = None
         facade(my_testuafn, user_agent=my_user_agent, hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
-        assert testresult.actual_result == 'HDXPythonLibrary/%s-%s' % (Configuration.get_version(), my_user_agent)
+        assert testresult.actual_result == 'HDXPythonLibrary/%s-%s' % (version, my_user_agent)
         testresult.actual_result = None
         my_user_agent = 'lala'
         monkeypatch.setenv('USER_AGENT', my_user_agent)
         facade(my_testuafn, hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
-        assert testresult.actual_result == 'HDXPythonLibrary/%s-%s' % (Configuration.get_version(), my_user_agent)
+        assert testresult.actual_result == 'HDXPythonLibrary/%s-%s' % (version, my_user_agent)
         testresult.actual_result = None
         facade(my_testuafn, user_agent='test', hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
-        assert testresult.actual_result == 'HDXPythonLibrary/%s-%s' % (Configuration.get_version(), my_user_agent)
+        assert testresult.actual_result == 'HDXPythonLibrary/%s-%s' % (version, my_user_agent)
         testresult.actual_result = None
         my_preprefix = 'haha'
         monkeypatch.setenv('PREPREFIX', my_preprefix)
         facade(my_testuafn, user_agent='test', hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
-        assert testresult.actual_result == '%s:HDXPythonLibrary/%s-%s' % (my_preprefix, Configuration.get_version(), my_user_agent)
+        assert testresult.actual_result == '%s:HDXPythonLibrary/%s-%s' % (my_preprefix, version, my_user_agent)
         testresult.actual_result = None
         my_test_key = '1234'
         facade(my_testkeyfn, hdx_key=my_test_key, user_agent=my_user_agent, hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
@@ -62,5 +66,5 @@ class TestSimple:
         testresult.actual_result = None
         with pytest.raises(ValueError):
             facade(my_excfn, user_agent='test', hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
-        with pytest.raises(ConfigurationError):
+        with pytest.raises(UserAgentError):
             facade(my_testuafn, hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
