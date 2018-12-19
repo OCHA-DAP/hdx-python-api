@@ -22,9 +22,9 @@ from hdx.hdx_configuration import Configuration
 from hdx.hdx_tagscleanup import Tags, ChainRuleError
 from . import MockResponse, user_data, organization_data
 from .test_organization import organization_mockshow
+from .test_resource_view import resource_view_list
 from .test_showcase import showcase_resultdict
 from .test_user import user_mockshow
-from .test_resource_view import resource_view_list
 
 resulttags = [{'state': 'active', 'display_name': 'conflict', 'vocabulary_id': None,
                'id': '1dae41e5-eacd-4fa5-91df-8d80cf579e53', 'name': 'conflict'},
@@ -546,8 +546,8 @@ class TestDataset:
         with pytest.raises(HDXError):
             dataset.create_in_hdx()
 
-        config = Configuration(hdx_read_only=True)
-        config.setup_remoteckan(user_agent='test')
+        config = Configuration(user_agent='test', hdx_read_only=True)
+        config.setup_remoteckan()
         config.remoteckan().session = Configuration.read().remoteckan().session
         uniqueval = 'myconfig'
         config.unique = uniqueval

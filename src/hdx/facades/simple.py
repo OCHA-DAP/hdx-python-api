@@ -3,6 +3,7 @@
 import logging
 
 from hdx.utilities.easy_logging import setup_logging
+from hdx.utilities.useragent import UserAgent
 
 from hdx.facades import logging_kwargs
 from hdx.hdx_configuration import Configuration
@@ -30,5 +31,7 @@ def facade(projectmainfn, **kwargs):
 
     logger.info('--------------------------------------------------')
     logger.info('> HDX Site: %s' % site_url)
+
+    UserAgent.user_agent = Configuration.read().user_agent
 
     projectmainfn()

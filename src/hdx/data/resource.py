@@ -3,7 +3,7 @@
 import logging
 from os import remove
 from os.path import join
-from typing import Optional, List, Tuple, Dict, Union
+from typing import Optional, List, Tuple, Dict, Union, Any
 
 from hdx.utilities import raisefrom, is_valid_uuid
 from hdx.utilities.downloader import Download
@@ -297,7 +297,7 @@ class Resource(HDXObject):
         format = '.%s' % self.data['format']
         if format not in filename:
             filename = '%s%s' % (filename, format)
-        with Download(full_agent=self.configuration._remoteckan.user_agent) as downloader:
+        with Download(full_agent=self.configuration.get_user_agent()) as downloader:
             path = downloader.download_file(url, folder, filename)
             return url, path
 
@@ -390,7 +390,7 @@ class Resource(HDXObject):
                     row[i] = str(val)
                 yield (number, headers, row)
 
-        with Download(full_agent=self.configuration._remoteckan.user_agent) as downloader:
+        with Download(full_agent=self.configuration.get_user_agent()) as downloader:
             try:
                 stream = downloader.get_tabular_stream(path, headers=1, post_parse=[convert_to_text],
                                                        bytes_sample_size=1000000)

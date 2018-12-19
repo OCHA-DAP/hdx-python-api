@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Tags cleaning"""
 import logging
-from typing import Tuple, Dict, List
+from typing import Tuple, Dict, List, Optional
 
 from hdx.utilities.downloader import Download
 
@@ -22,14 +22,14 @@ class Tags(object):
 
     @staticmethod
     def tagscleanupdicts(configuration=None, url=None, keycolumn=5, failchained=True):
-        # type: () -> Tuple[Dict,List]
+        # type: (Optional[Configuration], Optional[str], int, bool) -> Tuple[Dict,List]
         """
         Get tags cleanup dictionaries
 
         Args:
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
             url (Optional[str]): Url of tags cleanup spreadsheet. Defaults to None (internal configuration parameter).
-            keycolumn (int): Column number of tag column in spreadsheet
+            keycolumn (int): Column number of tag column in spreadsheet. Defaults to 5.
             failchained (bool): Fail if chained rules found. Defaults to True.
 
         Returns:
@@ -38,7 +38,7 @@ class Tags(object):
         if not Tags._tags_dict:
             if configuration is None:
                 configuration = Configuration.read()
-            with Download(full_agent=configuration._remoteckan.user_agent) as downloader:
+            with Download(full_agent=configuration.get_user_agent()) as downloader:
                 if url is None:
                     url = configuration['tags_cleanup_url']
                 Tags._tags_dict = downloader.download_tabular_rows_as_dicts(url, keycolumn=keycolumn)

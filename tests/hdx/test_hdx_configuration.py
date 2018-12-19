@@ -4,7 +4,6 @@ from os.path import join
 
 import ckanapi
 import pytest
-from hdx.utilities.downloader import Download
 from hdx.utilities.loader import LoadError
 from hdx.utilities.useragent import UserAgentError
 
@@ -56,12 +55,12 @@ class TestConfiguration:
     def test_init(self, hdx_config_json, hdx_config_yaml, hdx_base_config_yaml, hdx_base_config_json, hdx_missing_site_config_json, project_config_json, project_config_yaml):
         default_config_file = Configuration.default_hdx_config_yaml
         Configuration.default_hdx_config_yaml = 'NOT EXIST'
-        with pytest.raises(ConfigurationError):
+        with pytest.raises(UserAgentError):
             Configuration()
         Configuration.default_hdx_config_yaml = default_config_file
 
         Configuration.default_hdx_config_yaml = hdx_config_yaml
-        assert Configuration().get_api_key() == '12345'
+        assert Configuration(user_agent='test').get_api_key() == '12345'
         Configuration.default_hdx_config_yaml = default_config_file
 
         with pytest.raises(IOError):
@@ -106,21 +105,23 @@ class TestConfiguration:
             Configuration(hdx_config_yaml=hdx_config_yaml, project_config_json='NOT_EXIST')
 
         with pytest.raises(ConfigurationError):
-            Configuration(hdx_config_json=hdx_missing_site_config_json, project_config_json=project_config_json, hdx_base_config_json=hdx_base_config_json)
+            Configuration(user_agent='test', hdx_config_json=hdx_missing_site_config_json,
+                          project_config_json=project_config_json, hdx_base_config_json=hdx_base_config_json)
 
         with pytest.raises(ConfigurationError):
-            Configuration(hdx_site='NOT_EXIST', hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
-
-        with pytest.raises(ConfigurationError):
-            Configuration(hdx_config_yaml=hdx_config_yaml, project_config_json=project_config_json,
+            Configuration(user_agent='test', hdx_site='NOT_EXIST', hdx_config_yaml=hdx_config_yaml,
                           project_config_yaml=project_config_yaml)
 
         with pytest.raises(ConfigurationError):
-            Configuration(hdx_config_yaml=hdx_config_yaml, project_config_dict={'la': 'la'},
+            Configuration(user_agent='test', hdx_config_yaml=hdx_config_yaml, project_config_json=project_config_json,
                           project_config_yaml=project_config_yaml)
 
         with pytest.raises(ConfigurationError):
-            Configuration(hdx_config_yaml=hdx_config_yaml, project_config_dict={'la': 'la'},
+            Configuration(user_agent='test', hdx_config_yaml=hdx_config_yaml, project_config_dict={'la': 'la'},
+                          project_config_yaml=project_config_yaml)
+
+        with pytest.raises(ConfigurationError):
+            Configuration(user_agent='test', hdx_config_yaml=hdx_config_yaml, project_config_dict={'la': 'la'},
                           project_config_json=project_config_json)
 
     def test_hdx_configuration_dict(self, project_config_yaml, mocksmtp):
@@ -145,6 +146,22 @@ class TestConfiguration:
 
         configuration = Configuration.read()
         assert configuration == expected_configuration
+        version = get_api_version()
+        assert configuration.get_user_agent() == 'HDXPythonLibrary/%s-test' % version
+
+        Configuration._create(
+            hdx_config_dict={'hdx_site': 'prod', 'hdx_read_only': True, 'hdx_key': 'abcde', 'user_agent': 'test'},
+            hdx_base_config_dict={
+                'hdx_prod_site': {
+                    'url': 'https://data.humdata.org/',
+                },
+                'XYZ': {'567': 987}
+            },
+            project_config_yaml=project_config_yaml)
+        configuration = Configuration.read()
+        expected_configuration['user_agent'] = 'test'
+        assert configuration == expected_configuration
+        assert configuration.get_user_agent() == 'HDXPythonLibrary/%s-test' % version
 
         smtp_initargs = {
             'host': 'localhost',

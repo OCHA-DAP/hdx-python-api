@@ -314,7 +314,7 @@ It is possible to pass configuration parameters in the facade call eg.
 
 ::
 
-    facade(main, hdx_site = HDX_SITE_TO_USE, hdx_read_only = ONLY_READ_NOT_WRITE, hdx_key_file = LOCATION_OF_HDX_KEY_FILE, hdx_config_yaml=PATH_TO_HDX_YAML_CONFIGURATION, project_config_dict = {'MY_PARAMETER', 'MY_VALUE'})
+    facade(main, user_agent=USER_AGENT, hdx_site = HDX_SITE_TO_USE, hdx_read_only = ONLY_READ_NOT_WRITE, hdx_key_file = LOCATION_OF_HDX_KEY_FILE, hdx_config_yaml=PATH_TO_HDX_YAML_CONFIGURATION, project_config_dict = {'MY_PARAMETER', 'MY_VALUE'})
 
 If you do not use the facade, you can use the **create** method of the
 **Configuration** class directly, passing in appropriate keyword
@@ -326,11 +326,23 @@ arguments ie.
     ...
     Configuration.create([configuration], [user_agent], [user_agent_config_yaml], [remoteckan], KEYWORD ARGUMENTS)
 
-If you do not supply **remoteckan**, you must supply **user_agent**
-(which can simply be the name of your project) or
-**user_agent_config_yaml** which should point to a YAML file
-containing a parameter **user_agent**.
+You must supply a user agent using one of the following approaches:
 
+#. Populate parameter **user_agent** (which can simply be the name of your project)
+#. Supply **user_agent_config_yaml** which should point to a YAML file which
+   contains a parameter **user_agent**
+#. Supply **user_agent_config_yaml** which should point to a YAML file and
+   populate **user_agent_lookup** which is a key to look up in the YAML file
+   which should be of form:
+   ::
+
+       myproject:
+           user_agent: test
+       myproject2:
+           user_agent: test2
+
+#. Include **user_agent** in one of the configuration dictionaries or files
+   outlined in the table below eg. **hdx_config_json** or **project_config_dict**.
 
 **KEYWORD ARGUMENTS** can be:
 

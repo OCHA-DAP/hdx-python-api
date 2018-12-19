@@ -18,7 +18,7 @@ def my_testkeyfn():
 
 
 def my_testuafn():
-    testresult.actual_result = Configuration.read()._remoteckan.user_agent
+    testresult.actual_result = Configuration.read().user_agent
 
 
 def my_excfn():
