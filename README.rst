@@ -292,10 +292,7 @@ level and a file handler writing to errors.log at ERROR level.
 Facades
 ~~~~~~~
 
-You will most likely just need the simple facade. If you are in the HDX
-team, you may need to use the ScraperWiki facade which reports status to
-that platform (in which case replace **simple** with **scraperwiki** in
-the code below):
+The simple facade makes it easier to get up and running:
 
 ::
 
@@ -1075,7 +1072,7 @@ Next create a file called **run.py** and copy into it the code below.
 
     '''
     import logging
-    from hdx.facades.scraperwiki import facade
+    from hdx.facades.simple import facade
     from .my_code import generate_dataset
 
     logger = logging.getLogger(__name__)
