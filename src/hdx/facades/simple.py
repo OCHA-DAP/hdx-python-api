@@ -30,6 +30,7 @@ def facade(projectmainfn, **kwargs):
     site_url = Configuration._create(**kwargs)
 
     logger.info('--------------------------------------------------')
+    logger.info('> Using HDX Python API Library %s' % Configuration.apiversion)
     logger.info('> HDX Site: %s' % site_url)
 
     UserAgent.user_agent = Configuration.read().user_agent

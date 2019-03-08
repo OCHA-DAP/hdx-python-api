@@ -63,7 +63,8 @@ class Configuration(UserDict, object):
     default_hdx_base_config_yaml = script_dir_plus_file('hdx_base_configuration.yml', ConfigurationError)
     default_hdx_config_yaml = join(home_folder, '.hdx_configuration.yml')
 
-    prefix = 'HDXPythonLibrary/%s' % get_api_version()
+    apiversion = get_api_version()
+    prefix = 'HDXPythonLibrary/%s' % apiversion
 
     def __init__(self, **kwargs):
         # type: (Any) -> None
