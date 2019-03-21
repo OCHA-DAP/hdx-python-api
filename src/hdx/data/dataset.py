@@ -7,7 +7,7 @@ import sys
 from copy import deepcopy
 from datetime import datetime
 from os.path import join
-from typing import List, Union, Optional, Dict, Any
+from typing import List, Union, Optional, Dict, Any, Tuple
 
 from dateutil import parser
 from hdx.location.country import Country
@@ -177,8 +177,10 @@ class Dataset(HDXObject):
         if 'package_id' in resource:
             if not ignore_datasetid:
                 raise HDXError('Resource %s being added already has a dataset id!' % (resource['name']))
+        resource.check_url_filetoupload()
         resource_updated = self._addupdate_hdxobject(self.resources, 'name', resource)
-        resource_updated.set_file_to_upload(resource.get_file_to_upload())
+        if resource.get_file_to_upload():
+            resource_updated.set_file_to_upload(resource.get_file_to_upload())
 
     def add_update_resources(self, resources, ignore_datasetid=False):
         # type: (List[Union[hdx.data.resource.Resource,Dict,str]], bool) -> None
@@ -197,7 +199,7 @@ class Dataset(HDXObject):
             self.add_update_resource(resource, ignore_datasetid)
 
     def delete_resource(self, resource, delete=True):
-        # type: (Union[hdx.data.resource.Resource,Dict,str]) -> bool
+        # type: (Union[hdx.data.resource.Resource,Dict,str], bool) -> bool
         """Delete a resource from the dataset and also from HDX by default
 
         Args:
@@ -362,12 +364,10 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        merge_two_dictionaries(resource, updated_resource)
         if updated_resource.get_file_to_upload():
             resource.set_file_to_upload(updated_resource.get_file_to_upload())
             filestore_resources.append(resource)
-            if 'url' not in resource:
-                resource['url'] = 'ignore'
+        merge_two_dictionaries(resource, updated_resource)
         resource.check_required_fields(ignore_fields=ignore_fields)
 
     def _dataset_merge_filestore_newresource(self, new_resource, ignore_fields, filestore_resources):
@@ -386,11 +386,9 @@ class Dataset(HDXObject):
         self.resources.append(new_resource)
         if new_resource.get_file_to_upload():
             filestore_resources.append(new_resource)
-            if 'url' not in new_resource:
-                new_resource['url'] = 'ignore'
 
     def _add_filestore_resources(self, filestore_resources, create_default_views, hxl_update):
-        # type: (List[hdx.data.Resource], bool) -> None
+        # type: (List[hdx.data.Resource], bool, bool) -> None
         """Helper method to create files in filestore by updating resources.
 
         Args:
@@ -405,7 +403,8 @@ class Dataset(HDXObject):
             for created_resource in self.data['resources']:
                 if resource['name'] == created_resource['name']:
                     merge_two_dictionaries(resource.data, created_resource)
-                    del resource['url']
+                    if 'url' in resource:
+                        del resource['url']
                     resource.update_in_hdx()
                     merge_two_dictionaries(created_resource, resource.data)
                     break
@@ -418,7 +417,7 @@ class Dataset(HDXObject):
 
     def _dataset_merge_hdx_update(self, update_resources, update_resources_by_name,
                                   remove_additional_resources, create_default_views, hxl_update):
-        # type: (bool, bool, bool, bool) -> None
+        # type: (bool, bool, bool, bool, bool) -> None
         """Helper method to check if dataset or its resources exist and update them
 
         Args:
@@ -490,12 +489,14 @@ class Dataset(HDXObject):
 
         if self.resources:
             self.data['resources'] = self._convert_hdxobjects(self.resources)
+        ignore_field = self.configuration['dataset'].get('ignore_on_update')
+        self.check_required_fields(ignore_fields=[ignore_field])
         self._save_to_hdx('update', 'id')
         self._add_filestore_resources(filestore_resources, create_default_views, hxl_update)
 
     def update_in_hdx(self, update_resources=True, update_resources_by_name=True,
                       remove_additional_resources=False, create_default_views=True, hxl_update=True):
-        # type: (bool, bool, bool, bool) -> None
+        # type: (bool, bool, bool, bool, bool) -> None
         """Check if dataset exists in HDX and if so, update it
 
         Args:
@@ -527,7 +528,7 @@ class Dataset(HDXObject):
 
     def create_in_hdx(self, allow_no_resources=False, update_resources=True, update_resources_by_name=True,
                       remove_additional_resources=False, create_default_views=True, hxl_update=True):
-        # type: (bool, bool, bool, bool, bool) -> None
+        # type: (bool, bool, bool, bool, bool, bool) -> None
         """Check if dataset exists in HDX and if so, update it, otherwise create it
 
         Args:
@@ -567,8 +568,6 @@ class Dataset(HDXObject):
                 resource.check_required_fields(ignore_fields=ignore_fields)
                 if resource.get_file_to_upload():
                     filestore_resources.append(resource)
-                    if 'url' not in resource:
-                        resource['url'] = 'ignore'
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         self._save_to_hdx('create', 'name')
         self._add_filestore_resources(filestore_resources, False, hxl_update)
@@ -593,7 +592,7 @@ class Dataset(HDXObject):
 
     @classmethod
     def search_in_hdx(cls, query='*:*', configuration=None, page_size=1000, **kwargs):
-        # type: (Optional[str], Optional[Configuration], Any) -> List['Dataset']
+        # type: (Optional[str], Optional[Configuration], int, Any) -> List['Dataset']
         """Searches for datasets in HDX
 
         Args:
@@ -858,7 +857,7 @@ class Dataset(HDXObject):
         return self._get_formatted_date(dataset_date, date_format)
 
     def set_dataset_date_from_datetime(self, dataset_date, dataset_end_date=None):
-        # type: (datetime) -> None
+        # type: (datetime, Optional[datetime]) -> None
         """Set dataset date from datetime.datetime object
 
         Args:
@@ -900,7 +899,7 @@ class Dataset(HDXObject):
                 raisefrom(HDXError, 'Invalid dataset date!', e)
 
     def set_dataset_date(self, dataset_date, dataset_end_date=None, date_format=None):
-        # type: (str, Optional[str]) -> None
+        # type: (str, Optional[str], Optional[str]) -> None
         """Set dataset date from string using specified format. If no format is supplied, the function will guess.
         For unambiguous formats, this should be fine.
 
@@ -1077,7 +1076,7 @@ class Dataset(HDXObject):
                                                      configuration=self.configuration) for x in countries]
 
     def add_country_location(self, country, exact=True, locations=None, use_live=True):
-        # type: (str, bool,Optional[List[str]]) -> bool
+        # type: (str, bool, Optional[List[str]], bool) -> bool
         """Add a country. If an iso 3 code is not provided, value is parsed and if it is a valid country name,
         converted to an iso 3 code. If the country is already added, it is ignored.
 
@@ -1099,7 +1098,7 @@ class Dataset(HDXObject):
                                        locations=locations)
 
     def add_country_locations(self, countries, locations=None, use_live=True):
-        # type: (List[str], Optional[List[str]]) -> bool
+        # type: (List[str], Optional[List[str]], bool) -> bool
         """Add a list of countries. If iso 3 codes are not provided, values are parsed and where they are valid country
         names, converted to iso 3 codes. If any country is already added, it is ignored.
 
@@ -1118,7 +1117,7 @@ class Dataset(HDXObject):
         return allcountriesadded
 
     def add_region_location(self, region, locations=None, use_live=True):
-        # type: (str, Optional[List[str]]) -> bool
+        # type: (str, Optional[List[str]], bool) -> bool
         """Add all countries in a region. If a 3 digit UNStats M49 region code is not provided, value is parsed as a
         region name. If any country is already added, it is ignored.
 
@@ -1458,7 +1457,7 @@ class Dataset(HDXObject):
         return self._remove_string_from_commastring('file_types', filetype)
 
     def clean_dataset_tags(self):
-        # type: (Optional[str], int) -> Tuple[bool, bool]
+        # type: () -> Tuple[bool, bool]
         """Clean dataset tags according to tags cleanup spreadsheet and return if any changes occurred
 
         Returns:

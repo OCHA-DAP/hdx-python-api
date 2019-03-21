@@ -13,7 +13,7 @@ import copy
 import logging
 
 from ckanapi.errors import NotFound
-from typing import Optional, List, Tuple, TypeVar, Union, Dict
+from typing import Optional, List, Tuple, TypeVar, Union, Dict, Any
 
 from hdx.utilities import raisefrom
 from hdx.hdx_configuration import Configuration
@@ -22,7 +22,7 @@ from hdx.utilities.loader import load_yaml_into_existing_dict, load_json_into_ex
 
 logger = logging.getLogger(__name__)
 
-HDXObjectUpperBound = TypeVar('T', bound='HDXObject')
+HDXObjectUpperBound = TypeVar('HDXObjectUpperBound', bound='HDXObject')
 
 
 class HDXError(Exception):
@@ -162,20 +162,21 @@ class HDXObject(UserDict, object):
         if id_field_name not in self.data:
             raise HDXError('No %s field (mandatory) in %s!' % (id_field_name, object_type))
 
-    def _check_load_existing_object(self, object_type, id_field_name):
-        # type: (str, str) -> None
+    def _check_load_existing_object(self, object_type, id_field_name, operation='update'):
+        # type: (str, str, str) -> None
         """Check metadata exists and contains HDX object identifier, and if so load HDX object
 
         Args:
             object_type (str): Description of HDX object type (for messages)
             id_field_name (str): Name of field containing HDX object identifier
+            operation (str): Operation to report if error. Defaults to update.
 
         Returns:
             None
         """
         self._check_existing_object(object_type, id_field_name)
         if not self._load_from_hdx(object_type, self.data[id_field_name]):
-            raise HDXError('No existing %s to update!' % object_type)
+            raise HDXError('No existing %s to %s!' % (object_type, operation))
 
     @abc.abstractmethod
     def check_required_fields(self, ignore_fields=list()):
@@ -205,22 +206,29 @@ class HDXObject(UserDict, object):
             if field not in self.data and field not in ignore_fields:
                 raise HDXError('Field %s is missing in %s!' % (field, object_type))
 
-    def _merge_hdx_update(self, object_type, id_field_name, file_to_upload=None):
-        # type: (str, str, Optional[str]) -> None
+    def _merge_hdx_update(self, object_type, id_field_name, file_to_upload=None, **kwargs):
+        # type: (str, str, Optional[str], Any) -> None
         """Helper method to check if HDX object exists and update it
 
         Args:
             object_type (str): Description of HDX object type (for messages)
             id_field_name (str): Name of field containing HDX object identifier
             file_to_upload (Optional[str]): File to upload to HDX
+            **kwargs: See below
+            operation (string): Operation to perform eg. patch. Defaults to update.
 
         Returns:
             None
         """
         merge_two_dictionaries(self.data, self.old_data)
+        if 'batch_mode' in kwargs:  # Whether or not CKAN should change groupings of datasets on /datasets page
+            self.data['batch_mode'] = kwargs['batch_mode']
+        if 'skip_validation' in kwargs:  # Whether or not CKAN should perform validation steps (checking fields present)
+            self.data['skip_validation'] = kwargs['skip_validation']
         ignore_field = self.configuration['%s' % object_type].get('ignore_on_update')
         self.check_required_fields(ignore_fields=[ignore_field])
-        self._save_to_hdx('update', id_field_name, file_to_upload)
+        operation = kwargs.get('operation', 'update')
+        self._save_to_hdx(operation, id_field_name, file_to_upload)
 
     @abc.abstractmethod
     def update_in_hdx(self):
@@ -232,21 +240,26 @@ class HDXObject(UserDict, object):
         """
         raise NotImplementedError
 
-    def _update_in_hdx(self, object_type, id_field_name, file_to_upload=None):
-        # type: (str, str, Optional[str]) -> None
+    def _update_in_hdx(self, object_type, id_field_name, file_to_upload=None, **kwargs):
+        # type: (str, str, Optional[str], Any) -> None
         """Helper method to check if HDX object exists in HDX and if so, update it
 
         Args:
             object_type (str): Description of HDX object type (for messages)
             id_field_name (str): Name of field containing HDX object identifier
             file_to_upload (Optional[str]): File to upload to HDX
+            **kwargs: See below
+            operation (string): Operation to perform eg. patch. Defaults to update.
 
         Returns:
             None
         """
 
         self._check_load_existing_object(object_type, id_field_name)
-        self._merge_hdx_update(object_type, id_field_name, file_to_upload)
+        # We load an existing object even thought it may well have been loaded already
+        # to prevent an admittedly unlikely race condition where someone has updated
+        # the object in the intervening time
+        self._merge_hdx_update(object_type, id_field_name, file_to_upload, **kwargs)
 
     def _write_to_hdx(self, action, data, id_field_name, file_to_upload=None):
         # type: (str, Dict, str, Optional[str]) -> Dict
@@ -534,7 +547,7 @@ class HDXObject(UserDict, object):
             return list()
 
     def _add_string_to_commastring(self, field, string):
-        # type: (str) -> bool
+        # type: (str, str) -> bool
         """Add a string to a comma separated list of strings
 
         Args:
@@ -553,7 +566,7 @@ class HDXObject(UserDict, object):
         return True
 
     def _add_strings_to_commastring(self, field, strings):
-        # type: (List[str]) -> bool
+        # type: (str, List[str]) -> bool
         """Add a list of strings to a comma separated list of strings
 
         Args:
@@ -570,7 +583,7 @@ class HDXObject(UserDict, object):
         return allstringsadded
 
     def _remove_string_from_commastring(self, field, string):
-        # type: (str) -> bool
+        # type: (str, str) -> bool
         """Remove a string from a comma separated list of strings
 
         Args:

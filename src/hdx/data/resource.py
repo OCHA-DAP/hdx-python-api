@@ -132,7 +132,7 @@ class Resource(HDXObject):
 
     def set_file_to_upload(self, file_to_upload):
         # type: (str) -> None
-        """Set the file uploaded to the local path provided
+        """Delete any existing url and set the file uploaded to the local path provided
 
         Args:
             file_to_upload (str): Local path to file to upload
@@ -140,16 +140,17 @@ class Resource(HDXObject):
         Returns:
             None
         """
+        if 'url' in self.data:
+            del self.data['url']
         self.file_to_upload = file_to_upload
 
     def check_url_filetoupload(self):
-        # type: () -> bool
-        """Check if url or file to upload provided for resource and add resource_type and url_type if not supplied.
+        # type: () -> None
+        """Check if url or file to upload provided for resource and add resource_type and url_type if not supplied
 
         Returns:
-            bool: Whether url field and file_to_upload are both populated
+            None
         """
-        url_file_to_upload = False
         if self.file_to_upload is None:
             if 'url' in self.data:
                 if 'resource_type' not in self.data:
@@ -160,14 +161,13 @@ class Resource(HDXObject):
                 raise HDXError('Either a url or a file to upload must be supplied!')
         else:
             if 'url' in self.data:
-                url_file_to_upload = True
+                raise HDXError('Either a url or a file to upload must be supplied not both!')
             if 'resource_type' not in self.data:
                 self.data['resource_type'] = 'file.upload'
             if 'url_type' not in self.data:
                 self.data['url_type'] = 'upload'
             if 'tracking_summary' in self.data:
                 del self.data['tracking_summary']
-        return url_file_to_upload
 
     def check_required_fields(self, ignore_fields=list()):
         # type: (List[str]) -> None
@@ -183,30 +183,21 @@ class Resource(HDXObject):
         self.check_url_filetoupload()
         self._check_required_fields('resource', ignore_fields)
 
-    def _remove_url(self, url_file_to_upload):
-        # type: (bool) -> None
-        """If input parameter is True, remove url from data.
-
-        Args:
-            url_file_to_upload (bool): Whether to remove url
-
-        Returns:
-            None
-        """
-        if url_file_to_upload:
-            logger.warning(
-                'Either a url or a file to upload must be supplied not both! Deleting url from resource %s!' % self.data['id'])
-            del self.data['url']
-
-    def update_in_hdx(self):
-        # type: () -> None
+    def update_in_hdx(self, **kwargs):
+        # type: (Any) -> None
         """Check if resource exists in HDX and if so, update it
 
+        Args:
+            **kwargs: See below
+            operation (string): Operation to perform eg. patch. Defaults to update.
+
         Returns:
             None
         """
-        self._remove_url(self.check_url_filetoupload())
-        self._update_in_hdx('resource', 'id', self.file_to_upload)
+        self._check_load_existing_object('resource', 'id')
+        if self.file_to_upload and 'url' in self.data:
+            del self.data['url']
+        self._merge_hdx_update('resource', 'id', self.file_to_upload, **kwargs)
 
     def create_in_hdx(self):
         # type: () -> None
@@ -215,16 +206,14 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        url_file_to_upload = self.check_url_filetoupload()
+        self.check_required_fields()
         id = self.data.get('id')
         if id and self._load_from_hdx('resource', id):
             logger.warning('%s exists. Updating %s' % ('resource', id))
-            self._remove_url(url_file_to_upload)
+            if self.file_to_upload and 'url' in self.data:
+                del self.data['url']
             self._merge_hdx_update('resource', 'id', self.file_to_upload)
         else:
-            if url_file_to_upload:
-                raise HDXError('Either a url or a file to upload must be supplied not both!')
-            self._check_required_fields('resource', list())
             self._save_to_hdx('create', 'name', self.file_to_upload)
 
     def delete_from_hdx(self):
@@ -568,15 +557,6 @@ class Resource(HDXObject):
             None
         """
         self.create_datastore_for_topline(2, path=path)
-
-    def touch(self):
-        # type: () -> None
-        """Touch resource
-
-        Returns:
-            None
-        """
-        self._write_to_hdx('patch', self.data, 'id')
 
     def get_resource_views(self):
         # type: () -> List[ResourceView]

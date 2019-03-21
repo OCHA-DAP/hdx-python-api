@@ -100,6 +100,7 @@ hxlupdate_list = [{'title': 'Quick Charts', 'resource_id': 'de6549d8-268b-4dfe-a
                    'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d', 'view_type': 'hdx_hxl_preview', 
                    'description': '', 'id': '29cc5894-4306-4bef-96ce-b7a833e7986a'}]
 
+
 def mockshow(url, datadict):
     if 'show' not in url:
         return MockResponse(404,
@@ -255,14 +256,14 @@ class TestDataset:
                   'id': 'aaafc63b-2234-48e3-8ccc-198d7cf0f3f3', 'name': 'political violence'}],
     }
 
-    resources_data = [{"id": "de6549d8-268b-4dfe-adaf-a4ae5c8510d5", "description": "Resource1",
-                       "name": "Resource1",
-                       "url": "http://resource1.xlsx",
-                       "format": "xlsx"},
-                      {"id": "DEF", "description": "Resource2",
-                       "name": "Resource2",
-                       "url": "http://resource2.csv",
-                       "format": "csv"}]
+    resources_data = [{'id': 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5', 'description': 'Resource1',
+                       'name': 'Resource1',
+                       'url': 'http://resource1.xlsx',
+                       'format': 'xlsx'},
+                      {'id': 'DEF', 'description': 'Resource2',
+                       'name': 'Resource2',
+                       'url': 'http://resource2.csv',
+                       'format': 'csv'}]
 
     association = None
 
@@ -644,6 +645,7 @@ class TestDataset:
         assert len(dataset.resources) == 2
         resource['name'] = '123'
         resource.set_file_to_upload(None)
+        resource['url'] = 'http://lala'
         dataset.add_update_resource(resource)
         dataset.update_in_hdx()
         assert len(dataset.resources) == 3

@@ -10,7 +10,6 @@ import pytest
 import six
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.downloader import DownloadError
-from hdx.utilities.useragent import UserAgent
 
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
@@ -84,6 +83,7 @@ searchdict = {'count': 4, 'results': [{'size': None, 'description': 'ACLED-All-A
                                        'id': 'e1e16f5c-2380-4a28-87b1-f5d644f248e5', 'mimetype_inner': None,
                                        'webstore_url': None,
                                        'hash': '', 'originalHash': '97196323'}]}
+
 
 def mockshow(url, datadict):
     if 'show' not in url:
@@ -375,6 +375,8 @@ class TestResource:
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
+                if 'show' in url:
+                    return mockshow(url, datadict)
                 return mockpatch(url, datadict)
 
         Configuration.read().remoteckan().session = MockSession()
@@ -424,14 +426,12 @@ class TestResource:
     def test_check_url_filetoupload(self, configuration):
         resource_data = copy.deepcopy(TestResource.resource_data)
         resource = Resource(resource_data)
-        url_filetoupload = resource.check_url_filetoupload()
-        assert url_filetoupload is False
+        resource.check_url_filetoupload()
         resource.set_file_to_upload('abc')
-        url_filetoupload = resource.check_url_filetoupload()
-        assert url_filetoupload is True
-        del resource['url']
-        url_filetoupload = resource.check_url_filetoupload()
-        assert url_filetoupload is False
+        resource.check_url_filetoupload()
+        resource['url'] = 'lala'
+        with pytest.raises(HDXError):
+            resource.check_url_filetoupload()
 
     def test_check_required_fields(self, configuration):
         resource_data = copy.deepcopy(TestResource.resource_data)
@@ -462,9 +462,6 @@ class TestResource:
         filetoupload = join('tests', 'fixtures', 'test_data.csv')
         resource.set_file_to_upload(filetoupload)
         assert resource.get_file_to_upload() == filetoupload
-        with pytest.raises(HDXError):
-            resource.create_in_hdx()
-        del resource['url']
         resource.create_in_hdx()
         assert resource['url_type'] == 'upload'
         assert resource['resource_type'] == 'file.upload'
@@ -559,11 +556,11 @@ class TestResource:
         assert resource['name'] == 'MyResource1'
         assert resource.get_file_type() == 'zipped csv'
 
-    def test_touch(self, configuration, post_patch):
+    def test_patch(self, configuration, post_patch):
         resource = Resource()
         resource['id'] = '74b74ae1-df0c-4716-829f-4f939a046811'
-        resource.touch()
-        assert resource['id'] == '74b74ae1-df0c-4716-829f-4f939a046811'
+        resource.update_in_hdx(operation='patch', batch_mode='KEEP_OLD', skip_validation=True)
+        assert resource['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
 
     def test_get_dataset(self, configuration, post_dataset):
         resource_data = copy.deepcopy(TestResource.resource_data)
