@@ -74,6 +74,7 @@ class Dataset(HDXObject):
         'annually': '365',
         'yearly': '365'
     }
+    temporary_url = 'updated_by_file_upload_step'
 
     def __init__(self, initial_data=None, configuration=None):
         # type: (Optional[Dict], Optional[Configuration]) -> None
@@ -369,6 +370,8 @@ class Dataset(HDXObject):
             filestore_resources.append(resource)
         merge_two_dictionaries(resource, updated_resource)
         resource.check_required_fields(ignore_fields=ignore_fields)
+        if resource.get_file_to_upload():
+            resource['url'] = Dataset.temporary_url
 
     def _dataset_merge_filestore_newresource(self, new_resource, ignore_fields, filestore_resources):
         # type: (hdx.data.Resource, List[str], List[hdx.data.Resource]) -> None
@@ -386,6 +389,7 @@ class Dataset(HDXObject):
         self.resources.append(new_resource)
         if new_resource.get_file_to_upload():
             filestore_resources.append(new_resource)
+            new_resource['url'] = Dataset.temporary_url
 
     def _add_filestore_resources(self, filestore_resources, create_default_views, hxl_update):
         # type: (List[hdx.data.Resource], bool, bool) -> None
@@ -403,8 +407,7 @@ class Dataset(HDXObject):
             for created_resource in self.data['resources']:
                 if resource['name'] == created_resource['name']:
                     merge_two_dictionaries(resource.data, created_resource)
-                    if 'url' in resource:
-                        del resource['url']
+                    del resource['url']
                     resource.update_in_hdx()
                     merge_two_dictionaries(created_resource, resource.data)
                     break

@@ -161,7 +161,8 @@ class Resource(HDXObject):
                 raise HDXError('Either a url or a file to upload must be supplied!')
         else:
             if 'url' in self.data:
-                raise HDXError('Either a url or a file to upload must be supplied not both!')
+                if self.data['url'] != hdx.data.dataset.Dataset.temporary_url:
+                    raise HDXError('Either a url or a file to upload must be supplied not both!')
             if 'resource_type' not in self.data:
                 self.data['resource_type'] = 'file.upload'
             if 'url_type' not in self.data:
