@@ -571,6 +571,7 @@ class Dataset(HDXObject):
                 resource.check_required_fields(ignore_fields=ignore_fields)
                 if resource.get_file_to_upload():
                     filestore_resources.append(resource)
+                    resource['url'] = Dataset.temporary_url
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         self._save_to_hdx('create', 'name')
         self._add_filestore_resources(filestore_resources, False, hxl_update)
