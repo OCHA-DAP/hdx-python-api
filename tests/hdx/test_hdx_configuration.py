@@ -270,18 +270,15 @@ hello there'''
             },
             'hdx_demo_site': {
                 'url': 'https://demo-data.humdata.org/',
-                'username': 'ZGVtbzE3OQ==',
-                'password': 'ZnVud2l0aGhkeA=='
             },
             'hdx_test_site': {
                 'url': 'https://test-data.humdata.org/',
-                'username': 'ZGF0YXByb2plY3Q=',
-                'password': 'aHVtZGF0YQ=='
             },
             'hdx_feature_site': {
                 'url': 'https://feature-data.humdata.org/',
-                'username': 'ZGF0YXByb2plY3Q=',
-                'password': 'aHVtZGF0YQ=='
+            },
+            'hdx_dev_site': {
+                'url': 'http://data.dev.humdata.org/',
             },
             'dataset': {'required_fields': [
                 'name',
@@ -363,18 +360,15 @@ hello there'''
             },
             'hdx_demo_site': {
                 'url': 'https://demo-data.humdata.org/',
-                'username': 'ZGVtbzE3OQ==',
-                'password': 'ZnVud2l0aGhkeA=='
             },
             'hdx_test_site': {
                 'url': 'https://test-data.humdata.org/',
-                'username': 'ZGF0YXByb2plY3Q=',
-                'password': 'aHVtZGF0YQ=='
             },
             'hdx_feature_site': {
                 'url': 'https://feature-data.humdata.org/',
-                'username': 'ZGF0YXByb2plY3Q=',
-                'password': 'aHVtZGF0YQ=='
+            },
+            'hdx_dev_site': {
+                'url': 'http://data.dev.humdata.org/',
             },
             'my_param': 'abc',
             'dataset': {'required_fields': [
@@ -455,18 +449,15 @@ hello there'''
             },
             'hdx_demo_site': {
                 'url': 'https://demo-data.humdata.org/',
-                'username': 'ZGVtbzE3OQ==',
-                'password': 'ZnVud2l0aGhkeA=='
             },
             'hdx_test_site': {
                 'url': 'https://test-data.humdata.org/',
-                'username': 'ZGF0YXByb2plY3Q=',
-                'password': 'aHVtZGF0YQ=='
             },
             'hdx_feature_site': {
                 'url': 'https://feature-data.humdata.org/',
-                'username': 'ZGF0YXByb2plY3Q=',
-                'password': 'aHVtZGF0YQ=='
+            },
+            'hdx_dev_site': {
+                'url': 'http://data.dev.humdata.org/',
             },
             'dataset': {'required_fields': [
                 'name',
