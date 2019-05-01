@@ -310,7 +310,7 @@ The keyword arguments facade is similar but passes through keyword arguments:
 
     from hdx.facades.keyword_arguments import facade
 
-    def main(**kwargs):
+    def main(kwparam1, kwparam2, ...,**ignore):
         ***YOUR CODE HERE***
 
     if __name__ == '__main__':
