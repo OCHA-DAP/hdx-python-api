@@ -302,12 +302,24 @@ The simple facade makes it easier to get up and running:
         ***YOUR CODE HERE***
 
     if __name__ == '__main__':
-        facade(main)
+        facade(main, CONFIGURATION_KWARGS)
+
+The keyword arguments facade is similar but passes through keyword arguments:
+
+::
+
+    from hdx.facades.keyword_arguments import facade
+
+    def main(**kwargs):
+        ***YOUR CODE HERE***
+
+    if __name__ == '__main__':
+        facade(main, CONFIGURATION_AND_OTHER_KWARGS)
 
 Customising the Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-It is possible to pass configuration parameters in the facade call eg.
+It is necessary to pass configuration parameters in the facade call eg.
 
 ::
 
