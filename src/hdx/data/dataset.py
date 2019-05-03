@@ -1107,7 +1107,7 @@ class Dataset(HDXObject):
         names, converted to iso 3 codes. If any country is already added, it is ignored.
 
         Args:
-            countries (List[str]): list of countries to add
+            countries (List[str]): List of countries to add
             locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
             use_live (bool): Try to get use latest country data from web rather than file in package. Defaults to True.
 
@@ -1246,7 +1246,7 @@ class Dataset(HDXObject):
         """Get any showcases the dataset is in
 
         Returns:
-            List[Showcase]: list of showcases
+            List[Showcase]: List of showcases
         """
         assoc_result, showcases_dicts = self._read_from_hdx('showcase', self.data['id'], fieldname='package_id',
                                                             action=hdx.data.showcase.Showcase.actions()['list_showcases'])
@@ -1265,7 +1265,7 @@ class Dataset(HDXObject):
             showcase (Union[Showcase,Dict,str]): Either a showcase id or Showcase metadata from a Showcase object or dictionary
 
         Returns:
-            dict: dataset showcase dict
+            dict: Dataset showcase dict
         """
         if isinstance(showcase, hdx.data.showcase.Showcase) or isinstance(showcase, dict):
             if 'id' not in showcase:
@@ -1283,7 +1283,7 @@ class Dataset(HDXObject):
 
         Args:
             showcase (Union[Showcase,Dict,str]): Either a showcase id or showcase metadata from a Showcase object or dictionary
-            showcases_to_check (List[Showcase]): list of showcases against which to check existence of showcase. Defaults to showcases containing dataset.
+            showcases_to_check (List[Showcase]): List of showcases against which to check existence of showcase. Defaults to showcases containing dataset.
 
         Returns:
             bool: True if the showcase was added, False if already present
@@ -1370,7 +1370,7 @@ class Dataset(HDXObject):
         """Add a fieldname to list of fieldnames in your data. Only applicable to requestable datasets.
 
         Args:
-            fieldname (str): fieldname to add
+            fieldname (str): Fieldname to add
 
         Returns:
             bool: True if fieldname added or False if tag already present
@@ -1384,7 +1384,7 @@ class Dataset(HDXObject):
         """Add a list of fieldnames to list of fieldnames in your data. Only applicable to requestable datasets.
 
         Args:
-            fieldnames (List[str]): list of fieldnames to add
+            fieldnames (List[str]): List of fieldnames to add
 
         Returns:
             bool: True if all fieldnames added or False if any already present
@@ -1465,7 +1465,7 @@ class Dataset(HDXObject):
         """Clean dataset tags according to tags cleanup spreadsheet and return if any changes occurred
 
         Returns:
-            Tuple[bool, bool]: Returns (True if tags changed or False if not, True if error or False if not)
+            Tuple[bool, bool]: Tuple (True if tags changed or False if not, True if error or False if not)
         """
         tags_dict, wildcard_tags = Tags.tagscleanupdicts()
 
@@ -1561,7 +1561,7 @@ class Dataset(HDXObject):
             resource (Union[hdx.data.resource.Resource,Dict,str,int]): Either resource id or name, resource metadata from a Resource object or a dictionary or position
 
         Returns:
-            bool: Returns True if resource for QuickCharts in dataset preview set or False if not
+            bool: True if resource for QuickCharts in dataset preview set or False if not
         """
         if isinstance(resource, int) and not isinstance(resource, bool):
             resource = self.get_resources()[resource]
@@ -1603,3 +1603,15 @@ class Dataset(HDXObject):
 
         data = {'package': package, 'create_datastore_views': create_datastore_views}
         self._write_to_hdx('create_default_views', data, 'package')
+
+    def get_hdx_url(self):
+        # type: () -> Optional[str]
+        """Get the url of the dataset on HDX
+
+        Returns:
+            Optional[str]: Url of the dataset on HDX or None if the dataset is missing the name field
+        """
+        name = self.data.get('name')
+        if not name:
+            return None
+        return '%sdataset/%s' % (self.configuration.get_hdx_site_url(), name)

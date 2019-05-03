@@ -1213,4 +1213,12 @@ class TestDataset:
         assert resources[0]['dataset_preview_enabled'] == 'True'
         assert resources[1]['dataset_preview_enabled'] == 'False'
 
-
+    def test_get_hdx_url(self, configuration, hdx_config_yaml, project_config_yaml):
+        dataset_data = copy.deepcopy(TestDataset.dataset_data)
+        dataset = Dataset(dataset_data)
+        assert dataset.get_hdx_url() == 'https://data.humdata.org/dataset/MyDataset1'
+        Configuration.delete()
+        Configuration._create(hdx_site='feature', user_agent='test', hdx_config_yaml=hdx_config_yaml,
+                              project_config_yaml=project_config_yaml)
+        dataset = Dataset(dataset_data)
+        assert dataset.get_hdx_url() == 'https://feature-data.humdata.org/dataset/MyDataset1'
