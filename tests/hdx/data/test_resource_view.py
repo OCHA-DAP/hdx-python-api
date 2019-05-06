@@ -193,6 +193,7 @@ class TestResourceView:
         resource_view.create_in_hdx()
         assert resource_view['id'] == 'c06b5a0d-1d41-4a74-a196-41c251c76023'
         assert resource_view['view_type'] == 'hdx_hxl_preview'
+        assert 'state' not in resource_view
 
         data['title'] = 'XXX'
         resource_view = ResourceView(data)
@@ -224,6 +225,7 @@ class TestResourceView:
         assert resource_view['id'] == 'c06b5a0d-1d41-4a74-a196-41c251c76023'
         assert resource_view['view_type'] == 'recline_view'
         assert resource_view['resource_id'] == 'LALA'
+        assert 'state' not in resource_view
 
         resource_view['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):
@@ -250,6 +252,7 @@ class TestResourceView:
         assert resource_view['id'] == 'c06b5a0d-1d41-4a74-a196-41c251c76023'
         assert resource_view['description'] == 'Custom chart X'
         assert resource_view['view_type'] == 'recline_view'
+        assert 'state' not in resource_view
 
     def test_delete_from_hdx(self, configuration, post_delete):
         resource_view = ResourceView.read_from_hdx('c06b5a0d-1d41-4a74-a196-41c251c76023')

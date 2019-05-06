@@ -494,7 +494,7 @@ class Dataset(HDXObject):
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         ignore_field = self.configuration['dataset'].get('ignore_on_update')
         self.check_required_fields(ignore_fields=[ignore_field])
-        self._save_to_hdx('update', 'id')
+        self._save_to_hdx('update', 'id', force_active=True)
         self._add_filestore_resources(filestore_resources, create_default_views, hxl_update)
 
     def update_in_hdx(self, update_resources=True, update_resources_by_name=True,
@@ -573,7 +573,7 @@ class Dataset(HDXObject):
                     filestore_resources.append(resource)
                     resource['url'] = Dataset.temporary_url
             self.data['resources'] = self._convert_hdxobjects(self.resources)
-        self._save_to_hdx('create', 'name')
+        self._save_to_hdx('create', 'name', force_active=True)
         self._add_filestore_resources(filestore_resources, False, hxl_update)
 
     def delete_from_hdx(self):

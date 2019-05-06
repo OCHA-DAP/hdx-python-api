@@ -88,7 +88,9 @@ class TestOrganization:
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_create"}')
 
-                result = json.dumps(resultdict)
+                resultdictcopy = copy.deepcopy(resultdict)
+                resultdictcopy['state'] = datadict['state']
+                result = json.dumps(resultdictcopy)
                 if datadict['name'] == 'MyOrganization1':
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_create"}' % result)
@@ -207,6 +209,7 @@ class TestOrganization:
         organization = Organization(org_data)
         organization.create_in_hdx()
         assert organization['id'] == 'b67e6c74-c185-4f43-b561-0e114a736f19'
+        assert organization['state'] == 'active'
 
         org_data['name'] = 'MyOrganization2'
         organization = Organization(org_data)
@@ -237,6 +240,7 @@ class TestOrganization:
         organization.update_in_hdx()
         assert organization['id'] == 'b67e6c74-c185-4f43-b561-0e114a736f19'
         assert organization['description'] == 'Humanitarian work'
+        assert organization['state'] == 'active'
 
         organization['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):
@@ -253,6 +257,7 @@ class TestOrganization:
         organization.create_in_hdx()
         assert organization['id'] == 'b67e6c74-c185-4f43-b561-0e114a736f19'
         assert organization['name'] == 'MyOrganization1'
+        assert organization['state'] == 'active'
 
     def test_delete_from_hdx(self, configuration, post_delete):
         organization = Organization.read_from_hdx('b67e6c74-c185-4f43-b561-0e114a736f19')

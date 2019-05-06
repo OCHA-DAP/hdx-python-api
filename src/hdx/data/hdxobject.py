@@ -206,14 +206,15 @@ class HDXObject(UserDict, object):
             if field not in self.data and field not in ignore_fields:
                 raise HDXError('Field %s is missing in %s!' % (field, object_type))
 
-    def _merge_hdx_update(self, object_type, id_field_name, file_to_upload=None, **kwargs):
-        # type: (str, str, Optional[str], Any) -> None
+    def _merge_hdx_update(self, object_type, id_field_name, file_to_upload=None, force_active=False, **kwargs):
+        # type: (str, str, Optional[str], bool, Any) -> None
         """Helper method to check if HDX object exists and update it
 
         Args:
             object_type (str): Description of HDX object type (for messages)
             id_field_name (str): Name of field containing HDX object identifier
             file_to_upload (Optional[str]): File to upload to HDX
+            force_active (bool): Make object state active. Defaults to False.
             **kwargs: See below
             operation (string): Operation to perform eg. patch. Defaults to update.
 
@@ -228,7 +229,7 @@ class HDXObject(UserDict, object):
         ignore_field = self.configuration['%s' % object_type].get('ignore_on_update')
         self.check_required_fields(ignore_fields=[ignore_field])
         operation = kwargs.get('operation', 'update')
-        self._save_to_hdx(operation, id_field_name, file_to_upload)
+        self._save_to_hdx(operation, id_field_name, file_to_upload, force_active)
 
     @abc.abstractmethod
     def update_in_hdx(self):
@@ -240,14 +241,15 @@ class HDXObject(UserDict, object):
         """
         raise NotImplementedError
 
-    def _update_in_hdx(self, object_type, id_field_name, file_to_upload=None, **kwargs):
-        # type: (str, str, Optional[str], Any) -> None
+    def _update_in_hdx(self, object_type, id_field_name, file_to_upload=None, force_active=True, **kwargs):
+        # type: (str, str, Optional[str], bool, Any) -> None
         """Helper method to check if HDX object exists in HDX and if so, update it
 
         Args:
             object_type (str): Description of HDX object type (for messages)
             id_field_name (str): Name of field containing HDX object identifier
             file_to_upload (Optional[str]): File to upload to HDX
+            force_active (bool): Make object state active. Defaults to True.
             **kwargs: See below
             operation (string): Operation to perform eg. patch. Defaults to update.
 
@@ -256,10 +258,10 @@ class HDXObject(UserDict, object):
         """
 
         self._check_load_existing_object(object_type, id_field_name)
-        # We load an existing object even thought it may well have been loaded already
+        # We load an existing object even though it may well have been loaded already
         # to prevent an admittedly unlikely race condition where someone has updated
         # the object in the intervening time
-        self._merge_hdx_update(object_type, id_field_name, file_to_upload, **kwargs)
+        self._merge_hdx_update(object_type, id_field_name, file_to_upload, force_active=force_active, **kwargs)
 
     def _write_to_hdx(self, action, data, id_field_name, file_to_upload=None):
         # type: (str, Dict, str, Optional[str]) -> Dict
@@ -288,8 +290,8 @@ class HDXObject(UserDict, object):
             if file_to_upload and file:
                 file.close()
 
-    def _save_to_hdx(self, action, id_field_name, file_to_upload=None):
-        # type: (str, str, Optional[str]) -> None
+    def _save_to_hdx(self, action, id_field_name, file_to_upload=None, force_active=False):
+        # type: (str, str, Optional[str], bool) -> None
         """Creates or updates an HDX object in HDX, saving current data and replacing with returned HDX object data
         from HDX
 
@@ -297,10 +299,13 @@ class HDXObject(UserDict, object):
             action (str): Action to perform: 'create' or 'update'
             id_field_name (str): Name of field containing HDX object identifier
             file_to_upload (Optional[str]): File to upload to HDX
+            force_active (bool): Make object state active. Defaults to False.
 
         Returns:
             None
         """
+        if force_active:
+            self.data['state'] = 'active'
         result = self._write_to_hdx(action, self.data, id_field_name, file_to_upload)
         self.old_data = self.data
         self.data = result
@@ -316,8 +321,8 @@ class HDXObject(UserDict, object):
         raise NotImplementedError
 
     def _create_in_hdx(self, object_type, id_field_name, name_field_name,
-                       file_to_upload=None):
-        # type: (str, str, str, Optional[str]) -> None
+                       file_to_upload=None, force_active=True):
+        # type: (str, str, str, Optional[str], bool) -> None
         """Helper method to check if resource exists in HDX and if so, update it, otherwise create it
 
 
@@ -326,6 +331,7 @@ class HDXObject(UserDict, object):
             id_field_name (str): Name of field containing HDX object identifier
             name_field_name (str): Name of field containing HDX object name
             file_to_upload (Optional[str]): File to upload to HDX (if url not supplied)
+            force_active (bool): Make object state active. Defaults to True.
 
         Returns:
             None
@@ -333,9 +339,9 @@ class HDXObject(UserDict, object):
         self.check_required_fields()
         if id_field_name in self.data and self._load_from_hdx(object_type, self.data[id_field_name]):
             logger.warning('%s exists. Updating %s' % (object_type, self.data[id_field_name]))
-            self._merge_hdx_update(object_type, id_field_name, file_to_upload)
+            self._merge_hdx_update(object_type, id_field_name, file_to_upload, force_active)
         else:
-            self._save_to_hdx('create', name_field_name, file_to_upload)
+            self._save_to_hdx('create', name_field_name, file_to_upload, force_active)
 
     @abc.abstractmethod
     def delete_from_hdx(self):

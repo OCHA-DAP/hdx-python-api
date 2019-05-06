@@ -311,7 +311,9 @@ class TestDataset:
                                         '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_create"}')
 
                 if datadict['name'] == 'MyDataset1':
-                    result = json.dumps(dataset_resultdict)
+                    resultdictcopy = copy.deepcopy(dataset_resultdict)
+                    resultdictcopy['state'] = datadict['state']
+                    result = json.dumps(resultdictcopy)
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_create"}' % result)
                 if datadict['name'] == 'MyDataset2':
@@ -535,6 +537,7 @@ class TestDataset:
         dataset.add_update_resources([resource, resource])
         dataset.create_in_hdx()
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
+        assert dataset['state'] == 'active'
         assert len(dataset.resources) == 2
 
         dataset_data['name'] = 'MyDataset2'
@@ -569,6 +572,7 @@ class TestDataset:
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
         assert len(dataset.resources) == 2
         assert dataset.resources[0].configuration.unique == uniqueval
+        assert dataset['state'] == 'active'
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
         dataset = Dataset(dataset_data)
         resource = Resource(resources_data[0])
@@ -577,6 +581,7 @@ class TestDataset:
         dataset.add_update_resource(resource)
         dataset.create_in_hdx()
         remove(file.name)
+        assert dataset['state'] == 'active'
         assert len(dataset.resources) == 2
         # Dataset creates that end up updating are in the test below
 
@@ -599,6 +604,7 @@ class TestDataset:
         dataset.update_in_hdx()
         assert dataset['id'] == 'TEST1'
         assert dataset['dataset_date'] == '02/26/2016'
+        assert dataset['state'] == 'active'
 
         dataset['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):
@@ -622,6 +628,7 @@ class TestDataset:
         resource = Resource(resources_data[0])
         dataset.add_update_resources([resource, resource])
         dataset.create_in_hdx()
+        assert dataset['state'] == 'active'
         assert len(dataset.resources) == 2
         dataset = Dataset(dataset_data)
         resources_data = copy.deepcopy(TestDataset.resources_data)
@@ -630,11 +637,14 @@ class TestDataset:
         dataset.create_in_hdx(update_resources_by_name=False)
         assert dataset['id'] == 'TEST1'
         assert dataset['dataset_date'] == '03/23/2016'
+        assert dataset['state'] == 'active'
         assert len(dataset.resources) == 2
         dataset.update_in_hdx()
+        assert dataset['state'] == 'active'
         assert len(dataset.resources) == 2
         dataset = Dataset.read_from_hdx('TEST4')
         dataset['id'] = 'TEST4'
+        assert dataset['state'] == 'active'
         dataset.update_in_hdx()
         assert len(dataset.resources) == 2
         dataset = Dataset.read_from_hdx('TEST4')
@@ -648,6 +658,7 @@ class TestDataset:
         resource['url'] = 'http://lala'
         dataset.add_update_resource(resource)
         dataset.update_in_hdx()
+        assert dataset['state'] == 'active'
         assert len(dataset.resources) == 3
         dataset = Dataset(dataset_data)
         resources_data = copy.deepcopy(TestDataset.resources_data)
@@ -663,6 +674,7 @@ class TestDataset:
         resource['name'] = 'changed name'
         resource.set_file_to_upload(file.name)
         dataset.update_in_hdx(update_resources_by_name=True)
+        assert dataset['state'] == 'active'
         assert len(dataset.resources) == 4
         dataset = Dataset(dataset_data)
         resources_data = copy.deepcopy(TestDataset.resources_data)
@@ -678,6 +690,7 @@ class TestDataset:
         resource['name'] = 'changed name'
         resource.set_file_to_upload(file.name)
         dataset.update_in_hdx(update_resources_by_name=False)
+        assert dataset['state'] == 'active'
         assert len(dataset.resources) == 3
         remove(file.name)
         dataset = Dataset(dataset_data)
@@ -685,18 +698,21 @@ class TestDataset:
         resource = Resource(resources_data[0])
         dataset.add_update_resource(resource)
         dataset.update_in_hdx(remove_additional_resources=False)
+        assert dataset['state'] == 'active'
         assert len(dataset.resources) == 2
         dataset = Dataset(dataset_data)
         resources_data = copy.deepcopy(TestDataset.resources_data)
         resource = Resource(resources_data[0])
         dataset.add_update_resource(resource)
         dataset.update_in_hdx(remove_additional_resources=True)
+        assert dataset['state'] == 'active'
         assert len(dataset.resources) == 1
         dataset = Dataset(dataset_data)
         resources_data = copy.deepcopy(TestDataset.resources_data)
         resource = Resource(resources_data[0])
         dataset.add_update_resource(resource)
         dataset.update_in_hdx(update_resources_by_name=False, remove_additional_resources=True)
+        assert dataset['state'] == 'active'
         assert len(dataset.resources) == 1
 
     def test_delete_from_hdx(self, configuration, post_delete):

@@ -133,7 +133,9 @@ class TestShowcase:
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_create"}')
 
-                result = json.dumps(showcase_resultdict)
+                resultdictcopy = copy.deepcopy(showcase_resultdict)
+                resultdictcopy['state'] = datadict['state']
+                result = json.dumps(resultdictcopy)
                 if datadict['title'] == 'MyShowcase1':
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_create"}' % result)
@@ -222,6 +224,7 @@ class TestShowcase:
         showcase = Showcase(showcase_data)
         showcase.create_in_hdx()
         assert showcase['id'] == '05e392bf-04e0-4ca6-848c-4e87bba10746'
+        assert showcase['state'] == 'active'
 
         showcase_data['title'] = 'MyShowcase2'
         showcase = Showcase(showcase_data)
@@ -251,6 +254,7 @@ class TestShowcase:
         showcase.update_in_hdx()
         assert showcase['name'] == 'TEST1'
         assert showcase['notes'] == 'lalalala'
+        assert showcase['state'] == 'active'
         expected = copy.deepcopy(showcase_resultdict)
         expected['notes'] = 'lalalala'
         expected['name'] = 'TEST1'
@@ -271,6 +275,7 @@ class TestShowcase:
         showcase.create_in_hdx()
         assert showcase['name'] == 'TEST1'
         assert showcase['notes'] == 'My Showcase'
+        assert showcase['state'] == 'active'
 
     def test_delete_from_hdx(self, configuration, post_delete):
         showcase = Showcase.read_from_hdx('05e392bf-04e0-4ca6-848c-4e87bba10746')

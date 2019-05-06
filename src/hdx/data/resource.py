@@ -198,7 +198,7 @@ class Resource(HDXObject):
         self._check_load_existing_object('resource', 'id')
         if self.file_to_upload and 'url' in self.data:
             del self.data['url']
-        self._merge_hdx_update('resource', 'id', self.file_to_upload, **kwargs)
+        self._merge_hdx_update('resource', 'id', self.file_to_upload, True, **kwargs)
 
     def create_in_hdx(self):
         # type: () -> None
@@ -213,9 +213,9 @@ class Resource(HDXObject):
             logger.warning('%s exists. Updating %s' % ('resource', id))
             if self.file_to_upload and 'url' in self.data:
                 del self.data['url']
-            self._merge_hdx_update('resource', 'id', self.file_to_upload)
+            self._merge_hdx_update('resource', 'id', self.file_to_upload, True)
         else:
-            self._save_to_hdx('create', 'name', self.file_to_upload)
+            self._save_to_hdx('create', 'name', self.file_to_upload, True)
 
     def delete_from_hdx(self):
         # type: () -> None

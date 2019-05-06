@@ -130,7 +130,9 @@ class TestUser:
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_create"}')
 
-                result = json.dumps(resultdict)
+                resultdictcopy = copy.deepcopy(resultdict)
+                resultdictcopy['state'] = datadict['state']
+                result = json.dumps(resultdictcopy)
                 if datadict['name'] == 'MyUser1':
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_create"}' % result)
@@ -289,6 +291,7 @@ Content-Transfer-Encoding: 7bit
         user.create_in_hdx()
         assert user['id'] == '9f3e9973-7dbe-4c65-8820-f48578e3ffea'
         assert user['capacity'] == 'admin'
+        assert user['state'] == 'active'
 
         data['name'] = 'MyUser2'
         user = User(data)
@@ -321,6 +324,7 @@ Content-Transfer-Encoding: 7bit
         assert user['id'] == '9f3e9973-7dbe-4c65-8820-f48578e3ffea'
         assert user['about'] == 'IMO'
         assert user['capacity'] == 'member'
+        assert user['state'] == 'active'
 
         user['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):
@@ -337,6 +341,7 @@ Content-Transfer-Encoding: 7bit
         user.create_in_hdx()
         assert user['id'] == '9f3e9973-7dbe-4c65-8820-f48578e3ffea'
         assert user['about'] == 'Data Scientist'
+        assert user['state'] == 'active'
 
     def test_delete_from_hdx(self, configuration, post_delete):
         user = User.read_from_hdx('9f3e9973-7dbe-4c65-8820-f48578e3ffea')
