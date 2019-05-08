@@ -1,0 +1,288 @@
+---
+count: 10
+results:
+  - author: ''
+    author_email: ''
+    creator_user_id: 154de241-38d6-47d3-a77f-0a9848a61df3
+    groups: []
+    id: 65a9b6b3-6070-40d1-9e1b-b64ccf8acd61
+    image_url: https://centre.humdata.org/wp-content/uploads/acled_visual.png
+    metadata_created: '2017-07-12T13:13:38.012501'
+    metadata_modified: '2018-01-02T15:12:59.490981'
+    name: acled-conflict-data-for-africa-realtime-showcase
+    notes: The dynamic maps below have been drawn from ACLED Version 7. They illustrate
+      key dynamics in event types, reported fatalities, and actor categories. Clicking
+      on the maps, and selecting or de-selecting options in the legends, allows users
+      to interactively edit and manipulate the visualisations, and export or share the
+      finished visuals. The maps are visualised using Tableau Public.
+    num_tags: 4
+    relationships_as_object: []
+    relationships_as_subject: []
+    resources: []
+    revision_id: 73f7dc23-29a0-4118-a515-efc558abd5c7
+    state: active
+    tags:
+      - {display_name: conflict, id: 1dae41e5-eacd-4fa5-91df-8d80cf579e53, name: conflict,
+         state: active, vocabulary_id: null}
+      - {                                                                                                                                                                                display_name: political violence, id: aaafc63b-2234-48e3-8ccc-198d7cf0f3f3, name: political
+                                                                                                                                                                                                                                                                       violence, state: active, vocabulary_id: null}
+      - {display_name: protests, id: 1916519d-45cd-49aa-92bc-bd96c4898960, name: protests,
+         state: active, vocabulary_id: null}
+      - {display_name: war, id: 00e72ca1-a06c-40e6-aff3-a56a1b2349f7, name: war, state: active,
+         vocabulary_id: null}
+    title: 'Dynamic Map: Political Conflict in Africa'
+    tracking_summary: null
+    type: showcase
+    url: http://www.acleddata.com/visuals/maps/dynamic-maps/
+  - author: null
+    author_email: null
+    creator_user_id: 060468e4-2f33-4488-8504-c4b10cc34821
+    groups: []
+    id: 4f625ccf-e225-483f-b035-871a3dbe5dfd
+    image_url: http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png
+    metadata_created: '2017-07-05T11:46:21.508731'
+    metadata_modified: '2017-07-06T09:06:54.844458'
+    name: dynamic-map-political-conflict-in-africa-27
+    notes: The dynamic maps below have been drawn from ACLED Version 6. They illustrate
+      key dynamics in event types, reported fatalities, and actor categories. Clicking
+      on the maps, and selecting or de-selecting options in the legends, allows users
+      to interactively edit and manipulate the visualisations, and export or share the
+      finished visuals. The maps are visualised using Tableau Public.
+    num_tags: 1
+    original_related_item_id: 56764df7-69eb-4ff8-a968-00d145952649
+    relationships_as_object: []
+    relationships_as_subject: []
+    resources: []
+    revision_id: 164e693f-68bc-40d5-bca7-00ca24d0d99a
+    state: active
+    tags:
+      - {display_name: visualization, id: feeca8b4-d337-4340-bf7f-d9d3e4769ebe, name: visualization,
+         state: active, vocabulary_id: null}
+    title: 'Dynamic Map: Political Conflict in Africa'
+    tracking_summary: null
+    type: showcase
+    url: http://www.acleddata.com/visuals/maps/dynamic-maps/
+  - author: null
+    author_email: null
+    creator_user_id: 060468e4-2f33-4488-8504-c4b10cc34821
+    groups: []
+    id: 3dd3a862-a4a8-4610-b219-c72a78ac4c97
+    image_url: http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png
+    metadata_created: '2017-07-05T11:39:07.285967'
+    metadata_modified: '2017-07-05T11:39:07.285980'
+    name: dynamic-map-political-conflict-in-africa-25
+    notes: The dynamic maps below have been drawn from ACLED Version 6. They illustrate
+      key dynamics in event types, reported fatalities, and actor categories. Clicking
+      on the maps, and selecting or de-selecting options in the legends, allows users
+      to interactively edit and manipulate the visualisations, and export or share the
+      finished visuals. The maps are visualised using Tableau Public.
+    num_tags: 1
+    original_related_item_id: fa62b354-4456-440c-bd17-f575f3b9c3e9
+    relationships_as_object: []
+    relationships_as_subject: []
+    resources: []
+    revision_id: 126ebaf7-2105-426d-8242-de41d5cfa0b8
+    state: active
+    tags:
+      - {display_name: visualization, id: feeca8b4-d337-4340-bf7f-d9d3e4769ebe, name: visualization,
+         state: active, vocabulary_id: null}
+    title: 'Dynamic Map: Political Conflict in Africa'
+    tracking_summary: null
+    type: showcase
+    url: http://www.acleddata.com/visuals/maps/dynamic-maps/
+  - author: null
+    author_email: null
+    creator_user_id: 060468e4-2f33-4488-8504-c4b10cc34821
+    groups: []
+    id: 6af1def7-e219-41a0-89a5-0c0279590ad2
+    image_url: http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png
+    metadata_created: '2017-07-05T11:38:36.981423'
+    metadata_modified: '2017-07-05T11:38:36.981443'
+    name: dynamic-map-political-conflict-in-africa-24
+    notes: The dynamic maps below have been drawn from ACLED Version 6. They illustrate
+      key dynamics in event types, reported fatalities, and actor categories. Clicking
+      on the maps, and selecting or de-selecting options in the legends, allows users
+      to interactively edit and manipulate the visualisations, and export or share the
+      finished visuals. The maps are visualised using Tableau Public.
+    num_tags: 1
+    original_related_item_id: eda3282e-76e9-4a7c-bf9c-20a17b4750d8
+    relationships_as_object: []
+    relationships_as_subject: []
+    resources: []
+    revision_id: 5a60e196-f70a-433b-89ef-21910f620829
+    state: active
+    tags:
+      - {display_name: visualization, id: feeca8b4-d337-4340-bf7f-d9d3e4769ebe, name: visualization,
+         state: active, vocabulary_id: null}
+    title: 'Dynamic Map: Political Conflict in Africa'
+    tracking_summary: null
+    type: showcase
+    url: http://www.acleddata.com/visuals/maps/dynamic-maps/
+  - author: null
+    author_email: null
+    creator_user_id: 060468e4-2f33-4488-8504-c4b10cc34821
+    groups: []
+    id: d134b376-613a-4d9f-8c77-59dcf97b0a20
+    image_url: http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png
+    metadata_created: '2017-07-05T11:37:54.784897'
+    metadata_modified: '2017-07-05T11:37:54.784914'
+    name: dynamic-map-political-conflict-in-africa-23
+    notes: The dynamic maps below have been drawn from ACLED Version 6. They illustrate
+      key dynamics in event types, reported fatalities, and actor categories. Clicking
+      on the maps, and selecting or de-selecting options in the legends, allows users
+      to interactively edit and manipulate the visualisations, and export or share the
+      finished visuals. The maps are visualised using Tableau Public.
+    num_tags: 1
+    original_related_item_id: 3515687e-08d0-4389-afce-101b20935995
+    relationships_as_object: []
+    relationships_as_subject: []
+    resources: []
+    revision_id: 2570925c-732b-4ce2-8ebf-9a51907103a4
+    state: active
+    tags:
+      - {display_name: visualization, id: feeca8b4-d337-4340-bf7f-d9d3e4769ebe, name: visualization,
+         state: active, vocabulary_id: null}
+    title: 'Dynamic Map: Political Conflict in Africa'
+    tracking_summary: null
+    type: showcase
+    url: http://www.acleddata.com/visuals/maps/dynamic-maps/
+  - author: null
+    author_email: null
+    creator_user_id: 060468e4-2f33-4488-8504-c4b10cc34821
+    groups: []
+    id: 96b10853-ccc3-4234-beef-2502d7739213
+    image_url: http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png
+    metadata_created: '2017-07-05T11:37:38.597476'
+    metadata_modified: '2017-07-05T11:37:38.597494'
+    name: dynamic-map-political-conflict-in-africa-22
+    notes: The dynamic maps below have been drawn from ACLED Version 6. They illustrate
+      key dynamics in event types, reported fatalities, and actor categories. Clicking
+      on the maps, and selecting or de-selecting options in the legends, allows users
+      to interactively edit and manipulate the visualisations, and export or share the
+      finished visuals. The maps are visualised using Tableau Public.
+    num_tags: 1
+    original_related_item_id: d118cc40-9891-4d84-8373-fc743c4414ab
+    relationships_as_object: []
+    relationships_as_subject: []
+    resources: []
+    revision_id: e89a511b-9e85-44c4-9b39-2bc802c5114b
+    state: active
+    tags:
+      - {display_name: visualization, id: feeca8b4-d337-4340-bf7f-d9d3e4769ebe, name: visualization,
+         state: active, vocabulary_id: null}
+    title: 'Dynamic Map: Political Conflict in Africa'
+    tracking_summary: null
+    type: showcase
+    url: http://www.acleddata.com/visuals/maps/dynamic-maps/
+  - author: null
+    author_email: null
+    creator_user_id: 060468e4-2f33-4488-8504-c4b10cc34821
+    groups: []
+    id: debad752-4b4a-43d5-97b5-b44b6f05ff9b
+    image_url: http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png
+    metadata_created: '2017-07-05T11:37:31.110280'
+    metadata_modified: '2017-07-05T11:37:31.110293'
+    name: dynamic-map-political-conflict-in-africa-21
+    notes: The dynamic maps below have been drawn from ACLED Version 6. They illustrate
+      key dynamics in event types, reported fatalities, and actor categories. Clicking
+      on the maps, and selecting or de-selecting options in the legends, allows users
+      to interactively edit and manipulate the visualisations, and export or share the
+      finished visuals. The maps are visualised using Tableau Public.
+    num_tags: 1
+    original_related_item_id: 1915e127-f0ac-4a23-a718-c51b6f7728a4
+    relationships_as_object: []
+    relationships_as_subject: []
+    resources: []
+    revision_id: d367c282-ea85-4c4a-bc09-1578c893451f
+    state: active
+    tags:
+      - {display_name: visualization, id: feeca8b4-d337-4340-bf7f-d9d3e4769ebe, name: visualization,
+         state: active, vocabulary_id: null}
+    title: 'Dynamic Map: Political Conflict in Africa'
+    tracking_summary: null
+    type: showcase
+    url: http://www.acleddata.com/visuals/maps/dynamic-maps/
+  - author: null
+    author_email: null
+    creator_user_id: 060468e4-2f33-4488-8504-c4b10cc34821
+    groups: []
+    id: b6e21642-4937-4e42-81a5-3511d33b8953
+    image_url: http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png
+    metadata_created: '2017-07-05T11:37:29.400056'
+    metadata_modified: '2017-07-05T11:37:29.400071'
+    name: dynamic-map-political-conflict-in-africa-20
+    notes: The dynamic maps below have been drawn from ACLED Version 6. They illustrate
+      key dynamics in event types, reported fatalities, and actor categories. Clicking
+      on the maps, and selecting or de-selecting options in the legends, allows users
+      to interactively edit and manipulate the visualisations, and export or share the
+      finished visuals. The maps are visualised using Tableau Public.
+    num_tags: 1
+    original_related_item_id: f0a3ea39-3267-4089-ac75-9cc1069edc74
+    relationships_as_object: []
+    relationships_as_subject: []
+    resources: []
+    revision_id: 30941ebe-57f4-4f34-8107-f97b2d42757a
+    state: active
+    tags:
+      - {display_name: visualization, id: feeca8b4-d337-4340-bf7f-d9d3e4769ebe, name: visualization,
+         state: active, vocabulary_id: null}
+    title: 'Dynamic Map: Political Conflict in Africa'
+    tracking_summary: null
+    type: showcase
+    url: http://www.acleddata.com/visuals/maps/dynamic-maps/
+  - author: null
+    author_email: null
+    creator_user_id: 060468e4-2f33-4488-8504-c4b10cc34821
+    groups: []
+    id: 07c05ad6-29fa-4493-a801-b991f2b80ba8
+    image_url: http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png
+    metadata_created: '2017-07-05T11:37:11.678882'
+    metadata_modified: '2017-07-05T11:37:11.678896'
+    name: dynamic-map-political-conflict-in-africa-19
+    notes: The dynamic maps below have been drawn from ACLED Version 6. They illustrate
+      key dynamics in event types, reported fatalities, and actor categories. Clicking
+      on the maps, and selecting or de-selecting options in the legends, allows users
+      to interactively edit and manipulate the visualisations, and export or share the
+      finished visuals. The maps are visualised using Tableau Public.
+    num_tags: 1
+    original_related_item_id: 99da20e6-e8df-492a-abae-28e728d9c458
+    relationships_as_object: []
+    relationships_as_subject: []
+    resources: []
+    revision_id: 77615202-521a-4c72-8519-231687bec821
+    state: active
+    tags:
+      - {display_name: visualization, id: feeca8b4-d337-4340-bf7f-d9d3e4769ebe, name: visualization,
+         state: active, vocabulary_id: null}
+    title: 'Dynamic Map: Political Conflict in Africa'
+    tracking_summary: null
+    type: showcase
+    url: http://www.acleddata.com/visuals/maps/dynamic-maps/
+  - author: null
+    author_email: null
+    creator_user_id: 060468e4-2f33-4488-8504-c4b10cc34821
+    groups: []
+    id: 1ebc9f3c-1900-4538-a80c-5200315a9012
+    image_url: http://docs.hdx.rwlabs.org/wp-content/uploads/acled_visual.png
+    metadata_created: '2017-07-05T11:37:10.318347'
+    metadata_modified: '2017-07-05T11:37:10.318359'
+    name: dynamic-map-political-conflict-in-africa-18
+    notes: The dynamic maps below have been drawn from ACLED Version 6. They illustrate
+      key dynamics in event types, reported fatalities, and actor categories. Clicking
+      on the maps, and selecting or de-selecting options in the legends, allows users
+      to interactively edit and manipulate the visualisations, and export or share the
+      finished visuals. The maps are visualised using Tableau Public.
+    num_tags: 1
+    original_related_item_id: 1c7fc53c-9e0c-46d8-9e14-9d4f7fbf560d
+    relationships_as_object: []
+    relationships_as_subject: []
+    resources: []
+    revision_id: b87b75d6-d82f-4064-ad7b-8f6b1366e8f5
+    state: active
+    tags:
+      - {display_name: visualization, id: feeca8b4-d337-4340-bf7f-d9d3e4769ebe, name: visualization,
+         state: active, vocabulary_id: null}
+    title: 'Dynamic Map: Political Conflict in Africa'
+    tracking_summary: null
+    type: showcase
+    url: http://www.acleddata.com/visuals/maps/dynamic-maps/

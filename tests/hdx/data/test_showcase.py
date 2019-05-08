@@ -56,6 +56,7 @@ showcase_resultdict = {
 }
 
 datasetsdict = load_yaml(join('tests', 'fixtures', 'dataset_all_results.yml'))
+allsearchdict = load_yaml(join('tests', 'fixtures', 'showcase_all_search_results.yml'))
 
 
 def mockshow(url, datadict):
@@ -79,6 +80,67 @@ def mockshow(url, datadict):
     return MockResponse(404,
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_show"}')
 
+
+def mockallsearch(url, datadict):
+    if 'search' not in url:
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "TEST ERROR: Not search", "__type": "TEST ERROR: Not Search Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
+    if 'metadata_modified' in datadict['fq']:
+        newsearchdict = copy.deepcopy(allsearchdict)
+        newsearchdict['results'] = [newsearchdict['results'][0]]
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
+                                newsearchdict))
+    if datadict['q'] == 'ACLED':
+        newsearchdict = copy.deepcopy(allsearchdict)
+        if datadict['rows'] == 11:
+            newsearchdict['results'].append(newsearchdict['results'][0])
+            return MockResponse(200,
+                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
+                                    newsearchdict))
+        elif datadict['rows'] == 6:
+            if datadict['start'] == 2:
+                newsearchdict['results'] = newsearchdict['results'][2:8]
+                return MockResponse(200,
+                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
+                                        newsearchdict))
+        elif datadict['rows'] == 5:
+            if datadict['start'] == 0:
+                newsearchdict['count'] = 5
+                return MockResponse(200,
+                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
+                                        newsearchdict[:5]))
+            elif datadict['start'] == 5:
+                newsearchdict['count'] = 6  # return wrong count
+                return MockResponse(200,
+                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
+                                        newsearchdict[:5]))
+            else:
+                newsearchdict['count'] = 0
+                newsearchdict['results'] = list()
+                return MockResponse(200,
+                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
+                                        newsearchdict))
+        else:
+            return MockResponse(200,
+                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
+                                    allsearchdict))
+    if datadict['q'] == '*:*':
+        newsearchdict = copy.deepcopy(allsearchdict)
+        newsearchdict['results'].extend(copy.deepcopy(newsearchdict['results']))
+        for i, x in enumerate(newsearchdict['results']):
+            x['id'] = '%s%d' % (x['id'], i)
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
+                                newsearchdict))
+    if datadict['q'] == '"':
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "Validation Error", "__type": "Validation Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
+    if datadict['q'] == 'ajyhgr':
+        return MockResponse(200,
+                            '{"success": true, "result": {"count": 0, "results": []}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
+    return MockResponse(404,
+                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
 
 
 class TestShowcase:
@@ -199,6 +261,16 @@ class TestShowcase:
 
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_delete"}')
+
+        Configuration.read().remoteckan().session = MockSession()
+
+    @pytest.fixture(scope='function')
+    def allsearch(self):
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth=None):
+                datadict = json.loads(data.decode('utf-8'))
+                return mockallsearch(url, datadict)
 
         Configuration.read().remoteckan().session = MockSession()
 
@@ -343,3 +415,23 @@ class TestShowcase:
         with pytest.raises(HDXError):
             showcase.add_dataset(123)
 
+    def test_search_in_hdx(self, configuration, allsearch):
+        showcases = Showcase.search_in_hdx('ACLED')
+        assert len(showcases) == 10
+        showcases = Showcase.search_in_hdx('ACLED', offset=2, limit=6)
+        assert len(showcases) == 6
+        showcases = Showcase.search_in_hdx(fq='metadata_modified:[2018-01-01T00:00:00.000Z TO NOW]')
+        assert len(showcases) == 1
+        showcases = Showcase.search_in_hdx('ajyhgr')
+        assert len(showcases) == 0
+        with pytest.raises(HDXError):
+            Showcase.search_in_hdx('"')
+        with pytest.raises(HDXError):
+            Showcase.search_in_hdx('ACLED', rows=11)
+        with pytest.raises(HDXError):
+            # Test returned row counts per page mismatch (wrong count of 6 purposely in mocksearch)
+            Showcase.search_in_hdx('ACLED', page_size=5)
+
+    def test_get_all_showcases(self, configuration, allsearch):
+        showcases = Showcase.get_all_showcases()
+        assert len(showcases) == 20

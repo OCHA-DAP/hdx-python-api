@@ -146,6 +146,12 @@ def mocksearch(url, datadict):
             return MockResponse(200,
                                 '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
                                     newsearchdict))
+        elif datadict['rows'] == 6:
+            if datadict['start'] == 2:
+                newsearchdict['results'] = newsearchdict['results'][2:8]
+                return MockResponse(200,
+                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
+                                        newsearchdict))
         elif datadict['rows'] == 5:
             if datadict['start'] == 0:
                 newsearchdict['count'] = 5
@@ -177,13 +183,16 @@ def mocksearch(url, datadict):
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
 
 
-def mocklist(url):
+def mocklist(url, datadict):
     if 'list' not in url:
         return MockResponse(404,
                             '{"success": false, "error": {"message": "TEST ERROR: Not all", "__type": "TEST ERROR: Not All Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}')
+
+    offset = datadict.get('offset', 0)
+    limit = datadict.get('limit', len(dataset_list))
+    result = json.dumps(dataset_list[offset:offset + limit])
     return MockResponse(200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}' % json.dumps(
-                            dataset_list))
+                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}' % result)
 
 
 def mockall(url, datadict):
@@ -195,6 +204,11 @@ def mockall(url, datadict):
         if datadict['limit'] == 11:
             newalldict.append(newalldict[0])
             result = json.dumps(newalldict)
+        elif datadict['limit'] == 7:
+            if datadict['offset'] == 2:
+                result = json.dumps(alldict[2:9])
+            else:
+                result = json.dumps(alldict[4:5])  # repeated dataset
         elif datadict['limit'] == 5:
             if datadict['offset'] == 0:
                 result = json.dumps(alldict[:5])
@@ -447,7 +461,7 @@ class TestDataset:
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
-                return mocklist(url)
+                return mocklist(url, datadict)
 
         Configuration.read().remoteckan().session = MockSession()
 
@@ -818,6 +832,8 @@ class TestDataset:
     def test_search_in_hdx(self, configuration, search):
         datasets = Dataset.search_in_hdx('ACLED')
         assert len(datasets) == 10
+        datasets = Dataset.search_in_hdx('ACLED', offset=2, limit=6)
+        assert len(datasets) == 6
         datasets = Dataset.search_in_hdx('ajyhgr')
         assert len(datasets) == 0
         with pytest.raises(HDXError):
@@ -831,10 +847,14 @@ class TestDataset:
     def test_get_all_dataset_names(self, configuration, post_list):
         dataset_names = Dataset.get_all_dataset_names()
         assert dataset_names == dataset_list
+        dataset_names = Dataset.get_all_dataset_names(start=3, rows=5)
+        assert dataset_names == dataset_list[3:8]
 
     def test_get_all_datasets(self, configuration, all):
         datasets = Dataset.get_all_datasets()
         assert len(datasets) == 10
+        datasets = Dataset.get_all_datasets(start=2, rows=7)
+        assert len(datasets) == 7
         with pytest.raises(HDXError):
             Dataset.get_all_datasets(limit=11)
         with pytest.raises(HDXError):
@@ -1230,6 +1250,8 @@ class TestDataset:
         assert resources[1]['dataset_preview_enabled'] == 'False'
 
     def test_get_hdx_url(self, configuration, hdx_config_yaml, project_config_yaml):
+        dataset = Dataset()
+        assert dataset.get_hdx_url() is None
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
         dataset = Dataset(dataset_data)
         assert dataset.get_hdx_url() == 'https://data.humdata.org/dataset/MyDataset1'

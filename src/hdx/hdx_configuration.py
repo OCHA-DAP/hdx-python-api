@@ -4,7 +4,6 @@ import os
 
 import requests
 import six
-from hdx.utilities.downloader import Download
 from hdx.utilities.email import Email
 from hdx.utilities.session import get_session
 from hdx.utilities.useragent import UserAgent, UserAgentError
@@ -269,19 +268,6 @@ class Configuration(UserDict, object):
         if self._remoteckan is None:
             raise ConfigurationError('There is no remote CKAN set up! Use Configuration.create(**kwargs)')
         return self._remoteckan
-
-    def downloader(self):
-        # type: () -> Download
-        """
-        Return the Download object (see HDX Python Utilities library)
-
-        Returns:
-            Download: The Download object
-
-        """
-        if self._downloader is None:
-            raise ConfigurationError('There is no Download object set up! Use Configuration.create(**kwargs)')
-        return self._downloader
 
     def call_remoteckan(self, *args, **kwargs):
         # type: (Any, Any) -> Dict

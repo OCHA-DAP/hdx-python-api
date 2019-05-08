@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """Showcase class containing all logic for creating, checking, and updating showcases."""
 import logging
+import sys
 from os.path import join
-from typing import List, Union, Optional, Dict
+from typing import List, Union, Optional, Dict, Any
 
 from hdx.utilities import is_valid_uuid
 
@@ -20,6 +21,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         initial_data (Optional[Dict]): Initial showcase metadata dictionary. Defaults to None.
         configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
     """
+    max_int = sys.maxsize
     dataset_ids_field = 'dataset_ids'
 
     def __init__(self, initial_data=None, configuration=None):
@@ -252,7 +254,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         return alldatasetsadded
 
     def remove_dataset(self, dataset):
-        # type: (Union[Dataset,Dict,str]) -> None
+        # type: (Union[hdx.data.dataset.Dataset,Dict,str]) -> None
         """Remove a dataset
 
         Args:
@@ -262,3 +264,57 @@ class Showcase(hdx.data.hdxobject.HDXObject):
             None
         """
         self._write_to_hdx('disassociate', self._get_showcase_dataset_dict(dataset), 'package_id')
+
+    @classmethod
+    def search_in_hdx(cls, query='*:*', configuration=None, page_size=1000, **kwargs):
+        # type: (Optional[str], Optional[Configuration], int, Any) -> List['Showcase']
+        """Searches for datasets in HDX
+
+        Args:
+            query (Optional[str]): Query (in Solr format). Defaults to '*:*'.
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            page_size (int): Size of page to return. Defaults to 1000.
+            **kwargs: See below
+            fq (string): Any filter queries to apply
+            sort (string): Sorting of the search results. Defaults to 'relevance asc, metadata_modified desc'.
+            rows (int): Number of matching rows to return. Defaults to all datasets (sys.maxsize).
+            start (int): Offset in the complete result for where the set of returned datasets should begin
+            facet (string): Whether to enable faceted results. Default to True.
+            facet.mincount (int): Minimum counts for facet fields should be included in the results
+            facet.limit (int): Maximum number of values the facet fields return (- = unlimited). Defaults to 50.
+            facet.field (List[str]): Fields to facet upon. Default is empty.
+            use_default_schema (bool): Use default package schema instead of custom schema. Defaults to False.
+
+        Returns:
+            List[Dataset]: list of datasets resulting from query
+        """
+        curfq = kwargs.get('fq')
+        kwargs['fq'] = 'dataset_type:showcase'
+        if curfq:
+            kwargs['fq'] = '%s AND %s' % (kwargs['fq'], curfq)
+        datasets = hdx.data.dataset.Dataset.search_in_hdx(query=query, configuration=configuration,
+                                                          page_size=page_size, **kwargs)
+        showcases = list()
+        for dataset in datasets:
+            showcase = Showcase(configuration=configuration)
+            showcase.data = dataset.data
+            showcase.old_data = dataset.old_data
+            showcases.append(showcase)
+        return showcases
+
+    @classmethod
+    def get_all_showcases(cls, configuration=None, page_size=1000, **kwargs):
+        # type: (Optional[Configuration], int, Any) -> List['Showcase']
+        """Get all showcases in HDX
+
+        Args:
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            page_size (int): Size of page to return. Defaults to 1000.
+            **kwargs: See below
+            rows (int): Number of rows to return. Defaults to all showcases (sys.maxsize)
+            start (int): Offset in the complete result for where the set of returned showcases should begin
+
+        Returns:
+            List[Showcase]: list of all showcases in HDX
+        """
+        return cls.search_in_hdx(configuration=configuration, page_size=page_size, **kwargs)

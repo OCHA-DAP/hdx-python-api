@@ -528,6 +528,7 @@ class Dataset(HDXObject):
                                        remove_additional_resources=remove_additional_resources,
                                        create_default_views=create_default_views,
                                        hxl_update=hxl_update)
+        logger.info('Updated %s' % self.get_hdx_url())
 
     def create_in_hdx(self, allow_no_resources=False, update_resources=True, update_resources_by_name=True,
                       remove_additional_resources=False, create_default_views=True, hxl_update=True):
@@ -556,12 +557,12 @@ class Dataset(HDXObject):
             if self._dataset_load_from_hdx(self.data['name']):
                 loadedid = self.data['name']
         if loadedid:
-            logger.warning('Dataset exists. Updating %s' % loadedid)
             self._dataset_merge_hdx_update(update_resources=update_resources,
                                            update_resources_by_name=update_resources_by_name,
                                            remove_additional_resources=remove_additional_resources,
                                            create_default_views=create_default_views,
                                            hxl_update=hxl_update)
+            logger.info('Updated %s' % self.get_hdx_url())
             return
 
         filestore_resources = list()
@@ -575,6 +576,7 @@ class Dataset(HDXObject):
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         self._save_to_hdx('create', 'name', force_active=True)
         self._add_filestore_resources(filestore_resources, False, hxl_update)
+        logger.info('Created %s' % self.get_hdx_url())
 
     def delete_from_hdx(self):
         # type: () -> None
@@ -619,8 +621,24 @@ class Dataset(HDXObject):
         """
 
         dataset = Dataset(configuration=configuration)
-        total_rows = kwargs.get('rows', cls.max_int)
-        start = kwargs.get('start', 0)
+        limit = kwargs.get('limit')
+        total_rows = kwargs.get('rows')
+        if limit:
+            del kwargs['limit']
+            if not total_rows:
+                total_rows = limit
+        else:
+            if not total_rows:
+                total_rows = cls.max_int
+        offset = kwargs.get('offset')
+        start = kwargs.get('start')
+        if offset:
+            del kwargs['offset']
+            if not start:
+                start = offset
+        else:
+            if not start:
+                start = 0
         all_datasets = None
         attempts = 0
         while attempts < cls.max_attempts and all_datasets is None:  # if the count values vary for multiple calls, then must redo query
@@ -672,12 +690,20 @@ class Dataset(HDXObject):
         Args:
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
             **kwargs: See below
-            limit (int): Number of rows to return. Defaults to all dataset names.
-            offset (int): Offset in the complete result for where the set of returned dataset names should begin
+            rows (int): Number of rows to return. Defaults to all datasets (sys.maxsize)
+            start (int): Offset in the complete result for where the set of returned dataset names should begin
 
         Returns:
             List[str]: list of all dataset names in HDX
         """
+        total_rows = kwargs.get('rows')
+        if total_rows:
+            del kwargs['rows']
+            kwargs['limit'] = total_rows
+        start = kwargs.get('start')
+        if start:
+            del kwargs['start']
+            kwargs['offset'] = start
         dataset = Dataset(configuration=configuration)
         dataset['id'] = 'all dataset names'  # only for error message if produced
         return dataset._write_to_hdx('list', kwargs, 'id')
@@ -692,8 +718,8 @@ class Dataset(HDXObject):
             page_size (int): Size of page to return. Defaults to 1000.
             check_duplicates (bool): Whether to check for duplicate datasets. Defaults to True.
             **kwargs: See below
-            limit (int): Number of rows to return. Defaults to all datasets (sys.maxsize)
-            offset (int): Offset in the complete result for where the set of returned datasets should begin
+            rows (int): Number of rows to return. Defaults to all datasets (sys.maxsize)
+            start (int): Offset in the complete result for where the set of returned datasets should begin
 
         Returns:
             List[Dataset]: list of all datasets in HDX
@@ -701,8 +727,16 @@ class Dataset(HDXObject):
 
         dataset = Dataset(configuration=configuration)
         dataset['id'] = 'all datasets'  # only for error message if produced
-        total_rows = kwargs.get('limit', cls.max_int)
-        start = kwargs.get('offset', 0)
+        total_rows = kwargs.get('rows')
+        if total_rows:
+            del kwargs['rows']
+        else:
+            total_rows = kwargs.get('limit', cls.max_int)
+        start = kwargs.get('start')
+        if start:
+            del kwargs['start']
+        else:
+            start = kwargs.get('offset', 0)
         all_datasets = None
         attempts = 0
         while attempts < cls.max_attempts and all_datasets is None:  # if the dataset names vary for multiple calls, then must redo query
