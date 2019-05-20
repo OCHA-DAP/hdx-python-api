@@ -78,6 +78,7 @@ classifiers = [
 
 
 def setup_requires():
+    rmtree(script_dir_plus_file('dist', setup_requires), ignore_errors=True)
     rmtree(script_dir_plus_file('build', setup_requires), ignore_errors=True)
     return setup_requirements
 
