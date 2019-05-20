@@ -3,7 +3,6 @@ import inspect
 import sys
 from codecs import open
 from os.path import join, abspath, realpath, dirname
-from shutil import rmtree
 
 from setuptools import setup, find_packages
 
@@ -52,10 +51,6 @@ def get_readme():
     return readme_file.read()
 
 
-setup_requirements = ['pytest-runner']
-
-test_requirements = ['pytest']
-
 requirements = ['ckanapi>=4.1',
                 'hdx-python-country>=2.0.2',
                 'ndg-httpsclient',
@@ -76,13 +71,6 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
-
-def setup_requires():
-    rmtree(script_dir_plus_file('dist', setup_requires), ignore_errors=True)
-    rmtree(script_dir_plus_file('build', setup_requires), ignore_errors=True)
-    return setup_requirements
-
-
 setup(
     name='hdx-python-api',
     description='HDX Python Library',
@@ -96,8 +84,8 @@ setup(
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
     include_package_data=True,
-    setup_requires=setup_requires(),
-    tests_require=test_requirements,
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
     zip_safe=True,
     classifiers=classifiers,
     install_requires=requirements,
