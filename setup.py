@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from codecs import open
 from distutils import log
-from distutils.command.clean import clean as _clean
+from distutils.command.clean import clean
 from os.path import join, exists
 from shutil import rmtree
 
 from setuptools import setup, find_packages
 
 
-class CleanMore(_clean):
+class CleanMore(clean):
     """Custom implementation of ``clean`` setuptools command."""
 
     def run(self):
