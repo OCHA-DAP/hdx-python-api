@@ -13,7 +13,7 @@ class CleanMore(_clean):
 
     def run(self):
         """After calling the super class implementation, this function removes
-        the dist directory."""
+        the dist directory if it exists."""
         self.all = True  # --all by default when cleaning
         super(CleanMore, self).run()
         dir_ = 'dist'
