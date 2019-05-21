@@ -2,9 +2,27 @@
 import inspect
 import sys
 from codecs import open
-from os.path import join, abspath, realpath, dirname
+from distutils import log
+from distutils.command.clean import clean as _clean
+from os.path import join, abspath, realpath, dirname, exists
+from shutil import rmtree
 
 from setuptools import setup, find_packages
+
+
+class CleanMore(_clean):
+    """Custom implementation of ``clean`` setuptools command."""
+
+    def run(self):
+        """After calling the super class implementation, this function removes
+        the dist directory."""
+        super(CleanMore, self).run()
+        dir_ = 'dist'
+        if exists(dir_):
+            log.info("removing '%s' (and everything under it)", dir_)
+            rmtree(dir_)
+        else:
+            log.info("'%s' does not exist -- can't clean it", dir_)
 
 
 # Sadly we cannot use the utilities here because of the typing module which isn't in Python < 3.5
@@ -89,4 +107,5 @@ setup(
     zip_safe=True,
     classifiers=classifiers,
     install_requires=requirements,
+    cmdclass={'clean': CleanMore}
 )
