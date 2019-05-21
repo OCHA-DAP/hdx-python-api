@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-import inspect
-import sys
 from codecs import open
 from distutils import log
 from distutils.command.clean import clean as _clean
-from os.path import join, abspath, realpath, dirname, exists
+from os.path import join, exists
 from shutil import rmtree
 
 from setuptools import setup, find_packages
@@ -16,6 +14,7 @@ class CleanMore(_clean):
     def run(self):
         """After calling the super class implementation, this function removes
         the dist directory."""
+        self.all = True  # --all by default when cleaning
         super(CleanMore, self).run()
         dir_ = 'dist'
         if exists(dir_):
@@ -25,47 +24,13 @@ class CleanMore(_clean):
             log.info("'%s' does not exist -- can't clean it", dir_)
 
 
-# Sadly we cannot use the utilities here because of the typing module which isn't in Python < 3.5
-def script_dir(pyobject, follow_symlinks=True):
-    """Get current script's directory
-
-    Args:
-        pyobject (Any): Any Python object in the script
-        follow_symlinks (bool): Follow symlinks or not. Defaults to True.
-
-    Returns:
-        str: Current script's directory
-    """
-    if getattr(sys, 'frozen', False):  # py2exe, PyInstaller, cx_Freeze
-        path = abspath(sys.executable)
-    else:
-        path = inspect.getabsfile(pyobject)
-    if follow_symlinks:
-        path = realpath(path)
-    return dirname(path)
-
-
-def script_dir_plus_file(filename, pyobject, follow_symlinks=True):
-    """Get current script's directory and then append a filename
-
-    Args:
-        filename (str): Filename to append to directory path
-        pyobject (Any): Any Python object in the script
-        follow_symlinks (bool): Follow symlinks or not. Defaults to True.
-
-    Returns:
-        str: Current script's directory and with filename appended
-    """
-    return join(script_dir(pyobject, follow_symlinks), filename)
-
-
 def get_version():
-    version_file = open(script_dir_plus_file(join('src', 'hdx', 'version.txt'), get_version), encoding='utf-8')
+    version_file = open(join('src', 'hdx', 'version.txt'), encoding='utf-8')
     return version_file.read().strip()
 
 
 def get_readme():
-    readme_file = open(script_dir_plus_file('README.rst', get_readme), encoding='utf-8')
+    readme_file = open('README.rst', encoding='utf-8')
     return readme_file.read()
 
 
