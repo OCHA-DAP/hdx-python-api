@@ -1,41 +1,12 @@
 # -*- coding: utf-8 -*-
-from codecs import open
-from distutils import log
-from distutils.command.clean import clean
-from os.path import join, exists
-from shutil import rmtree
+from os.path import join
 
+from hdx.utilities import CleanCommand, PackageCommand, PublishCommand
+from hdx.utilities.loader import load_file_to_str
 from setuptools import setup, find_packages
 
-
-class CleanMore(clean):
-    """Custom implementation of ``clean`` setuptools command."""
-
-    def run(self):
-        """After calling the super class implementation, this function removes
-        the dist directory if it exists."""
-        self.all = True  # --all by default when cleaning
-        super(CleanMore, self).run()
-        dir_ = 'dist'
-        if exists(dir_):
-            log.info("removing '%s' (and everything under it)", dir_)
-            rmtree(dir_)
-        else:
-            log.info("'%s' does not exist -- can't clean it", dir_)
-
-
-def get_version():
-    version_file = open(join('src', 'hdx', 'version.txt'), encoding='utf-8')
-    return version_file.read().strip()
-
-
-def get_readme():
-    readme_file = open('README.rst', encoding='utf-8')
-    return readme_file.read()
-
-
-requirements = ['ckanapi>=4.1',
-                'hdx-python-country>=2.0.2',
+requirements = ['ckanapi==4.1',
+                'hdx-python-country>=2.0.8',
                 'ndg-httpsclient',
                 'pyasn1',
                 'pyOpenSSL',
@@ -54,16 +25,19 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
+PublishCommand.version = load_file_to_str(join('src', 'hdx', 'version.txt'), strip=True)
+
 setup(
     name='hdx-python-api',
     description='HDX Python Library',
     license='MIT',
     url='https://github.com/OCHA-DAP/hdx-python-api',
-    version=get_version(),
+    version=PublishCommand.version,
     author='Michael Rans',
     author_email='rans@email.com',
     keywords=['HDX', 'API', 'library'],
-    long_description=get_readme(),
+    long_description=load_file_to_str('README.md'),
+    long_description_content_type='text/markdown',
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
     include_package_data=True,
@@ -72,5 +46,5 @@ setup(
     zip_safe=True,
     classifiers=classifiers,
     install_requires=requirements,
-    cmdclass={'clean': CleanMore}
+    cmdclass={'clean': CleanCommand, 'package': PackageCommand, 'publish': PublishCommand},
 )
