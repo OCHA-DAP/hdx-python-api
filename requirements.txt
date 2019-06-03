@@ -1,4 +1,4 @@
-ckanapi==4.1
+ckanapi==4.3
 hdx-python-country==2.0.8
 ndg-httpsclient==0.5.1
 pyasn1==0.4.5
