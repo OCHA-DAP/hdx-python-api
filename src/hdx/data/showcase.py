@@ -121,7 +121,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         # the object in the intervening time
         merge_two_dictionaries(self.data, self.old_data)
         self.clean_tags()
-        self._hdx_update('showcase', 'name')
+        self._hdx_update('showcase', 'name', force_active=True)
         self._update_in_hdx('showcase', 'name')
 
     def create_in_hdx(self):
@@ -136,10 +136,10 @@ class Showcase(hdx.data.hdxobject.HDXObject):
             logger.warning('%s exists. Updating %s' % ('showcase', self.data['name']))
             merge_two_dictionaries(self.data, self.old_data)
             self.clean_tags()
-            self._hdx_update('showcase', 'name')
+            self._hdx_update('showcase', 'name', force_active=True)
         else:
             self.clean_tags()
-            self._save_to_hdx('create', 'title')
+            self._save_to_hdx('create', 'title', force_active=True)
 
         self._create_in_hdx('showcase', 'name', 'title')
 
