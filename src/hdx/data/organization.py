@@ -249,5 +249,4 @@ class Organization(HDXObject):
             List[str]: List of all organization names in HDX
         """
         organization = Organization(configuration=configuration)
-        organization['id'] = 'all organizations'  # only for error message if produced
-        return organization._write_to_hdx('list', kwargs, 'id')
+        return organization._write_to_hdx('list', kwargs)

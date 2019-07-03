@@ -137,11 +137,13 @@ class TestConfiguration:
             'hdx_site': 'prod',
             'hdx_read_only': True,
             'hdx_key': 'abcde',
-            'tags_cleanup_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/HDX_Tags_Cleaning.csv',
             'hdx_prod_site': {
                 'url': 'https://data.humdata.org/',
             },
-            'XYZ': {'567': 987}
+            'XYZ': {'567': 987},
+            'approved_tags_vocabulary': 'approved',
+            'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
+            'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
         }
 
         configuration = Configuration.read()
@@ -215,7 +217,6 @@ hello there'''
             'hdx_site': 'test',
             'hdx_read_only': False,
             'hdx_key': '54321',
-            'tags_cleanup_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/HDX_Tags_Cleaning.csv',
             'hdx_prod_site': {
                 'url': 'https://data.humdata.org/',
             },
@@ -230,6 +231,9 @@ hello there'''
             ]},
             'resource': {'required_fields': ['name', 'description']},
             'showcase': {'required_fields': ['name']},
+            'approved_tags_vocabulary': 'approved',
+            'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
+            'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
         }
         assert Configuration.read() == expected_configuration
 
@@ -240,7 +244,6 @@ hello there'''
             'hdx_site': 'prod',
             'hdx_read_only': False,
             'hdx_key': '12345',
-            'tags_cleanup_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/HDX_Tags_Cleaning.csv',
             'hdx_prod_site': {
                 'url': 'https://data.humdata.org/',
             },
@@ -256,6 +259,9 @@ hello there'''
             ]},
             'resource': {'required_fields': ['package_id', 'name', 'description']},
             'showcase': {'required_fields': ['name', 'title']},
+            'approved_tags_vocabulary': 'approved',
+            'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
+            'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
         }
         assert Configuration.read() == expected_configuration
 
@@ -342,7 +348,13 @@ hello there'''
                 'title',
                 'view_type',
             ]},
-            'tags_cleanup_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTyUP_oS878LihWM7iR0qry0OZP44BKyVXc1P_SoM0FEvbVGdOQxxlQvBWT_vwwGNaAbmuSeTg1FwuP/pub?gid=346948259&single=true&output=csv'
+            'vocabulary': {'required_fields': [
+                'name',
+                'tags',
+            ]},
+            'approved_tags_vocabulary': 'approved',
+            'tags_list_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=1739051517&single=true&output=csv',
+            'tags_mapping_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=334970416&single=true&output=csv'
         }
         assert Configuration.read() == expected_configuration
         Configuration._create(user_agent='test', hdx_config_yaml=hdx_config_yaml, project_config_dict={'abc': '123'})
@@ -433,7 +445,13 @@ hello there'''
                 'title',
                 'view_type',
             ]},
-            'tags_cleanup_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTyUP_oS878LihWM7iR0qry0OZP44BKyVXc1P_SoM0FEvbVGdOQxxlQvBWT_vwwGNaAbmuSeTg1FwuP/pub?gid=346948259&single=true&output=csv'
+            'vocabulary': {'required_fields': [
+                'name',
+                'tags',
+            ]},
+            'approved_tags_vocabulary': 'approved',
+            'tags_list_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=1739051517&single=true&output=csv',
+            'tags_mapping_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=334970416&single=true&output=csv'
         }
         assert Configuration.read() == expected_configuration
 
@@ -443,7 +461,6 @@ hello there'''
             'hdx_site': 'prod',
             'hdx_read_only': False,
             'hdx_key': '12345',
-            'tags_cleanup_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/HDX_Tags_Cleaning.csv',
             'hdx_prod_site': {
                 'url': 'https://data.humdata.org/',
             },
@@ -521,6 +538,13 @@ hello there'''
                 'title',
                 'view_type',
             ]},
+            'vocabulary': {'required_fields': [
+                'name',
+                'tags',
+            ]},
+            'approved_tags_vocabulary': 'approved',
+            'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
+            'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
         }
         assert Configuration.read() == expected_configuration
 

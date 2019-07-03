@@ -1,6 +1,6 @@
-pytest==4.5.0
+pytest==5.0.0
 pytest-cov==2.7.1
 pytest-pythonpath==0.7.3
-pytest-runner==4.4
+pytest-runner==5.1
 logging_tree==1.8
 -r requirements.txt

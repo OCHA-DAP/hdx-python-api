@@ -11,6 +11,7 @@ from hdx.utilities.loader import load_yaml
 from hdx.data.hdxobject import HDXError
 from hdx.data.showcase import Showcase
 from hdx.hdx_configuration import Configuration
+from tests.hdx.data.test_vocabulary import vocabulary_mockshow
 from . import MockResponse
 
 showcase_resultdict = {
@@ -189,6 +190,8 @@ class TestShowcase:
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
+                if 'vocabulary' in url:
+                    return vocabulary_mockshow(url, datadict)
                 if url.endswith('show') or 'list' in url:
                     return mockshow(url, datadict)
                 if 'create' not in url:
@@ -219,6 +222,8 @@ class TestShowcase:
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
+                if 'vocabulary' in url:
+                    return vocabulary_mockshow(url, datadict)
                 if url.endswith('show') or 'list' in url:
                     return mockshow(url, datadict)
                 if 'update' not in url:
@@ -379,12 +384,12 @@ class TestShowcase:
         showcase = Showcase(showcase_data)
         assert showcase.get_tags() == ['economy', 'health']
         showcase.add_tag('wash')
-        assert showcase.get_tags() == ['economy', 'health', 'wash']
+        assert showcase.get_tags() == ['economy', 'health', 'water sanitation and hygiene - wash']
         showcase.add_tags(['sanitation'])
-        assert showcase.get_tags() == ['economy', 'health', 'wash', 'sanitation']
-        result = showcase.remove_tag('wash')
+        assert showcase.get_tags() == ['economy', 'health', 'water sanitation and hygiene - wash']
+        result = showcase.remove_tag('water sanitation and hygiene - wash')
         assert result is True
-        assert showcase.get_tags() == ['economy', 'health', 'sanitation']
+        assert showcase.get_tags() == ['economy', 'health']
         showcase['tags'] = None
         result = showcase.remove_tag('wash')
         assert result is False

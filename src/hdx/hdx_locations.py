@@ -10,8 +10,8 @@ class Locations(object):
     """
     _validlocations = None
 
-    @staticmethod
-    def validlocations(configuration=None):
+    @classmethod
+    def validlocations(cls, configuration=None):
         # type: () -> List[Dict]
         """
         Read valid locations from HDX
@@ -22,14 +22,14 @@ class Locations(object):
         Returns:
             List[Dict]: A list of valid locations
         """
-        if Locations._validlocations is None:
+        if cls._validlocations is None:
             if configuration is None:
                 configuration = Configuration.read()
-            Locations._validlocations = configuration.call_remoteckan('group_list', {'all_fields': True})
-        return Locations._validlocations
+            cls._validlocations = configuration.call_remoteckan('group_list', {'all_fields': True})
+        return cls._validlocations
 
-    @staticmethod
-    def set_validlocations(locations):
+    @classmethod
+    def set_validlocations(cls, locations):
         # type: (List[Dict]) -> None
         """
         Set valid locations using list of dictionaries of form {'name': 'zmb', 'title', 'Zambia'}
@@ -40,10 +40,10 @@ class Locations(object):
         Returns:
             None
         """
-        Locations._validlocations = locations
+        cls._validlocations = locations
 
-    @staticmethod
-    def get_location_from_HDX_code(code, locations=None, configuration=None):
+    @classmethod
+    def get_location_from_HDX_code(cls, code, locations=None, configuration=None):
         # type: (str, Optional[List[Dict]], Optional[Configuration]) -> Optional[str]
         """Get location from HDX location code
 
@@ -56,14 +56,14 @@ class Locations(object):
             Optional[str]: location name
         """
         if locations is None:
-            locations = Locations.validlocations(configuration)
+            locations = cls.validlocations(configuration)
         for locdict in locations:
             if code.upper() == locdict['name'].upper():
                 return locdict['title']
         return None
 
-    @staticmethod
-    def get_HDX_code_from_location(location, locations=None, configuration=None):
+    @classmethod
+    def get_HDX_code_from_location(cls, location, locations=None, configuration=None):
         # type: (str, Optional[List[Dict]], Optional[Configuration]) -> Optional[str]
         """Get HDX code for location
 
@@ -76,7 +76,7 @@ class Locations(object):
             Optional[str]: HDX code or None
         """
         if locations is None:
-            locations = Locations.validlocations(configuration)
+            locations = cls.validlocations(configuration)
         locationupper = location.upper()
         for locdict in locations:
             locationcode = locdict['name'].upper()
@@ -88,8 +88,8 @@ class Locations(object):
                 return locdict['name'].upper()
         return None
 
-    @staticmethod
-    def get_HDX_code_from_location_partial(location, locations=None, configuration=None):
+    @classmethod
+    def get_HDX_code_from_location_partial(cls, location, locations=None, configuration=None):
         # type: (str, Optional[List[Dict]], Optional[Configuration]) -> Tuple[Optional[str], bool]
         """Get HDX code for location
 
@@ -101,13 +101,13 @@ class Locations(object):
         Returns:
             Tuple[Optional[str], bool]: HDX code and if the match is exact or (None, False) for no match
         """
-        hdx_code = Locations.get_HDX_code_from_location(location, locations, configuration)
+        hdx_code = cls.get_HDX_code_from_location(location, locations, configuration)
 
         if hdx_code is not None:
             return hdx_code, True
 
         if locations is None:
-            locations = Locations.validlocations(configuration)
+            locations = cls.validlocations(configuration)
         locationupper = location.upper()
         for locdict in locations:
             locationname = locdict['title'].upper()
