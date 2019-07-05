@@ -245,7 +245,7 @@ class Vocabulary(HDXObject):
         with Download(full_agent=configuration.get_user_agent()) as downloader:
             if url is None:
                 url = configuration['tags_list_url']
-            return list(OrderedDict.fromkeys(downloader.download(url).text.replace('"', '').split('\n')))
+            return list(OrderedDict.fromkeys(downloader.download(url).text.replace('"', '').splitlines()))
 
     @classmethod
     def create_approved_vocabulary(cls, url=None, configuration=None):
