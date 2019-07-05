@@ -20,6 +20,7 @@ from hdx.data.resource import Resource
 from hdx.data.user import User
 from hdx.hdx_configuration import Configuration
 from hdx.hdx_approvedtags import ApprovedTags, ChainRuleError
+from tests.hdx.data.test_vocabulary import vocabulary_mockshow
 from . import MockResponse, user_data, organization_data
 from .test_organization import organization_mockshow
 from .test_resource_view import resource_view_list
@@ -295,6 +296,8 @@ class TestDataset:
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
+                if 'vocabulary' in url:
+                    return vocabulary_mockshow(url, datadict)
                 return mockshow(url, datadict)
 
         Configuration.read().remoteckan().session = MockSession()
@@ -308,6 +311,8 @@ class TestDataset:
                     datadict = {k.decode('utf8'): v.decode('utf8') for k, v in data.items()}
                 else:
                     datadict = json.loads(data.decode('utf-8'))
+                if 'vocabulary' in url:
+                    return vocabulary_mockshow(url, datadict)
                 if 'show' in url:
                     return mockshow(url, datadict)
                 if 'hxl' in url:
@@ -350,6 +355,8 @@ class TestDataset:
                     datadict = {k.decode('utf8'): v.decode('utf8') for k, v in data.items()}
                 else:
                     datadict = json.loads(data.decode('utf-8'))
+                if 'vocabulary' in url:
+                    return vocabulary_mockshow(url, datadict)
                 if 'show' in url:
                     return mockshow(url, datadict)
                 if 'hxl' in url:
@@ -969,32 +976,30 @@ class TestDataset:
         assert dataset['tags'] == resulttags
         assert dataset.get_tags() == ['conflict', 'political violence']
         dataset.add_tag('LALA')
-        expected = copy.deepcopy(resulttags)
-        expected.append({'name': 'LALA'})
-        assert dataset['tags'] == expected
-        assert dataset.get_tags() == ['conflict', 'political violence', 'LALA']
+        assert dataset['tags'] == resulttags
+        assert dataset.get_tags() == ['conflict', 'political violence']
         dataset.add_tag('conflict')
+        expected = copy.deepcopy(resulttags)
+        expected.append({'name': 'violence and conflict', 'vocabulary_id': '4381925f-0ae9-44a3-b30d-cae35598757b'})
         assert dataset['tags'] == expected
-        assert dataset.get_tags() == ['conflict', 'political violence', 'LALA']
-        dataset.add_tags(['ABC', 'DEF', 'ABC'])
-        expected.extend([{'name': 'ABC'}, {'name': 'DEF'}])
-        assert dataset['tags'] == expected
-        assert dataset.get_tags() == ['conflict', 'political violence', 'LALA', 'ABC', 'DEF']
-        dataset.remove_tag('LALA')
-        assert dataset.get_tags() == ['conflict', 'political violence', 'ABC', 'DEF']
+        assert dataset.get_tags() == ['conflict', 'political violence', 'violence and conflict']
+        dataset.add_tags(['desempleo', 'desocupación', 'desempleo', 'conflict-related deaths'])
+        assert dataset.get_tags() == ['conflict', 'political violence', 'violence and conflict', 'unemployment', 'fatalities - deaths']
+        dataset.remove_tag('violence and conflict')
+        assert dataset.get_tags() == ['conflict', 'political violence', 'unemployment', 'fatalities - deaths']
         del dataset['tags']
         assert dataset.get_tags() == []
-        dataset.add_tag('LALA')
-        assert dataset['tags'] == [{'name': 'LALA'}]
-        assert dataset.get_tags() == ['LALA']
-        dataset.add_tag(u'LALA')
-        assert dataset.get_tags() == ['LALA']
-        dataset.add_tag(u'HAHA')
-        assert dataset.get_tags() == ['LALA', u'HAHA']
-        dataset.remove_tag(u'LALA')
-        assert dataset.get_tags() == [u'HAHA']
-        dataset.add_tag('HAHA')
-        assert dataset.get_tags() == [u'HAHA']
+        dataset.add_tag('conflict-related deaths')
+        assert dataset['tags'] == [{'name': 'violence and conflict', 'vocabulary_id': '4381925f-0ae9-44a3-b30d-cae35598757b'}, {'name': 'fatalities - deaths', 'vocabulary_id': '4381925f-0ae9-44a3-b30d-cae35598757b'}]
+        assert dataset.get_tags() == ['violence and conflict', 'fatalities - deaths']
+        dataset.add_tag(u'conflict-related deaths')
+        assert dataset.get_tags() == ['violence and conflict', 'fatalities - deaths']
+        dataset.add_tag(u'cholera')
+        assert dataset.get_tags() == ['violence and conflict', 'fatalities - deaths', 'cholera']
+        dataset.remove_tag(u'violence and conflict')
+        assert dataset.get_tags() == ['fatalities - deaths', 'cholera']
+        dataset.add_tag('cholera')
+        assert dataset.get_tags() == ['fatalities - deaths', 'cholera']
 
     def test_is_set_subnational(self, read):
         dataset = Dataset.read_from_hdx('TEST1')
@@ -1172,49 +1177,39 @@ class TestDataset:
 
     def test_chainrule_error(self, configuration, read):
         with pytest.raises(ChainRuleError):
+            ApprovedTags.set_tagsdict(None)
             ApprovedTags.read_tags_mappings(failchained=True)
 
-    def test_clean_dataset_tags(self, configuration, read):
+    def test_clean_tags(self, configuration, read):
         ApprovedTags.set_tagsdict(None)
-        ApprovedTags.set_wildcard_tags(None)
         ApprovedTags.read_tags_mappings(failchained=False)
         dataset = Dataset.read_from_hdx('TEST1')
         assert dataset.get_tags() == ['conflict', 'political violence']
-        assert dataset.clean_dataset_tags() == (True, False)
-        dataset.remove_tag('conflicts')
-        assert dataset.get_tags() == ['political violence']
-        assert dataset.clean_dataset_tags() == (False, False)
+        assert dataset.clean_tags() == ['violence and conflict']
         dataset.add_tags(['nodeid123', 'transportation'])
-        assert dataset.clean_dataset_tags() == (True, False)
-        assert dataset.get_tags() == ['political violence', 'transportation']
+        assert dataset.clean_tags() == ['violence and conflict', 'transportation']
+        assert dataset.get_tags() == ['violence and conflict', 'transportation']
         dataset.add_tags(['geodata', 'points'])
-        assert dataset.clean_dataset_tags() == (True, False)
-        assert dataset.get_tags() == ['political violence', 'transportation', 'geodata']
+        assert dataset.clean_tags() == ['violence and conflict', 'transportation', 'geodata']
         dataset.add_tag('financial')
-        assert dataset.clean_dataset_tags() == (True, False)
-        assert dataset.get_tags() == ['political violence', 'transportation', 'geodata', 'finance']
+        assert dataset.clean_tags() == ['violence and conflict', 'transportation', 'geodata']
         dataset.add_tag('addresses')
-        assert dataset.clean_dataset_tags() == (False, True)
-        dataset.remove_tag('addresses')
+        assert dataset.clean_tags() == ['violence and conflict', 'transportation', 'geodata', '3-word addresses']
+        dataset.remove_tag('3-word addresses')
+        assert dataset.get_tags() == ['violence and conflict', 'transportation', 'geodata']
         dataset.add_tag('cultivos coca')
-        assert dataset.clean_dataset_tags() == (False, True)
-        dataset.remove_tag('cultivos coca')
+        assert dataset.clean_tags() == ['violence and conflict', 'transportation', 'geodata', 'food production']
+        dataset.remove_tag('food production')
         dataset.add_tag('atentados')
-        assert dataset.clean_dataset_tags() == (True, False)
-        assert dataset.get_tags() == ['political violence', 'transportation', 'geodata', 'finance', 'atentados', 'attacks']
-        dataset.remove_tag('atentados')
-        dataset.remove_tag('attacks')
+        assert dataset.clean_tags() == ['violence and conflict', 'transportation', 'geodata', 'security incidents']
+        dataset.remove_tag('security incidents')
         dataset.add_tag('windspeeds')
-        assert dataset.clean_dataset_tags() == (True, False)
-        assert dataset.get_tags() == ['political violence', 'transportation', 'geodata', 'finance', 'wind speed']
-        dataset.add_tag('chil')
-        assert dataset.clean_dataset_tags() == (True, False)
-        assert dataset.get_tags() == ['political violence', 'transportation', 'geodata', 'finance', 'wind speed', 'children']
-        dataset.remove_tag('children')
+        assert dataset.clean_tags() == ['violence and conflict', 'transportation', 'geodata', 'wind speed']
         dataset.add_tag('conservancies')
-        assert dataset.clean_dataset_tags() == (False, True)
-        assert dataset.get_tags() == ['political violence', 'transportation', 'geodata', 'finance', 'wind speed', 'conservancies']
-        dataset.remove_tag('conservancies')
+        assert dataset.clean_tags() == ['violence and conflict', 'transportation', 'geodata', 'wind speed', 'protected areas']
+        dataset.remove_tag('transportation')
+        dataset.remove_tag('protected areas')
+        assert dataset.get_tags() == ['violence and conflict', 'geodata', 'wind speed']
 
     def test_set_quickchart_resource(self, configuration, read):
         dataset = Dataset.read_from_hdx('TEST1')

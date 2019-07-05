@@ -20,15 +20,15 @@ vocabulary_list = [{'tags': [], 'id': '57f71f5f-adb0-48fd-ab2c-6b93b9d30332', 'n
 resultdict = vocabulary_list[1]
 
 
-def vocabulary_mockshow(url, datadict):
-    if 'show' not in url:
+def vocabulary_mockshow(url, datadict, testshow=True):
+    if testshow and 'show' not in url:
         return MockResponse(404,
                             '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_show"}')
     if datadict['id'] == '1731e7fc-ff62-4551-8a70-2a5878e1142b' or datadict['id'] == 'MyVocabulary1':
         result = json.dumps(resultdict)
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_show"}' % result)
-    if datadict['id'] == 'approved':
+    if datadict['id'] == 'approved' or datadict['id'] == '4381925f-0ae9-44a3-b30d-cae35598757b':
         result = json.dumps(vocabulary_list[2])
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_show"}' % result)
@@ -42,6 +42,30 @@ def vocabulary_mockshow(url, datadict):
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_show"}')
 
 
+def vocabulary_delete(url, datadict):
+    if 'show' in url:
+        return vocabulary_mockshow(url, datadict)
+    if 'update' in url:
+        resultdictcopy = copy.deepcopy(resultdict)
+        resultdictcopy['tags'] = list()
+        result = json.dumps(resultdictcopy)
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_update"}' % result)
+    if 'delete' not in url:
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "TEST ERROR: Not delete", "__type": "TEST ERROR: Not Delete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_delete"}')
+    if datadict['id'] == '1731e7fc-ff62-4551-8a70-2a5878e1142b':
+        if len(datadict['tags']) == 0:
+            return MockResponse(200,
+                                '{"success": true, "result": null, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_delete"}')
+        else:
+            raise RetryError(
+                "HTTPSConnectionPool(host='test-data.humdata.org', port=443): Max retries exceeded with url: /api/action/vocabulary_delete (Caused by ResponseError('too many 500 error responses',))")
+
+    return MockResponse(404,
+                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_delete"}')
+
+
 def vocabulary_mocklist(url, datadict):
     if 'list' not in url:
         return MockResponse(404,
@@ -51,7 +75,6 @@ def vocabulary_mocklist(url, datadict):
 
 
 class TestVocabulary:
-    empty = False
     vocabulary_data = {'tags': [{'name': 'economy'}, {'name': 'health'}], 'name': 'Things'}
 
     @pytest.fixture(scope='class')
@@ -139,27 +162,8 @@ class TestVocabulary:
         class MockSession(object):
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth=None):
-                decodedata = data.decode('utf-8')
-                datadict = json.loads(decodedata)
-                if 'show' in url:
-                    return vocabulary_mockshow(url, datadict)
-                if 'update' in url:
-                    resultdictcopy = copy.deepcopy(resultdict)
-                    resultdictcopy['tags'] = list()
-                    result = json.dumps(resultdictcopy)
-                    return MockResponse(200,
-                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_update"}' % result)
-                if 'delete' not in url:
-                    return MockResponse(404,
-                                        '{"success": false, "error": {"message": "TEST ERROR: Not delete", "__type": "TEST ERROR: Not Delete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_delete"}')
-                if datadict['id'] == '1731e7fc-ff62-4551-8a70-2a5878e1142b':
-                    if TestVocabulary.empty:
-                        return MockResponse(200, '{"success": true, "result": null, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_delete"}')
-                    else:
-                        raise RetryError("HTTPSConnectionPool(host='test-data.humdata.org', port=443): Max retries exceeded with url: /api/action/vocabulary_delete (Caused by ResponseError('too many 500 error responses',))")
-
-                return MockResponse(404,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_delete"}')
+                datadict = json.loads(data.decode('utf-8'))
+                return vocabulary_delete(url, datadict)
 
         Configuration.read().remoteckan().session = MockSession()
 
@@ -172,6 +176,11 @@ class TestVocabulary:
                 return vocabulary_mocklist(url, datadict)
 
         Configuration.read().remoteckan().session = MockSession()
+
+    def test_init(self, configuration):
+        vocabulary = Vocabulary(name='test', tags=['mytesttag1', 'mytesttag2'])
+        assert vocabulary['name'] == 'test'
+        assert vocabulary['tags'] == [{'name': 'mytesttag1'}, {'name': 'mytesttag2'}]
 
     def test_read_from_hdx(self, configuration, read):
         vocabulary = Vocabulary.read_from_hdx('1731e7fc-ff62-4551-8a70-2a5878e1142b')
@@ -255,10 +264,8 @@ class TestVocabulary:
     def test_delete_from_hdx(self, configuration, post_delete):
         vocabulary = Vocabulary.read_from_hdx('1731e7fc-ff62-4551-8a70-2a5878e1142b')
         with pytest.raises(HDXError):
-            TestVocabulary.empty = False
-            vocabulary.delete_from_hdx(empty=TestVocabulary.empty)
-        TestVocabulary.empty = True
-        vocabulary.delete_from_hdx(empty=TestVocabulary.empty)
+            vocabulary.delete_from_hdx(empty=False)
+        vocabulary.delete_from_hdx()
         vocabulary = Vocabulary.read_from_hdx('1731e7fc-ff62-4551-8a70-2a5878e1142b')
         del vocabulary['id']
         with pytest.raises(HDXError):

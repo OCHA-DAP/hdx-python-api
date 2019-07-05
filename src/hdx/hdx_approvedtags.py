@@ -21,8 +21,103 @@ class ApprovedTags(object):
     """Methods to help with tags in the approved vocabulary and to handle mapping of tags
     """
     _approved_vocabulary = None
-    _approved_tags = None
     _tags_dict = None
+
+    @classmethod
+    def get_approved_vocabulary(cls, configuration=None):
+        # type: (Optional[Configuration]) -> Vocabulary
+        """
+        Get the HDX approved vocabulary
+
+        Args:
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+
+        Returns:
+            Vocabulary: HDX Vocabulary object
+        """
+        if cls._approved_vocabulary is None:
+            if configuration is None:
+                configuration = Configuration.read()
+            vocabulary_name = configuration['approved_tags_vocabulary']
+            cls._approved_vocabulary = Vocabulary.read_from_hdx(vocabulary_name, configuration=configuration)
+        return cls._approved_vocabulary
+
+    @classmethod
+    def _read_approved_tags(cls, url=None, configuration=None):
+        # type: (Optional[str], Optional[Configuration]) -> List[str]
+        """
+        Read approved tags
+
+        Args:
+            url (Optional[str]): Url to read approved tags from. Defaults to None (url in internal configuration).
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+
+        Returns:
+            List[str]: List of approved tags
+        """
+        with Download(full_agent=configuration.get_user_agent()) as downloader:
+            if url is None:
+                url = configuration['tags_list_url']
+            return list(OrderedDict.fromkeys(downloader.download(url).text.replace('"', '').split('\n')))
+
+    @classmethod
+    def create_approved_vocabulary(cls, url=None, configuration=None):
+        # type: (Optional[str], Optional[Configuration]) -> Vocabulary
+        """
+        Create the HDX approved vocabulary
+
+        Args:
+            url (Optional[str]): Tag to check. Defaults to None (url in internal configuration).
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+
+        Returns:
+            Vocabulary: HDX Vocabulary object
+        """
+        if configuration is None:
+            configuration = Configuration.read()
+        vocabulary_name = configuration['approved_tags_vocabulary']
+        tags = cls._read_approved_tags(url=url, configuration=configuration)
+        cls._approved_vocabulary = Vocabulary(name=vocabulary_name, tags=tags, configuration=configuration)
+        cls._approved_vocabulary.create_in_hdx()
+        return cls._approved_vocabulary
+
+    @classmethod
+    def update_approved_vocabulary(cls, url=None, configuration=None):
+        # type: (Optional[str], Optional[Configuration]) -> Vocabulary
+        """
+        Update the HDX approved vocabulary
+
+        Args:
+            url (Optional[str]): Tag to check. Defaults to None (url in internal configuration).
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+
+        Returns:
+            Vocabulary: HDX Vocabulary object
+        """
+        if configuration is None:
+            configuration = Configuration.read()
+        vocabulary = cls.get_approved_vocabulary(configuration=configuration)
+        vocabulary['tags'] = list()
+        vocabulary.add_tags(cls._read_approved_tags(url=url, configuration=configuration))
+        vocabulary.update_in_hdx()
+        return vocabulary
+
+    @classmethod
+    def delete_approved_vocabulary(cls, configuration=None):
+        # type: (Optional[Configuration]) -> None
+        """
+        Delete the approved vocabulary
+
+        Args:
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+
+        Returns:
+            None
+        """
+        if configuration is None:
+            configuration = Configuration.read()
+        vocabulary = cls.get_approved_vocabulary(configuration=configuration)
+        vocabulary.delete_from_hdx()
 
     @classmethod
     def approved_tags(cls, configuration=None):
@@ -36,13 +131,7 @@ class ApprovedTags(object):
         Returns:
             List[str]: List of approved tags
         """
-        if not cls._approved_tags:
-            if configuration is None:
-                configuration = Configuration.read()
-            cls._approved_vocabulary = configuration['approved_tags_vocabulary']
-            vocabulary = Vocabulary.read_from_hdx(cls._approved_vocabulary, configuration=configuration)
-            cls._approved_tags = [x['name'] for x in vocabulary['tags']]
-        return cls._approved_tags
+        return [x['name'] for x in cls.get_approved_vocabulary(configuration=configuration)['tags']]
 
     @classmethod
     def is_approved(cls, tag, configuration=None):
@@ -62,103 +151,7 @@ class ApprovedTags(object):
         return False
 
     @classmethod
-    def read_approved_tags(cls, url=None, configuration=None):
-        # type: (Optional[str], Optional[Configuration]) -> List[str]
-        """
-        Read approved tags
-
-        Args:
-            url (Optional[str]): Tag to check. Defaults to None (url in internal configuration).
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
-
-        Returns:
-            List[str]: List of approved tags
-        """
-        with Download(full_agent=configuration.get_user_agent()) as downloader:
-            if url is None:
-                url = configuration['tags_list_url']
-            cls._approved_tags = list(OrderedDict.fromkeys(downloader.download(url).text.replace('"', '').split('\n')))
-            return cls._approved_tags
-
-    @classmethod
-    def get_approved_vocabulary(cls, configuration=None):
-        # type: (Optional[Configuration]) -> Vocabulary
-        """
-        Get the HDX approved vocabulary
-
-        Args:
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
-
-        Returns:
-            Vocabulary: HDX Vocabulary object
-        """
-        if not cls._approved_vocabulary:
-            if configuration is None:
-                configuration = Configuration.read()
-            cls._approved_vocabulary = configuration['approved_tags_vocabulary']
-        return Vocabulary.read_from_hdx(cls._approved_vocabulary, configuration=configuration)
-
-    @classmethod
-    def create_approved_vocabulary(cls, url=None, configuration=None):
-        # type: (Optional[str], Optional[Configuration]) -> Vocabulary
-        """
-        Create the HDX approved vocabulary
-
-        Args:
-            url (Optional[str]): Tag to check. Defaults to None (url in internal configuration).
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
-
-        Returns:
-            Vocabulary: HDX Vocabulary object
-        """
-        if not cls._approved_vocabulary:
-            if configuration is None:
-                configuration = Configuration.read()
-            cls._approved_vocabulary = configuration['approved_tags_vocabulary']
-
-        cls.read_approved_tags(url=url, configuration=configuration)
-        vocabulary = Vocabulary(name=cls._approved_vocabulary, tags=cls._approved_tags, configuration=configuration)
-        vocabulary.create_in_hdx()
-        return vocabulary
-
-    @classmethod
-    def update_approved_vocabulary(cls, url=None, configuration=None):
-        # type: (Optional[str], Optional[Configuration]) -> None
-        """
-        Update the HDX approved vocabulary
-
-        Args:
-            url (Optional[str]): Tag to check. Defaults to None (url in internal configuration).
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
-
-        Returns:
-            Vocabulary: HDX Vocabulary object
-        """
-        if configuration is None:
-            configuration = Configuration.read()
-        vocabulary = cls.get_approved_vocabulary(configuration=configuration)
-        vocabulary['tags'] = list()
-        vocabulary.add_tags(cls.read_approved_tags(url=url, configuration=configuration))
-        vocabulary.update_in_hdx()
-        return vocabulary
-
-    @classmethod
-    def delete_approved_vocabulary(cls, configuration=None):
-        # type: (Optional[Configuration]) -> None
-        """
-        Delete the approved vocabulary
-
-        Args:
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
-
-        Returns:
-            None
-        """
-        vocabulary = cls.get_approved_vocabulary(configuration=configuration)
-        vocabulary.delete_from_hdx()
-
-    @classmethod
-    def read_tags_mappings(cls, configuration=None, url=None, keycolumn=1, failchained=False):  # Remember to set back to True!!!
+    def read_tags_mappings(cls, configuration=None, url=None, keycolumn=1, failchained=False):
         # type: (Optional[Configuration], Optional[str], int, bool) -> Dict
         """
         Read tag mappings and setup tags cleanup dictionaries
@@ -239,7 +232,6 @@ class ApprovedTags(object):
             action = whattodo[u'Action to Take']
             if action == u'ok':
                 logger.error("Tag %s is not in CKAN approved tags but is in tags mappings!" % tag)
-                tags.append(tag)
             elif action == u'delete':
                 logger.info("Tag %s is invalid and won't be added!" % tag)
             elif action == u'merge':
@@ -264,37 +256,39 @@ class ApprovedTags(object):
         for tag in tags:
             mapped_tags = cls.get_mapped_tag(tag)
             new_tags.extend(mapped_tags)
-        return new_tags
+        return list(OrderedDict.fromkeys(new_tags))
 
     @classmethod
-    def add_mapped_tag(cls, hdxobject, tag):
-        # type: (HDXObjectUpperBound, str) -> bool
+    def add_mapped_tag(cls, hdxobject, tag, configuration=None):
+        # type: (HDXObjectUpperBound, str, Optional[Configuration]) -> bool
         """Add a tag to an HDX object that has tags
 
         Args:
             hdxobject (T <= HDXObject): HDX object such as dataset
             tag (str): Tag to add
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
             bool: True if tag added or False if tag already present
         """
         tags = cls.get_mapped_tag(tag)
-        return hdxobject._add_tags(tags)
+        return hdxobject._add_tags(tags, cls.get_approved_vocabulary(configuration=configuration)['id'])
 
     @classmethod
-    def add_mapped_tags(cls, hdxobject, tags):
+    def add_mapped_tags(cls, hdxobject, tags, configuration=None):
         # type: (HDXObjectUpperBound, List[str]) -> bool
         """Add a list of tag to an HDX object that has tags
 
         Args:
             hdxobject (T <= HDXObject): HDX object such as dataset
             tags (List[str]): List of tags to add
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
             bool: True if all tags added or False if any already present.
         """
         new_tags = cls.get_mapped_tags(tags)
-        return hdxobject._add_tags(new_tags)
+        return hdxobject._add_tags(new_tags, cls.get_approved_vocabulary(configuration=configuration)['id'])
 
     @classmethod
     def clean_tags(cls, hdxobject):
@@ -310,6 +304,6 @@ class ApprovedTags(object):
         tags = hdxobject._get_tags()
         new_tags = cls.get_mapped_tags(tags)
         hdxobject['tags'] = list()
-        hdxobject._add_tags(new_tags)
+        hdxobject._add_tags(new_tags, cls.get_approved_vocabulary(configuration=hdxobject.configuration)['id'])
         return new_tags
 

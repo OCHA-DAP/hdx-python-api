@@ -1047,7 +1047,7 @@ class Dataset(HDXObject):
         Returns:
             bool: True if tag added or False if tag already present
         """
-        return ApprovedTags.add_mapped_tag(self, tag)
+        return ApprovedTags.add_mapped_tag(self, tag, configuration=self.configuration)
 
     def add_tags(self, tags):
         # type: (List[str]) -> bool
@@ -1059,7 +1059,7 @@ class Dataset(HDXObject):
         Returns:
             bool: True if all tags added or False if any already present
         """
-        return ApprovedTags.add_mapped_tags(self, tags)
+        return ApprovedTags.add_mapped_tags(self, tags, configuration=self.configuration)
 
     def clean_tags(self):
         # type: () -> List[str]

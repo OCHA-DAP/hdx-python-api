@@ -521,13 +521,13 @@ class HDXObject(UserDict, object):
             return list()
         return [x['name'] for x in tags]
 
-    def _add_tag(self, tag):
-        # type: (str, str) -> bool
+    def _add_tag(self, tag, vocabulary_id=None):
+        # type: (str, Optional[str]) -> bool
         """Add a tag
 
         Args:
             tag (str): Tag to add
-            vocabulary (str): Vocabulary tag is in. Defaults to 'approved'.
+            vocabulary_id (Optional[str]): Vocabulary tag is in. Defaults to None.
 
         Returns:
             bool: True if tag added or False if tag already present
@@ -538,23 +538,27 @@ class HDXObject(UserDict, object):
                 return False
         else:
             tags = list()
-        tags.append({'name': tag})
+        tagdict = {'name': tag}
+        if vocabulary_id is not None:
+            tagdict['vocabulary_id'] = vocabulary_id
+        tags.append(tagdict)
         self.data['tags'] = tags
         return True
 
-    def _add_tags(self, tags):
-        # type: (List[str]) -> bool
+    def _add_tags(self, tags, vocabulary_id=None):
+        # type: (List[str], Optional[str]) -> bool
         """Add a list of tag
 
         Args:
             tags (List[str]): list of tags to add
+            vocabulary_id (Optional[str]): Vocabulary tag is in. Defaults to None.
 
         Returns:
             bool: True if all tags added or False if any already present.
         """
         alltagsadded = True
         for tag in tags:
-            if not self._add_tag(tag):
+            if not self._add_tag(tag, vocabulary_id=vocabulary_id):
                 alltagsadded = False
         return alltagsadded
 

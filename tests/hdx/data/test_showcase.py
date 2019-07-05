@@ -28,17 +28,17 @@ showcase_resultdict = {
     'resources': [],
     'tags': [
         {
-            'vocabulary_id': '57f71f5f-adb0-48fd-ab2c-6b93b9d30332',
+            'vocabulary_id': '4381925f-0ae9-44a3-b30d-cae35598757b',
             'state': 'active',
-            'display_name': 'economy',
-            'id': 'c69c6fa1-7b2d-403e-a386-c57272da505d',
-            'name': 'economy'
+            'display_name': 'economics',
+            'id': 'e1ff4b78-efcf-40e7-888b-7342169068e1',
+            'name': 'economics'
         },
         {
-            'vocabulary_id': '57f71f5f-adb0-48fd-ab2c-6b93b9d30332',
+            'vocabulary_id': '4381925f-0ae9-44a3-b30d-cae35598757b',
             'state': 'active',
             'display_name': 'health',
-            'id': 'cfc3fb43-78a5-45e0-8bac-fbb81d00d211',
+            'id': '8a43b269-78cb-4a85-a4ce-7e3e928bc487',
             'name': 'health'
         }
     ],
@@ -335,6 +335,7 @@ class TestShowcase:
         expected = copy.deepcopy(showcase_resultdict)
         expected['notes'] = 'lalalala'
         expected['name'] = 'TEST1'
+        expected['tags'] = [{'name': 'economics', 'vocabulary_id': '4381925f-0ae9-44a3-b30d-cae35598757b'}, {'name': 'health', 'vocabulary_id': '4381925f-0ae9-44a3-b30d-cae35598757b'}]
         assert showcase.get_old_data_dict() == expected
 
         showcase['name'] = 'NOTEXIST'
