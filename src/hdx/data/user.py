@@ -169,8 +169,7 @@ class User(HDXObject):
             List[User]: List of all users in HDX
         """
         user = User(configuration=configuration)
-        user['id'] = 'all users'  # only for error message if produced
-        result = user._write_to_hdx('list', kwargs, 'id')
+        result = user._write_to_hdx('list', kwargs)
         users = list()
         if result:
             for userdict in result:

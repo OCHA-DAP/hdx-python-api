@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 """Dataset class containing all logic for creating, checking, and updating datasets and associated resources.
 """
-import fnmatch
 import logging
 import sys
 from copy import deepcopy
 from datetime import datetime
 from os.path import join
-from typing import List, Union, Optional, Dict, Any, Tuple
+from typing import List, Union, Optional, Dict, Any
 
 from dateutil import parser
 from hdx.location.country import Country
@@ -20,10 +19,10 @@ import hdx.data.organization
 import hdx.data.resource
 import hdx.data.showcase
 import hdx.data.user
+import hdx.data.vocabulary
 from hdx.data.hdxobject import HDXObject, HDXError
 from hdx.hdx_configuration import Configuration
 from hdx.hdx_locations import Locations
-from hdx.hdx_tagscleanup import Tags
 
 logger = logging.getLogger(__name__)
 
@@ -435,6 +434,7 @@ class Dataset(HDXObject):
         """
         # 'old_data' here is the data we want to use for updating while 'data' is the data read from HDX
         merge_two_dictionaries(self.data, self.old_data)
+        self.clean_tags()
         if 'resources' in self.data:
             del self.data['resources']
         updated_resources = self.old_data.get('resources', None)
@@ -574,6 +574,7 @@ class Dataset(HDXObject):
                     filestore_resources.append(resource)
                     resource['url'] = Dataset.temporary_url
             self.data['resources'] = self._convert_hdxobjects(self.resources)
+        self.clean_tags()
         self._save_to_hdx('create', 'name', force_active=True)
         self._add_filestore_resources(filestore_resources, False, hxl_update)
         logger.info('Created %s' % self.get_hdx_url())
@@ -705,8 +706,7 @@ class Dataset(HDXObject):
             del kwargs['start']
             kwargs['offset'] = start
         dataset = Dataset(configuration=configuration)
-        dataset['id'] = 'all dataset names'  # only for error message if produced
-        return dataset._write_to_hdx('list', kwargs, 'id')
+        return dataset._write_to_hdx('list', kwargs)
 
     @classmethod
     def get_all_datasets(cls, configuration=None, page_size=1000, check_duplicates=True, **kwargs):
@@ -726,7 +726,6 @@ class Dataset(HDXObject):
         """
 
         dataset = Dataset(configuration=configuration)
-        dataset['id'] = 'all datasets'  # only for error message if produced
         total_rows = kwargs.get('rows')
         if total_rows:
             del kwargs['rows']
@@ -747,7 +746,7 @@ class Dataset(HDXObject):
                 rows_left = total_rows - pagetimespagesize
                 rows = min(rows_left, page_size)
                 kwargs['limit'] = rows
-                result = dataset._write_to_hdx('all', kwargs, 'id')
+                result = dataset._write_to_hdx('all', kwargs)
                 datasets = list()
                 if isinstance(result, list):
                     no_results = len(result)
@@ -1047,19 +1046,28 @@ class Dataset(HDXObject):
         Returns:
             bool: True if tag added or False if tag already present
         """
-        return self._add_tag(tag)
+        return hdx.data.vocabulary.Vocabulary.add_mapped_tag(self, tag, configuration=self.configuration)
 
     def add_tags(self, tags):
         # type: (List[str]) -> bool
-        """Add a list of tag
+        """Add a list of tags
 
         Args:
-            tags (List[str]): list of tags to add
+            tags (List[str]): List of tags to add
 
         Returns:
             bool: True if all tags added or False if any already present
         """
-        return self._add_tags(tags)
+        return hdx.data.vocabulary.Vocabulary.add_mapped_tags(self, tags, configuration=self.configuration)
+
+    def clean_tags(self):
+        # type: () -> List[str]
+        """Clean tags in an HDX object according to tags cleanup spreadsheet
+
+        Returns:
+            List[str]: Cleaned tags
+        """
+        return hdx.data.vocabulary.Vocabulary.clean_tags(self)
 
     def remove_tag(self, tag):
         # type: (str) -> bool
@@ -1493,79 +1501,6 @@ class Dataset(HDXObject):
         if not self.is_requestable():
             raise NotRequestableError('remove_filetype is only applicable to requestable datasets!')
         return self._remove_string_from_commastring('file_types', filetype)
-
-    def clean_dataset_tags(self):
-        # type: () -> Tuple[bool, bool]
-        """Clean dataset tags according to tags cleanup spreadsheet and return if any changes occurred
-
-        Returns:
-            Tuple[bool, bool]: Tuple (True if tags changed or False if not, True if error or False if not)
-        """
-        tags_dict, wildcard_tags = Tags.tagscleanupdicts()
-
-        def delete_tag(tag):
-            logger.info('%s - Deleting tag %s!' % (self.data['name'], tag))
-            return self.remove_tag(tag), False
-
-        def update_tag(tag, final_tags, wording, remove_existing=True):
-            text = '%s - %s: %s -> ' % (self.data['name'], wording, tag)
-            if not final_tags:
-                logger.error('%snothing!' % text)
-                return False, True
-            tags_lower_five = final_tags[:5].lower()
-            if tags_lower_five == 'merge' or tags_lower_five == 'split' or (
-                    ';' not in final_tags and len(final_tags) > 50):
-                logger.error('%s%s - Invalid final tag!' % (text, final_tags))
-                return False, True
-            if remove_existing:
-                self.remove_tag(tag)
-            tags = ', '.join(self.get_tags())
-            if self.add_tags(final_tags.split(';')):
-                logger.info('%s%s! Dataset tags: %s' % (text, final_tags, tags))
-            else:
-                logger.warning(
-                    '%s%s - At least one of the tags already exists! Dataset tags: %s' % (text, final_tags, tags))
-            return True, False
-
-        def do_action(tag, tags_dict_key):
-            whattodo = tags_dict[tags_dict_key]
-            action = whattodo[u'action']
-            final_tags = whattodo[u'final tags (semicolon separated)']
-            if action == u'Delete':
-                changed, error = delete_tag(tag)
-            elif action == u'Merge':
-                changed, error = update_tag(tag, final_tags, 'Merging')
-            elif action == u'Fix spelling':
-                changed, error = update_tag(tag, final_tags, 'Fixing spelling')
-            elif action == u'Non English':
-                changed, error = update_tag(tag, final_tags, 'Anglicising', remove_existing=False)
-            else:
-                changed = False
-                error = False
-            return changed, error
-
-        def process_tag(tag):
-            changed = False
-            error = False
-            if tag in tags_dict.keys():
-                changed, error = do_action(tag, tag)
-            else:
-                for wildcard_tag in wildcard_tags:
-                    if fnmatch.fnmatch(tag, wildcard_tag):
-                        changed, error = do_action(tag, wildcard_tag)
-                        break
-            return changed, error
-
-        anychange = False
-        anyerror = False
-        for tag in self.get_tags():
-            changed, error = process_tag(tag)
-            if changed:
-                anychange = True
-            if error:
-                anyerror = True
-
-        return anychange, anyerror
 
     def preview_off(self):
         # type: () -> None

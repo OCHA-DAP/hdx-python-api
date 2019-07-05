@@ -6,9 +6,11 @@ from os.path import join
 from typing import List, Union, Optional, Dict, Any
 
 from hdx.utilities import is_valid_uuid
+from hdx.utilities.dictandlist import merge_two_dictionaries
 
 import hdx.data.dataset
 import hdx.data.hdxobject
+import hdx.data.vocabulary
 from hdx.hdx_configuration import Configuration
 
 logger = logging.getLogger(__name__)
@@ -113,6 +115,13 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             None
         """
+        self._check_load_existing_object('showcase', 'name')
+        # We load an existing object even though it may well have been loaded already
+        # to prevent an admittedly unlikely race condition where someone has updated
+        # the object in the intervening time
+        merge_two_dictionaries(self.data, self.old_data)
+        self.clean_tags()
+        self._hdx_update('showcase', 'name', force_active=True)
         self._update_in_hdx('showcase', 'name')
 
     def create_in_hdx(self):
@@ -122,6 +131,16 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             None
         """
+        self.check_required_fields()
+        if 'name' in self.data and self._load_from_hdx('showcase', self.data['name']):
+            logger.warning('%s exists. Updating %s' % ('showcase', self.data['name']))
+            merge_two_dictionaries(self.data, self.old_data)
+            self.clean_tags()
+            self._hdx_update('showcase', 'name', force_active=True)
+        else:
+            self.clean_tags()
+            self._save_to_hdx('create', 'title', force_active=True)
+
         self._create_in_hdx('showcase', 'name', 'title')
 
     def delete_from_hdx(self):
@@ -152,11 +171,11 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             bool: True if tag added or False if tag already present
         """
-        return self._add_tag(tag)
+        return hdx.data.vocabulary.Vocabulary.add_mapped_tag(self, tag, configuration=self.configuration)
 
     def add_tags(self, tags):
         # type: (List[str]) -> bool
-        """Add a list of tag
+        """Add a list of tags
 
         Args:
             tags (List[str]): List of tags to add
@@ -164,7 +183,16 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             bool: True if all tags added or False if any already present.
         """
-        return self._add_tags(tags)
+        return hdx.data.vocabulary.Vocabulary.add_mapped_tags(self, tags, configuration=self.configuration)
+
+    def clean_tags(self):
+        # type: () -> List[str]
+        """Clean tags in an HDX object according to tags cleanup spreadsheet
+
+        Returns:
+            List[str]: Cleaned tags
+        """
+        return hdx.data.vocabulary.Vocabulary.clean_tags(self)
 
     def remove_tag(self, tag):
         # type: (str) -> bool

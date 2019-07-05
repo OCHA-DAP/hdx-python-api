@@ -206,6 +206,30 @@ class HDXObject(UserDict, object):
             if field not in self.data and field not in ignore_fields:
                 raise HDXError('Field %s is missing in %s!' % (field, object_type))
 
+    def _hdx_update(self, object_type, id_field_name, file_to_upload=None, force_active=False, **kwargs):
+        # type: (str, str, Optional[str], bool, Any) -> None
+        """Helper method to check if HDX object exists and update it
+
+        Args:
+            object_type (str): Description of HDX object type (for messages)
+            id_field_name (str): Name of field containing HDX object identifier
+            file_to_upload (Optional[str]): File to upload to HDX
+            force_active (bool): Make object state active. Defaults to False.
+            **kwargs: See below
+            operation (string): Operation to perform eg. patch. Defaults to update.
+
+        Returns:
+            None
+        """
+        if 'batch_mode' in kwargs:  # Whether or not CKAN should change groupings of datasets on /datasets page
+            self.data['batch_mode'] = kwargs['batch_mode']
+        if 'skip_validation' in kwargs:  # Whether or not CKAN should perform validation steps (checking fields present)
+            self.data['skip_validation'] = kwargs['skip_validation']
+        ignore_field = self.configuration['%s' % object_type].get('ignore_on_update')
+        self.check_required_fields(ignore_fields=[ignore_field])
+        operation = kwargs.get('operation', 'update')
+        self._save_to_hdx(operation, id_field_name, file_to_upload, force_active)
+
     def _merge_hdx_update(self, object_type, id_field_name, file_to_upload=None, force_active=False, **kwargs):
         # type: (str, str, Optional[str], bool, Any) -> None
         """Helper method to check if HDX object exists and update it
@@ -222,14 +246,7 @@ class HDXObject(UserDict, object):
             None
         """
         merge_two_dictionaries(self.data, self.old_data)
-        if 'batch_mode' in kwargs:  # Whether or not CKAN should change groupings of datasets on /datasets page
-            self.data['batch_mode'] = kwargs['batch_mode']
-        if 'skip_validation' in kwargs:  # Whether or not CKAN should perform validation steps (checking fields present)
-            self.data['skip_validation'] = kwargs['skip_validation']
-        ignore_field = self.configuration['%s' % object_type].get('ignore_on_update')
-        self.check_required_fields(ignore_fields=[ignore_field])
-        operation = kwargs.get('operation', 'update')
-        self._save_to_hdx(operation, id_field_name, file_to_upload, force_active)
+        self._hdx_update(object_type, id_field_name, file_to_upload=file_to_upload, force_active=force_active, **kwargs)
 
     @abc.abstractmethod
     def update_in_hdx(self):
@@ -263,15 +280,15 @@ class HDXObject(UserDict, object):
         # the object in the intervening time
         self._merge_hdx_update(object_type, id_field_name, file_to_upload, force_active=force_active, **kwargs)
 
-    def _write_to_hdx(self, action, data, id_field_name, file_to_upload=None):
+    def _write_to_hdx(self, action, data, id_field_name=None, file_to_upload=None):
         # type: (str, Dict, str, Optional[str]) -> Dict
         """Creates or updates an HDX object in HDX and return HDX object metadata dict
 
         Args:
             action (str): Action to perform eg. 'create', 'update'
             data (Dict): Data to write to HDX
-            id_field_name (str): Name of field containing HDX object identifier or None
-            file_to_upload (Optional[str]): File to upload to HDX
+            id_field_name (Optional[str]): Name of field containing HDX object identifier. Defaults to None.
+            file_to_upload (Optional[str]): File to upload to HDX. Defaults to None.
 
         Returns:
             Dict: HDX object metadata
@@ -285,7 +302,11 @@ class HDXObject(UserDict, object):
                 files = None
             return self.configuration.call_remoteckan(self.actions()[action], data, files=files)
         except Exception as e:
-            raisefrom(HDXError, 'Failed when trying to %s %s! (POST)' % (action, data[id_field_name]), e)
+            if id_field_name:
+                idstr = ' %s' % data[id_field_name]
+            else:
+                idstr = ''
+            raisefrom(HDXError, 'Failed when trying to %s%s! (POST)' % (action, idstr), e)
         finally:
             if file_to_upload and file:
                 file.close()
@@ -500,12 +521,13 @@ class HDXObject(UserDict, object):
             return list()
         return [x['name'] for x in tags]
 
-    def _add_tag(self, tag):
-        # type: (str) -> bool
+    def _add_tag(self, tag, vocabulary_id=None):
+        # type: (str, Optional[str]) -> bool
         """Add a tag
 
         Args:
             tag (str): Tag to add
+            vocabulary_id (Optional[str]): Vocabulary tag is in. Defaults to None.
 
         Returns:
             bool: True if tag added or False if tag already present
@@ -516,23 +538,27 @@ class HDXObject(UserDict, object):
                 return False
         else:
             tags = list()
-        tags.append({'name': tag})
+        tagdict = {'name': tag}
+        if vocabulary_id is not None:
+            tagdict['vocabulary_id'] = vocabulary_id
+        tags.append(tagdict)
         self.data['tags'] = tags
         return True
 
-    def _add_tags(self, tags):
-        # type: (List[str]) -> bool
+    def _add_tags(self, tags, vocabulary_id=None):
+        # type: (List[str], Optional[str]) -> bool
         """Add a list of tag
 
         Args:
             tags (List[str]): list of tags to add
+            vocabulary_id (Optional[str]): Vocabulary tag is in. Defaults to None.
 
         Returns:
             bool: True if all tags added or False if any already present.
         """
         alltagsadded = True
         for tag in tags:
-            if not self._add_tag(tag):
+            if not self._add_tag(tag, vocabulary_id=vocabulary_id):
                 alltagsadded = False
         return alltagsadded
 

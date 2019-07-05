@@ -30,6 +30,7 @@ For more about the purpose and design philosophy, please visit
     -   [Resource Specific Operations](#resource-specific-operations)
     -   [User Management](#user-management)
     -   [Organization Management](#organization-management)
+    -   [Vocabulary Management](#vocabulary-management)
 -   [Working Example](#working-example)
 -   [ACLED Example](#acled-example)
 
@@ -410,8 +411,7 @@ file takes the following form:
     maintainer: "acled"
     ...
     tags:
-        - name: "conflict"
-        - name: "political violence"
+        - name: "violence and conflict"
     resources:
         -
           description: "Resource1"
@@ -483,7 +483,7 @@ You can get all the resources from a list of datasets as follows:
 
 To see the list of showcases a dataset is in, you use the **get\_showcases** function eg.
 
-    resources = dataset.get_showcases()
+    showcases = dataset.get_showcases()
 
 If you wish to add the dataset to a showcase, you must first create the showcase in HDX if it does not already exist:
 
@@ -605,7 +605,10 @@ If you want to add any other kind of location (which must be in this
 
 #### Tags
 
-HDX datasets can have tags which help people to find them eg. "COD", "PROTESTS".
+HDX datasets can have tags which help people to find them eg. "common operational dataset - cod", "refugees".
+These tags come from a predefined set of approved tags. If you add tags that are not in the approved list, the 
+library attempts to map them to approved tags based on a spreadsheet of tag mappings.
+
 
 If you wish to get the current tags, you can use this method:
 
@@ -618,6 +621,11 @@ If you want to add a tag, you do it like this:
 If you want to add a list of tags, you do it as follows:
 
     dataset.add_tags(['TAG','TAG','TAG'...])
+    
+To obtain the predefined set of approved tags:
+
+    approved_tags = Vocabulary.approved_tags()
+
 
 #### Maintainer
 
@@ -680,6 +688,34 @@ More fine grained control is possible by passing certain parameters and using ot
     resource.update_datastore(schema={'id': 'FIELD', 'type': 'TYPE'}, primary_key='PRIMARY_KEY_OF_SCHEMA', path='LOCAL_PATH_OF_UPLOADED_FILE') -> None:
     resource.update_datastore_from_json_schema(json_path='PATH_TO_JSON_SCHEMA', path='LOCAL_PATH_OF_UPLOADED_FILE')
 
+### Showcase Management
+The **Showcase** class enables you to manage showcases, creating, deleting and updating (as for other HDX objects) 
+according to  your permissions.
+
+To see the list of datasets a showcase is in, you use the **get\_datasets** function eg.
+
+    datasets = showcase.get_datasets()
+
+If you wish to add a dataset to a showcase, you call the **add\_dataset** function, for example:
+
+    showcase.add_dataset(dataset)
+
+You can remove the dataset from a showcase using the **remove\dataset** function, for example:
+
+    showcase.remove_dataset(dataset)
+
+If you wish to get the current tags, you can use this method:
+
+    tags = showcase.get_tags()
+
+If you want to add a tag, you do it like this:
+
+    showcase.add_tag('TAG')
+
+If you want to add a list of tags, you do it as follows:
+
+    showcase.add_tags(['TAG','TAG','TAG'...])
+    
 ### User Management
 
 The **User** class enables you to manage users, creating, deleting and updating (as for other HDX objects) according to 
@@ -730,6 +766,29 @@ You can add or update multiple users in an organization as follows:
 You can delete a user from an organization:
 
     organization.delete_user('USER ID')
+
+### Vocabulary Management
+
+The **Vocabulary** class enables you to manage CKAN vocabularies, creating, deleting and updating (as for other HDX 
+objects) according to your permissions.
+
+You can optionally initialise a Vocabulary with dictionary, name and tags:
+
+    vocabulary = Vocabulary(name='myvocab', tags=['TAG','TAG','TAG'...])
+    vocabulary = Vocabulary({'name': 'myvocab', tags=[{'name': TAG'}, {'name': TAG'}...])
+
+If you wish to get the current tags, you can use this method:
+
+    tags = vocabulary.get_tags()
+
+If you want to add a tag, you do it like this:
+
+    vocabulary.add_tag('TAG')
+
+If you want to add a list of tags, you do it as follows:
+
+    vocabulary.add_tags(['TAG','TAG','TAG'...])
+
 
 ## Working Example
 

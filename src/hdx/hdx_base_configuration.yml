@@ -73,5 +73,11 @@ organization:
     - resource_id
     - title
     - view_type
-tags_cleanup_url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTyUP_oS878LihWM7iR0qry0OZP44BKyVXc1P_SoM0FEvbVGdOQxxlQvBWT_vwwGNaAbmuSeTg1FwuP/pub?gid=346948259&single=true&output=csv"
-# https://docs.google.com/spreadsheets/d/1d1uY6DIbitt9crN3TQ6DtyMBnOAVecUf2XIavyGH4qU/edit?usp=drive_web&ouid=105353857294075732681
+vocabulary:
+  required_fields:
+    - name
+    - tags
+approved_tags_vocabulary: "approved"
+tags_list_url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=1739051517&single=true&output=csv"
+tags_mapping_url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=334970416&single=true&output=csv"
+# https://docs.google.com/spreadsheets/d/12nffmOm9EJMe6UFokVT0HOiBHQJKfgbE/edit#gid=334970416
