@@ -18,9 +18,9 @@ from hdx.data.hdxobject import HDXError
 from hdx.data.organization import Organization
 from hdx.data.resource import Resource
 from hdx.data.user import User
+from hdx.data.vocabulary import Vocabulary, ChainRuleError
 from hdx.hdx_configuration import Configuration
-from hdx.hdx_approvedtags import ApprovedTags, ChainRuleError
-from tests.hdx.data.test_vocabulary import vocabulary_mockshow
+from .test_vocabulary import vocabulary_mockshow
 from . import MockResponse, user_data, organization_data
 from .test_organization import organization_mockshow
 from .test_resource_view import resource_view_list
@@ -1177,12 +1177,12 @@ class TestDataset:
 
     def test_chainrule_error(self, configuration, read):
         with pytest.raises(ChainRuleError):
-            ApprovedTags.set_tagsdict(None)
-            ApprovedTags.read_tags_mappings(failchained=True)
+            Vocabulary.set_tagsdict(None)
+            Vocabulary.read_tags_mappings(failchained=True)
 
     def test_clean_tags(self, configuration, read):
-        ApprovedTags.set_tagsdict(None)
-        ApprovedTags.read_tags_mappings(failchained=False)
+        Vocabulary.set_tagsdict(None)
+        Vocabulary.read_tags_mappings(failchained=False)
         dataset = Dataset.read_from_hdx('TEST1')
         assert dataset.get_tags() == ['conflict', 'political violence']
         assert dataset.clean_tags() == ['violence and conflict']

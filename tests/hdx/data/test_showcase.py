@@ -11,7 +11,7 @@ from hdx.utilities.loader import load_yaml
 from hdx.data.hdxobject import HDXError
 from hdx.data.showcase import Showcase
 from hdx.hdx_configuration import Configuration
-from tests.hdx.data.test_vocabulary import vocabulary_mockshow
+from .test_vocabulary import vocabulary_mockshow
 from . import MockResponse
 
 showcase_resultdict = {

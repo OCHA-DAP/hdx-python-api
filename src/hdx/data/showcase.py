@@ -10,7 +10,7 @@ from hdx.utilities.dictandlist import merge_two_dictionaries
 
 import hdx.data.dataset
 import hdx.data.hdxobject
-from hdx.hdx_approvedtags import ApprovedTags
+import hdx.data.vocabulary
 from hdx.hdx_configuration import Configuration
 
 logger = logging.getLogger(__name__)
@@ -171,7 +171,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             bool: True if tag added or False if tag already present
         """
-        return ApprovedTags.add_mapped_tag(self, tag, configuration=self.configuration)
+        return hdx.data.vocabulary.Vocabulary.add_mapped_tag(self, tag, configuration=self.configuration)
 
     def add_tags(self, tags):
         # type: (List[str]) -> bool
@@ -183,7 +183,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             bool: True if all tags added or False if any already present.
         """
-        return ApprovedTags.add_mapped_tags(self, tags, configuration=self.configuration)
+        return hdx.data.vocabulary.Vocabulary.add_mapped_tags(self, tags, configuration=self.configuration)
 
     def clean_tags(self):
         # type: () -> List[str]
@@ -192,7 +192,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             List[str]: Cleaned tags
         """
-        return ApprovedTags.clean_tags(self)
+        return hdx.data.vocabulary.Vocabulary.clean_tags(self)
 
     def remove_tag(self, tag):
         # type: (str) -> bool

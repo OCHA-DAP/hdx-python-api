@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 """Dataset class containing all logic for creating, checking, and updating datasets and associated resources.
 """
-import fnmatch
 import logging
 import sys
 from copy import deepcopy
 from datetime import datetime
 from os.path import join
-from typing import List, Union, Optional, Dict, Any, Tuple
+from typing import List, Union, Optional, Dict, Any
 
 from dateutil import parser
 from hdx.location.country import Country
@@ -20,10 +19,10 @@ import hdx.data.organization
 import hdx.data.resource
 import hdx.data.showcase
 import hdx.data.user
+import hdx.data.vocabulary
 from hdx.data.hdxobject import HDXObject, HDXError
 from hdx.hdx_configuration import Configuration
 from hdx.hdx_locations import Locations
-from hdx.hdx_approvedtags import ApprovedTags
 
 logger = logging.getLogger(__name__)
 
@@ -1047,7 +1046,7 @@ class Dataset(HDXObject):
         Returns:
             bool: True if tag added or False if tag already present
         """
-        return ApprovedTags.add_mapped_tag(self, tag, configuration=self.configuration)
+        return hdx.data.vocabulary.Vocabulary.add_mapped_tag(self, tag, configuration=self.configuration)
 
     def add_tags(self, tags):
         # type: (List[str]) -> bool
@@ -1059,7 +1058,7 @@ class Dataset(HDXObject):
         Returns:
             bool: True if all tags added or False if any already present
         """
-        return ApprovedTags.add_mapped_tags(self, tags, configuration=self.configuration)
+        return hdx.data.vocabulary.Vocabulary.add_mapped_tags(self, tags, configuration=self.configuration)
 
     def clean_tags(self):
         # type: () -> List[str]
@@ -1068,7 +1067,7 @@ class Dataset(HDXObject):
         Returns:
             List[str]: Cleaned tags
         """
-        return ApprovedTags.clean_tags(self)
+        return hdx.data.vocabulary.Vocabulary.clean_tags(self)
 
     def remove_tag(self, tag):
         # type: (str) -> bool

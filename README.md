@@ -624,8 +624,7 @@ If you want to add a list of tags, you do it as follows:
     
 To obtain the predefined set of approved tags:
 
-    approved_tags = ApprovedTags.approved_tags()
-    
+    approved_tags = Vocabulary.approved_tags()
 
 
 #### Maintainer

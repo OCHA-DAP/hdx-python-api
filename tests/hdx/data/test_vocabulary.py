@@ -20,8 +20,8 @@ vocabulary_list = [{'tags': [], 'id': '57f71f5f-adb0-48fd-ab2c-6b93b9d30332', 'n
 resultdict = vocabulary_list[1]
 
 
-def vocabulary_mockshow(url, datadict, testshow=True):
-    if testshow and 'show' not in url:
+def vocabulary_mockshow(url, datadict):
+    if 'show' not in url:
         return MockResponse(404,
                             '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_show"}')
     if datadict['id'] == '1731e7fc-ff62-4551-8a70-2a5878e1142b' or datadict['id'] == 'MyVocabulary1':
@@ -109,10 +109,14 @@ class TestVocabulary:
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_create"}')
 
-                result = json.dumps(resultdict)
                 if datadict['name'] == 'A Vocabulary':
+                    result = json.dumps(resultdict)
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_create"}' % result)
+                if datadict['name'] == 'approved':
+                    result = json.dumps(vocabulary_list[2])
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_show"}' % result)
                 if datadict['name'] == 'XXX':
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_create"}')
@@ -142,6 +146,10 @@ class TestVocabulary:
                 merge_two_dictionaries(resultdictcopy, datadict)
 
                 result = json.dumps(resultdictcopy)
+                if datadict['id'] == '4381925f-0ae9-44a3-b30d-cae35598757b':
+                    result = json.dumps(vocabulary_list[2])
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_show"}' % result)
                 if datadict['tags'] in [[{'name': 'peter'}], [{'name': 'john'}], [{'name': 'wash'}]]:
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_update"}' % result)
@@ -309,3 +317,42 @@ class TestVocabulary:
         result = vocabulary.remove_tag('wash')
         assert result is False
 
+    def test_delete_approved_vocabulary(self, configuration, post_delete):
+        Vocabulary._approved_vocabulary = None
+        Vocabulary.get_approved_vocabulary()
+        Vocabulary.delete_approved_vocabulary()
+        assert Vocabulary._approved_vocabulary.data is None
+        Vocabulary._approved_vocabulary = None
+
+    def test_get_approved_vocabulary(self, configuration, read):
+        Vocabulary._approved_vocabulary = None
+        vocabulary = Vocabulary.get_approved_vocabulary()
+        assert vocabulary['name'] == 'approved'
+        assert vocabulary['tags'][0]['name'] == '3-word addresses'
+
+    def test_create_approved_vocabulary(self, configuration, post_create):
+        Vocabulary._approved_vocabulary = None
+        vocabulary = Vocabulary.create_approved_vocabulary()
+        assert vocabulary['name'] == 'approved'
+        assert vocabulary['tags'][0]['name'] == '3-word addresses'
+
+    def test_update_approved_vocabulary(self, configuration, post_update):
+        Vocabulary._approved_vocabulary = None
+        vocabulary = Vocabulary.update_approved_vocabulary()
+        assert vocabulary['name'] == 'approved'
+        assert vocabulary['tags'][0]['name'] == '3-word addresses'
+
+    def test_tag_mappings(self, configuration, read):
+        tags_dict = Vocabulary.read_tags_mappings()
+        assert tags_dict['refugee'] == {'Action to Take': 'merge', 'New Tag(s)': 'refugees', 'Number of Public Datasets': '1822'}
+        assert Vocabulary.get_mapped_tag('refugee') == ['refugees']
+        tags_dict['refugee']['Action to Take'] = 'ERROR'
+        assert Vocabulary.get_mapped_tag('refugee') == list()
+        refugeesdict = copy.deepcopy(tags_dict['refugees'])
+        del tags_dict['refugees']
+        assert Vocabulary.get_mapped_tag('refugees') == ['refugees']  # tag is in CKAN approved list but not tag cleanup spreadsheet
+        tags_dict['refugees'] = refugeesdict
+        Vocabulary.get_approved_vocabulary().remove_tag('refugees')
+        assert Vocabulary.get_mapped_tag('refugees') == list()  # tag is not in CKAN approved list but is in tag cleanup spreadsheet
+        Vocabulary._approved_vocabulary = None
+        Vocabulary.get_approved_vocabulary()
