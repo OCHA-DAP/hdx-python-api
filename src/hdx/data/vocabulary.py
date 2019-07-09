@@ -208,7 +208,7 @@ class Vocabulary(HDXObject):
         Returns:
             bool: True if tag removed or False if not
         """
-        return self._remove_hdxobject(self.data.get('tags'), tag, matchon='name')
+        return self._remove_hdxobject(self.data.get('tags'), tag.lower(), matchon='name')
 
     @classmethod
     def get_approved_vocabulary(cls, configuration=None):
@@ -333,7 +333,7 @@ class Vocabulary(HDXObject):
         Returns:
             bool: True if tag is approved, False if not
         """
-        if tag in cls.approved_tags(configuration):
+        if tag.lower() in cls.approved_tags(configuration):
             return True
         return False
 
@@ -408,9 +408,9 @@ class Vocabulary(HDXObject):
         Returns:
             List[str]: List of mapped tag(s)
         """
+        tag = tag.lower()
         tags_dict = cls.read_tags_mappings()
         tags = list()
-        tag = tag.lower()
         if cls.is_approved(tag):
             tags.append(tag)
         elif tag not in tags_dict.keys():

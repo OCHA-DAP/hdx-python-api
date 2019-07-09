@@ -532,6 +532,7 @@ class HDXObject(UserDict, object):
         Returns:
             bool: True if tag added or False if tag already present
         """
+        tag = tag.lower()
         tags = self.data.get('tags', None)
         if tags:
             if tag in [x['name'] for x in tags]:

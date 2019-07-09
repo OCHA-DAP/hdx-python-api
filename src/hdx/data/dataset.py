@@ -1079,7 +1079,7 @@ class Dataset(HDXObject):
         Returns:
             bool: True if tag removed or False if not
         """
-        return self._remove_hdxobject(self.data.get('tags'), tag, matchon='name')
+        return self._remove_hdxobject(self.data.get('tags'), tag.lower(), matchon='name')
 
     def is_subnational(self):
         # type: () -> bool
