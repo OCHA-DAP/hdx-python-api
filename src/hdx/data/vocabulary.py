@@ -410,6 +410,7 @@ class Vocabulary(HDXObject):
         """
         tags_dict = cls.read_tags_mappings()
         tags = list()
+        tag = tag.lower()
         if cls.is_approved(tag):
             tags.append(tag)
         elif tag not in tags_dict.keys():
