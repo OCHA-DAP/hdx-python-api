@@ -338,7 +338,7 @@ class Vocabulary(HDXObject):
         return False
 
     @classmethod
-    def read_tags_mappings(cls, configuration=None, url=None, keycolumn=1, failchained=False):
+    def read_tags_mappings(cls, configuration=None, url=None, keycolumn=1, failchained=True):
         # type: (Optional[Configuration], Optional[str], int, bool) -> Dict
         """
         Read tag mappings and setup tags cleanup dictionaries
@@ -398,35 +398,36 @@ class Vocabulary(HDXObject):
         cls._tags_dict = tags_dict
 
     @classmethod
-    def get_mapped_tag(cls, tag):
-        # type: (str) -> List[str]
+    def get_mapped_tag(cls, tag, configuration=None):
+        # type: (str, Optional[Configuration]) -> List[str]
         """Given a tag, return a list of tag(s) to which it maps
 
         Args:
             tags (str): Tag to map
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
             List[str]: List of mapped tag(s)
         """
         tag = tag.lower()
-        tags_dict = cls.read_tags_mappings()
+        tags_dict = cls.read_tags_mappings(configuration=configuration)
         tags = list()
         if cls.is_approved(tag):
             tags.append(tag)
         elif tag not in tags_dict.keys():
-            logger.error('Unapproved tag %s not in tag mapping!' % tag)
+            logger.error('Unapproved tag %s not in tag mapping! For a list of approved tags see: %s' % (tag, configuration['tags_list_url']))
         else:
             whattodo = tags_dict[tag]
             action = whattodo[u'Action to Take']
             if action == u'ok':
-                logger.error("Tag %s is not in CKAN approved tags but is in tags mappings!" % tag)
+                logger.error('Tag %s is not in CKAN approved tags but is in tags mappings! For a list of approved tags see: %s' % (tag, configuration['tags_list_url']))
             elif action == u'delete':
-                logger.info("Tag %s is invalid and won't be added!" % tag)
+                logger.info("Tag %s is invalid and won't be added! For a list of approved tags see: %s" % (tag, configuration['tags_list_url']))
             elif action == u'merge':
                 final_tags = whattodo['New Tag(s)'].split(';')
                 tags.extend(final_tags)
             else:
-                logger.error("Invalid action %s!" % action)
+                logger.error('Invalid action %s!' % action)
         return tags
 
     @classmethod

@@ -9,6 +9,7 @@ For more about the purpose and design philosophy, please visit
 [HDX Python Library](https://humanitarian.atlassian.net/wiki/display/HDX/HDX+Python+Library).
 
 -   [Usage](#usage)
+-   [Breaking Changes](#breaking-changes)
 -   [Getting Started](#getting-started)
     -   [Obtaining your API Key](#obtaining-your-api-key)
     -   [Installing the Library](#installing-the-library)
@@ -39,6 +40,10 @@ For more about the purpose and design philosophy, please visit
 The library has detailed API documentation which can be found
 here: <http://ocha-dap.github.io/hdx-python-api/>. The code for the
 library is here: <https://github.com/ocha-dap/hdx-python-api>.
+
+## Breaking Changes
+
+From 3.7.1, the list of tags must be from [this approved list](https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=1739051517&single=true&output=csv).
 
 ## Getting Started
 
@@ -606,8 +611,9 @@ If you want to add any other kind of location (which must be in this
 #### Tags
 
 HDX datasets can have tags which help people to find them eg. "common operational dataset - cod", "refugees".
-These tags come from a predefined set of approved tags. If you add tags that are not in the approved list, the 
-library attempts to map them to approved tags based on a spreadsheet of tag mappings.
+These tags come from a predefined set of approved tags. There is a link to a list of approved tags in the Breaking
+Changes section earlier. If you add tags that are not in the approved list, the library attempts to map them to
+approved tags based on a spreadsheet of tag mappings.
 
 
 If you wish to get the current tags, you can use this method:
