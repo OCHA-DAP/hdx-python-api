@@ -344,7 +344,7 @@ class TestVocabulary:
 
     def test_tag_mappings(self, configuration, read):
         tags_dict = Vocabulary.read_tags_mappings()
-        assert tags_dict['refugee'] == {'Action to Take': 'merge', 'New Tag(s)': 'refugees', 'Number of Public Datasets': '1822'}
+        assert tags_dict['refugee'] == {'Action to Take': 'merge', 'New Tag(s)': 'refugees', 'Number of Public Datasets': '1822', 'good tag + delete': '', 'new tag + delete': '', 'new tag + ok': '', 'no tag + merge': '', 'non-accepted tag + ok': '', 'non-accepted tag + merge': ''}
         assert Vocabulary.get_mapped_tag('refugee') == ['refugees']
         tags_dict['refugee']['Action to Take'] = 'ERROR'
         assert Vocabulary.get_mapped_tag('refugee') == list()

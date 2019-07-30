@@ -409,6 +409,8 @@ class Vocabulary(HDXObject):
         Returns:
             List[str]: List of mapped tag(s)
         """
+        if configuration is None:
+            configuration = Configuration.read()
         tag = tag.lower()
         tags_dict = cls.read_tags_mappings(configuration=configuration)
         tags = list()

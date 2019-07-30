@@ -1178,7 +1178,8 @@ class TestDataset:
     def test_chainrule_error(self, configuration, read):
         with pytest.raises(ChainRuleError):
             Vocabulary.set_tagsdict(None)
-            Vocabulary.read_tags_mappings(failchained=True)
+            url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping_ChainRuleError.csv'
+            Vocabulary.read_tags_mappings(url=url, failchained=True)
 
     def test_clean_tags(self, configuration, read):
         Vocabulary.set_tagsdict(None)
