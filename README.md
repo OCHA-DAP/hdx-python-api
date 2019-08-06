@@ -43,6 +43,9 @@ library is here: <https://github.com/ocha-dap/hdx-python-api>.
 
 ## Breaking Changes
 
+From 3.7.3, the return type for add_tag, add_tags and clean_tags is now Tuple[List[str], List[str]] 
+(Tuple containing list of added tags and list of deleted tags and tags not added).
+
 From 3.7.1, the list of tags must be from [this approved list](https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=1739051517&single=true&output=csv).
 
 ## Getting Started
