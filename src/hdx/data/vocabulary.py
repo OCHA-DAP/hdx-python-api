@@ -3,7 +3,7 @@
 import logging
 from collections import OrderedDict
 from os.path import join
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Tuple
 
 from hdx.utilities.downloader import Download
 
@@ -187,14 +187,14 @@ class Vocabulary(HDXObject):
         return self._add_tag(tag)
 
     def add_tags(self, tags):
-        # type: (List[str]) -> bool
+        # type: (List[str]) -> List[str]
         """Add a list of tags
 
         Args:
             tags (List[str]): list of tags to add
 
         Returns:
-            bool: True if all tags added or False if any already present.
+            List[str]: Tags that were successfully added
         """
         return self._add_tags(tags)
 
@@ -398,102 +398,112 @@ class Vocabulary(HDXObject):
         cls._tags_dict = tags_dict
 
     @classmethod
-    def get_mapped_tag(cls, tag, configuration=None):
-        # type: (str, Optional[Configuration]) -> List[str]
-        """Given a tag, return a list of tag(s) to which it maps
+    def get_mapped_tag(cls, tag, log_deleted=True, configuration=None):
+        # type: (str, bool, Optional[Configuration]) -> Tuple[List[str], List[str]]
+        """Given a tag, return a list of tag(s) to which it maps and any deleted tags
 
         Args:
             tags (str): Tag to map
+            log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
-            List[str]: List of mapped tag(s)
+            Tuple[List[str], List[str]]: Tuple containing list of mapped tag(s) and list of deleted tags
         """
         if configuration is None:
             configuration = Configuration.read()
         tag = tag.lower()
         tags_dict = cls.read_tags_mappings(configuration=configuration)
         tags = list()
+        deleted_tags = list()
         if cls.is_approved(tag):
             tags.append(tag)
         elif tag not in tags_dict.keys():
             logger.error('Unapproved tag %s not in tag mapping! For a list of approved tags see: %s' % (tag, configuration['tags_list_url']))
+            deleted_tags.append(tag)
         else:
             whattodo = tags_dict[tag]
             action = whattodo[u'Action to Take']
             if action == u'ok':
                 logger.error('Tag %s is not in CKAN approved tags but is in tags mappings! For a list of approved tags see: %s' % (tag, configuration['tags_list_url']))
             elif action == u'delete':
-                logger.info("Tag %s is invalid and won't be added! For a list of approved tags see: %s" % (tag, configuration['tags_list_url']))
+                if log_deleted:
+                    logger.info("Tag %s is invalid and won't be added! For a list of approved tags see: %s" % (tag, configuration['tags_list_url']))
+                deleted_tags.append(tag)
             elif action == u'merge':
                 final_tags = whattodo['New Tag(s)'].split(';')
                 tags.extend(final_tags)
             else:
                 logger.error('Invalid action %s!' % action)
-        return tags
+        return tags, deleted_tags
 
     @classmethod
-    def get_mapped_tags(cls, tags):
-        # type: (List[str]) -> List[str]
-        """Given a list of tags, return a list of tags to which they map
+    def get_mapped_tags(cls, tags, log_deleted=True, configuration=None):
+        # type: (List[str], bool, Optional[Configuration]) -> Tuple[List[str], List[str]]
+        """Given a list of tags, return a list of tags to which they map and any deleted tags
 
         Args:
             tags (List[str]): List of tags to map
+            log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
-            List[str]: List of mapped tags
+            Tuple[List[str], List[str]]: Tuple containing list of mapped tags and list of deleted tags
         """
         new_tags = list()
+        deleted_tags = list()
         for tag in tags:
-            mapped_tags = cls.get_mapped_tag(tag)
+            mapped_tags, del_tags = cls.get_mapped_tag(tag, log_deleted=log_deleted, configuration=configuration)
             new_tags.extend(mapped_tags)
-        return list(OrderedDict.fromkeys(new_tags))
+            deleted_tags.extend(del_tags)
+        return list(OrderedDict.fromkeys(new_tags)), list(OrderedDict.fromkeys(deleted_tags))
 
     @classmethod
-    def add_mapped_tag(cls, hdxobject, tag, configuration=None):
-        # type: (HDXObjectUpperBound, str, Optional[Configuration]) -> bool
+    def add_mapped_tag(cls, hdxobject, tag, log_deleted=True):
+        # type: (HDXObjectUpperBound, str, bool) -> Tuple[List[str], List[str]]
         """Add a tag to an HDX object that has tags
 
         Args:
             hdxobject (T <= HDXObject): HDX object such as dataset
             tag (str): Tag to add
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
 
         Returns:
-            bool: True if tag added or False if tag already present
+            Tuple[List[str], List[str]]: Tuple containing list of added tags and list of deleted tags and tags not added
         """
-        tags = cls.get_mapped_tag(tag)
-        return hdxobject._add_tags(tags, cls.get_approved_vocabulary(configuration=configuration)['id'])
+        return cls.add_mapped_tags(hdxobject, [tag], log_deleted=log_deleted)
 
     @classmethod
-    def add_mapped_tags(cls, hdxobject, tags, configuration=None):
-        # type: (HDXObjectUpperBound, List[str], Optional[Configuration]) -> bool
+    def add_mapped_tags(cls, hdxobject, tags, log_deleted=True):
+        # type: (HDXObjectUpperBound, List[str], bool) -> Tuple[List[str], List[str]]
         """Add a list of tag to an HDX object that has tags
 
         Args:
             hdxobject (T <= HDXObject): HDX object such as dataset
             tags (List[str]): List of tags to add
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
 
         Returns:
-            bool: True if all tags added or False if any already present.
+            Tuple[List[str], List[str]]: Tuple containing list of added tags and list of deleted tags and tags not added
         """
-        new_tags = cls.get_mapped_tags(tags)
-        return hdxobject._add_tags(new_tags, cls.get_approved_vocabulary(configuration=configuration)['id'])
+        new_tags, deleted_tags = cls.get_mapped_tags(tags, log_deleted=log_deleted, configuration=hdxobject.configuration)
+        added_tags = hdxobject._add_tags(new_tags, cls.get_approved_vocabulary(configuration=hdxobject.configuration)['id'])
+        unadded_tags = [x for x in new_tags if x not in added_tags]
+        unadded_tags.extend(deleted_tags)
+        return added_tags, unadded_tags
 
     @classmethod
-    def clean_tags(cls, hdxobject):
-        # type: (HDXObjectUpperBound) -> List[str]
+    def clean_tags(cls, hdxobject, log_deleted=True):
+        # type: (HDXObjectUpperBound, bool) -> Tuple[List[str], List[str]]
         """Clean tags in an HDX object according to tags cleanup spreadsheet
 
         Args:
             hdxobject (T <= HDXObject): HDX object such as dataset
+            log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
 
         Returns:
-            List[str]: Cleaned tags
+            Tuple[List[str], List[str]]: Tuple containing list of mapped tags and list of deleted tags and tags not added
         """
         tags = hdxobject._get_tags()
-        new_tags = cls.get_mapped_tags(tags)
         hdxobject['tags'] = list()
-        hdxobject._add_tags(new_tags, cls.get_approved_vocabulary(configuration=hdxobject.configuration)['id'])
-        return new_tags
+        return cls.add_mapped_tags(hdxobject, tags, log_deleted=log_deleted)

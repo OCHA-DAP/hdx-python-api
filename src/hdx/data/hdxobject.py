@@ -547,7 +547,7 @@ class HDXObject(UserDict, object):
         return True
 
     def _add_tags(self, tags, vocabulary_id=None):
-        # type: (List[str], Optional[str]) -> bool
+        # type: (List[str], Optional[str]) -> List[str]
         """Add a list of tag
 
         Args:
@@ -555,13 +555,13 @@ class HDXObject(UserDict, object):
             vocabulary_id (Optional[str]): Vocabulary tag is in. Defaults to None.
 
         Returns:
-            bool: True if all tags added or False if any already present.
+            List[str]: Tags that were successfully added
         """
-        alltagsadded = True
+        added_tags = list()
         for tag in tags:
-            if not self._add_tag(tag, vocabulary_id=vocabulary_id):
-                alltagsadded = False
-        return alltagsadded
+            if self._add_tag(tag, vocabulary_id=vocabulary_id):
+                added_tags.append(tag)
+        return added_tags
 
     def _get_stringlist_from_commastring(self, field):
         # type: (str) -> List[str]

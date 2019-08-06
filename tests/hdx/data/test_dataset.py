@@ -1181,33 +1181,39 @@ class TestDataset:
             url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping_ChainRuleError.csv'
             Vocabulary.read_tags_mappings(url=url, failchained=True)
 
-    def test_clean_tags(self, configuration, read):
+    def test_add_clean_tags(self, configuration, read):
         Vocabulary.set_tagsdict(None)
         Vocabulary.read_tags_mappings(failchained=False)
         dataset = Dataset.read_from_hdx('TEST1')
         assert dataset.get_tags() == ['conflict', 'political violence']
-        assert dataset.clean_tags() == ['violence and conflict']
+        assert dataset.clean_tags() == (['violence and conflict'], ['political violence'])
         dataset.add_tags(['nodeid123', 'transportation'])
-        assert dataset.clean_tags() == ['violence and conflict', 'transportation']
+        assert dataset.get_tags() == ['violence and conflict', 'transportation']
+        dataset['tags'].append({'name': 'nodeid123', 'vocabulary_id': '4381925f-0ae9-44a3-b30d-cae35598757b'})
+        assert dataset.clean_tags() == (['violence and conflict', 'transportation'], ['nodeid123'])
         assert dataset.get_tags() == ['violence and conflict', 'transportation']
         dataset.add_tags(['geodata', 'points'])
-        assert dataset.clean_tags() == ['violence and conflict', 'transportation', 'geodata']
+        assert dataset.clean_tags() == (['violence and conflict', 'transportation', 'geodata'], [])
         dataset.add_tag('financial')
-        assert dataset.clean_tags() == ['violence and conflict', 'transportation', 'geodata']
+        assert dataset.get_tags() == ['violence and conflict', 'transportation', 'geodata']
+        dataset['tags'].append({'name': 'financial', 'vocabulary_id': '4381925f-0ae9-44a3-b30d-cae35598757b'})
+        assert dataset.clean_tags() == (['violence and conflict', 'transportation', 'geodata'], ['financial'])
         dataset.add_tag('addresses')
-        assert dataset.clean_tags() == ['violence and conflict', 'transportation', 'geodata', '3-word addresses']
+        assert dataset.clean_tags() == (['violence and conflict', 'transportation', 'geodata', '3-word addresses'], [])
         dataset.remove_tag('3-word addresses')
         assert dataset.get_tags() == ['violence and conflict', 'transportation', 'geodata']
         dataset.add_tag('cultivos coca')
-        assert dataset.clean_tags() == ['violence and conflict', 'transportation', 'geodata', 'food production']
+        assert dataset.clean_tags() == (['violence and conflict', 'transportation', 'geodata', 'food production'], [])
         dataset.remove_tag('food production')
         dataset.add_tag('atentados')
-        assert dataset.clean_tags() == ['violence and conflict', 'transportation', 'geodata', 'security incidents']
+        assert dataset.get_tags() == ['violence and conflict', 'transportation', 'geodata', 'security incidents']
+        dataset['tags'].append({'name': 'atentados', 'vocabulary_id': '4381925f-0ae9-44a3-b30d-cae35598757b'})
+        assert dataset.clean_tags() == (['violence and conflict', 'transportation', 'geodata', 'security incidents'], [])
         dataset.remove_tag('security incidents')
         dataset.add_tag('windspeeds')
-        assert dataset.clean_tags() == ['violence and conflict', 'transportation', 'geodata', 'wind speed']
+        assert dataset.clean_tags() == (['violence and conflict', 'transportation', 'geodata', 'wind speed'], [])
         dataset.add_tag('conservancies')
-        assert dataset.clean_tags() == ['violence and conflict', 'transportation', 'geodata', 'wind speed', 'protected areas']
+        assert dataset.get_tags() == ['violence and conflict', 'transportation', 'geodata', 'wind speed', 'protected areas']
         dataset.remove_tag('transportation')
         dataset.remove_tag('protected areas')
         assert dataset.get_tags() == ['violence and conflict', 'geodata', 'wind speed']

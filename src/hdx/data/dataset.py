@@ -6,7 +6,7 @@ import sys
 from copy import deepcopy
 from datetime import datetime
 from os.path import join
-from typing import List, Union, Optional, Dict, Any
+from typing import List, Union, Optional, Dict, Any, Tuple
 
 from dateutil import parser
 from hdx.location.country import Country
@@ -1036,38 +1036,43 @@ class Dataset(HDXObject):
         """
         return self._get_tags()
 
-    def add_tag(self, tag):
-        # type: (str) -> bool
+    def add_tag(self, tag, log_deleted=True):
+        # type: (str, bool) -> Tuple[List[str], List[str]]
         """Add a tag
 
         Args:
             tag (str): Tag to add
+            log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
 
         Returns:
-            bool: True if tag added or False if tag already present
+            Tuple[List[str], List[str]]: Tuple containing list of added tags and list of deleted tags and tags not added
         """
-        return hdx.data.vocabulary.Vocabulary.add_mapped_tag(self, tag, configuration=self.configuration)
+        return hdx.data.vocabulary.Vocabulary.add_mapped_tag(self, tag, log_deleted=log_deleted)
 
-    def add_tags(self, tags):
-        # type: (List[str]) -> bool
+    def add_tags(self, tags, log_deleted=True):
+        # type: (List[str], bool) -> Tuple[List[str], List[str]]
         """Add a list of tags
 
         Args:
             tags (List[str]): List of tags to add
+            log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
 
         Returns:
-            bool: True if all tags added or False if any already present
+            Tuple[List[str], List[str]]: Tuple containing list of added tags and list of deleted tags and tags not added
         """
-        return hdx.data.vocabulary.Vocabulary.add_mapped_tags(self, tags, configuration=self.configuration)
+        return hdx.data.vocabulary.Vocabulary.add_mapped_tags(self, tags, log_deleted=log_deleted)
 
-    def clean_tags(self):
-        # type: () -> List[str]
+    def clean_tags(self, log_deleted=True):
+        # type: (bool) -> Tuple[List[str], List[str]]
         """Clean tags in an HDX object according to tags cleanup spreadsheet
 
+        Args:
+            log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
+
         Returns:
-            List[str]: Cleaned tags
+            Tuple[List[str], List[str]]: Tuple containing list of mapped tags and list of deleted tags and tags not added
         """
-        return hdx.data.vocabulary.Vocabulary.clean_tags(self)
+        return hdx.data.vocabulary.Vocabulary.clean_tags(self, log_deleted=log_deleted)
 
     def remove_tag(self, tag):
         # type: (str) -> bool
