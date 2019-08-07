@@ -141,7 +141,7 @@ class TestConfiguration:
                 'url': 'https://data.humdata.org/',
             },
             'XYZ': {'567': 987},
-            'approved_tags_vocabulary': 'approved',
+            'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
             'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
         }
@@ -231,7 +231,7 @@ hello there'''
             ]},
             'resource': {'required_fields': ['name', 'description']},
             'showcase': {'required_fields': ['name']},
-            'approved_tags_vocabulary': 'approved',
+            'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
             'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
         }
@@ -259,7 +259,7 @@ hello there'''
             ]},
             'resource': {'required_fields': ['package_id', 'name', 'description']},
             'showcase': {'required_fields': ['name', 'title']},
-            'approved_tags_vocabulary': 'approved',
+            'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
             'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
         }
@@ -352,7 +352,7 @@ hello there'''
                 'name',
                 'tags',
             ]},
-            'approved_tags_vocabulary': 'approved',
+            'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=1739051517&single=true&output=csv',
             'tags_mapping_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=334970416&single=true&output=csv'
         }
@@ -449,7 +449,7 @@ hello there'''
                 'name',
                 'tags',
             ]},
-            'approved_tags_vocabulary': 'approved',
+            'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=1739051517&single=true&output=csv',
             'tags_mapping_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=334970416&single=true&output=csv'
         }
@@ -542,7 +542,7 @@ hello there'''
                 'name',
                 'tags',
             ]},
-            'approved_tags_vocabulary': 'approved',
+            'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
             'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
         }

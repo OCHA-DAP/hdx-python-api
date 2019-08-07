@@ -1,4 +1,4 @@
 # Collector specific configuration
-approved_tags_vocabulary: "approved"
+approved_tags_vocabulary: "Topics"
 tags_list_url: "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv"
 tags_mapping_url: "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv"
