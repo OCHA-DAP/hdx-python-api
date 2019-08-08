@@ -203,8 +203,11 @@ class HDXObject(UserDict, object):
             None
         """
         for field in self.configuration[object_type]['required_fields']:
-            if field not in self.data and field not in ignore_fields:
-                raise HDXError('Field %s is missing in %s!' % (field, object_type))
+            if field not in ignore_fields:
+                if field not in self.data:
+                    raise HDXError('Field %s is missing in %s!' % (field, object_type))
+                if isinstance(self.data[field], list) and len(self.data[field]) == 0:
+                    raise HDXError('Field %s is empty in %s!' % (field, object_type))
 
     def _hdx_update(self, object_type, id_field_name, file_to_upload=None, force_active=False, **kwargs):
         # type: (str, str, Optional[str], bool, Any) -> None
@@ -217,6 +220,7 @@ class HDXObject(UserDict, object):
             force_active (bool): Make object state active. Defaults to False.
             **kwargs: See below
             operation (string): Operation to perform eg. patch. Defaults to update.
+            ignore_field (string): Any field to ignore when checking dataset metadata. Defaults to None.
 
         Returns:
             None
@@ -225,8 +229,14 @@ class HDXObject(UserDict, object):
             self.data['batch_mode'] = kwargs['batch_mode']
         if 'skip_validation' in kwargs:  # Whether or not CKAN should perform validation steps (checking fields present)
             self.data['skip_validation'] = kwargs['skip_validation']
+        ignore_fields = list()
         ignore_field = self.configuration['%s' % object_type].get('ignore_on_update')
-        self.check_required_fields(ignore_fields=[ignore_field])
+        if ignore_field:
+            ignore_fields.append(ignore_field)
+        ignore_field = kwargs.get('ignore_field')
+        if ignore_field:
+            ignore_fields.append(ignore_field)
+        self.check_required_fields(ignore_fields=ignore_fields)
         operation = kwargs.get('operation', 'update')
         self._save_to_hdx(operation, id_field_name, file_to_upload, force_active)
 
@@ -241,6 +251,7 @@ class HDXObject(UserDict, object):
             force_active (bool): Make object state active. Defaults to False.
             **kwargs: See below
             operation (string): Operation to perform eg. patch. Defaults to update.
+            ignore_field (string): Any field to ignore when checking dataset metadata. Defaults to None.
 
         Returns:
             None
@@ -269,6 +280,7 @@ class HDXObject(UserDict, object):
             force_active (bool): Make object state active. Defaults to True.
             **kwargs: See below
             operation (string): Operation to perform eg. patch. Defaults to update.
+            ignore_field (string): Any field to ignore when checking dataset metadata. Defaults to None.
 
         Returns:
             None

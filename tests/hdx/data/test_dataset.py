@@ -635,6 +635,12 @@ class TestDataset:
         with pytest.raises(HDXError):
             dataset.update_in_hdx()
 
+        dataset['id'] = 'TEST1'
+        dataset['groups'] = list()
+        with pytest.raises(HDXError):
+            dataset.update_in_hdx()
+
+
         # These dataset creates actually do updates
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
         dataset = Dataset(dataset_data)

@@ -3,7 +3,7 @@
 import logging
 from collections import OrderedDict
 from os.path import join
-from typing import Optional, List, Dict, Tuple
+from typing import Optional, List, Dict, Tuple, Any
 
 from hdx.utilities.downloader import Download
 
@@ -152,7 +152,7 @@ class Vocabulary(HDXObject):
 
     def delete_from_hdx(self, empty=True):
         # type: (bool) -> None
-        """Deletes a vocabulary from HDX. Vocabulary can only be deleted if it ahs no tags.
+        """Deletes a vocabulary from HDX. First tags are removed then vocabulary is deleted.
 
         Args:
             empty (bool): Remove all tags and update before deleting. Defaults to True.
@@ -162,7 +162,7 @@ class Vocabulary(HDXObject):
         """
         if empty and len(self.data['tags']) != 0:
             self.data['tags'] = list()
-            self.update_in_hdx()
+            self._update_in_hdx('vocabulary', 'id', force_active=False, ignore_field='tags')
         self._delete_from_hdx('vocabulary', 'id')
 
     def get_tags(self):
