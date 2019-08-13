@@ -206,7 +206,7 @@ class HDXObject(UserDict, object):
             if field not in ignore_fields:
                 if field not in self.data:
                     raise HDXError('Field %s is missing in %s!' % (field, object_type))
-                if isinstance(self.data[field], list) and len(self.data[field]) == 0:
+                if not self.data[field] and not isinstance(self.data[field], bool):
                     raise HDXError('Field %s is empty in %s!' % (field, object_type))
 
     def _hdx_update(self, object_type, id_field_name, file_to_upload=None, force_active=False, **kwargs):
