@@ -571,9 +571,13 @@ web interface.
     update_frequency = dataset.get_expected_update_frequency()
 
 The method below allows you to set the dataset's expected update frequency using one of the set frequencies above. (It 
-also allows you to pass a number of days cast to a string, but this is discouraged.)
+also allows you to pass a number of days as a string or integer, but this is discouraged.)
 
     dataset.set_expected_update_frequency('UPDATE_FREQUENCY')
+
+A list of valid update frequencies can be found using:
+
+    Dataset.list_valid_update_frequencies()
 
 Transforming backwards and forwards between representations can be achieved with this function:
 

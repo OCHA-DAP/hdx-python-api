@@ -982,19 +982,31 @@ class Dataset(HDXObject):
             raise hdx.data.hdxobject.HDXError('dataset_end_year has type %s which is not supported!' % type(dataset_end_year).__name__)
         self.set_dataset_date(dataset_date, dataset_end_date)
 
-    @staticmethod
-    def transform_update_frequency(frequency):
-        # type: (str) -> str
-        """Get numeric update frequency (as string since that is required field format) from textual representation or
-        vice versa (eg. 'Every month' = '30', '30' = 'Every month')
-
-        Args:
-            frequency (str): Update frequency in one format
+    @classmethod
+    def list_valid_update_frequencies(cls):
+        # type: () -> List[str]
+        """List of valid update frequency values
 
         Returns:
-            str: Update frequency in alternative format
+            List[str]: Allowed update frequencies
         """
-        return Dataset.update_frequencies.get(frequency.lower())
+        return list(cls.update_frequencies.keys())
+
+    @classmethod
+    def transform_update_frequency(cls, frequency):
+        # type: (Union[str, int]) -> Optional[str]
+        """Get numeric update frequency (as string since that is required field format) from textual representation or
+        vice versa (eg. 'Every month' = '30', '30' or 30 = 'Every month')
+
+        Args:
+            frequency (Union[str, int]): Update frequency in one format
+
+        Returns:
+            Optional[str]: Update frequency in alternative format or None if not valid
+        """
+        if isinstance(frequency, int):
+            frequency = str(frequency)
+        return cls.update_frequencies.get(frequency.lower())
 
     def get_expected_update_frequency(self):
         # type: () -> Optional[str]
@@ -1010,20 +1022,23 @@ class Dataset(HDXObject):
             return None
 
     def set_expected_update_frequency(self, update_frequency):
-        # type: (str) -> None
-        """Set expected update frequency
+        # type: (Union[str, int]) -> None
+        """Set expected update frequency. You can pass frequencies like "Every week" or '7' or 7. Valid values for
+        update frequency can be found from Dataset.list_valid_update_frequencies().
 
         Args:
-            update_frequency (str): Update frequency
+            update_frequency (Union[str, int]): Update frequency
 
         Returns:
             None
         """
+        if isinstance(update_frequency, int):
+            update_frequency = str(update_frequency)
         try:
             int(update_frequency)
         except ValueError:
             update_frequency = Dataset.transform_update_frequency(update_frequency)
-        if not update_frequency:
+        if update_frequency not in Dataset.update_frequencies.keys():
             raise HDXError('Invalid update frequency supplied!')
         self.data['data_update_frequency'] = update_frequency
 

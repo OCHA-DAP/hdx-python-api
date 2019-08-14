@@ -947,6 +947,7 @@ class TestDataset:
         assert dataset.get_dataset_date_type() is None
 
     def test_transform_update_frequency(self):
+        assert len(Dataset.list_valid_update_frequencies()) == 30
         assert Dataset.transform_update_frequency('-2') == 'Adhoc'
         assert Dataset.transform_update_frequency('-1') == 'Never'
         assert Dataset.transform_update_frequency('0') == 'Live'
@@ -958,12 +959,21 @@ class TestDataset:
         assert Dataset.transform_update_frequency('EVERY WEEK') == '7'
         assert Dataset.transform_update_frequency('every month') == '30'
         assert Dataset.transform_update_frequency('LALA') is None
+        assert Dataset.transform_update_frequency(-2) == 'Adhoc'
+        assert Dataset.transform_update_frequency(7) == 'Every week'
+        assert Dataset.transform_update_frequency('') is None
+        assert Dataset.transform_update_frequency(23) is None
+        assert Dataset.transform_update_frequency('15') is None
 
     def test_get_set_expected_update_frequency(self, configuration, read):
         dataset = Dataset.read_from_hdx('TEST1')
         assert dataset['data_update_frequency'] == '7'
         assert dataset.get_expected_update_frequency() == 'Every week'
         dataset.set_expected_update_frequency('every two weeks')
+        assert dataset['data_update_frequency'] == '14'
+        dataset.set_expected_update_frequency(30)
+        assert dataset['data_update_frequency'] == '30'
+        dataset.set_expected_update_frequency('Fortnightly')
         assert dataset['data_update_frequency'] == '14'
         assert dataset.get_expected_update_frequency() == 'Every two weeks'
         dataset.set_expected_update_frequency('EVERY SIX MONTHS')
@@ -974,6 +984,8 @@ class TestDataset:
         assert dataset.get_expected_update_frequency() == 'Every three months'
         with pytest.raises(HDXError):
             dataset.set_expected_update_frequency('lalala')
+        with pytest.raises(HDXError):
+            dataset.set_expected_update_frequency(9)
         del dataset['data_update_frequency']
         assert dataset.get_expected_update_frequency() is None
 
