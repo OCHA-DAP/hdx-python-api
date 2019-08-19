@@ -418,8 +418,8 @@ class Dataset(HDXObject):
             self.hxl_update()
 
     def _dataset_merge_hdx_update(self, update_resources, update_resources_by_name,
-                                  remove_additional_resources, create_default_views, hxl_update):
-        # type: (bool, bool, bool, bool, bool) -> None
+                                  remove_additional_resources, create_default_views, hxl_update, **kwargs):
+        # type: (bool, bool, bool, bool, bool, Any) -> None
         """Helper method to check if dataset or its resources exist and update them
 
         Args:
@@ -492,14 +492,15 @@ class Dataset(HDXObject):
 
         if self.resources:
             self.data['resources'] = self._convert_hdxobjects(self.resources)
-        ignore_field = self.configuration['dataset'].get('ignore_on_update')
-        self.check_required_fields(ignore_fields=[ignore_field])
+        if 'ignore_check' not in kwargs:  # allow ignoring of field checks
+            ignore_field = self.configuration['dataset'].get('ignore_on_update')
+            self.check_required_fields(ignore_fields=[ignore_field])
         self._save_to_hdx('update', 'id', force_active=True)
         self._add_filestore_resources(filestore_resources, create_default_views, hxl_update)
 
     def update_in_hdx(self, update_resources=True, update_resources_by_name=True,
-                      remove_additional_resources=False, create_default_views=True, hxl_update=True):
-        # type: (bool, bool, bool, bool, bool) -> None
+                      remove_additional_resources=False, create_default_views=True, hxl_update=True, **kwargs):
+        # type: (bool, bool, bool, bool, bool, Any) -> None
         """Check if dataset exists in HDX and if so, update it
 
         Args:
@@ -527,12 +528,12 @@ class Dataset(HDXObject):
                                        update_resources_by_name=update_resources_by_name,
                                        remove_additional_resources=remove_additional_resources,
                                        create_default_views=create_default_views,
-                                       hxl_update=hxl_update)
+                                       hxl_update=hxl_update, **kwargs)
         logger.info('Updated %s' % self.get_hdx_url())
 
     def create_in_hdx(self, allow_no_resources=False, update_resources=True, update_resources_by_name=True,
-                      remove_additional_resources=False, create_default_views=True, hxl_update=True):
-        # type: (bool, bool, bool, bool, bool, bool) -> None
+                      remove_additional_resources=False, create_default_views=True, hxl_update=True, **kwargs):
+        # type: (bool, bool, bool, bool, bool, bool, Any) -> None
         """Check if dataset exists in HDX and if so, update it, otherwise create it
 
         Args:
@@ -546,7 +547,8 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        self.check_required_fields(allow_no_resources=allow_no_resources)
+        if 'ignore_check' not in kwargs:  # allow ignoring of field checks
+            self.check_required_fields(allow_no_resources=allow_no_resources)
         loadedid = None
         if 'id' in self.data:
             if self._dataset_load_from_hdx(self.data['id']):
@@ -561,7 +563,7 @@ class Dataset(HDXObject):
                                            update_resources_by_name=update_resources_by_name,
                                            remove_additional_resources=remove_additional_resources,
                                            create_default_views=create_default_views,
-                                           hxl_update=hxl_update)
+                                           hxl_update=hxl_update, **kwargs)
             logger.info('Updated %s' % self.get_hdx_url())
             return
 

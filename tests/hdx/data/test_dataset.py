@@ -571,6 +571,14 @@ class TestDataset:
         with pytest.raises(HDXError):
             dataset.create_in_hdx()
 
+        dataset_data = copy.deepcopy(TestDataset.dataset_data)
+        dataset = Dataset(dataset_data)
+        dataset.add_update_resource(resource)
+        del dataset['tags']
+        with pytest.raises(HDXError):
+            dataset.create_in_hdx()
+        dataset.create_in_hdx(ignore_check=False)
+
         config = Configuration(user_agent='test', hdx_read_only=True)
         config.setup_remoteckan()
         config.remoteckan().session = Configuration.read().remoteckan().session
@@ -639,7 +647,7 @@ class TestDataset:
         dataset['groups'] = list()
         with pytest.raises(HDXError):
             dataset.update_in_hdx()
-
+        dataset.update_in_hdx(ignore_check=False)
 
         # These dataset creates actually do updates
         dataset_data = copy.deepcopy(TestDataset.dataset_data)
