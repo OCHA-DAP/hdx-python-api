@@ -20,6 +20,7 @@ import hdx.data.resource
 import hdx.data.showcase
 import hdx.data.user
 import hdx.data.vocabulary
+from hdx.data.filestore_helper import FilestoreHelper
 from hdx.data.hdxobject import HDXObject, HDXError
 from hdx.hdx_configuration import Configuration
 from hdx.hdx_locations import Locations
@@ -73,7 +74,6 @@ class Dataset(HDXObject):
         'annually': '365',
         'yearly': '365'
     }
-    temporary_url = 'updated_by_file_upload_step'
 
     def __init__(self, initial_data=None, configuration=None):
         # type: (Optional[Dict], Optional[Configuration]) -> None
@@ -351,72 +351,6 @@ class Dataset(HDXObject):
                 ignore_fields = ['package_id']
                 resource.check_required_fields(ignore_fields=ignore_fields)
 
-    def _dataset_merge_filestore_resource(self, resource, updated_resource, filestore_resources, ignore_fields):
-        # type: (hdx.data.Resource, hdx.data.Resource, List[hdx.data.Resource], List[str]) -> None
-        """Helper method to merge updated resource from dataset into HDX resource read from HDX including filestore.
-
-        Args:
-            resource (hdx.data.Resource): Resource read from HDX
-            updated_resource (hdx.data.Resource): Updated resource from dataset
-            filestore_resources (List[hdx.data.Resource]): List of resources that use filestore (to be appended to)
-            ignore_fields (List[str]): List of fields to ignore when checking resource
-
-        Returns:
-            None
-        """
-        if updated_resource.get_file_to_upload():
-            resource.set_file_to_upload(updated_resource.get_file_to_upload())
-            filestore_resources.append(resource)
-        merge_two_dictionaries(resource, updated_resource)
-        resource.check_required_fields(ignore_fields=ignore_fields)
-        if resource.get_file_to_upload():
-            resource['url'] = Dataset.temporary_url
-
-    def _dataset_merge_filestore_newresource(self, new_resource, ignore_fields, filestore_resources):
-        # type: (hdx.data.Resource, List[str], List[hdx.data.Resource]) -> None
-        """Helper method to add new resource from dataset including filestore.
-
-        Args:
-            new_resource (hdx.data.Resource): New resource from dataset
-            ignore_fields (List[str]): List of fields to ignore when checking resource
-            filestore_resources (List[hdx.data.Resource]): List of resources that use filestore (to be appended to)
-
-        Returns:
-            None
-        """
-        new_resource.check_required_fields(ignore_fields=ignore_fields)
-        self.resources.append(new_resource)
-        if new_resource.get_file_to_upload():
-            filestore_resources.append(new_resource)
-            new_resource['url'] = Dataset.temporary_url
-
-    def _add_filestore_resources(self, filestore_resources, create_default_views, hxl_update):
-        # type: (List[hdx.data.Resource], bool, bool) -> None
-        """Helper method to create files in filestore by updating resources.
-
-        Args:
-            filestore_resources (List[hdx.data.Resource]): List of resources that use filestore (to be appended to)
-            create_default_views (bool): Whether to call package_create_default_resource_views.
-            hxl_update (bool): Whether to call package_hxl_update.
-
-        Returns:
-            None
-        """
-        for resource in filestore_resources:
-            for created_resource in self.data['resources']:
-                if resource['name'] == created_resource['name']:
-                    merge_two_dictionaries(resource.data, created_resource)
-                    del resource['url']
-                    resource.update_in_hdx()
-                    merge_two_dictionaries(created_resource, resource.data)
-                    break
-        self.init_resources()
-        self.separate_resources()
-        if create_default_views:
-            self.create_default_views()
-        if hxl_update:
-            self.hxl_update()
-
     def _dataset_merge_hdx_update(self, update_resources, update_resources_by_name,
                                   remove_additional_resources, create_default_views, hxl_update, **kwargs):
         # type: (bool, bool, bool, bool, bool, Any) -> None
@@ -449,15 +383,17 @@ class Dataset(HDXObject):
                     for updated_resource in updated_resources:
                         if resource_name == updated_resource['name']:
                             logger.warning('Resource exists. Updating %s' % resource_name)
-                            self._dataset_merge_filestore_resource(resource, updated_resource,
-                                                                   filestore_resources, ignore_fields)
+                            FilestoreHelper.dataset_merge_filestore_resource(resource, updated_resource,
+                                                                             filestore_resources, ignore_fields)
                             break
                 updated_resource_names = set()
                 for updated_resource in updated_resources:
                     updated_resource_name = updated_resource['name']
                     updated_resource_names.add(updated_resource_name)
                     if not updated_resource_name in resource_names:
-                        self._dataset_merge_filestore_newresource(updated_resource, ignore_fields, filestore_resources)
+                        FilestoreHelper.check_filestore_resource(updated_resource, ignore_fields, filestore_resources)
+                        self.resources.append(updated_resource)
+
                 if remove_additional_resources:
                     resources_to_delete = list()
                     for i, resource in enumerate(self.resources):
@@ -477,10 +413,12 @@ class Dataset(HDXObject):
                         logger.warning('Resource exists. Updating %s' % resource_name)
                         if resource_name != updated_resource_name:
                             logger.warning('Changing resource name to: %s' % updated_resource_name)
-                        self._dataset_merge_filestore_resource(resource, updated_resource,
-                                                               filestore_resources, ignore_fields)
+                        FilestoreHelper.dataset_merge_filestore_resource(resource, updated_resource,
+                                                                         filestore_resources, ignore_fields)
                     else:
-                        self._dataset_merge_filestore_newresource(updated_resource, ignore_fields, filestore_resources)
+                        FilestoreHelper.check_filestore_resource(updated_resource, ignore_fields, filestore_resources)
+                        self.resources.append(updated_resource)
+
                 if remove_additional_resources:
                     resources_to_delete = list()
                     for i, resource in enumerate(self.resources):
@@ -496,7 +434,13 @@ class Dataset(HDXObject):
             ignore_field = self.configuration['dataset'].get('ignore_on_update')
             self.check_required_fields(ignore_fields=[ignore_field])
         self._save_to_hdx('update', 'id', force_active=True)
-        self._add_filestore_resources(filestore_resources, create_default_views, hxl_update)
+        FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources)
+        self.init_resources()
+        self.separate_resources()
+        if create_default_views:
+            self.create_default_views()
+        if hxl_update:
+            self.hxl_update()
 
     def update_in_hdx(self, update_resources=True, update_resources_by_name=True,
                       remove_additional_resources=False, create_default_views=True, hxl_update=True, **kwargs):
@@ -571,14 +515,15 @@ class Dataset(HDXObject):
         if self.resources:
             ignore_fields = ['package_id']
             for resource in self.resources:
-                resource.check_required_fields(ignore_fields=ignore_fields)
-                if resource.get_file_to_upload():
-                    filestore_resources.append(resource)
-                    resource['url'] = Dataset.temporary_url
+                FilestoreHelper.check_filestore_resource(resource, ignore_fields, filestore_resources)
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         self.clean_tags()
         self._save_to_hdx('create', 'name', force_active=True)
-        self._add_filestore_resources(filestore_resources, False, hxl_update)
+        FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources)
+        self.init_resources()
+        self.separate_resources()
+        if hxl_update:
+            self.hxl_update()
         logger.info('Created %s' % self.get_hdx_url())
 
     def delete_from_hdx(self):

@@ -11,6 +11,7 @@ from hdx.utilities.loader import load_yaml, load_json
 from hdx.utilities.path import script_dir_plus_file
 
 import hdx.data.dataset
+import hdx.data.filestore_helper
 from hdx.data.hdxobject import HDXObject, HDXError
 from hdx.data.resource_view import ResourceView
 from hdx.hdx_configuration import Configuration
@@ -161,7 +162,7 @@ class Resource(HDXObject):
                 raise HDXError('Either a url or a file to upload must be supplied!')
         else:
             if 'url' in self.data:
-                if self.data['url'] != hdx.data.dataset.Dataset.temporary_url:
+                if self.data['url'] != hdx.data.filestore_helper.FilestoreHelper.temporary_url:
                     raise HDXError('Either a url or a file to upload must be supplied not both!')
             if 'resource_type' not in self.data:
                 self.data['resource_type'] = 'file.upload'
