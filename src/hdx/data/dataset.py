@@ -20,7 +20,7 @@ import hdx.data.resource
 import hdx.data.showcase
 import hdx.data.user
 import hdx.data.vocabulary
-from hdx.data.filestore_helper import FilestoreHelper
+import hdx.data.filestore_helper
 from hdx.data.hdxobject import HDXObject, HDXError
 from hdx.hdx_configuration import Configuration
 from hdx.hdx_locations import Locations
@@ -383,7 +383,7 @@ class Dataset(HDXObject):
                     for updated_resource in updated_resources:
                         if resource_name == updated_resource['name']:
                             logger.warning('Resource exists. Updating %s' % resource_name)
-                            FilestoreHelper.dataset_merge_filestore_resource(resource, updated_resource,
+                            hdx.data.filestore_helper.FilestoreHelper.dataset_merge_filestore_resource(resource, updated_resource,
                                                                              filestore_resources, ignore_fields)
                             break
                 updated_resource_names = set()
@@ -391,7 +391,7 @@ class Dataset(HDXObject):
                     updated_resource_name = updated_resource['name']
                     updated_resource_names.add(updated_resource_name)
                     if not updated_resource_name in resource_names:
-                        FilestoreHelper.check_filestore_resource(updated_resource, ignore_fields, filestore_resources)
+                        hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(updated_resource, ignore_fields, filestore_resources)
                         self.resources.append(updated_resource)
 
                 if remove_additional_resources:
@@ -413,10 +413,10 @@ class Dataset(HDXObject):
                         logger.warning('Resource exists. Updating %s' % resource_name)
                         if resource_name != updated_resource_name:
                             logger.warning('Changing resource name to: %s' % updated_resource_name)
-                        FilestoreHelper.dataset_merge_filestore_resource(resource, updated_resource,
+                        hdx.data.filestore_helper.FilestoreHelper.dataset_merge_filestore_resource(resource, updated_resource,
                                                                          filestore_resources, ignore_fields)
                     else:
-                        FilestoreHelper.check_filestore_resource(updated_resource, ignore_fields, filestore_resources)
+                        hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(updated_resource, ignore_fields, filestore_resources)
                         self.resources.append(updated_resource)
 
                 if remove_additional_resources:
@@ -434,7 +434,7 @@ class Dataset(HDXObject):
             ignore_field = self.configuration['dataset'].get('ignore_on_update')
             self.check_required_fields(ignore_fields=[ignore_field])
         self._save_to_hdx('update', 'id', force_active=True)
-        FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources)
+        hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources)
         self.init_resources()
         self.separate_resources()
         if create_default_views:
@@ -515,11 +515,11 @@ class Dataset(HDXObject):
         if self.resources:
             ignore_fields = ['package_id']
             for resource in self.resources:
-                FilestoreHelper.check_filestore_resource(resource, ignore_fields, filestore_resources)
+                hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(resource, ignore_fields, filestore_resources)
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         self.clean_tags()
         self._save_to_hdx('create', 'name', force_active=True)
-        FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources)
+        hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources)
         self.init_resources()
         self.separate_resources()
         if hxl_update:
