@@ -12,7 +12,9 @@ from hdx.utilities.path import script_dir_plus_file
 
 import hdx.data.dataset
 import hdx.data.filestore_helper
-from hdx.data.hdxobject import HDXObject, HDXError
+from hdx.github_helper import GithubHelper
+from hdx.data.hdxobject import HDXObject
+from hdx.data import HDXError
 from hdx.data.resource_view import ResourceView
 from hdx.hdx_configuration import Configuration
 
@@ -26,7 +28,6 @@ class Resource(HDXObject):
         initial_data (Optional[Dict]): Initial resource metadata dictionary. Defaults to None.
         configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
     """
-
     def __init__(self, initial_data=None, configuration=None):
         # type: (Optional[Dict], Optional[Configuration]) -> None
         if not initial_data:
@@ -152,7 +153,7 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        if self.file_to_upload is None:
+        if self.file_to_upload is None or 'github' in self.configuration:
             if 'url' in self.data:
                 if 'resource_type' not in self.data:
                     self.data['resource_type'] = 'api'
@@ -197,9 +198,15 @@ class Resource(HDXObject):
             None
         """
         self._check_load_existing_object('resource', 'id')
-        if self.file_to_upload and 'url' in self.data:
-            del self.data['url']
-        self._merge_hdx_update('resource', 'id', self.file_to_upload, True, **kwargs)
+        url = GithubHelper.create_or_update_in_github(self.configuration, self.file_to_upload)
+        if url is None:
+            file_to_upload = self.file_to_upload
+            if file_to_upload and 'url' in self.data:
+                del self.data['url']
+        else:
+            file_to_upload = None
+            self.data['url'] = url
+        self._merge_hdx_update('resource', 'id', file_to_upload, True, **kwargs)
 
     def create_in_hdx(self):
         # type: () -> None
@@ -210,13 +217,19 @@ class Resource(HDXObject):
         """
         self.check_required_fields()
         id = self.data.get('id')
+        url = GithubHelper.create_or_update_in_github(self.configuration, self.file_to_upload)
+        if url is None:
+            file_to_upload = self.file_to_upload
+        else:
+            file_to_upload = None
+            self.data['url'] = url
         if id and self._load_from_hdx('resource', id):
             logger.warning('%s exists. Updating %s' % ('resource', id))
-            if self.file_to_upload and 'url' in self.data:
+            if file_to_upload and 'url' in self.data:
                 del self.data['url']
-            self._merge_hdx_update('resource', 'id', self.file_to_upload, True)
+            self._merge_hdx_update('resource', 'id', file_to_upload, True)
         else:
-            self._save_to_hdx('create', 'name', self.file_to_upload, True)
+            self._save_to_hdx('create', 'name', file_to_upload, True)
 
     def delete_from_hdx(self):
         # type: () -> None
@@ -232,7 +245,7 @@ class Resource(HDXObject):
         """Return dataset containing this resource
 
         Returns:
-            hdx.data.dataset.Dataset: Dataset containing this resource
+            Dataset: Dataset containing this resource
         """
         package_id = self.data.get('package_id')
         if package_id is None:

@@ -9,6 +9,7 @@ requirements = ['ckanapi>=4.3',
                 'hdx-python-country>=2.1.2',
                 'ndg-httpsclient',
                 'pyasn1',
+                'PyGithub',
                 'pyOpenSSL',
                 'python-dateutil'
                 ]

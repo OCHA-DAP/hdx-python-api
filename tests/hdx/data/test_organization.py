@@ -8,7 +8,7 @@ import pytest
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
 
-from hdx.data.hdxobject import HDXError
+from hdx.data import HDXError
 from hdx.data.organization import Organization
 from hdx.data.user import User
 from hdx.hdx_configuration import Configuration

@@ -147,6 +147,8 @@ class TestConfiguration:
         }
 
         configuration = Configuration.read()
+        if 'github' in configuration:
+            del configuration['github']
         assert configuration == expected_configuration
         version = get_api_version()
         assert configuration.get_user_agent() == 'HDXPythonLibrary/%s-test' % version
@@ -162,6 +164,9 @@ class TestConfiguration:
             project_config_yaml=project_config_yaml)
         configuration = Configuration.read()
         expected_configuration['user_agent'] = 'test'
+        configuration = Configuration.read()
+        if 'github' in configuration:
+            del configuration['github']
         assert configuration == expected_configuration
         assert configuration.get_user_agent() == 'HDXPythonLibrary/%s-test' % version
 
@@ -235,7 +240,10 @@ hello there'''
             'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
             'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
         }
-        assert Configuration.read() == expected_configuration
+        configuration = Configuration.read()
+        if 'github' in configuration:
+            del configuration['github']
+        assert configuration == expected_configuration
 
     def test_hdx_configuration_yaml(self, hdx_config_yaml, hdx_base_config_yaml, project_config_yaml):
         Configuration._create(user_agent='test', hdx_config_yaml=hdx_config_yaml,
@@ -263,7 +271,10 @@ hello there'''
             'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
             'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
         }
-        assert Configuration.read() == expected_configuration
+        configuration = Configuration.read()
+        if 'github' in configuration:
+            del configuration['github']
+        assert configuration == expected_configuration
 
     def test_project_configuration_dict(self, hdx_config_yaml):
         Configuration._create(user_agent='test', hdx_config_yaml=hdx_config_yaml)
@@ -354,12 +365,19 @@ hello there'''
             ]},
             'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=1739051517&single=true&output=csv',
-            'tags_mapping_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=334970416&single=true&output=csv'
+            'tags_mapping_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=334970416&single=true&output=csv',
+            'github_url': 'https://github.com'
         }
-        assert Configuration.read() == expected_configuration
+        configuration = Configuration.read()
+        if 'github' in configuration:
+            del configuration['github']
+        assert configuration == expected_configuration
         Configuration._create(user_agent='test', hdx_config_yaml=hdx_config_yaml, project_config_dict={'abc': '123'})
         expected_configuration['abc'] = '123'
-        assert Configuration.read() == expected_configuration
+        configuration = Configuration.read()
+        if 'github' in configuration:
+            del configuration['github']
+        assert configuration == expected_configuration
 
     def test_project_configuration_json(self, hdx_config_yaml, project_config_json):
         Configuration._create(user_agent='test', hdx_config_yaml=hdx_config_yaml, project_config_json=project_config_json)
@@ -451,9 +469,13 @@ hello there'''
             ]},
             'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=1739051517&single=true&output=csv',
-            'tags_mapping_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=334970416&single=true&output=csv'
+            'tags_mapping_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=334970416&single=true&output=csv',
+            'github_url': 'https://github.com'
         }
-        assert Configuration.read() == expected_configuration
+        configuration = Configuration.read()
+        if 'github' in configuration:
+            del configuration['github']
+        assert configuration == expected_configuration
 
     def test_project_configuration_yaml(self, hdx_config_yaml, project_config_yaml):
         Configuration._create(user_agent='test', hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
@@ -545,8 +567,12 @@ hello there'''
             'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
             'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
+            'github_url': 'https://github.com'
         }
-        assert Configuration.read() == expected_configuration
+        configuration = Configuration.read()
+        if 'github' in configuration:
+            del configuration['github']
+        assert configuration == expected_configuration
 
     def test_get_hdx_key_site(self, hdx_config_yaml, project_config_yaml):
         Configuration._create(user_agent='test', hdx_config_yaml=hdx_config_yaml,

@@ -34,6 +34,8 @@ def my_testfnkw(**kwargs):
         testresult.actual_result = Configuration.read().get_api_key()
     elif fn == 'agent':
         testresult.actual_result = Configuration.read().user_agent
+    elif fn == 'github':
+        testresult.actual_result = Configuration.read()['github']
     elif fn == 'exc':
         testresult.actual_result = Configuration.read().get_hdx_site_url()
         raise ValueError('Some failure!')

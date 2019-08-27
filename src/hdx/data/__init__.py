@@ -1,0 +1,2 @@
+class HDXError(Exception):
+    pass

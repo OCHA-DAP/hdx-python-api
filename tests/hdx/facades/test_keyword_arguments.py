@@ -80,6 +80,17 @@ class TestKeywordArguments:
                project_config_yaml=project_config_yaml, fn='site')
         assert testresult.actual_result == my_test_hdxurl
         UserAgent.clear_global()
+        testresult.actual_result = None
+        facade(my_testfnkw, user_agent=my_user_agent, hdx_config_yaml=hdx_config_yaml,
+               project_config_yaml=project_config_yaml, github='mytoken,myorg/myrepo,mybase/mybase2,dev', fn='github')
+        assert testresult.actual_result == {'access_token': 'mytoken', 'base_folder': 'mybase/mybase2', 'branch': 'dev', 'repository': 'myorg/myrepo'}
+        UserAgent.clear_global()
+        testresult.actual_result = None
+        monkeypatch.setenv('GITHUB', 'mytoken2,myorg/myrepo2,,')
+        facade(my_testfnkw, user_agent=my_user_agent, hdx_config_yaml=hdx_config_yaml,
+               project_config_yaml=project_config_yaml, github='mytoken,myorg/myrepo,mybase/mybase2,dev', fn='github')
+        assert testresult.actual_result == {'access_token': 'mytoken2', 'repository': 'myorg/myrepo2'}
+        UserAgent.clear_global()
 
     def test_exception(self, hdx_config_yaml, project_config_yaml):
         UserAgent.clear_global()

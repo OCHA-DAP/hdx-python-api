@@ -11,7 +11,7 @@ import six
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.downloader import DownloadError
 
-from hdx.data.hdxobject import HDXError
+from hdx.data import HDXError
 from hdx.data.resource import Resource
 from hdx.hdx_configuration import Configuration
 from . import MockResponse

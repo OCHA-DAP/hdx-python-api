@@ -15,13 +15,15 @@ from hdx.utilities import raisefrom
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from six.moves import range
 
+import hdx.data
 import hdx.data.organization
 import hdx.data.resource
 import hdx.data.showcase
 import hdx.data.user
 import hdx.data.vocabulary
 import hdx.data.filestore_helper
-from hdx.data.hdxobject import HDXObject, HDXError
+from hdx.data.hdxobject import HDXObject
+from hdx.data import HDXError
 from hdx.hdx_configuration import Configuration
 from hdx.hdx_locations import Locations
 
@@ -147,10 +149,10 @@ class Dataset(HDXObject):
         """Add new or update existing resource in dataset with new metadata
 
         Args:
-            resource (Union[hdx.data.resource.Resource,Dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
+            resource (Union[Resource,Dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
 
         Returns:
-            hdx.data.resource.Resource: Resource object
+            Resource: Resource object
         """
         if isinstance(resource, str):
             if is_valid_uuid(resource) is False:
@@ -167,7 +169,7 @@ class Dataset(HDXObject):
         """Add new or update existing resource in dataset with new metadata
 
         Args:
-            resource (Union[hdx.data.resource.Resource,Dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
+            resource (Union[Resource,Dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
             ignore_datasetid (bool): Whether to ignore dataset id in the resource
 
         Returns:
@@ -187,7 +189,7 @@ class Dataset(HDXObject):
         """Add new or update existing resources with new metadata to the dataset
 
         Args:
-            resources (List[Union[hdx.data.resource.Resource,Dict,str]]): A list of either resource ids or resources metadata from either Resource objects or dictionaries
+            resources (List[Union[Resource,Dict,str]]): A list of either resource ids or resources metadata from either Resource objects or dictionaries
             ignore_datasetid (bool): Whether to ignore dataset id in the resource. Defaults to False.
 
         Returns:
@@ -203,7 +205,7 @@ class Dataset(HDXObject):
         """Delete a resource from the dataset and also from HDX by default
 
         Args:
-            resource (Union[hdx.data.resource.Resource,Dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
+            resource (Union[Resource,Dict,str]): Either resource id or resource metadata from a Resource object or a dictionary
             delete (bool): Whetehr to delete the resource from HDX (not just the dataset). Defaults to True.
 
         Returns:
@@ -219,7 +221,7 @@ class Dataset(HDXObject):
         """Get dataset's resources
 
         Returns:
-            List[hdx.data.resource.Resource]: list of Resource objects
+            List[Resource]: list of Resource objects
         """
         return self.resources
 
@@ -231,7 +233,7 @@ class Dataset(HDXObject):
             index (int): Index of resource in dataset. Defaults to 0.
 
         Returns:
-            hdx.data.resource.Resource: Resource object
+            Resource: Resource object
         """
         return self.resources[index]
 
@@ -373,66 +375,13 @@ class Dataset(HDXObject):
             del self.data['resources']
         updated_resources = self.old_data.get('resources', None)
         filestore_resources = list()
-        if update_resources and updated_resources:
-            ignore_fields = ['package_id']
-            if update_resources_by_name:
-                resource_names = set()
-                for resource in self.resources:
-                    resource_name = resource['name']
-                    resource_names.add(resource_name)
-                    for updated_resource in updated_resources:
-                        if resource_name == updated_resource['name']:
-                            logger.warning('Resource exists. Updating %s' % resource_name)
-                            hdx.data.filestore_helper.FilestoreHelper.dataset_merge_filestore_resource(resource, updated_resource,
-                                                                             filestore_resources, ignore_fields)
-                            break
-                updated_resource_names = set()
-                for updated_resource in updated_resources:
-                    updated_resource_name = updated_resource['name']
-                    updated_resource_names.add(updated_resource_name)
-                    if not updated_resource_name in resource_names:
-                        hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(updated_resource, ignore_fields, filestore_resources)
-                        self.resources.append(updated_resource)
-
-                if remove_additional_resources:
-                    resources_to_delete = list()
-                    for i, resource in enumerate(self.resources):
-                        resource_name = resource['name']
-                        if resource_name not in updated_resource_names:
-                            logger.warning('Removing additional resource %s!' % resource_name)
-                            resources_to_delete.append(i)
-                    for i in sorted(resources_to_delete, reverse=True):
-                        del self.resources[i]
-
-            else:  # update resources by position
-                for i, updated_resource in enumerate(updated_resources):
-                    if len(self.resources) > i:
-                        updated_resource_name = updated_resource['name']
-                        resource = self.resources[i]
-                        resource_name = resource['name']
-                        logger.warning('Resource exists. Updating %s' % resource_name)
-                        if resource_name != updated_resource_name:
-                            logger.warning('Changing resource name to: %s' % updated_resource_name)
-                        hdx.data.filestore_helper.FilestoreHelper.dataset_merge_filestore_resource(resource, updated_resource,
-                                                                         filestore_resources, ignore_fields)
-                    else:
-                        hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(updated_resource, ignore_fields, filestore_resources)
-                        self.resources.append(updated_resource)
-
-                if remove_additional_resources:
-                    resources_to_delete = list()
-                    for i, resource in enumerate(self.resources):
-                        if len(updated_resources) <= i:
-                            logger.warning('Removing additional resource %s!' % resource['name'])
-                            resources_to_delete.append(i)
-                    for i in sorted(resources_to_delete, reverse=True):
-                        del self.resources[i]
-
+        hdx.data.filestore_helper.FilestoreHelper.update_resources(self.configuration, self.resources, updated_resources, filestore_resources, update_resources, update_resources_by_name, remove_additional_resources)
         if self.resources:
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         if 'ignore_check' not in kwargs:  # allow ignoring of field checks
             ignore_field = self.configuration['dataset'].get('ignore_on_update')
             self.check_required_fields(ignore_fields=[ignore_field])
+
         self._save_to_hdx('update', 'id', force_active=True)
         hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources)
         self.init_resources()
@@ -515,7 +464,7 @@ class Dataset(HDXObject):
         if self.resources:
             ignore_fields = ['package_id']
             for resource in self.resources:
-                hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(resource, ignore_fields, filestore_resources)
+                hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(self.configuration, resource, ignore_fields, filestore_resources)
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         self.clean_tags()
         self._save_to_hdx('create', 'name', force_active=True)
@@ -738,7 +687,7 @@ class Dataset(HDXObject):
             datasets (List[Dataset]): list of datasets
 
         Returns:
-            List[hdx.data.resource.Resource]: list of resources within those datasets
+            List[Resource]: list of resources within those datasets
         """
         resources = []
         for dataset in datasets:
@@ -918,7 +867,7 @@ class Dataset(HDXObject):
         elif isinstance(dataset_year, str):
             dataset_date = '01/01/%s' % dataset_year
         else:
-            raise hdx.data.hdxobject.HDXError('dataset_year has type %s which is not supported!' % type(dataset_year).__name__)
+            raise hdx.data.HDXError('dataset_year has type %s which is not supported!' % type(dataset_year).__name__)
         if dataset_end_year is None:
             dataset_end_year = dataset_year
         if isinstance(dataset_end_year, int):
@@ -926,7 +875,7 @@ class Dataset(HDXObject):
         elif isinstance(dataset_end_year, str):
             dataset_end_date = '31/12/%s' % dataset_end_year
         else:
-            raise hdx.data.hdxobject.HDXError('dataset_end_year has type %s which is not supported!' % type(dataset_end_year).__name__)
+            raise hdx.data.HDXError('dataset_end_year has type %s which is not supported!' % type(dataset_end_year).__name__)
         self.set_dataset_date(dataset_date, dataset_end_date)
 
     @classmethod
@@ -1494,7 +1443,7 @@ class Dataset(HDXObject):
         """Set the resource that will be used for displaying QuickCharts in dataset preview
 
         Args:
-            resource (Union[hdx.data.resource.Resource,Dict,str,int]): Either resource id or name, resource metadata from a Resource object or a dictionary or position
+            resource (Union[Resource,Dict,str,int]): Either resource id or name, resource metadata from a Resource object or a dictionary or position
 
         Returns:
             bool: True if resource for QuickCharts in dataset preview set or False if not
@@ -1508,7 +1457,7 @@ class Dataset(HDXObject):
             else:
                 resource = res
         elif not isinstance(resource, str):
-            raise hdx.data.hdxobject.HDXError('Resource id cannot be found in type %s!' % type(resource).__name__)
+            raise hdx.data.HDXError('Resource id cannot be found in type %s!' % type(resource).__name__)
         if is_valid_uuid(resource) is True:
             search = 'id'
         else:

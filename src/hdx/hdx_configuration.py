@@ -8,6 +8,7 @@ from hdx.utilities.email import Email
 from hdx.utilities.session import get_session
 from hdx.utilities.useragent import UserAgent, UserAgentError
 
+from hdx.github_helper import GithubHelper
 from hdx.version import get_api_version
 
 if six.PY2:
@@ -157,6 +158,12 @@ class Configuration(UserDict, object):
 
         self.data = merge_two_dictionaries(hdx_base_config_dict, project_config_dict)
 
+        self.use_github = kwargs.get('use_github', self.data.get('use_github', False))
+        githubarg = kwargs.get('github', self.data.get('github'))
+        if githubarg is not None:
+            github = GithubHelper.github_dict_from_args(githubarg)
+            self.data['github'] = github
+
         ua = kwargs.get('full_agent')
         if ua:
             self.user_agent = ua
@@ -240,6 +247,19 @@ class Configuration(UserDict, object):
         """
         return self.data[self.hdx_site]['url']
 
+    def set_use_github(self, use_github=True):
+        # type: (bool) -> None
+        """
+        Set the flag which determines if GitHub rather than the filestore is used
+
+        Args:
+            use_github (bool): Value to set use_github flag. Defaults to True.
+        Returns:
+            None
+
+        """
+        self.use_github = use_github
+
     def _get_credentials(self):
         # type: () -> Optional[Tuple[str, str]]
         """
@@ -318,6 +338,9 @@ class Configuration(UserDict, object):
             hdx_site = os.getenv('HDX_SITE')
             if hdx_site is not None:
                 kwargs['hdx_site'] = hdx_site
+        github = os.getenv('GITHUB')
+        if github is not None:
+            kwargs['github'] = github
         return kwargs
 
     @classmethod

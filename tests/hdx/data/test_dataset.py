@@ -14,7 +14,7 @@ from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
 
 from hdx.data.dataset import Dataset, NotRequestableError
-from hdx.data.hdxobject import HDXError
+from hdx.data import HDXError
 from hdx.data.organization import Organization
 from hdx.data.resource import Resource
 from hdx.data.user import User

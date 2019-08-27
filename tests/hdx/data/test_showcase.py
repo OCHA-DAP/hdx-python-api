@@ -8,7 +8,7 @@ import pytest
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
 
-from hdx.data.hdxobject import HDXError
+from hdx.data import HDXError
 from hdx.data.showcase import Showcase
 from hdx.hdx_configuration import Configuration
 from .test_vocabulary import vocabulary_mockshow

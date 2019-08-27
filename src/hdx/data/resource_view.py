@@ -6,7 +6,8 @@ from typing import Optional, List
 
 from hdx.utilities import is_valid_uuid
 
-from hdx.data.hdxobject import HDXObject, HDXError
+from hdx.data.hdxobject import HDXObject
+from hdx.data import HDXError
 from hdx.hdx_configuration import Configuration
 
 logger = logging.getLogger(__name__)

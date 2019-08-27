@@ -3,6 +3,9 @@
 New HDX objects should extend this in similar fashion to Resource for example.
 """
 import six
+
+from hdx.data import HDXError
+
 if six.PY2:
     from UserDict import IterableUserDict as UserDict
 else:
@@ -23,10 +26,6 @@ from hdx.utilities.loader import load_yaml_into_existing_dict, load_json_into_ex
 logger = logging.getLogger(__name__)
 
 HDXObjectUpperBound = TypeVar('HDXObjectUpperBound', bound='HDXObject')
-
-
-class HDXError(Exception):
-    pass
 
 
 class HDXObject(UserDict, object):

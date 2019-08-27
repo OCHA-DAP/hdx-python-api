@@ -6,7 +6,8 @@ from typing import Optional, List, Dict, Union
 
 import hdx.data.dataset
 import hdx.data.user
-from hdx.data.hdxobject import HDXObject, HDXError
+from hdx.data.hdxobject import HDXObject
+from hdx.data import HDXError
 from hdx.hdx_configuration import Configuration
 
 logger = logging.getLogger(__name__)

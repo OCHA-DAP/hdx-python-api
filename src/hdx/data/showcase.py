@@ -8,6 +8,7 @@ from typing import List, Union, Optional, Dict, Any, Tuple
 from hdx.utilities import is_valid_uuid
 from hdx.utilities.dictandlist import merge_two_dictionaries
 
+import hdx.data
 import hdx.data.dataset
 import hdx.data.hdxobject
 import hdx.data.vocabulary
@@ -242,9 +243,9 @@ class Showcase(hdx.data.hdxobject.HDXObject):
                 dataset = hdx.data.dataset.Dataset.read_from_hdx(dataset['name'])
             dataset = dataset['id']
         elif not isinstance(dataset, str):
-            raise hdx.data.hdxobject.HDXError('Type %s cannot be added as a dataset!' % type(dataset).__name__)
+            raise hdx.data.HDXError('Type %s cannot be added as a dataset!' % type(dataset).__name__)
         if is_valid_uuid(dataset) is False:
-            raise hdx.data.hdxobject.HDXError('%s is not a valid dataset id!' % dataset)
+            raise hdx.data.HDXError('%s is not a valid dataset id!' % dataset)
         return {'showcase_id': self.data['id'], 'package_id': dataset}
 
     def add_dataset(self, dataset, datasets_to_check=None):
@@ -319,7 +320,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
             use_default_schema (bool): Use default package schema instead of custom schema. Defaults to False.
 
         Returns:
-            List[Dataset]: list of datasets resulting from query
+            List[Showcase]: list of showcases resulting from query
         """
         curfq = kwargs.get('fq')
         kwargs['fq'] = 'dataset_type:showcase'

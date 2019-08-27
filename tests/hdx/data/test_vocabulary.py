@@ -8,7 +8,7 @@ import pytest
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from requests.exceptions import RetryError
 
-from hdx.data.hdxobject import HDXError
+from hdx.data import HDXError
 from hdx.data.vocabulary import Vocabulary
 from hdx.hdx_configuration import Configuration
 from . import MockResponse
