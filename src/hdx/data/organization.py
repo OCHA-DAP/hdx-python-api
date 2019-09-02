@@ -244,6 +244,7 @@ class Organization(HDXObject):
             include_extras (bool): If all_fields, include the group extra fields. Defaults to False.
             include_tags (bool): If all_fields, include the group tags. Defaults to False.
             include_groups: If all_fields, include the groups the groups are in. Defaults to False.
+            include_users (bool): If all_fields, include the organization users. Defaults to False.
 
         Returns:
             List[str]: List of all organization names in HDX
