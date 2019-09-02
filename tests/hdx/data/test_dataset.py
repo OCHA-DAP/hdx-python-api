@@ -955,19 +955,20 @@ class TestDataset:
         assert dataset.get_dataset_date_type() is None
 
     def test_transform_update_frequency(self):
-        assert len(Dataset.list_valid_update_frequencies()) == 30
-        assert Dataset.transform_update_frequency('-2') == 'Adhoc'
+        assert len(Dataset.list_valid_update_frequencies()) == 31
+        assert Dataset.transform_update_frequency('-2') == 'As needed'
         assert Dataset.transform_update_frequency('-1') == 'Never'
         assert Dataset.transform_update_frequency('0') == 'Live'
         assert Dataset.transform_update_frequency('1') == 'Every day'
         assert Dataset.transform_update_frequency('Adhoc') == '-2'
+        assert Dataset.transform_update_frequency('As needed') == '-2'
         assert Dataset.transform_update_frequency('Never') == '-1'
         assert Dataset.transform_update_frequency('Live') == '0'
         assert Dataset.transform_update_frequency('Every day') == '1'
         assert Dataset.transform_update_frequency('EVERY WEEK') == '7'
         assert Dataset.transform_update_frequency('every month') == '30'
         assert Dataset.transform_update_frequency('LALA') is None
-        assert Dataset.transform_update_frequency(-2) == 'Adhoc'
+        assert Dataset.transform_update_frequency(-2) == 'As needed'
         assert Dataset.transform_update_frequency(7) == 'Every week'
         assert Dataset.transform_update_frequency('') is None
         assert Dataset.transform_update_frequency(23) is None

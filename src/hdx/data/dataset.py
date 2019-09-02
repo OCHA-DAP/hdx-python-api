@@ -43,7 +43,7 @@ class Dataset(HDXObject):
     max_attempts = 5
     max_int = sys.maxsize
     update_frequencies = {
-        '-2': 'Adhoc',
+        '-2': 'As needed',
         '-1': 'Never',
         '0': 'Live',
         '1': 'Every day',
@@ -53,6 +53,7 @@ class Dataset(HDXObject):
         '90': 'Every three months',
         '180': 'Every six months',
         '365': 'Every year',
+        'as needed': '-2',
         'adhoc': '-2',
         'never': '-1',
         'live': '0',
