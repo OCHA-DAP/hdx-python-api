@@ -236,7 +236,8 @@ class HDXObject(UserDict, object):
         ignore_field = kwargs.get('ignore_field')
         if ignore_field:
             ignore_fields.append(ignore_field)
-        self.check_required_fields(ignore_fields=ignore_fields)
+        if 'ignore_check' not in kwargs:  # allow ignoring of field checks
+            self.check_required_fields(ignore_fields=ignore_fields)
         operation = kwargs.get('operation', 'update')
         self._save_to_hdx(operation, id_field_name, file_to_upload, force_active)
 
@@ -354,8 +355,8 @@ class HDXObject(UserDict, object):
         raise NotImplementedError
 
     def _create_in_hdx(self, object_type, id_field_name, name_field_name,
-                       file_to_upload=None, force_active=True):
-        # type: (str, str, str, Optional[str], bool) -> None
+                       file_to_upload=None, force_active=True, **kwargs):
+        # type: (str, str, str, Optional[str], bool, Any) -> None
         """Helper method to check if resource exists in HDX and if so, update it, otherwise create it
 
 
@@ -369,10 +370,11 @@ class HDXObject(UserDict, object):
         Returns:
             None
         """
-        self.check_required_fields()
+        if 'ignore_check' not in kwargs:  # allow ignoring of field checks
+            self.check_required_fields()
         if id_field_name in self.data and self._load_from_hdx(object_type, self.data[id_field_name]):
             logger.warning('%s exists. Updating %s' % (object_type, self.data[id_field_name]))
-            self._merge_hdx_update(object_type, id_field_name, file_to_upload, force_active)
+            self._merge_hdx_update(object_type, id_field_name, file_to_upload, force_active, **kwargs)
         else:
             self._save_to_hdx('create', name_field_name, file_to_upload, force_active)
 

@@ -132,23 +132,23 @@ class Vocabulary(HDXObject):
         """
         self._check_required_fields('vocabulary', ignore_fields)
 
-    def update_in_hdx(self):
-        # type: () -> None
+    def update_in_hdx(self, **kwargs):
+        # type: (Any) -> None
         """Check if vocabulary exists in HDX and if so, update vocabulary
 
         Returns:
             None
         """
-        self._update_in_hdx('vocabulary', 'id', force_active=False)
+        self._update_in_hdx('vocabulary', 'id', force_active=False, **kwargs)
 
-    def create_in_hdx(self):
-        # type: () -> None
+    def create_in_hdx(self, **kwargs):
+        # type: (Any) -> None
         """Check if vocabulary exists in HDX and if so, update it, otherwise create vocabulary
 
         Returns:
             None
         """
-        self._create_in_hdx('vocabulary', 'id', 'name', force_active=False)
+        self._create_in_hdx('vocabulary', 'id', 'name', force_active=False, **kwargs)
 
     def delete_from_hdx(self, empty=True):
         # type: (bool) -> None

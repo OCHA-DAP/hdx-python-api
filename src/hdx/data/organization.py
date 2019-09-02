@@ -98,23 +98,23 @@ class Organization(HDXObject):
         """
         self._check_required_fields('organization', ignore_fields)
 
-    def update_in_hdx(self):
-        # type: () -> None
+    def update_in_hdx(self, **kwargs):
+        # type: (Any) -> None
         """Check if organization exists in HDX and if so, update organization
 
         Returns:
             None
         """
-        self._update_in_hdx('organization', 'id')
+        self._update_in_hdx('organization', 'id', **kwargs)
 
-    def create_in_hdx(self):
-        # type: () -> None
+    def create_in_hdx(self, **kwargs):
+        # type: (Any) -> None
         """Check if organization exists in HDX and if so, update it, otherwise create organization
 
         Returns:
             None
         """
-        self._create_in_hdx('organization', 'id', 'name')
+        self._create_in_hdx('organization', 'id', 'name', **kwargs)
 
     def delete_from_hdx(self):
         # type: () -> None

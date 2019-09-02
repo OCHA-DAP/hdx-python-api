@@ -2,7 +2,7 @@
 """Resource view class containing all logic for creating, checking, and updating resource views."""
 import logging
 from os.path import join
-from typing import Optional, List
+from typing import Optional, List, Any
 
 from hdx.utilities import is_valid_uuid
 
@@ -121,8 +121,8 @@ class ResourceView(HDXObject):
         """
         self._check_required_fields('resource view', ignore_fields)
 
-    def _update_resource_view(self, log=False):
-        # type: () -> bool
+    def _update_resource_view(self, log=False, **kwargs):
+        # type: (bool, Any) -> bool
         """Check if resource view exists in HDX and if so, update resource view
 
         Returns:
@@ -143,28 +143,29 @@ class ResourceView(HDXObject):
         if update:
             if log:
                 logger.warning('resource view exists. Updating %s' % self.data['id'])
-            self._merge_hdx_update('resource view', 'id')
+            self._merge_hdx_update('resource view', 'id', **kwargs)
         return update
 
-    def update_in_hdx(self):
-        # type: () -> None
+    def update_in_hdx(self, **kwargs):
+        # type: (Any) -> None
         """Check if resource view exists in HDX and if so, update resource view
 
         Returns:
             None
         """
-        if not self._update_resource_view():
+        if not self._update_resource_view(**kwargs):
             raise HDXError('No existing resource view to update!')
 
-    def create_in_hdx(self):
-        # type: () -> None
+    def create_in_hdx(self, **kwargs):
+        # type: (Any) -> None
         """Check if resource view exists in HDX and if so, update it, otherwise create resource view
 
         Returns:
             None
         """
-        self.check_required_fields()
-        if not self._update_resource_view(log=True):
+        if 'ignore_check' not in kwargs:  # allow ignoring of field checks
+            self.check_required_fields()
+        if not self._update_resource_view(log=True, **kwargs):
             self._save_to_hdx('create', 'title')
 
     def delete_from_hdx(self):

@@ -108,8 +108,8 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         """
         self._check_required_fields('showcase', ignore_fields)
 
-    def update_in_hdx(self):
-        # type: () -> None
+    def update_in_hdx(self, **kwargs):
+        # type: (Any) -> None
         """Check if showcase exists in HDX and if so, update it
 
         Returns:
@@ -121,27 +121,28 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         # the object in the intervening time
         merge_two_dictionaries(self.data, self.old_data)
         self.clean_tags()
-        self._hdx_update('showcase', 'name', force_active=True)
-        self._update_in_hdx('showcase', 'name')
+        self._hdx_update('showcase', 'name', force_active=True, **kwargs)
+        self._update_in_hdx('showcase', 'name', **kwargs)
 
-    def create_in_hdx(self):
-        # type: () -> None
+    def create_in_hdx(self, **kwargs):
+        # type: (Any) -> None
         """Check if showcase exists in HDX and if so, update it, otherwise create it
 
         Returns:
             None
         """
-        self.check_required_fields()
+        if 'ignore_check' not in kwargs:  # allow ignoring of field checks
+            self.check_required_fields()
         if 'name' in self.data and self._load_from_hdx('showcase', self.data['name']):
             logger.warning('%s exists. Updating %s' % ('showcase', self.data['name']))
             merge_two_dictionaries(self.data, self.old_data)
             self.clean_tags()
-            self._hdx_update('showcase', 'name', force_active=True)
+            self._hdx_update('showcase', 'name', force_active=True, **kwargs)
         else:
             self.clean_tags()
             self._save_to_hdx('create', 'title', force_active=True)
 
-        self._create_in_hdx('showcase', 'name', 'title')
+        self._create_in_hdx('showcase', 'name', 'title', **kwargs)
 
     def delete_from_hdx(self):
         # type: () -> None
