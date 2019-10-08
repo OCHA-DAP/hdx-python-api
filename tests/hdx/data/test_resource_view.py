@@ -52,6 +52,25 @@ def resource_view_mocklist(url, datadict):
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_list"}')
 
 
+def resource_view_mockcreate(url, datadict):
+    if 'create' not in url:
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}')
+    result = json.dumps(resultdict)
+    if datadict['title'] == 'A Preview':
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}' % result)
+    if datadict['title'] == 'XXX':
+        return MockResponse(404,
+                            '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}')
+    if datadict['title'] == 'YYY':
+        return MockResponse(200,
+                            '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}')
+
+    return MockResponse(404,
+                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}')
+
+
 class TestResourceView:
     resource_view_data = {
         'resource_id': '25982d1c-f45a-45e1-b14e-87d367413045',
@@ -87,23 +106,10 @@ class TestResourceView:
                     return resource_view_mockshow(url, datadict)
                 if 'list' in url:
                     return resource_view_mocklist(url, datadict)
-                if 'create' not in url:
-                    return MockResponse(404,
-                                        '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}')
-
-                result = json.dumps(resultdict)
-                if datadict['title'] == 'A Preview':
-                    return MockResponse(200,
-                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}' % result)
-                if datadict['title'] == 'XXX':
-                    return MockResponse(404,
-                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}')
-                if datadict['title'] == 'YYY':
-                    return MockResponse(200,
-                                        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}')
-
+                if 'create' in url:
+                    return resource_view_mockcreate(url, datadict)
                 return MockResponse(404,
-                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}')
+                                    '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}')
 
         Configuration.read().remoteckan().session = MockSession()
 

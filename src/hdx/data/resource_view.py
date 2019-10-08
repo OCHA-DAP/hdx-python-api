@@ -48,7 +48,7 @@ class ResourceView(HDXObject):
         """Update resource view metadata with static metadata from YAML file
 
         Args:
-            path (Optional[str]): Path to YAML dataset metadata. Defaults to config/hdx_resource_view_static.yml.
+            path (Optional[str]): Path to YAML resource view metadata. Defaults to config/hdx_resource_view_static.yml.
 
         Returns:
             None

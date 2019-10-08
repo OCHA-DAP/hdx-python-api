@@ -23,7 +23,8 @@ from hdx.hdx_configuration import Configuration
 from .test_vocabulary import vocabulary_mockshow
 from . import MockResponse, user_data, organization_data
 from .test_organization import organization_mockshow
-from .test_resource_view import resource_view_list
+from .test_resource_view import resource_view_list, resource_view_mockshow, resource_view_mocklist, \
+    resource_view_mockcreate
 from .test_showcase import showcase_resultdict
 from .test_user import user_mockshow
 
@@ -290,6 +291,10 @@ class TestDataset:
     def static_json(self):
         return join('tests', 'fixtures', 'config', 'hdx_dataset_static.json')
 
+    @pytest.fixture(scope='class')
+    def static_resource_view_yaml(self):
+        return join('tests', 'fixtures', 'config', 'hdx_resource_view_static.yml')
+
     @pytest.fixture(scope='function')
     def read(self):
         class MockSession(object):
@@ -321,6 +326,10 @@ class TestDataset:
                     result = json.dumps(resource_view_list)
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_create_default_resource_views"}' % result)
+                if 'resource_view' in url:
+                    result = json.dumps(resource_view_list[1])
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}' % result)
                 if 'resource' in url:
                     result = json.dumps(TestDataset.resources_data[0])
                     return MockResponse(200,
@@ -523,6 +532,29 @@ class TestDataset:
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_package_association_create"}' % result)
                 return mockshow(url, datadict)
 
+
+        Configuration.read().remoteckan().session = MockSession()
+
+    @pytest.fixture(scope='function')
+    def resource_view_create(self):
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth=None):
+                datadict = json.loads(data.decode('utf-8'))
+                if 'package' in url:
+                    result = json.dumps(dataset_resultdict)
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}' % result)
+                if 'show' in url:
+                    return resource_view_mockshow(url, datadict)
+                if 'list' in url:
+                    return resource_view_mocklist(url, datadict)
+                if 'create' in url:
+                    if datadict['title'] == 'Quick Charts':
+                        datadict['title'] = 'A Preview'
+                    return resource_view_mockcreate(url, datadict)
+                return MockResponse(404,
+                                    '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}')
 
         Configuration.read().remoteckan().session = MockSession()
 
@@ -1248,35 +1280,41 @@ class TestDataset:
     def test_set_quickchart_resource(self, configuration, read):
         dataset = Dataset.read_from_hdx('TEST1')
         assert 'dataset_preview' not in dataset
-        assert dataset.set_quickchart_resource('3d777226-96aa-4239-860a-703389d16d1f') is True
+        assert dataset.set_quickchart_resource('3d777226-96aa-4239-860a-703389d16d1f')['id'] == '3d777226-96aa-4239-860a-703389d16d1f'
         assert dataset['dataset_preview'] == 'resource_id'
         resources = dataset.get_resources()
         assert resources[0]['dataset_preview_enabled'] == 'False'
         assert resources[1]['dataset_preview_enabled'] == 'True'
-        assert dataset.set_quickchart_resource(resources[0]) is True
+        assert dataset.set_quickchart_resource(resources[0])['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
         assert resources[0]['dataset_preview_enabled'] == 'True'
         assert resources[1]['dataset_preview_enabled'] == 'False'
-        assert dataset.set_quickchart_resource(resources[1].data) is True
+        assert dataset.set_quickchart_resource(resources[1].data)['id'] == '3d777226-96aa-4239-860a-703389d16d1f'
         assert resources[0]['dataset_preview_enabled'] == 'False'
         assert resources[1]['dataset_preview_enabled'] == 'True'
-        assert dataset.set_quickchart_resource(0) is True
+        assert dataset.set_quickchart_resource(0)['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
         assert resources[0]['dataset_preview_enabled'] == 'True'
         assert resources[1]['dataset_preview_enabled'] == 'False'
-        assert dataset.set_quickchart_resource('12345') is False
+        assert dataset.set_quickchart_resource('12345') is None
         with pytest.raises(HDXError):
             dataset.set_quickchart_resource(True)
         dataset.preview_off()
         assert dataset['dataset_preview'] == 'no_preview'
         assert resources[0]['dataset_preview_enabled'] == 'False'
         assert resources[1]['dataset_preview_enabled'] == 'False'
-        assert dataset.set_quickchart_resource('Resource2') is True
+        assert dataset.set_quickchart_resource('Resource2')['id'] == '3d777226-96aa-4239-860a-703389d16d1f'
         assert dataset['dataset_preview'] == 'resource_id'
         assert resources[0]['dataset_preview_enabled'] == 'False'
         assert resources[1]['dataset_preview_enabled'] == 'True'
-        assert dataset.set_quickchart_resource({'name': 'Resource1'}) is True
+        assert dataset.set_quickchart_resource({'name': 'Resource1'})['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
         assert dataset['dataset_preview'] == 'resource_id'
         assert resources[0]['dataset_preview_enabled'] == 'True'
         assert resources[1]['dataset_preview_enabled'] == 'False'
+
+    def test_generate_resource_view(self, configuration, resource_view_create, static_resource_view_yaml):
+        dataset = Dataset.read_from_hdx('TEST1')
+        assert 'dataset_preview' not in dataset
+        assert dataset.generate_resource_view(path=static_resource_view_yaml)['id'] == 'c06b5a0d-1d41-4a74-a196-41c251c76023'
+        assert dataset.generate_resource_view(resource='123', path=static_resource_view_yaml) is None
 
     def test_get_hdx_url(self, configuration, hdx_config_yaml, project_config_yaml):
         dataset = Dataset()

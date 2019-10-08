@@ -17,6 +17,7 @@ from six.moves import range
 
 import hdx.data.organization
 import hdx.data.resource
+import hdx.data.resource_view
 import hdx.data.showcase
 import hdx.data.user
 import hdx.data.vocabulary
@@ -1491,14 +1492,14 @@ class Dataset(HDXObject):
         self.data['dataset_preview'] = 'resource_id'
 
     def set_quickchart_resource(self, resource):
-        # type: (Union[hdx.data.resource.Resource,Dict,str,int]) -> bool
+        # type: (Union[hdx.data.resource.Resource,Dict,str,int]) -> hdx.data.resource.Resource
         """Set the resource that will be used for displaying QuickCharts in dataset preview
 
         Args:
             resource (Union[hdx.data.resource.Resource,Dict,str,int]): Either resource id or name, resource metadata from a Resource object or a dictionary or position
 
         Returns:
-            bool: True if resource for QuickCharts in dataset preview set or False if not
+            hdx.data.resource.Resource: Resource that is used for preview or None if no preview set
         """
         if isinstance(resource, int) and not isinstance(resource, bool):
             resource = self.get_resources()[resource]
@@ -1514,15 +1515,15 @@ class Dataset(HDXObject):
             search = 'id'
         else:
             search = 'name'
-        changed = False
+        preview_resource = None
         for dataset_resource in self.resources:
             if dataset_resource[search] == resource:
                 dataset_resource.enable_dataset_preview()
                 self.preview_resource()
-                changed = True
+                preview_resource = dataset_resource
             else:
                 dataset_resource.disable_dataset_preview()
-        return changed
+        return preview_resource
 
     def create_default_views(self, create_datastore_views=False):
         # type: (bool) -> None
@@ -1540,6 +1541,25 @@ class Dataset(HDXObject):
 
         data = {'package': package, 'create_datastore_views': create_datastore_views}
         self._write_to_hdx('create_default_views', data, 'package')
+
+    def generate_resource_view(self, resource=0, path=join('config', 'hdx_resource_view_static.yml')):
+        # type: (Union[hdx.data.resource.Resource,Dict,str,int], str) -> hdx.data.resource_view.ResourceView
+        """Create QuickCharts for dataset from configuration saved in resource view
+
+        Args:
+            resource (Union[hdx.data.resource.Resource,Dict,str,int]): Either resource id or name, resource metadata from a Resource object or a dictionary or position. Defaults to 0.
+            path (str): Path to YAML resource view metadata. Defaults to config/hdx_resource_view_static.yml.
+
+        Returns:
+            hdx.data.resource_view.ResourceView: The resource view if QuickCharts created, None is not
+        """
+        res = self.set_quickchart_resource(resource)
+        if res is None:
+            return None
+        resourceview = hdx.data.resource_view.ResourceView({'resource_id': res['id']})
+        resourceview.update_from_yaml(path=path)
+        resourceview.create_in_hdx()
+        return resourceview
 
     def get_hdx_url(self):
         # type: () -> Optional[str]
