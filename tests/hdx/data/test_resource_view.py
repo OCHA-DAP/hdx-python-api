@@ -56,8 +56,13 @@ def resource_view_mockcreate(url, datadict):
     if 'create' not in url:
         return MockResponse(404,
                             '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}')
-    result = json.dumps(resultdict)
     if datadict['title'] == 'A Preview':
+        result = json.dumps(resultdict)
+        return MockResponse(200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}' % result)
+    if datadict['title'] == 'Quick Charts':
+        resultdictcopy = copy.deepcopy(resultdict)
+        result = json.dumps(merge_two_dictionaries(resultdictcopy, datadict))
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}' % result)
     if datadict['title'] == 'XXX':
@@ -274,7 +279,7 @@ class TestResourceView:
         assert resource_view['view_type'] == 'recline_view'
         assert resource_view['title'] == 'Data Explorer'
         resource_view.update_from_yaml(static_yaml)
-        assert resource_view['view_type'] == 'recline_view'
+        assert resource_view['view_type'] == 'hdx_hxl_preview'
         assert resource_view['title'] == 'Quick Charts'
         assert resource_view['description'] == 'lala'
         assert resource_view['resource_id'] == '25982d1c-f45a-45e1-b14e-87d367413045'
@@ -284,8 +289,9 @@ class TestResourceView:
         resource_view = ResourceView(data)
         assert resource_view['view_type'] == 'recline_view'
         assert resource_view['title'] == 'Data Explorer'
+        resource_view['view_type'] = 'hdx_hxl_preview'
         resource_view.update_from_json(static_json)
-        assert resource_view['view_type'] == 'hdx_hxl_preview'
+        assert resource_view['view_type'] == 'recline_view'
         assert resource_view['title'] == 'Data Explorer'
         assert resource_view['description'] == 'haha'
         assert resource_view['resource_id'] == '25982d1c-f45a-45e1-b14e-87d367413045'

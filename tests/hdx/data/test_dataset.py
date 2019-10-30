@@ -551,8 +551,7 @@ class TestDataset:
                     return resource_view_mocklist(url, datadict)
                 if 'create' in url:
                     if datadict['title'] == 'Quick Charts':
-                        datadict['title'] = 'A Preview'
-                    return resource_view_mockcreate(url, datadict)
+                        return resource_view_mockcreate(url, datadict)
                 return MockResponse(404,
                                     '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}')
 
@@ -1313,7 +1312,17 @@ class TestDataset:
     def test_generate_resource_view(self, configuration, resource_view_create, static_resource_view_yaml):
         dataset = Dataset.read_from_hdx('TEST1')
         assert 'dataset_preview' not in dataset
-        assert dataset.generate_resource_view(path=static_resource_view_yaml)['id'] == 'c06b5a0d-1d41-4a74-a196-41c251c76023'
+        resourceview = dataset.generate_resource_view(path=static_resource_view_yaml)
+        hxl_preview_config = json.loads(resourceview['hxl_preview_config'])
+        assert resourceview['id'] == 'c06b5a0d-1d41-4a74-a196-41c251c76023'
+        assert hxl_preview_config['bites'][0]['title'] == 'Sum of fatalities'
+        assert hxl_preview_config['bites'][1]['title'] == 'Sum of fatalities grouped by admin1'
+        assert hxl_preview_config['bites'][2]['title'] == 'Sum of fatalities grouped by admin2'
+        resourceview = dataset.generate_resource_view(path=static_resource_view_yaml, bites_disabled=[False, True, False])
+        hxl_preview_config = json.loads(resourceview['hxl_preview_config'])
+        assert resourceview['id'] == 'c06b5a0d-1d41-4a74-a196-41c251c76023'
+        assert hxl_preview_config['bites'][0]['title'] == 'Sum of fatalities'
+        assert hxl_preview_config['bites'][1]['title'] == 'Sum of fatalities grouped by admin2'
         assert dataset.generate_resource_view(resource='123', path=static_resource_view_yaml) is None
 
     def test_get_hdx_url(self, configuration, hdx_config_yaml, project_config_yaml):

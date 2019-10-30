@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Dataset class containing all logic for creating, checking, and updating datasets and associated resources.
 """
+import json
 import logging
 import sys
 from copy import deepcopy
@@ -1542,13 +1543,16 @@ class Dataset(HDXObject):
         data = {'package': package, 'create_datastore_views': create_datastore_views}
         self._write_to_hdx('create_default_views', data, 'package')
 
-    def generate_resource_view(self, resource=0, path=join('config', 'hdx_resource_view_static.yml')):
-        # type: (Union[hdx.data.resource.Resource,Dict,str,int], str) -> hdx.data.resource_view.ResourceView
-        """Create QuickCharts for dataset from configuration saved in resource view
+    def generate_resource_view(self, resource=0, path=join('config', 'hdx_resource_view_static.yml'), bites_disabled=None):
+        # type: (Union[hdx.data.resource.Resource,Dict,str,int], str, Optional[List[bool]]) -> hdx.data.resource_view.ResourceView
+        """Create QuickCharts for dataset from configuration saved in resource view. You can disable specific bites
+        by providing bites_disabled, a list of bools where True indicates a specific bite is disabled and False
+        indicates leave enabled.
 
         Args:
             resource (Union[hdx.data.resource.Resource,Dict,str,int]): Either resource id or name, resource metadata from a Resource object or a dictionary or position. Defaults to 0.
             path (str): Path to YAML resource view metadata. Defaults to config/hdx_resource_view_static.yml.
+            bites_disabled (Optional[List[bool]]): Which QC bites should be disabled. Defaults to None (all bites enabled).
 
         Returns:
             hdx.data.resource_view.ResourceView: The resource view if QuickCharts created, None is not
@@ -1558,6 +1562,12 @@ class Dataset(HDXObject):
             return None
         resourceview = hdx.data.resource_view.ResourceView({'resource_id': res['id']})
         resourceview.update_from_yaml(path=path)
+        if bites_disabled is not None:
+            hxl_preview_config = json.loads(resourceview['hxl_preview_config'])
+            for i, disable in reversed(list(enumerate(bites_disabled))):
+                if disable:
+                    del hxl_preview_config['bites'][i]
+            resourceview['hxl_preview_config'] = json.dumps(hxl_preview_config)
         resourceview.create_in_hdx()
         return resourceview
 
