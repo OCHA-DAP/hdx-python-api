@@ -1323,6 +1323,8 @@ class TestDataset:
         assert resourceview['id'] == 'c06b5a0d-1d41-4a74-a196-41c251c76023'
         assert hxl_preview_config['bites'][0]['title'] == 'Sum of fatalities'
         assert hxl_preview_config['bites'][1]['title'] == 'Sum of fatalities grouped by admin2'
+        resourceview = dataset.generate_resource_view(path=static_resource_view_yaml, bites_disabled=[True, True, True])
+        assert resourceview is None
         assert dataset.generate_resource_view(resource='123', path=static_resource_view_yaml) is None
 
     def test_get_hdx_url(self, configuration, hdx_config_yaml, project_config_yaml):

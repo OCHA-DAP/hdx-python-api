@@ -1557,6 +1557,8 @@ class Dataset(HDXObject):
         Returns:
             hdx.data.resource_view.ResourceView: The resource view if QuickCharts created, None is not
         """
+        if bites_disabled == [True, True, True]:
+            return None
         res = self.set_quickchart_resource(resource)
         if res is None:
             return None
@@ -1564,9 +1566,10 @@ class Dataset(HDXObject):
         resourceview.update_from_yaml(path=path)
         if bites_disabled is not None:
             hxl_preview_config = json.loads(resourceview['hxl_preview_config'])
+            bites = hxl_preview_config['bites']
             for i, disable in reversed(list(enumerate(bites_disabled))):
                 if disable:
-                    del hxl_preview_config['bites'][i]
+                    del bites[i]
             resourceview['hxl_preview_config'] = json.dumps(hxl_preview_config)
         resourceview.create_in_hdx()
         return resourceview
