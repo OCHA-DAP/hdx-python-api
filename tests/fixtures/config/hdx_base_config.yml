@@ -1,8 +1,8 @@
 # HDX configuration
 hdx_prod_site:
-  url: "https://data.humdata.org/"
+  url: "https://data.humdata.org"
 hdx_test_site:
-  url: "https://test-data.humdata.org/"
+  url: "https://test-data.humdata.org"
   username: 'lala'
   password: 'lalala'
 dataset:

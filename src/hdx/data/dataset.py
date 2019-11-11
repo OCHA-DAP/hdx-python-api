@@ -1584,4 +1584,4 @@ class Dataset(HDXObject):
         name = self.data.get('name')
         if not name:
             return None
-        return '%sdataset/%s' % (self.configuration.get_hdx_site_url(), name)
+        return '%s/dataset/%s' % (self.configuration.get_hdx_site_url(), name)

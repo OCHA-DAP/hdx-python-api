@@ -128,7 +128,7 @@ class TestConfiguration:
         Configuration._create(user_agent='test', hdx_config_dict={'hdx_site': 'prod', 'hdx_read_only': True, 'hdx_key': 'abcde'},
                               hdx_base_config_dict={
                                                  'hdx_prod_site': {
-                                                     'url': 'https://data.humdata.org/',
+                                                     'url': 'https://data.humdata.org',
                                                  },
                                                  'XYZ': {'567': 987}
                                              },
@@ -138,7 +138,7 @@ class TestConfiguration:
             'hdx_read_only': True,
             'hdx_key': 'abcde',
             'hdx_prod_site': {
-                'url': 'https://data.humdata.org/',
+                'url': 'https://data.humdata.org',
             },
             'XYZ': {'567': 987},
             'approved_tags_vocabulary': 'Topics',
@@ -155,7 +155,7 @@ class TestConfiguration:
             hdx_config_dict={'hdx_site': 'prod', 'hdx_read_only': True, 'hdx_key': 'abcde', 'user_agent': 'test'},
             hdx_base_config_dict={
                 'hdx_prod_site': {
-                    'url': 'https://data.humdata.org/',
+                    'url': 'https://data.humdata.org',
                 },
                 'XYZ': {'567': 987}
             },
@@ -218,10 +218,10 @@ hello there'''
             'hdx_read_only': False,
             'hdx_key': '54321',
             'hdx_prod_site': {
-                'url': 'https://data.humdata.org/',
+                'url': 'https://data.humdata.org',
             },
             'hdx_test_site': {
-                'url': 'https://test-data.humdata.org/',
+                'url': 'https://test-data.humdata.org',
                 'username': 'tumteetum',
                 'password': 'tumteetumteetum'
             },
@@ -245,10 +245,10 @@ hello there'''
             'hdx_read_only': False,
             'hdx_key': '12345',
             'hdx_prod_site': {
-                'url': 'https://data.humdata.org/',
+                'url': 'https://data.humdata.org',
             },
             'hdx_test_site': {
-                'url': 'https://test-data.humdata.org/',
+                'url': 'https://test-data.humdata.org',
                 'username': 'lala',
                 'password': 'lalala'
             },
@@ -272,19 +272,19 @@ hello there'''
             'hdx_read_only': False,
             'hdx_key': '12345',
             'hdx_prod_site': {
-                'url': 'https://data.humdata.org/',
+                'url': 'https://data.humdata.org',
             },
             'hdx_demo_site': {
-                'url': 'https://demo-data.humdata.org/',
+                'url': 'https://demo-data.humdata.org',
             },
             'hdx_test_site': {
-                'url': 'https://test-data.humdata.org/',
+                'url': 'https://test-data.humdata.org',
             },
             'hdx_feature_site': {
-                'url': 'https://feature-data.humdata.org/',
+                'url': 'https://feature-data.humdata.org',
             },
             'hdx_dev_site': {
-                'url': 'http://data.dev.humdata.org/',
+                'url': 'http://data.dev.humdata.org',
             },
             'dataset': {'required_fields': [
                 'name',
@@ -368,19 +368,19 @@ hello there'''
             'hdx_read_only': False,
             'hdx_key': '12345',
             'hdx_prod_site': {
-                'url': 'https://data.humdata.org/',
+                'url': 'https://data.humdata.org',
             },
             'hdx_demo_site': {
-                'url': 'https://demo-data.humdata.org/',
+                'url': 'https://demo-data.humdata.org',
             },
             'hdx_test_site': {
-                'url': 'https://test-data.humdata.org/',
+                'url': 'https://test-data.humdata.org',
             },
             'hdx_feature_site': {
-                'url': 'https://feature-data.humdata.org/',
+                'url': 'https://feature-data.humdata.org',
             },
             'hdx_dev_site': {
-                'url': 'http://data.dev.humdata.org/',
+                'url': 'http://data.dev.humdata.org',
             },
             'my_param': 'abc',
             'dataset': {'required_fields': [
@@ -462,19 +462,19 @@ hello there'''
             'hdx_read_only': False,
             'hdx_key': '12345',
             'hdx_prod_site': {
-                'url': 'https://data.humdata.org/',
+                'url': 'https://data.humdata.org',
             },
             'hdx_demo_site': {
-                'url': 'https://demo-data.humdata.org/',
+                'url': 'https://demo-data.humdata.org',
             },
             'hdx_test_site': {
-                'url': 'https://test-data.humdata.org/',
+                'url': 'https://test-data.humdata.org',
             },
             'hdx_feature_site': {
-                'url': 'https://feature-data.humdata.org/',
+                'url': 'https://feature-data.humdata.org',
             },
             'hdx_dev_site': {
-                'url': 'http://data.dev.humdata.org/',
+                'url': 'http://data.dev.humdata.org',
             },
             'dataset': {'required_fields': [
                 'name',
@@ -553,7 +553,7 @@ hello there'''
                               hdx_base_config_dict={}, project_config_yaml=project_config_yaml)
         actual_configuration = Configuration.read()
         assert actual_configuration.get_api_key() == '12345'
-        assert actual_configuration.get_hdx_site_url() == 'https://data.humdata.org/'
+        assert actual_configuration.get_hdx_site_url() == 'https://data.humdata.org'
         assert actual_configuration._get_credentials() is None
 
     def test_set_hdx_key_value(self, project_config_yaml):

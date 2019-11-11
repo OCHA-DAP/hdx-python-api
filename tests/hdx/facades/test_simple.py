@@ -23,7 +23,7 @@ class TestSimple:
         my_user_agent = 'test'
         testresult.actual_result = None
         facade(my_testfn, user_agent=my_user_agent, hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
-        assert testresult.actual_result == 'https://data.humdata.org/'
+        assert testresult.actual_result == 'https://data.humdata.org'
         UserAgent.clear_global()
         version = get_api_version()
         testresult.actual_result = None
@@ -59,15 +59,20 @@ class TestSimple:
         testresult.actual_result = None
         my_test_hdxsite = 'test'
         facade(my_testfn, hdx_site=my_test_hdxsite, user_agent=my_user_agent, hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
-        assert testresult.actual_result == 'https://%s-data.humdata.org/' % my_test_hdxsite
+        assert testresult.actual_result == 'https://%s-data.humdata.org' % my_test_hdxsite
         UserAgent.clear_global()
         testresult.actual_result = None
         monkeypatch.setenv('HDX_SITE', my_test_hdxsite)
         facade(my_testfn, hdx_site='feature', user_agent=my_user_agent, hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
-        assert testresult.actual_result == 'https://%s-data.humdata.org/' % my_test_hdxsite
+        assert testresult.actual_result == 'https://%s-data.humdata.org' % my_test_hdxsite
         UserAgent.clear_global()
         my_test_hdxurl = 'http://other-data.humdata.org'
         monkeypatch.setenv('HDX_URL', my_test_hdxurl)
+        facade(my_testfn, hdx_site='feature', user_agent=my_user_agent, hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
+        assert testresult.actual_result == my_test_hdxurl
+        UserAgent.clear_global()
+        my_test_hdxurl2 = 'http://other-data.humdata.org/'
+        monkeypatch.setenv('HDX_URL', my_test_hdxurl2)
         facade(my_testfn, hdx_site='feature', user_agent=my_user_agent, hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml)
         assert testresult.actual_result == my_test_hdxurl
         UserAgent.clear_global()

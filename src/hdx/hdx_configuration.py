@@ -173,6 +173,7 @@ class Configuration(UserDict, object):
         hdx_url = kwargs.get('hdx_url', self.data.get('hdx_url'))
         if hdx_url:
             self.hdx_site = 'hdx_custom_site'
+            hdx_url = hdx_url.rstrip('/')
             self.data[self.hdx_site] = {'url': hdx_url}
         else:
             self.hdx_site = 'hdx_%s_site' % kwargs.get('hdx_site', self.data.get('hdx_site', 'test'))
