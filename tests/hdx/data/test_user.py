@@ -374,20 +374,23 @@ Content-Transfer-Encoding: 7bit
         config = Configuration.read()
         config.setup_emailer(email_config_dict=TestUser.email_config_dict)
         User.email_users(users, TestUser.subject, TestUser.text_body, html_body=TestUser.html_body,
-                         sender=TestUser.sender, mail_options=TestUser.mail_options, rcpt_options=TestUser.rcpt_options)
+                         sender=TestUser.sender, cc=users, bcc=users, mail_options=TestUser.mail_options,
+                         rcpt_options=TestUser.rcpt_options)
         email = config.emailer()
         assert email.server.type == 'smtpssl'
         assert email.server.initargs == TestUser.smtp_initargs
         assert email.server.username == TestUser.username
         assert email.server.password == TestUser.password
         assert email.server.sender == TestUser.sender
-        assert email.server.recipients == ['xxx@yyy.com', 'aaa@bbb.com']
+        assert email.server.recipients == ['xxx@yyy.com', 'aaa@bbb.com', 'xxx@yyy.com', 'aaa@bbb.com', 'xxx@yyy.com',
+                                           'aaa@bbb.com']
         assert 'Content-Type: multipart/alternative;' in email.server.msg
         assert '''\
 MIME-Version: 1.0
 Subject: hello
 From: me@gmail.com
-To: xxx@yyy.com, aaa@bbb.com''' in email.server.msg
+To: xxx@yyy.com, aaa@bbb.com
+Cc: xxx@yyy.com, aaa@bbb.com''' in email.server.msg
         assert '''\
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0

@@ -2,7 +2,7 @@
 """User class containing all logic for creating, checking, and updating users."""
 import logging
 from os.path import join
-from typing import Optional, List
+from typing import Optional, List, Any
 
 import hdx.data.organization
 from hdx.data.hdxobject import HDXObject
@@ -180,16 +180,19 @@ class User(HDXObject):
         return users
 
     @staticmethod
-    def email_users(users, subject, text_body, html_body=None, sender=None, configuration=None, **kwargs):
-        # type: (List['User'], str, str, Optional[str], Optional[str], Optional[Configuration], Any) -> None
+    def email_users(users, subject, text_body, html_body=None, sender=None, cc=None, bcc=None, configuration=None,
+                    **kwargs):
+        # type: (List['User'], str, str, Optional[str], Optional[str], Optional[List[User]], Optional[List[User]], Optional[Configuration], Any) -> None
         """Email a list of users
 
         Args:
-            users (List[User]): List of users
+            users (List[User]): List of users in To address
             subject (str): Email subject
             text_body (str): Plain text email body
             html_body (str): HTML email body
             sender (Optional[str]): Email sender. Defaults to SMTP username.
+            cc (Optional[List[User]]: List of users to cc. Defaults to None.
+            bcc (Optional[List[User]]: List of users to bcc. Defaults to None.
             configuration (Optional[Configuration]): HDX configuration. Defaults to configuration of first user in list.
             **kwargs: See below
             mail_options (List): Mail options (see smtplib documentation)
@@ -203,9 +206,16 @@ class User(HDXObject):
         recipients = list()
         for user in users:
             recipients.append(user.data['email'])
+        ccemails = list()
+        for user in cc:
+            ccemails.append(user.data['email'])
+        bccemails = list()
+        for user in bcc:
+            bccemails.append(user.data['email'])
         if configuration is None:
             configuration = users[0].configuration
-        configuration.emailer().send(recipients, subject, text_body, html_body=html_body, sender=sender, **kwargs)
+        configuration.emailer().send(recipients, subject, text_body, html_body=html_body, sender=sender, cc=ccemails,
+                                     bcc=bccemails, **kwargs)
 
     def get_organizations(self, permission='read'):
         # type: (str) -> List['Organization']
