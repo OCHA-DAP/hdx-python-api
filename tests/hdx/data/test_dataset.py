@@ -93,7 +93,6 @@ dataset_resultdict = {
     'dataset_date': '06/04/2016'}
 
 searchdict = load_yaml(join('tests', 'fixtures', 'dataset_search_results.yml'))
-alldict = load_yaml(join('tests', 'fixtures', 'dataset_all_results.yml'))
 dataset_list = ['acled-conflict-data-for-libya', 'acled-conflict-data-for-liberia', 'acled-conflict-data-for-lesotho',
                 'acled-conflict-data-for-kenya', 'acled-conflict-data-for-guinea', 'acled-conflict-data-for-ghana',
                 'acled-conflict-data-for-gambia', 'acled-conflict-data-for-gabon', 'acled-conflict-data-for-ethiopia',
@@ -145,36 +144,21 @@ def mocksearch(url, datadict):
         newsearchdict = copy.deepcopy(searchdict)
         if datadict['rows'] == 11:
             newsearchdict['results'].append(newsearchdict['results'][0])
-            return MockResponse(200,
-                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
-                                    newsearchdict))
         elif datadict['rows'] == 6:
             if datadict['start'] == 2:
                 newsearchdict['results'] = newsearchdict['results'][2:8]
-                return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
-                                        newsearchdict))
         elif datadict['rows'] == 5:
             if datadict['start'] == 0:
                 newsearchdict['count'] = 5
-                return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
-                                        newsearchdict[:5]))
+                newsearchdict['results'] = newsearchdict['results'][:5]
             elif datadict['start'] == 5:
                 newsearchdict['count'] = 6  # return wrong count
-                return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
-                                        newsearchdict[:5]))
+                newsearchdict['results'] = newsearchdict['results'][:5]
             else:
                 newsearchdict['count'] = 0
                 newsearchdict['results'] = list()
-                return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
-                                        newsearchdict))
-        else:
-            return MockResponse(200,
-                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
-                                    searchdict))
+        result = json.dumps(newsearchdict)
+        return MockResponse(200, '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % result)
     if datadict['q'] == '"':
         return MockResponse(404,
                             '{"success": false, "error": {"message": "Validation Error", "__type": "Validation Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
@@ -198,37 +182,38 @@ def mocklist(url, datadict):
 
 
 def mockall(url, datadict):
-    if 'current' not in url and 'list' not in url:
+    if 'search' not in url:
         return MockResponse(404,
-                            '{"success": false, "error": {"message": "TEST ERROR: Not search", "__type": "TEST ERROR: Not All Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}')
-    if 'current' in url:
-        newalldict = copy.deepcopy(alldict)
-        if datadict['limit'] == 11:
-            newalldict.append(newalldict[0])
-            result = json.dumps(newalldict)
-        elif datadict['limit'] == 7:
-            if datadict['offset'] == 2:
-                result = json.dumps(alldict[2:9])
-            else:
-                result = json.dumps(alldict[4:5])  # repeated dataset
-        elif datadict['limit'] == 5:
-            if datadict['offset'] == 0:
-                result = json.dumps(alldict[:5])
-            else:
-                result = json.dumps(alldict[4:5])  # repeated dataset
+                            '{"success": false, "error": {"message": "TEST ERROR: Not search", "__type": "TEST ERROR: Not All Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}')
+    newsearchdict = copy.deepcopy(searchdict)
+    if datadict['rows'] == 11:
+        newsearchdict['results'].append(newsearchdict['results'][0])
+    elif datadict['rows'] == 7:
+        if datadict['start'] == 2:
+            newsearchdict['results'] = newsearchdict['results'][2:9]
         else:
-            result = json.dumps(alldict)
-        return MockResponse(200,
-                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=current_package_list_with_resources"}' % result)
-    # No longer valid as package_list returns showcases (so the check of current_package_list_with_resources vs package_list is commented)
-    # if dataset.page_size == 1001:
-    #     return MockResponse(200,
-    #                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}' % json.dumps(
-    #                             dataset_list[1:]))
-    # else:
-    #     return MockResponse(200,
-    #                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}' % json.dumps(
-    #                             dataset_list))
+            newsearchdict['results'] = newsearchdict['results'][4:5]  # repeated dataset
+    elif datadict['rows'] == 5:
+        newsearchdict['count'] = 6
+        if datadict['sort'] == 'metadata_modified desc':
+            if datadict['start'] == 0:
+                newsearchdict['results'] = newsearchdict['results'][:5]
+            else:
+                newsearchdict['results'] = newsearchdict['results'][4:5]  # repeated dataset
+        elif datadict['sort'] == 'metadata_modified asc':
+            if datadict['start'] == 0:
+                newsearchdict['results'] = newsearchdict['results'][:5]
+            else:
+                newsearchdict['results'] = newsearchdict['results'][5:6]
+        else:
+            if datadict['start'] == 0:
+                newsearchdict['results'] = newsearchdict['results'][:5]
+            else:
+                newsearchdict['count'] = 7
+                newsearchdict['results'] = newsearchdict['results'][5:7]
+    result = json.dumps(newsearchdict)
+    return MockResponse(200,
+                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % result)
 
 
 def mockhxlupdate(url, datadict):
@@ -364,16 +349,26 @@ class TestDataset:
                     datadict = {k.decode('utf8'): v.decode('utf8') for k, v in data.items()}
                 else:
                     datadict = json.loads(data.decode('utf-8'))
+                if 'default' in url:
+                    result = json.dumps(resource_view_list)
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_create_default_resource_views"}' % result)
+                if 'resource_view' in url:
+                    if 'show' in url:
+                        return resource_view_mockshow(url, datadict)
+                    if 'list' in url:
+                        return resource_view_mocklist(url, datadict)
+                    if 'create' in url:
+                        if datadict['title'] == 'Quick Charts':
+                            return resource_view_mockcreate(url, datadict)
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}')
                 if 'vocabulary' in url:
                     return vocabulary_mockshow(url, datadict)
                 if 'show' in url:
                     return mockshow(url, datadict)
                 if 'hxl' in url:
                     return mockhxlupdate(url, datadict)
-                if 'default' in url:
-                    result = json.dumps(resource_view_list)
-                    return MockResponse(200,
-                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_create_default_resource_views"}' % result)
                 if 'resource' in url:
                     result = json.dumps(TestDataset.resources_data[0])
                     return MockResponse(200,
@@ -531,29 +526,6 @@ class TestDataset:
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_package_association_create"}' % result)
                 return mockshow(url, datadict)
-
-
-        Configuration.read().remoteckan().session = MockSession()
-
-    @pytest.fixture(scope='function')
-    def resource_view_create(self):
-        class MockSession(object):
-            @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
-                datadict = json.loads(data.decode('utf-8'))
-                if 'package' in url:
-                    result = json.dumps(dataset_resultdict)
-                    return MockResponse(200,
-                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}' % result)
-                if 'show' in url:
-                    return resource_view_mockshow(url, datadict)
-                if 'list' in url:
-                    return resource_view_mocklist(url, datadict)
-                if 'create' in url:
-                    if datadict['title'] == 'Quick Charts':
-                        return resource_view_mockcreate(url, datadict)
-                return MockResponse(404,
-                                    '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}')
 
         Configuration.read().remoteckan().session = MockSession()
 
@@ -910,8 +882,10 @@ class TestDataset:
         with pytest.raises(HDXError):
             Dataset.get_all_datasets(limit=11)
         with pytest.raises(HDXError):
-            Dataset.get_all_datasets(page_size=5)  # test repeated dataset (see mockall)
-        datasets = Dataset.get_all_datasets(page_size=5, check_duplicates=False)  # test repeated dataset (see mockall)
+            Dataset.get_all_datasets(page_size=5, sort='metadata_modified desc')  # test repeated dataset (see mockall)
+        with pytest.raises(HDXError):
+            Dataset.get_all_datasets(page_size=5, sort='relevance desc')  # test changed count (see mockall)
+        datasets = Dataset.get_all_datasets(page_size=5)  # test no repeating dataset (see mockall)
         assert len(datasets) == 6
 
     def test_get_all_resources(self, configuration, search):
@@ -1309,7 +1283,7 @@ class TestDataset:
         assert resources[0]['dataset_preview_enabled'] == 'True'
         assert resources[1]['dataset_preview_enabled'] == 'False'
 
-    def test_generate_resource_view(self, configuration, resource_view_create, static_resource_view_yaml):
+    def test_generate_resource_view(self, configuration, post_update, static_resource_view_yaml):
         dataset = Dataset.read_from_hdx('TEST1')
         assert 'dataset_preview' not in dataset
         resourceview = dataset.generate_resource_view(path=static_resource_view_yaml)
@@ -1326,6 +1300,14 @@ class TestDataset:
         resourceview = dataset.generate_resource_view(path=static_resource_view_yaml, bites_disabled=[True, True, True])
         assert resourceview is None
         assert dataset.generate_resource_view(resource='123', path=static_resource_view_yaml) is None
+        del dataset.get_resources()[0]['id']
+        resourceview = dataset.generate_resource_view(path=static_resource_view_yaml)
+        assert 'id' not in resourceview
+        assert 'resource_id' not in resourceview
+        assert resourceview['resource_name'] == 'Resource1'
+        dataset['id'] = 'TEST1'
+        dataset.update_in_hdx()
+        assert dataset.preview_resourceview is None
 
     def test_get_hdx_url(self, configuration, hdx_config_yaml, project_config_yaml):
         dataset = Dataset()

@@ -56,13 +56,13 @@ showcase_resultdict = {
     'name': 'showcase-1'
 }
 
-datasetsdict = load_yaml(join('tests', 'fixtures', 'dataset_all_results.yml'))
+datasetsdict = load_yaml(join('tests', 'fixtures', 'dataset_search_results.yml'))
 allsearchdict = load_yaml(join('tests', 'fixtures', 'showcase_all_search_results.yml'))
 
 
 def mockshow(url, datadict):
     if 'package_list' in url:
-        result = json.dumps(datasetsdict)
+        result = json.dumps(datasetsdict['results'])
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_package_list"}' % result)
     if '_show' not in url:
@@ -96,36 +96,21 @@ def mockallsearch(url, datadict):
         newsearchdict = copy.deepcopy(allsearchdict)
         if datadict['rows'] == 11:
             newsearchdict['results'].append(newsearchdict['results'][0])
-            return MockResponse(200,
-                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
-                                    newsearchdict))
         elif datadict['rows'] == 6:
             if datadict['start'] == 2:
                 newsearchdict['results'] = newsearchdict['results'][2:8]
-                return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
-                                        newsearchdict))
         elif datadict['rows'] == 5:
             if datadict['start'] == 0:
                 newsearchdict['count'] = 5
-                return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
-                                        newsearchdict[:5]))
+                newsearchdict['results'] = newsearchdict['results'][:5]
             elif datadict['start'] == 5:
                 newsearchdict['count'] = 6  # return wrong count
-                return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
-                                        newsearchdict[:5]))
+                newsearchdict['results'] = newsearchdict['results'][:5]
             else:
                 newsearchdict['count'] = 0
                 newsearchdict['results'] = list()
-                return MockResponse(200,
-                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
-                                        newsearchdict))
-        else:
-            return MockResponse(200,
-                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
-                                    allsearchdict))
+        result = json.dumps(newsearchdict)
+        return MockResponse(200, '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % result)
     if datadict['q'] == '*:*':
         newsearchdict = copy.deepcopy(allsearchdict)
         newsearchdict['results'].extend(copy.deepcopy(newsearchdict['results']))
@@ -399,8 +384,8 @@ class TestShowcase:
         showcase = Showcase.read_from_hdx('05e392bf-04e0-4ca6-848c-4e87bba10746')
         datasets = showcase.get_datasets()
         assert len(datasets) == 10
-        assert datasets[0].data == datasetsdict[0]
-        dict4 = copy.deepcopy(datasetsdict[4])
+        assert datasets[0].data == datasetsdict['results'][0]
+        dict4 = copy.deepcopy(datasetsdict['results'][4])
         del dict4['resources']
         assert datasets[4].data == dict4
         TestShowcase.association = None

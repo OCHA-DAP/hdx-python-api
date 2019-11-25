@@ -43,6 +43,8 @@ library is here: <https://github.com/ocha-dap/hdx-python-api>.
 
 ## Breaking Changes
 
+From 3.9.2, the default sort order for returned results from search and getting all datasets has changed.
+
 From 3.7.3, the return type for add_tag, add_tags and clean_tags is now Tuple[List[str], List[str]] 
 (Tuple containing list of added tags and list of deleted tags and tags not added).
 

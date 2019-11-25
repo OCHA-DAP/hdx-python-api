@@ -84,6 +84,7 @@ class Dataset(HDXObject):
             initial_data = dict()
         super(Dataset, self).__init__(dict(), configuration=configuration)
         self.init_resources()
+        self.preview_resourceview = None
         # workaround: python2 IterableUserDict does not call __setitem__ in __init__,
         # while python3 collections.UserDict does
         for key in initial_data:
@@ -105,7 +106,6 @@ class Dataset(HDXObject):
             'search': 'package_search',
             'reorder': 'package_resource_reorder',
             'list': 'package_list',
-            'all': 'current_package_list_with_resources',
             'hxl': 'package_hxl_update',
             'create_default_views': 'package_create_default_resource_views'
         }
@@ -442,6 +442,7 @@ class Dataset(HDXObject):
         self.separate_resources()
         if create_default_views:
             self.create_default_views()
+        self._create_preview_resourceview()
         if hxl_update:
             self.hxl_update()
 
@@ -527,6 +528,7 @@ class Dataset(HDXObject):
         self.separate_resources()
         if hxl_update:
             self.hxl_update()
+        self._create_preview_resourceview()
         logger.info('Created %s' % self.get_hdx_url())
 
     def delete_from_hdx(self):
@@ -558,9 +560,9 @@ class Dataset(HDXObject):
             page_size (int): Size of page to return. Defaults to 1000.
             **kwargs: See below
             fq (string): Any filter queries to apply
-            sort (string): Sorting of the search results. Defaults to 'relevance asc, metadata_modified desc'.
             rows (int): Number of matching rows to return. Defaults to all datasets (sys.maxsize).
             start (int): Offset in the complete result for where the set of returned datasets should begin
+            sort (string): Sorting of results. Defaults to 'relevance asc, metadata_modified desc' if rows<=page_size or 'metadata_modified asc' if rows>page_size.
             facet (string): Whether to enable faceted results. Default to True.
             facet.mincount (int): Minimum counts for facet fields should be included in the results
             facet.limit (int): Maximum number of values the facet fields return (- = unlimited). Defaults to 50.
@@ -581,6 +583,12 @@ class Dataset(HDXObject):
         else:
             if not total_rows:
                 total_rows = cls.max_int
+        sort = kwargs.get('sort')
+        if not sort:
+            if total_rows > page_size:
+                kwargs['sort'] = 'metadata_modified asc'
+            else:
+                kwargs['sort'] = 'relevance asc, metadata_modified desc'
         offset = kwargs.get('offset')
         start = kwargs.get('start')
         if offset:
@@ -621,7 +629,7 @@ class Dataset(HDXObject):
                         break
                 else:
                     logger.debug(result)
-            if all_datasets and len(counts) != 1:  # Make sure counts are all same for multiple calls to HDX
+            if kwargs['sort'] != 'metadata_modified asc' and all_datasets and len(counts) != 1:  # Make sure counts are all same for multiple calls to HDX
                 all_datasets = None
                 attempts += 1
             else:
@@ -659,78 +667,30 @@ class Dataset(HDXObject):
         return dataset._write_to_hdx('list', kwargs)
 
     @classmethod
-    def get_all_datasets(cls, configuration=None, page_size=1000, check_duplicates=True, **kwargs):
-        # type: (Optional[Configuration], int, bool, Any) -> List['Dataset']
-        """Get all datasets in HDX
+    def get_all_datasets(cls, configuration=None, page_size=1000, **kwargs):
+        # type: (Optional[str], Optional[Configuration], int, Any) -> List['Dataset']
+        """Get all datasets from HDX (just calls search_in_hdx)
 
         Args:
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
             page_size (int): Size of page to return. Defaults to 1000.
-            check_duplicates (bool): Whether to check for duplicate datasets. Defaults to True.
             **kwargs: See below
-            rows (int): Number of rows to return. Defaults to all datasets (sys.maxsize)
+            fq (string): Any filter queries to apply
+            rows (int): Number of matching rows to return. Defaults to all datasets (sys.maxsize).
             start (int): Offset in the complete result for where the set of returned datasets should begin
+            sort (string): Sorting of results. Defaults to 'metadata_modified asc'.
+            facet (string): Whether to enable faceted results. Default to True.
+            facet.mincount (int): Minimum counts for facet fields should be included in the results
+            facet.limit (int): Maximum number of values the facet fields return (- = unlimited). Defaults to 50.
+            facet.field (List[str]): Fields to facet upon. Default is empty.
+            use_default_schema (bool): Use default package schema instead of custom schema. Defaults to False.
 
         Returns:
-            List[Dataset]: list of all datasets in HDX
+            List[Dataset]: list of datasets resulting from query
         """
-
-        dataset = Dataset(configuration=configuration)
-        total_rows = kwargs.get('rows')
-        if total_rows:
-            del kwargs['rows']
-        else:
-            total_rows = kwargs.get('limit', cls.max_int)
-        start = kwargs.get('start')
-        if start:
-            del kwargs['start']
-        else:
-            start = kwargs.get('offset', 0)
-        all_datasets = None
-        attempts = 0
-        while attempts < cls.max_attempts and all_datasets is None:  # if the dataset names vary for multiple calls, then must redo query
-            all_datasets = list()
-            for page in range(total_rows // page_size + 1):
-                pagetimespagesize = page * page_size
-                kwargs['offset'] = start + pagetimespagesize
-                rows_left = total_rows - pagetimespagesize
-                rows = min(rows_left, page_size)
-                kwargs['limit'] = rows
-                result = dataset._write_to_hdx('all', kwargs)
-                datasets = list()
-                if isinstance(result, list):
-                    no_results = len(result)
-                    if no_results == 0 and page == 0:
-                        all_datasets = None
-                        break
-                    for datasetdict in result:
-                        dataset = Dataset(configuration=configuration)
-                        dataset.old_data = dict()
-                        dataset.data = datasetdict
-                        dataset._dataset_create_resources()
-                        datasets.append(dataset)
-                    all_datasets += datasets
-                    if no_results < rows:
-                        break
-                else:
-                    logger.debug(result)
-            if all_datasets is None:
-                attempts += 1
-            elif check_duplicates:
-                names_list = [dataset['name'] for dataset in all_datasets]
-                names = set(names_list)
-                if len(names_list) != len(names):  # check for duplicates (shouldn't happen)
-                    all_datasets = None
-                    attempts += 1
-                # This check is no longer valid because of showcases being returned by package_list!
-                # elif total_rows == max_int:
-                #     all_names = set(Dataset.get_all_dataset_names())  # check dataset names match package_list
-                #     if names != all_names:
-                #         all_datasets = None
-                #         attempts += 1
-        if attempts == cls.max_attempts and all_datasets is None:
-            raise HDXError('Maximum attempts reached for getting all datasets!')
-        return all_datasets
+        if 'sort' not in kwargs:
+            kwargs['sort'] = 'metadata_modified asc'
+        return cls.search_in_hdx(query='*:*', configuration=configuration, page_size=page_size, **kwargs)
 
     @staticmethod
     def get_all_resources(datasets):
@@ -1543,11 +1503,28 @@ class Dataset(HDXObject):
         data = {'package': package, 'create_datastore_views': create_datastore_views}
         self._write_to_hdx('create_default_views', data, 'package')
 
+    def _create_preview_resourceview(self):
+        # type: () -> None
+        """Creates preview resourceview
+
+        Returns:
+            None
+        """
+        if self.preview_resourceview:
+            for resource in self.get_resources():
+                if resource['name'] == self.preview_resourceview['resource_name']:
+                    del self.preview_resourceview['resource_name']
+                    self.preview_resourceview['resource_id'] = resource['id']
+                    self.preview_resourceview.create_in_hdx()
+                    self.preview_resourceview = None
+                    break
+
     def generate_resource_view(self, resource=0, path=join('config', 'hdx_resource_view_static.yml'), bites_disabled=None):
         # type: (Union[hdx.data.resource.Resource,Dict,str,int], str, Optional[List[bool]]) -> hdx.data.resource_view.ResourceView
         """Create QuickCharts for dataset from configuration saved in resource view. You can disable specific bites
         by providing bites_disabled, a list of bools where True indicates a specific bite is disabled and False
-        indicates leave enabled.
+        indicates leave enabled. Creation of the resource view will be delayed until after the next dataset create
+        or update if a resource id is not yet available.
 
         Args:
             resource (Union[hdx.data.resource.Resource,Dict,str,int]): Either resource id or name, resource metadata from a Resource object or a dictionary or position. Defaults to 0.
@@ -1562,7 +1539,11 @@ class Dataset(HDXObject):
         res = self.set_quickchart_resource(resource)
         if res is None:
             return None
-        resourceview = hdx.data.resource_view.ResourceView({'resource_id': res['id']})
+        if 'id' in res:
+            resourceview_data = {'resource_id': res['id']}
+        else:
+            resourceview_data = {'resource_name': res['name']}
+        resourceview = hdx.data.resource_view.ResourceView(resourceview_data)
         resourceview.update_from_yaml(path=path)
         if bites_disabled is not None:
             hxl_preview_config = json.loads(resourceview['hxl_preview_config'])
@@ -1571,7 +1552,11 @@ class Dataset(HDXObject):
                 if disable:
                     del bites[i]
             resourceview['hxl_preview_config'] = json.dumps(hxl_preview_config)
-        resourceview.create_in_hdx()
+        if 'resource_id' in resourceview:
+            resourceview.create_in_hdx()
+            self.preview_resourceview = None
+        else:
+            self.preview_resourceview = resourceview
         return resourceview
 
     def get_hdx_url(self):
