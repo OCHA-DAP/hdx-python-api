@@ -241,6 +241,20 @@ class Configuration(UserDict, object):
         """
         return self.data[self.hdx_site]['url']
 
+    def get_dataset_url(self, name):
+        # type: (str) -> str
+        """
+        Return HDX dataset url given dataset name
+
+        Args:
+            name: Dataset name
+
+        Returns:
+            str: HDX dataset url
+
+        """
+        return '%s/dataset/%s' % (self.get_hdx_site_url(), name)
+
     def _get_credentials(self):
         # type: () -> Optional[Tuple[str, str]]
         """

@@ -64,6 +64,7 @@ class Dataset(HDXObject):
         'every two weeks': '14',
         'every month': '30',
         'every three months': '90',
+        'every quarter': '90',
         'every six months': '180',
         'every year': '365',
         'daily': '1',
