@@ -960,7 +960,7 @@ class TestDataset:
         assert dataset.get_dataset_date_type() is None
 
     def test_transform_update_frequency(self):
-        assert len(Dataset.list_valid_update_frequencies()) == 31
+        assert len(Dataset.list_valid_update_frequencies()) == 32
         assert Dataset.transform_update_frequency('-2') == 'As needed'
         assert Dataset.transform_update_frequency('-1') == 'Never'
         assert Dataset.transform_update_frequency('0') == 'Live'
@@ -978,6 +978,7 @@ class TestDataset:
         assert Dataset.transform_update_frequency('') is None
         assert Dataset.transform_update_frequency(23) is None
         assert Dataset.transform_update_frequency('15') is None
+        assert Dataset.transform_update_frequency('Quarterly') == '90'
 
     def test_get_set_expected_update_frequency(self, configuration, read):
         dataset = Dataset.read_from_hdx('TEST1')
