@@ -20,13 +20,13 @@ from hdx.data.resource import Resource
 from hdx.data.user import User
 from hdx.data.vocabulary import Vocabulary, ChainRuleError
 from hdx.hdx_configuration import Configuration
-from .test_vocabulary import vocabulary_mockshow
 from . import MockResponse, user_data, organization_data
 from .test_organization import organization_mockshow
 from .test_resource_view import resource_view_list, resource_view_mockshow, resource_view_mocklist, \
     resource_view_mockcreate
 from .test_showcase import showcase_resultdict
 from .test_user import user_mockshow
+from .test_vocabulary import vocabulary_mockshow
 
 resulttags = [{'state': 'active', 'display_name': 'conflict', 'vocabulary_id': None,
                'id': '1dae41e5-eacd-4fa5-91df-8d80cf579e53', 'name': 'conflict'},
@@ -933,6 +933,12 @@ class TestDataset:
         assert dataset.get_dataset_date('%Y/%m/%d') == test_date
         assert dataset.get_dataset_end_date('%Y/%m/%d') == test_end_date
         assert dataset.get_dataset_date_type() == 'range'
+        dataset.set_dataset_date(test_date, test_end_date, '%Y/%m/%d', allow_range=False)
+        assert dataset['dataset_date'] == '05/06/2021-07/08/2021'
+        dataset.set_dataset_date(test_date, test_end_date)
+        assert dataset['dataset_date'] == '05/06/2021-07/08/2021'
+        dataset.set_dataset_date(test_date, test_end_date, allow_range=False)
+        assert dataset['dataset_date'] == '05/06/2021-07/08/2021'
         dataset.set_dataset_year_range(2001, 2015)
         assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2001, 1, 1, 0, 0)
         assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2015, 12, 31, 0, 0)
@@ -958,6 +964,28 @@ class TestDataset:
         assert dataset.get_dataset_date() is None
         assert dataset.get_dataset_date('YYYY/MM/DD') is None
         assert dataset.get_dataset_date_type() is None
+        dataset.set_dataset_date('2013-09')
+        assert dataset['dataset_date'] == '09/01/2013-09/30/2013'
+        dataset.set_dataset_date('2013-09', date_format='%Y-%m')
+        assert dataset['dataset_date'] == '09/01/2013-09/30/2013'
+        dataset.set_dataset_date('2013-09', dataset_end_date='2014-02')
+        assert dataset['dataset_date'] == '09/01/2013-02/28/2014'
+        dataset.set_dataset_date('2013-09', dataset_end_date='2014-02', date_format='%Y-%m')
+        assert dataset['dataset_date'] == '09/01/2013-02/28/2014'
+        dataset.set_dataset_date('2013')
+        assert dataset['dataset_date'] == '01/01/2013-12/31/2013'
+        dataset.set_dataset_date('2013', dataset_end_date='2014')
+        assert dataset['dataset_date'] == '01/01/2013-12/31/2014'
+        dataset.set_dataset_date('2013', dataset_end_date='2014', date_format='%Y')
+        assert dataset['dataset_date'] == '01/01/2013-12/31/2014'
+        with pytest.raises(HDXError):
+            dataset.set_dataset_date('2013-09', allow_range=False)
+        with pytest.raises(HDXError):
+            dataset.set_dataset_date('2013-09', date_format='%Y-%m', allow_range=False)
+        with pytest.raises(HDXError):
+            dataset.set_dataset_date('2013-09', dataset_end_date='2014-02', allow_range=False)
+        with pytest.raises(HDXError):
+            dataset.set_dataset_date('2013-09', dataset_end_date='2014-02', date_format='%Y-%m', allow_range=False)
 
     def test_transform_update_frequency(self):
         assert len(Dataset.list_valid_update_frequencies()) == 32

@@ -534,8 +534,10 @@ To get the dataset end date of a range, you call:
 
     dataset_date = dataset.get_dataset_end_date('FORMAT')
 
-To set the dataset date, you pass a start date and end date for a range or just a start date for a single date. If you 
-do not supply any dates format, the method will try to guess, which for unambiguous formats should be fine.
+To set the dataset date, you pass a start date and end date for a range or just a start date for a single date. 
+If the start date has no day or month, then by default if no end date is supplied, the start date will be converted
+into a range. If you do not supply any dates format, the method will try to guess, which for unambiguous formats should 
+be fine.
 
     dataset.set_dataset_date('START DATE', 'END DATE', 'FORMAT')
 
