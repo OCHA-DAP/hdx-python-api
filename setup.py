@@ -6,11 +6,10 @@ from hdx.utilities.loader import load_file_to_str
 from setuptools import setup, find_packages
 
 requirements = ['ckanapi>=4.3',
-                'hdx-python-country>=2.2.0',
+                'hdx-python-country>=2.2.3',
                 'ndg-httpsclient',
                 'pyasn1',
-                'pyOpenSSL',
-                'python-dateutil'
+                'pyOpenSSL'
                 ]
 
 classifiers = [

@@ -905,6 +905,8 @@ class TestDataset:
         assert dataset.get_dataset_date_as_datetime() == testdate
         assert dataset.get_dataset_date() == '2013-12-25'
         assert dataset.get_dataset_date('%y-%m-%d %H:%M:%S%Z') == '13-12-25 00:00:00'
+        dataset.set_dataset_date_from_datetime(testdate, testdate)
+        assert dataset['dataset_date'] == '12/25/2013'
         dataset.set_dataset_date('2007-01-25T12:00:00Z')
         assert dataset['dataset_date'] == '01/25/2007'
         assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2007, 1, 25, 0, 0)
@@ -923,6 +925,8 @@ class TestDataset:
         assert dataset.get_dataset_date('%Y/%m/%d') == test_date
         assert dataset.get_dataset_date_type() == 'date'
         test_date = '2021/05/06'
+        dataset.set_dataset_date(test_date, None, '%Y/%m/%d', allow_range=False)
+        assert dataset['dataset_date'] == '05/06/2021'
         test_end_date = '2021/07/08'
         dataset.set_dataset_date(test_date, test_end_date, '%Y/%m/%d')
         assert dataset['dataset_date'] == '05/06/2021-07/08/2021'
@@ -948,11 +952,11 @@ class TestDataset:
         dataset.set_dataset_year_range('2013')
         assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2013, 1, 1, 0, 0)
         assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2013, 12, 31, 0, 0)
-        with pytest.raises(HDXError):
+        with pytest.raises(ValueError):
             dataset.set_dataset_date('lalala')
-        with pytest.raises(HDXError):
+        with pytest.raises(ValueError):
             dataset.set_dataset_date('lalala', 'lalala')
-        with pytest.raises(HDXError):
+        with pytest.raises(ValueError):
             dataset.set_dataset_date('lalala', 'lalala', date_format='%Y/%m/%d')
         with pytest.raises(HDXError):
             dataset.set_dataset_year_range(23.5)
@@ -978,13 +982,13 @@ class TestDataset:
         assert dataset['dataset_date'] == '01/01/2013-12/31/2014'
         dataset.set_dataset_date('2013', dataset_end_date='2014', date_format='%Y')
         assert dataset['dataset_date'] == '01/01/2013-12/31/2014'
-        with pytest.raises(HDXError):
+        with pytest.raises(ValueError):
             dataset.set_dataset_date('2013-09', allow_range=False)
-        with pytest.raises(HDXError):
+        with pytest.raises(ValueError):
             dataset.set_dataset_date('2013-09', date_format='%Y-%m', allow_range=False)
-        with pytest.raises(HDXError):
+        with pytest.raises(ValueError):
             dataset.set_dataset_date('2013-09', dataset_end_date='2014-02', allow_range=False)
-        with pytest.raises(HDXError):
+        with pytest.raises(ValueError):
             dataset.set_dataset_date('2013-09', dataset_end_date='2014-02', date_format='%Y-%m', allow_range=False)
 
     def test_transform_update_frequency(self):

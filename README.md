@@ -536,10 +536,12 @@ To get the dataset end date of a range, you call:
 
 To set the dataset date, you pass a start date and end date for a range or just a start date for a single date. 
 If the start date has no day or month, then by default if no end date is supplied, the start date will be converted
-into a range. If you do not supply any dates format, the method will try to guess, which for unambiguous formats should 
-be fine.
+into a range provided allow_range is True otherwise an exception is raised. If allow_range is True, dataset_end_date 
+is supplied and both dataset_date and dataset_end_date lack days and/or months, then a date range will be used from 
+the start date of dataset_date range and the end date of the dataset_end_date range. If you do not supply any date 
+format, the method will try to guess, which for unambiguous formats should be fine. 
 
-    dataset.set_dataset_date('START DATE', 'END DATE', 'FORMAT')
+    dataset.set_dataset_date('START DATE', 'END DATE', 'FORMAT', True)
 
 To retrieve the dataset date or range as a **datetime.datetime** object, you can do:
 

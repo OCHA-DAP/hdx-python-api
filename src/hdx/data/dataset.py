@@ -7,12 +7,11 @@ import sys
 from copy import deepcopy
 from datetime import datetime
 from os.path import join
-from typing import List, Union, Optional, Dict, Any, Tuple
+from typing import List, Union, Optional, Dict, Any
 
-from dateutil import parser
 from hdx.location.country import Country
 from hdx.utilities import is_valid_uuid
-from hdx.utilities import raisefrom
+from hdx.utilities.dateparse import parse_date_range, parse_date
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from six.moves import range
 
@@ -78,8 +77,6 @@ class Dataset(HDXObject):
         'annually': '365',
         'yearly': '365'
     }
-    default_startdate = datetime(year=1970, month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
-    default_enddate = datetime(year=2099, month=12, day=31, hour=0, minute=0, second=0, microsecond=0)
 
     def __init__(self, initial_data=None, configuration=None):
         # type: (Optional[Dict], Optional[Configuration]) -> None
@@ -822,59 +819,19 @@ class Dataset(HDXObject):
             self.data['dataset_date'] = start_date
         else:
             end_date = dataset_end_date.strftime('%m/%d/%Y')
-            self.data['dataset_date'] = '%s-%s' % (start_date, end_date)
-
-    @classmethod
-    def _parse_date(cls, dataset_date, date_format):
-        # type: (str, Optional[str]) -> Tuple[datetime,datetime]
-        """Parse dataset date from string using specified format. If no format is supplied, the function will guess.
-        For unambiguous formats, this should be fine. Returns start date and end date which if month and day
-        provided, will be the same.
-
-        Args:
-            dataset_date (str): Dataset date string
-            date_format (Optional[str]): Date format. If None is given, will attempt to guess. Defaults to None.
-
-        Returns:
-            Tuple[datetime.datetime, datetime.datetime]
-        """
-        if date_format is None:
-            try:
-                startdate = parser.parse(dataset_date, default=cls.default_startdate)
-                enddate = parser.parse(dataset_date, default=cls.default_enddate)
-                if startdate.year != enddate.year:
-                    raise HDXError('No year in date!')
-            except (ValueError, OverflowError) as e:
-                raisefrom(HDXError, 'Invalid dataset date!', e)
-        else:
-            try:
-                startdate = datetime.strptime(dataset_date, date_format)
-                enddate = startdate
-                if not any(str in date_format for str in ['%d', '%j']):
-                    startdate = startdate.replace(day=cls.default_startdate.day)
-                    endday = cls.default_enddate.day
-                    not_set = True
-                    while not_set:
-                        try:
-                            enddate = enddate.replace(day=endday)
-                            not_set = False
-                        except ValueError as e:
-                            endday -= 1
-                            if endday == 0:
-                                raisefrom(HDXError, 'End date could not be set! This should be impossible!', e)
-                if not any(str in date_format for str in ['%b', '%B', '%m', '%j']):
-                    startdate = startdate.replace(month=cls.default_startdate.month)
-                    enddate = enddate.replace(month=cls.default_enddate.month)
-            except ValueError as e:
-                raisefrom(HDXError, 'Invalid dataset date!', e)
-        return startdate, enddate
+            if start_date == end_date:
+                self.data['dataset_date'] = start_date
+            else:
+                self.data['dataset_date'] = '%s-%s' % (start_date, end_date)
 
     def set_dataset_date(self, dataset_date, dataset_end_date=None, date_format=None, allow_range=True):
         # type: (str, Optional[str], Optional[str], bool) -> None
         """Set dataset date from string using specified format. If no format is supplied, the function will guess.
         For unambiguous formats, this should be fine. If allow_range is True and dataset_end_date is not supplied,
-        then if dataset_date lacks days and/or months, it will be taken to be a date range.
-
+        then if dataset_date lacks days and/or months, it will be taken to be a date range. If allow_range is True,
+        dataset_end_date is supplied and both dataset_date and dataset_end_date lack days and/or months, then a
+        date range will be used from the start date of dataset_date range and the end date of the dataset_end_date
+        range. If allow_range is False, date ranges will not be allowed.
 
         Args:
             dataset_date (str): Dataset date string
@@ -885,20 +842,18 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        startdate, enddate = self._parse_date(dataset_date, date_format)
-        if dataset_end_date is None:
-            if startdate == enddate:
-                self.set_dataset_date_from_datetime(startdate)
-            elif allow_range:
-                self.set_dataset_date_from_datetime(startdate, enddate)
-            else:
-                raise HDXError('dataset_date is not a specific day amd allow_range is False!')
+        if allow_range:
+            startdate, enddate = parse_date_range(dataset_date, date_format=date_format)
+            if dataset_end_date is not None:
+                _, enddate = parse_date_range(dataset_end_date, date_format=date_format)
+            self.set_dataset_date_from_datetime(startdate, enddate)
         else:
-            sd, enddate = self._parse_date(dataset_end_date, date_format)
-            if sd == enddate or allow_range:
-                self.set_dataset_date_from_datetime(startdate, enddate)
+            date = parse_date(dataset_date, date_format=date_format)
+            if dataset_end_date is None:
+                enddate = None
             else:
-                raise HDXError('dataset_end_date is not a specific day!')
+                enddate = parse_date(dataset_end_date, date_format=date_format)
+            self.set_dataset_date_from_datetime(date, enddate)
 
     def set_dataset_year_range(self, dataset_year, dataset_end_year=None):
         # type: (Union[str, int], Optional[Union[str, int]]) -> None
