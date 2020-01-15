@@ -436,6 +436,7 @@ class Dataset(HDXObject):
         if 'ignore_check' not in kwargs:  # allow ignoring of field checks
             ignore_field = self.configuration['dataset'].get('ignore_on_update')
             self.check_required_fields(ignore_fields=[ignore_field])
+        self.data['updated_by_script'] = kwargs.get('updated_by_script', self.configuration.get_user_agent())
         self._save_to_hdx('update', 'id', force_active=True)
         hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources)
         self.init_resources()
@@ -522,6 +523,7 @@ class Dataset(HDXObject):
                 hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(resource, ignore_fields, filestore_resources)
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         self.clean_tags()
+        self.data['updated_by_script'] = kwargs.get('updated_by_script', self.configuration.get_user_agent())
         self._save_to_hdx('create', 'name', force_active=True)
         hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources)
         self.init_resources()

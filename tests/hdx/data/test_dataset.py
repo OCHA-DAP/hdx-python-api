@@ -20,6 +20,7 @@ from hdx.data.resource import Resource
 from hdx.data.user import User
 from hdx.data.vocabulary import Vocabulary, ChainRuleError
 from hdx.hdx_configuration import Configuration
+from hdx.version import get_api_version
 from . import MockResponse, user_data, organization_data
 from .test_organization import organization_mockshow
 from .test_resource_view import resource_view_list, resource_view_mockshow, resource_view_mocklist, \
@@ -637,6 +638,9 @@ class TestDataset:
         assert dataset['id'] == 'TEST1'
         assert dataset['dataset_date'] == '02/26/2016'
         assert dataset['state'] == 'active'
+        assert dataset['updated_by_script'] == 'HDXPythonLibrary/%s-test' % get_api_version()
+        dataset.update_in_hdx(updated_by_script='hi')
+        assert dataset['updated_by_script'] == 'hi'
 
         dataset['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):
