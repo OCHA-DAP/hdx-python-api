@@ -38,7 +38,7 @@ class DatasetTitleHelper(object):
         while match:
             start = match.start()
             end = match.end()
-            stringlr = title[start - 13:end]
+            stringlr = title[max(start - 13, 0):end]
             stringlr = cls.PUNCTUATION_PATTERN.split(stringlr)[-1]
             fuzzylr = dict()
             startdatelr = None
@@ -51,7 +51,7 @@ class DatasetTitleHelper(object):
             except ParserError:
                 pass
             fuzzyrl = dict()
-            stringrl = title[start:end + 13]
+            stringrl = title[start:min(end + 13, len(title))]
             stringrl = cls.PUNCTUATION_PATTERN.split(stringrl)[0]
             startdaterl = None
             enddaterl = None

@@ -16,14 +16,16 @@ class TestDatasetTitleHelper:
 
     def test_get_date_from_title(self):
         title = 'Myanmar Town 2019 July'
-        assert DatasetTitleHelper.get_date_from_title(title) == (
-            'Myanmar Town', datetime(2019, 7, 1, 0, 0), datetime(2019, 7, 31, 0, 0))
-        assert DatasetTitleHelper.get_date_from_title('Formal Sector School Location Upper Myanmar (2019)') == (
-            'Formal Sector School Location Upper Myanmar', datetime(2019, 1, 1, 0, 0), datetime(2019, 12, 31, 0, 0))
-        assert DatasetTitleHelper.get_date_from_title('ICA Armenia, 2017 - Drought Risk, 1981-2015') == (
-            'ICA Armenia - Drought Risk', datetime(1981, 1, 1, 0, 0), datetime(2015, 12, 31, 0, 0))
-        assert DatasetTitleHelper.get_date_from_title('Central African Republic, Bridges, January 2019') == (
-            'Central African Republic, Bridges', datetime(2019, 1, 1, 0, 0), datetime(2019, 1, 31, 0, 0))
+        assert DatasetTitleHelper.get_date_from_title(title) == \
+               ('Myanmar Town', datetime(2019, 7, 1, 0, 0), datetime(2019, 7, 31, 0, 0))
+        assert DatasetTitleHelper.get_date_from_title('Formal Sector School Location Upper Myanmar (2019)') == \
+               ('Formal Sector School Location Upper Myanmar', datetime(2019, 1, 1, 0, 0), datetime(2019, 12, 31, 0, 0))
+        assert DatasetTitleHelper.get_date_from_title('ICA Armenia, 2017 - Drought Risk, 1981-2015') == \
+               ('ICA Armenia - Drought Risk', datetime(1981, 1, 1, 0, 0), datetime(2015, 12, 31, 0, 0))
+        assert DatasetTitleHelper.get_date_from_title('ICA Sudan, 2018 - Land Degradation, 2001-2013') == \
+               ('ICA Sudan - Land Degradation', datetime(2001, 1, 1, 0, 0), datetime(2013, 12, 31, 0, 0))
+        assert DatasetTitleHelper.get_date_from_title('Central African Republic, Bridges, January 2019') == \
+               ('Central African Republic, Bridges', datetime(2019, 1, 1, 0, 0), datetime(2019, 1, 31, 0, 0))
         assert DatasetTitleHelper.get_date_from_title(
             'Afghanistan:District Accessibility for WFP and Partners Staff as of 05 May 2019') == \
                ('Afghanistan:District Accessibility for WFP and Partners Staff', datetime(2019, 5, 5, 0, 0),
