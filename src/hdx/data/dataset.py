@@ -856,16 +856,16 @@ class Dataset(HDXObject):
             None
         """
         if allow_range:
-            startdate, enddate = parse_date_range(dataset_date, date_format=date_format)
+            startdate, enddate = parse_date_range(dataset_date, date_format=date_format, zero_time=True)
             if dataset_end_date is not None:
-                _, enddate = parse_date_range(dataset_end_date, date_format=date_format)
+                _, enddate = parse_date_range(dataset_end_date, date_format=date_format, zero_time=True)
             self.set_dataset_date_from_datetime(startdate, enddate)
         else:
-            date = parse_date(dataset_date, date_format=date_format)
+            date = parse_date(dataset_date, date_format=date_format, zero_time=True)
             if dataset_end_date is None:
                 enddate = None
             else:
-                enddate = parse_date(dataset_end_date, date_format=date_format)
+                enddate = parse_date(dataset_end_date, date_format=date_format, zero_time=True)
             self.set_dataset_date_from_datetime(date, enddate)
 
     def set_dataset_year_range(self, dataset_year, dataset_end_year=None):

@@ -45,7 +45,7 @@ class DatasetTitleHelper(object):
             enddatelr = None
             deltalr = timedelta(days=1000)
             try:
-                startdatelr, enddatelr = parse_date_range(stringlr, fuzzy=fuzzylr)
+                startdatelr, enddatelr = parse_date_range(stringlr, fuzzy=fuzzylr, zero_time=True)
                 if startdatelr and enddatelr:
                     deltalr = enddatelr - startdatelr
             except ParserError:
@@ -57,7 +57,7 @@ class DatasetTitleHelper(object):
             enddaterl = None
             deltarl = timedelta(days=1000)
             try:
-                startdaterl, enddaterl = parse_date_range(stringrl, fuzzy=fuzzyrl)
+                startdaterl, enddaterl = parse_date_range(stringrl, fuzzy=fuzzyrl, zero_time=True)
                 if startdaterl and enddaterl:
                     deltarl = enddaterl - startdaterl
             except ParserError:
@@ -71,7 +71,7 @@ class DatasetTitleHelper(object):
             else:
                 year = match.group(0)
                 date_components = (year)
-                ranges.append(parse_date_range(year))
+                ranges.append(parse_date_range(year, zero_time=True))
             newtitle = title
             for date_component in date_components:
                 newtitle = remove_string(newtitle, date_component, PUNCTUATION_MINUS_BRACKETS)
@@ -80,7 +80,7 @@ class DatasetTitleHelper(object):
             match = cls.YEAR_PATTERN.search(title, end)
         try:
             fuzzy = dict()
-            startdate, enddate = parse_date_range(title, fuzzy=fuzzy)
+            startdate, enddate = parse_date_range(title, fuzzy=fuzzy, zero_time=True)
             if startdate == enddate and len(fuzzy['date']) == 1:  # only accept dates where day, month and year are
                 # all together not split throughout the string and where the date is a precise day not a range
                 ranges.append((startdate, enddate))
@@ -108,8 +108,8 @@ class DatasetTitleHelper(object):
         """
         ranges = list()
         for match in cls.YEAR_RANGE_PATTERN.finditer(title):
-            startdate = parse_date('%s-01-01' % match.group(1), '%Y-%m-%d')
-            enddate = parse_date('%s-12-31' % match.group(3), '%Y-%m-%d')
+            startdate = parse_date('%s-01-01' % match.group(1), '%Y-%m-%d', zero_time=True)
+            enddate = parse_date('%s-12-31' % match.group(3), '%Y-%m-%d', zero_time=True)
             ranges.append((startdate, enddate))
             newtitle = remove_string(title, match.group(0))
             logger.info('Removing date range from title: %s -> %s' % (title, newtitle))
@@ -117,8 +117,8 @@ class DatasetTitleHelper(object):
 
         for match in cls.YEAR_RANGE_PATTERN2.finditer(title):
             first_year = match.group(1)
-            startdate = parse_date('%s-01-01' % first_year, '%Y-%m-%d')
-            enddate = parse_date('%s%s-12-31' % (first_year[:2], match.group(3)), '%Y-%m-%d')
+            startdate = parse_date('%s-01-01' % first_year, '%Y-%m-%d', zero_time=True)
+            enddate = parse_date('%s%s-12-31' % (first_year[:2], match.group(3)), '%Y-%m-%d', zero_time=True)
             ranges.append((startdate, enddate))
             newtitle = remove_string(title, match.group(0))
             logger.info('Removing date range from title: %s -> %s' % (title, newtitle))
