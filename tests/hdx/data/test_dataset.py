@@ -1,12 +1,13 @@
-
 # -*- coding: UTF-8 -*-
 """Dataset Tests"""
 import copy
 import datetime
 import json
+import re
 import tempfile
 from os import remove
 from os.path import join
+from parser import ParserError
 
 import pytest
 from hdx.location.country import Country
@@ -638,9 +639,13 @@ class TestDataset:
         assert dataset['id'] == 'TEST1'
         assert dataset['dataset_date'] == '02/26/2016'
         assert dataset['state'] == 'active'
-        assert dataset['updated_by_script'] == 'HDXPythonLibrary/%s-test' % get_api_version()
+        pattern = r'HDXPythonLibrary/%s-test \([12]\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d\)' % get_api_version()
+        match = re.search(pattern, dataset['updated_by_script'])
+        assert match
         dataset.update_in_hdx(updated_by_script='hi')
-        assert dataset['updated_by_script'] == 'hi'
+        pattern = r'hi \([12]\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d\)'
+        match = re.search(pattern, dataset['updated_by_script'])
+        assert match
 
         dataset['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):
@@ -956,11 +961,11 @@ class TestDataset:
         dataset.set_dataset_year_range('2013')
         assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2013, 1, 1, 0, 0)
         assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2013, 12, 31, 0, 0)
-        with pytest.raises(ValueError):
+        with pytest.raises(ParserError):
             dataset.set_dataset_date('lalala')
-        with pytest.raises(ValueError):
+        with pytest.raises(ParserError):
             dataset.set_dataset_date('lalala', 'lalala')
-        with pytest.raises(ValueError):
+        with pytest.raises(ParserError):
             dataset.set_dataset_date('lalala', 'lalala', date_format='%Y/%m/%d')
         with pytest.raises(HDXError):
             dataset.set_dataset_year_range(23.5)
@@ -986,13 +991,13 @@ class TestDataset:
         assert dataset['dataset_date'] == '01/01/2013-12/31/2014'
         dataset.set_dataset_date('2013', dataset_end_date='2014', date_format='%Y')
         assert dataset['dataset_date'] == '01/01/2013-12/31/2014'
-        with pytest.raises(ValueError):
+        with pytest.raises(ParserError):
             dataset.set_dataset_date('2013-09', allow_range=False)
-        with pytest.raises(ValueError):
+        with pytest.raises(ParserError):
             dataset.set_dataset_date('2013-09', date_format='%Y-%m', allow_range=False)
-        with pytest.raises(ValueError):
+        with pytest.raises(ParserError):
             dataset.set_dataset_date('2013-09', dataset_end_date='2014-02', allow_range=False)
-        with pytest.raises(ValueError):
+        with pytest.raises(ParserError):
             dataset.set_dataset_date('2013-09', dataset_end_date='2014-02', date_format='%Y-%m', allow_range=False)
 
     def test_transform_update_frequency(self):
@@ -1357,3 +1362,42 @@ class TestDataset:
                               project_config_yaml=project_config_yaml)
         dataset = Dataset(dataset_data)
         assert dataset.get_hdx_url() == 'https://feature-data.humdata.org/dataset/MyDataset1'
+
+    def test_remove_dates_from_title(self):
+        dataset = Dataset()
+        with pytest.raises(HDXError):
+            dataset.remove_dates_from_title()
+        assert 'title' not in dataset
+        title = 'Title with no dates'
+        dataset['title'] = title
+        assert dataset.remove_dates_from_title() is False
+        assert dataset['title'] == title
+        assert 'dataset_date' not in dataset
+        assert dataset.remove_dates_from_title(set_dataset_date=True) is False
+        title = 'ICA Armenia, 2017 - Drought Risk, 1981-2015'
+        dataset['title'] = title
+        assert dataset.remove_dates_from_title(change_title=False) is True
+        assert dataset['title'] == title
+        assert 'dataset_date' not in dataset
+        assert dataset.remove_dates_from_title() is True
+        newtitle = 'ICA Armenia - Drought Risk'
+        assert dataset['title'] == newtitle
+        assert 'dataset_date' not in dataset
+        title = 'ICA Armenia, 2017 - Drought Risk, 1981-2015'
+        dataset['title'] = title
+        assert dataset.remove_dates_from_title(set_dataset_date=True) is True
+        assert dataset['title'] == newtitle
+        assert dataset['dataset_date'] == '01/01/1981-12/31/2015'
+        assert dataset.remove_dates_from_title() is False
+        dataset['title'] = 'Mon_State_Village_Tract_Boundaries 9999 2001'
+        assert dataset.remove_dates_from_title(set_dataset_date=True) is True
+        assert dataset['title'] == 'Mon_State_Village_Tract_Boundaries 9999'
+        assert dataset['dataset_date'] == '01/01/2001-12/31/2001'
+        dataset['title'] = 'Mon_State_Village_Tract_Boundaries 2001 99'
+        assert dataset.remove_dates_from_title(set_dataset_date=True) is True
+        assert dataset['title'] == 'Mon_State_Village_Tract_Boundaries 99'
+        assert dataset['dataset_date'] == '01/01/2001-12/31/2001'
+        dataset['title'] = 'Mon_State_Village_Tract_Boundaries 9999 2001 99'
+        assert dataset.remove_dates_from_title(set_dataset_date=True) is True
+        assert dataset['title'] == 'Mon_State_Village_Tract_Boundaries 9999 99'
+        assert dataset['dataset_date'] == '01/01/2001-12/31/2001'

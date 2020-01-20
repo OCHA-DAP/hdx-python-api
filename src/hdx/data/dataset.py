@@ -22,6 +22,7 @@ import hdx.data.resource_view
 import hdx.data.showcase
 import hdx.data.user
 import hdx.data.vocabulary
+from hdx.data.dataset_title_helper import DatasetTitleHelper
 from hdx.data.hdxobject import HDXObject, HDXError
 from hdx.hdx_configuration import Configuration
 from hdx.hdx_locations import Locations
@@ -354,6 +355,16 @@ class Dataset(HDXObject):
                 ignore_fields = ['package_id']
                 resource.check_required_fields(ignore_fields=ignore_fields)
 
+    def set_updated_by_script(self, **kwargs):
+        # type: (Any) -> None
+        """Set metadata field updated_by_script
+
+        Returns:
+            None
+        """
+        scriptinfo = kwargs.get('updated_by_script', self.configuration.get_user_agent())
+        self.data['updated_by_script'] = '%s (%s)' % (scriptinfo, datetime.utcnow().isoformat())
+
     def _dataset_merge_hdx_update(self, update_resources, update_resources_by_name,
                                   remove_additional_resources, create_default_views, hxl_update, **kwargs):
         # type: (bool, bool, bool, bool, bool, Any) -> None
@@ -436,7 +447,7 @@ class Dataset(HDXObject):
         if 'ignore_check' not in kwargs:  # allow ignoring of field checks
             ignore_field = self.configuration['dataset'].get('ignore_on_update')
             self.check_required_fields(ignore_fields=[ignore_field])
-        self.data['updated_by_script'] = kwargs.get('updated_by_script', self.configuration.get_user_agent())
+        self.set_updated_by_script(**kwargs)
         self._save_to_hdx('update', 'id', force_active=True)
         hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources)
         self.init_resources()
@@ -523,7 +534,7 @@ class Dataset(HDXObject):
                 hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(resource, ignore_fields, filestore_resources)
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         self.clean_tags()
-        self.data['updated_by_script'] = kwargs.get('updated_by_script', self.configuration.get_user_agent())
+        self.set_updated_by_script(**kwargs)
         self._save_to_hdx('create', 'name', force_active=True)
         hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources)
         self.init_resources()
@@ -1562,3 +1573,26 @@ class Dataset(HDXObject):
         if not name:
             return None
         return '%s/dataset/%s' % (self.configuration.get_hdx_site_url(), name)
+
+    def remove_dates_from_title(self, change_title=True, set_dataset_date=False):
+        # type: (bool, bool) -> str
+        """Remove dates from dataset title returning True if dates were found in title or False if not. The
+        title in the dataset metadata will be changed by default. The dataset's metadata field dataset date will
+        not be changed by default.
+
+        Args:
+            change_title (bool): Whether to change the dataset title. Defaults to True.
+            set_dataset_date (bool): Whether to set the dataset date from date(s) in the title. Defaults to False.
+
+        Returns:
+            bool: True if dates were found in title, False if not
+        """
+        if 'title' not in self.data:
+            raise HDXError('Dataset has no title!')
+        title = self.data['title']
+        newtitle, startdate, enddate = DatasetTitleHelper.get_date_from_title(title)
+        if change_title:
+            self.data['title'] = newtitle
+        if set_dataset_date and startdate:
+            self.set_dataset_date_from_datetime(startdate, enddate)
+        return newtitle != title
