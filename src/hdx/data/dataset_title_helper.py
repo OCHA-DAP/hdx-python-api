@@ -15,10 +15,11 @@ logger = logging.getLogger(__name__)
 
 
 class DatasetTitleHelper(object):
-    YEAR_RANGE_PATTERN = re.compile('([12]\d\d\d)(-| % | and )([12]\d\d\d)')
+    YEAR_RANGE_PATTERN = re.compile('([12]\d\d\d)(-| & | and )([12]\d\d\d)')
     YEAR_RANGE_PATTERN2 = re.compile('([12]\d\d\d)(/|-)(\d\d)')
     YEAR_PATTERN = re.compile('([12]\d\d\d)')
     PUNCTUATION_PATTERN = re.compile('[%s]' % punctuation)
+    EMPTY_BRACKET_PATTERN = re.compile('(\s?\(\)\s?)')
 
     @classmethod
     def fuzzy_match_dates_in_title(cls, title, ranges):
@@ -39,7 +40,6 @@ class DatasetTitleHelper(object):
             start = match.start()
             end = match.end()
             stringlr = title[max(start - 13, 0):end]
-            stringlr = cls.PUNCTUATION_PATTERN.split(stringlr)[-1]
             fuzzylr = dict()
             startdatelr = None
             enddatelr = None
@@ -52,7 +52,6 @@ class DatasetTitleHelper(object):
                 pass
             fuzzyrl = dict()
             stringrl = title[start:min(end + 13, len(title))]
-            stringrl = cls.PUNCTUATION_PATTERN.split(stringrl)[0]
             startdaterl = None
             enddaterl = None
             deltarl = timedelta(days=1000)
@@ -126,7 +125,8 @@ class DatasetTitleHelper(object):
 
         title = cls.fuzzy_match_dates_in_title(title, ranges)
 
-        title = title.replace('()', '')
+        for match in cls.EMPTY_BRACKET_PATTERN.finditer(title):
+            title = title.replace(match.group(0), ' ')
         title = remove_end_characters(title, '%s%s' % (PUNCTUATION_MINUS_BRACKETS, whitespace))
         title = remove_from_end(title, ['as of'], 'Removing - from title: %s -> %s')
         if len(ranges) == 0:
