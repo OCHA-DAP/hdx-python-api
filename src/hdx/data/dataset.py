@@ -7,7 +7,7 @@ import sys
 from copy import deepcopy
 from datetime import datetime
 from os.path import join
-from typing import List, Union, Optional, Dict, Any
+from typing import List, Union, Optional, Dict, Any, Tuple
 
 from hdx.location.country import Country
 from hdx.utilities import is_valid_uuid
@@ -1575,24 +1575,26 @@ class Dataset(HDXObject):
         return '%s/dataset/%s' % (self.configuration.get_hdx_site_url(), name)
 
     def remove_dates_from_title(self, change_title=True, set_dataset_date=False):
-        # type: (bool, bool) -> str
-        """Remove dates from dataset title returning True if dates were found in title or False if not. The
-        title in the dataset metadata will be changed by default. The dataset's metadata field dataset date will
-        not be changed by default.
+        # type: (bool, bool) -> List[Tuple[datetime,datetime]]
+        """Remove dates from dataset title returning sorted the dates that were found in title. The title in
+        the dataset metadata will be changed by default. The dataset's metadata field dataset date will not
+        be changed by default, but if set_dataset_date is True, then the range with the lowest start date
+        will be used to set the dataset date field.
 
         Args:
             change_title (bool): Whether to change the dataset title. Defaults to True.
-            set_dataset_date (bool): Whether to set the dataset date from date(s) in the title. Defaults to False.
+            set_dataset_date (bool): Whether to set the dataset date from date or range in the title. Defaults to False.
 
         Returns:
-            bool: True if dates were found in title, False if not
+            List[Tuple[datetime,datetime]]: Date ranges found in title
         """
         if 'title' not in self.data:
             raise HDXError('Dataset has no title!')
         title = self.data['title']
-        newtitle, startdate, enddate = DatasetTitleHelper.get_date_from_title(title)
+        newtitle, ranges = DatasetTitleHelper.get_dates_from_title(title)
         if change_title:
             self.data['title'] = newtitle
-        if set_dataset_date and startdate:
+        if set_dataset_date and len(ranges) != 0:
+            startdate, enddate = ranges[0]
             self.set_dataset_date_from_datetime(startdate, enddate)
-        return newtitle != title
+        return ranges

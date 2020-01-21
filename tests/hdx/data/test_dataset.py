@@ -1370,34 +1370,36 @@ class TestDataset:
         assert 'title' not in dataset
         title = 'Title with no dates'
         dataset['title'] = title
-        assert dataset.remove_dates_from_title() is False
+        assert dataset.remove_dates_from_title() == list()
         assert dataset['title'] == title
         assert 'dataset_date' not in dataset
-        assert dataset.remove_dates_from_title(set_dataset_date=True) is False
+        assert dataset.remove_dates_from_title(set_dataset_date=True) == list()
         title = 'ICA Armenia, 2017 - Drought Risk, 1981-2015'
         dataset['title'] = title
-        assert dataset.remove_dates_from_title(change_title=False) is True
+        expected = [(datetime.datetime(1981, 1, 1, 0, 0), datetime.datetime(2015, 12, 31, 0, 0)),
+                    (datetime.datetime(2017, 1, 1, 0, 0), datetime.datetime(2017, 12, 31, 0, 0))]
+        assert dataset.remove_dates_from_title(change_title=False) == expected
         assert dataset['title'] == title
         assert 'dataset_date' not in dataset
-        assert dataset.remove_dates_from_title() is True
+        assert dataset.remove_dates_from_title() == expected
         newtitle = 'ICA Armenia - Drought Risk'
         assert dataset['title'] == newtitle
         assert 'dataset_date' not in dataset
-        title = 'ICA Armenia, 2017 - Drought Risk, 1981-2015'
         dataset['title'] = title
-        assert dataset.remove_dates_from_title(set_dataset_date=True) is True
+        assert dataset.remove_dates_from_title(set_dataset_date=True) == expected
         assert dataset['title'] == newtitle
         assert dataset['dataset_date'] == '01/01/1981-12/31/2015'
-        assert dataset.remove_dates_from_title() is False
+        assert dataset.remove_dates_from_title() == list()
         dataset['title'] = 'Mon_State_Village_Tract_Boundaries 9999 2001'
-        assert dataset.remove_dates_from_title(set_dataset_date=True) is True
+        expected = [(datetime.datetime(2001, 1, 1, 0, 0), datetime.datetime(2001, 12, 31, 0, 0))]
+        assert dataset.remove_dates_from_title(set_dataset_date=True) == expected
         assert dataset['title'] == 'Mon_State_Village_Tract_Boundaries 9999'
         assert dataset['dataset_date'] == '01/01/2001-12/31/2001'
         dataset['title'] = 'Mon_State_Village_Tract_Boundaries 2001 99'
-        assert dataset.remove_dates_from_title(set_dataset_date=True) is True
+        assert dataset.remove_dates_from_title(set_dataset_date=True) == expected
         assert dataset['title'] == 'Mon_State_Village_Tract_Boundaries 99'
         assert dataset['dataset_date'] == '01/01/2001-12/31/2001'
         dataset['title'] = 'Mon_State_Village_Tract_Boundaries 9999 2001 99'
-        assert dataset.remove_dates_from_title(set_dataset_date=True) is True
+        assert dataset.remove_dates_from_title(set_dataset_date=True) == expected
         assert dataset['title'] == 'Mon_State_Village_Tract_Boundaries 9999 99'
         assert dataset['dataset_date'] == '01/01/2001-12/31/2001'

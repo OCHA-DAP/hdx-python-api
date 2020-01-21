@@ -6,7 +6,7 @@ import re
 from datetime import datetime, timedelta
 from parser import ParserError
 from string import punctuation, whitespace
-from typing import List, Tuple, Optional
+from typing import List, Tuple
 
 from hdx.utilities.dateparse import parse_date_range, parse_date
 from hdx.utilities.text import remove_end_characters, remove_from_end, PUNCTUATION_MINUS_BRACKETS, remove_string
@@ -93,16 +93,16 @@ class DatasetTitleHelper(object):
         return title
 
     @classmethod
-    def get_date_from_title(cls, title):
-        # type: (str) -> Tuple[str,Optional[datetime],Optional[datetime]]
+    def get_dates_from_title(cls, title):
+        # type: (str) -> Tuple[str,List[Tuple[datetime,datetime]]]
         """
-        Get dataset date from title and clean title of dates
+        Get dataset dates (start and end dates in a list) from title and clean title of dates
 
         Args:
             title (str): Title to get date from and clean
 
         Returns:
-            Tuple[str,Optional[datetime],Optional[datetime]]: Cleaned title, start and end dates
+            Tuple[str,List[Tuple[datetime,datetime]]]: Cleaned title, list of start and end dates
 
         """
         ranges = list()
@@ -129,8 +129,4 @@ class DatasetTitleHelper(object):
             title = title.replace(match.group(0), ' ')
         title = remove_end_characters(title, '%s%s' % (PUNCTUATION_MINUS_BRACKETS, whitespace))
         title = remove_from_end(title, ['as of'], 'Removing - from title: %s -> %s')
-        if len(ranges) == 0:
-            return title, None, None
-        else:
-            startdate, enddate = sorted(ranges)[0]
-            return title, startdate, enddate
+        return title, sorted(ranges)
