@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class DatasetTitleHelper(object):
-    YEAR_RANGE_PATTERN = re.compile('([12]\d\d\d)(-| & | and )([12]\d\d\d)')
+    YEAR_RANGE_PATTERN = re.compile('([12]\d\d\d)(\/\d\d)?(-| & | and )([12]\d\d\d)')
     YEAR_RANGE_PATTERN2 = re.compile('([12]\d\d\d)(/|-)(\d\d)')
     YEAR_PATTERN = re.compile('([12]\d\d\d)')
     PUNCTUATION_PATTERN = re.compile('[%s]' % punctuation)
@@ -108,7 +108,7 @@ class DatasetTitleHelper(object):
         ranges = list()
         for match in cls.YEAR_RANGE_PATTERN.finditer(title):
             startdate = parse_date('%s-01-01' % match.group(1), '%Y-%m-%d', zero_time=True)
-            enddate = parse_date('%s-12-31' % match.group(3), '%Y-%m-%d', zero_time=True)
+            enddate = parse_date('%s-12-31' % match.group(4), '%Y-%m-%d', zero_time=True)
             ranges.append((startdate, enddate))
             newtitle = remove_string(title, match.group(0))
             logger.info('Removing date range from title: %s -> %s' % (title, newtitle))

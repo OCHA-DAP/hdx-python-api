@@ -67,3 +67,6 @@ class TestDatasetTitleHelper:
         assert DatasetTitleHelper.get_dates_from_title('ICA Armenia, 2016 & 2017 - Land Degradation, 2001-2012') == \
                ('ICA Armenia - Land Degradation', [(datetime(2001, 1, 1, 0, 0), datetime(2012, 12, 31, 0, 0)),
                                                    (datetime(2016, 1, 1, 0, 0), datetime(2017, 12, 31, 0, 0))])
+        assert DatasetTitleHelper.get_dates_from_title('ICA Afghanistan, 2016 - Food Insecurity Risk, 2007/08-2014') == \
+               ('ICA Afghanistan - Food Insecurity Risk', [(datetime(2007, 1, 1, 0, 0), datetime(2014, 12, 31, 0, 0)),
+                                                           (datetime(2016, 1, 1, 0, 0), datetime(2016, 12, 31, 0, 0))])
