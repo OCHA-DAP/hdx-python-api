@@ -8,6 +8,13 @@ from parser import ParserError
 from string import punctuation, whitespace
 from typing import List, Tuple
 
+import six
+
+if six.PY2:
+    from quantulum import parser
+else:
+    from quantulum3 import parser
+
 from hdx.utilities.dateparse import parse_date_range, parse_date
 from hdx.utilities.text import remove_end_characters, remove_from_end, PUNCTUATION_MINUS_BRACKETS, remove_string
 
@@ -15,11 +22,13 @@ logger = logging.getLogger(__name__)
 
 
 class DatasetTitleHelper(object):
-    YEAR_RANGE_PATTERN = re.compile('([12]\d\d\d)(\/\d\d)?(-| & | and )([12]\d\d\d)')
-    YEAR_RANGE_PATTERN2 = re.compile('([12]\d\d\d)(/|-)(\d\d)')
-    YEAR_PATTERN = re.compile('([12]\d\d\d)')
-    PUNCTUATION_PATTERN = re.compile('[%s]' % punctuation)
-    EMPTY_BRACKET_PATTERN = re.compile('(\s?\(\)\s?)')
+    YEAR_RANGE_PATTERN = re.compile(r'([12]\d\d\d)(/\d\d)?(-| & | and )([12]\d\d\d)')
+    YEAR_RANGE_PATTERN2 = re.compile(r'([12]\d\d\d)([/-])(\d\d)')
+    YEAR_PATTERN = re.compile(r'([12]\d\d\d)')
+    PUNCTUATION_PATTERN = re.compile(r'[%s]' % punctuation)
+    EMPTY_BRACKET_PATTERN = re.compile(r'(\s?\(\s*\)\s?)')
+    WORD_RIGHT_BRACKET_PATTERN = re.compile(r'\b(\s*)(\w{2,})\b\)')
+    DATE_INTRO_WORDS = ['on', 'at', 'for', 'of', 'in']
 
     @classmethod
     def fuzzy_match_dates_in_title(cls, title, ranges):
@@ -35,8 +44,15 @@ class DatasetTitleHelper(object):
             str: Title with dates removed
 
         """
-        match = cls.YEAR_PATTERN.search(title)
-        while match:
+        ignore_years = list()
+        for quant in parser.parse(title):
+            if quant.unit.name == 'dimensionless':
+                continue
+            ignore_years.append(int(quant.value))
+        for match in cls.YEAR_PATTERN.finditer(title):
+            year = match.group(0)
+            if int(year) in ignore_years:
+                continue
             start = match.start()
             end = match.end()
             stringlr = title[max(start - 13, 0):end]
@@ -68,7 +84,6 @@ class DatasetTitleHelper(object):
                 date_components = fuzzyrl['date']
                 ranges.append((startdaterl, enddaterl))
             else:
-                year = match.group(0)
                 date_components = (year)
                 ranges.append(parse_date_range(year, zero_time=True))
             newtitle = title
@@ -76,7 +91,6 @@ class DatasetTitleHelper(object):
                 newtitle = remove_string(newtitle, date_component, PUNCTUATION_MINUS_BRACKETS)
             logger.info('Removing date from title: %s -> %s' % (title, newtitle))
             title = newtitle
-            match = cls.YEAR_PATTERN.search(title, end)
         try:
             fuzzy = dict()
             startdate, enddate = parse_date_range(title, fuzzy=fuzzy, zero_time=True)
@@ -125,8 +139,13 @@ class DatasetTitleHelper(object):
 
         title = cls.fuzzy_match_dates_in_title(title, ranges)
 
+        for match in cls.WORD_RIGHT_BRACKET_PATTERN.finditer(title):
+            word = match.group(2)
+            if word in cls.DATE_INTRO_WORDS:
+                title = title.replace(match.group(0), ')')
+
         for match in cls.EMPTY_BRACKET_PATTERN.finditer(title):
             title = title.replace(match.group(0), ' ')
         title = remove_end_characters(title, '%s%s' % (PUNCTUATION_MINUS_BRACKETS, whitespace))
-        title = remove_from_end(title, ['as of'], 'Removing - from title: %s -> %s')
+        title = remove_from_end(title, ['as of'] + cls.DATE_INTRO_WORDS, 'Removing - from title: %s -> %s')
         return title, sorted(ranges)

@@ -17,7 +17,7 @@ class TestDatasetTitleHelper:
     def test_get_date_from_title(self):
         assert DatasetTitleHelper.get_dates_from_title('Myanmar Town 2019 July') == \
                ('Myanmar Town', [(datetime(2019, 7, 1, 0, 0), datetime(2019, 7, 31, 0, 0))])
-        assert DatasetTitleHelper.get_dates_from_title('Formal Sector School Location Upper Myanmar (2019)') == \
+        assert DatasetTitleHelper.get_dates_from_title('Formal Sector School Location Upper Myanmar (  2019   )') == \
                ('Formal Sector School Location Upper Myanmar',
                 [(datetime(2019, 1, 1, 0, 0), datetime(2019, 12, 31, 0, 0))])
         assert DatasetTitleHelper.get_dates_from_title('ICA Armenia, 2017 - Drought Risk, 1981-2015') == \
@@ -70,3 +70,13 @@ class TestDatasetTitleHelper:
         assert DatasetTitleHelper.get_dates_from_title('ICA Afghanistan, 2016 - Food Insecurity Risk, 2007/08-2014') == \
                ('ICA Afghanistan - Food Insecurity Risk', [(datetime(2007, 1, 1, 0, 0), datetime(2014, 12, 31, 0, 0)),
                                                            (datetime(2016, 1, 1, 0, 0), datetime(2016, 12, 31, 0, 0))])
+        assert DatasetTitleHelper.get_dates_from_title('south sudan access constraints shp for 20200124') == \
+               ('south sudan access constraints shp', [(datetime(2020, 1, 24, 0, 0), datetime(2020, 1, 24, 0, 0))])
+        assert DatasetTitleHelper.get_dates_from_title('Cambodia Flood Extent in 2011') == \
+               ('Cambodia Flood Extent', [(datetime(2011, 1, 1, 0, 0), datetime(2011, 12, 31, 0, 0))])
+        assert DatasetTitleHelper.get_dates_from_title(
+            'Access: Proportion of the population consuming less than 2100 kcal per day (average of 2011-2013), National Statistics Committee 2013') == \
+               (
+                   'Access: Proportion of the population consuming less than 2100 kcal per day (average), National Statistics Committee',
+                   [(datetime(2011, 1, 1, 0, 0), datetime(2013, 12, 31, 0, 0)),
+                    (datetime(2013, 1, 1, 0, 0), datetime(2013, 12, 31, 0, 0))])
