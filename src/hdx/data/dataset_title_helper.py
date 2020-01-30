@@ -6,9 +6,9 @@ import re
 from datetime import datetime, timedelta
 from parser import ParserError
 from string import punctuation, whitespace
-from typing import List, Tuple, Optional, Match
 
 import six
+from typing import List, Tuple, Optional, Match
 
 if six.PY2:
     from quantulum import parser
@@ -45,10 +45,13 @@ class DatasetTitleHelper(object):
             str: Title with dates removed
 
         """
-        for quant in parser.parse(title):
-            if quant.unit.name == 'dimensionless':
-                continue
-            ignore_wrong_years.append(int(quant.value))
+        try:
+            for quant in parser.parse(title):
+                if quant.unit.name == 'dimensionless':
+                    continue
+                ignore_wrong_years.append(int(quant.value))
+        except UnboundLocalError:  # quantulum on Py2 has a bug
+            pass
         for match in cls.YEAR_PATTERN.finditer(title):
             year = match.group(0)
             if int(year) in ignore_wrong_years:
