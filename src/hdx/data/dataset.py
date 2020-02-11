@@ -1624,12 +1624,9 @@ class Dataset(HDXObject):
             return False
 
         rows = [downloader.hxl_row(headers, hxltags, dict_form=True)]
-        norows = 0
         for row in iterator:
-            if row:
-                norows += 1
-                rows.append(row)
-        if norows == 0:
+            rows.append(row)
+        if len(rows) == 1:
             logger.error('Could not download data to create %s!' % filename)
             return False
         filepath = join(folder, filename)
