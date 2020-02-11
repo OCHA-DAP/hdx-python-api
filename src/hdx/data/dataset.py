@@ -7,12 +7,13 @@ import sys
 from copy import deepcopy
 from datetime import datetime
 from os.path import join
-from typing import List, Union, Optional, Dict, Any, Tuple
+from typing import List, Union, Optional, Dict, Any, Tuple, Callable
 
 from hdx.location.country import Country
 from hdx.utilities import is_valid_uuid
 from hdx.utilities.dateparse import parse_date_range, parse_date
-from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.dictandlist import merge_two_dictionaries, write_list_to_csv
+from hdx.utilities.downloader import Download
 from six.moves import range
 
 import hdx.data.filestore_helper
@@ -1598,3 +1599,43 @@ class Dataset(HDXObject):
             startdate, enddate = ranges[0]
             self.set_dataset_date_from_datetime(startdate, enddate)
         return ranges
+
+    def generate_resource_from_download(self, downloader, url, hxltags, folder, filename,
+                                        resourcedata, header_insertions=None, row_function=None):
+        # type: (Download, str, Dict[str,str], str, str, Dict, Optional[List[Tuple[int,str]]], Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]]) -> bool
+        """Write rows to csv and create resource, adding to it the dataset
+
+        Args:
+            downloader (Download): Download object
+            url (str): URL to download
+            hxltags (Dict[str,str]): Header to HXL hashtag mapping
+            folder (str): Folder to which to write file containing rows
+            filename (str): Filename of file to write rows
+            resourcedata (Dict): Resource data
+            header_insertions (Optional[List[Tuple[int,str]]]): List of (position, header) to insert. Defaults to None.
+            row_function (Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]]): Function to call for each row. Defaults to None.
+
+        Returns:
+            bool: True if resource created or False if not
+        """
+        headers, iterator = downloader.get_tabular_rows(url, dict_form=True, header_insertions=header_insertions,
+                                                        row_function=row_function, format='csv')
+        if headers is None:
+            return False
+
+        rows = [downloader.hxl_row(headers, hxltags, dict_form=True)]
+        norows = 0
+        for row in iterator:
+            if row:
+                norows += 1
+                rows.append(row)
+        if norows == 0:
+            logger.error('Could not download data to create %s!' % filename)
+            return False
+        filepath = join(folder, filename)
+        write_list_to_csv(filepath, rows, headers=headers)
+        resource = hdx.data.resource.Resource(resourcedata)
+        resource.set_file_type('csv')
+        resource.set_file_to_upload(filepath)
+        self.add_update_resource(resource)
+        return True

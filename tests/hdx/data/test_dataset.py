@@ -11,8 +11,11 @@ from parser import ParserError
 
 import pytest
 from hdx.location.country import Country
+from hdx.utilities.compare import assert_files_same
 from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_yaml
+from hdx.utilities.path import temp_dir
 
 from hdx.data.dataset import Dataset, NotRequestableError
 from hdx.data.hdxobject import HDXError
@@ -1403,3 +1406,37 @@ class TestDataset:
         assert dataset.remove_dates_from_title(set_dataset_date=True) == expected
         assert dataset['title'] == 'Mon_State_Village_Tract_Boundaries 9999 99'
         assert dataset['dataset_date'] == '01/01/2001-12/31/2001'
+
+    def test_generate_resource_from_download(self, configuration):
+        with temp_dir('test') as folder:
+            url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
+            hxltags = {'EVENT_ID_CNTY': '#event+code', 'EVENT_DATE': '#date+occurred', 'YEAR': '#date+year',
+                       'EVENT_TYPE': '#event+type', 'ACTOR1': '#group+name+first', 'ASSOC_ACTOR_1':
+                           '#group+name+first+assoc', 'ACTOR2': '#group+name+second', 'ASSOC_ACTOR_2':
+                           '#group+name+second+assoc', 'REGION': '#region+name', 'COUNTRY': '#country+name',
+                       'ADMIN1': '#adm1+name', 'ADMIN2': '#adm2+name', 'ADMIN3': '#adm3+name', 'LOCATION': '#loc+name',
+                       'LATITUDE': '#geo+lat', 'LONGITUDE': '#geo+lon', 'SOURCE': '#meta+source', 'NOTES':
+                           '#description', 'FATALITIES': '#affected+killed', 'ISO3': '#country+code'}
+
+            filename = 'conflict_data_alg.csv'
+            resourcedata = {
+                'name': 'Conflict Data for Algeria',
+                'description': 'Conflict data with HXL tags'
+            }
+
+            years = set()
+
+            def process_row(headers, row):
+                row['lala'] = 'lala'
+                year = row.get('YEAR')
+                if year is not None:
+                    years.add(int(year))
+                return row
+
+            dataset = Dataset()
+            with Download(user_agent='test') as downloader:
+                dataset.generate_resource_from_download(downloader, url, hxltags, folder, filename,
+                                                        resourcedata, header_insertions=[(0, 'lala')],
+                                                        row_function=process_row)
+            assert years == {2001}
+            assert_files_same(join('tests', 'fixtures', 'gen_resource', filename), join(folder, filename))
