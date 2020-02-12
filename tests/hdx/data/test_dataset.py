@@ -1438,22 +1438,26 @@ class TestDataset:
                 result = dataset.generate_resource_from_download(downloader, url, hxltags, folder, filename,
                                                                  resourcedata, header_insertions=[(0, 'lala')],
                                                                  row_function=process_row, yearcol='YEAR')
-                assert result is True
+                assert result == [2001, 2002]
                 assert dataset['dataset_date'] == '01/01/2001-12/31/2002'
                 assert admin1s == {'Bejaia', 'Tizi Ouzou'}
                 assert_files_same(join('tests', 'fixtures', 'gen_resource', filename), join(folder, filename))
+                result = dataset.generate_resource_from_download(downloader, url, hxltags, folder, filename,
+                                                                 resourcedata, header_insertions=[(0, 'lala')],
+                                                                 row_function=process_row)
+                assert result is True
                 url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/empty.csv'
                 result = dataset.generate_resource_from_download(downloader, url, hxltags, folder, filename,
                                                                  resourcedata, header_insertions=[(0, 'lala')],
                                                                  row_function=process_row, yearcol='YEAR')
-                assert result is False
+                assert result is None
                 url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/gen_resource/test_data_no_data.csv'
                 result = dataset.generate_resource_from_download(downloader, url, hxltags, folder, filename,
                                                                  resourcedata, header_insertions=[(0, 'lala')],
-                                                                 row_function=process_row, yearcol='YEAR')
+                                                                 row_function=process_row)
                 assert result is False
                 url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/gen_resource/test_data_no_years.csv'
                 result = dataset.generate_resource_from_download(downloader, url, hxltags, folder, filename,
                                                                  resourcedata, header_insertions=[(0, 'lala')],
                                                                  row_function=process_row, yearcol='YEAR')
-                assert result is False
+                assert result is None
