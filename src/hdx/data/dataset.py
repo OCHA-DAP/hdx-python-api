@@ -1601,8 +1601,8 @@ class Dataset(HDXObject):
         return ranges
 
     def generate_resource_from_download(self, downloader, url, hxltags, folder, filename,
-                                        resourcedata, header_insertions=None, row_function=None):
-        # type: (Download, str, Dict[str,str], str, str, Dict, Optional[List[Tuple[int,str]]], Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]]) -> bool
+                                        resourcedata, header_insertions=None, row_function=None, yearcol=None):
+        # type: (Download, str, Dict[str,str], str, str, Dict, Optional[List[Tuple[int,str]]], Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]], Optional[str]) -> bool
         """Write rows to csv and create resource, adding to it the dataset
 
         Args:
@@ -1614,6 +1614,7 @@ class Dataset(HDXObject):
             resourcedata (Dict): Resource data
             header_insertions (Optional[List[Tuple[int,str]]]): List of (position, header) to insert. Defaults to None.
             row_function (Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]]): Function to call for each row. Defaults to None.
+            yearcol (Optional[str]): Year column for setting dataset year range. Defaults to None (don't set).
 
         Returns:
             bool: True if resource created or False if not
@@ -1624,11 +1625,29 @@ class Dataset(HDXObject):
             return False
 
         rows = [downloader.hxl_row(headers, hxltags, dict_form=True)]
+        years = set()
         for row in iterator:
             rows.append(row)
+            if yearcol is not None:
+                year = row[yearcol]
+                if year:
+                    if '-' in year:
+                        yearrange = year.split('-')
+                        years.add(int(yearrange[0]))
+                        years.add(int(yearrange[1]))
+                    else:
+                        years.add(int(year))
+
         if len(rows) == 1:
-            logger.error('Could not download data to create %s!' % filename)
+            logger.error('No data rows in %s!' % filename)
             return False
+        if yearcol is not None:
+            if len(years) == 0:
+                logger.error('No years in %s of %s!' % (yearcol, filename))
+                return False
+            else:
+                years = sorted(list(years))
+                self.set_dataset_year_range(years[0], years[-1])
         filepath = join(folder, filename)
         write_list_to_csv(filepath, rows, headers=headers)
         resource = hdx.data.resource.Resource(resourcedata)
