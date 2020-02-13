@@ -955,15 +955,30 @@ class TestDataset:
         assert dataset['dataset_date'] == '05/06/2021-07/08/2021'
         dataset.set_dataset_date(test_date, test_end_date, allow_range=False)
         assert dataset['dataset_date'] == '05/06/2021-07/08/2021'
-        dataset.set_dataset_year_range(2001, 2015)
+        retval = dataset.set_dataset_year_range(2001, 2015)
         assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2001, 1, 1, 0, 0)
         assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2015, 12, 31, 0, 0)
-        dataset.set_dataset_year_range('2010', '2017')
+        assert retval == [2001, 2015]
+        retval = dataset.set_dataset_year_range('2010', '2017')
         assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2010, 1, 1, 0, 0)
         assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2017, 12, 31, 0, 0)
-        dataset.set_dataset_year_range('2013')
+        assert retval == [2010, 2017]
+        retval = dataset.set_dataset_year_range('2013')
         assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2013, 1, 1, 0, 0)
         assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2013, 12, 31, 0, 0)
+        assert retval == [2013]
+        retval = dataset.set_dataset_year_range({2005, 2002, 2003})
+        assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2002, 1, 1, 0, 0)
+        assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2005, 12, 31, 0, 0)
+        assert retval == [2002, 2003, 2005]
+        retval = dataset.set_dataset_year_range([2005, 2002, 2003])
+        assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2002, 1, 1, 0, 0)
+        assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2005, 12, 31, 0, 0)
+        assert retval == [2002, 2003, 2005]
+        retval = dataset.set_dataset_year_range((2005, 2002, 2003))
+        assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2002, 1, 1, 0, 0)
+        assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2005, 12, 31, 0, 0)
+        assert retval == [2002, 2003, 2005]
         with pytest.raises(ParserError):
             dataset.set_dataset_date('lalala')
         with pytest.raises(ParserError):

@@ -7,12 +7,12 @@ import sys
 from copy import deepcopy
 from datetime import datetime
 from os.path import join
-from typing import List, Union, Optional, Dict, Any, Tuple, Callable, Iterator
+from typing import List, Union, Optional, Dict, Any, Tuple, Callable, Iterator, Iterable
 
 from hdx.location.country import Country
 from hdx.utilities import is_valid_uuid
 from hdx.utilities.dateparse import parse_date_range, parse_date
-from hdx.utilities.dictandlist import merge_two_dictionaries, write_list_to_csv
+from hdx.utilities.dictandlist import merge_two_dictionaries, write_list_to_csv, DictUpperBound
 from hdx.utilities.downloader import Download
 from six.moves import range
 
@@ -870,31 +870,40 @@ class Dataset(HDXObject):
             self.set_dataset_date_from_datetime(date, enddate)
 
     def set_dataset_year_range(self, dataset_year, dataset_end_year=None):
-        # type: (Union[str, int], Optional[Union[str, int]]) -> None
+        # type: (Union[str, int, Iterable], Optional[Union[str, int]]) -> List[int]
         """Set dataset date as a range from year or start and end year.
 
         Args:
-            dataset_year (Union[str, int]): Dataset year given as string or int
+            dataset_year (Union[str, int, Iterable]): Dataset year given as string or int or range in an iterable
             dataset_end_year (Optional[Union[str, int]]): Dataset end year given as string or int
 
         Returns:
-            None
+            List[int]: The start and end year if supplied or sorted list of years
         """
+        retval = list()
+        if isinstance(dataset_year, str):
+            dataset_year = int(dataset_year)
         if isinstance(dataset_year, int):
             dataset_date = '01/01/%d' % dataset_year
-        elif isinstance(dataset_year, str):
-            dataset_date = '01/01/%s' % dataset_year
+            retval.append(dataset_year)
+        elif isinstance(dataset_year, Iterable):
+            retval = sorted(list(dataset_year))
+            dataset_date = '01/01/%d' % retval[0]
+            dataset_end_year = retval[-1]
+            retval.pop()
         else:
             raise hdx.data.hdxobject.HDXError('dataset_year has type %s which is not supported!' % type(dataset_year).__name__)
+        if isinstance(dataset_end_year, str):
+            dataset_end_year = int(dataset_end_year)
         if dataset_end_year is None:
-            dataset_end_year = dataset_year
-        if isinstance(dataset_end_year, int):
+            dataset_end_date = '31/12/%d' % dataset_year
+        elif isinstance(dataset_end_year, int):
             dataset_end_date = '31/12/%d' % dataset_end_year
-        elif isinstance(dataset_end_year, str):
-            dataset_end_date = '31/12/%s' % dataset_end_year
+            retval.append(dataset_end_year)
         else:
             raise hdx.data.hdxobject.HDXError('dataset_end_year has type %s which is not supported!' % type(dataset_end_year).__name__)
         self.set_dataset_date(dataset_date, dataset_end_date)
+        return retval
 
     @classmethod
     def list_valid_update_frequencies(cls):
@@ -1600,10 +1609,31 @@ class Dataset(HDXObject):
             self.set_dataset_date_from_datetime(startdate, enddate)
         return ranges
 
+    def generate_resource_from_rows(self, folder, filename, rows, resourcedata, headers=None):
+        # type: (str, str, List[Union[DictUpperBound, List]], Dict, Optional[List[str]]) -> None
+        """Write rows to csv and create resource, adding to it the dataset
+
+        Args:
+            folder (str): Folder to which to write file containing rows
+            filename (str): Filename of file to write rows
+            rows (List[Union[DictUpperBound, List]]): List of rows
+            resourcedata (Dict): Resource data
+            headers (Optional[List[str]]): List of headers. Defaults to None.
+
+        Returns:
+            None
+        """
+        filepath = join(folder, filename)
+        write_list_to_csv(filepath, rows, headers=headers)
+        resource = hdx.data.resource.Resource(resourcedata)
+        resource.set_file_type('csv')
+        resource.set_file_to_upload(filepath)
+        self.add_update_resource(resource)
+
     def generate_resource_from_download(self, downloader, url, hxltags, folder, filename,
                                         resourcedata, header_insertions=None, row_function=None, yearcol=None):
         # type: (Download, str, Dict[str,str], str, str, Dict, Optional[List[Tuple[int,str]]], Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]], Optional[str]) -> Union[bool,Optional[List]]
-        """Write rows to csv and create resource, adding to it the dataset
+        """Download url, write rows to csv and create resource, adding to it the dataset
 
         Args:
             downloader (Download): Download object
@@ -1651,13 +1681,6 @@ class Dataset(HDXObject):
                 logger.error('No years in %s of %s!' % (yearcol, filename))
                 return retval
             else:
-                years = sorted(list(years))
-                self.set_dataset_year_range(years[0], years[-1])
-                retval = years
-        filepath = join(folder, filename)
-        write_list_to_csv(filepath, rows, headers=headers)
-        resource = hdx.data.resource.Resource(resourcedata)
-        resource.set_file_type('csv')
-        resource.set_file_to_upload(filepath)
-        self.add_update_resource(resource)
+                retval = self.set_dataset_year_range(years)
+        self.generate_resource_from_rows(folder, filename, rows, resourcedata, headers=headers)
         return retval
