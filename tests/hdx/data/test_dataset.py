@@ -1448,31 +1448,33 @@ class TestDataset:
                     admin1s.add(admin1)
                 return row
 
+            quickcharts = {'column': 'EVENT_ID_CNTY', 'values': ['1416RTA', 'XXXXRTA', '2231RTA']}
             dataset = Dataset()
             with Download(user_agent='test') as downloader:
-                result = dataset.generate_resource_from_download(downloader, url, hxltags, folder, filename,
-                                                                 resourcedata, header_insertions=[(0, 'lala')],
-                                                                 row_function=process_row, yearcol='YEAR')
-                assert result == [2001, 2002]
+                success, results = dataset.generate_resource_from_download(
+                    downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
+                    row_function=process_row, yearcol='YEAR', quickcharts=quickcharts)
+                assert success is True
+                assert results == {'years': [2001, 2002], 'bites_disabled': [False, True, False]}
                 assert dataset['dataset_date'] == '01/01/2001-12/31/2002'
                 assert admin1s == {'Bejaia', 'Tizi Ouzou'}
                 assert_files_same(join('tests', 'fixtures', 'gen_resource', filename), join(folder, filename))
-                result = dataset.generate_resource_from_download(downloader, url, hxltags, folder, filename,
-                                                                 resourcedata, header_insertions=[(0, 'lala')],
-                                                                 row_function=process_row)
-                assert result is True
+                success, results = dataset.generate_resource_from_download(
+                    downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
+                    row_function=process_row)
+                assert success is True
                 url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/empty.csv'
-                result = dataset.generate_resource_from_download(downloader, url, hxltags, folder, filename,
-                                                                 resourcedata, header_insertions=[(0, 'lala')],
-                                                                 row_function=process_row, yearcol='YEAR')
-                assert result is None
+                success, results = dataset.generate_resource_from_download(
+                    downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
+                    row_function=process_row, yearcol='YEAR')
+                assert success is False
                 url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/gen_resource/test_data_no_data.csv'
-                result = dataset.generate_resource_from_download(downloader, url, hxltags, folder, filename,
-                                                                 resourcedata, header_insertions=[(0, 'lala')],
-                                                                 row_function=process_row)
-                assert result is False
+                success, results = dataset.generate_resource_from_download(
+                    downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
+                    row_function=process_row, quickcharts=quickcharts)
+                assert success is False
                 url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/gen_resource/test_data_no_years.csv'
-                result = dataset.generate_resource_from_download(downloader, url, hxltags, folder, filename,
+                success, results = dataset.generate_resource_from_download(downloader, url, hxltags, folder, filename,
                                                                  resourcedata, header_insertions=[(0, 'lala')],
                                                                  row_function=process_row, yearcol='YEAR')
-                assert result is None
+                assert success is False

@@ -1630,10 +1630,22 @@ class Dataset(HDXObject):
         resource.set_file_to_upload(filepath)
         self.add_update_resource(resource)
 
-    def generate_resource_from_download(self, downloader, url, hxltags, folder, filename,
-                                        resourcedata, header_insertions=None, row_function=None, yearcol=None):
-        # type: (Download, str, Dict[str,str], str, str, Dict, Optional[List[Tuple[int,str]]], Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]], Optional[str]) -> Union[bool,Optional[List]]
-        """Download url, write rows to csv and create resource, adding to it the dataset
+    def generate_resource_from_download(self, downloader, url, hxltags, folder, filename, resourcedata,
+                                        header_insertions=None, row_function=None, yearcol=None, quickcharts=None):
+        # type: (Download, str, Dict[str,str], str, str, Dict, Optional[List[Tuple[int,str]]], Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]], Optional[str], Optional[Dict]) -> Tuple[bool, Dict]
+        """Download url, write rows to csv and create resource, adding to it the dataset.
+
+        Optionally, headers can be inserted at specific positions. This is achieved using the header_insertions
+        argument. If supplied, it is a list of tuples of the form (position, header) to be inserted. A function is
+        called for each row. If supplied, it takes as arguments: headers (prior to any insertions) and
+        row (which will be in dict or list form depending upon the dict_rows argument) and outputs a modified row.
+
+        The date of dataset can optionally be set by supplying a column in which the year is to be looked up. In this
+        case, the list of years is returned in the key years of the returned dictionary.
+
+        A list of booleans indicating which QuickCharts bites should be enabled can be returned in the key
+        bites_disabled in the returned dictionary if the quickcharts parameter is supplied. It is a dictionary with
+        keys: column - the column to examine - and values - the 3 values to look for in that column.
 
         Args:
             downloader (Download): Download object
@@ -1645,20 +1657,19 @@ class Dataset(HDXObject):
             header_insertions (Optional[List[Tuple[int,str]]]): List of (position, header) to insert. Defaults to None.
             row_function (Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]]): Function to call for each row. Defaults to None.
             yearcol (Optional[str]): Year column for setting dataset year range. Defaults to None (don't set).
+            quickcharts (Optional[Dict]): Dictionary containing keys: column and values
 
         Returns:
-            Union[bool,Optional[List]]: True or sorted list of years if resource created, False or None if not
+            Tuple[bool, Dict]: (True if resource added, dictionary of results)
         """
         headers, iterator = downloader.get_tabular_rows(url, dict_form=True, header_insertions=header_insertions,
                                                         row_function=row_function, format='csv')
-        if yearcol is None:
-            retval = False
-        else:
-            retval = None
-            years = set()
+        retdict = dict()
         if headers is None:
-            return retval
+            return False, retdict
         rows = [downloader.hxl_row(headers, hxltags, dict_form=True)]
+        years = set()
+        bites_disabled = [True, True, True]
         for row in iterator:
             rows.append(row)
             if yearcol is not None:
@@ -1670,17 +1681,22 @@ class Dataset(HDXObject):
                         years.add(int(yearrange[1]))
                     else:
                         years.add(int(year))
+            if quickcharts is not None:
+                value = row[quickcharts['column']]
+                for i, lookup in enumerate(quickcharts['values']):
+                    if value == lookup:
+                        bites_disabled[i] = False
 
         if len(rows) == 1:
             logger.error('No data rows in %s!' % filename)
-            return retval
-        if yearcol is None:
-            retval = True
-        else:
+            return False, retdict
+        if yearcol is not None:
             if len(years) == 0:
                 logger.error('No years in %s of %s!' % (yearcol, filename))
-                return retval
+                return False, retdict
             else:
-                retval = self.set_dataset_year_range(years)
+                retdict['years'] = self.set_dataset_year_range(years)
+        if quickcharts is not None:
+            retdict['bites_disabled'] = bites_disabled
         self.generate_resource_from_rows(folder, filename, rows, resourcedata, headers=headers)
-        return retval
+        return True, retdict
