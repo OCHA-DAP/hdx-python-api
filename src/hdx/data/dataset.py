@@ -1645,7 +1645,7 @@ class Dataset(HDXObject):
 
         A list of booleans indicating which QuickCharts bites should be enabled can be returned in the key
         bites_disabled in the returned dictionary if the quickcharts parameter is supplied. It is a dictionary with
-        keys: column - the column to examine - and values - the 3 values to look for in that column.
+        keys: hashtag - the HXL hashtag to examine - and values - the 3 values to look for in that column.
 
         Args:
             downloader (Download): Download object
@@ -1657,7 +1657,7 @@ class Dataset(HDXObject):
             header_insertions (Optional[List[Tuple[int,str]]]): List of (position, header) to insert. Defaults to None.
             row_function (Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]]): Function to call for each row. Defaults to None.
             yearcol (Optional[str]): Year column for setting dataset year range. Defaults to None (don't set).
-            quickcharts (Optional[Dict]): Dictionary containing keys: column and values
+            quickcharts (Optional[Dict]): Dictionary containing keys: hashtag and values
 
         Returns:
             Tuple[bool, Dict]: (True if resource added, dictionary of results)
@@ -1670,6 +1670,11 @@ class Dataset(HDXObject):
         rows = [downloader.hxl_row(headers, hxltags, dict_form=True)]
         years = set()
         bites_disabled = [True, True, True]
+        if quickcharts is not None:
+            hashtag = quickcharts['hashtag']
+            column = next(key for key, value in hxltags.items() if value == hashtag)  # reverse dict lookup
+        else:
+            column = None
         for row in iterator:
             rows.append(row)
             if yearcol is not None:
@@ -1682,7 +1687,7 @@ class Dataset(HDXObject):
                     else:
                         years.add(int(year))
             if quickcharts is not None:
-                value = row[quickcharts['column']]
+                value = row[column]
                 for i, lookup in enumerate(quickcharts['values']):
                     if value == lookup:
                         bites_disabled[i] = False

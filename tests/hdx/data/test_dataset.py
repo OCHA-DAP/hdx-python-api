@@ -1448,7 +1448,7 @@ class TestDataset:
                     admin1s.add(admin1)
                 return row
 
-            quickcharts = {'column': 'EVENT_ID_CNTY', 'values': ['1416RTA', 'XXXXRTA', '2231RTA']}
+            quickcharts = {'hashtag': '#event+code', 'values': ['1416RTA', 'XXXXRTA', '2231RTA']}
             dataset = Dataset()
             with Download(user_agent='test') as downloader:
                 success, results = dataset.generate_resource_from_download(
