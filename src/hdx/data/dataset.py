@@ -1633,7 +1633,8 @@ class Dataset(HDXObject):
     def generate_resource_from_download(self, downloader, url, hxltags, folder, filename, resourcedata,
                                         header_insertions=None, row_function=None, yearcol=None, quickcharts=None):
         # type: (Download, str, Dict[str,str], str, str, Dict, Optional[List[Tuple[int,str]]], Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]], Optional[str], Optional[Dict]) -> Tuple[bool, Dict]
-        """Download url, write rows to csv and create resource, adding to it the dataset.
+        """Download url, write rows to csv and create resource, adding to it the dataset. The returned dictionary
+        will contain the list of rows in the key rows.
 
         Optionally, headers can be inserted at specific positions. This is achieved using the header_insertions
         argument. If supplied, it is a list of tuples of the form (position, header) to be inserted. A function is
@@ -1704,4 +1705,5 @@ class Dataset(HDXObject):
         if quickcharts is not None:
             retdict['bites_disabled'] = bites_disabled
         self.generate_resource_from_rows(folder, filename, rows, resourcedata, headers=headers)
+        retdict['rows'] = rows
         return True, retdict
