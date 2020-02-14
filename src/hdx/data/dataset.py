@@ -1705,5 +1705,6 @@ class Dataset(HDXObject):
         if quickcharts is not None:
             retdict['bites_disabled'] = bites_disabled
         self.generate_resource_from_rows(folder, filename, rows, resourcedata, headers=headers)
+        retdict['headers'] = headers
         retdict['rows'] = rows
         return True, retdict
