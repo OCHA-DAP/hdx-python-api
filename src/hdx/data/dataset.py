@@ -1634,7 +1634,7 @@ class Dataset(HDXObject):
                                         header_insertions=None, row_function=None, yearcol=None, quickcharts=None):
         # type: (Download, str, Dict[str,str], str, str, Dict, Optional[List[Tuple[int,str]]], Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]], Optional[str], Optional[Dict]) -> Tuple[bool, Dict]
         """Download url, write rows to csv and create resource, adding to it the dataset. The returned dictionary
-        will contain the list of rows in the key rows.
+        will contain the headers in the key headers and the list of rows in the key rows.
 
         Optionally, headers can be inserted at specific positions. This is achieved using the header_insertions
         argument. If supplied, it is a list of tuples of the form (position, header) to be inserted. A function is
