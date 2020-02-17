@@ -1630,16 +1630,11 @@ class Dataset(HDXObject):
         resource.set_file_to_upload(filepath)
         self.add_update_resource(resource)
 
-    def generate_resource_from_download(self, downloader, url, hxltags, folder, filename, resourcedata,
-                                        header_insertions=None, row_function=None, yearcol=None, quickcharts=None):
-        # type: (Download, str, Dict[str,str], str, str, Dict, Optional[List[Tuple[int,str]]], Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]], Optional[str], Optional[Dict]) -> Tuple[bool, Dict]
-        """Download url, write rows to csv and create resource, adding to it the dataset. The returned dictionary
-        will contain the headers in the key headers and the list of rows in the key rows.
-
-        Optionally, headers can be inserted at specific positions. This is achieved using the header_insertions
-        argument. If supplied, it is a list of tuples of the form (position, header) to be inserted. A function is
-        called for each row. If supplied, it takes as arguments: headers (prior to any insertions) and
-        row (which will be in dict or list form depending upon the dict_rows argument) and outputs a modified row.
+    def generate_resource_from_download(self, headers, iterator, hxltags, folder, filename, resourcedata,
+                                        yearcol=None, quickcharts=None):
+        # type: (List[str], Iterator[Union[List,Dict]], Dict[str,str], str, str, Dict, Optional[str], Optional[Dict]) -> Tuple[bool, Dict]
+        """Given headers and an iterator, write rows to csv and create resource, adding to it the dataset. The returned
+        dictionary will contain the headers in the key headers and the list of rows in the key rows.
 
         The date of dataset can optionally be set by supplying a column in which the year is to be looked up. In this
         case, the list of years is returned in the key years of the returned dictionary.
@@ -1649,26 +1644,22 @@ class Dataset(HDXObject):
         keys: hashtag - the HXL hashtag to examine - and values - the 3 values to look for in that column.
 
         Args:
-            downloader (Download): Download object
-            url (str): URL to download
+            headers (List[str]): Headers
+            iterator (Iterator[Union[List,Dict]]): Iterator returning rows
             hxltags (Dict[str,str]): Header to HXL hashtag mapping
             folder (str): Folder to which to write file containing rows
             filename (str): Filename of file to write rows
             resourcedata (Dict): Resource data
-            header_insertions (Optional[List[Tuple[int,str]]]): List of (position, header) to insert. Defaults to None.
-            row_function (Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]]): Function to call for each row. Defaults to None.
             yearcol (Optional[str]): Year column for setting dataset year range. Defaults to None (don't set).
             quickcharts (Optional[Dict]): Dictionary containing keys: hashtag and values
 
         Returns:
             Tuple[bool, Dict]: (True if resource added, dictionary of results)
         """
-        headers, iterator = downloader.get_tabular_rows(url, dict_form=True, header_insertions=header_insertions,
-                                                        row_function=row_function, format='csv')
         retdict = dict()
         if headers is None:
             return False, retdict
-        rows = [downloader.hxl_row(headers, hxltags, dict_form=True)]
+        rows = [Download.hxl_row(headers, hxltags, dict_form=True)]
         years = set()
         bites_disabled = [True, True, True]
         if quickcharts is not None:
@@ -1708,3 +1699,41 @@ class Dataset(HDXObject):
         retdict['headers'] = headers
         retdict['rows'] = rows
         return True, retdict
+
+    def download_and_generate_resource(self, downloader, url, hxltags, folder, filename, resourcedata,
+                                       header_insertions=None, row_function=None, yearcol=None, quickcharts=None):
+        # type: (Download, str, Dict[str,str], str, str, Dict, Optional[List[Tuple[int,str]]], Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]], Optional[str], Optional[Dict]) -> Tuple[bool, Dict]
+        """Download url, write rows to csv and create resource, adding to it the dataset. The returned dictionary
+        will contain the headers in the key headers and the list of rows in the key rows.
+
+        Optionally, headers can be inserted at specific positions. This is achieved using the header_insertions
+        argument. If supplied, it is a list of tuples of the form (position, header) to be inserted. A function is
+        called for each row. If supplied, it takes as arguments: headers (prior to any insertions) and
+        row (which will be in dict or list form depending upon the dict_rows argument) and outputs a modified row.
+
+        The date of dataset can optionally be set by supplying a column in which the year is to be looked up. In this
+        case, the list of years is returned in the key years of the returned dictionary.
+
+        A list of booleans indicating which QuickCharts bites should be enabled can be returned in the key
+        bites_disabled in the returned dictionary if the quickcharts parameter is supplied. It is a dictionary with
+        keys: hashtag - the HXL hashtag to examine - and values - the 3 values to look for in that column.
+
+        Args:
+            downloader (Download): Download object
+            url (str): URL to download
+            hxltags (Dict[str,str]): Header to HXL hashtag mapping
+            folder (str): Folder to which to write file containing rows
+            filename (str): Filename of file to write rows
+            resourcedata (Dict): Resource data
+            header_insertions (Optional[List[Tuple[int,str]]]): List of (position, header) to insert. Defaults to None.
+            row_function (Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]]): Function to call for each row. Defaults to None.
+            yearcol (Optional[str]): Year column for setting dataset year range. Defaults to None (don't set).
+            quickcharts (Optional[Dict]): Dictionary containing keys: hashtag and values
+
+        Returns:
+            Tuple[bool, Dict]: (True if resource added, dictionary of results)
+        """
+        headers, iterator = downloader.get_tabular_rows(url, dict_form=True, header_insertions=header_insertions,
+                                                        row_function=row_function, format='csv')
+        return self.generate_resource_from_download(headers, iterator, hxltags, folder, filename, resourcedata,
+                                                    yearcol=yearcol, quickcharts=quickcharts)

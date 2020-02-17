@@ -1422,7 +1422,7 @@ class TestDataset:
         assert dataset['title'] == 'Mon_State_Village_Tract_Boundaries 9999 99'
         assert dataset['dataset_date'] == '01/01/2001-12/31/2001'
 
-    def test_generate_resource_from_download(self, configuration):
+    def test_download_and_generate_resource(self, configuration):
         with temp_dir('test') as folder:
             url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
             hxltags = {'EVENT_ID_CNTY': '#event+code', 'EVENT_DATE': '#date+occurred', 'YEAR': '#date+year',
@@ -1451,7 +1451,7 @@ class TestDataset:
             quickcharts = {'hashtag': '#event+code', 'values': ['1416RTA', 'XXXXRTA', '2231RTA']}
             dataset = Dataset()
             with Download(user_agent='test') as downloader:
-                success, results = dataset.generate_resource_from_download(
+                success, results = dataset.download_and_generate_resource(
                     downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
                     row_function=process_row, yearcol='YEAR', quickcharts=quickcharts)
                 assert success is True
@@ -1465,22 +1465,22 @@ class TestDataset:
                 assert dataset['dataset_date'] == '01/01/2001-12/31/2002'
                 assert admin1s == {'Bejaia', 'Tizi Ouzou'}
                 assert_files_same(join('tests', 'fixtures', 'gen_resource', filename), join(folder, filename))
-                success, results = dataset.generate_resource_from_download(
+                success, results = dataset.download_and_generate_resource(
                     downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
                     row_function=process_row)
                 assert success is True
                 url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/empty.csv'
-                success, results = dataset.generate_resource_from_download(
+                success, results = dataset.download_and_generate_resource(
                     downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
                     row_function=process_row, yearcol='YEAR')
                 assert success is False
                 url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/gen_resource/test_data_no_data.csv'
-                success, results = dataset.generate_resource_from_download(
+                success, results = dataset.download_and_generate_resource(
                     downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
                     row_function=process_row, quickcharts=quickcharts)
                 assert success is False
                 url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/gen_resource/test_data_no_years.csv'
-                success, results = dataset.generate_resource_from_download(downloader, url, hxltags, folder, filename,
+                success, results = dataset.download_and_generate_resource(downloader, url, hxltags, folder, filename,
                                                                  resourcedata, header_insertions=[(0, 'lala')],
                                                                  row_function=process_row, yearcol='YEAR')
                 assert success is False
