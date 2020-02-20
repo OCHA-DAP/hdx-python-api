@@ -1643,8 +1643,10 @@ class Dataset(HDXObject):
         A list of booleans indicating which QuickCharts bites should be enabled can be returned in the key
         bites_disabled in the returned dictionary if the quickcharts parameter is supplied. It is a dictionary with
         keys: hashtag - the HXL hashtag to examine - and values - the 3 values to look for in that column. Optionally,
-        the dictionary can also have key: cutdown - if it is True, then a separate cut down resource is created
+        the dictionary can also have key: cutdown - if it is 1, then a separate cut down list is created
         containing only columns with HXL hashtags and rows with desired values for the purpose of driving QuickCharts.
+        It is returned in the key qcrows in the returned dictionary with the matching headers in qcheaders.
+        If cutdown is 2, then a resource is created using the cut down list.
 
         Args:
             headers (List[str]): Headers
@@ -1672,7 +1674,7 @@ class Dataset(HDXObject):
         if quickcharts is not None:
             hashtag = quickcharts['hashtag']
             qc['column'] = next(key for key, value in hxltags.items() if value == hashtag)  # reverse dict lookup
-            cutdown = quickcharts.get('cutdown', False)
+            cutdown = quickcharts.get('cutdown', 0)
             if cutdown:
                 qc['cutdown'] = cutdown
                 qc['headers'] = [x for x in headers if x in hxltags]
@@ -1709,10 +1711,13 @@ class Dataset(HDXObject):
         if quickcharts is not None:
             retdict['bites_disabled'] = bites_disabled
             if qc['cutdown']:
-                qc_resourcedata = {'name': 'QuickCharts-%s' % resourcedata['name'],
-                                   'description': 'Cut down data for QuickCharts'}
-                self.generate_resource_from_rows(folder, 'qc_%s' % filename, qc['rows'], qc_resourcedata,
-                                                 headers=qc['headers'])
+                retdict['qcheaders'] = qc['headers']
+                retdict['qcrows'] = qc['rows']
+                if qc['cutdown'] == 2:
+                    qc_resourcedata = {'name': 'QuickCharts-%s' % resourcedata['name'],
+                                       'description': 'Cut down data for QuickCharts'}
+                    self.generate_resource_from_rows(folder, 'qc_%s' % filename, qc['rows'], qc_resourcedata,
+                                                     headers=qc['headers'])
         return True, retdict
 
     def download_and_generate_resource(self, downloader, url, hxltags, folder, filename, resourcedata,
@@ -1734,8 +1739,10 @@ class Dataset(HDXObject):
         A list of booleans indicating which QuickCharts bites should be enabled can be returned in the key
         bites_disabled in the returned dictionary if the quickcharts parameter is supplied. It is a dictionary with
         keys: hashtag - the HXL hashtag to examine - and values - the 3 values to look for in that column. Optionally,
-        the dictionary can also have key: cutdown - if it is True, then a separate cut down resource is created
+        the dictionary can also have key: cutdown - if it is 1, then a separate cut down list is created
         containing only columns with HXL hashtags and rows with desired values for the purpose of driving QuickCharts.
+        It is returned in the key qcrows in the returned dictionary with the matching headers in qcheaders.
+        If cutdown is 2, then a resource is created using the cut down list.
 
         Args:
             downloader (Download): Download object
