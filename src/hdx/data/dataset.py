@@ -1691,7 +1691,7 @@ class Dataset(HDXObject):
                     if value == lookup:
                         bites_disabled[i] = False
                         if qc['cutdown']:
-                            qcrow = {x: row[x] for x in row if x in qc['headers']}
+                            qcrow = {x: row[x] for x in qc['headers']}
                             qc['rows'].append(qcrow)
 
         if len(rows) == 1:
