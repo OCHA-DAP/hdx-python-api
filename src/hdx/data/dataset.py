@@ -7,7 +7,7 @@ import sys
 from copy import deepcopy
 from datetime import datetime
 from os.path import join
-from typing import List, Union, Optional, Dict, Any, Tuple, Callable, Iterator, Iterable
+from typing import List, Union, Optional, Dict, Any, Tuple, Callable, Iterator, Iterable, Set
 
 from hdx.location.country import Country
 from hdx.utilities import is_valid_uuid
@@ -1631,8 +1631,8 @@ class Dataset(HDXObject):
         self.add_update_resource(resource)
 
     def generate_resource_from_download(self, headers, iterator, hxltags, folder, filename, resourcedata,
-                                        yearcol=None, quickcharts=None):
-        # type: (List[str], Iterator[Union[List,Dict]], Dict[str,str], str, str, Dict, Optional[str], Optional[Dict]) -> Tuple[bool, Dict]
+                                        yearcol=None, year_function=None, quickcharts=None):
+        # type: (List[str], Iterator[Union[List,Dict]], Dict[str,str], str, str, Dict, Optional[Union[int,str]], Optional[Callable[[Set[int],Union[List,Dict]],None]], Optional[Dict]) -> Tuple[bool, Dict]
         """Given headers and an iterator, write rows to csv and create resource, adding to it the dataset. The returned
         dictionary will contain the headers in the key headers and the list of rows in the key rows.
 
@@ -1650,12 +1650,15 @@ class Dataset(HDXObject):
             folder (str): Folder to which to write file containing rows
             filename (str): Filename of file to write rows
             resourcedata (Dict): Resource data
-            yearcol (Optional[str]): Year column for setting dataset year range. Defaults to None (don't set).
+            yearcol (Optional[Union[int,str]]): Year column for setting dataset year range. Defaults to None (don't set).
+            year_function (Optional[Callable[[Set[int],Union[List,Dict]],None]]): Year function to call for each row. Defaults to None.
             quickcharts (Optional[Dict]): Dictionary containing keys: hashtag and values
 
         Returns:
             Tuple[bool, Dict]: (True if resource added, dictionary of results)
         """
+        if yearcol is not None and year_function is not None:
+            raise HDXError('Supply either yearcol or year_function not both!')
         retdict = dict()
         if headers is None:
             return False, retdict
@@ -1670,7 +1673,7 @@ class Dataset(HDXObject):
         for row in iterator:
             rows.append(row)
             if yearcol is not None:
-                year = row[yearcol]  # type: str
+                year = row[yearcol]
                 if year:
                     if '-' in year:
                         yearrange = year.split('-')
@@ -1678,6 +1681,8 @@ class Dataset(HDXObject):
                         years.add(int(yearrange[1]))
                     else:
                         years.add(int(year))
+            if year_function is not None:
+                year_function(years, row)
             if quickcharts is not None:
                 value = row[column]
                 for i, lookup in enumerate(quickcharts['values']):
@@ -1687,7 +1692,7 @@ class Dataset(HDXObject):
         if len(rows) == 1:
             logger.error('No data rows in %s!' % filename)
             return False, retdict
-        if yearcol is not None:
+        if yearcol is not None or year_function is not None:
             if len(years) == 0:
                 logger.error('No years in %s of %s!' % (yearcol, filename))
                 return False, retdict
@@ -1701,8 +1706,9 @@ class Dataset(HDXObject):
         return True, retdict
 
     def download_and_generate_resource(self, downloader, url, hxltags, folder, filename, resourcedata,
-                                       header_insertions=None, row_function=None, yearcol=None, quickcharts=None):
-        # type: (Download, str, Dict[str,str], str, str, Dict, Optional[List[Tuple[int,str]]], Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]], Optional[str], Optional[Dict]) -> Tuple[bool, Dict]
+                                       header_insertions=None, row_function=None, yearcol=None, year_function=None,
+                                       quickcharts=None):
+        # type: (Download, str, Dict[str,str], str, str, Dict, Optional[List[Tuple[int,str]]], Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]], Optional[str], Optional[Callable[[Set[int],Union[List,Dict]],None]], Optional[Dict]) -> Tuple[bool, Dict]
         """Download url, write rows to csv and create resource, adding to it the dataset. The returned dictionary
         will contain the headers in the key headers and the list of rows in the key rows.
 
@@ -1728,6 +1734,7 @@ class Dataset(HDXObject):
             header_insertions (Optional[List[Tuple[int,str]]]): List of (position, header) to insert. Defaults to None.
             row_function (Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]]): Function to call for each row. Defaults to None.
             yearcol (Optional[str]): Year column for setting dataset year range. Defaults to None (don't set).
+            year_function (Optional[Callable[[Set[int],Union[List,Dict]],None]]): Year function to call for each row. Defaults to None.
             quickcharts (Optional[Dict]): Dictionary containing keys: hashtag and values
 
         Returns:
@@ -1736,4 +1743,5 @@ class Dataset(HDXObject):
         headers, iterator = downloader.get_tabular_rows(url, dict_form=True, header_insertions=header_insertions,
                                                         row_function=row_function, format='csv')
         return self.generate_resource_from_download(headers, iterator, hxltags, folder, filename, resourcedata,
-                                                    yearcol=yearcol, quickcharts=quickcharts)
+                                                    yearcol=yearcol, year_function=year_function,
+                                                    quickcharts=quickcharts)

@@ -1465,6 +1465,21 @@ class TestDataset:
                 assert dataset['dataset_date'] == '01/01/2001-12/31/2002'
                 assert admin1s == {'Bejaia', 'Tizi Ouzou'}
                 assert_files_same(join('tests', 'fixtures', 'gen_resource', filename), join(folder, filename))
+
+                def process_year(years, row):
+                    year = row['YEAR']
+                    if '-' in year:
+                        year = year[:4]
+                    years.add(int(year))
+                success, results = dataset.download_and_generate_resource(
+                    downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
+                    row_function=process_row, year_function=process_year, quickcharts=quickcharts)
+                assert success is True
+                assert results['years'] == [2001]
+                assert dataset['dataset_date'] == '01/01/2001-12/31/2001'
+                with pytest.raises(HDXError):
+                    dataset.download_and_generate_resource(downloader, url, hxltags, folder, filename, resourcedata,
+                                                           yearcol='YEAR', year_function=process_year)
                 success, results = dataset.download_and_generate_resource(
                     downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
                     row_function=process_row)
