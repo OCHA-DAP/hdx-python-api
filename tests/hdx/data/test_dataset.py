@@ -1448,7 +1448,7 @@ class TestDataset:
                     admin1s.add(admin1)
                 return row
 
-            quickcharts = {'hashtag': '#event+code', 'values': ['1416RTA', 'XXXXRTA', '2231RTA']}
+            quickcharts = {'hashtag': '#event+code', 'values': ['1416RTA', 'XXXXRTA', '2231RTA'], 'cutdown': True}
             dataset = Dataset()
             with Download(user_agent='test') as downloader:
                 success, results = dataset.download_and_generate_resource(
@@ -1460,17 +1460,22 @@ class TestDataset:
                                    'rows': [{'lala': '', 'GWNO': '', 'EVENT_ID_CNTY': '#event+code', 'EVENT_ID_NO_CNTY': '', 'EVENT_DATE': '#date+occurred', 'YEAR': '#date+year', 'TIME_PRECISION': '', 'EVENT_TYPE': '#event+type', 'ACTOR1': '#group+name+first', 'ALLY_ACTOR_1': '', 'INTER1': '', 'ACTOR2': '#group+name+second', 'ALLY_ACTOR_2': '', 'INTER2': '', 'INTERACTION': '', 'COUNTRY': '#country+name', 'ADMIN1': '#adm1+name', 'ADMIN2': '#adm2+name', 'ADMIN3': '#adm3+name', 'LOCATION': '#loc+name', 'LATITUDE': '#geo+lat', 'LONGITUDE': '#geo+lon', 'GEO_PRECISION': '', 'SOURCE': '#meta+source', 'NOTES': '#description', 'FATALITIES': '#affected+killed'},
                                             {'GWNO': '615', 'EVENT_ID_CNTY': '1416RTA', 'EVENT_ID_NO_CNTY': '', 'EVENT_DATE': '18/04/2001', 'YEAR': '2001', 'TIME_PRECISION': '1', 'EVENT_TYPE': 'Violence against civilians', 'ACTOR1': 'Police Forces of Algeria (1999-)', 'ALLY_ACTOR_1': '', 'INTER1': '1', 'ACTOR2': 'Civilians (Algeria)', 'ALLY_ACTOR_2': 'Berber Ethnic Group (Algeria)', 'INTER2': '7', 'INTERACTION': '17', 'COUNTRY': 'Algeria', 'ADMIN1': 'Tizi Ouzou', 'ADMIN2': 'Beni-Douala', 'ADMIN3': '', 'LOCATION': 'Beni Douala', 'LATITUDE': '36.61954', 'LONGITUDE': '4.08282', 'GEO_PRECISION': '1', 'SOURCE': 'Associated Press Online', 'NOTES': 'A Berber student was shot while in police custody at a police station in Beni Douala. He later died on Apr.21.', 'FATALITIES': '1', 'lala': 'lala'},
                                             {'GWNO': '615', 'EVENT_ID_CNTY': '2229RTA', 'EVENT_ID_NO_CNTY': '', 'EVENT_DATE': '19/04/2001', 'YEAR': '2001', 'TIME_PRECISION': '1', 'EVENT_TYPE': 'Riots/Protests', 'ACTOR1': 'Rioters (Algeria)', 'ALLY_ACTOR_1': 'Berber Ethnic Group (Algeria)', 'INTER1': '5', 'ACTOR2': 'Police Forces of Algeria (1999-)', 'ALLY_ACTOR_2': '', 'INTER2': '1', 'INTERACTION': '15', 'COUNTRY': 'Algeria', 'ADMIN1': 'Tizi Ouzou', 'ADMIN2': 'Tizi Ouzou', 'ADMIN3': '', 'LOCATION': 'Tizi Ouzou', 'LATITUDE': '36.71183', 'LONGITUDE': '4.04591', 'GEO_PRECISION': '3', 'SOURCE': 'Kabylie report', 'NOTES': 'Riots were reported in numerous villages in Kabylie, resulting in dozens wounded in clashes between protesters and police and significant material damage.', 'FATALITIES': '0', 'lala': 'lala'},
-                                            {'GWNO': '615', 'EVENT_ID_CNTY': '2230RTA', 'EVENT_ID_NO_CNTY': '', 'EVENT_DATE': '20/04/2001', 'YEAR': '2001-2002', 'TIME_PRECISION': '1', 'EVENT_TYPE': 'Riots/Protests', 'ACTOR1': 'Protesters (Algeria)', 'ALLY_ACTOR_1': 'Students (Algeria)', 'INTER1': '6', 'ACTOR2': '', 'ALLY_ACTOR_2': '', 'INTER2': '0', 'INTERACTION': '60', 'COUNTRY': 'Algeria', 'ADMIN1': 'Bejaia', 'ADMIN2': 'Amizour', 'ADMIN3': '', 'LOCATION': 'Amizour', 'LATITUDE': '36.64022', 'LONGITUDE': '4.90131', 'GEO_PRECISION': '1', 'SOURCE': 'Crisis Group', 'NOTES': 'Students protested in the Amizour area. At least 3 were later arrested for allegedly insulting gendarmes.', 'FATALITIES': '0', 'lala': 'lala'},
+                                            {'GWNO': '615', 'EVENT_ID_CNTY': '2230RTA', 'EVENT_ID_NO_CNTY': '', 'EVENT_DATE': '20/04/2001', 'YEAR': '2002', 'TIME_PRECISION': '1', 'EVENT_TYPE': 'Riots/Protests', 'ACTOR1': 'Protesters (Algeria)', 'ALLY_ACTOR_1': 'Students (Algeria)', 'INTER1': '6', 'ACTOR2': '', 'ALLY_ACTOR_2': '', 'INTER2': '0', 'INTERACTION': '60', 'COUNTRY': 'Algeria', 'ADMIN1': 'Bejaia', 'ADMIN2': 'Amizour', 'ADMIN3': '', 'LOCATION': 'Amizour', 'LATITUDE': '36.64022', 'LONGITUDE': '4.90131', 'GEO_PRECISION': '1', 'SOURCE': 'Crisis Group', 'NOTES': 'Students protested in the Amizour area. At least 3 were later arrested for allegedly insulting gendarmes.', 'FATALITIES': '0', 'lala': 'lala'},
                                             {'GWNO': '615', 'EVENT_ID_CNTY': '2231RTA', 'EVENT_ID_NO_CNTY': '', 'EVENT_DATE': '21/04/2001', 'YEAR': '2001', 'TIME_PRECISION': '1', 'EVENT_TYPE': 'Riots/Protests', 'ACTOR1': 'Rioters (Algeria)', 'ALLY_ACTOR_1': 'Berber Ethnic Group (Algeria)', 'INTER1': '5', 'ACTOR2': 'Police Forces of Algeria (1999-)', 'ALLY_ACTOR_2': '', 'INTER2': '1', 'INTERACTION': '15', 'COUNTRY': 'Algeria', 'ADMIN1': 'Bejaia', 'ADMIN2': 'Amizour', 'ADMIN3': '', 'LOCATION': 'Amizour', 'LATITUDE': '36.64022', 'LONGITUDE': '4.90131', 'GEO_PRECISION': '1', 'SOURCE': 'Kabylie report', 'NOTES': 'Rioters threw molotov cocktails, rocks and burning tires at gendarmerie stations in Beni Douala, El-Kseur and Amizour.', 'FATALITIES': '0', 'lala': 'lala'}]}
                 assert dataset['dataset_date'] == '01/01/2001-12/31/2002'
                 assert admin1s == {'Bejaia', 'Tizi Ouzou'}
+                resources = dataset.get_resources()
+                assert resources == [{'name': 'Conflict Data for Algeria', 'description': 'Conflict data with HXL tags', 'format': 'csv', 'resource_type': 'file.upload', 'url_type': 'upload'},
+                                     {'name': 'QuickCharts-Conflict Data for Algeria', 'description': 'Cut down data for QuickCharts', 'format': 'csv', 'resource_type': 'file.upload', 'url_type': 'upload'}]
                 assert_files_same(join('tests', 'fixtures', 'gen_resource', filename), join(folder, filename))
+                qc_filename = 'qc_%s' % filename
+                assert_files_same(join('tests', 'fixtures', 'gen_resource', qc_filename), join(folder, qc_filename))
 
                 def process_year(years, row):
-                    year = row['YEAR']
-                    if '-' in year:
-                        year = year[:4]
-                    years.add(int(year))
+                    year = int(row['YEAR'])
+                    if year != 2002:
+                        years.add(int(year))
+
                 success, results = dataset.download_and_generate_resource(
                     downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
                     row_function=process_row, year_function=process_year, quickcharts=quickcharts)
