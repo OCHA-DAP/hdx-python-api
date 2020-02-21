@@ -1480,6 +1480,7 @@ class TestDataset:
                         years.add(int(year))
 
                 quickcharts['cutdownhashtags'] = ['#event+code']
+                del quickcharts['hashtag']
                 success, results = dataset.download_and_generate_resource(
                     downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
                     row_function=process_row, year_function=process_year, quickcharts=quickcharts)

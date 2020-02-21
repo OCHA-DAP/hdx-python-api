@@ -1641,11 +1641,12 @@ class Dataset(HDXObject):
         a function to obtain the year from a row. In this case, the list of years is returned in the key years of the
         returned dictionary.
 
-        A list of booleans indicating which QuickCharts bites should be enabled can be returned in the key
-        bites_disabled in the returned dictionary if the quickcharts parameter is supplied. It is a dictionary with
-        keys: hashtag - the HXL hashtag to examine - and values - the 3 values to look for in that column. Optionally,
-        the dictionary can also have key: cutdown - if it is 1, then a separate cut down list is created
-        containing only columns with HXL hashtags and rows with desired values for the purpose of driving QuickCharts.
+        If the parameter quickcharts is supplied then various QuickCharts related actions will occur depending upon the
+        keys given in the dictionary. If the keys: hashtag - the HXL hashtag to examine - and values - the 3 values to
+        look for in that column - are supplied, then a list of booleans indicating which QuickCharts bites should be
+        enabled will be returned in the key bites_disabled in the returned dictionary. If the key: cutdown is given,
+        if it is 1, then a separate cut down list is created containing only columns with HXL hashtags and
+        rows with desired values (if hashtag and values are supplied) for the purpose of driving QuickCharts.
         It is returned in the key qcrows in the returned dictionary with the matching headers in qcheaders.
         If cutdown is 2, then a resource is created using the cut down list. If the key cutdownhashtags is supplied,
         then only the provided hashtags are used for cutting down otherwise the full list of hxl tags is used.
@@ -1659,7 +1660,7 @@ class Dataset(HDXObject):
             resourcedata (Dict): Resource data
             yearcol (Optional[Union[int,str]]): Year column for setting dataset year range. Defaults to None (don't set).
             year_function (Optional[Callable[[Set[int],Dict],None]]): Year function to call for each row. Defaults to None.
-            quickcharts (Optional[Dict]): Dictionary containing keys: hashtag and values and (optionally) cutdown and cutdownhashtags
+            quickcharts (Optional[Dict]): Dictionary containing optional keys: hashtag, values, cutdown and/or cutdownhashtags
 
         Returns:
             Tuple[bool, Dict]: (True if resource added, dictionary of results)
@@ -1671,11 +1672,14 @@ class Dataset(HDXObject):
             return False, retdict
         rows = [Download.hxl_row(headers, hxltags, dict_form=True)]
         years = set()
-        qc = {'cutdown': False}
+        qc = {'cutdown': 0}
         bites_disabled = [True, True, True]
         if quickcharts is not None:
-            hashtag = quickcharts['hashtag']
-            qc['column'] = next(key for key, value in hxltags.items() if value == hashtag)  # reverse dict lookup
+            hashtag = quickcharts.get('hashtag')
+            if hashtag:
+                qc['column'] = next(key for key, value in hxltags.items() if value == hashtag)  # reverse dict lookup
+            else:
+                qc['column'] = None
             cutdown = quickcharts.get('cutdown', 0)
             if cutdown:
                 qc['cutdown'] = cutdown
@@ -1695,13 +1699,18 @@ class Dataset(HDXObject):
             elif year_function is not None:
                 year_function(years, row)
             if quickcharts is not None:
-                value = row[qc['column']]
-                for i, lookup in enumerate(quickcharts['values']):
-                    if value == lookup:
-                        bites_disabled[i] = False
-                        if qc['cutdown']:
-                            qcrow = {x: row[x] for x in qc['headers']}
-                            qc['rows'].append(qcrow)
+                if qc['column'] is None:
+                    if qc['cutdown']:
+                        qcrow = {x: row[x] for x in qc['headers']}
+                        qc['rows'].append(qcrow)
+                else:
+                    value = row[qc['column']]
+                    for i, lookup in enumerate(quickcharts['values']):
+                        if value == lookup:
+                            bites_disabled[i] = False
+                            if qc['cutdown']:
+                                qcrow = {x: row[x] for x in qc['headers']}
+                                qc['rows'].append(qcrow)
 
         if len(rows) == 1:
             logger.error('No data rows in %s!' % filename)
@@ -1743,11 +1752,12 @@ class Dataset(HDXObject):
         a function to obtain the year from a row. In this case, the list of years is returned in the key years of the
         returned dictionary.
 
-        A list of booleans indicating which QuickCharts bites should be enabled can be returned in the key
-        bites_disabled in the returned dictionary if the quickcharts parameter is supplied. It is a dictionary with
-        keys: hashtag - the HXL hashtag to examine - and values - the 3 values to look for in that column. Optionally,
-        the dictionary can also have key: cutdown - if it is 1, then a separate cut down list is created
-        containing only columns with HXL hashtags and rows with desired values for the purpose of driving QuickCharts.
+        If the parameter quickcharts is supplied then various QuickCharts related actions will occur depending upon the
+        keys given in the dictionary. If the keys: hashtag - the HXL hashtag to examine - and values - the 3 values to
+        look for in that column - are supplied, then a list of booleans indicating which QuickCharts bites should be
+        enabled will be returned in the key bites_disabled in the returned dictionary. If the key: cutdown is given,
+        if it is 1, then a separate cut down list is created containing only columns with HXL hashtags and
+        rows with desired values (if hashtag and values are supplied) for the purpose of driving QuickCharts.
         It is returned in the key qcrows in the returned dictionary with the matching headers in qcheaders.
         If cutdown is 2, then a resource is created using the cut down list. If the key cutdownhashtags is supplied,
         then only the provided hashtags are used for cutting down otherwise the full list of hxl tags is used.
@@ -1763,7 +1773,7 @@ class Dataset(HDXObject):
             row_function (Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]]): Function to call for each row. Defaults to None.
             yearcol (Optional[str]): Year column for setting dataset year range. Defaults to None (don't set).
             year_function (Optional[Callable[[Set[int],Dict],None]]): Year function to call for each row. Defaults to None.
-            quickcharts (Optional[Dict]): Dictionary containing keys: hashtag and values and (optionally) cutdown and cutdownhashtags
+            quickcharts (Optional[Dict]): Dictionary containing optional keys: hashtag, values, cutdown and/or cutdownhashtags
 
         Returns:
             Tuple[bool, Dict]: (True if resource added, dictionary of results)
