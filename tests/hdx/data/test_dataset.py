@@ -1479,12 +1479,15 @@ class TestDataset:
                     if year != 2002:
                         years.add(int(year))
 
+                quickcharts['cutdownhashtags'] = ['#event+code']
                 success, results = dataset.download_and_generate_resource(
                     downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
                     row_function=process_row, year_function=process_year, quickcharts=quickcharts)
                 assert success is True
                 assert results['years'] == [2001]
                 assert dataset['dataset_date'] == '01/01/2001-12/31/2001'
+                assert_files_same(join('tests', 'fixtures', 'gen_resource', 'min_%s' % qc_filename), join(folder, qc_filename))
+
                 with pytest.raises(HDXError):
                     dataset.download_and_generate_resource(downloader, url, hxltags, folder, filename, resourcedata,
                                                            yearcol='YEAR', year_function=process_year)

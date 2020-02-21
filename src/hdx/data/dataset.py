@@ -1610,7 +1610,7 @@ class Dataset(HDXObject):
         return ranges
 
     def generate_resource_from_rows(self, folder, filename, rows, resourcedata, headers=None):
-        # type: (str, str, List[Union[DictUpperBound, List]], Dict, Optional[List[str]]) -> None
+        # type: (str, str, List[Union[DictUpperBound, List]], Dict, Optional[List[str]]) -> hdx.data.resource.Resource
         """Write rows to csv and create resource, adding to it the dataset
 
         Args:
@@ -1621,7 +1621,7 @@ class Dataset(HDXObject):
             headers (Optional[List[str]]): List of headers. Defaults to None.
 
         Returns:
-            None
+            hdx.data.resource.Resource: The created resource
         """
         filepath = join(folder, filename)
         write_list_to_csv(filepath, rows, headers=headers)
@@ -1629,6 +1629,7 @@ class Dataset(HDXObject):
         resource.set_file_type('csv')
         resource.set_file_to_upload(filepath)
         self.add_update_resource(resource)
+        return resource
 
     def generate_resource_from_download(self, headers, iterator, hxltags, folder, filename, resourcedata,
                                         yearcol=None, year_function=None, quickcharts=None):
@@ -1646,7 +1647,8 @@ class Dataset(HDXObject):
         the dictionary can also have key: cutdown - if it is 1, then a separate cut down list is created
         containing only columns with HXL hashtags and rows with desired values for the purpose of driving QuickCharts.
         It is returned in the key qcrows in the returned dictionary with the matching headers in qcheaders.
-        If cutdown is 2, then a resource is created using the cut down list.
+        If cutdown is 2, then a resource is created using the cut down list. If the key cutdownhashtags is supplied,
+        then only the provided hashtags are used for cutting down otherwise the full list of hxl tags is used.
 
         Args:
             headers (List[str]): Headers
@@ -1657,7 +1659,7 @@ class Dataset(HDXObject):
             resourcedata (Dict): Resource data
             yearcol (Optional[Union[int,str]]): Year column for setting dataset year range. Defaults to None (don't set).
             year_function (Optional[Callable[[Set[int],Dict],None]]): Year function to call for each row. Defaults to None.
-            quickcharts (Optional[Dict]): Dictionary containing keys: hashtag and values and (optionally) cutdown
+            quickcharts (Optional[Dict]): Dictionary containing keys: hashtag and values and (optionally) cutdown and cutdownhashtags
 
         Returns:
             Tuple[bool, Dict]: (True if resource added, dictionary of results)
@@ -1677,7 +1679,12 @@ class Dataset(HDXObject):
             cutdown = quickcharts.get('cutdown', 0)
             if cutdown:
                 qc['cutdown'] = cutdown
-                qc['headers'] = [x for x in headers if x in hxltags]
+                cutdownhashtags = quickcharts.get('cutdownhashtags')
+                if cutdownhashtags is None:
+                    cutdownhashtags = hxltags.keys()
+                else:
+                    cutdownhashtags = [key for key, value in hxltags.items() if value in cutdownhashtags]
+                qc['headers'] = [x for x in headers if x in cutdownhashtags]
                 qc['rows'] = [Download.hxl_row(qc['headers'], hxltags, dict_form=True)]
         for row in iterator:
             rows.append(row)
@@ -1742,7 +1749,8 @@ class Dataset(HDXObject):
         the dictionary can also have key: cutdown - if it is 1, then a separate cut down list is created
         containing only columns with HXL hashtags and rows with desired values for the purpose of driving QuickCharts.
         It is returned in the key qcrows in the returned dictionary with the matching headers in qcheaders.
-        If cutdown is 2, then a resource is created using the cut down list.
+        If cutdown is 2, then a resource is created using the cut down list. If the key cutdownhashtags is supplied,
+        then only the provided hashtags are used for cutting down otherwise the full list of hxl tags is used.
 
         Args:
             downloader (Download): Download object
@@ -1755,7 +1763,7 @@ class Dataset(HDXObject):
             row_function (Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]]): Function to call for each row. Defaults to None.
             yearcol (Optional[str]): Year column for setting dataset year range. Defaults to None (don't set).
             year_function (Optional[Callable[[Set[int],Dict],None]]): Year function to call for each row. Defaults to None.
-            quickcharts (Optional[Dict]): Dictionary containing keys: hashtag and values and (optionally) cutdown
+            quickcharts (Optional[Dict]): Dictionary containing keys: hashtag and values and (optionally) cutdown and cutdownhashtags
 
         Returns:
             Tuple[bool, Dict]: (True if resource added, dictionary of results)
