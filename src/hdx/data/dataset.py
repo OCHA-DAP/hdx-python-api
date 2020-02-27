@@ -1633,13 +1633,13 @@ class Dataset(HDXObject):
 
     def generate_resource_from_download(self, headers, iterator, hxltags, folder, filename, resourcedata,
                                         yearcol=None, year_function=None, quickcharts=None):
-        # type: (List[str], Iterator[Union[List,Dict]], Dict[str,str], str, str, Dict, Optional[Union[int,str]], Optional[Callable[[Set[int],Dict],None]], Optional[Dict]) -> Tuple[bool, Dict]
+        # type: (List[str], Iterator[Union[List,Dict]], Dict[str,str], str, str, Dict, Optional[Union[int,str]], Optional[Callable[[Set[int],Dict],Optional[bool]]], Optional[Dict]) -> Tuple[bool, Dict]
         """Given headers and an iterator, write rows to csv and create resource, adding to it the dataset. The returned
         dictionary will contain the headers in the key headers and the list of rows in the key rows.
 
         The date of dataset can optionally be set by supplying a column in which the year is to be looked up or
-        a function to obtain the year from a row. In this case, the list of years is returned in the key years of the
-        returned dictionary.
+        a function to obtain the year from a row. The function should return False or None to keep the row or True
+        to ignore it. In either case, the list of years is returned in the key years of the returned dictionary.
 
         If the parameter quickcharts is supplied then various QuickCharts related actions will occur depending upon the
         keys given in the dictionary. If the keys: hashtag - the HXL hashtag to examine - and values - the 3 values to
@@ -1659,7 +1659,7 @@ class Dataset(HDXObject):
             filename (str): Filename of file to write rows
             resourcedata (Dict): Resource data
             yearcol (Optional[Union[int,str]]): Year column for setting dataset year range. Defaults to None (don't set).
-            year_function (Optional[Callable[[Set[int],Dict],None]]): Year function to call for each row. Defaults to None.
+            year_function (Optional[Callable[[Set[int],Dict],Optional[bool]]]): Year function to call for each row. Defaults to None.
             quickcharts (Optional[Dict]): Dictionary containing optional keys: hashtag, values, cutdown and/or cutdownhashtags
 
         Returns:
@@ -1691,13 +1691,15 @@ class Dataset(HDXObject):
                 qc['headers'] = [x for x in headers if x in cutdownhashtags]
                 qc['rows'] = [Download.hxl_row(qc['headers'], hxltags, dict_form=True)]
         for row in iterator:
-            rows.append(row)
             if yearcol is not None:
                 year = row[yearcol]
                 if year:
                     years.add(int(year))
             elif year_function is not None:
-                year_function(years, row)
+                ignore = year_function(years, row)
+                if ignore is True:
+                    continue
+            rows.append(row)
             if quickcharts is not None:
                 if qc['column'] is None:
                     if qc['cutdown']:
@@ -1739,7 +1741,7 @@ class Dataset(HDXObject):
     def download_and_generate_resource(self, downloader, url, hxltags, folder, filename, resourcedata,
                                        header_insertions=None, row_function=None, yearcol=None, year_function=None,
                                        quickcharts=None):
-        # type: (Download, str, Dict[str,str], str, str, Dict, Optional[List[Tuple[int,str]]], Optional[Callable[[List[str],Union[List,Dict]],Dict]], Optional[str], Optional[Callable[[Set[int],Union[List,Dict]],None]], Optional[Dict]) -> Tuple[bool, Dict]
+        # type: (Download, str, Dict[str,str], str, str, Dict, Optional[List[Tuple[int,str]]], Optional[Callable[[List[str],Union[List,Dict]],Dict]], Optional[str], Optional[Callable[[Set[int],Union[List,Dict]],bool]], Optional[Dict]) -> Tuple[bool, Dict]
         """Download url, write rows to csv and create resource, adding to it the dataset. The returned dictionary
         will contain the headers in the key headers and the list of rows in the key rows.
 
@@ -1749,8 +1751,8 @@ class Dataset(HDXObject):
         row (which will be in dict or list form depending upon the dict_rows argument) and outputs a modified row.
 
         The date of dataset can optionally be set by supplying a column in which the year is to be looked up or
-        a function to obtain the year from a row. In this case, the list of years is returned in the key years of the
-        returned dictionary.
+        a function to obtain the year from a row. The function should return False or None to keep the row or True
+        to ignore it. In either case, the list of years is returned in the key years of the returned dictionary.
 
         If the parameter quickcharts is supplied then various QuickCharts related actions will occur depending upon the
         keys given in the dictionary. If the keys: hashtag - the HXL hashtag to examine - and values - the 3 values to
@@ -1772,7 +1774,7 @@ class Dataset(HDXObject):
             header_insertions (Optional[List[Tuple[int,str]]]): List of (position, header) to insert. Defaults to None.
             row_function (Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]]): Function to call for each row. Defaults to None.
             yearcol (Optional[str]): Year column for setting dataset year range. Defaults to None (don't set).
-            year_function (Optional[Callable[[Set[int],Dict],None]]): Year function to call for each row. Defaults to None.
+            year_function (Optional[Callable[[Set[int],Dict],Optional[bool]]]): Year function to call for each row. Defaults to None.
             quickcharts (Optional[Dict]): Dictionary containing optional keys: hashtag, values, cutdown and/or cutdownhashtags
 
         Returns:

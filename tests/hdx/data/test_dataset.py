@@ -1476,8 +1476,9 @@ class TestDataset:
 
                 def process_year(years, row):
                     year = int(row['YEAR'])
-                    if year != 2002:
-                        years.add(int(year))
+                    if year == 2002:
+                        return True
+                    years.add(int(year))
 
                 quickcharts['cutdownhashtags'] = ['#event+code']
                 del quickcharts['hashtag']
