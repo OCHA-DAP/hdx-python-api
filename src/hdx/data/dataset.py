@@ -1740,8 +1740,8 @@ class Dataset(HDXObject):
 
     def download_and_generate_resource(self, downloader, url, hxltags, folder, filename, resourcedata,
                                        header_insertions=None, row_function=None, yearcol=None, year_function=None,
-                                       quickcharts=None):
-        # type: (Download, str, Dict[str,str], str, str, Dict, Optional[List[Tuple[int,str]]], Optional[Callable[[List[str],Union[List,Dict]],Dict]], Optional[str], Optional[Callable[[Set[int],Union[List,Dict]],bool]], Optional[Dict]) -> Tuple[bool, Dict]
+                                       quickcharts=None, **kwargs):
+        # type: (Download, str, Dict[str,str], str, str, Dict, Optional[List[Tuple[int,str]]], Optional[Callable[[List[str],Union[List,Dict]],Dict]], Optional[str], Optional[Callable[[Set[int],Union[List,Dict]],bool]], Optional[Dict], Any) -> Tuple[bool, Dict]
         """Download url, write rows to csv and create resource, adding to it the dataset. The returned dictionary
         will contain the headers in the key headers and the list of rows in the key rows.
 
@@ -1776,12 +1776,13 @@ class Dataset(HDXObject):
             yearcol (Optional[str]): Year column for setting dataset year range. Defaults to None (don't set).
             year_function (Optional[Callable[[Set[int],Dict],Optional[bool]]]): Year function to call for each row. Defaults to None.
             quickcharts (Optional[Dict]): Dictionary containing optional keys: hashtag, values, cutdown and/or cutdownhashtags
+            **kwargs: Any additional args to pass to downloader.get_tabular_rows
 
         Returns:
             Tuple[bool, Dict]: (True if resource added, dictionary of results)
         """
         headers, iterator = downloader.get_tabular_rows(url, dict_form=True, header_insertions=header_insertions,
-                                                        row_function=row_function, format='csv')
+                                                        row_function=row_function, format='csv', **kwargs)
         return self.generate_resource_from_download(headers, iterator, hxltags, folder, filename, resourcedata,
                                                     yearcol=yearcol, year_function=year_function,
                                                     quickcharts=quickcharts)
