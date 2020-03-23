@@ -12,6 +12,7 @@ from parser import ParserError
 import pytest
 from hdx.location.country import Country
 from hdx.utilities.compare import assert_files_same
+from hdx.utilities.dateparse import parse_date_range
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_yaml
@@ -1455,7 +1456,7 @@ class TestDataset:
                     downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
                     row_function=process_row, yearcol='YEAR', quickcharts=quickcharts)
                 assert success is True
-                assert results == {'years': [2001, 2002], 'bites_disabled': [False, True, False],
+                assert results == {'startdate': datetime.datetime(2001, 1, 1, 0, 0), 'enddate': datetime.datetime(2002, 12, 31, 0, 0), 'bites_disabled': [False, True, False],
                                    'headers': ['lala', 'GWNO', 'EVENT_ID_CNTY', 'EVENT_ID_NO_CNTY', 'EVENT_DATE', 'YEAR', 'TIME_PRECISION', 'EVENT_TYPE', 'ACTOR1', 'ALLY_ACTOR_1', 'INTER1', 'ACTOR2', 'ALLY_ACTOR_2', 'INTER2', 'INTERACTION', 'COUNTRY', 'ADMIN1', 'ADMIN2', 'ADMIN3', 'LOCATION', 'LATITUDE', 'LONGITUDE', 'GEO_PRECISION', 'SOURCE', 'NOTES', 'FATALITIES'],
                                    'rows': [{'lala': '', 'GWNO': '', 'EVENT_ID_CNTY': '#event+code', 'EVENT_ID_NO_CNTY': '', 'EVENT_DATE': '#date+occurred', 'YEAR': '#date+year', 'TIME_PRECISION': '', 'EVENT_TYPE': '#event+type', 'ACTOR1': '#group+name+first', 'ALLY_ACTOR_1': '', 'INTER1': '', 'ACTOR2': '#group+name+second', 'ALLY_ACTOR_2': '', 'INTER2': '', 'INTERACTION': '', 'COUNTRY': '#country+name', 'ADMIN1': '#adm1+name', 'ADMIN2': '#adm2+name', 'ADMIN3': '#adm3+name', 'LOCATION': '#loc+name', 'LATITUDE': '#geo+lat', 'LONGITUDE': '#geo+lon', 'GEO_PRECISION': '', 'SOURCE': '#meta+source', 'NOTES': '#description', 'FATALITIES': '#affected+killed'},
                                             {'GWNO': '615', 'EVENT_ID_CNTY': '1416RTA', 'EVENT_ID_NO_CNTY': '', 'EVENT_DATE': '18/04/2001', 'YEAR': '2001', 'TIME_PRECISION': '1', 'EVENT_TYPE': 'Violence against civilians', 'ACTOR1': 'Police Forces of Algeria (1999-)', 'ALLY_ACTOR_1': '', 'INTER1': '1', 'ACTOR2': 'Civilians (Algeria)', 'ALLY_ACTOR_2': 'Berber Ethnic Group (Algeria)', 'INTER2': '7', 'INTERACTION': '17', 'COUNTRY': 'Algeria', 'ADMIN1': 'Tizi Ouzou', 'ADMIN2': 'Beni-Douala', 'ADMIN3': '', 'LOCATION': 'Beni Douala', 'LATITUDE': '36.61954', 'LONGITUDE': '4.08282', 'GEO_PRECISION': '1', 'SOURCE': 'Associated Press Online', 'NOTES': 'A Berber student was shot while in police custody at a police station in Beni Douala. He later died on Apr.21.', 'FATALITIES': '1', 'lala': 'lala'},
@@ -1474,25 +1475,27 @@ class TestDataset:
                 qc_filename = 'qc_%s' % filename
                 assert_files_same(join('tests', 'fixtures', 'gen_resource', qc_filename), join(folder, qc_filename))
 
-                def process_year(years, row):
-                    year = int(row['YEAR'])
-                    if year == 2002:
-                        return True
-                    years.add(int(year))
+                def process_year(row):
+                    year = row['YEAR']
+                    if year == '2002':
+                        return None
+                    startdate, enddate = parse_date_range(year)
+                    return {'startdate': startdate, 'enddate': enddate}
 
                 quickcharts['cutdownhashtags'] = ['#event+code']
                 del quickcharts['hashtag']
                 success, results = dataset.download_and_generate_resource(
                     downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
-                    row_function=process_row, year_function=process_year, quickcharts=quickcharts)
+                    row_function=process_row, date_function=process_year, quickcharts=quickcharts)
                 assert success is True
-                assert results['years'] == [2001]
+                assert results['startdate'] == datetime.datetime(2001, 1, 1, 0, 0)
+                assert results['enddate'] == datetime.datetime(2001, 12, 31, 0, 0)
                 assert dataset['dataset_date'] == '01/01/2001-12/31/2001'
                 assert_files_same(join('tests', 'fixtures', 'gen_resource', 'min_%s' % qc_filename), join(folder, qc_filename))
 
                 with pytest.raises(HDXError):
                     dataset.download_and_generate_resource(downloader, url, hxltags, folder, filename, resourcedata,
-                                                           yearcol='YEAR', year_function=process_year)
+                                                           yearcol='YEAR', date_function=process_year)
                 success, results = dataset.download_and_generate_resource(
                     downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
                     row_function=process_row)

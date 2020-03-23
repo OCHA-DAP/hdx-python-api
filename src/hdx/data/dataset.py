@@ -11,7 +11,7 @@ from typing import List, Union, Optional, Dict, Any, Tuple, Callable, Iterator, 
 
 from hdx.location.country import Country
 from hdx.utilities import is_valid_uuid
-from hdx.utilities.dateparse import parse_date_range, parse_date
+from hdx.utilities.dateparse import parse_date_range, parse_date, default_date, default_enddate
 from hdx.utilities.dictandlist import merge_two_dictionaries, write_list_to_csv, DictUpperBound
 from hdx.utilities.downloader import Download
 from six.moves import range
@@ -1632,14 +1632,16 @@ class Dataset(HDXObject):
         return resource
 
     def generate_resource_from_download(self, headers, iterator, hxltags, folder, filename, resourcedata,
-                                        yearcol=None, year_function=None, quickcharts=None):
-        # type: (List[str], Iterator[Union[List,Dict]], Dict[str,str], str, str, Dict, Optional[Union[int,str]], Optional[Callable[[Set[int],Dict],Optional[bool]]], Optional[Dict]) -> Tuple[bool, Dict]
+                                        yearcol=None, date_function=None, quickcharts=None):
+        # type: (List[str], Iterator[Union[List,Dict]], Dict[str,str], str, str, Dict, Optional[Union[int,str]], Optional[Callable[[Dict],Optional[Dict]]], Optional[Dict]) -> Tuple[bool, Dict]
         """Given headers and an iterator, write rows to csv and create resource, adding to it the dataset. The returned
         dictionary will contain the headers in the key headers and the list of rows in the key rows.
 
         The date of dataset can optionally be set by supplying a column in which the year is to be looked up or
-        a function to obtain the year from a row. The function should return False or None to keep the row or True
-        to ignore it. In either case, the list of years is returned in the key years of the returned dictionary.
+        a function to obtain handle any dates in a row. The function should accept a row and should return None to
+        ignore the row or a dictionary which can either be empty if there are no dates in the row or can be populated
+        with keys startdate and/or enddate which are of type datetime. The lowest start date and highest end date are
+        used to set the date of dataset and are returned in the results dictionary in keys: startdate and endddate.
 
         If the parameter quickcharts is supplied then various QuickCharts related actions will occur depending upon the
         keys given in the dictionary. If the keys: hashtag - the HXL hashtag to examine - and values - the 3 values to
@@ -1659,19 +1661,19 @@ class Dataset(HDXObject):
             filename (str): Filename of file to write rows
             resourcedata (Dict): Resource data
             yearcol (Optional[Union[int,str]]): Year column for setting dataset year range. Defaults to None (don't set).
-            year_function (Optional[Callable[[Set[int],Dict],Optional[bool]]]): Year function to call for each row. Defaults to None.
+            date_function (Optional[Callable[[Dict],Optional[Dict]]]): Date function to call for each row. Defaults to None.
             quickcharts (Optional[Dict]): Dictionary containing optional keys: hashtag, values, cutdown and/or cutdownhashtags
 
         Returns:
             Tuple[bool, Dict]: (True if resource added, dictionary of results)
         """
-        if yearcol is not None and year_function is not None:
-            raise HDXError('Supply either yearcol or year_function not both!')
+        if yearcol is not None and date_function is not None:
+            raise HDXError('Supply either yearcol or date_function not both!')
         retdict = dict()
         if headers is None:
             return False, retdict
         rows = [Download.hxl_row(headers, hxltags, dict_form=True)]
-        years = set()
+        dates = [default_enddate, default_date]
         qc = {'cutdown': 0}
         bites_disabled = [True, True, True]
         if quickcharts is not None:
@@ -1694,11 +1696,23 @@ class Dataset(HDXObject):
             if yearcol is not None:
                 year = row[yearcol]
                 if year:
-                    years.add(int(year))
-            elif year_function is not None:
-                ignore = year_function(years, row)
-                if ignore is True:
+                    startdate, enddate = parse_date_range(year)
+                    if startdate < dates[0]:
+                        dates[0] = startdate
+                    if enddate > dates[1]:
+                        dates[1] = enddate
+            elif date_function is not None:
+                result = date_function(row)
+                if result is None:
                     continue
+                startdate = result.get('startdate')
+                if startdate is not None:
+                    if startdate < dates[0]:
+                        dates[0] = startdate
+                enddate = result.get('enddate')
+                if enddate is not None:
+                    if enddate > dates[1]:
+                        dates[1] = enddate
             rows.append(row)
             if quickcharts is not None:
                 if qc['column'] is None:
@@ -1717,12 +1731,14 @@ class Dataset(HDXObject):
         if len(rows) == 1:
             logger.error('No data rows in %s!' % filename)
             return False, retdict
-        if yearcol is not None or year_function is not None:
-            if len(years) == 0:
-                logger.error('No years in %s of %s!' % (yearcol, filename))
+        if yearcol is not None or date_function is not None:
+            if dates[0] == default_enddate or dates[1] == default_date:
+                logger.error('No dates in %s!' % filename)
                 return False, retdict
             else:
-                retdict['years'] = self.set_dataset_year_range(years)
+                retdict['startdate'] = dates[0]
+                retdict['enddate'] = dates[1]
+                self.set_dataset_date_from_datetime(dates[0], dates[1])
         self.generate_resource_from_rows(folder, filename, rows, resourcedata, headers=headers)
         retdict['headers'] = headers
         retdict['rows'] = rows
@@ -1739,9 +1755,9 @@ class Dataset(HDXObject):
         return True, retdict
 
     def download_and_generate_resource(self, downloader, url, hxltags, folder, filename, resourcedata,
-                                       header_insertions=None, row_function=None, yearcol=None, year_function=None,
+                                       header_insertions=None, row_function=None, yearcol=None, date_function=None,
                                        quickcharts=None, **kwargs):
-        # type: (Download, str, Dict[str,str], str, str, Dict, Optional[List[Tuple[int,str]]], Optional[Callable[[List[str],Union[List,Dict]],Dict]], Optional[str], Optional[Callable[[Set[int],Union[List,Dict]],bool]], Optional[Dict], Any) -> Tuple[bool, Dict]
+        # type: (Download, str, Dict[str,str], str, str, Dict, Optional[List[Tuple[int,str]]], Optional[Callable[[List[str],Union[List,Dict]],Dict]], Optional[str], Optional[Callable[[Dict],Optional[Dict]]], Optional[Dict], Any) -> Tuple[bool, Dict]
         """Download url, write rows to csv and create resource, adding to it the dataset. The returned dictionary
         will contain the headers in the key headers and the list of rows in the key rows.
 
@@ -1751,8 +1767,10 @@ class Dataset(HDXObject):
         row (which will be in dict or list form depending upon the dict_rows argument) and outputs a modified row.
 
         The date of dataset can optionally be set by supplying a column in which the year is to be looked up or
-        a function to obtain the year from a row. The function should return False or None to keep the row or True
-        to ignore it. In either case, the list of years is returned in the key years of the returned dictionary.
+        a function to obtain handle any dates in a row. The function should accept a row and should return None to
+        ignore the row or a dictionary which can either be empty if there are no dates in the row or can be populated
+        with keys startdate and/or enddate which are of type datetime. The lowest start date and highest end date are
+        used to set the date of dataset and are returned in the results dictionary in keys: startdate and endddate.
 
         If the parameter quickcharts is supplied then various QuickCharts related actions will occur depending upon the
         keys given in the dictionary. If the keys: hashtag - the HXL hashtag to examine - and values - the 3 values to
@@ -1774,7 +1792,7 @@ class Dataset(HDXObject):
             header_insertions (Optional[List[Tuple[int,str]]]): List of (position, header) to insert. Defaults to None.
             row_function (Optional[Callable[[List[str],Union[List,Dict]],Union[List,Dict]]]): Function to call for each row. Defaults to None.
             yearcol (Optional[str]): Year column for setting dataset year range. Defaults to None (don't set).
-            year_function (Optional[Callable[[Set[int],Dict],Optional[bool]]]): Year function to call for each row. Defaults to None.
+            date_function (Optional[Callable[[Dict],Optional[Dict]]]): Date function to call for each row. Defaults to None.
             quickcharts (Optional[Dict]): Dictionary containing optional keys: hashtag, values, cutdown and/or cutdownhashtags
             **kwargs: Any additional args to pass to downloader.get_tabular_rows
 
@@ -1784,5 +1802,5 @@ class Dataset(HDXObject):
         headers, iterator = downloader.get_tabular_rows(url, dict_form=True, header_insertions=header_insertions,
                                                         row_function=row_function, format='csv', **kwargs)
         return self.generate_resource_from_download(headers, iterator, hxltags, folder, filename, resourcedata,
-                                                    yearcol=yearcol, year_function=year_function,
+                                                    yearcol=yearcol, date_function=date_function,
                                                     quickcharts=quickcharts)
