@@ -14,6 +14,7 @@ from hdx.utilities import is_valid_uuid
 from hdx.utilities.dateparse import parse_date_range, parse_date, default_date, default_enddate
 from hdx.utilities.dictandlist import merge_two_dictionaries, write_list_to_csv, DictUpperBound
 from hdx.utilities.downloader import Download
+from hdx.utilities.path import script_dir_plus_file
 from six.moves import range
 
 import hdx.data.filestore_helper
@@ -1532,17 +1533,21 @@ class Dataset(HDXObject):
                     self.preview_resourceview = None
                     break
 
-    def generate_resource_view(self, resource=0, path=join('config', 'hdx_resource_view_static.yml'), bites_disabled=None):
-        # type: (Union[hdx.data.resource.Resource,Dict,str,int], str, Optional[List[bool]]) -> hdx.data.resource_view.ResourceView
+    def generate_resource_view(self, resource=0, path=None, bites_disabled=None, indicators=None):
+        # type: (Union[hdx.data.resource.Resource,Dict,str,int], Optional[str], Optional[List[bool]], Optional[List[Dict]]) -> hdx.data.resource_view.ResourceView
         """Create QuickCharts for dataset from configuration saved in resource view. You can disable specific bites
-        by providing bites_disabled, a list of bools where True indicates a specific bite is disabled and False
-        indicates leave enabled. Creation of the resource view will be delayed until after the next dataset create
+        by providing bites_disabled, a list of 3 bools where True indicates a specific bite is disabled and False
+        indicates leave enabled. If you supply indicators, then the internal indicators resource view template will be
+        used. The parameter indicators is a list with 3 dictionaries of form:
+        {'code': 'MY_INDICATOR_CODE', 'title': 'MY_INDICATOR_TITLE', 'unit': 'MY_INDICATOR_UNIT'}.
+        Creation of the resource view will be delayed until after the next dataset create
         or update if a resource id is not yet available.
 
         Args:
             resource (Union[hdx.data.resource.Resource,Dict,str,int]): Either resource id or name, resource metadata from a Resource object or a dictionary or position. Defaults to 0.
-            path (str): Path to YAML resource view metadata. Defaults to config/hdx_resource_view_static.yml.
+            path (Optional[str]): Path to YAML resource view metadata. Defaults to None (config/hdx_resource_view_static.yml or internal template).
             bites_disabled (Optional[List[bool]]): Which QC bites should be disabled. Defaults to None (all bites enabled).
+            indicators (Optional[List[Dict]]): Indicator codes, QC titles and units for resource view template. Defaults to None (don't use template).
 
         Returns:
             hdx.data.resource_view.ResourceView: The resource view if QuickCharts created, None is not
@@ -1557,14 +1562,36 @@ class Dataset(HDXObject):
         else:
             resourceview_data = {'resource_name': res['name']}
         resourceview = hdx.data.resource_view.ResourceView(resourceview_data)
+        if path is None:
+            if indicators is None:
+                path = join('config', 'hdx_resource_view_static.yml')
+            else:
+                path = script_dir_plus_file('indicator_resource_view_template.yml', NotRequestableError)
         resourceview.update_from_yaml(path=path)
-        if bites_disabled is not None:
-            hxl_preview_config = json.loads(resourceview['hxl_preview_config'])
-            bites = hxl_preview_config['bites']
-            for i, disable in reversed(list(enumerate(bites_disabled))):
-                if disable:
-                    del bites[i]
-            resourceview['hxl_preview_config'] = json.dumps(hxl_preview_config)
+        if bites_disabled is not None or indicators is not None:
+            hxl_preview_config = resourceview['hxl_preview_config']
+            if indicators is not None:
+                if indicators[0] is not None:
+                    hxl_preview_config = hxl_preview_config.replace('INDICATOR_CODE_1', indicators[0]['code'])
+                    hxl_preview_config = hxl_preview_config.replace('INDICATOR_TITLE_1', indicators[0]['title'])
+                    hxl_preview_config = hxl_preview_config.replace('INDICATOR_UNIT_1', indicators[0]['unit'])
+                if indicators[1] is not None:
+                    hxl_preview_config = hxl_preview_config.replace('INDICATOR_CODE_2', indicators[1]['code'])
+                    hxl_preview_config = hxl_preview_config.replace('INDICATOR_TITLE_2', indicators[1]['title'])
+                    hxl_preview_config = hxl_preview_config.replace('INDICATOR_UNIT_2', indicators[1]['unit'])
+                if indicators[2] is not None:
+                    hxl_preview_config = hxl_preview_config.replace('INDICATOR_CODE_3', indicators[2]['code'])
+                    hxl_preview_config = hxl_preview_config.replace('INDICATOR_TITLE_3', indicators[2]['title'])
+                    hxl_preview_config = hxl_preview_config.replace('INDICATOR_UNIT_3', indicators[2]['unit'])
+            if bites_disabled is not None:
+                hxl_preview_config = json.loads(hxl_preview_config)
+                bites = hxl_preview_config['bites']
+                for i, disable in reversed(list(enumerate(bites_disabled))):
+                    if disable:
+                        del bites[i]
+                hxl_preview_config = json.dumps(hxl_preview_config)
+            resourceview['hxl_preview_config'] = hxl_preview_config
+
         if 'resource_id' in resourceview:
             resourceview.create_in_hdx()
             self.preview_resourceview = None

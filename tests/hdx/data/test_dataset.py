@@ -1360,6 +1360,20 @@ class TestDataset:
         assert hxl_preview_config['bites'][1]['title'] == 'Sum of fatalities grouped by admin2'
         resourceview = dataset.generate_resource_view(path=static_resource_view_yaml, bites_disabled=[True, True, True])
         assert resourceview is None
+        indicators = [{'code': '1', 'title': 'My1', 'unit': 'ones'}, {'code': '2', 'title': 'My2', 'unit': 'twos'},
+                      {'code': '3', 'title': 'My3', 'unit': 'threes'}]
+        resourceview = dataset.generate_resource_view(indicators=indicators)
+        hxl_preview_config = json.loads(resourceview['hxl_preview_config'])
+        assert resourceview['id'] == 'c06b5a0d-1d41-4a74-a196-41c251c76023'
+        assert hxl_preview_config['bites'][0]['ingredient']['filters']['filterWith'][0]['#indicator+code'] == '1'
+        assert hxl_preview_config['bites'][0]['uiProperties']['title'] == 'My1'
+        assert hxl_preview_config['bites'][0]['computedProperties']['dataTitle'] == 'ones'
+        assert hxl_preview_config['bites'][1]['ingredient']['filters']['filterWith'][0]['#indicator+code'] == '2'
+        assert hxl_preview_config['bites'][1]['uiProperties']['title'] == 'My2'
+        assert hxl_preview_config['bites'][1]['computedProperties']['dataTitle'] == 'twos'
+        assert hxl_preview_config['bites'][2]['ingredient']['filters']['filterWith'][0]['#indicator+code'] == '3'
+        assert hxl_preview_config['bites'][2]['uiProperties']['title'] == 'My3'
+        assert hxl_preview_config['bites'][2]['computedProperties']['dataTitle'] == 'threes'
         assert dataset.generate_resource_view(resource='123', path=static_resource_view_yaml) is None
         del dataset.get_resources()[0]['id']
         resourceview = dataset.generate_resource_view(path=static_resource_view_yaml)
