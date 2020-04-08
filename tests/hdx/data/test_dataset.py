@@ -1374,6 +1374,8 @@ class TestDataset:
         assert hxl_preview_config['bites'][2]['ingredient']['filters']['filterWith'][0]['#indicator+code'] == '3'
         assert hxl_preview_config['bites'][2]['uiProperties']['title'] == 'My3'
         assert hxl_preview_config['bites'][2]['computedProperties']['dataTitle'] == 'threes'
+        assert dataset.generate_resource_view(indicators=[]) is None
+        assert dataset.generate_resource_view(indicators=[None, None, None]) is None
         assert dataset.generate_resource_view(resource='123', path=static_resource_view_yaml) is None
         del dataset.get_resources()[0]['id']
         resourceview = dataset.generate_resource_view(path=static_resource_view_yaml)
@@ -1383,6 +1385,8 @@ class TestDataset:
         dataset['id'] = 'TEST1'
         dataset.update_in_hdx()
         assert dataset.preview_resourceview is None
+        with pytest.raises(FileNotFoundError):
+            dataset.generate_resource_view()
 
     def test_get_hdx_url(self, configuration, hdx_config_yaml, project_config_yaml):
         dataset = Dataset()

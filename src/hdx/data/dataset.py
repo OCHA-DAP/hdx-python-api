@@ -1571,19 +1571,29 @@ class Dataset(HDXObject):
         if bites_disabled is not None or indicators is not None:
             hxl_preview_config = resourceview['hxl_preview_config']
             if indicators is not None:
-                if indicators[0] is not None:
+                len_indicators = len(indicators)
+                if len_indicators == 0:
+                    return None
+                if bites_disabled is None:
+                    bites_disabled = [True, True, True]
+                if indicators[0]:
                     hxl_preview_config = hxl_preview_config.replace('INDICATOR_CODE_1', indicators[0]['code'])
                     hxl_preview_config = hxl_preview_config.replace('INDICATOR_TITLE_1', indicators[0]['title'])
                     hxl_preview_config = hxl_preview_config.replace('INDICATOR_UNIT_1', indicators[0]['unit'])
-                if indicators[1] is not None:
+                    bites_disabled[0] = False
+                if len_indicators > 1 and indicators[1]:
                     hxl_preview_config = hxl_preview_config.replace('INDICATOR_CODE_2', indicators[1]['code'])
                     hxl_preview_config = hxl_preview_config.replace('INDICATOR_TITLE_2', indicators[1]['title'])
                     hxl_preview_config = hxl_preview_config.replace('INDICATOR_UNIT_2', indicators[1]['unit'])
-                if indicators[2] is not None:
+                    bites_disabled[1] = False
+                if len_indicators > 2 and indicators[2]:
                     hxl_preview_config = hxl_preview_config.replace('INDICATOR_CODE_3', indicators[2]['code'])
                     hxl_preview_config = hxl_preview_config.replace('INDICATOR_TITLE_3', indicators[2]['title'])
                     hxl_preview_config = hxl_preview_config.replace('INDICATOR_UNIT_3', indicators[2]['unit'])
-            if bites_disabled is not None:
+                    bites_disabled[2] = False
+                if bites_disabled == [True, True, True]:
+                    return None
+            if bites_disabled:
                 hxl_preview_config = json.loads(hxl_preview_config)
                 bites = hxl_preview_config['bites']
                 for i, disable in reversed(list(enumerate(bites_disabled))):
