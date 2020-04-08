@@ -1500,6 +1500,19 @@ class Dataset(HDXObject):
                 dataset_resource.disable_dataset_preview()
         return preview_resource
 
+    def quickcharts_resource_last(self):
+        # type: () -> bool
+        """Move the QuickCharts resource to be last. Assumes that it's name begins 'QuickCharts-'.
+
+        Returns:
+            bool: True if QuickCharts resource found, False if not
+        """
+        for i, resource in enumerate(self.resources):
+            if resource['name'][:12] == 'QuickCharts-':
+                self.resources.append(self.resources.pop(i))
+                return True
+        return False
+
     def create_default_views(self, create_datastore_views=False):
         # type: (bool) -> None
         """Create default resource views for all resources in dataset

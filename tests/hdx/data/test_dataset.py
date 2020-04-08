@@ -1344,6 +1344,15 @@ class TestDataset:
         assert resources[0]['dataset_preview_enabled'] == 'True'
         assert resources[1]['dataset_preview_enabled'] == 'False'
 
+    def test_quickcharts_resource_last(self):
+        dataset = Dataset.read_from_hdx('TEST1')
+        assert dataset.quickcharts_resource_last() is False
+        resource = {'name': 'QuickCharts-resource'}
+        dataset.resources.insert(1, resource)
+        assert dataset.quickcharts_resource_last() is True
+        assert dataset.resources[2]['name'] == resource['name']
+        assert dataset.quickcharts_resource_last() is True
+
     def test_generate_resource_view(self, configuration, post_update, static_resource_view_yaml):
         dataset = Dataset.read_from_hdx('TEST1')
         assert 'dataset_preview' not in dataset
