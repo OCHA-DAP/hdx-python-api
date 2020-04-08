@@ -540,7 +540,7 @@ class TestDataset:
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
         assert dataset['name'] == 'MyDataset1'
         assert dataset['dataset_date'] == '06/04/2016'
-        assert len(dataset.resources) == 2
+        assert dataset.number_of_resources() == 2
         dataset = Dataset.read_from_hdx('TEST2')
         assert dataset is None
         dataset = Dataset.read_from_hdx('TEST3')

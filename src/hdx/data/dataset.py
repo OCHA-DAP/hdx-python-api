@@ -225,7 +225,7 @@ class Dataset(HDXObject):
         """Get dataset's resources
 
         Returns:
-            List[hdx.data.resource.Resource]: list of Resource objects
+            List[hdx.data.resource.Resource]: List of Resource objects
         """
         return self.resources
 
@@ -240,6 +240,15 @@ class Dataset(HDXObject):
             hdx.data.resource.Resource: Resource object
         """
         return self.resources[index]
+
+    def number_of_resources(self):
+        # type: () -> int
+        """Get number of dataset's resources
+
+        Returns:
+            int: Number of Resource objects
+        """
+        return len(self.resources)
 
     def reorder_resources(self, resource_ids, hxl_update=True):
         # type: (List[str], bool) -> None
