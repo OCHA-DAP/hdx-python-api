@@ -18,6 +18,8 @@ class TestDatasetTitleHelper:
         assert ranges == [(datetime(2019, 7, 1, 0, 0), datetime(2019, 7, 31, 0, 0))]
 
     def test_get_date_from_title(self):
+        assert DatasetTitleHelper.get_dates_from_title('Myanmar Self Administered Regions Boundaries MIMU v9.2.1') == (
+            'Myanmar Self Administered Regions Boundaries MIMU v9.2.1', list())
         assert DatasetTitleHelper.get_dates_from_title(
             'Myanmar Town 2019 July') == ('Myanmar Town', [(datetime(2019, 7, 1, 0, 0), datetime(2019, 7, 31, 0, 0))])
         assert DatasetTitleHelper.get_dates_from_title('Formal Sector School Location Upper Myanmar (  2019   )') == (

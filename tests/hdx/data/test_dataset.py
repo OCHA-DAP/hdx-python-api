@@ -650,6 +650,10 @@ class TestDataset:
         pattern = r'hi \([12]\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d\)'
         match = re.search(pattern, dataset['updated_by_script'])
         assert match
+        dataset.update_in_hdx(updated_by_script='hi', batch='1234')
+        pattern = r'hi \([12]\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d\) \[1234\]'
+        match = re.search(pattern, dataset['updated_by_script'])
+        assert match
 
         dataset['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):
@@ -1394,7 +1398,7 @@ class TestDataset:
         dataset['id'] = 'TEST1'
         dataset.update_in_hdx()
         assert dataset.preview_resourceview is None
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(IOError):
             dataset.generate_resource_view()
 
     def test_get_hdx_url(self, configuration, hdx_config_yaml, project_config_yaml):

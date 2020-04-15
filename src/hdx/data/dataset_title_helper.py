@@ -22,9 +22,10 @@ logger = logging.getLogger(__name__)
 
 
 class DatasetTitleHelper(object):
+    YEAR_PATTERN = re.compile(r'([12]\d\d\d)')
+    VERSION_PATTERN = re.compile(r'(\d)?(\d)?\d')
     YEAR_RANGE_PATTERN = re.compile(r'([12]\d\d\d)(/(\d{1,2}))?(-| & | and )([12]\d\d\d)')
     YEAR_RANGE_PATTERN2 = re.compile(r'([12]\d\d\d)([/-])(\d{1,2})')
-    YEAR_PATTERN = re.compile(r'([12]\d\d\d)')
     PUNCTUATION_PATTERN = re.compile(r'[%s]' % punctuation)
     EMPTY_BRACKET_PATTERN = re.compile(r'(\s?\(\s*\)\s?)')
     WORD_RIGHT_BRACKET_PATTERN = re.compile(r'\b(\s*)(\w{2,})\b\)')
@@ -97,10 +98,14 @@ class DatasetTitleHelper(object):
         try:
             fuzzy = dict()
             startdate, enddate = parse_date_range(title, fuzzy=fuzzy, zero_time=True)
-            if startdate == enddate and len(fuzzy['date']) == 1:  # only accept dates where day, month and year are
+            datestrs = fuzzy['date']
+            if startdate == enddate and len(datestrs) == 1:  # only accept dates where day, month and year are
                 # all together not split throughout the string and where the date is a precise day not a range
+                date_component = datestrs[0]
+                index = title.find(date_component) - 1
+                if index >= 0 and title[index].lower() == 'v':
+                    return title
                 ranges.append((startdate, enddate))
-                date_component = fuzzy['date'][0]
                 newtitle = remove_string(title, date_component, PUNCTUATION_MINUS_BRACKETS)
                 logger.info('Removing date from title: %s -> %s' % (title, newtitle))
                 title = newtitle

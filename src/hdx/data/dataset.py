@@ -374,7 +374,11 @@ class Dataset(HDXObject):
             None
         """
         scriptinfo = kwargs.get('updated_by_script', self.configuration.get_user_agent())
-        self.data['updated_by_script'] = '%s (%s)' % (scriptinfo, datetime.utcnow().isoformat())
+        updated_by_script = '%s (%s)' % (scriptinfo, datetime.utcnow().isoformat())
+        batch = kwargs.get('batch')
+        if batch:
+            updated_by_script = '%s [%s]' % (updated_by_script, batch)
+        self.data['updated_by_script'] = updated_by_script
 
     def _dataset_merge_hdx_update(self, update_resources, update_resources_by_name,
                                   remove_additional_resources, create_default_views, hxl_update, **kwargs):
@@ -480,6 +484,9 @@ class Dataset(HDXObject):
             remove_additional_resources (bool): Remove additional resources found in dataset. Defaults to False.
             create_default_views (bool): Whether to call package_create_default_resource_views. Defaults to True.
             hxl_update (bool): Whether to call package_hxl_update. Defaults to True.
+            **kwargs: See below
+            updated_by_script (str): String to identify your script. Defaults to your user agent.
+            batch (str): A string you can specify to show which datasets are part of a single batch update
 
         Returns:
             None
@@ -514,6 +521,9 @@ class Dataset(HDXObject):
             remove_additional_resources (bool): Remove additional resources found in dataset (if updating). Defaults to False.
             create_default_views (bool): Whether to call package_create_default_resource_views (if updating). Defaults to True.
             hxl_update (bool): Whether to call package_hxl_update. Defaults to True.
+            **kwargs: See below
+            updated_by_script (str): String to identify your script. Defaults to your user agent.
+            batch (str): A string you can specify to show which datasets are part of a single batch update
 
         Returns:
             None
