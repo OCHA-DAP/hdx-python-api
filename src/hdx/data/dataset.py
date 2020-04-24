@@ -366,19 +366,21 @@ class Dataset(HDXObject):
                 ignore_fields = ['package_id']
                 resource.check_required_fields(ignore_fields=ignore_fields)
 
-    def set_updated_by_script(self, **kwargs):
+    def set_updated_by_script_batch(self, **kwargs):
         # type: (Any) -> None
-        """Set metadata field updated_by_script
+        """Set metadata fields updated_by_script, batch and batch_mode
 
         Returns:
             None
         """
         scriptinfo = kwargs.get('updated_by_script', self.configuration.get_user_agent())
-        updated_by_script = '%s (%s)' % (scriptinfo, datetime.utcnow().isoformat())
+        self.data['updated_by_script'] = '%s (%s)' % (scriptinfo, datetime.utcnow().isoformat())
         batch = kwargs.get('batch')
         if batch:
-            updated_by_script = '%s [%s]' % (updated_by_script, batch)
-        self.data['updated_by_script'] = updated_by_script
+            if not is_valid_uuid(batch):
+                raise HDXError('%s is not a valid UUID!' % batch)
+            self.data['batch'] = batch
+            self.data['batch_mode'] = 'DONT_GROUP'
 
     def _dataset_merge_hdx_update(self, update_resources, update_resources_by_name,
                                   remove_additional_resources, create_default_views, hxl_update, **kwargs):
@@ -462,7 +464,7 @@ class Dataset(HDXObject):
         if 'ignore_check' not in kwargs:  # allow ignoring of field checks
             ignore_field = self.configuration['dataset'].get('ignore_on_update')
             self.check_required_fields(ignore_fields=[ignore_field])
-        self.set_updated_by_script(**kwargs)
+        self.set_updated_by_script_batch(**kwargs)
         self._save_to_hdx('update', 'id', force_active=True)
         hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources)
         self.init_resources()
@@ -555,7 +557,7 @@ class Dataset(HDXObject):
                 hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(resource, ignore_fields, filestore_resources)
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         self.clean_tags()
-        self.set_updated_by_script(**kwargs)
+        self.set_updated_by_script_batch(**kwargs)
         self._save_to_hdx('create', 'name', force_active=True)
         hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources)
         self.init_resources()
@@ -1565,7 +1567,8 @@ class Dataset(HDXObject):
                     self.preview_resourceview = None
                     break
 
-    def generate_resource_view(self, resource=0, path=None, bites_disabled=None, indicators=None):
+
+    def _generate_resource_view(self, resource=0, path=None, bites_disabled=None, indicators=None):
         # type: (Union[hdx.data.resource.Resource,Dict,str,int], Optional[str], Optional[List[bool]], Optional[List[Dict]]) -> hdx.data.resource_view.ResourceView
         """Create QuickCharts for dataset from configuration saved in resource view. You can disable specific bites
         by providing bites_disabled, a list of 3 bools where True indicates a specific bite is disabled and False
@@ -1639,6 +1642,30 @@ class Dataset(HDXObject):
             self.preview_resourceview = None
         else:
             self.preview_resourceview = resourceview
+        return resourceview
+
+    def generate_resource_view(self, resource=0, path=None, bites_disabled=None, indicators=None):
+        # type: (Union[hdx.data.resource.Resource,Dict,str,int], Optional[str], Optional[List[bool]], Optional[List[Dict]]) -> hdx.data.resource_view.ResourceView
+        """Create QuickCharts for dataset from configuration saved in resource view. You can disable specific bites
+        by providing bites_disabled, a list of 3 bools where True indicates a specific bite is disabled and False
+        indicates leave enabled. If you supply indicators, then the internal indicators resource view template will be
+        used. The parameter indicators is a list with 3 dictionaries of form:
+        {'code': 'MY_INDICATOR_CODE', 'title': 'MY_INDICATOR_TITLE', 'unit': 'MY_INDICATOR_UNIT'}.
+        Creation of the resource view will be delayed until after the next dataset create
+        or update if a resource id is not yet available.
+
+        Args:
+            resource (Union[hdx.data.resource.Resource,Dict,str,int]): Either resource id or name, resource metadata from a Resource object or a dictionary or position. Defaults to 0.
+            path (Optional[str]): Path to YAML resource view metadata. Defaults to None (config/hdx_resource_view_static.yml or internal template).
+            bites_disabled (Optional[List[bool]]): Which QC bites should be disabled. Defaults to None (all bites enabled).
+            indicators (Optional[List[Dict]]): Indicator codes, QC titles and units for resource view template. Defaults to None (don't use template).
+
+        Returns:
+            hdx.data.resource_view.ResourceView: The resource view if QuickCharts created, None is not
+        """
+        resourceview = self._generate_resource_view(resource, path, bites_disabled, indicators)
+        if resourceview is None:
+            self.preview_off()
         return resourceview
 
     def get_hdx_url(self):

@@ -650,10 +650,13 @@ class TestDataset:
         pattern = r'hi \([12]\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d\)'
         match = re.search(pattern, dataset['updated_by_script'])
         assert match
-        dataset.update_in_hdx(updated_by_script='hi', batch='1234')
-        pattern = r'hi \([12]\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d\) \[1234\]'
+        dataset.update_in_hdx(updated_by_script='hi', batch='6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d')
         match = re.search(pattern, dataset['updated_by_script'])
         assert match
+        assert dataset['batch'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
+        assert dataset['batch_mode'] == 'DONT_GROUP'
+        with pytest.raises(HDXError):
+            dataset.update_in_hdx(updated_by_script='hi', batch='1234')
 
         dataset['id'] = 'NOTEXIST'
         with pytest.raises(HDXError):
