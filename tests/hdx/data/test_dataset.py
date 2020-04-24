@@ -274,6 +274,15 @@ class TestDataset:
 
     association = None
 
+    url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
+    hxltags = {'EVENT_ID_CNTY': '#event+code', 'EVENT_DATE': '#date+occurred', 'YEAR': '#date+year',
+               'EVENT_TYPE': '#event+type', 'ACTOR1': '#group+name+first', 'ASSOC_ACTOR_1':
+                   '#group+name+first+assoc', 'ACTOR2': '#group+name+second', 'ASSOC_ACTOR_2':
+                   '#group+name+second+assoc', 'REGION': '#region+name', 'COUNTRY': '#country+name',
+               'ADMIN1': '#adm1+name', 'ADMIN2': '#adm2+name', 'ADMIN3': '#adm3+name', 'LOCATION': '#loc+name',
+               'LATITUDE': '#geo+lat', 'LONGITUDE': '#geo+lon', 'SOURCE': '#meta+source', 'NOTES':
+                   '#description', 'FATALITIES': '#affected+killed', 'ISO3': '#country+code'}
+
     @pytest.fixture(scope='class')
     def static_yaml(self):
         return join('tests', 'fixtures', 'config', 'hdx_dataset_static.yml')
@@ -1457,23 +1466,31 @@ class TestDataset:
         assert dataset['title'] == 'Mon_State_Village_Tract_Boundaries 9999 99'
         assert dataset['dataset_date'] == '01/01/2001-12/31/2001'
 
+    def test_generate_qc_resource_from_rows(self, configuration):
+        with temp_dir('test') as folder:
+            with Download(user_agent='test') as downloader:
+                _, rows = downloader.get_tabular_rows(TestDataset.url, dict_form=True, format='csv')
+                dataset = Dataset({'name': 'test'})
+                qc_filename = 'qc_conflict_data_alg.csv'
+                resourcedata = {
+                    'name': 'Conflict Data for Algeria',
+                    'description': 'Conflict data with HXL tags'
+                }
+                columnname = 'EVENT_ID_CNTY'
+                qc_indicator_codes = ['1416RTA', 'XXXXRTA', '2231RTA']
+                resource = dataset.generate_qc_resource_from_rows(folder, qc_filename, rows, resourcedata, columnname,
+                                                                  TestDataset.hxltags, qc_indicator_codes, headers=[columnname])
+                assert resource == {'name': 'Conflict Data for Algeria', 'description': 'Conflict data with HXL tags',
+                                    'format': 'csv', 'resource_type': 'file.upload', 'url_type': 'upload'}
+                assert_files_same(join('tests', 'fixtures', 'qc_from_rows', qc_filename), join(folder, qc_filename))
+
     def test_download_and_generate_resource(self, configuration):
         with temp_dir('test') as folder:
-            url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
-            hxltags = {'EVENT_ID_CNTY': '#event+code', 'EVENT_DATE': '#date+occurred', 'YEAR': '#date+year',
-                       'EVENT_TYPE': '#event+type', 'ACTOR1': '#group+name+first', 'ASSOC_ACTOR_1':
-                           '#group+name+first+assoc', 'ACTOR2': '#group+name+second', 'ASSOC_ACTOR_2':
-                           '#group+name+second+assoc', 'REGION': '#region+name', 'COUNTRY': '#country+name',
-                       'ADMIN1': '#adm1+name', 'ADMIN2': '#adm2+name', 'ADMIN3': '#adm3+name', 'LOCATION': '#loc+name',
-                       'LATITUDE': '#geo+lat', 'LONGITUDE': '#geo+lon', 'SOURCE': '#meta+source', 'NOTES':
-                           '#description', 'FATALITIES': '#affected+killed', 'ISO3': '#country+code'}
-
             filename = 'conflict_data_alg.csv'
             resourcedata = {
                 'name': 'Conflict Data for Algeria',
                 'description': 'Conflict data with HXL tags'
             }
-
             admin1s = set()
 
             def process_row(headers, row):
@@ -1487,8 +1504,8 @@ class TestDataset:
             dataset = Dataset()
             with Download(user_agent='test') as downloader:
                 success, results = dataset.download_and_generate_resource(
-                    downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
-                    row_function=process_row, yearcol='YEAR', quickcharts=quickcharts)
+                    downloader, TestDataset.url, TestDataset.hxltags, folder, filename, resourcedata,
+                    header_insertions=[(0, 'lala')], row_function=process_row, yearcol='YEAR', quickcharts=quickcharts)
                 assert success is True
                 assert results == {'startdate': datetime.datetime(2001, 1, 1, 0, 0), 'enddate': datetime.datetime(2002, 12, 31, 0, 0), 'bites_disabled': [False, True, False],
                                    'headers': ['lala', 'GWNO', 'EVENT_ID_CNTY', 'EVENT_ID_NO_CNTY', 'EVENT_DATE', 'YEAR', 'TIME_PRECISION', 'EVENT_TYPE', 'ACTOR1', 'ALLY_ACTOR_1', 'INTER1', 'ACTOR2', 'ALLY_ACTOR_2', 'INTER2', 'INTERACTION', 'COUNTRY', 'ADMIN1', 'ADMIN2', 'ADMIN3', 'LOCATION', 'LATITUDE', 'LONGITUDE', 'GEO_PRECISION', 'SOURCE', 'NOTES', 'FATALITIES'],
@@ -1519,7 +1536,7 @@ class TestDataset:
                 quickcharts['cutdownhashtags'] = ['#event+code']
                 del quickcharts['hashtag']
                 success, results = dataset.download_and_generate_resource(
-                    downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
+                    downloader, TestDataset.url, TestDataset.hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
                     row_function=process_row, date_function=process_year, quickcharts=quickcharts)
                 assert success is True
                 assert results['startdate'] == datetime.datetime(2001, 1, 1, 0, 0)
@@ -1528,24 +1545,24 @@ class TestDataset:
                 assert_files_same(join('tests', 'fixtures', 'gen_resource', 'min_%s' % qc_filename), join(folder, qc_filename))
 
                 with pytest.raises(HDXError):
-                    dataset.download_and_generate_resource(downloader, url, hxltags, folder, filename, resourcedata,
+                    dataset.download_and_generate_resource(downloader, TestDataset.url, TestDataset.hxltags, folder, filename, resourcedata,
                                                            yearcol='YEAR', date_function=process_year)
                 success, results = dataset.download_and_generate_resource(
-                    downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
+                    downloader, TestDataset.url, TestDataset.hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
                     row_function=process_row)
                 assert success is True
                 url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/empty.csv'
                 success, results = dataset.download_and_generate_resource(
-                    downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
+                    downloader, url, TestDataset.hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
                     row_function=process_row, yearcol='YEAR')
                 assert success is False
                 url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/gen_resource/test_data_no_data.csv'
                 success, results = dataset.download_and_generate_resource(
-                    downloader, url, hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
+                    downloader, url, TestDataset.hxltags, folder, filename, resourcedata, header_insertions=[(0, 'lala')],
                     row_function=process_row, quickcharts=quickcharts)
                 assert success is False
                 url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/gen_resource/test_data_no_years.csv'
-                success, results = dataset.download_and_generate_resource(downloader, url, hxltags, folder, filename,
+                success, results = dataset.download_and_generate_resource(downloader, url, TestDataset.hxltags, folder, filename,
                                                                  resourcedata, header_insertions=[(0, 'lala')],
                                                                  row_function=process_row, yearcol='YEAR')
                 assert success is False

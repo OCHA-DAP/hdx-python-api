@@ -1728,7 +1728,38 @@ class Dataset(HDXObject):
         self.add_update_resource(resource)
         return resource
 
-    def generate_resource_from_download(self, headers, iterator, hxltags, folder, filename, resourcedata,
+    def generate_qc_resource_from_rows(self, folder, filename, rows, resourcedata, columnname, hxltags, qc_indicator_codes, headers=None):
+        # type: (str, str, List[DictUpperBound], Dict, str, Dict[str,str], List[str], Optional[List[str]]) -> Optional[hdx.data.resource.Resource]
+        """Generate QuickCharts rows by cutting down input rows by indicator code and optionally restricting to certain
+        columns. Output to csv and create resource, adding to it the dataset.
+
+        Args:
+            folder (str): Folder to which to write file containing rows
+            filename (str): Filename of file to write rows
+            rows (List[DictUpperBound]): List of rows in dict form
+            resourcedata (Dict): Resource data
+            columnname (str): Name of column containing indicator code
+            hxltags (Dict[str,str]): Header to HXL hashtag mapping
+            qc_indicator_codes (List[str]): List of indicator codes to match
+            headers (Optional[List[str]]): List of headers to output. Defaults to None (all headers).
+
+        Returns:
+            Optional[hdx.data.resource.Resource]: The created resource or None
+        """
+        qc_rows = list()
+        for row in rows:
+            if row[columnname] in qc_indicator_codes:
+                if headers:
+                    qcrow = {x: row[x] for x in headers}
+                else:
+                    qcrow = row
+                qc_rows.append(qcrow)
+        if len(qc_rows) == 0:
+            return None
+        qc_rows.insert(0, hxltags)
+        return self.generate_resource_from_rows(folder, filename, qc_rows, resourcedata, headers=headers)
+
+    def generate_resource_from_iterator(self, headers, iterator, hxltags, folder, filename, resourcedata,
                                         yearcol=None, date_function=None, quickcharts=None):
         # type: (List[str], Iterator[Union[List,Dict]], Dict[str,str], str, str, Dict, Optional[Union[int,str]], Optional[Callable[[Dict],Optional[Dict]]], Optional[Dict]) -> Tuple[bool, Dict]
         """Given headers and an iterator, write rows to csv and create resource, adding to it the dataset. The returned
@@ -1898,6 +1929,6 @@ class Dataset(HDXObject):
         """
         headers, iterator = downloader.get_tabular_rows(url, dict_form=True, header_insertions=header_insertions,
                                                         row_function=row_function, format='csv', **kwargs)
-        return self.generate_resource_from_download(headers, iterator, hxltags, folder, filename, resourcedata,
+        return self.generate_resource_from_iterator(headers, iterator, hxltags, folder, filename, resourcedata,
                                                     yearcol=yearcol, date_function=date_function,
                                                     quickcharts=quickcharts)
