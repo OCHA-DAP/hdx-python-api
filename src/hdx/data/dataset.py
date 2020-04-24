@@ -1589,6 +1589,8 @@ class Dataset(HDXObject):
         """
         if bites_disabled == [True, True, True]:
             return None
+        elif not bites_disabled:
+            bites_disabled = [False, False, False]
         res = self.set_quickchart_resource(resource)
         if res is None:
             return None
@@ -1603,39 +1605,38 @@ class Dataset(HDXObject):
             else:
                 path = script_dir_plus_file('indicator_resource_view_template.yml', NotRequestableError)
         resourceview.update_from_yaml(path=path)
-        if bites_disabled is not None or indicators is not None:
-            hxl_preview_config = resourceview['hxl_preview_config']
-            if indicators is not None:
-                len_indicators = len(indicators)
-                if len_indicators == 0:
-                    return None
-                if bites_disabled is None:
-                    bites_disabled = [True, True, True]
-                if indicators[0]:
-                    hxl_preview_config = hxl_preview_config.replace('INDICATOR_CODE_1', indicators[0]['code'])
-                    hxl_preview_config = hxl_preview_config.replace('INDICATOR_TITLE_1', indicators[0]['title'])
-                    hxl_preview_config = hxl_preview_config.replace('INDICATOR_UNIT_1', indicators[0]['unit'])
-                    bites_disabled[0] = False
-                if len_indicators > 1 and indicators[1]:
-                    hxl_preview_config = hxl_preview_config.replace('INDICATOR_CODE_2', indicators[1]['code'])
-                    hxl_preview_config = hxl_preview_config.replace('INDICATOR_TITLE_2', indicators[1]['title'])
-                    hxl_preview_config = hxl_preview_config.replace('INDICATOR_UNIT_2', indicators[1]['unit'])
-                    bites_disabled[1] = False
-                if len_indicators > 2 and indicators[2]:
-                    hxl_preview_config = hxl_preview_config.replace('INDICATOR_CODE_3', indicators[2]['code'])
-                    hxl_preview_config = hxl_preview_config.replace('INDICATOR_TITLE_3', indicators[2]['title'])
-                    hxl_preview_config = hxl_preview_config.replace('INDICATOR_UNIT_3', indicators[2]['unit'])
-                    bites_disabled[2] = False
-                if bites_disabled == [True, True, True]:
-                    return None
-            if bites_disabled:
-                hxl_preview_config = json.loads(hxl_preview_config)
-                bites = hxl_preview_config['bites']
-                for i, disable in reversed(list(enumerate(bites_disabled))):
-                    if disable:
-                        del bites[i]
-                hxl_preview_config = json.dumps(hxl_preview_config)
-            resourceview['hxl_preview_config'] = hxl_preview_config
+        hxl_preview_config = resourceview['hxl_preview_config']
+        if indicators is None:
+            indicators_notexist = [False, False, False]
+        else:
+            len_indicators = len(indicators)
+            if len_indicators == 0:
+                return None
+            indicators_notexist = [True, True, True]
+            if indicators[0]:
+                hxl_preview_config = hxl_preview_config.replace('INDICATOR_CODE_1', indicators[0]['code'])
+                hxl_preview_config = hxl_preview_config.replace('INDICATOR_TITLE_1', indicators[0]['title'])
+                hxl_preview_config = hxl_preview_config.replace('INDICATOR_UNIT_1', indicators[0]['unit'])
+                indicators_notexist[0] = False
+            if len_indicators > 1 and indicators[1]:
+                hxl_preview_config = hxl_preview_config.replace('INDICATOR_CODE_2', indicators[1]['code'])
+                hxl_preview_config = hxl_preview_config.replace('INDICATOR_TITLE_2', indicators[1]['title'])
+                hxl_preview_config = hxl_preview_config.replace('INDICATOR_UNIT_2', indicators[1]['unit'])
+                indicators_notexist[1] = False
+            if len_indicators > 2 and indicators[2]:
+                hxl_preview_config = hxl_preview_config.replace('INDICATOR_CODE_3', indicators[2]['code'])
+                hxl_preview_config = hxl_preview_config.replace('INDICATOR_TITLE_3', indicators[2]['title'])
+                hxl_preview_config = hxl_preview_config.replace('INDICATOR_UNIT_3', indicators[2]['unit'])
+                indicators_notexist[2] = False
+            if indicators_notexist == [True, True, True]:
+                return None
+        hxl_preview_config = json.loads(hxl_preview_config)
+        bites = hxl_preview_config['bites']
+        for i, disable in reversed(list(enumerate(bites_disabled))):
+            if disable or indicators_notexist[i]:
+                del bites[i]
+        hxl_preview_config = json.dumps(hxl_preview_config)
+        resourceview['hxl_preview_config'] = hxl_preview_config
 
         if 'resource_id' in resourceview:
             resourceview.create_in_hdx()
