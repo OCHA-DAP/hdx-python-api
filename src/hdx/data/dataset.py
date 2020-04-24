@@ -4,6 +4,7 @@
 import json
 import logging
 import sys
+from collections import OrderedDict
 from copy import deepcopy
 from datetime import datetime
 from os.path import join
@@ -1630,12 +1631,12 @@ class Dataset(HDXObject):
                 indicators_notexist[2] = False
             if indicators_notexist == [True, True, True]:
                 return None
-        hxl_preview_config = json.loads(hxl_preview_config)
+        hxl_preview_config = json.loads(hxl_preview_config, object_pairs_hook=OrderedDict)
         bites = hxl_preview_config['bites']
         for i, disable in reversed(list(enumerate(bites_disabled))):
             if disable or indicators_notexist[i]:
                 del bites[i]
-        hxl_preview_config = json.dumps(hxl_preview_config)
+        hxl_preview_config = json.dumps(hxl_preview_config, indent=None, separators=(',', ':'))
         resourceview['hxl_preview_config'] = hxl_preview_config
 
         if 'resource_id' in resourceview:
