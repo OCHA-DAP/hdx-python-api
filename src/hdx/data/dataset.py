@@ -1615,19 +1615,31 @@ class Dataset(HDXObject):
                 return None
             indicators_notexist = [True, True, True]
             if indicators[0]:
-                hxl_preview_config = hxl_preview_config.replace('INDICATOR_CODE_1', indicators[0]['code'])
-                hxl_preview_config = hxl_preview_config.replace('INDICATOR_TITLE_1', indicators[0]['title'])
-                hxl_preview_config = hxl_preview_config.replace('INDICATOR_UNIT_1', indicators[0]['unit'])
+                indicator = indicators[0]
+                hxl_preview_config = hxl_preview_config.replace('INDICATOR_CODE_1', indicator['code'])
+                replace = indicator.get('description', '')
+                hxl_preview_config = hxl_preview_config.replace('DESCRIPTION_1', replace)
+                hxl_preview_config = hxl_preview_config.replace('INDICATOR_TITLE_1', indicator['title'])
+                replace = indicator.get('unit', '')
+                hxl_preview_config = hxl_preview_config.replace('INDICATOR_UNIT_1', replace)
                 indicators_notexist[0] = False
             if len_indicators > 1 and indicators[1]:
-                hxl_preview_config = hxl_preview_config.replace('INDICATOR_CODE_2', indicators[1]['code'])
-                hxl_preview_config = hxl_preview_config.replace('INDICATOR_TITLE_2', indicators[1]['title'])
-                hxl_preview_config = hxl_preview_config.replace('INDICATOR_UNIT_2', indicators[1]['unit'])
+                indicator = indicators[1]
+                hxl_preview_config = hxl_preview_config.replace('INDICATOR_CODE_2', indicator['code'])
+                replace = indicator.get('description', '')
+                hxl_preview_config = hxl_preview_config.replace('DESCRIPTION_2', replace)
+                hxl_preview_config = hxl_preview_config.replace('INDICATOR_TITLE_2', indicator['title'])
+                replace = indicator.get('unit', '')
+                hxl_preview_config = hxl_preview_config.replace('INDICATOR_UNIT_2', replace)
                 indicators_notexist[1] = False
             if len_indicators > 2 and indicators[2]:
-                hxl_preview_config = hxl_preview_config.replace('INDICATOR_CODE_3', indicators[2]['code'])
-                hxl_preview_config = hxl_preview_config.replace('INDICATOR_TITLE_3', indicators[2]['title'])
-                hxl_preview_config = hxl_preview_config.replace('INDICATOR_UNIT_3', indicators[2]['unit'])
+                indicator = indicators[2]
+                hxl_preview_config = hxl_preview_config.replace('INDICATOR_CODE_3', indicator['code'])
+                replace = indicator.get('description', '')
+                hxl_preview_config = hxl_preview_config.replace('DESCRIPTION_3', replace)
+                hxl_preview_config = hxl_preview_config.replace('INDICATOR_TITLE_3', indicator['title'])
+                replace = indicator.get('unit', '')
+                hxl_preview_config = hxl_preview_config.replace('INDICATOR_UNIT_3', replace)
                 indicators_notexist[2] = False
             if indicators_notexist == [True, True, True]:
                 return None
