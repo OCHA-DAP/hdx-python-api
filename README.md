@@ -165,7 +165,7 @@ Once you have it, then put it into a file in your home directory:
     Assuming you have an API key stored in a file **.hdxkey** in the
     current user's home directory:
 
-        Configuration.create(hdx_site='test', user_agent='A_Quick_Example')
+        Configuration.create(hdx_site='stage', user_agent='A_Quick_Example')
 
 1.  Read this dataset 
 [ACLED Conflict Data for Africa 1997-2016](https://data.humdata.org/dataset/acled-conflict-data-for-africa-1997-lastyear)
