@@ -1,4 +1,3 @@
-EVENT_ID_CNTY
-#event+code
-1416RTA
-2231RTA
+#group+name+first,#group+name+second,#adm1+name,#adm2+name,#adm3+name,#group+name+first+assoc,#group+name+second+assoc,#country+name,#date+occurred,#event+code,#event+type,#affected+killed,#country+code,#geo+lat,#loc+name,#geo+lon,#description,#region+name,#meta+source,#date+year
+Police Forces of Algeria (1999-),Civilians (Algeria),Tizi Ouzou,Beni-Douala,,,Berber Ethnic Group (Algeria),Algeria,18/04/2001,1416RTA,,Violence against civilians,1,1,615,1,7,17,36.61954,Beni Douala,4.08282,A Berber student was shot while in police custody at a police station in Beni Douala. He later died on Apr.21.,Associated Press Online,1,2001
+Rioters (Algeria),Police Forces of Algeria (1999-),Bejaia,Amizour,,Berber Ethnic Group (Algeria),,Algeria,21/04/2001,2231RTA,,Riots/Protests,0,1,615,5,1,15,36.64022,Amizour,4.90131,"Rioters threw molotov cocktails, rocks and burning tires at gendarmerie stations in Beni Douala, El-Kseur and Amizour.",Kabylie report,1,2001

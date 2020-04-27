@@ -2,8 +2,8 @@
   "hdx_prod_site": {
     "url": "https://data.humdata.org"
   },
-  "hdx_test_site": {
-    "url": "https://test-data.humdata.org",
+  "hdx_stage_site": {
+    "url": "https://stage.data-humdata-org.ahconu.org",
     "username": "tumteetum",
     "password": "tumteetumteetum"
   },

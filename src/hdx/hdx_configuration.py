@@ -176,7 +176,7 @@ class Configuration(UserDict, object):
             hdx_url = hdx_url.rstrip('/')
             self.data[self.hdx_site] = {'url': hdx_url}
         else:
-            self.hdx_site = 'hdx_%s_site' % kwargs.get('hdx_site', self.data.get('hdx_site', 'test'))
+            self.hdx_site = 'hdx_%s_site' % kwargs.get('hdx_site', self.data.get('hdx_site', 'stage'))
             if self.hdx_site not in self.data:
                 raise ConfigurationError('%s not defined in configuration!' % self.hdx_site)
 

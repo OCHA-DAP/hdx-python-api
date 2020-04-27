@@ -214,14 +214,14 @@ hello there'''
         Configuration._create(user_agent='test', hdx_config_json=hdx_config_json,
                               hdx_base_config_json=hdx_base_config_json, project_config_yaml=project_config_yaml)
         expected_configuration = {
-            'hdx_site': 'test',
+            'hdx_site': 'stage',
             'hdx_read_only': False,
             'hdx_key': '54321',
             'hdx_prod_site': {
                 'url': 'https://data.humdata.org',
             },
-            'hdx_test_site': {
-                'url': 'https://test-data.humdata.org',
+            'hdx_stage_site': {
+                'url': 'https://stage.data-humdata-org.ahconu.org',
                 'username': 'tumteetum',
                 'password': 'tumteetumteetum'
             },
@@ -247,8 +247,8 @@ hello there'''
             'hdx_prod_site': {
                 'url': 'https://data.humdata.org',
             },
-            'hdx_test_site': {
-                'url': 'https://test-data.humdata.org',
+            'hdx_stage_site': {
+                'url': 'https://stage.data-humdata-org.ahconu.org',
                 'username': 'lala',
                 'password': 'lalala'
             },
@@ -275,16 +275,16 @@ hello there'''
                 'url': 'https://data.humdata.org',
             },
             'hdx_demo_site': {
-                'url': 'https://demo-data.humdata.org',
+                'url': 'https://demo.data-humdata-org.ahconu.org',
             },
-            'hdx_test_site': {
-                'url': 'https://test-data.humdata.org',
+            'hdx_stage_site': {
+                'url': 'https://stage.data-humdata-org.ahconu.org',
             },
             'hdx_feature_site': {
-                'url': 'https://feature-data.humdata.org',
+                'url': 'https://feature.data-humdata-org.ahconu.org',
             },
             'hdx_dev_site': {
-                'url': 'http://data.dev.humdata.org',
+                'url': 'https://dev.data-humdata-org.ahconu.org',
             },
             'dataset': {'required_fields': [
                 'name',
@@ -371,16 +371,16 @@ hello there'''
                 'url': 'https://data.humdata.org',
             },
             'hdx_demo_site': {
-                'url': 'https://demo-data.humdata.org',
+                'url': 'https://demo.data-humdata-org.ahconu.org',
             },
-            'hdx_test_site': {
-                'url': 'https://test-data.humdata.org',
+            'hdx_stage_site': {
+                'url': 'https://stage.data-humdata-org.ahconu.org',
             },
             'hdx_feature_site': {
-                'url': 'https://feature-data.humdata.org',
+                'url': 'https://feature.data-humdata-org.ahconu.org',
             },
             'hdx_dev_site': {
-                'url': 'http://data.dev.humdata.org',
+                'url': 'https://dev.data-humdata-org.ahconu.org',
             },
             'my_param': 'abc',
             'dataset': {'required_fields': [
@@ -465,16 +465,16 @@ hello there'''
                 'url': 'https://data.humdata.org',
             },
             'hdx_demo_site': {
-                'url': 'https://demo-data.humdata.org',
+                'url': 'https://demo.data-humdata-org.ahconu.org',
             },
-            'hdx_test_site': {
-                'url': 'https://test-data.humdata.org',
+            'hdx_stage_site': {
+                'url': 'https://stage.data-humdata-org.ahconu.org',
             },
             'hdx_feature_site': {
-                'url': 'https://feature-data.humdata.org',
+                'url': 'https://feature.data-humdata-org.ahconu.org',
             },
             'hdx_dev_site': {
-                'url': 'http://data.dev.humdata.org',
+                'url': 'https://dev.data-humdata-org.ahconu.org',
             },
             'dataset': {'required_fields': [
                 'name',
@@ -584,7 +584,7 @@ hello there'''
         with pytest.raises(ConfigurationError):
             Configuration.create(user_agent='test', hdx_site='prod', hdx_key='TEST_HDX_KEY',
                                  hdx_base_config_dict={}, project_config_yaml=project_config_yaml)
-        configuration = Configuration(user_agent='test', hdx_site='test', hdx_key='OTHER_TEST_HDX_KEY',
+        configuration = Configuration(user_agent='test', hdx_site='stage', hdx_key='OTHER_TEST_HDX_KEY',
                                       hdx_base_config_dict={}, project_config_yaml=project_config_yaml)
         Configuration.setup(configuration)
         assert Configuration.read() == configuration

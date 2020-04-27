@@ -2,13 +2,13 @@
 hdx_prod_site:
   url: "https://data.humdata.org"
 hdx_demo_site:
-  url: "https://demo-data.humdata.org"
-hdx_test_site:
-  url: "https://test-data.humdata.org"
+  url: "https://demo.data-humdata-org.ahconu.org"
+hdx_stage_site:
+  url: "https://stage.data-humdata-org.ahconu.org"
 hdx_feature_site:
-  url: "https://feature-data.humdata.org"
+  url: "https://feature.data-humdata-org.ahconu.org"
 hdx_dev_site:
-  url: "http://data.dev.humdata.org"
+  url: "https://dev.data-humdata-org.ahconu.org"
 dataset:
   required_fields:
     - name
