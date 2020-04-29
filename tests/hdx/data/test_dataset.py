@@ -718,7 +718,7 @@ class TestDataset:
         file = tempfile.NamedTemporaryFile(delete=False)
         resource.set_file_to_upload(file.name)
         dataset.add_update_resource(resource)
-        dataset.update_in_hdx()
+        dataset.update_in_hdx(batch='6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d')
         assert len(dataset.resources) == 2
         resource['name'] = '123'
         resource.set_file_to_upload(None)

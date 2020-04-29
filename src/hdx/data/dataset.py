@@ -368,11 +368,11 @@ class Dataset(HDXObject):
                 resource.check_required_fields(ignore_fields=ignore_fields)
 
     def set_updated_by_script_batch(self, **kwargs):
-        # type: (Any) -> None
+        # type: (Any) -> Optional[str]
         """Set metadata fields updated_by_script, batch and batch_mode
 
         Returns:
-            None
+            Optional[str]: batch_mode setting or None
         """
         scriptinfo = kwargs.get('updated_by_script', self.configuration.get_user_agent())
         self.data['updated_by_script'] = '%s (%s)' % (scriptinfo, datetime.utcnow().isoformat())
@@ -381,7 +381,10 @@ class Dataset(HDXObject):
             if not is_valid_uuid(batch):
                 raise HDXError('%s is not a valid UUID!' % batch)
             self.data['batch'] = batch
-            self.data['batch_mode'] = 'DONT_GROUP'
+            batch_mode = 'DONT_GROUP'
+            self.data['batch_mode'] = batch_mode
+            return batch_mode
+        return None
 
     def _dataset_merge_hdx_update(self, update_resources, update_resources_by_name,
                                   remove_additional_resources, create_default_views, hxl_update, **kwargs):
@@ -465,9 +468,9 @@ class Dataset(HDXObject):
         if 'ignore_check' not in kwargs:  # allow ignoring of field checks
             ignore_field = self.configuration['dataset'].get('ignore_on_update')
             self.check_required_fields(ignore_fields=[ignore_field])
-        self.set_updated_by_script_batch(**kwargs)
+        batch_mode = self.set_updated_by_script_batch(**kwargs)
         self._save_to_hdx('update', 'id', force_active=True)
-        hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources)
+        hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources, batch_mode)
         self.init_resources()
         self.separate_resources()
         if create_default_views:
@@ -558,9 +561,9 @@ class Dataset(HDXObject):
                 hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(resource, ignore_fields, filestore_resources)
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         self.clean_tags()
-        self.set_updated_by_script_batch(**kwargs)
+        batch_mode = self.set_updated_by_script_batch(**kwargs)
         self._save_to_hdx('create', 'name', force_active=True)
-        hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources)
+        hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources, batch_mode)
         self.init_resources()
         self.separate_resources()
         if hxl_update:

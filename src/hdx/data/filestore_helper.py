@@ -30,13 +30,14 @@ class FilestoreHelper(object):
             resource['url'] = cls.temporary_url
 
     @staticmethod
-    def add_filestore_resources(resources_list, filestore_resources):
+    def add_filestore_resources(resources_list, filestore_resources, batch_mode):
         # type: (List[Dict], List[hdx.data.resource.Resource]) -> None
         """Helper method to create files in filestore by updating resources.
 
         Args:
             resources_list (List[Dict]): List of resources from dataset dict's resources key
             filestore_resources (List[hdx.data.resource.Resource]): List of resources that use filestore (to be appended to)
+            batch_mode (Optional[str]): batch_mode to be passed to resource_update call
 
         Returns:
             None
@@ -46,6 +47,8 @@ class FilestoreHelper(object):
                 if resource['name'] == created_resource['name']:
                     merge_two_dictionaries(resource.data, created_resource)
                     del resource['url']
+                    if batch_mode:
+                        resource['batch_mode'] = batch_mode
                     resource.update_in_hdx()
                     merge_two_dictionaries(created_resource, resource.data)
                     break
