@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Helper to the Dataset class for handling resources with filestores.
 """
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from hdx.utilities.dictandlist import merge_two_dictionaries
 
@@ -31,7 +31,7 @@ class FilestoreHelper(object):
 
     @staticmethod
     def add_filestore_resources(resources_list, filestore_resources, batch_mode):
-        # type: (List[Dict], List[hdx.data.resource.Resource]) -> None
+        # type: (List[Dict], List[hdx.data.resource.Resource], Optional[str]) -> None
         """Helper method to create files in filestore by updating resources.
 
         Args:
