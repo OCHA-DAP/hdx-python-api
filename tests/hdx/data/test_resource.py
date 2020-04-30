@@ -14,8 +14,7 @@ from hdx.utilities.downloader import DownloadError
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
 from hdx.hdx_configuration import Configuration
-from . import MockResponse
-from .test_dataset import dataset_resultdict
+from . import MockResponse, dataset_resultdict
 from .test_resource_view import resource_view_list, resource_view_mocklist
 
 resultdict = {'cache_last_updated': None, 'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',

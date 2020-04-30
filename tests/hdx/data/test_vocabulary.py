@@ -9,7 +9,7 @@ from hdx.utilities.dictandlist import merge_two_dictionaries
 from requests.exceptions import RetryError
 
 from hdx.data.hdxobject import HDXError
-from hdx.data.vocabulary import Vocabulary
+from hdx.data.vocabulary import Vocabulary, ChainRuleError
 from hdx.hdx_configuration import Configuration
 from . import MockResponse
 
@@ -357,3 +357,10 @@ class TestVocabulary:
         assert Vocabulary.get_mapped_tag('refugees') == (list(), list())  # tag is not in CKAN approved list but is in tag cleanup spreadsheet
         Vocabulary._approved_vocabulary = None
         Vocabulary.get_approved_vocabulary()
+
+    def test_chainrule_error(self, configuration, read):
+        with pytest.raises(ChainRuleError):
+            Vocabulary.set_tagsdict(None)
+            url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping_ChainRuleError.csv'
+            Vocabulary.read_tags_mappings(url=url, failchained=True)
+

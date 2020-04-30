@@ -1790,12 +1790,14 @@ class Dataset(HDXObject):
         If the parameter quickcharts is supplied then various QuickCharts related actions will occur depending upon the
         keys given in the dictionary. If the keys: hashtag - the HXL hashtag to examine - and values - the 3 values to
         look for in that column - are supplied, then a list of booleans indicating which QuickCharts bites should be
-        enabled will be returned in the key bites_disabled in the returned dictionary. If the key: cutdown is given,
-        if it is 1, then a separate cut down list is created containing only columns with HXL hashtags and
-        rows with desired values (if hashtag and values are supplied) for the purpose of driving QuickCharts.
-        It is returned in the key qcrows in the returned dictionary with the matching headers in qcheaders.
-        If cutdown is 2, then a resource is created using the cut down list. If the key cutdownhashtags is supplied,
-        then only the provided hashtags are used for cutting down otherwise the full list of hxl tags is used.
+        enabled will be returned in the key bites_disabled in the returned dictionary. For the 3 values, if the key:
+        numeric_hashtag is supplied then if that column for a given value contains no numbers, then the corresponding
+        bite will be disabled. If the key: cutdown is given, if it is 1, then a separate cut down list is created
+        containing only columns with HXL hashtags and rows with desired values (if hashtag and values are supplied) for
+        the purpose of driving QuickCharts. It is returned in the key qcrows in the returned dictionary with the
+        matching headers in qcheaders. If cutdown is 2, then a resource is created using the cut down list. If the key
+        cutdownhashtags is supplied, then only the provided hashtags are used for cutting down otherwise the full list
+        of hxl tags is used.
 
         Args:
             headers (List[str]): Headers
@@ -1826,6 +1828,11 @@ class Dataset(HDXObject):
                 qc['column'] = next(key for key, value in hxltags.items() if value == hashtag)  # reverse dict lookup
             else:
                 qc['column'] = None
+            numeric_hashtag = quickcharts.get('numeric_hashtag')
+            if numeric_hashtag:
+                qc['numeric'] = next(key for key, value in hxltags.items() if value == numeric_hashtag)  # reverse lookup
+            else:
+                qc['numeric'] = None
             cutdown = quickcharts.get('cutdown', 0)
             if cutdown:
                 qc['cutdown'] = cutdown
@@ -1867,11 +1874,15 @@ class Dataset(HDXObject):
                     value = row[qc['column']]
                     for i, lookup in enumerate(quickcharts['values']):
                         if value == lookup:
+                            if qc['numeric']:
+                                try:
+                                    float(row[qc['numeric']])
+                                except ValueError:
+                                    continue
                             bites_disabled[i] = False
                             if qc['cutdown']:
                                 qcrow = {x: row[x] for x in qc['headers']}
                                 qc['rows'].append(qcrow)
-
         if len(rows) == 1:
             logger.error('No data rows in %s!' % filename)
             return False, retdict
@@ -1919,12 +1930,14 @@ class Dataset(HDXObject):
         If the parameter quickcharts is supplied then various QuickCharts related actions will occur depending upon the
         keys given in the dictionary. If the keys: hashtag - the HXL hashtag to examine - and values - the 3 values to
         look for in that column - are supplied, then a list of booleans indicating which QuickCharts bites should be
-        enabled will be returned in the key bites_disabled in the returned dictionary. If the key: cutdown is given,
-        if it is 1, then a separate cut down list is created containing only columns with HXL hashtags and
-        rows with desired values (if hashtag and values are supplied) for the purpose of driving QuickCharts.
-        It is returned in the key qcrows in the returned dictionary with the matching headers in qcheaders.
-        If cutdown is 2, then a resource is created using the cut down list. If the key cutdownhashtags is supplied,
-        then only the provided hashtags are used for cutting down otherwise the full list of hxl tags is used.
+        enabled will be returned in the key bites_disabled in the returned dictionary. For the 3 values, if the key:
+        numeric_hashtag is supplied then if that column for a given value contains no numbers, then the corresponding
+        bite will be disabled. If the key: cutdown is given, if it is 1, then a separate cut down list is created
+        containing only columns with HXL hashtags and rows with desired values (if hashtag and values are supplied) for
+        the purpose of driving QuickCharts. It is returned in the key qcrows in the returned dictionary with the
+        matching headers in qcheaders. If cutdown is 2, then a resource is created using the cut down list. If the key
+        cutdownhashtags is supplied, then only the provided hashtags are used for cutting down otherwise the full list
+        of hxl tags is used.
 
         Args:
             downloader (Download): Download object
