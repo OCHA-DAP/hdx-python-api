@@ -1838,9 +1838,11 @@ class Dataset(HDXObject):
                 qc['cutdown'] = cutdown
                 cutdownhashtags = quickcharts.get('cutdownhashtags')
                 if cutdownhashtags is None:
-                    cutdownhashtags = hxltags.keys()
+                    cutdownhashtags = list(hxltags.keys())
                 else:
                     cutdownhashtags = [key for key, value in hxltags.items() if value in cutdownhashtags]
+                if numeric_hashtag and qc['numeric'] not in cutdownhashtags:
+                    cutdownhashtags.append(qc['numeric'])
                 qc['headers'] = [x for x in headers if x in cutdownhashtags]
                 qc['rows'] = [Download.hxl_row(qc['headers'], hxltags, dict_form=True)]
         for row in iterator:
