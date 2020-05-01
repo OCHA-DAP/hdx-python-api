@@ -419,14 +419,14 @@ class Dataset(HDXObject):
                         if resource_name == updated_resource['name']:
                             logger.warning('Resource exists. Updating %s' % resource_name)
                             hdx.data.filestore_helper.FilestoreHelper.dataset_merge_filestore_resource(resource, updated_resource,
-                                                                             filestore_resources, ignore_fields)
+                                                                             filestore_resources, ignore_fields, **kwargs)
                             break
                 updated_resource_names = set()
                 for updated_resource in updated_resources:
                     updated_resource_name = updated_resource['name']
                     updated_resource_names.add(updated_resource_name)
                     if not updated_resource_name in resource_names:
-                        hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(updated_resource, ignore_fields, filestore_resources)
+                        hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(updated_resource, ignore_fields, filestore_resources, **kwargs)
                         self.resources.append(updated_resource)
 
                 if remove_additional_resources:
@@ -449,9 +449,9 @@ class Dataset(HDXObject):
                         if resource_name != updated_resource_name:
                             logger.warning('Changing resource name to: %s' % updated_resource_name)
                         hdx.data.filestore_helper.FilestoreHelper.dataset_merge_filestore_resource(resource, updated_resource,
-                                                                         filestore_resources, ignore_fields)
+                                                                         filestore_resources, ignore_fields, **kwargs)
                     else:
-                        hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(updated_resource, ignore_fields, filestore_resources)
+                        hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(updated_resource, ignore_fields, filestore_resources, **kwargs)
                         self.resources.append(updated_resource)
 
                 if remove_additional_resources:

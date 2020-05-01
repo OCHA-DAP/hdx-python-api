@@ -13,7 +13,7 @@ class FilestoreHelper(object):
 
     @classmethod
     def check_filestore_resource(cls, resource, ignore_fields, filestore_resources, **kwargs):
-        # type: (hdx.data.resource.Resource, List[str], List[hdx.data.resource.Resource]) -> None
+        # type: (hdx.data.resource.Resource, List[str], List[hdx.data.resource.Resource], Any) -> None
         """Helper method to add new resource from dataset including filestore.
 
         Args:
@@ -24,7 +24,8 @@ class FilestoreHelper(object):
         Returns:
             None
         """
-        resource.check_required_fields(ignore_fields=ignore_fields)
+        if 'ignore_check' not in kwargs:  # allow ignoring of field checks
+            resource.check_required_fields(ignore_fields=ignore_fields)
         if resource.get_file_to_upload():
             filestore_resources.append(resource)
             resource['url'] = cls.temporary_url
@@ -54,8 +55,8 @@ class FilestoreHelper(object):
                     break
 
     @classmethod
-    def dataset_merge_filestore_resource(cls, resource, updated_resource, filestore_resources, ignore_fields):
-        # type: (hdx.data.resource.Resource, hdx.data.resource.Resource, List[hdx.data.resource.Resource], List[str]) -> None
+    def dataset_merge_filestore_resource(cls, resource, updated_resource, filestore_resources, ignore_fields, **kwargs):
+        # type: (hdx.data.resource.Resource, hdx.data.resource.Resource, List[hdx.data.resource.Resource], List[str], Any) -> None
         """Helper method to merge updated resource from dataset into HDX resource read from HDX including filestore.
 
         Args:
@@ -71,7 +72,8 @@ class FilestoreHelper(object):
             resource.set_file_to_upload(updated_resource.get_file_to_upload())
             filestore_resources.append(resource)
         merge_two_dictionaries(resource, updated_resource)
-        resource.check_required_fields(ignore_fields=ignore_fields)
+        if 'ignore_check' not in kwargs:  # allow ignoring of field checks
+            resource.check_required_fields(ignore_fields=ignore_fields)
         if resource.get_file_to_upload():
             resource['url'] = cls.temporary_url
 
