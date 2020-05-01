@@ -470,7 +470,7 @@ class Dataset(HDXObject):
             self.check_required_fields(ignore_fields=[ignore_field])
         batch_mode = self.set_updated_by_script_batch(**kwargs)
         self._save_to_hdx('update', 'id', force_active=True)
-        hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources, batch_mode)
+        hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources, batch_mode, **kwargs)
         self.init_resources()
         self.separate_resources()
         if create_default_views:

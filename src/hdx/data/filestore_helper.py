@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Helper to the Dataset class for handling resources with filestores.
 """
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
 
 from hdx.utilities.dictandlist import merge_two_dictionaries
 
@@ -12,7 +12,7 @@ class FilestoreHelper(object):
     temporary_url = 'updated_by_file_upload_step'
 
     @classmethod
-    def check_filestore_resource(cls, resource, ignore_fields, filestore_resources):
+    def check_filestore_resource(cls, resource, ignore_fields, filestore_resources, **kwargs):
         # type: (hdx.data.resource.Resource, List[str], List[hdx.data.resource.Resource]) -> None
         """Helper method to add new resource from dataset including filestore.
 
@@ -30,8 +30,8 @@ class FilestoreHelper(object):
             resource['url'] = cls.temporary_url
 
     @staticmethod
-    def add_filestore_resources(resources_list, filestore_resources, batch_mode):
-        # type: (List[Dict], List[hdx.data.resource.Resource], Optional[str]) -> None
+    def add_filestore_resources(resources_list, filestore_resources, batch_mode, **kwargs):
+        # type: (List[Dict], List[hdx.data.resource.Resource], Optional[str], Any) -> None
         """Helper method to create files in filestore by updating resources.
 
         Args:
@@ -49,7 +49,7 @@ class FilestoreHelper(object):
                     del resource['url']
                     if batch_mode:
                         resource['batch_mode'] = batch_mode
-                    resource.update_in_hdx()
+                    resource.update_in_hdx(**kwargs)
                     merge_two_dictionaries(created_resource, resource.data)
                     break
 
