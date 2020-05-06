@@ -626,7 +626,7 @@ class Dataset(HDXObject):
         sort = kwargs.get('sort')
         if not sort:
             if total_rows > page_size:
-                kwargs['sort'] = 'metadata_modified asc'
+                kwargs['sort'] = 'metadata_created asc'
             else:
                 kwargs['sort'] = 'relevance asc, metadata_modified desc'
         offset = kwargs.get('offset')
@@ -669,7 +669,7 @@ class Dataset(HDXObject):
                         break
                 else:
                     logger.debug(result)
-            if kwargs['sort'] != 'metadata_modified asc' and all_datasets and len(counts) != 1:  # Make sure counts are all same for multiple calls to HDX
+            if kwargs['sort'] != 'metadata_created asc' and all_datasets and len(counts) != 1:  # Make sure counts are all same for multiple calls to HDX
                 all_datasets = None
                 attempts += 1
             else:
@@ -729,7 +729,7 @@ class Dataset(HDXObject):
             List[Dataset]: list of datasets resulting from query
         """
         if 'sort' not in kwargs:
-            kwargs['sort'] = 'metadata_modified asc'
+            kwargs['sort'] = 'metadata_created asc'
         return cls.search_in_hdx(query='*:*', configuration=configuration, page_size=page_size, **kwargs)
 
     @staticmethod

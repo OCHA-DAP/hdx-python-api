@@ -96,7 +96,7 @@ def mockall(url, datadict):
                 newsearchdict['results'] = newsearchdict['results'][:5]
             else:
                 newsearchdict['results'] = newsearchdict['results'][4:5]  # repeated dataset
-        elif datadict['sort'] == 'metadata_modified asc':
+        elif datadict['sort'] == 'metadata_created asc':
             if datadict['start'] == 0:
                 newsearchdict['results'] = newsearchdict['results'][:5]
             else:
