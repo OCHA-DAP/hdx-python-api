@@ -416,7 +416,7 @@ class Dataset(HDXObject):
                     resource_name = resource['name']
                     resource_names.add(resource_name)
                     for updated_resource in updated_resources:
-                        if resource_name == updated_resource['name']:
+                        if resource_name == updated_resource['name'] and resource['format'].upper() == updated_resource['format'].upper():
                             logger.warning('Resource exists. Updating %s' % resource_name)
                             hdx.data.filestore_helper.FilestoreHelper.dataset_merge_filestore_resource(resource, updated_resource,
                                                                              filestore_resources, ignore_fields, **kwargs)

@@ -644,7 +644,7 @@ class TestDatasetNoncore:
                 resource = dataset.generate_qc_resource_from_rows(folder, qc_filename, rows, resourcedata, columnname,
                                                                   TestDatasetNoncore.hxltags, qc_indicator_codes)
                 assert resource == {'name': 'Conflict Data for Algeria', 'description': 'Conflict data with HXL tags',
-                                    'format': 'csv', 'resource_type': 'file.upload', 'url_type': 'upload'}
+                                    'format': 'CSV', 'resource_type': 'file.upload', 'url_type': 'upload'}
                 assert_files_same(join('tests', 'fixtures', 'qc_from_rows', qc_filename), join(folder, qc_filename))
                 qc_filename = 'qc_conflict_data_alg_one_col.csv'
                 dataset.generate_qc_resource_from_rows(folder, qc_filename, rows, resourcedata, columnname,
@@ -691,8 +691,8 @@ class TestDatasetNoncore:
                 assert dataset['dataset_date'] == '01/01/2001-12/31/2002'
                 assert admin1s == {'Bejaia', 'Tizi Ouzou'}
                 resources = dataset.get_resources()
-                assert resources == [{'name': 'Conflict Data for Algeria', 'description': 'Conflict data with HXL tags', 'format': 'csv', 'resource_type': 'file.upload', 'url_type': 'upload'},
-                                     {'name': 'QuickCharts-Conflict Data for Algeria', 'description': 'Cut down data for QuickCharts', 'format': 'csv', 'resource_type': 'file.upload', 'url_type': 'upload'}]
+                assert resources == [{'name': 'Conflict Data for Algeria', 'description': 'Conflict data with HXL tags', 'format': 'CSV', 'resource_type': 'file.upload', 'url_type': 'upload'},
+                                     {'name': 'QuickCharts-Conflict Data for Algeria', 'description': 'Cut down data for QuickCharts', 'format': 'CSV', 'resource_type': 'file.upload', 'url_type': 'upload'}]
                 assert_files_same(join('tests', 'fixtures', 'gen_resource', filename), join(folder, filename))
                 qc_filename = 'qc_%s' % filename
                 assert_files_same(join('tests', 'fixtures', 'gen_resource', qc_filename), join(folder, qc_filename))

@@ -45,7 +45,7 @@ class FilestoreHelper(object):
         """
         for resource in filestore_resources:
             for created_resource in resources_list:
-                if resource['name'] == created_resource['name']:
+                if resource['name'] == created_resource['name'] and resource['format'].upper() == created_resource['format'].upper():
                     merge_two_dictionaries(resource.data, created_resource)
                     del resource['url']
                     if batch_mode:
