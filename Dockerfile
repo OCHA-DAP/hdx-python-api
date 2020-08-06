@@ -1,8 +1,10 @@
-FROM unocha/alpine-base:3.11.2
+FROM unocha/alpine-base:3.12
 
 MAINTAINER Michael Rans <rans@email.com>
 
-RUN apk add --no-cache --upgrade python3 && \
+RUN apk add --no-cache --upgrade \
+        python3 \
+        py3-pip && \
     apk add --no-cache --upgrade --virtual .build-deps \
         build-base \
         libffi-dev \
