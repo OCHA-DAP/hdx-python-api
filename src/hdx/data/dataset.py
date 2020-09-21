@@ -27,6 +27,7 @@ import hdx.data.user
 import hdx.data.vocabulary
 from hdx.data.dataset_title_helper import DatasetTitleHelper
 from hdx.data.hdxobject import HDXObject, HDXError
+from hdx.data.resource_matcher import ResourceMatcher
 from hdx.hdx_configuration import Configuration
 from hdx.hdx_locations import Locations
 
@@ -185,9 +186,13 @@ class Dataset(HDXObject):
             if not ignore_datasetid:
                 raise HDXError('Resource %s being added already has a dataset id!' % (resource['name']))
         resource.check_url_filetoupload()
-        resource_updated = self._addupdate_hdxobject(self.resources, 'name', resource)
-        if resource.get_file_to_upload():
-            resource_updated.set_file_to_upload(resource.get_file_to_upload())
+        resource_index = ResourceMatcher.match_resource_list(self.resources, resource)
+        if resource_index is None:
+            self.resources.append(resource)
+        else:
+            updated_resource = merge_two_dictionaries(self.resources[resource_index], resource)
+            if resource.get_file_to_upload():
+                updated_resource.set_file_to_upload(resource.get_file_to_upload())
 
     def add_update_resources(self, resources, ignore_datasetid=False):
         # type: (List[Union[hdx.data.resource.Resource,Dict,str]], bool) -> None
@@ -202,8 +207,23 @@ class Dataset(HDXObject):
         """
         if not isinstance(resources, list):
             raise HDXError('Resources should be a list!')
-        for resource in resources:
-            self.add_update_resource(resource, ignore_datasetid)
+        for i, resource in enumerate(resources):
+            resource = self._get_resource_from_obj(resource)
+            if 'package_id' in resource:
+                if not ignore_datasetid:
+                    raise HDXError('Resource %s being added already has a dataset id!' % (resource['name']))
+            resources[i] = resource
+        resource_matches, updated_resource_matches, _, updated_resource_no_matches = ResourceMatcher.match_resource_lists(self.resources, resources)
+        for i, resource_index in enumerate(resource_matches):
+            resource = resources[updated_resource_matches[i]]
+            resource.check_url_filetoupload()
+            updated_resource = merge_two_dictionaries(self.resources[resource_index], resource)
+            if resource.get_file_to_upload():
+                updated_resource.set_file_to_upload(resource.get_file_to_upload())
+        for resource_index in updated_resource_no_matches:
+            resource = resources[resource_index]
+            resource.check_url_filetoupload()
+            self.resources.append(resource)
 
     def delete_resource(self, resource, delete=True):
         # type: (Union[hdx.data.resource.Resource,Dict,str], bool) -> bool
@@ -386,14 +406,14 @@ class Dataset(HDXObject):
             return batch_mode
         return None
 
-    def _dataset_merge_hdx_update(self, update_resources, update_resources_by_name,
+    def _dataset_merge_hdx_update(self, update_resources, match_resources_by_metadata,
                                   remove_additional_resources, create_default_views, hxl_update, **kwargs):
         # type: (bool, bool, bool, bool, bool, Any) -> None
         """Helper method to check if dataset or its resources exist and update them
 
         Args:
             update_resources (bool): Whether to update resources
-            update_resources_by_name (bool): Compare resource names rather than position in list
+            match_resources_by_metadata (bool): Compare resource metadata rather than position in list
             remove_additional_resources (bool): Remove additional resources found in dataset (if updating)
             create_default_views (bool): Whether to call package_create_default_resource_views.
             hxl_update (bool): Whether to call package_hxl_update.
@@ -410,35 +430,28 @@ class Dataset(HDXObject):
         filestore_resources = list()
         if update_resources and updated_resources:
             ignore_fields = ['package_id']
-            if update_resources_by_name:
-                resource_names = set()
-                for resource in self.resources:
-                    resource_name = resource['name']
-                    resource_names.add(resource_name)
-                    for updated_resource in updated_resources:
-                        if resource_name == updated_resource['name'] and resource['format'].upper() == updated_resource['format'].upper():
-                            logger.warning('Resource exists. Updating %s' % resource_name)
-                            hdx.data.filestore_helper.FilestoreHelper.dataset_merge_filestore_resource(resource, updated_resource,
-                                                                             filestore_resources, ignore_fields, **kwargs)
-                            break
-                updated_resource_names = set()
-                for updated_resource in updated_resources:
-                    updated_resource_name = updated_resource['name']
-                    updated_resource_names.add(updated_resource_name)
-                    if not updated_resource_name in resource_names:
-                        hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(updated_resource, ignore_fields, filestore_resources, **kwargs)
-                        self.resources.append(updated_resource)
-
+            if match_resources_by_metadata:
+                resource_matches, updated_resource_matches, resource_no_matches, updated_resource_no_matches = ResourceMatcher.match_resource_lists(self.resources, updated_resources)
+                for i, resource_index in enumerate(resource_matches):
+                    resource = self.resources[resource_index]
+                    updated_resource = updated_resources[updated_resource_matches[i]]
+                    logger.warning('Resource exists. Updating %s' % resource['name'])
+                    hdx.data.filestore_helper.FilestoreHelper.dataset_merge_filestore_resource(resource, updated_resource,
+                                                                                               filestore_resources,
+                                                                                               ignore_fields, **kwargs)
+                for resource_index in updated_resource_no_matches:
+                    updated_resource = updated_resources[resource_index]
+                    hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(updated_resource, ignore_fields,
+                                                                                       filestore_resources, **kwargs)
+                    self.resources.append(updated_resource)
                 if remove_additional_resources:
                     resources_to_delete = list()
-                    for i, resource in enumerate(self.resources):
-                        resource_name = resource['name']
-                        if resource_name not in updated_resource_names:
-                            logger.warning('Removing additional resource %s!' % resource_name)
-                            resources_to_delete.append(i)
+                    for resource_index in resource_no_matches:
+                        resource = self.resources[resource_index]
+                        logger.warning('Removing additional resource %s!' % resource['name'])
+                        resources_to_delete.append(resource_index)
                     for i in sorted(resources_to_delete, reverse=True):
                         del self.resources[i]
-
             else:  # update resources by position
                 for i, updated_resource in enumerate(updated_resources):
                     if len(self.resources) > i:
@@ -479,14 +492,15 @@ class Dataset(HDXObject):
         if hxl_update:
             self.hxl_update()
 
-    def update_in_hdx(self, update_resources=True, update_resources_by_name=True,
+    def update_in_hdx(self, update_resources=True, match_resources_by_metadata=True,
                       remove_additional_resources=False, create_default_views=True, hxl_update=True, **kwargs):
         # type: (bool, bool, bool, bool, bool, Any) -> None
-        """Check if dataset exists in HDX and if so, update it
+        """Check if dataset exists in HDX and if so, update it. match_resources_by_metadata uses ids if they are
+        available, otherwise names only if names are unique or format in addition if not.
 
         Args:
             update_resources (bool): Whether to update resources. Defaults to True.
-            update_resources_by_name (bool): Compare resource names rather than position in list. Defaults to True.
+            match_resources_by_metadata (bool): Compare resource metadata rather than position in list. Defaults to True.
             remove_additional_resources (bool): Remove additional resources found in dataset. Defaults to False.
             create_default_views (bool): Whether to call package_create_default_resource_views. Defaults to True.
             hxl_update (bool): Whether to call package_hxl_update. Defaults to True.
@@ -509,21 +523,22 @@ class Dataset(HDXObject):
             if not self._dataset_load_from_hdx(self.data['name']):
                 raise HDXError('No existing dataset to update!')
         self._dataset_merge_hdx_update(update_resources=update_resources,
-                                       update_resources_by_name=update_resources_by_name,
+                                       match_resources_by_metadata=match_resources_by_metadata,
                                        remove_additional_resources=remove_additional_resources,
                                        create_default_views=create_default_views,
                                        hxl_update=hxl_update, **kwargs)
         logger.info('Updated %s' % self.get_hdx_url())
 
-    def create_in_hdx(self, allow_no_resources=False, update_resources=True, update_resources_by_name=True,
+    def create_in_hdx(self, allow_no_resources=False, update_resources=True, match_resources_by_metadata=True,
                       remove_additional_resources=False, create_default_views=True, hxl_update=True, **kwargs):
         # type: (bool, bool, bool, bool, bool, bool, Any) -> None
-        """Check if dataset exists in HDX and if so, update it, otherwise create it
+        """Check if dataset exists in HDX and if so, update it, otherwise create it. match_resources_by_metadata uses
+        ids if they are available, otherwise names only if names are unique or format in addition if not.
 
         Args:
             allow_no_resources (bool): Whether to allow no resources. Defaults to False.
             update_resources (bool): Whether to update resources (if updating). Defaults to True.
-            update_resources_by_name (bool): Compare resource names rather than position in list. Defaults to True.
+            match_resources_by_metadata (bool): Compare resource metadata rather than position in list. Defaults to True.
             remove_additional_resources (bool): Remove additional resources found in dataset (if updating). Defaults to False.
             create_default_views (bool): Whether to call package_create_default_resource_views (if updating). Defaults to True.
             hxl_update (bool): Whether to call package_hxl_update. Defaults to True.
@@ -547,7 +562,7 @@ class Dataset(HDXObject):
                 loadedid = self.data['name']
         if loadedid:
             self._dataset_merge_hdx_update(update_resources=update_resources,
-                                           update_resources_by_name=update_resources_by_name,
+                                           match_resources_by_metadata=match_resources_by_metadata,
                                            remove_additional_resources=remove_additional_resources,
                                            create_default_views=create_default_views,
                                            hxl_update=hxl_update, **kwargs)
@@ -1517,7 +1532,7 @@ class Dataset(HDXObject):
             search = 'name'
         preview_resource = None
         for dataset_resource in self.resources:
-            if dataset_resource[search] == resource:
+            if preview_resource is None and dataset_resource[search] == resource:
                 dataset_resource.enable_dataset_preview()
                 self.preview_resource()
                 preview_resource = dataset_resource

@@ -6,6 +6,7 @@ from typing import List, Dict, Optional, Any
 from hdx.utilities.dictandlist import merge_two_dictionaries
 
 import hdx.data.resource
+from hdx.data.resource_matcher import ResourceMatcher
 
 
 class FilestoreHelper(object):
@@ -43,16 +44,16 @@ class FilestoreHelper(object):
         Returns:
             None
         """
-        for resource in filestore_resources:
-            for created_resource in resources_list:
-                if resource['name'] == created_resource['name'] and resource['format'].upper() == created_resource['format'].upper():
-                    merge_two_dictionaries(resource.data, created_resource)
-                    del resource['url']
-                    if batch_mode:
-                        resource['batch_mode'] = batch_mode
-                    resource.update_in_hdx(**kwargs)
-                    merge_two_dictionaries(created_resource, resource.data)
-                    break
+        filestore_resource_matches, resource_list_matches, _, _ = ResourceMatcher.match_resource_lists(filestore_resources, resources_list)
+        for i, resource_index in enumerate(filestore_resource_matches):
+            resource = filestore_resources[resource_index]
+            created_resource = resources_list[resource_list_matches[i]]
+            merge_two_dictionaries(resource.data, created_resource)
+            del resource['url']
+            if batch_mode:
+                resource['batch_mode'] = batch_mode
+            resource.update_in_hdx(**kwargs)
+            merge_two_dictionaries(created_resource, resource.data)
 
     @classmethod
     def dataset_merge_filestore_resource(cls, resource, updated_resource, filestore_resources, ignore_fields, **kwargs):

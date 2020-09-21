@@ -120,7 +120,7 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        self.data['format'] = file_type.upper()
+        self.data['format'] = file_type.lower()
 
     def get_file_to_upload(self):
         # type: () -> Optional[str]

@@ -53,7 +53,12 @@ resources_data = [{'id': 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5', 'description': 
                   {'id': '3d777226-96aa-4239-860a-703389d16d1f', 'description': 'Resource2',
                    'name': 'Resource2',
                    'url': 'http://resource2.csv',
-                   'format': 'csv'}]
+                   'format': 'csv'},
+                  {'id': '3d777226-96aa-4239-860a-703389d16d1g', 'description': 'Resource2',
+                   'name': 'Resource2',
+                   'url': 'http://resource2.xls',
+                   'format': 'xls'}
+                  ]
 
 organization_data = {
     'name': 'MyOrganization1',
@@ -72,7 +77,7 @@ user_data = {
 
 dataset_resultdict = {
     'resources': [{'revision_id': '43765383-1fce-471f-8166-d6c8660cc8a9', 'cache_url': None,
-                   'datastore_active': False, 'format': 'XLSX', 'webstore_url': None,
+                   'datastore_active': False, 'format': 'xlsx', 'webstore_url': None,
                    'last_modified': None, 'tracking_summary': {'recent': 0, 'total': 0},
                    'id': 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5', 'webstore_last_updated': None,
                    'mimetype': None, 'state': 'active', 'created': '2016-06-07T08:57:27.367939',
@@ -92,7 +97,19 @@ dataset_resultdict = {
                    'name': 'Resource2',
                    'url': 'http://resource2_csv.zip',
                    'resource_type': 'api', 'url_type': 'api', 'size': None, 'mimetype_inner': None,
-                   'cache_last_updated': None}],
+                   'cache_last_updated': None},
+                  {'revision_id': '387e5d1a-50ca-4039-b5a7-f7b6b88d0f2c', 'cache_url': None,
+                   'datastore_active': False, 'format': 'geojson', 'webstore_url': None,
+                   'last_modified': None, 'tracking_summary': {'recent': 0, 'total': 0},
+                   'id': '3d777226-96aa-4239-860a-703389d16d1g', 'webstore_last_updated': None,
+                   'mimetype': None, 'state': 'active', 'created': '2016-06-07T08:57:27.367959',
+                   'description': 'Resource2', 'position': 2,
+                   'hash': '', 'package_id': '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d',
+                   'name': 'Resource2',
+                   'url': 'http://resource2_csv.zip',
+                   'resource_type': 'api', 'url_type': 'api', 'size': None, 'mimetype_inner': None,
+                   'cache_last_updated': None},
+                  ],
     'isopen': True, 'caveats': 'Various',
     'revision_id': '032833ca-c403-40cc-8b86-69d5a6eecb1b', 'url': None, 'author': 'acled',
     'metadata_created': '2016-03-23T14:28:48.664205',

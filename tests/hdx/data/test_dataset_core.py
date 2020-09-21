@@ -339,7 +339,7 @@ class TestDatasetCore:
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
         assert dataset['name'] == 'MyDataset1'
         assert dataset['dataset_date'] == '06/04/2016'
-        assert dataset.number_of_resources() == 2
+        assert dataset.number_of_resources() == 3
         dataset = Dataset.read_from_hdx('TEST2')
         assert dataset is None
         dataset = Dataset.read_from_hdx('TEST3')
@@ -367,7 +367,7 @@ class TestDatasetCore:
         dataset.create_in_hdx()
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
         assert dataset['state'] == 'active'
-        assert len(dataset.resources) == 2
+        assert len(dataset.resources) == 3
 
         datasetdata['name'] = 'MyDataset2'
         dataset = Dataset(datasetdata)
@@ -397,7 +397,7 @@ class TestDatasetCore:
         resourcesdata = copy.deepcopy(resources_data)
         datasetdata['resources'] = resourcesdata
         dataset = Dataset(datasetdata)
-        assert len(dataset.get_resources()) == 2
+        assert len(dataset.get_resources()) == 3
         del datasetdata['resources']
         uniqueval = 'myconfig2'
         config.unique = uniqueval
@@ -407,7 +407,7 @@ class TestDatasetCore:
         dataset.add_update_resources(resourcesdata)
         dataset.create_in_hdx()
         assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
-        assert len(dataset.resources) == 2
+        assert len(dataset.resources) == 3
         assert dataset.resources[0].configuration.unique == uniqueval
         assert dataset['state'] == 'active'
         datasetdata = copy.deepcopy(dataset_data)
@@ -419,7 +419,7 @@ class TestDatasetCore:
         dataset.create_in_hdx()
         remove(file.name)
         assert dataset['state'] == 'active'
-        assert len(dataset.resources) == 2
+        assert len(dataset.resources) == 3
         # Dataset creates that end up updating are in the test below
 
     def test_update_in_hdx(self, configuration, post_update):
@@ -490,30 +490,31 @@ class TestDatasetCore:
         dataset.add_update_resources([resource, resource])
         dataset.create_in_hdx()
         assert dataset['state'] == 'active'
-        assert len(dataset.resources) == 2
+        assert len(dataset.resources) == 3
+
         dataset = Dataset(datasetdata)
         resourcesdata = copy.deepcopy(resources_data)
         resource = Resource(resourcesdata[0])
         dataset.add_update_resources([resource, resource])
-        dataset.create_in_hdx(update_resources_by_name=False)
+        dataset.create_in_hdx(match_resources_by_metadata=False)
         assert dataset['id'] == 'TEST1'
         assert dataset['dataset_date'] == '06/04/2016'
         assert dataset['state'] == 'active'
-        assert len(dataset.resources) == 2
+        assert len(dataset.resources) == 3
         dataset.update_in_hdx()
         assert dataset['state'] == 'active'
-        assert len(dataset.resources) == 2
+        assert len(dataset.resources) == 3
         dataset = Dataset.read_from_hdx('TEST4')
         dataset['id'] = 'TEST4'
         assert dataset['state'] == 'active'
         dataset.update_in_hdx()
-        assert len(dataset.resources) == 2
+        assert len(dataset.resources) == 3
         dataset = Dataset.read_from_hdx('TEST4')
         file = tempfile.NamedTemporaryFile(delete=False)
         resource.set_file_to_upload(file.name)
         dataset.add_update_resource(resource)
         dataset.update_in_hdx(batch='6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d')
-        assert len(dataset.resources) == 2
+        assert len(dataset.resources) == 3
         resource['name'] = '123'
         resource.set_file_to_upload(None)
         resource['url'] = 'http://lala'
@@ -521,22 +522,13 @@ class TestDatasetCore:
         dataset.update_in_hdx()
         assert dataset['state'] == 'active'
         assert len(dataset.resources) == 3
-        dataset = Dataset(datasetdata)
-        resourcesdata = copy.deepcopy(resources_data)
-        resource = Resource(resourcesdata[0])
+        del resource['id']
+        resource['name'] = 'Resource1'
         dataset.add_update_resource(resource)
-        resource = Resource(resourcesdata[1])
-        dataset.add_update_resource(resource)
-        resource = Resource(resourcesdata[0])
-        resource['name'] = 'ResourcePosition'
-        resource.set_file_to_upload(file.name)
-        dataset.add_update_resource(resource)
-        resource = dataset.get_resources()[0]
-        resource['name'] = 'changed name'
-        resource.set_file_to_upload(file.name)
-        dataset.update_in_hdx(update_resources_by_name=True)
+        dataset.update_in_hdx()
         assert dataset['state'] == 'active'
         assert len(dataset.resources) == 4
+
         dataset = Dataset(datasetdata)
         resourcesdata = copy.deepcopy(resources_data)
         resource = Resource(resourcesdata[0])
@@ -545,12 +537,33 @@ class TestDatasetCore:
         dataset.add_update_resource(resource)
         resource = Resource(resourcesdata[0])
         resource['name'] = 'ResourcePosition'
+        resource['id'] = '123'
+        resource.set_file_to_upload(file.name)
+        dataset.add_update_resource(resource)
+        resource = Resource(resourcesdata[0])
+        resource['name'] = 'changed name'
+        resource['id'] = '456'
+        resource.set_file_to_upload(file.name)
+        dataset.update_in_hdx(match_resources_by_metadata=True)
+        assert dataset['state'] == 'active'
+        assert len(dataset.resources) == 4
+
+        dataset = Dataset(datasetdata)
+        resourcesdata = copy.deepcopy(resources_data)
+        resource = Resource(resourcesdata[0])
+        dataset.add_update_resource(resource)
+        resource = Resource(resourcesdata[1])
+        dataset.add_update_resource(resource)
+        resource = Resource(resourcesdata[0])
+        resource['name'] = 'ResourcePosition'
+        resource['id'] = '123'
         resource.set_file_to_upload(file.name)
         dataset.add_update_resource(resource)
         resource = dataset.get_resources()[0]
         resource['name'] = 'changed name'
+        resource['id'] = '456'
         resource.set_file_to_upload(file.name)
-        dataset.update_in_hdx(update_resources_by_name=False)
+        dataset.update_in_hdx(match_resources_by_metadata=False)
         assert dataset['state'] == 'active'
         assert len(dataset.resources) == 3
         remove(file.name)
@@ -560,7 +573,7 @@ class TestDatasetCore:
         dataset.add_update_resource(resource)
         dataset.update_in_hdx(remove_additional_resources=False)
         assert dataset['state'] == 'active'
-        assert len(dataset.resources) == 2
+        assert len(dataset.resources) == 3
         dataset = Dataset(datasetdata)
         resourcesdata = copy.deepcopy(resources_data)
         resource = Resource(resourcesdata[0])
@@ -572,7 +585,7 @@ class TestDatasetCore:
         resourcesdata = copy.deepcopy(resources_data)
         resource = Resource(resourcesdata[0])
         dataset.add_update_resource(resource)
-        dataset.update_in_hdx(update_resources_by_name=False, remove_additional_resources=True)
+        dataset.update_in_hdx(match_resources_by_metadata=False, remove_additional_resources=True)
         assert dataset['state'] == 'active'
         assert len(dataset.resources) == 1
 
@@ -645,18 +658,18 @@ class TestDatasetCore:
         dataset = Dataset(datasetdata)
         dataset.add_update_resources(resourcesdata)
         dataset.add_update_resources(resourcesdata)
-        assert len(dataset.resources) == 2
+        assert len(dataset.resources) == 3
         dataset.delete_resource('de6549d8-268b-4dfe-adaf-a4ae5c8510d6')
-        assert len(dataset.resources) == 2
+        assert len(dataset.resources) == 3
         dataset.delete_resource('de6549d8-268b-4dfe-adaf-a4ae5c8510d5')
-        assert len(dataset.resources) == 1
+        assert len(dataset.resources) == 2
         resourcesdata = copy.deepcopy(resources_data)
         resource = Resource(resourcesdata[0])
         resource.set_file_to_upload('lala')
         dataset.add_update_resource(resource)
-        assert dataset.resources[1].get_file_to_upload() == 'lala'
+        assert dataset.resources[2].get_file_to_upload() == 'lala'
         dataset.add_update_resource('de6549d8-268b-4dfe-adaf-a4ae5c8510d5')
-        assert len(dataset.resources) == 2
+        assert len(dataset.resources) == 3
         with pytest.raises(HDXError):
             dataset.add_update_resource(123)
         with pytest.raises(HDXError):
@@ -668,6 +681,29 @@ class TestDatasetCore:
             dataset.add_update_resources(123)
         with pytest.raises(HDXError):
             dataset.delete_resource('NOTEXIST')
+        datasetdata['resources'] = resourcesdata
+        dataset = Dataset(datasetdata)
+        assert len(dataset.resources) == 3
+        resource = copy.deepcopy(resources_data[0])
+        del resource['id']
+        dataset.add_update_resource(resource)
+        assert len(dataset.resources) == 3
+        dataset.add_update_resources([resource])
+        assert len(dataset.resources) == 3
+        resource = copy.deepcopy(resources_data[2])
+        del resource['id']
+        dataset.add_update_resource(resource)
+        assert len(dataset.resources) == 3
+        dataset.add_update_resources([resource])
+        assert len(dataset.resources) == 3
+        resource['format'] = 'lala'
+        dataset.add_update_resource(resource)
+        assert len(dataset.resources) == 4
+        resource = copy.deepcopy(resources_data[2])
+        del resource['id']
+        resource['format'] = 'haha'
+        dataset.add_update_resources([resource])
+        assert len(dataset.resources) == 5
 
     def test_reorder_resources(self, configuration, post_reorder):
         dataset = Dataset.read_from_hdx('TEST1')
@@ -768,4 +804,4 @@ class TestDatasetCore:
             dataset.add_filetypes(['csv'])
         with pytest.raises(NotRequestableError):
             dataset.remove_filetype('csv')
-        assert dataset.get_filetypes() == ['xlsx', 'csv']
+        assert dataset.get_filetypes() == ['xlsx', 'csv', 'xls']
