@@ -76,8 +76,8 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         """
         super(Showcase, self).update_from_json(path)
 
-    @staticmethod
-    def read_from_hdx(identifier, configuration=None):
+    @classmethod
+    def read_from_hdx(cls, identifier, configuration=None):
         # type: (str, Optional[Configuration]) -> Optional['Showcase']
         """Reads the showcase given by identifier from HDX and returns Showcase object
 
@@ -88,12 +88,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             Optional[Showcase]: Showcase object if successful read, None if not
         """
-
-        showcase = Showcase(configuration=configuration)
-        result = showcase._load_from_hdx('showcase', identifier)
-        if result:
-            return showcase
-        return None
+        return cls._read_from_hdx_class('showcase', identifier, configuration)
 
     def check_required_fields(self, ignore_fields=list()):
         # type: (List[str]) -> None

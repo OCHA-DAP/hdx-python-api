@@ -53,7 +53,8 @@ class Vocabulary(HDXObject):
             'update': 'vocabulary_update',
             'create': 'vocabulary_create',
             'delete': 'vocabulary_delete',
-            'list': 'vocabulary_list'
+            'list': 'vocabulary_list',
+            'autocomplete': 'tag_autocomplete'
         }
 
     def update_from_yaml(self, path=join('config', 'hdx_vocabulary_static.yml')):
@@ -80,8 +81,8 @@ class Vocabulary(HDXObject):
         """
         super(Vocabulary, self).update_from_json(path)
 
-    @staticmethod
-    def read_from_hdx(identifier, configuration=None):
+    @classmethod
+    def read_from_hdx(cls, identifier, configuration=None):
         # type: (str, Optional[Configuration]) -> Optional['Vocabulary']
         """Reads the vocabulary given by identifier from HDX and returns Vocabulary object
 
@@ -92,12 +93,7 @@ class Vocabulary(HDXObject):
         Returns:
             Optional[Vocabulary]: Vocabulary object if successful read, None if not
         """
-
-        vocabulary = Vocabulary(configuration=configuration)
-        result = vocabulary._load_from_hdx('vocabulary', identifier)
-        if result:
-            return vocabulary
-        return None
+        return cls._read_from_hdx_class('vocabulary', identifier, configuration)
 
     @staticmethod
     def get_all_vocabularies(configuration=None):
@@ -507,3 +503,20 @@ class Vocabulary(HDXObject):
         tags = hdxobject._get_tags()
         hdxobject['tags'] = list()
         return cls.add_mapped_tags(hdxobject, tags, log_deleted=log_deleted)
+
+    @classmethod
+    def autocomplete(cls, name, limit=20, configuration=None, **kwargs):
+        # type: (str, int, Optional[Configuration], Any) -> List
+        """Autocomplete a tag name and return matches
+
+        Args:
+            name (str): Name to autocomplete
+            limit (int): Maximum number of matches to return
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            **kwargs:
+            offset (int): The offset to start returning tags from.
+
+        Returns:
+            List: Autocomplete matches
+        """
+        return cls._autocomplete(name, limit, configuration, **kwargs)

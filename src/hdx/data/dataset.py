@@ -111,6 +111,7 @@ class Dataset(HDXObject):
             'search': 'package_search',
             'reorder': 'package_resource_reorder',
             'list': 'package_list',
+            'autocomplete': 'package_autocomplete',
             'hxl': 'package_hxl_update',
             'create_default_views': 'package_create_default_resource_views'
         }
@@ -763,6 +764,21 @@ class Dataset(HDXObject):
             for resource in dataset.get_resources():
                 resources.append(resource)
         return resources
+
+    @classmethod
+    def autocomplete(cls, name, limit=20, configuration=None):
+        # type: (str, int, Optional[Configuration]) -> List
+        """Autocomplete a dataset name and return matches
+
+        Args:
+            name (str): Name to autocomplete
+            limit (int): Maximum number of matches to return
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+
+        Returns:
+            List: Autocomplete matches
+        """
+        return cls._autocomplete(name, limit, configuration)
 
     def get_dataset_date_type(self):
         # type: () -> Optional[str]

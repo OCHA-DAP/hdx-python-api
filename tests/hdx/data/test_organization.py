@@ -21,6 +21,8 @@ organization_list = ['acaps', 'accion-contra-el-hambre-acf-spain', 'acf-west-afr
                      'action-contre-la-faim', 'adeso', 'afd', 'afdb', 'afghanistan-protection-cluster']
 searchdict = load_yaml(join('tests', 'fixtures', 'dataset_search_results.yml'))
 
+organization_autocomplete = [{'title': 'INNAGO', 'id': '5a63012e-6c41-420c-8c33-e84b277fdc90', 'name': 'innago'}]
+
 
 def organization_mockshow(url, datadict):
     if 'show' not in url:
@@ -48,6 +50,7 @@ def mocklist(url):
                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_list"}' % json.dumps(
                             organization_list))
 
+
 def mockgetdatasets(url, datadict):
     if 'search' not in url:
         return MockResponse(404,
@@ -56,6 +59,7 @@ def mockgetdatasets(url, datadict):
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
                                 searchdict))
+
 
 class TestOrganization:
     @pytest.fixture(scope='class')
@@ -184,6 +188,22 @@ class TestOrganization:
             def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 return mockgetdatasets(url, datadict)
+
+        Configuration.read().remoteckan().session = MockSession()
+
+    @pytest.fixture(scope='function')
+    def post_autocomplete(self):
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth=None):
+                decodedata = data.decode('utf-8')
+                datadict = json.loads(decodedata)
+                if 'autocomplete' not in url or 'innago' not in datadict['q']:
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "TEST ERROR: Not autocomplete", "__type": "TEST ERROR: Not Autocomplete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_autocomplete"}')
+                result = json.dumps(organization_autocomplete)
+                return MockResponse(200,
+                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_autocomplete"}' % result)
 
         Configuration.read().remoteckan().session = MockSession()
 
@@ -347,3 +367,6 @@ class TestOrganization:
         organization = Organization(org_data)
         datasets = organization.get_datasets()
         assert len(datasets) == 10
+
+    def test_autocomplete(self, configuration, post_autocomplete):
+        assert Organization.autocomplete('innago') == organization_autocomplete

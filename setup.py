@@ -11,7 +11,7 @@ requirements = ['ckanapi>=4.3',
                 'pyasn1',
                 'pyOpenSSL',
                 'quantulum>=0.1.13;python_version<"3"',
-                'quantulum3>=0.7.5;python_version>="3"'
+                'quantulum3>=0.7.6;python_version>="3"'
                 ]
 
 classifiers = [

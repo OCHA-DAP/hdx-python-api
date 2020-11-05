@@ -67,8 +67,8 @@ class ResourceView(HDXObject):
         """
         super(ResourceView, self).update_from_json(path)
 
-    @staticmethod
-    def read_from_hdx(identifier, configuration=None):
+    @classmethod
+    def read_from_hdx(cls, identifier, configuration=None):
         # type: (str, Optional[Configuration]) -> Optional['ResourceView']
         """Reads the resource view given by identifier from HDX and returns ResourceView object
 
@@ -79,12 +79,7 @@ class ResourceView(HDXObject):
         Returns:
             Optional[ResourceView]: ResourceView object if successful read, None if not
         """
-
-        resourceview = ResourceView(configuration=configuration)
-        result = resourceview._load_from_hdx('resource view', identifier)
-        if result:
-            return resourceview
-        return None
+        return cls._read_from_hdx_class('resource view', identifier, configuration)
 
     @staticmethod
     def get_all_for_resource(identifier, configuration=None):

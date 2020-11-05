@@ -80,8 +80,8 @@ class Resource(HDXObject):
         """
         super(Resource, self).update_from_json(path)
 
-    @staticmethod
-    def read_from_hdx(identifier, configuration=None):
+    @classmethod
+    def read_from_hdx(cls, identifier, configuration=None):
         # type: (str, Optional[Configuration]) -> Optional['Resource']
         """Reads the resource given by identifier from HDX and returns Resource object
 
@@ -95,11 +95,7 @@ class Resource(HDXObject):
 
         if is_valid_uuid(identifier) is False:
             raise HDXError('%s is not a valid resource id!' % identifier)
-        resource = Resource(configuration=configuration)
-        result = resource._load_from_hdx('resource', identifier)
-        if result:
-            return resource
-        return None
+        return cls._read_from_hdx_class('resource', identifier, configuration)
 
     def get_file_type(self):
         # type: () -> Optional[str]

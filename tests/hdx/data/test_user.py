@@ -41,6 +41,8 @@ result2dict = copy.deepcopy(resultdict)
 result2dict['email'] = 'aaa@bbb.com'
 user_list = [resultdict, result2dict]
 
+user_autocomplete = [{'fullname': 'Fake Test', 'id': '2ea425bf-130d-4b63-b755-5cc5435b4b75', 'name': 'another-fake-tester'}]
+
 
 def user_mockshow(url, datadict):
     if 'show' not in url:
@@ -227,7 +229,23 @@ class TestUser:
                         result = json.dumps(orgdict)
                         if datadict['id'] == 'b67e6c74-c185-4f43-b561-0e114a736f19' or datadict['id'] == 'TEST1':
                             return MockResponse(200,
-                                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_show"}' % result)
+                                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}' % result)
+
+        Configuration.read().remoteckan().session = MockSession()
+
+    @pytest.fixture(scope='function')
+    def post_autocomplete(self):
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth=None):
+                decodedata = data.decode('utf-8')
+                datadict = json.loads(decodedata)
+                if 'autocomplete' not in url or 'fake' not in datadict['q']:
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "TEST ERROR: Not autocomplete", "__type": "TEST ERROR: Not Autocomplete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_autocomplete"}')
+                result = json.dumps(user_autocomplete)
+                return MockResponse(200,
+                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_autocomplete"}' % result)
 
         Configuration.read().remoteckan().session = MockSession()
 
@@ -419,3 +437,5 @@ Content-Transfer-Encoding: 7bit
         organizations = user.get_organizations()
         assert organizations[0]['id'] == 'b67e6c74-c185-4f43-b561-0e114a736f19'
 
+    def test_autocomplete(self, configuration, post_autocomplete):
+        assert User.autocomplete('fake%20test') == user_autocomplete

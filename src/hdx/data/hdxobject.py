@@ -155,6 +155,25 @@ class HDXObject(UserDict, object):
         """
         raise NotImplementedError
 
+    @classmethod
+    def _read_from_hdx_class(cls, object_type, identifier, configuration=None):
+        # type: (str, str, Optional[Configuration]) -> Optional[HDXObjectUpperBound]
+        """Reads the HDX object given by identifier from HDX and returns it
+
+        Args:
+            object_type (str): Description of HDX object type (for messages)
+            identifier (str): Identifier
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+
+        Returns:
+            Optional[HDXObjectUpperBound]: HDX object if successful read, None if not
+        """
+        hdxobject = cls(configuration=configuration)
+        result = hdxobject._load_from_hdx(object_type, identifier)
+        if result:
+            return hdxobject
+        return None
+
     def _check_existing_object(self, object_type, id_field_name):
         # type: (str, str) -> None
         if not self.data:
@@ -294,7 +313,7 @@ class HDXObject(UserDict, object):
         self._merge_hdx_update(object_type, id_field_name, file_to_upload, force_active=force_active, **kwargs)
 
     def _write_to_hdx(self, action, data, id_field_name=None, file_to_upload=None):
-        # type: (str, Dict, str, Optional[str]) -> Dict
+        # type: (str, Dict, str, Optional[str]) -> Union[Dict,List]
         """Creates or updates an HDX object in HDX and return HDX object metadata dict
 
         Args:
@@ -304,7 +323,7 @@ class HDXObject(UserDict, object):
             file_to_upload (Optional[str]): File to upload to HDX. Defaults to None.
 
         Returns:
-            Dict: HDX object metadata
+            Union[Dict,List]: HDX object metadata
         """
         file = None
         try:
@@ -402,6 +421,26 @@ class HDXObject(UserDict, object):
         if id_field_name not in self.data:
             raise HDXError('No %s field (mandatory) in %s!' % (id_field_name, object_type))
         self._save_to_hdx('delete', id_field_name)
+
+    @classmethod
+    def _autocomplete(cls, name, limit=20, configuration=None, **kwargs):
+        # type: (str, int, Optional[Configuration], Any) -> List
+        """Helper method to autocomplete a name and return matches
+
+        Args:
+            name (str): Name to autocomplete
+            limit (int): Maximum number of matches to return
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            **kwargs:
+            offset (int): The offset to start returning tags from.
+
+        Returns:
+            List: Autocomplete matches
+        """
+        hdxobject = cls(configuration=configuration)
+        data = {'q': name, 'limit': limit}
+        data.update(kwargs)
+        return hdxobject._write_to_hdx('autocomplete', data)
 
     def _addupdate_hdxobject(self, hdxobjects, id_field, new_hdxobject):
         # type: (List[HDXObjectUpperBound], str, HDXObjectUpperBound) -> HDXObjectUpperBound

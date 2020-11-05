@@ -39,7 +39,8 @@ class User(HDXObject):
             'create': 'user_create',
             'delete': 'user_delete',
             'list': 'user_list',
-            'listorgs': 'organization_list_for_user'
+            'listorgs': 'organization_list_for_user',
+            'autocomplete': 'user_autocomplete'
         }
 
     def update_from_yaml(self, path=join('config', 'hdx_user_static.yml')):
@@ -66,8 +67,8 @@ class User(HDXObject):
         """
         super(User, self).update_from_json(path)
 
-    @staticmethod
-    def read_from_hdx(identifier, configuration=None):
+    @classmethod
+    def read_from_hdx(cls, identifier, configuration=None):
         # type: (str, Optional[Configuration]) -> Optional['User']
         """Reads the user given by identifier from HDX and returns User object
 
@@ -78,12 +79,7 @@ class User(HDXObject):
         Returns:
             Optional[User]: User object if successful read, None if not
         """
-
-        user = User(configuration=configuration)
-        result = user._load_from_hdx('user', identifier)
-        if result:
-            return user
-        return None
+        return cls._read_from_hdx_class('user', identifier, configuration)
 
     def check_required_fields(self, ignore_fields=list()):
         # type: (List[str]) -> None
@@ -236,3 +232,17 @@ class User(HDXObject):
                 organizations.append(organization)
         return organizations
 
+    @classmethod
+    def autocomplete(cls, name, limit=20, configuration=None):
+        # type: (str, int, Optional[Configuration]) -> List
+        """Autocomplete a user name and return matches
+
+        Args:
+            name (str): Name to autocomplete
+            limit (int): Maximum number of matches to return
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+
+        Returns:
+            List: Autocomplete matches
+        """
+        return cls._autocomplete(name, limit, configuration)

@@ -39,7 +39,8 @@ class Organization(HDXObject):
             'update': 'organization_update',
             'create': 'organization_create',
             'delete': 'organization_delete',
-            'list': 'organization_list'
+            'list': 'organization_list',
+            'autocomplete': 'organization_autocomplete'
         }
 
     def update_from_yaml(self, path=join('config', 'hdx_organization_static.yml')):
@@ -66,8 +67,8 @@ class Organization(HDXObject):
         """
         super(Organization, self).update_from_json(path)
 
-    @staticmethod
-    def read_from_hdx(identifier, configuration=None):
+    @classmethod
+    def read_from_hdx(cls, identifier, configuration=None):
         # type: (str, Optional[Configuration]) -> Optional['Organization']
         """Reads the organization given by identifier from HDX and returns Organization object
 
@@ -78,12 +79,7 @@ class Organization(HDXObject):
         Returns:
             Optional[Organization]: Organization object if successful read, None if not
         """
-
-        organization = Organization(configuration=configuration)
-        result = organization._load_from_hdx('organization', identifier)
-        if result:
-            return organization
-        return None
+        return cls._read_from_hdx_class('organization', identifier, configuration)
 
     def check_required_fields(self, ignore_fields=list()):
         # type: (List[str]) -> None
@@ -251,3 +247,18 @@ class Organization(HDXObject):
         """
         organization = Organization(configuration=configuration)
         return organization._write_to_hdx('list', kwargs)
+
+    @classmethod
+    def autocomplete(cls, name, limit=20, configuration=None):
+        # type: (str, int, Optional[Configuration]) -> List
+        """Autocomplete an organization name and return matches
+
+        Args:
+            name (str): Name to autocomplete
+            limit (int): Maximum number of matches to return
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+
+        Returns:
+            List: Autocomplete matches
+        """
+        return cls._autocomplete(name, limit, configuration)

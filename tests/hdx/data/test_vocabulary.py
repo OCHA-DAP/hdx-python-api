@@ -19,6 +19,8 @@ vocabulary_list = [{'tags': [], 'id': '57f71f5f-adb0-48fd-ab2c-6b93b9d30332', 'n
 
 resultdict = vocabulary_list[1]
 
+tag_autocomplete = ['health', 'healthcare']
+
 
 def vocabulary_mockshow(url, datadict):
     if 'show' not in url:
@@ -184,6 +186,23 @@ class TestVocabulary:
                 return vocabulary_mocklist(url, datadict)
 
         Configuration.read().remoteckan().session = MockSession()
+
+    @pytest.fixture(scope='function')
+    def post_autocomplete(self):
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth=None):
+                decodedata = data.decode('utf-8')
+                datadict = json.loads(decodedata)
+                if 'autocomplete' not in url or 'health' not in datadict['q']:
+                    return MockResponse(404,
+                                        '{"success": false, "error": {"message": "TEST ERROR: Not autocomplete", "__type": "TEST ERROR: Not Autocomplete Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=tag_autocomplete"}')
+                result = json.dumps(tag_autocomplete)
+                return MockResponse(200,
+                                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=tag_autocomplete"}' % result)
+
+        Configuration.read().remoteckan().session = MockSession()
+
 
     def test_init(self, configuration):
         vocabulary = Vocabulary(name='test', tags=['mytesttag1', 'mytesttag2'])
@@ -364,3 +383,5 @@ class TestVocabulary:
             url = 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping_ChainRuleError.csv'
             Vocabulary.read_tags_mappings(url=url, failchained=True)
 
+    def test_autocomplete(self, configuration, post_autocomplete):
+        assert Vocabulary.autocomplete('health') == tag_autocomplete
