@@ -10,7 +10,7 @@ from parser import ParserError
 
 from hdx.location.country import Country
 from hdx.utilities.compare import assert_files_same
-from hdx.utilities.dateparse import parse_date_range
+from hdx.utilities.dateparse import parse_date_range, parse_date
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import temp_dir
 
@@ -250,6 +250,14 @@ class TestDatasetNoncore:
             dataset.set_dataset_date('2013-09', dataset_end_date='2014-02', allow_range=False)
         with pytest.raises(ParserError):
             dataset.set_dataset_date('2013-09', dataset_end_date='2014-02', date_format='%Y-%m', allow_range=False)
+
+    def test_get_set_date_of_dataset(self):
+        dataset = Dataset({'dataset_date': '[2020-01-07T00:00:00 TO *]'})
+        result = dataset.get_date_of_dataset(today=datetime.date(2020, 11, 17))
+        assert result == {'startdate': datetime.datetime(2020, 1, 7, 0, 0), 'enddate': datetime.datetime(2020, 11, 17, 0, 0), 'startdate_str': '2020-01-07T00:00:00', 'enddate_str': '2020-11-17T00:00:00', 'ongoing': True}
+        dataset.set_date_of_dataset('2020-02-09', '2020-10-20')
+        result = dataset.get_date_of_dataset('%d/%m/%Y')
+        assert result == {'startdate': datetime.datetime(2020, 2, 9, 0, 0), 'enddate': datetime.datetime(2020, 10, 20, 0, 0), 'startdate_str': '09/02/2020', 'enddate_str': '20/10/2020', 'ongoing': False}
 
     def test_is_set_subnational(self):
         datasetdata = copy.deepcopy(dataset_data)

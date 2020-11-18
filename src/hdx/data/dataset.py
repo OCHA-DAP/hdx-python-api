@@ -6,7 +6,7 @@ import logging
 import sys
 from collections import OrderedDict
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, date
 from os.path import join
 from typing import List, Union, Optional, Dict, Any, Tuple, Callable, Iterator, Iterable, Set
 
@@ -846,6 +846,45 @@ class Dataset(HDXObject):
         else:
             return None
 
+    def get_date_of_dataset(self, date_format=None, today=date.today()):
+        # type: (Optional[str], datetime.date) -> Dict
+        """Get dataset date as datetimes and strings in specified format. If no format is supplied, the ISO 8601
+        format is used. Returns a dictionary containing keys startdate (start date as datetime), enddate (end
+        date as datetime), startdate_str (start date as string), enddate_str (end date as string) and ongoing
+        (whether the end date is a rolls forward every day).
+
+        Args:
+            date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
+            today (datetime.date): Date to use for today. Defaults to date.today.
+
+        Returns:
+            Dict: Dictionary of date information
+        """
+        result = dict()
+        dataset_date = self.data.get('dataset_date', None)
+        if dataset_date:
+            dataset_dates = dataset_date[1:-1].split(' TO ')
+            startdate = parse_date(dataset_dates[0])
+            enddate = dataset_dates[1]
+            if enddate == '*':
+                enddate = datetime(today.year, today.month, today.day, 0, 0)
+                ongoing = True
+            else:
+                enddate = parse_date(enddate)
+                ongoing = False
+            result['startdate'] = startdate
+            result['enddate'] = enddate
+            if date_format is None:
+                startdate_str = startdate.isoformat()
+                enddate_str = enddate.isoformat()
+            else:
+                startdate_str = startdate.strftime(date_format)
+                enddate_str = enddate.strftime(date_format)
+            result['startdate_str'] = startdate_str
+            result['enddate_str'] = enddate_str
+            result['ongoing'] = ongoing
+        return result
+
     def get_dataset_date(self, date_format=None):
         # type: (Optional[str]) -> Optional[str]
         """Get dataset date as string in specified format. For range returns start date.
@@ -873,6 +912,26 @@ class Dataset(HDXObject):
         """
         dataset_date = self.get_dataset_end_date_as_datetime()
         return self._get_formatted_date(dataset_date, date_format)
+
+    def set_date_of_dataset(self, startdate, enddate):
+        # type: (Union[datetime.datetime, str], Union[datetime.datetime, str]) -> None
+        """Set dataset date from either datetime.datetime objects or strings.
+
+        Args:
+            startdate (Union[datetime.datetime, str]): Dataset start date
+            enddate (Union[datetime.datetime, str]): Dataset end date
+
+        Returns:
+            None
+        """
+        if isinstance(startdate, str):
+            startdate = parse_date(startdate)
+            startdate = startdate.isoformat()
+        if isinstance(enddate, str):
+            if enddate != '*':
+                enddate = parse_date(enddate)
+                enddate = enddate.isoformat()
+        self.data['dataset_date'] = '[%s TO %s]' % (startdate, enddate)
 
     def set_dataset_date_from_datetime(self, dataset_date, dataset_end_date=None):
         # type: (datetime, Optional[datetime]) -> None
