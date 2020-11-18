@@ -26,6 +26,7 @@ import hdx.data.showcase
 import hdx.data.user
 import hdx.data.vocabulary
 from hdx.data.dataset_title_helper import DatasetTitleHelper
+from hdx.data.date_helper import DateHelper
 from hdx.data.hdxobject import HDXObject, HDXError
 from hdx.data.resource_matcher import ResourceMatcher
 from hdx.hdx_configuration import Configuration
@@ -860,30 +861,7 @@ class Dataset(HDXObject):
         Returns:
             Dict: Dictionary of date information
         """
-        result = dict()
-        dataset_date = self.data.get('dataset_date', None)
-        if dataset_date:
-            dataset_dates = dataset_date[1:-1].split(' TO ')
-            startdate = parse_date(dataset_dates[0])
-            enddate = dataset_dates[1]
-            if enddate == '*':
-                enddate = datetime(today.year, today.month, today.day, 0, 0)
-                ongoing = True
-            else:
-                enddate = parse_date(enddate)
-                ongoing = False
-            result['startdate'] = startdate
-            result['enddate'] = enddate
-            if date_format is None:
-                startdate_str = startdate.isoformat()
-                enddate_str = enddate.isoformat()
-            else:
-                startdate_str = startdate.strftime(date_format)
-                enddate_str = enddate.strftime(date_format)
-            result['startdate_str'] = startdate_str
-            result['enddate_str'] = enddate_str
-            result['ongoing'] = ongoing
-        return result
+        return DateHelper.get_date_info(self.data.get('dataset_date'), date_format, today)
 
     def get_dataset_date(self, date_format=None):
         # type: (Optional[str]) -> Optional[str]
@@ -924,14 +902,7 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        if isinstance(startdate, str):
-            startdate = parse_date(startdate)
-            startdate = startdate.isoformat()
-        if isinstance(enddate, str):
-            if enddate != '*':
-                enddate = parse_date(enddate)
-                enddate = enddate.isoformat()
-        self.data['dataset_date'] = '[%s TO %s]' % (startdate, enddate)
+        self.data['dataset_date'] = DateHelper.get_hdx_date(startdate, enddate)
 
     def set_dataset_date_from_datetime(self, dataset_date, dataset_end_date=None):
         # type: (datetime, Optional[datetime]) -> None

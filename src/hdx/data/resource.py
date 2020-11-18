@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Resource class containing all logic for creating, checking, and updating resources."""
 import logging
+from datetime import date
 from os import remove
 from os.path import join
 from typing import Optional, List, Tuple, Dict, Union, Any
@@ -12,6 +13,7 @@ from hdx.utilities.path import script_dir_plus_file
 
 import hdx.data.dataset
 import hdx.data.filestore_helper
+from hdx.data.date_helper import DateHelper
 from hdx.data.hdxobject import HDXObject, HDXError
 from hdx.data.resource_view import ResourceView
 from hdx.hdx_configuration import Configuration
@@ -96,6 +98,36 @@ class Resource(HDXObject):
         if is_valid_uuid(identifier) is False:
             raise HDXError('%s is not a valid resource id!' % identifier)
         return cls._read_from_hdx_class('resource', identifier, configuration)
+
+    def get_date_of_resource(self, date_format=None, today=date.today()):
+        # type: (Optional[str], datetime.date) -> Dict
+        """Get resource date as datetimes and strings in specified format. If no format is supplied, the ISO 8601
+        format is used. Returns a dictionary containing keys startdate (start date as datetime), enddate (end
+        date as datetime), startdate_str (start date as string), enddate_str (end date as string) and ongoing
+        (whether the end date is a rolls forward every day).
+
+        Args:
+            date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
+            today (datetime.date): Date to use for today. Defaults to date.today.
+
+        Returns:
+            Dict: Dictionary of date information
+        """
+        return DateHelper.get_date_info(self.data.get('daterange_for_data'), date_format, today)
+
+    def set_date_of_resource(self, startdate, enddate):
+        # type: (Union[datetime.datetime, str], Union[datetime.datetime, str]) -> None
+        """Set resource date from either datetime.datetime objects or strings.
+
+        Args:
+            startdate (Union[datetime.datetime, str]): Dataset start date
+            enddate (Union[datetime.datetime, str]): Dataset end date
+
+        Returns:
+            None
+        """
+        self.data['daterange_for_data'] = DateHelper.get_hdx_date(startdate, enddate)
+
 
     def get_file_type(self):
         # type: () -> Optional[str]

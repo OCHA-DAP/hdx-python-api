@@ -3,6 +3,7 @@
 import copy
 import json
 import os
+import datetime
 from os import remove
 from os.path import join, basename
 
@@ -432,6 +433,14 @@ class TestResource:
         resource['url'] = 'lala'
         with pytest.raises(HDXError):
             resource.check_url_filetoupload()
+
+    def test_get_set_date_of_resource(self):
+        resource = Resource({'daterange_for_data': '[2020-01-07T00:00:00 TO *]'})
+        result = resource.get_date_of_resource(today=datetime.date(2020, 11, 17))
+        assert result == {'startdate': datetime.datetime(2020, 1, 7, 0, 0), 'enddate': datetime.datetime(2020, 11, 17, 0, 0), 'startdate_str': '2020-01-07T00:00:00', 'enddate_str': '2020-11-17T00:00:00', 'ongoing': True}
+        resource.set_date_of_resource('2020-02-09', '2020-10-20')
+        result = resource.get_date_of_resource('%d/%m/%Y')
+        assert result == {'startdate': datetime.datetime(2020, 2, 9, 0, 0), 'enddate': datetime.datetime(2020, 10, 20, 0, 0), 'startdate_str': '09/02/2020', 'enddate_str': '20/10/2020', 'ongoing': False}
 
     def test_check_required_fields(self, configuration):
         resource_data = copy.deepcopy(TestResource.resource_data)
