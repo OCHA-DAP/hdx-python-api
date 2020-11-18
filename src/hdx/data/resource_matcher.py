@@ -20,18 +20,23 @@ class ResourceMatcher(object):
         Returns:
             Optional[int]: Index of resource that matches in list or None
         """
-        ids1 = [x.get('id') for x in resources1]
         id2 = resource2.get('id')
+        grouping2 = resource2.get('grouping')
         index1_match = None
         if id2 is not None:
-            try:
-                return ids1.index(id2)
-            except ValueError:
-                pass
-        names1 = [x['name'] for x in resources1]
-        name2 = resource2['name']
+            ids1 = [(x.get('id'), x.get('grouping')) for x in resources1]
+            id2 = (resource2.get('id'), grouping2)
+
+            if id2 is not None:
+                try:
+                    return ids1.index(id2)
+                except ValueError:
+                    pass
+        names1 = [(x['name'], x.get('grouping')) for x in resources1]
+        name2 = (resource2['name'], grouping2)
         formats1 = [x['format'] for x in resources1]
         format2 = resource2['format'].lower()
+
         dupnames = {item for item, count in collections.Counter(names1).items() if count > 1}
         for i, name1 in enumerate(names1):
             if name1 != name2:
@@ -56,9 +61,11 @@ class ResourceMatcher(object):
             Tuple[List, List, List, List]: Returns indices that match (2 lists) and that don't match (2 lists)
         """
         ids1 = [x.get('id') for x in resources1]
+        groups1 = [x.get('group') for x in resources1]
         names1 = [x['name'] for x in resources1]
         formats1 = [x['format'] for x in resources1]
         ids2 = [x.get('id') for x in resources2]
+        groups2 = [x.get('group') for x in resources2]
         names2 = [x['name'] for x in resources2]
         formats2 = [x['format'] for x in resources2]
         index1_matches = list()
@@ -70,8 +77,9 @@ class ResourceMatcher(object):
                 if id2 is None:
                     continue
                 if id1 == id2:
-                    index1_matches.append(i)
-                    index2_matches.append(j)
+                    if groups1[i] == groups2[j]:
+                        index1_matches.append(i)
+                        index2_matches.append(j)
         dupnames1 = {item for item, count in collections.Counter(names1).items() if count > 1}
         dupnames2 = {item for item, count in collections.Counter(names2).items() if count > 1}
         dupnames = dupnames1.union(dupnames2)
@@ -86,8 +94,9 @@ class ResourceMatcher(object):
                 if name1 in dupnames:
                     if formats1[i].lower() != formats2[j].lower():
                         continue
-                index1_matches.append(i)
-                index2_matches.append(j)
+                if groups1[i] == groups2[j]:
+                    index1_matches.append(i)
+                    index2_matches.append(j)
         index1_nomatches = [i for i, _ in enumerate(ids1) if i not in index1_matches]
         index2_nomatches = [i for i, _ in enumerate(ids2) if i not in index2_matches]
         return index1_matches, index2_matches, index1_nomatches, index2_nomatches
