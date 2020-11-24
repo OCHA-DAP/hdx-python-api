@@ -61,11 +61,11 @@ class ResourceMatcher(object):
             Tuple[List, List, List, List]: Returns indices that match (2 lists) and that don't match (2 lists)
         """
         ids1 = [x.get('id') for x in resources1]
-        groups1 = [x.get('group') for x in resources1]
+        groups1 = [x.get('grouping') for x in resources1]
         names1 = [x['name'] for x in resources1]
         formats1 = [x['format'] for x in resources1]
         ids2 = [x.get('id') for x in resources2]
-        groups2 = [x.get('group') for x in resources2]
+        groups2 = [x.get('grouping') for x in resources2]
         names2 = [x['name'] for x in resources2]
         formats2 = [x['format'] for x in resources2]
         index1_matches = list()
