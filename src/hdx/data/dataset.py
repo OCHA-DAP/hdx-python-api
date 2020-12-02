@@ -403,8 +403,13 @@ class Dataset(HDXObject):
             if not is_valid_uuid(batch):
                 raise HDXError('%s is not a valid UUID!' % batch)
             self.data['batch'] = batch
-            batch_mode = 'DONT_GROUP'
-            self.data['batch_mode'] = batch_mode
+            del kwargs['batch']
+            batch_mode = kwargs.get('batch_mode')
+            if batch_mode:
+                del kwargs['batch_mode']
+            else:
+                batch_mode = 'DONT_GROUP'
+                self.data['batch_mode'] = batch_mode
             return batch_mode
         return None
 
