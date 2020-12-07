@@ -108,6 +108,7 @@ class Dataset(HDXObject):
             'show': 'package_show',
             'update': 'package_update',
             'create': 'package_create',
+            'patch': 'package_patch',
             'delete': 'hdx_dataset_purge',
             'search': 'package_search',
             'reorder': 'package_resource_reorder',
@@ -389,14 +390,29 @@ class Dataset(HDXObject):
                 ignore_fields = ['package_id']
                 resource.check_required_fields(ignore_fields=ignore_fields)
 
-    def set_updated_by_script_batch(self, **kwargs):
-        # type: (Any) -> Optional[str]
-        """Set metadata fields updated_by_script, batch and batch_mode
+    def _save_dataset_add_filestore_resources(self, default_operation, id_field_name, filestore_resources, hxl_update, create_default_views=False, **kwargs):
+        # type: (str, str, List[hdx.data.resource.Resource], bool, bool, Any) -> None
+        """Helper method to save the modified dataset and add any filestore resources
+
+        Args:
+            default_operation (str): Operation to perform eg. patch. Defaults to update.
+            id_field_name (str): Name of field containing HDX object identifier
+            filestore_resources (List[hdx.data.resource.Resource]): List of resources that use filestore (to be appended to)
+            hxl_update (bool): Whether to call package_hxl_update.
+            create_default_views (bool): Whether to create default views. Defaults to False.
+            **kwargs: See below
+            ignore_field (str): Any field to ignore when checking dataset metadata. Defaults to None.
 
         Returns:
-            Optional[str]: batch_mode setting or None
+            None
         """
-        scriptinfo = kwargs.get('updated_by_script', self.configuration.get_user_agent())
+
+        self.clean_tags()
+        scriptinfo = kwargs.get('updated_by_script')
+        if scriptinfo:
+            del kwargs['updated_by_script']
+        else:
+            scriptinfo = self.configuration.get_user_agent()
         self.data['updated_by_script'] = '%s (%s)' % (scriptinfo, datetime.utcnow().isoformat())
         batch = kwargs.get('batch')
         if batch:
@@ -404,14 +420,28 @@ class Dataset(HDXObject):
                 raise HDXError('%s is not a valid UUID!' % batch)
             self.data['batch'] = batch
             del kwargs['batch']
-            batch_mode = kwargs.get('batch_mode')
-            if batch_mode:
-                del kwargs['batch_mode']
-            else:
-                batch_mode = 'DONT_GROUP'
-                self.data['batch_mode'] = batch_mode
-            return batch_mode
-        return None
+            if 'batch_mode' not in kwargs:
+                kwargs['batch_mode'] = 'DONT_GROUP'
+        existing_operation = kwargs.get('operation')
+        if not existing_operation:
+            kwargs['operation'] = default_operation
+        existing_ignore_check = kwargs.get('ignore_check')
+        if not existing_ignore_check and default_operation == 'create':
+            kwargs['ignore_check'] = True
+        self._hdx_update('dataset', id_field_name, force_active=True, **kwargs)
+        if not existing_operation:
+            del kwargs['operation']
+        if not existing_ignore_check and default_operation == 'create':
+            del kwargs['ignore_check']
+        hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources, **kwargs)
+        self.init_resources()
+        self.separate_resources()
+        if create_default_views:
+            self.create_default_views()
+        self._create_preview_resourceview()
+        if hxl_update:
+            self.hxl_update()
+
 
     def _dataset_merge_hdx_update(self, update_resources, match_resources_by_metadata,
                                   remove_additional_resources, create_default_views, hxl_update, **kwargs):
@@ -430,7 +460,6 @@ class Dataset(HDXObject):
         """
         # 'old_data' here is the data we want to use for updating while 'data' is the data read from HDX
         merge_two_dictionaries(self.data, self.old_data)
-        self.clean_tags()
         if 'resources' in self.data:
             del self.data['resources']
         updated_resources = self.old_data.get('resources', None)
@@ -485,19 +514,8 @@ class Dataset(HDXObject):
 
         if self.resources:
             self.data['resources'] = self._convert_hdxobjects(self.resources)
-        if 'ignore_check' not in kwargs:  # allow ignoring of field checks
-            ignore_field = self.configuration['dataset'].get('ignore_on_update')
-            self.check_required_fields(ignore_fields=[ignore_field])
-        batch_mode = self.set_updated_by_script_batch(**kwargs)
-        self._save_to_hdx('update', 'id', force_active=True)
-        hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources, batch_mode, **kwargs)
-        self.init_resources()
-        self.separate_resources()
-        if create_default_views:
-            self.create_default_views()
-        self._create_preview_resourceview()
-        if hxl_update:
-            self.hxl_update()
+        self._save_dataset_add_filestore_resources('update', 'id', filestore_resources, hxl_update,
+                                                   create_default_views=create_default_views, **kwargs)
 
     def update_in_hdx(self, update_resources=True, match_resources_by_metadata=True,
                       remove_additional_resources=False, create_default_views=True, hxl_update=True, **kwargs):
@@ -582,15 +600,7 @@ class Dataset(HDXObject):
             for resource in self.resources:
                 hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(resource, ignore_fields, filestore_resources)
             self.data['resources'] = self._convert_hdxobjects(self.resources)
-        self.clean_tags()
-        batch_mode = self.set_updated_by_script_batch(**kwargs)
-        self._save_to_hdx('create', 'name', force_active=True)
-        hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources, batch_mode)
-        self.init_resources()
-        self.separate_resources()
-        if hxl_update:
-            self.hxl_update()
-        self._create_preview_resourceview()
+        self._save_dataset_add_filestore_resources('create', 'name', filestore_resources, hxl_update, **kwargs)
         logger.info('Created %s' % self.get_hdx_url())
 
     def delete_from_hdx(self):
