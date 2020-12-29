@@ -137,120 +137,6 @@ class TestDatasetNoncore:
         dataset = Dataset(datasetdata)
         assert dataset.get_hdx_url() == 'https://feature.data-humdata-org.ahconu.org/dataset/MyDataset1'
 
-    def test_get_set_dataset_date(self, configuration):
-        datasetdata = copy.deepcopy(dataset_data)
-        dataset = Dataset(datasetdata)
-        assert dataset['dataset_date'] == '06/04/2016'
-        assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2016, 6, 4, 0, 0)
-        assert dataset.get_dataset_date() == '2016-06-04'
-        assert dataset.get_dataset_date('%Y/%m/%d') == '2016/06/04'
-        testdate = datetime.datetime(2013, 12, 25, 0, 0)
-        dataset.set_dataset_date_from_datetime(testdate)
-        assert dataset['dataset_date'] == '12/25/2013'
-        assert dataset.get_dataset_date_as_datetime() == testdate
-        assert dataset.get_dataset_date() == '2013-12-25'
-        assert dataset.get_dataset_date('%y-%m-%d %H:%M:%S%Z') == '13-12-25 00:00:00'
-        dataset.set_dataset_date_from_datetime(testdate, testdate)
-        assert dataset['dataset_date'] == '12/25/2013'
-        dataset.set_dataset_date('2007-01-25T12:00:00Z')
-        assert dataset['dataset_date'] == '01/25/2007'
-        assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2007, 1, 25, 0, 0)
-        assert dataset.get_dataset_date() == '2007-01-25'
-        assert dataset.get_dataset_date('%Y-%m-%dT%H:%M:%S%Z') == '2007-01-25T00:00:00'
-        dataset.set_dataset_date('2013-09-11')
-        assert dataset['dataset_date'] == '09/11/2013'
-        assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2013, 9, 11, 0, 0)
-        assert dataset.get_dataset_date() == '2013-09-11'
-        assert dataset.get_dataset_date('%Y/%m/%d') == '2013/09/11'
-        test_date = '2021/05/06'
-        dataset.set_dataset_date(test_date, date_format='%Y/%m/%d')
-        assert dataset['dataset_date'] == '05/06/2021'
-        assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2021, 5, 6, 0, 0)
-        assert dataset.get_dataset_date() == '2021-05-06'
-        assert dataset.get_dataset_date('%Y/%m/%d') == test_date
-        assert dataset.get_dataset_date_type() == 'date'
-        test_date = '2021/05/06'
-        dataset.set_dataset_date(test_date, None, '%Y/%m/%d', allow_range=False)
-        assert dataset['dataset_date'] == '05/06/2021'
-        test_end_date = '2021/07/08'
-        dataset.set_dataset_date(test_date, test_end_date, '%Y/%m/%d')
-        assert dataset['dataset_date'] == '05/06/2021-07/08/2021'
-        assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2021, 5, 6, 0, 0)
-        assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2021, 7, 8, 0, 0)
-        assert dataset.get_dataset_date() == '2021-05-06'
-        assert dataset.get_dataset_end_date() == '2021-07-08'
-        assert dataset.get_dataset_date('%Y/%m/%d') == test_date
-        assert dataset.get_dataset_end_date('%Y/%m/%d') == test_end_date
-        assert dataset.get_dataset_date_type() == 'range'
-        dataset.set_dataset_date(test_date, test_end_date, '%Y/%m/%d', allow_range=False)
-        assert dataset['dataset_date'] == '05/06/2021-07/08/2021'
-        dataset.set_dataset_date(test_date, test_end_date)
-        assert dataset['dataset_date'] == '05/06/2021-07/08/2021'
-        dataset.set_dataset_date(test_date, test_end_date, allow_range=False)
-        assert dataset['dataset_date'] == '05/06/2021-07/08/2021'
-        retval = dataset.set_dataset_year_range(2001, 2015)
-        assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2001, 1, 1, 0, 0)
-        assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2015, 12, 31, 0, 0)
-        assert retval == [2001, 2015]
-        retval = dataset.set_dataset_year_range('2010', '2017')
-        assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2010, 1, 1, 0, 0)
-        assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2017, 12, 31, 0, 0)
-        assert retval == [2010, 2017]
-        retval = dataset.set_dataset_year_range('2013')
-        assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2013, 1, 1, 0, 0)
-        assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2013, 12, 31, 0, 0)
-        assert retval == [2013]
-        retval = dataset.set_dataset_year_range({2005, 2002, 2003})
-        assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2002, 1, 1, 0, 0)
-        assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2005, 12, 31, 0, 0)
-        assert retval == [2002, 2003, 2005]
-        retval = dataset.set_dataset_year_range([2005, 2002, 2003])
-        assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2002, 1, 1, 0, 0)
-        assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2005, 12, 31, 0, 0)
-        assert retval == [2002, 2003, 2005]
-        retval = dataset.set_dataset_year_range((2005, 2002, 2003))
-        assert dataset.get_dataset_date_as_datetime() == datetime.datetime(2002, 1, 1, 0, 0)
-        assert dataset.get_dataset_end_date_as_datetime() == datetime.datetime(2005, 12, 31, 0, 0)
-        assert retval == [2002, 2003, 2005]
-        with pytest.raises(ParserError):
-            dataset.set_dataset_date('lalala')
-        with pytest.raises(ParserError):
-            dataset.set_dataset_date('lalala', 'lalala')
-        with pytest.raises(ParserError):
-            dataset.set_dataset_date('lalala', 'lalala', date_format='%Y/%m/%d')
-        with pytest.raises(HDXError):
-            dataset.set_dataset_year_range(23.5)
-        with pytest.raises(HDXError):
-            dataset.set_dataset_year_range(2015, 23.5)
-        del dataset['dataset_date']
-        assert dataset.get_dataset_date_as_datetime() is None
-        assert dataset.get_dataset_end_date_as_datetime() is None
-        assert dataset.get_dataset_date() is None
-        assert dataset.get_dataset_date('YYYY/MM/DD') is None
-        assert dataset.get_dataset_date_type() is None
-        dataset.set_dataset_date('2013-09')
-        assert dataset['dataset_date'] == '09/01/2013-09/30/2013'
-        dataset.set_dataset_date('2013-09', date_format='%Y-%m')
-        assert dataset['dataset_date'] == '09/01/2013-09/30/2013'
-        dataset.set_dataset_date('2013-09', dataset_end_date='2014-02')
-        assert dataset['dataset_date'] == '09/01/2013-02/28/2014'
-        dataset.set_dataset_date('2013-09', dataset_end_date='2014-02', date_format='%Y-%m')
-        assert dataset['dataset_date'] == '09/01/2013-02/28/2014'
-        dataset.set_dataset_date('2013')
-        assert dataset['dataset_date'] == '01/01/2013-12/31/2013'
-        dataset.set_dataset_date('2013', dataset_end_date='2014')
-        assert dataset['dataset_date'] == '01/01/2013-12/31/2014'
-        dataset.set_dataset_date('2013', dataset_end_date='2014', date_format='%Y')
-        assert dataset['dataset_date'] == '01/01/2013-12/31/2014'
-        with pytest.raises(ParserError):
-            dataset.set_dataset_date('2013-09', allow_range=False)
-        with pytest.raises(ParserError):
-            dataset.set_dataset_date('2013-09', date_format='%Y-%m', allow_range=False)
-        with pytest.raises(ParserError):
-            dataset.set_dataset_date('2013-09', dataset_end_date='2014-02', allow_range=False)
-        with pytest.raises(ParserError):
-            dataset.set_dataset_date('2013-09', dataset_end_date='2014-02', date_format='%Y-%m', allow_range=False)
-
     def test_get_set_date_of_dataset(self):
         dataset = Dataset({'dataset_date': '[2020-01-07T00:00:00 TO *]'})
         result = dataset.get_date_of_dataset(today=datetime.date(2020, 11, 17))
@@ -258,6 +144,21 @@ class TestDatasetNoncore:
         dataset.set_date_of_dataset('2020-02-09', '2020-10-20')
         result = dataset.get_date_of_dataset('%d/%m/%Y')
         assert result == {'startdate': datetime.datetime(2020, 2, 9, 0, 0), 'enddate': datetime.datetime(2020, 10, 20, 0, 0), 'startdate_str': '09/02/2020', 'enddate_str': '20/10/2020', 'ongoing': False}
+
+    def test_set_dataset_year_range(self, configuration):
+        dataset = Dataset()
+        retval = dataset.set_dataset_year_range(2001, 2015)
+        assert retval == [2001, 2015]
+        retval = dataset.set_dataset_year_range('2010', '2017')
+        assert retval == [2010, 2017]
+        retval = dataset.set_dataset_year_range('2013')
+        assert retval == [2013]
+        retval = dataset.set_dataset_year_range({2005, 2002, 2003})
+        assert retval == [2002, 2003, 2005]
+        retval = dataset.set_dataset_year_range([2005, 2002, 2003])
+        assert retval == [2002, 2003, 2005]
+        retval = dataset.set_dataset_year_range((2005, 2002, 2003))
+        assert retval == [2002, 2003, 2005]
 
     def test_is_set_subnational(self):
         datasetdata = copy.deepcopy(dataset_data)
@@ -620,21 +521,21 @@ class TestDatasetNoncore:
         dataset['title'] = title
         assert dataset.remove_dates_from_title(set_dataset_date=True) == expected
         assert dataset['title'] == newtitle
-        assert dataset['dataset_date'] == '01/01/1981-12/31/2015'
+        assert dataset['dataset_date'] == '[1981-01-01T00:00:00 TO 2015-12-31T00:00:00]'
         assert dataset.remove_dates_from_title() == list()
         dataset['title'] = 'Mon_State_Village_Tract_Boundaries 9999 2001'
         expected = [(datetime.datetime(2001, 1, 1, 0, 0), datetime.datetime(2001, 12, 31, 0, 0))]
         assert dataset.remove_dates_from_title(set_dataset_date=True) == expected
         assert dataset['title'] == 'Mon_State_Village_Tract_Boundaries 9999'
-        assert dataset['dataset_date'] == '01/01/2001-12/31/2001'
+        assert dataset['dataset_date'] == '[2001-01-01T00:00:00 TO 2001-12-31T00:00:00]'
         dataset['title'] = 'Mon_State_Village_Tract_Boundaries 2001 99'
         assert dataset.remove_dates_from_title(set_dataset_date=True) == expected
         assert dataset['title'] == 'Mon_State_Village_Tract_Boundaries 99'
-        assert dataset['dataset_date'] == '01/01/2001-12/31/2001'
+        assert dataset['dataset_date'] == '[2001-01-01T00:00:00 TO 2001-12-31T00:00:00]'
         dataset['title'] = 'Mon_State_Village_Tract_Boundaries 9999 2001 99'
         assert dataset.remove_dates_from_title(set_dataset_date=True) == expected
         assert dataset['title'] == 'Mon_State_Village_Tract_Boundaries 9999 99'
-        assert dataset['dataset_date'] == '01/01/2001-12/31/2001'
+        assert dataset['dataset_date'] == '[2001-01-01T00:00:00 TO 2001-12-31T00:00:00]'
 
     def test_generate_qc_resource_from_rows(self, configuration):
         with temp_dir('test') as folder:
@@ -698,7 +599,7 @@ class TestDatasetNoncore:
                                    'qcheaders': ['EVENT_ID_CNTY', 'EVENT_DATE', 'YEAR', 'EVENT_TYPE', 'ACTOR1', 'ACTOR2', 'COUNTRY', 'ADMIN1', 'ADMIN2', 'ADMIN3', 'LOCATION', 'LATITUDE', 'LONGITUDE', 'SOURCE', 'NOTES', 'FATALITIES'],
                                    'qcrows': [{'EVENT_ID_CNTY': '#event+code', 'EVENT_DATE': '#date+occurred', 'YEAR': '#date+year', 'EVENT_TYPE': '#event+type', 'ACTOR1': '#group+name+first', 'ACTOR2': '#group+name+second', 'COUNTRY': '#country+name', 'ADMIN1': '#adm1+name', 'ADMIN2': '#adm2+name', 'ADMIN3': '#adm3+name', 'LOCATION': '#loc+name', 'LATITUDE': '#geo+lat', 'LONGITUDE': '#geo+lon', 'SOURCE': '#meta+source', 'NOTES': '#description', 'FATALITIES': '#affected+killed'},
                                               {'EVENT_ID_CNTY': '1416RTA', 'EVENT_DATE': '18/04/2001', 'YEAR': '2001', 'EVENT_TYPE': 'Violence against civilians', 'ACTOR1': 'Police Forces of Algeria (1999-)', 'ACTOR2': 'Civilians (Algeria)', 'COUNTRY': 'Algeria', 'ADMIN1': 'Tizi Ouzou', 'ADMIN2': 'Beni-Douala', 'ADMIN3': '', 'LOCATION': 'Beni Douala', 'LATITUDE': '36.61954', 'LONGITUDE': '4.08282', 'SOURCE': 'Associated Press Online', 'NOTES': 'A Berber student was shot while in police custody at a police station in Beni Douala. He later died on Apr.21.', 'FATALITIES': '1'}, {'EVENT_ID_CNTY': '2231RTA', 'EVENT_DATE': '21/04/2001', 'YEAR': '2001', 'EVENT_TYPE': 'Riots/Protests', 'ACTOR1': 'Rioters (Algeria)', 'ACTOR2': 'Police Forces of Algeria (1999-)', 'COUNTRY': 'Algeria', 'ADMIN1': 'Bejaia', 'ADMIN2': 'Amizour', 'ADMIN3': '', 'LOCATION': 'Amizour', 'LATITUDE': '36.64022', 'LONGITUDE': '4.90131', 'SOURCE': 'Kabylie report', 'NOTES': 'Rioters threw molotov cocktails, rocks and burning tires at gendarmerie stations in Beni Douala, El-Kseur and Amizour.', 'FATALITIES': '0'}]}
-                assert dataset['dataset_date'] == '01/01/2001-12/31/2002'
+                assert dataset['dataset_date'] == '[2001-01-01T00:00:00 TO 2002-12-31T00:00:00]'
                 assert admin1s == {'Bejaia', 'Tizi Ouzou'}
                 resources = dataset.get_resources()
                 assert resources == [{'name': 'Conflict Data for Algeria', 'description': 'Conflict data with HXL tags', 'format': 'csv', 'resource_type': 'file.upload', 'url_type': 'upload'},
@@ -740,7 +641,7 @@ class TestDatasetNoncore:
                 assert success is True
                 assert results['startdate'] == datetime.datetime(2001, 1, 1, 0, 0)
                 assert results['enddate'] == datetime.datetime(2001, 12, 31, 0, 0)
-                assert dataset['dataset_date'] == '01/01/2001-12/31/2001'
+                assert dataset['dataset_date'] == '[2001-01-01T00:00:00 TO 2001-12-31T00:00:00]'
                 assert_files_same(join('tests', 'fixtures', 'gen_resource', 'min_%s' % qc_filename), join(folder, qc_filename))
 
                 with pytest.raises(HDXError):

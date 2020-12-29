@@ -1,7 +1,7 @@
 ckanapi==4.5
-hdx-python-country==2.7.0
+hdx-python-country==2.7.1
 ndg-httpsclient==0.5.1
 pyasn1==0.4.8
-pyOpenSSL==20.0.0
+pyOpenSSL==20.0.1
 quantulum==0.1.13;python_version<'3'
 quantulum3==0.7.6;python_version>='3'

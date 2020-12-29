@@ -796,73 +796,7 @@ class Dataset(HDXObject):
         """
         return cls._autocomplete(name, limit, configuration)
 
-    def get_dataset_date_type(self):
-        # type: () -> Optional[str]
-        """Get type of dataset date (range, date) or None if no date is set
-
-        Returns:
-            Optional[str]: Type of dataset date (range, date) or None if no date is set
-        """
-        dataset_date = self.data.get('dataset_date', None)
-        if dataset_date:
-            if '-' in dataset_date:
-                return 'range'
-            else:
-                return 'date'
-        else:
-            return None
-
-    def get_dataset_date_as_datetime(self):
-        # type: () -> Optional[datetime]
-        """Get dataset date as datetime.datetime object. For range returns start date.
-
-        Returns:
-            Optional[datetime.datetime]: Dataset date in datetime object or None if no date is set
-        """
-        dataset_date = self.data.get('dataset_date', None)
-        if dataset_date:
-            if '-' in dataset_date:
-                dataset_date = dataset_date.split('-')[0]
-            return datetime.strptime(dataset_date, '%m/%d/%Y')
-        else:
-            return None
-
-    def get_dataset_end_date_as_datetime(self):
-        # type: () -> Optional[datetime]
-        """Get dataset end date as datetime.datetime object.
-
-        Returns:
-            Optional[datetime.datetime]: Dataset date in datetime object or None if no date is set
-        """
-        dataset_date = self.data.get('dataset_date', None)
-        if dataset_date:
-            if '-' in dataset_date:
-                dataset_date = dataset_date.split('-')[1]
-                return datetime.strptime(dataset_date, '%m/%d/%Y')
-        return None
-
-    @staticmethod
-    def _get_formatted_date(dataset_date, date_format=None):
-        # type: (Optional[datetime], Optional[str]) -> Optional[str]
-        """Get supplied dataset date as string in specified format. 
-        If no format is supplied, an ISO 8601 string is returned.
-
-        Args:
-            dataset_date (Optional[datetime.datetime]): dataset date in datetime.datetime format 
-            date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
-
-        Returns:
-            Optional[str]: Dataset date string or None if no date is set
-        """
-        if dataset_date:
-            if date_format:
-                return dataset_date.strftime(date_format)
-            else:
-                return dataset_date.date().isoformat()
-        else:
-            return None
-
-    def get_date_of_dataset(self, date_format=None, today=date.today()):
+    def get_date_of_dataset(self, date_format=None, today=datetime.now()):
         # type: (Optional[str], datetime.date) -> Dict
         """Get dataset date as datetimes and strings in specified format. If no format is supplied, the ISO 8601
         format is used. Returns a dictionary containing keys startdate (start date as datetime), enddate (end
@@ -871,40 +805,12 @@ class Dataset(HDXObject):
 
         Args:
             date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
-            today (datetime.date): Date to use for today. Defaults to date.today.
+            today (datetime.date): Date to use for today. Defaults to datetime.now.
 
         Returns:
             Dict: Dictionary of date information
         """
         return DateHelper.get_date_info(self.data.get('dataset_date'), date_format, today)
-
-    def get_dataset_date(self, date_format=None):
-        # type: (Optional[str]) -> Optional[str]
-        """Get dataset date as string in specified format. For range returns start date.
-        If no format is supplied, an ISO 8601 string is returned.
-
-        Args:
-            date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
-
-        Returns:
-            Optional[str]: Dataset date string or None if no date is set
-        """
-        dataset_date = self.get_dataset_date_as_datetime()
-        return self._get_formatted_date(dataset_date, date_format)
-
-    def get_dataset_end_date(self, date_format=None):
-        # type: (Optional[str]) -> Optional[str]
-        """Get dataset date as string in specified format. For range returns start date.
-        If no format is supplied, an ISO 8601 string is returned.
-
-        Args:
-            date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
-
-        Returns:
-            Optional[str]: Dataset date string or None if no date is set
-        """
-        dataset_date = self.get_dataset_end_date_as_datetime()
-        return self._get_formatted_date(dataset_date, date_format)
 
     def set_date_of_dataset(self, startdate, enddate):
         # type: (Union[datetime.datetime, str], Union[datetime.datetime, str]) -> None
@@ -919,58 +825,6 @@ class Dataset(HDXObject):
         """
         self.data['dataset_date'] = DateHelper.get_hdx_date(startdate, enddate)
 
-    def set_dataset_date_from_datetime(self, dataset_date, dataset_end_date=None):
-        # type: (datetime, Optional[datetime]) -> None
-        """Set dataset date from datetime.datetime object
-
-        Args:
-            dataset_date (datetime.datetime): Dataset date
-            dataset_end_date (Optional[datetime.datetime]): Dataset end date
-
-        Returns:
-            None
-        """
-        start_date = dataset_date.strftime('%m/%d/%Y')
-        if dataset_end_date is None:
-            self.data['dataset_date'] = start_date
-        else:
-            end_date = dataset_end_date.strftime('%m/%d/%Y')
-            if start_date == end_date:
-                self.data['dataset_date'] = start_date
-            else:
-                self.data['dataset_date'] = '%s-%s' % (start_date, end_date)
-
-    def set_dataset_date(self, dataset_date, dataset_end_date=None, date_format=None, allow_range=True):
-        # type: (str, Optional[str], Optional[str], bool) -> None
-        """Set dataset date from string using specified format. If no format is supplied, the function will guess.
-        For unambiguous formats, this should be fine. If allow_range is True and dataset_end_date is not supplied,
-        then if dataset_date lacks days and/or months, it will be taken to be a date range. If allow_range is True,
-        dataset_end_date is supplied and both dataset_date and dataset_end_date lack days and/or months, then a
-        date range will be used from the start date of dataset_date range and the end date of the dataset_end_date
-        range. If allow_range is False, date ranges will not be allowed.
-
-        Args:
-            dataset_date (str): Dataset date string
-            dataset_end_date (Optional[str]): Dataset end date string
-            date_format (Optional[str]): Date format. If None is given, will attempt to guess. Defaults to None.
-            allow_range (bool): Whether to allow dataset_date to be a range. Defaults to True.
-
-        Returns:
-            None
-        """
-        if allow_range:
-            startdate, enddate = parse_date_range(dataset_date, date_format=date_format, zero_time=True)
-            if dataset_end_date is not None:
-                _, enddate = parse_date_range(dataset_end_date, date_format=date_format, zero_time=True)
-            self.set_dataset_date_from_datetime(startdate, enddate)
-        else:
-            date = parse_date(dataset_date, date_format=date_format, zero_time=True)
-            if dataset_end_date is None:
-                enddate = None
-            else:
-                enddate = parse_date(dataset_end_date, date_format=date_format, zero_time=True)
-            self.set_dataset_date_from_datetime(date, enddate)
-
     def set_dataset_year_range(self, dataset_year, dataset_end_year=None):
         # type: (Union[str, int, Iterable], Optional[Union[str, int]]) -> List[int]
         """Set dataset date as a range from year or start and end year.
@@ -982,29 +836,7 @@ class Dataset(HDXObject):
         Returns:
             List[int]: The start and end year if supplied or sorted list of years
         """
-        retval = list()
-        if isinstance(dataset_year, str):
-            dataset_year = int(dataset_year)
-        if isinstance(dataset_year, int):
-            dataset_date = '01/01/%d' % dataset_year
-            retval.append(dataset_year)
-        elif isinstance(dataset_year, Iterable):
-            retval = sorted(list(dataset_year))
-            dataset_date = '01/01/%d' % retval[0]
-            dataset_end_year = retval[-1]
-            retval.pop()
-        else:
-            raise hdx.data.hdxobject.HDXError('dataset_year has type %s which is not supported!' % type(dataset_year).__name__)
-        if isinstance(dataset_end_year, str):
-            dataset_end_year = int(dataset_end_year)
-        if dataset_end_year is None:
-            dataset_end_date = '31/12/%d' % dataset_year
-        elif isinstance(dataset_end_year, int):
-            dataset_end_date = '31/12/%d' % dataset_end_year
-            retval.append(dataset_end_year)
-        else:
-            raise hdx.data.hdxobject.HDXError('dataset_end_year has type %s which is not supported!' % type(dataset_end_year).__name__)
-        self.set_dataset_date(dataset_date, dataset_end_date)
+        self.data['dataset_date'], retval = DateHelper.get_hdx_date_from_years(dataset_year, dataset_end_year)
         return retval
 
     @classmethod
@@ -1795,7 +1627,7 @@ class Dataset(HDXObject):
             self.data['title'] = newtitle
         if set_dataset_date and len(ranges) != 0:
             startdate, enddate = ranges[0]
-            self.set_dataset_date_from_datetime(startdate, enddate)
+            self.set_date_of_dataset(startdate, enddate)
         return ranges
 
     def generate_resource_from_rows(self, folder, filename, rows, resourcedata, headers=None):
@@ -1973,7 +1805,7 @@ class Dataset(HDXObject):
             else:
                 retdict['startdate'] = dates[0]
                 retdict['enddate'] = dates[1]
-                self.set_dataset_date_from_datetime(dates[0], dates[1])
+                self.set_date_of_dataset(dates[0], dates[1])
         resource = self.generate_resource_from_rows(folder, filename, rows, resourcedata, headers=headers)
         retdict['resource'] = resource
         retdict['headers'] = headers
