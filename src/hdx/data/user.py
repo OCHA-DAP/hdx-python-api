@@ -109,7 +109,7 @@ class User(HDXObject):
             self.data['capacity'] = capacity
 
     def create_in_hdx(self, **kwargs):
-        # type: () -> None
+        # type: (Any) -> None
         """Check if user exists in HDX and if so, update it, otherwise create user
 
         Returns:
@@ -214,14 +214,14 @@ class User(HDXObject):
                                      bcc=bccemails, **kwargs)
 
     def get_organizations(self, permission='read'):
-        # type: (str) -> List['Organization']
+        # type: (str) -> List[hdx.data.organization]
         """Get organizations in HDX that this user is a member of.
 
         Args:
             permission (str): Permission to check for. Defaults to 'read'.
 
         Returns:
-            List[Organization]: List of organizations in HDX that this user is a member of
+            List[hdx.data.organization]: List of organizations in HDX that this user is a member of
         """
         success, result = self._read_from_hdx('user', self.data['name'], 'id', self.actions()['listorgs'],
                                               permission=permission)

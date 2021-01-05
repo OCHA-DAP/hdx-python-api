@@ -2,7 +2,7 @@
 """Resource view class containing all logic for creating, checking, and updating resource views."""
 import logging
 from os.path import join
-from typing import Optional, List, Any, Dict
+from typing import Optional, List, Any, Dict, Union
 
 from hdx.utilities import is_valid_uuid
 
