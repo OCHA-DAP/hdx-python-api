@@ -2,7 +2,7 @@
 """User class containing all logic for creating, checking, and updating users."""
 import logging
 from os.path import join
-from typing import Optional, List, Any
+from typing import Optional, List, Any, Dict
 
 import hdx.data.organization
 from hdx.data.hdxobject import HDXObject

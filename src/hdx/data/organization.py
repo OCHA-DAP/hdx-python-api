@@ -2,7 +2,7 @@
 """Organization class containing all logic for creating, checking, and updating organizations."""
 import logging
 from os.path import join
-from typing import Optional, List, Dict, Union
+from typing import Optional, List, Dict, Union, Any
 
 import hdx.data.dataset
 import hdx.data.user
@@ -122,13 +122,13 @@ class Organization(HDXObject):
         self._delete_from_hdx('organization', 'id')
 
     def get_users(self, capacity=None):
-        # type: (Optional[str]) -> List[User]
+        # type: (Optional[str]) -> List[hdx.data.user.User]
         """Returns the organization's users.
 
         Args:
             capacity (Optional[str]): Filter by capacity eg. member, admin. Defaults to None.
         Returns:
-            List[User]: Organization's users.
+            List[hdx.data.user.User]: Organization's users.
         """
         users = list()
         usersdicts = self.data.get('users')

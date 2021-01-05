@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Resource class containing all logic for creating, checking, and updating resources."""
 import logging
-from datetime import date
+import datetime
 from os import remove
 from os.path import join
 from typing import Optional, List, Tuple, Dict, Union, Any
@@ -99,7 +99,7 @@ class Resource(HDXObject):
             raise HDXError('%s is not a valid resource id!' % identifier)
         return cls._read_from_hdx_class('resource', identifier, configuration)
 
-    def get_date_of_resource(self, date_format=None, today=date.today()):
+    def get_date_of_resource(self, date_format=None, today=datetime.date.today()):
         # type: (Optional[str], datetime.date) -> Dict
         """Get resource date as datetimes and strings in specified format. If no format is supplied, the ISO 8601
         format is used. Returns a dictionary containing keys startdate (start date as datetime), enddate (end

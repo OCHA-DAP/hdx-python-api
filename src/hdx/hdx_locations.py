@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Locations in HDX"""
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict
 
 from hdx.hdx_configuration import Configuration
 
