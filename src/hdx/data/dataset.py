@@ -1694,7 +1694,7 @@ class Dataset(HDXObject):
         a function to obtain handle any dates in a row. The function should accept a row and should return None to
         ignore the row or a dictionary which can either be empty if there are no dates in the row or can be populated
         with keys startdate and/or enddate which are of type datetime. The lowest start date and highest end date are
-        used to set the date of dataset and are returned in the results dictionary in keys: startdate and endddate.
+        used to set the date of dataset and are returned in the results dictionary in keys: startdate and enddate.
 
         If the parameter quickcharts is supplied then various QuickCharts related actions will occur depending upon the
         keys given in the dictionary and the returned dictionary will contain the QuickCharts resource in the key
@@ -1839,7 +1839,7 @@ class Dataset(HDXObject):
         a function to obtain handle any dates in a row. The function should accept a row and should return None to
         ignore the row or a dictionary which can either be empty if there are no dates in the row or can be populated
         with keys startdate and/or enddate which are of type datetime. The lowest start date and highest end date are
-        used to set the date of dataset and are returned in the results dictionary in keys: startdate and endddate.
+        used to set the date of dataset and are returned in the results dictionary in keys: startdate and enddate.
 
         If the parameter quickcharts is supplied then various QuickCharts related actions will occur depending upon the
         keys given in the dictionary and the returned dictionary will contain the QuickCharts resource in the key
