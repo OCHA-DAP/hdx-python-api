@@ -608,6 +608,12 @@ class TestDatasetNoncore:
                 qc_filename = 'qc_%s' % filename
                 assert_files_same(join('tests', 'fixtures', 'gen_resource', qc_filename), join(folder, qc_filename))
 
+                success, results = dataset.download_and_generate_resource(
+                    downloader, TestDatasetNoncore.url, TestDatasetNoncore.hxltags, folder, filename, resourcedata,
+                    header_insertions=[(0, 'lala')], row_function=process_row, datecol='EVENT_DATE', quickcharts=quickcharts)
+                assert success is True
+                assert dataset['dataset_date'] == '[2001-04-18T00:00:00 TO 2001-04-21T00:00:00]'
+
                 quickcharts = {'hashtag': '#event+code', 'values': ['1416RTA', '2230RTA', '2231RTA'],
                                'numeric_hashtag': '#affected+killed', 'cutdown': 2, 'cutdownhashtags': ['#event+code']}
                 success, results = dataset.download_and_generate_resource(
