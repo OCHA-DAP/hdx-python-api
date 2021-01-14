@@ -160,7 +160,7 @@ Once you have it, then put it into a file in your home directory:
 1.  Use configuration defaults.
 
     If you only want to read data, then connect to the production HDX
-    server:
+    server, replacing A_Quick_Example with something short that describes your project:
 
         Configuration.create(hdx_site='prod', user_agent='A_Quick_Example', hdx_read_only=True)
 
