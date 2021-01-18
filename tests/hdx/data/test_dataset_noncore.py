@@ -141,9 +141,15 @@ class TestDatasetNoncore:
         dataset = Dataset({'dataset_date': '[2020-01-07T00:00:00 TO *]'})
         result = dataset.get_date_of_dataset(today=datetime.date(2020, 11, 17))
         assert result == {'startdate': datetime.datetime(2020, 1, 7, 0, 0), 'enddate': datetime.datetime(2020, 11, 17, 0, 0), 'startdate_str': '2020-01-07T00:00:00', 'enddate_str': '2020-11-17T00:00:00', 'ongoing': True}
+        dataset.set_date_of_dataset('2020-02-09')
+        result = dataset.get_date_of_dataset('%d/%m/%Y')
+        assert result == {'startdate': datetime.datetime(2020, 2, 9, 0, 0), 'enddate': datetime.datetime(2020, 2, 9, 0, 0), 'startdate_str': '09/02/2020', 'enddate_str': '09/02/2020', 'ongoing': False}
         dataset.set_date_of_dataset('2020-02-09', '2020-10-20')
         result = dataset.get_date_of_dataset('%d/%m/%Y')
         assert result == {'startdate': datetime.datetime(2020, 2, 9, 0, 0), 'enddate': datetime.datetime(2020, 10, 20, 0, 0), 'startdate_str': '09/02/2020', 'enddate_str': '20/10/2020', 'ongoing': False}
+        dataset.set_date_of_dataset('2020-02-09', ongoing=True)
+        result = dataset.get_date_of_dataset('%d/%m/%Y', today=datetime.datetime(2020, 3, 9, 0, 0))
+        assert result == {'startdate': datetime.datetime(2020, 2, 9, 0, 0), 'enddate': datetime.datetime(2020, 3, 9, 0, 0), 'startdate_str': '09/02/2020', 'enddate_str': '09/03/2020', 'ongoing': True}
 
     def test_set_dataset_year_range(self, configuration):
         dataset = Dataset()

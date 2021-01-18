@@ -812,18 +812,19 @@ class Dataset(HDXObject):
         """
         return DateHelper.get_date_info(self.data.get('dataset_date'), date_format, today)
 
-    def set_date_of_dataset(self, startdate, enddate):
-        # type: (Union[datetime.datetime, str], Union[datetime.datetime, str]) -> None
+    def set_date_of_dataset(self, startdate, enddate=None, ongoing=False):
+        # type: (Union[datetime.datetime, str], Union[datetime, str, None], bool) -> None
         """Set dataset date from either datetime.datetime objects or strings.
 
         Args:
             startdate (Union[datetime.datetime, str]): Dataset start date
-            enddate (Union[datetime.datetime, str]): Dataset end date
+            enddate (Union[datetime, str, None]): Dataset end date. Defaults to None.
+            ongoing (bool): True if ongoing, False if not. Defaults to False.
 
         Returns:
             None
         """
-        self.data['dataset_date'] = DateHelper.get_hdx_date(startdate, enddate)
+        self.data['dataset_date'] = DateHelper.get_hdx_date(startdate, enddate, ongoing)
 
     def set_dataset_year_range(self, dataset_year, dataset_end_year=None):
         # type: (Union[str, int, Iterable], Optional[Union[str, int]]) -> List[int]
