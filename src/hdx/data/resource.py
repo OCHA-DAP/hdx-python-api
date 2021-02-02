@@ -128,7 +128,6 @@ class Resource(HDXObject):
         """
         self.data['daterange_for_data'] = DateHelper.get_hdx_date(startdate, enddate)
 
-
     def get_file_type(self):
         # type: () -> Optional[str]
         """Get the resource's file type
