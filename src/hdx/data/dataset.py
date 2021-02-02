@@ -109,6 +109,7 @@ class Dataset(HDXObject):
             'update': 'package_update',
             'create': 'package_create',
             'patch': 'package_patch',
+            'revise': 'package_revise',
             'delete': 'hdx_dataset_purge',
             'search': 'package_search',
             'reorder': 'package_resource_reorder',

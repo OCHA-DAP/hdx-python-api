@@ -213,6 +213,17 @@ class Resource(HDXObject):
         self.check_url_filetoupload()
         self._check_required_fields('resource', ignore_fields)
 
+    def _get_files(self):
+        # type: () -> Dict
+        """Return the files parameter for CKANAPI
+
+        Returns:
+            Dict: files parameter for CKANAPI
+        """
+        if self.file_to_upload is None:
+            return dict()
+        return {'upload': self.file_to_upload}
+
     def update_in_hdx(self, **kwargs):
         # type: (Any) -> None
         """Check if resource exists in HDX and if so, update it
@@ -227,7 +238,7 @@ class Resource(HDXObject):
         self._check_load_existing_object('resource', 'id')
         if self.file_to_upload and 'url' in self.data:
             del self.data['url']
-        self._merge_hdx_update('resource', 'id', self.file_to_upload, True, **kwargs)
+        self._merge_hdx_update('resource', 'id', self._get_files(), True, **kwargs)
 
     def create_in_hdx(self, **kwargs):
         # type: (Any) -> None
@@ -239,13 +250,14 @@ class Resource(HDXObject):
         if 'ignore_check' not in kwargs:  # allow ignoring of field checks
             self.check_required_fields()
         id = self.data.get('id')
+        files = self._get_files()
         if id and self._load_from_hdx('resource', id):
             logger.warning('%s exists. Updating %s' % ('resource', id))
             if self.file_to_upload and 'url' in self.data:
                 del self.data['url']
-            self._merge_hdx_update('resource', 'id', self.file_to_upload, True, **kwargs)
+            self._merge_hdx_update('resource', 'id', files, True, **kwargs)
         else:
-            self._save_to_hdx('create', 'name', self.file_to_upload, True)
+            self._save_to_hdx('create', 'name', files, True)
 
     def delete_from_hdx(self):
         # type: () -> None
