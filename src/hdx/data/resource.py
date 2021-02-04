@@ -153,8 +153,11 @@ class Resource(HDXObject):
                 downloader.download(url)
                 cls._formats_dict = dict()
                 for format_data in downloader.get_json():
-                    for format in format_data[3]:
-                        cls._formats_dict[format.lower()] = format_data[0].lower()
+                    format = format_data[0].lower()
+                    if format == '_comment':
+                        continue
+                    for file_type in format_data[3]:
+                        cls._formats_dict[file_type.lower()] = format
         return cls._formats_dict
 
     @classmethod
@@ -172,12 +175,12 @@ class Resource(HDXObject):
         cls._formats_dict = formats_dict
 
     @classmethod
-    def get_mapped_format(cls, format, configuration=None):
+    def get_mapped_format(cls, file_type, configuration=None):
         # type: (str, Optional[Configuration]) -> Optional[str]
         """Given a format, return a format to which it maps
 
         Args:
-            tags (str): Tag to map
+            file_type (str): File type to map
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
@@ -185,8 +188,16 @@ class Resource(HDXObject):
         """
         if configuration is None:
             configuration = Configuration.read()
-        format = format.lower()
-        return cls.read_formats_mappings(configuration=configuration).get(format)
+        file_type = file_type.lower()
+        mappings = cls.read_formats_mappings(configuration=configuration)
+        format = mappings.get(file_type)
+        if format is None:
+            if file_type[0] == '.':
+                file_type = file_type[1:]
+            else:
+                file_type = '.%s' % file_type
+            format = mappings.get(file_type)
+        return format
 
     def get_file_type(self):
         # type: () -> Optional[str]
@@ -201,16 +212,19 @@ class Resource(HDXObject):
         return format
 
     def set_file_type(self, file_type):
-        # type: (str) -> None
+        # type: (str) -> Optional[str]
         """Set the resource's file type
 
         Args:
-            file_type (str): resource's file type
+            file_type (str): File type to set on resource
 
         Returns:
-            None
+            Optional[str]: Format that was set or None if file type could not be matched to a format
         """
-        self.data['format'] = file_type.lower()
+        format = self.get_mapped_format(file_type, configuration=self.configuration)
+        if format:
+            self.data['format'] = format
+        return format
 
     def get_file_to_upload(self):
         # type: () -> Optional[str]
@@ -237,10 +251,7 @@ class Resource(HDXObject):
         self.file_to_upload = file_to_upload
         format = None
         if guess_format_from_suffix:
-            suffix = Path(file_to_upload).suffix
-            format = self.get_mapped_format(suffix, configuration=self.configuration)
-            if format is not None:
-                self.data['format'] = format
+            format = self.set_file_type(Path(file_to_upload).suffix)
         return format
 
     def check_url_filetoupload(self):
