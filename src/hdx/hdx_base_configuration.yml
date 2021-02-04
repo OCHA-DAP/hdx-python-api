@@ -81,3 +81,4 @@ approved_tags_vocabulary: Topics
 tags_list_url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=1739051517&single=true&output=csv"
 tags_mapping_url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=334970416&single=true&output=csv"
 # https://docs.google.com/spreadsheets/d/1_nhIETuzJhlsNEOv39PhZ66lpENTlfjH/edit#gid=334970416
+formats_mapping_url: "https://raw.githubusercontent.com/OCHA-DAP/hdx-ckan/master/ckanext-hdx_package/ckanext/hdx_package/config/resource_formats.json"

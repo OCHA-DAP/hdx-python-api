@@ -391,6 +391,35 @@ class Dataset(HDXObject):
                 ignore_fields = ['package_id']
                 resource.check_required_fields(ignore_fields=ignore_fields)
 
+    @staticmethod
+    def revise(match, filter=dict(), update=dict(), files_to_upload=dict(), configuration=None):
+        # type: (Dict, Dict, Dict, Dict, Optional[Configuration]) -> Optional['Dataset']
+        """Creates or updates an HDX object in HDX, saving current data and replacing with returned HDX object data
+        from HDX
+
+        Args:
+            match (Dict): Metadata on which to match dataset
+            filter (Dict): Filters to apply
+            update (Dict): Metadata updates to apply
+            files_to_upload (Dict): Files to upload to HDX
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+
+        Returns:
+            Optional[Dataset]: Dataset object if successful revise, None if not
+        """
+        data = {'match': match}
+        if filter:
+            data['filter'] = filter
+        if update:
+            data['update'] = update
+        dataset = Dataset(data, configuration=configuration)
+        result = dataset._write_to_hdx('revise', data, id_field_name='match', files_to_upload=files_to_upload)
+        if result:
+            dataset.data = result['package']
+            dataset.separate_resources()
+            return dataset
+        return None
+
     def _save_dataset_add_filestore_resources(self, default_operation, id_field_name, filestore_resources, hxl_update, create_default_views=False, **kwargs):
         # type: (str, str, List[hdx.data.resource.Resource], bool, bool, Any) -> None
         """Helper method to save the modified dataset and add any filestore resources
@@ -442,7 +471,6 @@ class Dataset(HDXObject):
         self._create_preview_resourceview()
         if hxl_update:
             self.hxl_update()
-
 
     def _dataset_merge_hdx_update(self, update_resources, match_resources_by_metadata,
                                   remove_additional_resources, create_default_views, hxl_update, **kwargs):

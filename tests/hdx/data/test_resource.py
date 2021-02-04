@@ -514,7 +514,8 @@ class TestResource:
         assert resource['state'] == 'active'
 
         filetoupload = join('tests', 'fixtures', 'test_data.csv')
-        resource.set_file_to_upload(filetoupload)
+        resource.set_file_to_upload(filetoupload, guess_format_from_suffix=True)
+        assert resource['format'] == 'csv'
         resource.update_in_hdx()
         assert resource['url_type'] == 'upload'
         assert resource['resource_type'] == 'file.upload'
