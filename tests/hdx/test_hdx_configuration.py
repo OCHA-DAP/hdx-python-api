@@ -144,6 +144,7 @@ class TestConfiguration:
             'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
             'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
+            'formats_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/revise/tests/fixtures/resource_formats.json'
         }
 
         configuration = Configuration.read()
@@ -234,6 +235,7 @@ hello there'''
             'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
             'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
+            'formats_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/revise/tests/fixtures/resource_formats.json'
         }
         assert Configuration.read() == expected_configuration
 
@@ -262,6 +264,7 @@ hello there'''
             'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
             'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
+            'formats_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/revise/tests/fixtures/resource_formats.json'
         }
         assert Configuration.read() == expected_configuration
 
@@ -354,7 +357,8 @@ hello there'''
             ]},
             'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=1739051517&single=true&output=csv',
-            'tags_mapping_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=334970416&single=true&output=csv'
+            'tags_mapping_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=334970416&single=true&output=csv',
+            'formats_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-ckan/master/ckanext-hdx_package/ckanext/hdx_package/config/resource_formats.json'
         }
         assert Configuration.read() == expected_configuration
         Configuration._create(user_agent='test', hdx_config_yaml=hdx_config_yaml, project_config_dict={'abc': '123'})
@@ -451,7 +455,8 @@ hello there'''
             ]},
             'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=1739051517&single=true&output=csv',
-            'tags_mapping_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=334970416&single=true&output=csv'
+            'tags_mapping_url': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=334970416&single=true&output=csv',
+            'formats_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-ckan/master/ckanext-hdx_package/ckanext/hdx_package/config/resource_formats.json'
         }
         assert Configuration.read() == expected_configuration
 
@@ -545,6 +550,7 @@ hello there'''
             'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
             'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
+            'formats_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/revise/tests/fixtures/resource_formats.json'
         }
         assert Configuration.read() == expected_configuration
 

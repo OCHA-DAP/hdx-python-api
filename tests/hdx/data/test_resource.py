@@ -247,10 +247,10 @@ class TestResource:
                                         '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}')
                 if datadict['name'] == 'MyResource1':
                     resultdictcopy = copy.deepcopy(resultdict)
-                    if files is not None:
+                    if files:
                         resultdictcopy['url_type'] = 'upload'
                         resultdictcopy['resource_type'] = 'file.upload'
-                        filename = os.path.basename(files[0][1].name)
+                        filename = os.path.basename(files['upload'].name)
                         resultdictcopy[
                             'url'] = 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/%s' % filename
                     resultdictcopy['state'] = datadict['state']
@@ -290,10 +290,10 @@ class TestResource:
                 if datadict['name'] == 'MyResource1':
                     resultdictcopy = copy.deepcopy(resultdict)
                     merge_two_dictionaries(resultdictcopy, datadict)
-                    if files is not None:
+                    if files:
                         resultdictcopy['url_type'] = 'upload'
                         resultdictcopy['resource_type'] = 'file.upload'
-                        filename = os.path.basename(files[0][1].name)
+                        filename = os.path.basename(files['upload'].name)
                         resultdictcopy[
                             'url'] = 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/%s' % filename
                     result = json.dumps(resultdictcopy)
@@ -514,7 +514,8 @@ class TestResource:
         assert resource['state'] == 'active'
 
         filetoupload = join('tests', 'fixtures', 'test_data.csv')
-        resource.set_file_to_upload(filetoupload)
+        resource.set_file_to_upload(filetoupload, guess_format_from_suffix=True)
+        assert resource['format'] == 'csv'
         resource.update_in_hdx()
         assert resource['url_type'] == 'upload'
         assert resource['resource_type'] == 'file.upload'

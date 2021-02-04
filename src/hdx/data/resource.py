@@ -4,6 +4,7 @@ import logging
 import datetime
 from os import remove
 from os.path import join
+from pathlib import Path
 from typing import Optional, List, Tuple, Dict, Union, Any
 
 from hdx.utilities import raisefrom, is_valid_uuid
@@ -28,6 +29,8 @@ class Resource(HDXObject):
         initial_data (Optional[Dict]): Initial resource metadata dictionary. Defaults to None.
         configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
     """
+
+    _formats_dict = None
 
     def __init__(self, initial_data=None, configuration=None):
         # type: (Optional[Dict], Optional[Configuration]) -> None
@@ -128,6 +131,73 @@ class Resource(HDXObject):
         """
         self.data['daterange_for_data'] = DateHelper.get_hdx_date(startdate, enddate)
 
+    @classmethod
+    def read_formats_mappings(cls, configuration=None, url=None):
+        # type: (Optional[Configuration], Optional[str]) -> Dict
+        """
+        Read HDX formats list
+
+        Args:
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            url (Optional[str]): Url of tags cleanup spreadsheet. Defaults to None (internal configuration parameter).
+
+        Returns:
+            Dict: Returns formats dictionary
+        """
+        if not cls._formats_dict:
+            if configuration is None:
+                configuration = Configuration.read()
+            with Download(full_agent=configuration.get_user_agent()) as downloader:
+                if url is None:
+                    url = configuration['formats_mapping_url']
+                downloader.download(url)
+                cls._formats_dict = dict()
+                for format_data in downloader.get_json():
+                    format = format_data[0].lower()
+                    if format == '_comment':
+                        continue
+                    for file_type in format_data[3]:
+                        cls._formats_dict[file_type.lower()] = format
+        return cls._formats_dict
+
+    @classmethod
+    def set_formatsdict(cls, formats_dict):
+        # type: (Dict) -> None
+        """
+        Set formats dictionary
+
+        Args:
+            formats_dict (Dict): Formats dictionary
+
+        Returns:
+            None
+        """
+        cls._formats_dict = formats_dict
+
+    @classmethod
+    def get_mapped_format(cls, file_type, configuration=None):
+        # type: (str, Optional[Configuration]) -> Optional[str]
+        """Given a format, return a format to which it maps
+
+        Args:
+            file_type (str): File type to map
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+
+        Returns:
+            Optional[str]: Mapped format or None if no mapping found
+        """
+        if configuration is None:
+            configuration = Configuration.read()
+        file_type = file_type.lower()
+        mappings = cls.read_formats_mappings(configuration=configuration)
+        format = mappings.get(file_type)
+        if format is None:
+            if file_type[0] == '.':
+                file_type = file_type[1:]
+            else:
+                file_type = '.%s' % file_type
+            format = mappings.get(file_type)
+        return format
 
     def get_file_type(self):
         # type: () -> Optional[str]
@@ -136,19 +206,25 @@ class Resource(HDXObject):
         Returns:
             Optional[str]: Resource's file type or None if it has not been set
         """
-        return self.data.get('format')
+        format = self.data.get('format')
+        if format:
+            format = format.lower()
+        return format
 
     def set_file_type(self, file_type):
-        # type: (str) -> None
+        # type: (str) -> Optional[str]
         """Set the resource's file type
 
         Args:
-            file_type (str): resource's file type
+            file_type (str): File type to set on resource
 
         Returns:
-            None
+            Optional[str]: Format that was set or None if file type could not be matched to a format
         """
-        self.data['format'] = file_type.lower()
+        format = self.get_mapped_format(file_type, configuration=self.configuration)
+        if format:
+            self.data['format'] = format
+        return format
 
     def get_file_to_upload(self):
         # type: () -> Optional[str]
@@ -159,19 +235,24 @@ class Resource(HDXObject):
         """
         return self.file_to_upload
 
-    def set_file_to_upload(self, file_to_upload):
-        # type: (str) -> None
+    def set_file_to_upload(self, file_to_upload, guess_format_from_suffix=False):
+        # type: (str, bool) -> str
         """Delete any existing url and set the file uploaded to the local path provided
 
         Args:
             file_to_upload (str): Local path to file to upload
+            guess_format_from_suffix (bool): Whether to try to set format based on file suffix. Defaults to False.
 
         Returns:
-            None
+            Optional[str]: The format that was guessed or None if no format was set
         """
         if 'url' in self.data:
             del self.data['url']
         self.file_to_upload = file_to_upload
+        format = None
+        if guess_format_from_suffix:
+            format = self.set_file_type(Path(file_to_upload).suffix)
+        return format
 
     def check_url_filetoupload(self):
         # type: () -> None
@@ -213,6 +294,17 @@ class Resource(HDXObject):
         self.check_url_filetoupload()
         self._check_required_fields('resource', ignore_fields)
 
+    def _get_files(self):
+        # type: () -> Dict
+        """Return the files parameter for CKANAPI
+
+        Returns:
+            Dict: files parameter for CKANAPI
+        """
+        if self.file_to_upload is None:
+            return dict()
+        return {'upload': self.file_to_upload}
+
     def update_in_hdx(self, **kwargs):
         # type: (Any) -> None
         """Check if resource exists in HDX and if so, update it
@@ -227,7 +319,7 @@ class Resource(HDXObject):
         self._check_load_existing_object('resource', 'id')
         if self.file_to_upload and 'url' in self.data:
             del self.data['url']
-        self._merge_hdx_update('resource', 'id', self.file_to_upload, True, **kwargs)
+        self._merge_hdx_update('resource', 'id', self._get_files(), True, **kwargs)
 
     def create_in_hdx(self, **kwargs):
         # type: (Any) -> None
@@ -239,13 +331,14 @@ class Resource(HDXObject):
         if 'ignore_check' not in kwargs:  # allow ignoring of field checks
             self.check_required_fields()
         id = self.data.get('id')
+        files = self._get_files()
         if id and self._load_from_hdx('resource', id):
             logger.warning('%s exists. Updating %s' % ('resource', id))
             if self.file_to_upload and 'url' in self.data:
                 del self.data['url']
-            self._merge_hdx_update('resource', 'id', self.file_to_upload, True, **kwargs)
+            self._merge_hdx_update('resource', 'id', files, True, **kwargs)
         else:
-            self._save_to_hdx('create', 'name', self.file_to_upload, True)
+            self._save_to_hdx('create', 'name', files, True)
 
     def delete_from_hdx(self):
         # type: () -> None
