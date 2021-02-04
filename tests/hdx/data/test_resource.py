@@ -506,6 +506,9 @@ class TestResource:
         resource.update_in_hdx()
         assert resource['id'] == '74b74ae1-df0c-4716-829f-4f939a046811'
         assert resource['format'] == 'xlsx'
+        resource.set_file_type('.xsl')
+        assert resource.get_file_type() == 'xls'
+        resource.set_file_type('XLSX')
         assert resource.get_file_type() == 'xlsx'
         assert resource['url_type'] == 'api'
         assert resource['resource_type'] == 'api'
