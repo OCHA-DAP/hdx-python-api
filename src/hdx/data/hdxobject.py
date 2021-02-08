@@ -337,6 +337,8 @@ class HDXObject(UserDict, object):
             raisefrom(HDXError, 'Failed when trying to %s%s! (POST)' % (action, idstr), e)
         finally:
             for file in files_to_upload.values():
+                if isinstance(file, str):
+                    continue
                 file.close()
 
     def _save_to_hdx(self, action, id_field_name, files_to_upload=dict(), force_active=False):

@@ -124,6 +124,10 @@ def mockhxlupdate(url, datadict):
 
 class TestDatasetCore:
     @pytest.fixture(scope='class')
+    def test_file(self):
+        return join('tests', 'fixtures', 'test_data.csv')
+
+    @pytest.fixture(scope='class')
     def static_yaml(self):
         return join('tests', 'fixtures', 'config', 'hdx_dataset_static.yml')
 
@@ -138,6 +142,27 @@ class TestDatasetCore:
             def post(url, data, headers, files, allow_redirects, auth=None):
                 datadict = json.loads(data.decode('utf-8'))
                 return dataset_mockshow(url, datadict)
+
+        Configuration.read().remoteckan().session = MockSession()
+
+    @pytest.fixture(scope='function')
+    def post_revise(self):
+        class MockSession(object):
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth=None):
+                if isinstance(data, dict):
+                    datadict = {k.decode('utf8'): v.decode('utf8') for k, v in data.items()}
+                else:
+                    datadict = json.loads(data.decode('utf-8'))
+                if datadict['match'] == '{"name":"MyDataset1"}':
+                    resultdictcopy = copy.deepcopy(dataset_resultdict)
+                    resultdictcopy['resources'][0]['description'] = 'haha'
+                    resultdictcopy = {'package': resultdictcopy}
+                    result = json.dumps(resultdictcopy)
+                    return MockResponse(200,
+                                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_revise"}' % result)
+                return MockResponse(404,
+                                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_revise"}')
 
         Configuration.read().remoteckan().session = MockSession()
 
@@ -362,6 +387,17 @@ class TestDatasetCore:
         assert dataset is None
         dataset = Dataset.read_from_hdx('TEST3')
         assert dataset is None
+
+    def test_revise(self, configuration, test_file, post_revise):
+        dataset = Dataset.revise({'name': 'MyDataset1'}, filter=['-resources__0__description'], update={'resources': [{'description': 'haha'}]}, files_to_upload={'update__resources__0__upload': test_file})
+        assert dataset['id'] == '6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d'
+        assert dataset['name'] == 'MyDataset1'
+        assert dataset['dataset_date'] == '06/04/2016'
+        assert dataset.get_resource()['description'] == 'haha'
+        with pytest.raises(HDXError):
+            Dataset.revise({'name': 'MyDataset1'}, filter=['-resources__0__description'], update={'resources': [{'description': 'haha'}]}, files_to_upload={'update__resources__0__upload': 'NOTEXIST'})
+        with pytest.raises(HDXError):
+            dataset._write_to_hdx('revise', dict(), id_field_name='', files_to_upload={'update__resources__0__upload': 'NOTEXIST'})
 
     def test_create_in_hdx(self, configuration, post_create):
         dataset = Dataset()

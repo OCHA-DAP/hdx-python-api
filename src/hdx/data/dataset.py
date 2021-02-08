@@ -391,35 +391,33 @@ class Dataset(HDXObject):
                 ignore_fields = ['package_id']
                 resource.check_required_fields(ignore_fields=ignore_fields)
 
-    # @staticmethod
-    # def revise(match, filter=dict(), update=dict(), files_to_upload=dict(), configuration=None):
-    #     # type: (Dict, Dict, Dict, Dict, Optional[Configuration]) -> Optional['Dataset']
-    #     """Creates or updates an HDX object in HDX, saving current data and replacing with returned HDX object data
-    #     from HDX
-    #
-    #     Args:
-    #         match (Dict): Metadata on which to match dataset
-    #         filter (Dict): Filters to apply
-    #         update (Dict): Metadata updates to apply
-    #         files_to_upload (Dict): Files to upload to HDX
-    #         configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
-    #
-    #     Returns:
-    #         Optional[Dataset]: Dataset object if successful revise, None if not
-    #     """
-    #     data = {'match': match}
-    #     if filter:
-    #         data['filter'] = filter
-    #     if update:
-    #         data['update'] = update
-    #     dataset = Dataset(data, configuration=configuration)
-    #     result = dataset._write_to_hdx('revise', data, id_field_name='match', files_to_upload=files_to_upload)
-    #     if result:
-    #         dataset.data = result['package']
-    #         dataset.separate_resources()
-    #         return dataset
-    #     return None
-    #
+    @staticmethod
+    def revise(match, filter=list(), update=dict(), files_to_upload=dict(), configuration=None):
+        # type: (Dict, List, Dict, Dict, Optional[Configuration]) -> 'Dataset'
+        """Revises an HDX dataset in HDX
+
+        Args:
+            match (Dict): Metadata on which to match dataset
+            filter (List): Filters to apply
+            update (Dict): Metadata updates to apply
+            files_to_upload (Dict): Files to upload to HDX
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+
+        Returns:
+            Dataset: Dataset object
+        """
+        separators = (',', ':')
+        data = {'match': json.dumps(match, separators=separators)}
+        if filter:
+            data['filter'] = json.dumps(filter, separators=separators)
+        if update:
+            data['update'] = json.dumps(update, separators=separators)
+        dataset = Dataset(data, configuration=configuration)
+        result = dataset._write_to_hdx('revise', data, id_field_name='match', files_to_upload=files_to_upload)
+        dataset.data = result['package']
+        dataset.separate_resources()
+        return dataset
+
     def _save_dataset_add_filestore_resources(self, default_operation, id_field_name, filestore_resources, hxl_update, create_default_views=False, **kwargs):
         # type: (str, str, List[hdx.data.resource.Resource], bool, bool, Any) -> None
         """Helper method to save the modified dataset and add any filestore resources
