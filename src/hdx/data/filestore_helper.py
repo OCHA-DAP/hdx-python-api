@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Helper to the Dataset class for handling resources with filestores.
 """
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Any
 
 from hdx.utilities.dictandlist import merge_two_dictionaries
 

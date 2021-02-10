@@ -415,16 +415,18 @@ class Dataset(HDXObject):
         dataset = Dataset(data, configuration=configuration)
         result = dataset._write_to_hdx('revise', data, id_field_name='match', files_to_upload=files_to_upload)
         dataset.data = result['package']
+        dataset.init_resources()
         dataset.separate_resources()
         return dataset
 
-    def _save_dataset_add_filestore_resources(self, default_operation, id_field_name, filestore_resources, hxl_update, create_default_views=False, **kwargs):
-        # type: (str, str, List[hdx.data.resource.Resource], bool, bool, Any) -> None
+    def _save_dataset_add_filestore_resources(self, default_operation, id_field_name, resources_to_delete, filestore_resources, hxl_update, create_default_views=False, **kwargs):
+        # type: (str, str, List[int], List[hdx.data.resource.Resource], bool, bool, Any) -> None
         """Helper method to save the modified dataset and add any filestore resources
 
         Args:
             default_operation (str): Operation to perform eg. patch. Defaults to update.
             id_field_name (str): Name of field containing HDX object identifier
+            resources_to_delete (List[int]): Indexes of resources to delete
             filestore_resources (List[hdx.data.resource.Resource]): List of resources that use filestore (to be appended to)
             hxl_update (bool): Whether to call package_hxl_update.
             create_default_views (bool): Whether to create default views. Defaults to False.
@@ -434,7 +436,10 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-
+        for i in sorted(resources_to_delete, reverse=True):
+            del self.resources[i]
+        if self.resources:
+            self.data['resources'] = self._convert_hdxobjects(self.resources)
         self.clean_tags()
         scriptinfo = kwargs.get('updated_by_script')
         if scriptinfo:
@@ -462,6 +467,9 @@ class Dataset(HDXObject):
         if not existing_ignore_check and default_operation == 'create':
             del kwargs['ignore_check']
         hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.data['resources'], filestore_resources, **kwargs)
+
+        #self._check_kwargs_fields('dataset', **kwargs)
+
         self.init_resources()
         self.separate_resources()
         if create_default_views:
@@ -490,6 +498,7 @@ class Dataset(HDXObject):
         if 'resources' in self.data:
             del self.data['resources']
         updated_resources = self.old_data.get('resources', None)
+        resources_to_delete = list()
         filestore_resources = list()
         if update_resources and updated_resources:
             ignore_fields = ['package_id']
@@ -508,13 +517,10 @@ class Dataset(HDXObject):
                                                                                        filestore_resources, **kwargs)
                     self.resources.append(updated_resource)
                 if remove_additional_resources:
-                    resources_to_delete = list()
                     for resource_index in resource_no_matches:
                         resource = self.resources[resource_index]
                         logger.warning('Removing additional resource %s!' % resource['name'])
                         resources_to_delete.append(resource_index)
-                    for i in sorted(resources_to_delete, reverse=True):
-                        del self.resources[i]
             else:  # update resources by position
                 for i, updated_resource in enumerate(updated_resources):
                     if len(self.resources) > i:
@@ -531,17 +537,12 @@ class Dataset(HDXObject):
                         self.resources.append(updated_resource)
 
                 if remove_additional_resources:
-                    resources_to_delete = list()
                     for i, resource in enumerate(self.resources):
                         if len(updated_resources) <= i:
                             logger.warning('Removing additional resource %s!' % resource['name'])
                             resources_to_delete.append(i)
-                    for i in sorted(resources_to_delete, reverse=True):
-                        del self.resources[i]
 
-        if self.resources:
-            self.data['resources'] = self._convert_hdxobjects(self.resources)
-        self._save_dataset_add_filestore_resources('update', 'id', filestore_resources, hxl_update,
+        self._save_dataset_add_filestore_resources('update', 'id', resources_to_delete, filestore_resources, hxl_update,
                                                    create_default_views=create_default_views, **kwargs)
 
     def update_in_hdx(self, update_resources=True, match_resources_by_metadata=True,
@@ -626,8 +627,7 @@ class Dataset(HDXObject):
             ignore_fields = ['package_id']
             for resource in self.resources:
                 hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(resource, ignore_fields, filestore_resources)
-            self.data['resources'] = self._convert_hdxobjects(self.resources)
-        self._save_dataset_add_filestore_resources('create', 'name', filestore_resources, hxl_update, **kwargs)
+        self._save_dataset_add_filestore_resources('create', 'name', list(), filestore_resources, hxl_update, **kwargs)
         logger.info('Created %s' % self.get_hdx_url())
 
     def delete_from_hdx(self):
