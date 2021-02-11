@@ -244,7 +244,9 @@ class TestDatasetCore:
                 if 'hxl' in url:
                     return mockhxlupdate(url, datadict)
                 if 'resource' in url:
-                    result = json.dumps(resources_data[0])
+                    resultdictcopy = copy.deepcopy(resources_data[0])
+                    merge_two_dictionaries(resultdictcopy, datadict)
+                    result = json.dumps(resultdictcopy)
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}' % result)
                 else:
