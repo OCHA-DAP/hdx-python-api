@@ -228,17 +228,14 @@ class HDXObject(UserDict, object):
                 if not self.data[field] and not isinstance(self.data[field], bool):
                     raise HDXError('Field %s is empty in %s!' % (field, object_type))
 
-    def _hdx_update(self, object_type, id_field_name, files_to_upload=dict(), force_active=False, **kwargs):
-        # type: (str, str, Dict, bool, Any) -> None
-        """Helper method to check if HDX object exists and update it
+    def _check_kwargs_fields(self, object_type, **kwargs):
+        # type: (str, Any) -> None
+        """Helper method to check kwargs and set fields appropriately and to check metadata fields unless it is
+        specified not to do so.
 
         Args:
             object_type (str): Description of HDX object type (for messages)
-            id_field_name (str): Name of field containing HDX object identifier
-            files_to_upload (Dict): Files to upload to HDX
-            force_active (bool): Make object state active. Defaults to False.
             **kwargs: See below
-            operation (str): Operation to perform eg. patch. Defaults to update.
             ignore_field (str): Any field to ignore when checking dataset metadata. Defaults to None.
 
         Returns:
@@ -257,6 +254,24 @@ class HDXObject(UserDict, object):
             ignore_fields.append(ignore_field)
         if 'ignore_check' not in kwargs or not kwargs.get('ignore_check'):  # allow ignoring of field checks
             self.check_required_fields(ignore_fields=ignore_fields)
+
+    def _hdx_update(self, object_type, id_field_name, files_to_upload=dict(), force_active=False, **kwargs):
+        # type: (str, str, Dict, bool, Any) -> None
+        """Helper method to update HDX object
+
+        Args:
+            object_type (str): Description of HDX object type (for messages)
+            id_field_name (str): Name of field containing HDX object identifier
+            files_to_upload (Dict): Files to upload to HDX
+            force_active (bool): Make object state active. Defaults to False.
+            **kwargs: See below
+            operation (str): Operation to perform eg. patch. Defaults to update.
+            ignore_field (str): Any field to ignore when checking dataset metadata. Defaults to None.
+
+        Returns:
+            None
+        """
+        self._check_kwargs_fields(object_type, **kwargs)
         operation = kwargs.get('operation', 'update')
         self._save_to_hdx(operation, id_field_name, files_to_upload, force_active)
 
@@ -337,6 +352,8 @@ class HDXObject(UserDict, object):
             raisefrom(HDXError, 'Failed when trying to %s%s! (POST)' % (action, idstr), e)
         finally:
             for file in files_to_upload.values():
+                if isinstance(file, str):
+                    continue
                 file.close()
 
     def _save_to_hdx(self, action, id_field_name, files_to_upload=dict(), force_active=False):
