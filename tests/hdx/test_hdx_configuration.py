@@ -144,7 +144,7 @@ class TestConfiguration:
             'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
             'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
-            'formats_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/revise/tests/fixtures/resource_formats.json'
+            'formats_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/resource_formats.json'
         }
 
         configuration = Configuration.read()
@@ -235,7 +235,7 @@ hello there'''
             'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
             'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
-            'formats_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/revise/tests/fixtures/resource_formats.json'
+            'formats_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/resource_formats.json'
         }
         assert Configuration.read() == expected_configuration
 
@@ -264,7 +264,7 @@ hello there'''
             'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
             'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
-            'formats_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/revise/tests/fixtures/resource_formats.json'
+            'formats_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/resource_formats.json'
         }
         assert Configuration.read() == expected_configuration
 
@@ -550,7 +550,7 @@ hello there'''
             'approved_tags_vocabulary': 'Topics',
             'tags_list_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv',
             'tags_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv',
-            'formats_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/revise/tests/fixtures/resource_formats.json'
+            'formats_mapping_url': 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/resource_formats.json'
         }
         assert Configuration.read() == expected_configuration
 
