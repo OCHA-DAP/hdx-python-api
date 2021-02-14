@@ -461,13 +461,13 @@ class Dataset(HDXObject):
         existing_ignore_check = kwargs.get('ignore_check')
         revise = True
         if operation == 'create':
+            if not existing_ignore_check:
+                kwargs['ignore_check'] = True
             self._hdx_update('dataset', id_field_name, force_active=True, **kwargs)
             if not filestore_resources and not keys_to_delete:
                 revise = False
                 self.init_resources()
                 self.separate_resources()
-            if not existing_ignore_check:
-                kwargs['ignore_check'] = True
 
         if revise:
             self.old_data = self.data
@@ -556,7 +556,7 @@ class Dataset(HDXObject):
                         if len(updated_resources) <= i:
                             logger.warning('Removing additional resource %s!' % resource['name'])
                             resources_to_delete.append(i)
-
+        resources_to_delete = sorted(resources_to_delete, reverse=True)
         self._save_dataset_add_filestore_resources('update', 'id', keys_to_delete, resources_to_delete, filestore_resources, hxl_update,
                                                    create_default_views=create_default_views, **kwargs)
 

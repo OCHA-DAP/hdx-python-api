@@ -193,13 +193,16 @@ class TestDatasetCore:
                     result = json.dumps(resources_data[0])
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}' % result)
-                if 'create' not in url:
+                if 'create' not in url and 'revise' not in url:
                     return MockResponse(404,
                                         '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_create"}')
-
+                if 'revise' in url:
+                    datadict = json.loads(datadict['update'])
                 if datadict['name'] == 'MyDataset1':
                     resultdictcopy = copy.deepcopy(dataset_resultdict)
                     resultdictcopy['state'] = datadict['state']
+                    if 'revise' in url:
+                        resultdictcopy = {'package': resultdictcopy}
                     result = json.dumps(resultdictcopy)
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_create"}' % result)
@@ -250,36 +253,25 @@ class TestDatasetCore:
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}' % result)
                 else:
-                    if 'update' not in url:
+                    if 'revise' not in url:
                         return MockResponse(404,
                                             '{"success": false, "error": {"message": "TEST ERROR: Not update", "__type": "TEST ERROR: Not Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}')
-                    resultdictcopy = copy.deepcopy(dataset_resultdict)
-                    merge_two_dictionaries(resultdictcopy, datadict)
-                    for i, resource in enumerate(resultdictcopy['resources']):
-                        for j, resource2 in enumerate(resultdictcopy['resources']):
-                            if i != j:
-                                if resource == resource2:
-                                    del resultdictcopy['resources'][j]
-                                    break
-                        resource['package_id'] = resultdictcopy['id']
-
-                    if datadict['name'] == 'MyDataset1':
+                    datadict = json.loads(datadict['update'])
+                    if datadict['name'] in ['MyDataset1', 'DatasetExist']:
+                        resultdictcopy = copy.deepcopy(dataset_resultdict)
+                        merge_two_dictionaries(resultdictcopy, datadict)
+                        for i, resource in enumerate(resultdictcopy['resources']):
+                            for j, resource2 in enumerate(resultdictcopy['resources']):
+                                if i != j:
+                                    if resource == resource2:
+                                        del resultdictcopy['resources'][j]
+                                        break
+                            resource['package_id'] = resultdictcopy['id']
+                        resultdictcopy = {'package': resultdictcopy}
                         result = json.dumps(resultdictcopy)
                         return MockResponse(200,
                                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}' % result)
-                    if datadict['name'] == 'DatasetExist':
-                        resultdictcopy['name'] = 'DatasetExist'
-                        result = json.dumps(resultdictcopy)
-                        return MockResponse(200,
-                                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}' % result)
-                    if datadict['name'] == 'MyDataset2':
-                        return MockResponse(404,
-                                            '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}')
-                    if datadict['name'] == 'MyDataset3':
-                        return MockResponse(200,
-                                            '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}')
-
-                return MockResponse(404,
+                    return MockResponse(404,
                                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}')
 
         Configuration.read().remoteckan().session = MockSession()
@@ -377,7 +369,6 @@ class TestDatasetCore:
                                     '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_autocomplete"}' % result)
 
         Configuration.read().remoteckan().session = MockSession()
-
 
     def test_read_from_hdx(self, configuration, read):
         dataset = Dataset.read_from_hdx('TEST1')
