@@ -433,6 +433,15 @@ class TestResource:
         resource['url'] = 'lala'
         with pytest.raises(HDXError):
             resource.check_url_filetoupload()
+        resource = Resource(resource_data)
+        resource['format'] = 'NOTEXIST'
+        with pytest.raises(HDXError):
+            resource.check_url_filetoupload()
+        with pytest.raises(HDXError):
+            resource.set_file_type('NOTEXIST')
+        del resource['format']
+        with pytest.raises(HDXError):
+            resource.check_url_filetoupload()
 
     def test_get_set_date_of_resource(self):
         resource = Resource({'daterange_for_data': '[2020-01-07T00:00:00 TO *]'})
@@ -463,8 +472,7 @@ class TestResource:
         assert resource['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
         assert resource['url_type'] == 'api'
         assert resource['resource_type'] == 'api'
-        assert resource[
-                   'url'] == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
+        assert resource['url'] == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
 
         resource_data = copy.deepcopy(TestResource.resource_data)
         resource = Resource(resource_data)
@@ -474,9 +482,12 @@ class TestResource:
         resource.create_in_hdx()
         assert resource['url_type'] == 'upload'
         assert resource['resource_type'] == 'file.upload'
+        assert resource['url'] == 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv'
+        assert resource['state'] == 'active'
+        resource.set_file_to_upload(filetoupload)
+        resource.create_in_hdx()
         assert resource[
                    'url'] == 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv'
-        assert resource['state'] == 'active'
         resource_data['name'] = 'MyResource2'
         resource = Resource(resource_data)
         with pytest.raises(HDXError):
@@ -512,8 +523,7 @@ class TestResource:
         assert resource.get_file_type() == 'xlsx'
         assert resource['url_type'] == 'api'
         assert resource['resource_type'] == 'api'
-        assert resource[
-                   'url'] == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
+        assert resource['url'] == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
         assert resource['state'] == 'active'
 
         filetoupload = join('tests', 'fixtures', 'test_data.csv')
@@ -522,8 +532,7 @@ class TestResource:
         resource.update_in_hdx()
         assert resource['url_type'] == 'upload'
         assert resource['resource_type'] == 'file.upload'
-        assert resource[
-                   'url'] == 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv'
+        assert resource['url'] == 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv'
         assert resource['state'] == 'active'
 
         resource['id'] = 'NOTEXIST'
@@ -546,6 +555,12 @@ class TestResource:
         assert resource['id'] == '74b74ae1-df0c-4716-829f-4f939a046811'
         assert resource.get_file_type() == 'xlsx'
         assert resource['state'] == 'active'
+        resource['format'] = 'Geoservice'
+        resource.update_in_hdx()
+        assert resource.get_file_type() == 'geoservice'
+        resource['format'] = 'NOTEXIST'
+        with pytest.raises(HDXError):
+            resource.update_in_hdx()
 
     def test_delete_from_hdx(self, configuration, post_delete):
         resource = Resource.read_from_hdx('74b74ae1-df0c-4716-829f-4f939a046811')
