@@ -555,6 +555,9 @@ class TestResource:
         assert resource['id'] == '74b74ae1-df0c-4716-829f-4f939a046811'
         assert resource.get_file_type() == 'xlsx'
         assert resource['state'] == 'active'
+        resource['format'] = 'Geoservice'
+        resource.update_in_hdx()
+        assert resource.get_file_type() == 'geoservice'
         resource['format'] = 'NOTEXIST'
         with pytest.raises(HDXError):
             resource.update_in_hdx()

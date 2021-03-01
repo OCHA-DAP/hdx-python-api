@@ -156,6 +156,7 @@ class Resource(HDXObject):
                     format = format_data[0].lower()
                     if format == '_comment':
                         continue
+                    cls._formats_dict[format] = format
                     for file_type in format_data[3]:
                         cls._formats_dict[file_type.lower()] = format
         return cls._formats_dict
@@ -226,7 +227,7 @@ class Resource(HDXObject):
         """
         format = self.get_mapped_format(file_type, configuration=self.configuration)
         if not format:
-            raise HDXError('Supplied file type is invalid and could not be mapped to a known type!')
+            raise HDXError('Supplied file type %s is invalid and could not be mapped to a known type!' % file_type)
         self.data['format'] = format
         return format
 
