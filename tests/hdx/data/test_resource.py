@@ -472,8 +472,7 @@ class TestResource:
         assert resource['id'] == 'de6549d8-268b-4dfe-adaf-a4ae5c8510d5'
         assert resource['url_type'] == 'api'
         assert resource['resource_type'] == 'api'
-        assert resource[
-                   'url'] == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
+        assert resource['url'] == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
 
         resource_data = copy.deepcopy(TestResource.resource_data)
         resource = Resource(resource_data)
@@ -483,9 +482,12 @@ class TestResource:
         resource.create_in_hdx()
         assert resource['url_type'] == 'upload'
         assert resource['resource_type'] == 'file.upload'
+        assert resource['url'] == 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv'
+        assert resource['state'] == 'active'
+        resource.set_file_to_upload(filetoupload)
+        resource.create_in_hdx()
         assert resource[
                    'url'] == 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv'
-        assert resource['state'] == 'active'
         resource_data['name'] = 'MyResource2'
         resource = Resource(resource_data)
         with pytest.raises(HDXError):
@@ -521,8 +523,7 @@ class TestResource:
         assert resource.get_file_type() == 'xlsx'
         assert resource['url_type'] == 'api'
         assert resource['resource_type'] == 'api'
-        assert resource[
-                   'url'] == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
+        assert resource['url'] == 'https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv'
         assert resource['state'] == 'active'
 
         filetoupload = join('tests', 'fixtures', 'test_data.csv')
@@ -531,8 +532,7 @@ class TestResource:
         resource.update_in_hdx()
         assert resource['url_type'] == 'upload'
         assert resource['resource_type'] == 'file.upload'
-        assert resource[
-                   'url'] == 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv'
+        assert resource['url'] == 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv'
         assert resource['state'] == 'active'
 
         resource['id'] = 'NOTEXIST'

@@ -294,9 +294,7 @@ class Resource(HDXObject):
                 self.data['url_type'] = 'upload'
             if 'tracking_summary' in self.data:
                 del self.data['tracking_summary']
-        format = self.clean_file_type()
-        if format is None:
-            raise HDXError('Either no or an invalid file type (format) was supplied!')
+        self.clean_file_type()
 
     def check_required_fields(self, ignore_fields=list()):
         # type: (List[str]) -> None
