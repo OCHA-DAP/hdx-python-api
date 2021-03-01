@@ -962,7 +962,7 @@ class Dataset(HDXObject):
 
     def clean_tags(self, log_deleted=True):
         # type: (bool) -> Tuple[List[str], List[str]]
-        """Clean tags in an HDX object according to tags cleanup spreadsheet
+        """Clean tags in an HDX object according to tags cleanup spreadsheet, deleting invalid tags that cannot be mapped
 
         Args:
             log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.

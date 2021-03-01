@@ -752,14 +752,17 @@ class TestDatasetCore:
         assert len(dataset.resources) == 3
         dataset.add_update_resources([resource])
         assert len(dataset.resources) == 3
-        resource['format'] = 'lala'
+        resource['format'] = 'mdb'
         dataset.add_update_resource(resource)
         assert len(dataset.resources) == 4
         resource = copy.deepcopy(resources_data[2])
         del resource['id']
-        resource['format'] = 'haha'
+        resource['format'] = 'doc'
         dataset.add_update_resources([resource])
         assert len(dataset.resources) == 5
+        resource['format'] = 'NOTEXIST'
+        with pytest.raises(HDXError):
+            dataset.add_update_resource(resource)
 
     def test_reorder_resources(self, configuration, post_reorder):
         dataset = Dataset.read_from_hdx('TEST1')
