@@ -6,6 +6,7 @@ RUN apk add --no-cache --upgrade \
         python3 \
         py3-pip && \
     apk add --no-cache --upgrade -X http://dl-cdn.alpinelinux.org/alpine/edge/community --virtual .build-deps1 \
+        py3-wheel \
         cargo && \
     apk add --no-cache --upgrade --virtual .build-deps2 \
         build-base \
