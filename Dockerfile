@@ -18,4 +18,4 @@ RUN apk add --no-cache --upgrade \
     apk del .build-deps1 && \
     apk del .build-deps2 && \
     apk add --no-cache --upgrade libstdc++ && \
-    rm -rf /var/lib/apk/*
+    rm -rf ./target ~/.cargo /var/lib/apk/*
