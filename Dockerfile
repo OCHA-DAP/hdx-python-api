@@ -11,7 +11,7 @@ RUN apk add --no-cache --upgrade \
     apk add --no-cache --upgrade --virtual .build-deps2 \
         build-base \
         libffi-dev \
-        postgresql-dev \
+        openssl-dev \
         python3-dev && \
     pip3 --no-cache-dir install --upgrade pip && \
     pip --no-cache-dir install hdx-python-api && \
