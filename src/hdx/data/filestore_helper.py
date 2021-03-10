@@ -32,23 +32,6 @@ class FilestoreHelper(object):
             filestore_resources[resource_index] = file_to_upload
             resource['url'] = cls.temporary_url
 
-    @staticmethod
-    def add_filestore_resources(resources_list, filestore_resources, **kwargs):
-        # type: (List[Dict], Dict[int, str], Any) -> None
-        """Helper method to create files in filestore by updating resources.
-
-        Args:
-            resources_list (List[Dict]): List of resources from dataset dict's resources key
-            filestore_resources (Dict[int, str]): List of (index of resources, file to upload)
-
-        Returns:
-            None
-        """
-        for resource_index, file_to_upload in filestore_resources.items():
-            resource = resources_list[resource_index]
-            resource.set_file_to_upload(file_to_upload)
-            resource.update_in_hdx(**kwargs)
-
     @classmethod
     def dataset_merge_filestore_resource(cls, resource, updated_resource, filestore_resources, resource_index, ignore_fields, **kwargs):
         # type: (hdx.data.resource.Resource, hdx.data.resource.Resource, Dict[int, str], int, List[str], Any) -> None

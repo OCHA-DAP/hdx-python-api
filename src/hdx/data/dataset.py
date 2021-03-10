@@ -393,14 +393,14 @@ class Dataset(HDXObject):
 
     @staticmethod
     def revise(match, filter=list(), update=dict(), files_to_upload=dict(), configuration=None):
-        # type: (Dict, List, Dict, Dict, Optional[Configuration]) -> 'Dataset'
+        # type: (Dict[str,Any], List[str], Dict[str,Any], Dict[str,str], Optional[Configuration]) -> 'Dataset'
         """Revises an HDX dataset in HDX
 
         Args:
-            match (Dict): Metadata on which to match dataset
-            filter (List): Filters to apply
-            update (Dict): Metadata updates to apply
-            files_to_upload (Dict): Files to upload to HDX
+            match (Dict[str,Any]): Metadata on which to match dataset
+            filter (List[str]): Filters to apply
+            update (Dict[str,Any]): Metadata updates to apply
+            files_to_upload (Dict[str,str]): Files to upload to HDX
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
@@ -419,13 +419,14 @@ class Dataset(HDXObject):
         dataset.separate_resources()
         return dataset
 
-    def _save_dataset_add_filestore_resources(self, default_operation, id_field_name, resources_to_delete, filestore_resources, hxl_update, create_default_views=False, **kwargs):
-        # type: (str, str, List[int], Dict[int, str], bool, bool, Any) -> None
+    def _save_dataset_add_filestore_resources(self, default_operation, id_field_name, keys_to_delete, resources_to_delete, filestore_resources, hxl_update, create_default_views=False, **kwargs):
+        # type: (str, str, List[str], List[int], Dict[int, str], bool, bool, Any) -> None
         """Helper method to save the modified dataset and add any filestore resources
 
         Args:
             default_operation (str): Operation to perform eg. patch. Defaults to update.
             id_field_name (str): Name of field containing HDX object identifier
+            keys_to_delete (List[str]): List of top level metadata keys to delete
             resources_to_delete (List[int]): List of indexes of resources to delete
             filestore_resources (Dict[int, str]): List of (index of resources, file to upload)
             hxl_update (bool): Whether to call package_hxl_update.
@@ -436,8 +437,6 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        for i in sorted(resources_to_delete, reverse=True):
-            del self.resources[i]
         if self.resources:
             self.data['resources'] = self._convert_hdxobjects(self.resources)
         self.clean_tags()
@@ -455,20 +454,37 @@ class Dataset(HDXObject):
             del kwargs['batch']
             if 'batch_mode' not in kwargs:
                 kwargs['batch_mode'] = 'DONT_GROUP'
-        existing_operation = kwargs.get('operation')
-        if not existing_operation:
-            kwargs['operation'] = default_operation
+        operation = kwargs.get('operation')
+        if not operation:
+            operation = default_operation
+        kwargs['operation'] = operation
         existing_ignore_check = kwargs.get('ignore_check')
-        if not existing_ignore_check and default_operation == 'create':
-            kwargs['ignore_check'] = True
-        self._hdx_update('dataset', id_field_name, force_active=True, **kwargs)
-        if not existing_operation:
-            del kwargs['operation']
-        if not existing_ignore_check and default_operation == 'create':
-            del kwargs['ignore_check']
-        self.init_resources()
-        self.separate_resources()
-        hdx.data.filestore_helper.FilestoreHelper.add_filestore_resources(self.resources, filestore_resources, **kwargs)
+        revise = True
+        if operation == 'create':
+            if not existing_ignore_check:
+                kwargs['ignore_check'] = True
+            self._hdx_update('dataset', id_field_name, force_active=True, **kwargs)
+            if not filestore_resources and not keys_to_delete:
+                revise = False
+                self.init_resources()
+                self.separate_resources()
+
+        if revise:
+            self.old_data = self.data
+            self._check_kwargs_fields('dataset', **kwargs)
+            self.data['state'] = 'active'
+            filter = list()
+            for key in keys_to_delete:
+                filter.append('-%s' % key)
+                self.data.pop(key, None)
+            for resource_index in resources_to_delete:
+                del self.data['resources'][resource_index]
+            files_to_upload = dict()
+            for resource_index, file_to_upload in filestore_resources.items():
+                files_to_upload['update__resources__%d__upload' % resource_index] = file_to_upload
+            new_dataset = self.revise({'id': self.data['id']}, filter=filter, update=self.data, files_to_upload=files_to_upload)
+            self.data = new_dataset.data
+            self.resources = new_dataset.resources
 
         if create_default_views:
             self.create_default_views()
@@ -476,14 +492,15 @@ class Dataset(HDXObject):
         if hxl_update:
             self.hxl_update()
 
-    def _dataset_merge_hdx_update(self, update_resources, match_resources_by_metadata,
+    def _dataset_merge_hdx_update(self, update_resources, match_resources_by_metadata, keys_to_delete,
                                   remove_additional_resources, create_default_views, hxl_update, **kwargs):
-        # type: (bool, bool, bool, bool, bool, Any) -> None
+        # type: (bool, bool, List[str], bool, bool, bool, Any) -> None
         """Helper method to check if dataset or its resources exist and update them
 
         Args:
             update_resources (bool): Whether to update resources
             match_resources_by_metadata (bool): Compare resource metadata rather than position in list
+            keys_to_delete (List[str]): List of top level metadata keys to delete
             remove_additional_resources (bool): Remove additional resources found in dataset (if updating)
             create_default_views (bool): Whether to call package_create_default_resource_views.
             hxl_update (bool): Whether to call package_hxl_update.
@@ -539,19 +556,20 @@ class Dataset(HDXObject):
                         if len(updated_resources) <= i:
                             logger.warning('Removing additional resource %s!' % resource['name'])
                             resources_to_delete.append(i)
-
-        self._save_dataset_add_filestore_resources('update', 'id', resources_to_delete, filestore_resources, hxl_update,
+        resources_to_delete = sorted(resources_to_delete, reverse=True)
+        self._save_dataset_add_filestore_resources('update', 'id', keys_to_delete, resources_to_delete, filestore_resources, hxl_update,
                                                    create_default_views=create_default_views, **kwargs)
 
-    def update_in_hdx(self, update_resources=True, match_resources_by_metadata=True,
+    def update_in_hdx(self, update_resources=True, match_resources_by_metadata=True, keys_to_delete=list(),
                       remove_additional_resources=False, create_default_views=True, hxl_update=True, **kwargs):
-        # type: (bool, bool, bool, bool, bool, Any) -> None
+        # type: (bool, bool, List[str], bool, bool, bool, Any) -> None
         """Check if dataset exists in HDX and if so, update it. match_resources_by_metadata uses ids if they are
         available, otherwise names only if names are unique or format in addition if not.
 
         Args:
             update_resources (bool): Whether to update resources. Defaults to True.
             match_resources_by_metadata (bool): Compare resource metadata rather than position in list. Defaults to True.
+            keys_to_delete (List[str]): List of top level metadata keys to delete. Defaults to empty list.
             remove_additional_resources (bool): Remove additional resources found in dataset. Defaults to False.
             create_default_views (bool): Whether to call package_create_default_resource_views. Defaults to True.
             hxl_update (bool): Whether to call package_hxl_update. Defaults to True.
@@ -575,14 +593,16 @@ class Dataset(HDXObject):
                 raise HDXError('No existing dataset to update!')
         self._dataset_merge_hdx_update(update_resources=update_resources,
                                        match_resources_by_metadata=match_resources_by_metadata,
+                                       keys_to_delete=keys_to_delete,
                                        remove_additional_resources=remove_additional_resources,
                                        create_default_views=create_default_views,
                                        hxl_update=hxl_update, **kwargs)
         logger.info('Updated %s' % self.get_hdx_url())
 
     def create_in_hdx(self, allow_no_resources=False, update_resources=True, match_resources_by_metadata=True,
-                      remove_additional_resources=False, create_default_views=True, hxl_update=True, **kwargs):
-        # type: (bool, bool, bool, bool, bool, bool, Any) -> None
+                      keys_to_delete=list(), remove_additional_resources=False, create_default_views=True,
+                      hxl_update=True, **kwargs):
+        # type: (bool, bool, bool, List[str], bool, bool, bool, Any) -> None
         """Check if dataset exists in HDX and if so, update it, otherwise create it. match_resources_by_metadata uses
         ids if they are available, otherwise names only if names are unique or format in addition if not.
 
@@ -590,6 +610,7 @@ class Dataset(HDXObject):
             allow_no_resources (bool): Whether to allow no resources. Defaults to False.
             update_resources (bool): Whether to update resources (if updating). Defaults to True.
             match_resources_by_metadata (bool): Compare resource metadata rather than position in list. Defaults to True.
+            keys_to_delete (List[str]): List of top level metadata keys to delete. Defaults to empty list.
             remove_additional_resources (bool): Remove additional resources found in dataset (if updating). Defaults to False.
             create_default_views (bool): Whether to call package_create_default_resource_views (if updating). Defaults to True.
             hxl_update (bool): Whether to call package_hxl_update. Defaults to True.
@@ -614,6 +635,7 @@ class Dataset(HDXObject):
         if loadedid:
             self._dataset_merge_hdx_update(update_resources=update_resources,
                                            match_resources_by_metadata=match_resources_by_metadata,
+                                           keys_to_delete=keys_to_delete,
                                            remove_additional_resources=remove_additional_resources,
                                            create_default_views=create_default_views,
                                            hxl_update=hxl_update, **kwargs)
@@ -625,7 +647,7 @@ class Dataset(HDXObject):
             ignore_fields = ['package_id']
             for i, resource in enumerate(self.resources):
                 hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(resource, ignore_fields, filestore_resources, i)
-        self._save_dataset_add_filestore_resources('create', 'name', list(), filestore_resources, hxl_update, **kwargs)
+        self._save_dataset_add_filestore_resources('create', 'name', keys_to_delete, list(), filestore_resources, hxl_update, **kwargs)
         logger.info('Created %s' % self.get_hdx_url())
 
     def delete_from_hdx(self):
@@ -765,7 +787,7 @@ class Dataset(HDXObject):
 
     @classmethod
     def get_all_datasets(cls, configuration=None, page_size=1000, **kwargs):
-        # type: (Optional[str], Optional[Configuration], int, Any) -> List['Dataset']
+        # type: (Optional[Configuration], int, Any) -> List['Dataset']
         """Get all datasets from HDX (just calls search_in_hdx)
 
         Args:
