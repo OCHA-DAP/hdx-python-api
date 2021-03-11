@@ -478,6 +478,7 @@ class Dataset(HDXObject):
                 filter.append('-%s' % key)
                 self.data.pop(key, None)
             for resource_index in resources_to_delete:
+                filter.append('-resources__%d' % resource_index)
                 del self.data['resources'][resource_index]
             files_to_upload = dict()
             for resource_index, file_to_upload in filestore_resources.items():
