@@ -19,7 +19,7 @@ class FilestoreHelper(object):
         Args:
             resource (hdx.data.resource.Resource): Resource to check
             ignore_fields (List[str]): List of fields to ignore when checking resource
-            filestore_resources (Dict[int, str]): List of (index of resources, file to upload)
+            filestore_resources (Dict[int, str]): List of (index of resource, file to upload)
             resource_index (int): Index of resource
 
         Returns:

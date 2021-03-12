@@ -392,8 +392,8 @@ class Dataset(HDXObject):
                 resource.check_required_fields(ignore_fields=ignore_fields)
 
     @staticmethod
-    def revise(match, filter=list(), update=dict(), files_to_upload=dict(), configuration=None):
-        # type: (Dict[str,Any], List[str], Dict[str,Any], Dict[str,str], Optional[Configuration]) -> 'Dataset'
+    def revise(match, filter=list(), update=dict(), files_to_upload=dict(), configuration=None, **kwargs):
+        # type: (Dict[str,Any], List[str], Dict[str,Any], Dict[str,str], Optional[Configuration], Any) -> 'Dataset'
         """Revises an HDX dataset in HDX
 
         Args:
@@ -402,6 +402,7 @@ class Dataset(HDXObject):
             update (Dict[str,Any]): Metadata updates to apply
             files_to_upload (Dict[str,str]): Files to upload to HDX
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            **kwargs: Additional arguments to pass to package_revise
 
         Returns:
             Dataset: Dataset object
@@ -412,6 +413,8 @@ class Dataset(HDXObject):
             data['filter'] = json.dumps(filter, separators=separators)
         if update:
             data['update'] = json.dumps(update, separators=separators)
+        for key, value in kwargs.items():
+            data[key] = json.dumps(value, separators=separators)
         dataset = Dataset(data, configuration=configuration)
         result = dataset._write_to_hdx('revise', data, id_field_name='match', files_to_upload=files_to_upload)
         dataset.data = result['package']
@@ -477,8 +480,11 @@ class Dataset(HDXObject):
             for key in keys_to_delete:
                 filter.append('-%s' % key)
                 self.data.pop(key, None)
+            resources = self.data['resources']
             for resource_index in resources_to_delete:
-                filter.append('-resources__%d' % resource_index)
+                del resources[resource_index]
+                if resource_index == len(resources):
+                    filter.append('-resources__%d' % resource_index)
             files_to_upload = dict()
             for resource_index, file_to_upload in filestore_resources.items():
                 files_to_upload['update__resources__%d__upload' % resource_index] = file_to_upload
