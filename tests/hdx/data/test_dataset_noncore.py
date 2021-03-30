@@ -183,39 +183,40 @@ class TestDatasetNoncore:
         datasetdata = copy.deepcopy(dataset_data)
         dataset = Dataset(datasetdata)
         assert dataset['groups'] == resultgroups
-        assert dataset.get_location() == ['Algeria', 'Zimbabwe']
+        assert dataset.get_location_names() == ['Algeria', 'Zimbabwe']
         dataset.add_country_location('sdn')
         expected = copy.deepcopy(resultgroups)
         expected.append({'name': 'sdn'})
         assert dataset['groups'] == expected
-        assert dataset.get_location() == ['Algeria', 'Zimbabwe', 'Sudan']
+        assert dataset.get_location_names() == ['Algeria', 'Zimbabwe', 'Sudan']
         dataset.add_country_location('dza')
         assert dataset['groups'] == expected
-        assert dataset.get_location() == ['Algeria', 'Zimbabwe', 'Sudan']
+        assert dataset.get_location_names() == ['Algeria', 'Zimbabwe', 'Sudan']
         dataset.add_country_locations(['KEN', 'Mozambique', 'ken'])
         expected.extend([{'name': 'ken'}, {'name': 'moz'}])
         assert dataset['groups'] == expected
-        assert dataset.get_location() == ['Algeria', 'Zimbabwe', 'Sudan', 'Kenya', 'Mozambique']
+        assert dataset.get_location_names() == ['Algeria', 'Zimbabwe', 'Sudan', 'Kenya', 'Mozambique']
+        assert dataset.get_location_iso3s() == ['dza', 'zwe', 'sdn', 'ken', 'moz']
         dataset.remove_location('sdn')
-        assert dataset.get_location() == ['Algeria', 'Zimbabwe', 'Kenya', 'Mozambique']
+        assert dataset.get_location_names() == ['Algeria', 'Zimbabwe', 'Kenya', 'Mozambique']
         with pytest.raises(HDXError):
             dataset.add_region_location('NOTEXIST')
         dataset.add_region_location('Africa')
         assert len(dataset['groups']) == 60
-        assert len(dataset.get_location()) == 60
+        assert len(dataset.get_location_names()) == 60
         del dataset['groups']
-        assert dataset.get_location() == []
+        assert dataset.get_location_names() == []
         with pytest.raises(HDXError):
             dataset.add_country_location('abc')
         with pytest.raises(HDXError):
             dataset.add_country_location('lala')
         dataset.add_country_location('Ukrai', exact=False)
         assert dataset['groups'] == [{'name': 'ukr'}]
-        assert dataset.get_location() == ['Ukraine']
+        assert dataset.get_location_names() == ['Ukraine']
         dataset.add_country_location('ukr')
         dataset.add_other_location('nepal-earthquake')
         assert dataset['groups'] == [{'name': 'ukr'}, {'name': 'nepal-earthquake'}]
-        assert dataset.get_location() == ['Ukraine', 'Nepal Earthquake']
+        assert dataset.get_location_names() == ['Ukraine', 'Nepal Earthquake']
         del dataset['groups']
         dataset.add_other_location('Nepal E', exact=False)
         assert dataset['groups'] == [{'name': 'nepal-earthquake'}]

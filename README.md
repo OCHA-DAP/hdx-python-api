@@ -43,6 +43,8 @@ library is here: <https://github.com/ocha-dap/hdx-python-api>.
 
 ## Breaking Changes
 
+From 5.0.1, Dataset functions get_location_iso3s and get_location_names replace get_location 
+
 From 4.8.3, some date functions in Dataset have been deprecated: get_dataset_date_type, get_dataset_date_as_datetime, 
 get_dataset_end_date_as_datetime, get_dataset_date, get_dataset_end_date, set_dataset_date_from_datetime and 
 set_dataset_date.
@@ -597,9 +599,13 @@ Transforming backwards and forwards between representations can be achieved with
 
 Each HDX dataset must have at least one location associated with it.
 
-If you wish to get the current location (ISO 3 country codes), you can call the method below:
+If you wish to get the current location(s) as ISO 3 country codes, you can call the method below:
 
-    locations = dataset.get_location()
+    locations = dataset.get_location_iso3s()
+
+If you wish to get the current location name(s), you can call the method below:
+
+    locations = dataset.get_location_names()
 
 If you want to add a country, you do as shown below. If you don't provide an ISO 3 country code, the text you give will 
 be parsed and converted to an ISO 3 code if it is a valid country name.

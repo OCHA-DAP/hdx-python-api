@@ -1036,7 +1036,7 @@ class Dataset(HDXObject):
         else:
             self.data['subnational'] = '0'
 
-    def get_location(self, locations=None):
+    def get_location_iso3s(self, locations=None):
         # type: (Optional[List[str]]) -> List[str]
         """Return the dataset's location
 
@@ -1044,7 +1044,22 @@ class Dataset(HDXObject):
             locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
 
         Returns:
-            List[str]: list of locations or [] if there are none
+            List[str]: list of location iso3s
+        """
+        countries = self.data.get('groups', None)
+        if not countries:
+            return list()
+        return [x['name'] for x in countries]
+
+    def get_location_names(self, locations=None):
+        # type: (Optional[List[str]]) -> List[str]
+        """Return the dataset's location
+
+        Args:
+            locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
+
+        Returns:
+            List[str]: list of location names
         """
         countries = self.data.get('groups', None)
         if not countries:
