@@ -370,8 +370,8 @@ class Dataset(HDXObject):
         self._dataset_create_resources()
         return True
 
-    def check_required_fields(self, ignore_fields=list(), allow_no_resources=False):
-        # type: (List[str], bool) -> None
+    def check_required_fields(self, ignore_fields=list(), allow_no_resources=False, **kwargs):
+        # type: (List[str], bool, Any) -> None
         """Check that metadata for dataset and its resources is complete. The parameter ignore_fields
         should be set if required to any fields that should be ignored for the particular operation.
 
