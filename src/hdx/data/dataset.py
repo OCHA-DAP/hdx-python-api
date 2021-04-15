@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Dataset class containing all logic for creating, checking, and updating datasets and associated resources.
 """
+import copy
 import json
 import logging
 import sys
@@ -498,6 +499,23 @@ class Dataset(HDXObject):
         if hxl_update:
             self.hxl_update()
 
+    def _get_kwargs_ignore_fields(self, kwargs):
+        # type: (Dict) -> Dict
+        """Helper method to add package_id to ignore_fields in kwargs
+
+        Args:
+            kwargs (Dict): Keyword arguments dictionary
+
+        Returns:
+            Dict: New keyword arguments dictionary
+        """
+        new_kwargs = copy.deepcopy(kwargs)
+        ignore_fields = new_kwargs.get('ignore_fields', list())
+        if 'package_id' not in ignore_fields:
+            ignore_fields.append('package_id')
+        new_kwargs['ignore_fields'] = ignore_fields
+        return new_kwargs
+
     def _dataset_merge_hdx_update(self, update_resources, match_resources_by_metadata, keys_to_delete,
                                   remove_additional_resources, create_default_views, hxl_update, **kwargs):
         # type: (bool, bool, List[str], bool, bool, bool, Any) -> None
@@ -522,6 +540,7 @@ class Dataset(HDXObject):
         resources_to_delete = list()
         filestore_resources = dict()
         if update_resources and updated_resources:
+            new_kwargs = self._get_kwargs_ignore_fields(kwargs)
             ignore_fields = ['package_id']
             if match_resources_by_metadata:
                 resource_matches, updated_resource_matches, resource_no_matches, updated_resource_no_matches = ResourceMatcher.match_resource_lists(self.resources, updated_resources)
@@ -530,11 +549,11 @@ class Dataset(HDXObject):
                     updated_resource = updated_resources[updated_resource_matches[i]]
                     logger.warning('Resource exists. Updating %s' % resource['name'])
                     hdx.data.filestore_helper.FilestoreHelper.dataset_merge_filestore_resource(
-                        resource, updated_resource, filestore_resources, resource_index, ignore_fields, **kwargs)
+                        resource, updated_resource, filestore_resources, resource_index,  **new_kwargs)
                 for resource_index in updated_resource_no_matches:
                     updated_resource = updated_resources[resource_index]
                     hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(
-                        updated_resource, ignore_fields, filestore_resources, resource_index, **kwargs)
+                        updated_resource, filestore_resources, resource_index, **new_kwargs)
                     self.resources.append(updated_resource)
                 if remove_additional_resources:
                     for resource_index in resource_no_matches:
@@ -551,10 +570,10 @@ class Dataset(HDXObject):
                         if resource_name != updated_resource_name:
                             logger.warning('Changing resource name to: %s' % updated_resource_name)
                         hdx.data.filestore_helper.FilestoreHelper.dataset_merge_filestore_resource(
-                            resource, updated_resource, filestore_resources, i, ignore_fields, **kwargs)
+                            resource, updated_resource, filestore_resources, i, **new_kwargs)
                     else:
                         hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(
-                            updated_resource, ignore_fields, filestore_resources, i, **kwargs)
+                            updated_resource, filestore_resources, i, **new_kwargs)
                         self.resources.append(updated_resource)
 
                 if remove_additional_resources:
@@ -650,9 +669,9 @@ class Dataset(HDXObject):
 
         filestore_resources = dict()
         if self.resources:
-            ignore_fields = ['package_id']
+            new_kwargs = self._get_kwargs_ignore_fields(kwargs)
             for i, resource in enumerate(self.resources):
-                hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(resource, ignore_fields, filestore_resources, i)
+                hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(resource, filestore_resources, i, **new_kwargs)
         self._save_dataset_add_filestore_resources('create', 'name', keys_to_delete, list(), filestore_resources, hxl_update, **kwargs)
         logger.info('Created %s' % self.get_hdx_url())
 

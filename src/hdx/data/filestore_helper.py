@@ -12,13 +12,12 @@ class FilestoreHelper(object):
     temporary_url = 'updated_by_file_upload_step'
 
     @classmethod
-    def check_filestore_resource(cls, resource, ignore_fields, filestore_resources, resource_index, **kwargs):
-        # type: (hdx.data.resource.Resource, List[str], Dict[int, str], int, Any) -> None
+    def check_filestore_resource(cls, resource, filestore_resources, resource_index, **kwargs):
+        # type: (hdx.data.resource.Resource, Dict[int, str], int, Any) -> None
         """Helper method to add new resource from dataset including filestore.
 
         Args:
             resource (hdx.data.resource.Resource): Resource to check
-            ignore_fields (List[str]): List of fields to ignore when checking resource
             filestore_resources (Dict[int, str]): List of (index of resource, file to upload)
             resource_index (int): Index of resource
 
@@ -26,15 +25,15 @@ class FilestoreHelper(object):
             None
         """
         if 'ignore_check' not in kwargs:  # allow ignoring of field checks
-            resource.check_required_fields(ignore_fields=ignore_fields)
+            resource.check_required_fields(ignore_fields=kwargs.get('ignore_fields', list()))
         file_to_upload = resource.get_file_to_upload()
         if file_to_upload:
             filestore_resources[resource_index] = file_to_upload
             resource['url'] = cls.temporary_url
 
     @classmethod
-    def dataset_merge_filestore_resource(cls, resource, updated_resource, filestore_resources, resource_index, ignore_fields, **kwargs):
-        # type: (hdx.data.resource.Resource, hdx.data.resource.Resource, Dict[int, str], int, List[str], Any) -> None
+    def dataset_merge_filestore_resource(cls, resource, updated_resource, filestore_resources, resource_index, **kwargs):
+        # type: (hdx.data.resource.Resource, hdx.data.resource.Resource, Dict[int, str], int, Any) -> None
         """Helper method to merge updated resource from dataset into HDX resource read from HDX including filestore.
 
         Args:
@@ -42,7 +41,6 @@ class FilestoreHelper(object):
             updated_resource (hdx.data.resource.Resource): Updated resource from dataset
             filestore_resources (Dict[int, str]): List of (index of resources, file to upload)
             resource_index (int): Index of resource
-            ignore_fields (List[str]): List of fields to ignore when checking resource
 
         Returns:
             None
@@ -55,7 +53,7 @@ class FilestoreHelper(object):
         if 'ignore_check' not in kwargs:  # allow ignoring of field checks
             if resource.get_file_to_upload() and 'url' in resource.data:
                 del resource.data['url']
-            resource.check_required_fields(ignore_fields=ignore_fields)
+            resource.check_required_fields(ignore_fields=kwargs.get('ignore_fields', list()))
         if resource.get_file_to_upload():
             resource['url'] = cls.temporary_url
 
