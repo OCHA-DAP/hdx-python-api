@@ -541,7 +541,6 @@ class Dataset(HDXObject):
         filestore_resources = dict()
         if update_resources and updated_resources:
             new_kwargs = self._get_kwargs_ignore_fields(kwargs)
-            ignore_fields = ['package_id']
             if match_resources_by_metadata:
                 resource_matches, updated_resource_matches, resource_no_matches, updated_resource_no_matches = ResourceMatcher.match_resource_lists(self.resources, updated_resources)
                 for i, resource_index in enumerate(resource_matches):
