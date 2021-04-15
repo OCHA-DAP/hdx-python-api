@@ -628,7 +628,7 @@ class Dataset(HDXObject):
             None
         """
         if 'ignore_check' not in kwargs:  # allow ignoring of field checks
-            self.check_required_fields(allow_no_resources=allow_no_resources)
+            self.check_required_fields(allow_no_resources=allow_no_resources, **kwargs)
         loadedid = None
         if 'id' in self.data:
             if self._dataset_load_from_hdx(self.data['id']):
