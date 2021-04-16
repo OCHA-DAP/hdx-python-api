@@ -481,14 +481,15 @@ class Dataset(HDXObject):
             for key in keys_to_delete:
                 filter.append('-%s' % key)
                 self.data.pop(key, None)
-            resources = self.data['resources']
-            for resource_index in resources_to_delete:
-                del resources[resource_index]
-                if resource_index == len(resources):
-                    filter.append('-resources__%d' % resource_index)
             files_to_upload = dict()
-            for resource_index, file_to_upload in filestore_resources.items():
-                files_to_upload['update__resources__%d__upload' % resource_index] = file_to_upload
+            if not self.is_requestable():
+                resources = self.data['resources']
+                for resource_index in resources_to_delete:
+                    del resources[resource_index]
+                    if resource_index == len(resources):
+                        filter.append('-resources__%d' % resource_index)
+                for resource_index, file_to_upload in filestore_resources.items():
+                    files_to_upload['update__resources__%d__upload' % resource_index] = file_to_upload
             new_dataset = self.revise({'id': self.data['id']}, filter=filter, update=self.data, files_to_upload=files_to_upload)
             self.data = new_dataset.data
             self.resources = new_dataset.resources
