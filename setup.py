@@ -5,7 +5,7 @@ from hdx.utilities import CleanCommand, PackageCommand, PublishCommand
 from hdx.utilities.loader import load_file_to_str
 from setuptools import setup, find_packages
 
-requirements = ['ckanapi >= 4.5',
+requirements = ['ckanapi >= 4.6',
                 'hdx-python-country>=2.8.5',
                 'ndg-httpsclient',
                 'pyasn1',
