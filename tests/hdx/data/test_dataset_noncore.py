@@ -476,7 +476,7 @@ class TestDatasetNoncore:
         resourceview = dataset.generate_resource_view(path=static_resource_view_yaml, bites_disabled=[True, True, True])
         assert resourceview is None
         indicators = [{'code': '1', 'title': 'My1', 'unit': 'ones', 'description': 'This is my one!'},
-                      {'code': '2', 'title': 'My2', 'unit': 'twos'},
+                      {'code': '2', 'title': 'My2', 'unit': 'twos', 'aggregate': 'Agg2'},
                       {'code': '3', 'title': 'My3', 'description': 'This is my three!'}]
         resourceview = dataset.generate_resource_view(indicators=indicators)
         hxl_preview_config = json.loads(resourceview['hxl_preview_config'])
@@ -489,6 +489,7 @@ class TestDatasetNoncore:
         assert hxl_preview_config['bites'][1]['ingredient']['description'] == ''
         assert hxl_preview_config['bites'][1]['uiProperties']['title'] == 'My2'
         assert hxl_preview_config['bites'][1]['computedProperties']['dataTitle'] == 'twos'
+        assert hxl_preview_config['bites'][1]['ingredient']['aggregateColumn'] == 'Agg2'
         assert hxl_preview_config['bites'][2]['ingredient']['filters']['filterWith'][0]['#indicator+code'] == '3'
         assert hxl_preview_config['bites'][2]['ingredient']['description'] == 'This is my three!'
         assert hxl_preview_config['bites'][2]['uiProperties']['title'] == 'My3'
