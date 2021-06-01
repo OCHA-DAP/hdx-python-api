@@ -1587,6 +1587,15 @@ class Dataset(HDXObject):
                 path = script_dir_plus_file('indicator_resource_view_template.yml', NotRequestableError)
         resourceview.update_from_yaml(path=path)
 
+        def replace_date_col(hxl_preview_cfg, ind, colno):
+            date_col_str = 'DATE_COL_%d' % colno
+            date_col = ind.get('date')
+            if date_col:
+                replace = date_col
+            else:
+                replace = '#date+year'
+            return replace_string(hxl_preview_cfg, date_col_str, replace)
+
         def replace_aggregate_col(hxl_preview_cfg, ind, colno):
             aggregate_col_str = 'AGGREGATE_COL_%d' % colno
             aggregate_col = ind.get('aggregate')
@@ -1615,6 +1624,7 @@ class Dataset(HDXObject):
                 hxl_preview_config = replace_string(hxl_preview_config, 'INDICATOR_TITLE_1', indicator['title'])
                 replace = indicator.get('unit', '')
                 hxl_preview_config = replace_string(hxl_preview_config, 'INDICATOR_UNIT_1', replace)
+                hxl_preview_config = replace_date_col(hxl_preview_config, indicator, 1)
                 hxl_preview_config = replace_aggregate_col(hxl_preview_config, indicator, 1)
                 indicators_notexist[0] = False
             if len_indicators > 1 and indicators[1]:
@@ -1625,6 +1635,7 @@ class Dataset(HDXObject):
                 hxl_preview_config = replace_string(hxl_preview_config, 'INDICATOR_TITLE_2', indicator['title'])
                 replace = indicator.get('unit', '')
                 hxl_preview_config = replace_string(hxl_preview_config, 'INDICATOR_UNIT_2', replace)
+                hxl_preview_config = replace_date_col(hxl_preview_config, indicator, 2)
                 hxl_preview_config = replace_aggregate_col(hxl_preview_config, indicator, 2)
                 indicators_notexist[1] = False
             if len_indicators > 2 and indicators[2]:
@@ -1635,6 +1646,7 @@ class Dataset(HDXObject):
                 hxl_preview_config = replace_string(hxl_preview_config, 'INDICATOR_TITLE_3', indicator['title'])
                 replace = indicator.get('unit', '')
                 hxl_preview_config = replace_string(hxl_preview_config, 'INDICATOR_UNIT_3', replace)
+                hxl_preview_config = replace_date_col(hxl_preview_config, indicator, 3)
                 hxl_preview_config = replace_aggregate_col(hxl_preview_config, indicator, 3)
                 indicators_notexist[2] = False
             if indicators_notexist == [True, True, True]:
