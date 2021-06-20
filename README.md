@@ -182,7 +182,7 @@ Once you have it, then put it into a file in your home directory:
 
 1. You can search for datasets on HDX and get their resources:
 
-        datasets = Dataset.search_in_hdx('ACLED', rows=10)
+        datasets = Dataset.search_in_hdx('thailand subnational boundaries', rows=10)
         print(datasets)
         resources = Dataset.get_all_resources(datasets)
         print(resources)
