@@ -174,22 +174,11 @@ Once you have it, then put it into a file in your home directory:
         Configuration.create(hdx_site='stage', user_agent='A_Quick_Example')
 
 1.  Read this dataset 
-[ACLED Conflict Data for Africa 1997-2016](https://data.humdata.org/dataset/acled-conflict-data-for-africa-1997-lastyear)
+[Novel Coronavirus (COVID-19) Cases Data](https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases)
     from HDX and view the date of the dataset:
 
-        dataset = Dataset.read_from_hdx('acled-conflict-data-for-africa-1997-lastyear')
+        dataset = Dataset.read_from_hdx('novel-coronavirus-2019-ncov-cases')
         print(dataset.get_dataset_date())
-
-1.  If you have an API key, as a test, change the dataset date:
-
-        dataset.set_dataset_date('2015-07-26', date_format='%Y-%m-%d')
-        print(dataset.get_dataset_date())
-        dataset.update_in_hdx()
-
-1.  You can view it on HDX before changing it back (if you have an API key):
-
-        dataset.set_dataset_date('2016-06-25', date_format='%Y-%m-%d')
-        dataset.update_in_hdx()
 
 1. You can search for datasets on HDX and get their resources:
 
@@ -202,6 +191,20 @@ Once you have it, then put it into a file in your home directory:
 
         url, path = resources[0].download()
         print('Resource URL %s downloaded to %s' % (url, path))
+
+1. If you have an API key, you can write to HDX. You can try it out on a test 
+   server. With a dataset to which you have permissions, change the dataset date:
+
+        dataset = Dataset.read_from_hdx('ID OR NAME OF DATASET')
+        print(dataset.get_dataset_date())  # record this
+        dataset.set_dataset_date('2015-07-26', date_format='%Y-%m-%d')
+        print(dataset.get_dataset_date())
+        dataset.update_in_hdx()
+
+1.  You can view it on HDX before changing it back (if you have an API key):
+
+        dataset.set_dataset_date('PREVIOUS DATE', date_format='%Y-%m-%d')
+        dataset.update_in_hdx()
 
 1. Exit and remove virtualenv:
 
