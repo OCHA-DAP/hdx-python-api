@@ -1549,7 +1549,7 @@ class Dataset(HDXObject):
                     break
 
 
-    def _generate_resource_view(self, resource=0, path=None, bites_disabled=None, indicators=None, hxltags=None):
+    def _generate_resource_view(self, resource=0, path=None, bites_disabled=None, indicators=None, findreplace=None):
         # type: (Union[hdx.data.resource.Resource,Dict,str,int], Optional[str], Optional[List[bool]], Optional[List[Dict]], Optional[Dict]) -> hdx.data.resource_view.ResourceView
         """Create QuickCharts for dataset from configuration saved in resource view. You can disable specific bites
         by providing bites_disabled, a list of 3 bools where True indicates a specific bite is disabled and False
@@ -1564,7 +1564,7 @@ class Dataset(HDXObject):
             path (Optional[str]): Path to YAML resource view metadata. Defaults to None (config/hdx_resource_view_static.yml or internal template).
             bites_disabled (Optional[List[bool]]): Which QC bites should be disabled. Defaults to None (all bites enabled).
             indicators (Optional[List[Dict]]): Indicator codes, QC titles and units for resource view template. Defaults to None (don't use template).
-            hxltags (Optional[Dict]): HXL tags to use instead of #indicator+code and #indicator+value+num in template. Defaults to None.
+            findreplace (Optional[Dict]): Replacements for anything else in resource view. Defaults to None.
 
         Returns:
             hdx.data.resource_view.ResourceView: The resource view if QuickCharts created, None is not
@@ -1591,23 +1591,18 @@ class Dataset(HDXObject):
         def replace_string(instr, what, withwhat):
             return instr.replace(what, str(withwhat))
 
-        def replace_date_col(hxl_preview_cfg, ind, colno):
-            date_col_str = 'DATE_COL_%d' % colno
-            date_col = ind.get('date')
-            if date_col:
-                replace = date_col
-            else:
-                replace = '#date+year'
-            return replace_string(hxl_preview_cfg, date_col_str, replace)
+        defaults = {'code_col': '#indicator+code', 'value_col': '#indicator+value+num', 'date_col': '#date+year', 'aggregate_col': 'null'}
 
-        def replace_aggregate_col(hxl_preview_cfg, ind, colno):
-            aggregate_col_str = 'AGGREGATE_COL_%d' % colno
-            aggregate_col = ind.get('aggregate')
-            if aggregate_col:
-                replace = '"%s"' % aggregate_col
+        def replace_col(hxl_preview_cfg, col_str, ind, col, with_quotes=False):
+            if with_quotes:
+                col_str = '"%s"' % col_str
+            replace = ind.get(col)
+            if replace:
+                if with_quotes:
+                    replace = '"%s"' % replace
             else:
-                replace = 'null'
-            return replace_string(hxl_preview_cfg, aggregate_col_str, replace)
+                replace = defaults[col]
+            return replace_string(hxl_preview_cfg, col_str, replace)
 
         hxl_preview_config = resourceview['hxl_preview_config']
         if indicators is None:
@@ -1619,36 +1614,42 @@ class Dataset(HDXObject):
             indicators_notexist = [True, True, True]
             if indicators[0]:
                 indicator = indicators[0]
-                hxl_preview_config = replace_string(hxl_preview_config, 'INDICATOR_CODE_1', str(indicator['code']))
+                hxl_preview_config = replace_string(hxl_preview_config, 'CODE_VALUE_1', str(indicator['code']))
                 replace = indicator.get('description', '')
-                hxl_preview_config = replace_string(hxl_preview_config, 'DESCRIPTION_1', replace)
-                hxl_preview_config = replace_string(hxl_preview_config, 'INDICATOR_TITLE_1', indicator['title'])
+                hxl_preview_config = replace_string(hxl_preview_config, 'DESCRIPTION_VALUE_1', replace)
+                hxl_preview_config = replace_string(hxl_preview_config, 'TITLE_VALUE_1', indicator['title'])
                 replace = indicator.get('unit', '')
-                hxl_preview_config = replace_string(hxl_preview_config, 'INDICATOR_UNIT_1', replace)
-                hxl_preview_config = replace_date_col(hxl_preview_config, indicator, 1)
-                hxl_preview_config = replace_aggregate_col(hxl_preview_config, indicator, 1)
+                hxl_preview_config = replace_string(hxl_preview_config, 'UNIT_VALUE_1', replace)
+                hxl_preview_config = replace_col(hxl_preview_config, 'CODE_COL_1', indicator, 'code_col')
+                hxl_preview_config = replace_col(hxl_preview_config, 'VALUE_COL_1', indicator, 'value_col')
+                hxl_preview_config = replace_col(hxl_preview_config, 'DATE_COL_1', indicator, 'date_col')
+                hxl_preview_config = replace_col(hxl_preview_config, 'AGGREGATE_COL_1', indicator, 'aggregate_col', True)
                 indicators_notexist[0] = False
             if len_indicators > 1 and indicators[1]:
                 indicator = indicators[1]
-                hxl_preview_config = replace_string(hxl_preview_config, 'INDICATOR_CODE_2', str(indicator['code']))
+                hxl_preview_config = replace_string(hxl_preview_config, 'CODE_VALUE_2', str(indicator['code']))
                 replace = indicator.get('description', '')
-                hxl_preview_config = replace_string(hxl_preview_config, 'DESCRIPTION_2', replace)
-                hxl_preview_config = replace_string(hxl_preview_config, 'INDICATOR_TITLE_2', indicator['title'])
+                hxl_preview_config = replace_string(hxl_preview_config, 'DESCRIPTION_VALUE_2', replace)
+                hxl_preview_config = replace_string(hxl_preview_config, 'TITLE_VALUE_2', indicator['title'])
                 replace = indicator.get('unit', '')
-                hxl_preview_config = replace_string(hxl_preview_config, 'INDICATOR_UNIT_2', replace)
-                hxl_preview_config = replace_date_col(hxl_preview_config, indicator, 2)
-                hxl_preview_config = replace_aggregate_col(hxl_preview_config, indicator, 2)
+                hxl_preview_config = replace_string(hxl_preview_config, 'UNIT_VALUE_2', replace)
+                hxl_preview_config = replace_col(hxl_preview_config, 'CODE_COL_2', indicator, 'code_col')
+                hxl_preview_config = replace_col(hxl_preview_config, 'VALUE_COL_2', indicator, 'value_col')
+                hxl_preview_config = replace_col(hxl_preview_config, 'DATE_COL_2', indicator, 'date_col')
+                hxl_preview_config = replace_col(hxl_preview_config, 'AGGREGATE_COL_2', indicator, 'aggregate_col', True)
                 indicators_notexist[1] = False
             if len_indicators > 2 and indicators[2]:
                 indicator = indicators[2]
-                hxl_preview_config = replace_string(hxl_preview_config, 'INDICATOR_CODE_3', str(indicator['code']))
+                hxl_preview_config = replace_string(hxl_preview_config, 'CODE_VALUE_3', str(indicator['code']))
                 replace = indicator.get('description', '')
-                hxl_preview_config = replace_string(hxl_preview_config, 'DESCRIPTION_3', replace)
-                hxl_preview_config = replace_string(hxl_preview_config, 'INDICATOR_TITLE_3', indicator['title'])
+                hxl_preview_config = replace_string(hxl_preview_config, 'DESCRIPTION_VALUE_3', replace)
+                hxl_preview_config = replace_string(hxl_preview_config, 'TITLE_VALUE_3', indicator['title'])
                 replace = indicator.get('unit', '')
-                hxl_preview_config = replace_string(hxl_preview_config, 'INDICATOR_UNIT_3', replace)
-                hxl_preview_config = replace_date_col(hxl_preview_config, indicator, 3)
-                hxl_preview_config = replace_aggregate_col(hxl_preview_config, indicator, 3)
+                hxl_preview_config = replace_string(hxl_preview_config, 'UNIT_VALUE_3', replace)
+                hxl_preview_config = replace_col(hxl_preview_config, 'CODE_COL_3', indicator, 'code_col')
+                hxl_preview_config = replace_col(hxl_preview_config, 'VALUE_COL_3', indicator, 'value_col')
+                hxl_preview_config = replace_col(hxl_preview_config, 'DATE_COL_3', indicator, 'date_col')
+                hxl_preview_config = replace_col(hxl_preview_config, 'AGGREGATE_COL_3', indicator, 'aggregate_col', True)
                 indicators_notexist[2] = False
             if indicators_notexist == [True, True, True]:
                 return None
@@ -1658,9 +1659,9 @@ class Dataset(HDXObject):
             if disable or indicators_notexist[i]:
                 del bites[i]
         hxl_preview_config = json.dumps(hxl_preview_config, indent=None, separators=(',', ':'))
-        if hxltags:
-            for hxltag in hxltags:
-                hxl_preview_config = replace_string(hxl_preview_config, hxltag, hxltags[hxltag])
+        if findreplace:
+            for find in findreplace:
+                hxl_preview_config = replace_string(hxl_preview_config, find, findreplace[find])
         resourceview['hxl_preview_config'] = hxl_preview_config
 
         if 'resource_id' in resourceview:
@@ -1670,7 +1671,7 @@ class Dataset(HDXObject):
             self.preview_resourceview = resourceview
         return resourceview
 
-    def generate_resource_view(self, resource=0, path=None, bites_disabled=None, indicators=None, hxltags=None):
+    def generate_resource_view(self, resource=0, path=None, bites_disabled=None, indicators=None, findreplace=None):
         # type: (Union[hdx.data.resource.Resource,Dict,str,int], Optional[str], Optional[List[bool]], Optional[List[Dict]], Optional[Dict]) -> hdx.data.resource_view.ResourceView
         """Create QuickCharts for dataset from configuration saved in resource view. You can disable specific bites
         by providing bites_disabled, a list of 3 bools where True indicates a specific bite is disabled and False
@@ -1685,12 +1686,12 @@ class Dataset(HDXObject):
             path (Optional[str]): Path to YAML resource view metadata. Defaults to None (config/hdx_resource_view_static.yml or internal template).
             bites_disabled (Optional[List[bool]]): Which QC bites should be disabled. Defaults to None (all bites enabled).
             indicators (Optional[List[Dict]]): Indicator codes, QC titles and units for resource view template. Defaults to None (don't use template).
-            hxltags (Optional[Dict]): HXL tags to use instead of #indicator+code and #indicator+value+num in template. Defaults to None.
+            findreplace (Optional[Dict]): Replacements for anything else in resource view. Defaults to None.
 
         Returns:
             hdx.data.resource_view.ResourceView: The resource view if QuickCharts created, None is not
         """
-        resourceview = self._generate_resource_view(resource, path, bites_disabled, indicators, hxltags=hxltags)
+        resourceview = self._generate_resource_view(resource, path, bites_disabled, indicators, findreplace=findreplace)
         if resourceview is None:
             self.preview_off()
         return resourceview
