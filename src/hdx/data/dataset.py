@@ -1549,8 +1549,8 @@ class Dataset(HDXObject):
                     break
 
 
-    def _generate_resource_view(self, resource=0, path=None, bites_disabled=None, indicators=None):
-        # type: (Union[hdx.data.resource.Resource,Dict,str,int], Optional[str], Optional[List[bool]], Optional[List[Dict]]) -> hdx.data.resource_view.ResourceView
+    def _generate_resource_view(self, resource=0, path=None, bites_disabled=None, indicators=None, hxltags=None):
+        # type: (Union[hdx.data.resource.Resource,Dict,str,int], Optional[str], Optional[List[bool]], Optional[List[Dict]], Optional[Dict]) -> hdx.data.resource_view.ResourceView
         """Create QuickCharts for dataset from configuration saved in resource view. You can disable specific bites
         by providing bites_disabled, a list of 3 bools where True indicates a specific bite is disabled and False
         indicates leave enabled. If you supply indicators, then the internal indicators resource view template will be
@@ -1564,6 +1564,7 @@ class Dataset(HDXObject):
             path (Optional[str]): Path to YAML resource view metadata. Defaults to None (config/hdx_resource_view_static.yml or internal template).
             bites_disabled (Optional[List[bool]]): Which QC bites should be disabled. Defaults to None (all bites enabled).
             indicators (Optional[List[Dict]]): Indicator codes, QC titles and units for resource view template. Defaults to None (don't use template).
+            hxltags (Optional[Dict]): HXL tags to use instead of #indicator+code and #indicator+value+num in template. Defaults to None.
 
         Returns:
             hdx.data.resource_view.ResourceView: The resource view if QuickCharts created, None is not
@@ -1586,6 +1587,9 @@ class Dataset(HDXObject):
             else:
                 path = script_dir_plus_file('indicator_resource_view_template.yml', NotRequestableError)
         resourceview.update_from_yaml(path=path)
+
+        def replace_string(instr, what, withwhat):
+            return instr.replace(what, str(withwhat))
 
         def replace_date_col(hxl_preview_cfg, ind, colno):
             date_col_str = 'DATE_COL_%d' % colno
@@ -1614,9 +1618,6 @@ class Dataset(HDXObject):
                 return None
             indicators_notexist = [True, True, True]
             if indicators[0]:
-                def replace_string(instr, what, withwhat):
-                    return instr.replace(what, str(withwhat))
-
                 indicator = indicators[0]
                 hxl_preview_config = replace_string(hxl_preview_config, 'INDICATOR_CODE_1', str(indicator['code']))
                 replace = indicator.get('description', '')
@@ -1657,6 +1658,9 @@ class Dataset(HDXObject):
             if disable or indicators_notexist[i]:
                 del bites[i]
         hxl_preview_config = json.dumps(hxl_preview_config, indent=None, separators=(',', ':'))
+        if hxltags:
+            for hxltag in hxltags:
+                hxl_preview_config = replace_string(hxl_preview_config, hxltag, hxltags[hxltag])
         resourceview['hxl_preview_config'] = hxl_preview_config
 
         if 'resource_id' in resourceview:
@@ -1666,8 +1670,8 @@ class Dataset(HDXObject):
             self.preview_resourceview = resourceview
         return resourceview
 
-    def generate_resource_view(self, resource=0, path=None, bites_disabled=None, indicators=None):
-        # type: (Union[hdx.data.resource.Resource,Dict,str,int], Optional[str], Optional[List[bool]], Optional[List[Dict]]) -> hdx.data.resource_view.ResourceView
+    def generate_resource_view(self, resource=0, path=None, bites_disabled=None, indicators=None, hxltags=None):
+        # type: (Union[hdx.data.resource.Resource,Dict,str,int], Optional[str], Optional[List[bool]], Optional[List[Dict]], Optional[Dict]) -> hdx.data.resource_view.ResourceView
         """Create QuickCharts for dataset from configuration saved in resource view. You can disable specific bites
         by providing bites_disabled, a list of 3 bools where True indicates a specific bite is disabled and False
         indicates leave enabled. If you supply indicators, then the internal indicators resource view template will be
@@ -1681,11 +1685,12 @@ class Dataset(HDXObject):
             path (Optional[str]): Path to YAML resource view metadata. Defaults to None (config/hdx_resource_view_static.yml or internal template).
             bites_disabled (Optional[List[bool]]): Which QC bites should be disabled. Defaults to None (all bites enabled).
             indicators (Optional[List[Dict]]): Indicator codes, QC titles and units for resource view template. Defaults to None (don't use template).
+            hxltags (Optional[Dict]): HXL tags to use instead of #indicator+code and #indicator+value+num in template. Defaults to None.
 
         Returns:
             hdx.data.resource_view.ResourceView: The resource view if QuickCharts created, None is not
         """
-        resourceview = self._generate_resource_view(resource, path, bites_disabled, indicators)
+        resourceview = self._generate_resource_view(resource, path, bites_disabled, indicators, hxltags=hxltags)
         if resourceview is None:
             self.preview_off()
         return resourceview

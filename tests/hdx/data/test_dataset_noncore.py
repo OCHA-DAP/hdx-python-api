@@ -495,6 +495,11 @@ class TestDatasetNoncore:
         assert hxl_preview_config['bites'][2]['ingredient']['dateColumn'] == 'dt3'
         assert hxl_preview_config['bites'][2]['uiProperties']['title'] == 'My3'
         assert hxl_preview_config['bites'][2]['computedProperties']['dataTitle'] == ''
+        resourceview = dataset.generate_resource_view(indicators=indicators, hxltags={'#indicator+code': '#item+code', '#indicator+value+num': '#value'})
+        hxl_preview_config = json.loads(resourceview['hxl_preview_config'])
+        assert resourceview['id'] == 'c06b5a0d-1d41-4a74-a196-41c251c76023'
+        assert hxl_preview_config['bites'][0]['ingredient']['filters']['filterWith'][0]['#item+code'] == '1'
+        assert hxl_preview_config['bites'][0]['ingredient']['valueColumn'] == '#value'
         assert dataset.generate_resource_view(indicators=[]) is None
         assert dataset.generate_resource_view(indicators=[None, None, None]) is None
         assert dataset.generate_resource_view(resource='123', path=static_resource_view_yaml) is None
