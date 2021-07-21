@@ -6,7 +6,7 @@ from hdx.utilities.loader import load_file_to_str
 from setuptools import setup, find_packages
 
 requirements = ['ckanapi >= 4.6',
-                'hdx-python-country>=2.9.1',
+                'hdx-python-country>=2.9.2',
                 'ndg-httpsclient',
                 'pyasn1',
                 'pyOpenSSL',
