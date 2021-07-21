@@ -7,7 +7,7 @@ import logging
 import sys
 from collections import OrderedDict
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, date
 from os.path import join
 from typing import List, Union, Optional, Dict, Any, Tuple, Callable, Iterator, Iterable, Set
 
@@ -850,7 +850,7 @@ class Dataset(HDXObject):
         return cls._autocomplete(name, limit, configuration)
 
     def get_date_of_dataset(self, date_format=None, today=datetime.now()):
-        # type: (Optional[str], datetime.date) -> Dict
+        # type: (Optional[str], datetime) -> Dict
         """Get dataset date as datetimes and strings in specified format. If no format is supplied, the ISO 8601
         format is used. Returns a dictionary containing keys startdate (start date as datetime), enddate (end
         date as datetime), startdate_str (start date as string), enddate_str (end date as string) and ongoing
@@ -858,7 +858,7 @@ class Dataset(HDXObject):
 
         Args:
             date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
-            today (datetime.date): Date to use for today. Defaults to datetime.now.
+            today (datetime): Date to use for today. Defaults to datetime.now.
 
         Returns:
             Dict: Dictionary of date information
@@ -866,11 +866,11 @@ class Dataset(HDXObject):
         return DateHelper.get_date_info(self.data.get('dataset_date'), date_format, today)
 
     def set_date_of_dataset(self, startdate, enddate=None, ongoing=False):
-        # type: (Union[datetime.datetime, str], Union[datetime, str, None], bool) -> None
+        # type: (Union[datetime, str], Union[datetime, str, None], bool) -> None
         """Set dataset date from either datetime.datetime objects or strings.
 
         Args:
-            startdate (Union[datetime.datetime, str]): Dataset start date
+            startdate (Union[datetime, str]): Dataset start date
             enddate (Union[datetime, str, None]): Dataset end date. Defaults to None.
             ongoing (bool): True if ongoing, False if not. Defaults to False.
 
