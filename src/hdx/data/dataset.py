@@ -7,9 +7,9 @@ import logging
 import sys
 from collections import OrderedDict
 from copy import deepcopy
-from datetime import datetime, date
+from datetime import datetime
 from os.path import join
-from typing import List, Union, Optional, Dict, Any, Tuple, Callable, Iterator, Iterable, Set
+from typing import List, Union, Optional, Dict, Any, Tuple, Callable, Iterator, Iterable
 
 from hdx.location.country import Country
 from hdx.utilities import is_valid_uuid
