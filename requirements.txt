@@ -1,5 +1,5 @@
 ckanapi==4.6
-hdx-python-country==2.9.5
+hdx-python-country==2.9.6
 ndg-httpsclient==0.5.1
 pyasn1==0.4.8
 pyOpenSSL==20.0.1
