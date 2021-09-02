@@ -6,12 +6,12 @@ from hdx.utilities.loader import load_file_to_str
 from setuptools import setup, find_packages
 
 requirements = ['ckanapi >= 4.6',
-                'hdx-python-country>=2.9.6',
+                'hdx-python-country>=2.9.7',
                 'ndg-httpsclient',
                 'pyasn1',
                 'pyOpenSSL',
                 'quantulum>=0.1.13;python_version<"3"',
-                'quantulum3>=0.7.7;python_version>="3"'
+                'quantulum3>=0.7.8;python_version>="3"'
                 ]
 
 classifiers = [
