@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 """Dataset class containing all logic for creating, checking, and updating datasets and associated resources.
 """
-import copy
+import sys
 import json
 import logging
-import sys
-from collections import OrderedDict
 from copy import deepcopy
 from datetime import datetime
 from os.path import join
 from typing import List, Union, Optional, Dict, Any, Tuple, Callable, Iterator, Iterable
+if sys.version_info[:2] >= (3, 7):
+    OrderedDict = dict
+else:
+    from collections import OrderedDict
 
 from hdx.location.country import Country
 from hdx.utilities import is_valid_uuid
