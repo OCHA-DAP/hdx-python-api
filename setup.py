@@ -6,12 +6,11 @@ from hdx.utilities.loader import load_file_to_str
 from setuptools import setup, find_packages
 
 requirements = ['ckanapi >= 4.6',
-                'hdx-python-country>=2.9.8',
+                'hdx-python-country>=3.0.0',
                 'ndg-httpsclient',
                 'pyasn1',
                 'pyOpenSSL',
-                'quantulum>=0.1.13;python_version<"3"',
-                'quantulum3>=0.7.8;python_version>="3"'
+                'quantulum3'
                 ]
 
 classifiers = [
@@ -21,7 +20,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 2.7",
     "Programming Language :: Python :: 3",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]

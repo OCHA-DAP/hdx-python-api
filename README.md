@@ -43,6 +43,8 @@ library is here: <https://github.com/ocha-dap/hdx-python-api>.
 
 ## Breaking Changes
 
+From 5.3.0, only supports Python 3.6 and above
+
 From 5.0.1, Dataset functions get_location_iso3s and get_location_names replace get_location 
 
 From 4.8.3, some date functions in Dataset have been deprecated: get_dataset_date_type, get_dataset_date_as_datetime, 
