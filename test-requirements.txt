@@ -1,6 +1,6 @@
-pytest==4.6.4  # the last version compatible with Python 2.7
-pytest-cov==2.7.1
+pytest==6.2.5
+pytest-cov==2.12.1
 pytest-pythonpath==0.7.3
-pytest-runner==5.1
-logging_tree==1.8
+pytest-runner==5.3.1
+logging_tree==1.9
 -r requirements.txt
