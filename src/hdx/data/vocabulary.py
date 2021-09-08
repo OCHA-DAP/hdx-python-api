@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 """Vocabulary class containing all logic for creating, checking, and updating vocabularies."""
 import logging
 from collections import OrderedDict
 from os.path import join
-from typing import Optional, List, Dict, Tuple, Any
+from typing import Any, Dict, List, Optional, Tuple
 
 from hdx.utilities.downloader import Download
 
@@ -30,35 +29,40 @@ class Vocabulary(HDXObject):
     _approved_vocabulary = None
     _tags_dict = None
 
-    def __init__(self, initial_data=None, name=None, tags=None, configuration=None):
-        # type: (Optional[Dict], str, Optional[List], Optional[Configuration]) -> None
+    def __init__(
+        self,
+        initial_data: Optional[Dict] = None,
+        name: str = None,
+        tags: Optional[List] = None,
+        configuration: Optional[Configuration] = None,
+    ) -> None:
         if not initial_data:
             initial_data = dict()
         if name:
-            initial_data['name'] = name
-        super(Vocabulary, self).__init__(initial_data, configuration=configuration)
+            initial_data["name"] = name
+        super().__init__(initial_data, configuration=configuration)
         if tags:
             self.add_tags(tags)
 
     @staticmethod
-    def actions():
-        # type: () -> Dict[str, str]
+    def actions() -> Dict[str, str]:
         """Dictionary of actions that can be performed on object
 
         Returns:
             Dict[str, str]: Dictionary of actions that can be performed on object
         """
         return {
-            'show': 'vocabulary_show',
-            'update': 'vocabulary_update',
-            'create': 'vocabulary_create',
-            'delete': 'vocabulary_delete',
-            'list': 'vocabulary_list',
-            'autocomplete': 'tag_autocomplete'
+            "show": "vocabulary_show",
+            "update": "vocabulary_update",
+            "create": "vocabulary_create",
+            "delete": "vocabulary_delete",
+            "list": "vocabulary_list",
+            "autocomplete": "tag_autocomplete",
         }
 
-    def update_from_yaml(self, path=join('config', 'hdx_vocabulary_static.yml')):
-        # type: (str) -> None
+    def update_from_yaml(
+        self, path: str = join("config", "hdx_vocabulary_static.yml")
+    ) -> None:
         """Update vocabulary metadata with static metadata from YAML file
 
         Args:
@@ -67,10 +71,11 @@ class Vocabulary(HDXObject):
         Returns:
             None
         """
-        super(Vocabulary, self).update_from_yaml(path)
+        super().update_from_yaml(path)
 
-    def update_from_json(self, path=join('config', 'hdx_vocabulary_static.json')):
-        # type: (str) -> None
+    def update_from_json(
+        self, path: str = join("config", "hdx_vocabulary_static.json")
+    ) -> None:
         """Update vocabulary metadata with static metadata from JSON file
 
         Args:
@@ -79,11 +84,12 @@ class Vocabulary(HDXObject):
         Returns:
             None
         """
-        super(Vocabulary, self).update_from_json(path)
+        super().update_from_json(path)
 
     @classmethod
-    def read_from_hdx(cls, identifier, configuration=None):
-        # type: (str, Optional[Configuration]) -> Optional['Vocabulary']
+    def read_from_hdx(
+        cls, identifier: str, configuration: Optional[Configuration] = None
+    ) -> Optional["Vocabulary"]:
         """Reads the vocabulary given by identifier from HDX and returns Vocabulary object
 
         Args:
@@ -93,11 +99,12 @@ class Vocabulary(HDXObject):
         Returns:
             Optional[Vocabulary]: Vocabulary object if successful read, None if not
         """
-        return cls._read_from_hdx_class('vocabulary', identifier, configuration)
+        return cls._read_from_hdx_class("vocabulary", identifier, configuration)
 
     @staticmethod
-    def get_all_vocabularies(configuration=None):
-        # type: (Optional[Configuration]) -> List['Vocabulary']
+    def get_all_vocabularies(
+        configuration: Optional[Configuration] = None,
+    ) -> List["Vocabulary"]:
         """Get all vocabulary names in HDX
 
         Args:
@@ -109,14 +116,13 @@ class Vocabulary(HDXObject):
         """
 
         vocabulary = Vocabulary(configuration=configuration)
-        vocabulary['id'] = 'all vocabulary names'  # only for error message if produced
+        vocabulary["id"] = "all vocabulary names"  # only for error message if produced
         vocabularies = list()
-        for vocabularydict in vocabulary._write_to_hdx('list', {}):
+        for vocabularydict in vocabulary._write_to_hdx("list", {}):
             vocabularies.append(Vocabulary(vocabularydict, configuration=configuration))
         return vocabularies
 
-    def check_required_fields(self, ignore_fields=list()):
-        # type: (List[str]) -> None
+    def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
         """Check that metadata for vocabulary is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
@@ -126,28 +132,25 @@ class Vocabulary(HDXObject):
         Returns:
             None
         """
-        self._check_required_fields('vocabulary', ignore_fields)
+        self._check_required_fields("vocabulary", ignore_fields)
 
-    def update_in_hdx(self, **kwargs):
-        # type: (Any) -> None
+    def update_in_hdx(self, **kwargs: Any) -> None:
         """Check if vocabulary exists in HDX and if so, update vocabulary
 
         Returns:
             None
         """
-        self._update_in_hdx('vocabulary', 'id', force_active=False, **kwargs)
+        self._update_in_hdx("vocabulary", "id", force_active=False, **kwargs)
 
-    def create_in_hdx(self, **kwargs):
-        # type: (Any) -> None
+    def create_in_hdx(self, **kwargs: Any) -> None:
         """Check if vocabulary exists in HDX and if so, update it, otherwise create vocabulary
 
         Returns:
             None
         """
-        self._create_in_hdx('vocabulary', 'id', 'name', force_active=False, **kwargs)
+        self._create_in_hdx("vocabulary", "id", "name", force_active=False, **kwargs)
 
-    def delete_from_hdx(self, empty=True):
-        # type: (bool) -> None
+    def delete_from_hdx(self, empty: bool = True) -> None:
         """Deletes a vocabulary from HDX. First tags are removed then vocabulary is deleted.
 
         Args:
@@ -156,13 +159,14 @@ class Vocabulary(HDXObject):
         Returns:
             None
         """
-        if empty and len(self.data['tags']) != 0:
-            self.data['tags'] = list()
-            self._update_in_hdx('vocabulary', 'id', force_active=False, ignore_field='tags')
-        self._delete_from_hdx('vocabulary', 'id')
+        if empty and len(self.data["tags"]) != 0:
+            self.data["tags"] = list()
+            self._update_in_hdx(
+                "vocabulary", "id", force_active=False, ignore_field="tags"
+            )
+        self._delete_from_hdx("vocabulary", "id")
 
-    def get_tags(self):
-        # type: () -> List[str]
+    def get_tags(self) -> List[str]:
         """Lists tags in vocabulary
 
         Returns:
@@ -170,8 +174,7 @@ class Vocabulary(HDXObject):
         """
         return self._get_tags()
 
-    def add_tag(self, tag):
-        # type: (str) -> bool
+    def add_tag(self, tag: str) -> bool:
         """Add a tag
 
         Args:
@@ -182,8 +185,7 @@ class Vocabulary(HDXObject):
         """
         return self._add_tag(tag)
 
-    def add_tags(self, tags):
-        # type: (List[str]) -> List[str]
+    def add_tags(self, tags: List[str]) -> List[str]:
         """Add a list of tags
 
         Args:
@@ -194,8 +196,7 @@ class Vocabulary(HDXObject):
         """
         return self._add_tags(tags)
 
-    def remove_tag(self, tag):
-        # type: (str) -> bool
+    def remove_tag(self, tag: str) -> bool:
         """Remove a tag
 
         Args:
@@ -204,11 +205,14 @@ class Vocabulary(HDXObject):
         Returns:
             bool: True if tag removed or False if not
         """
-        return self._remove_hdxobject(self.data.get('tags'), tag.lower(), matchon='name')
+        return self._remove_hdxobject(
+            self.data.get("tags"), tag.lower(), matchon="name"
+        )
 
     @classmethod
-    def get_approved_vocabulary(cls, configuration=None):
-        # type: (Optional[Configuration]) -> Vocabulary
+    def get_approved_vocabulary(
+        cls, configuration: Optional[Configuration] = None
+    ) -> "Vocabulary":
         """
         Get the HDX approved vocabulary
 
@@ -221,13 +225,16 @@ class Vocabulary(HDXObject):
         if cls._approved_vocabulary is None:
             if configuration is None:
                 configuration = Configuration.read()
-            vocabulary_name = configuration['approved_tags_vocabulary']
-            cls._approved_vocabulary = Vocabulary.read_from_hdx(vocabulary_name, configuration=configuration)
+            vocabulary_name = configuration["approved_tags_vocabulary"]
+            cls._approved_vocabulary = Vocabulary.read_from_hdx(
+                vocabulary_name, configuration=configuration
+            )
         return cls._approved_vocabulary
 
     @classmethod
-    def _read_approved_tags(cls, url=None, configuration=None):
-        # type: (Optional[str], Optional[Configuration]) -> List[str]
+    def _read_approved_tags(
+        cls, url: Optional[str] = None, configuration: Optional[Configuration] = None
+    ) -> List[str]:
         """
         Read approved tags
 
@@ -240,12 +247,17 @@ class Vocabulary(HDXObject):
         """
         with Download(full_agent=configuration.get_user_agent()) as downloader:
             if url is None:
-                url = configuration['tags_list_url']
-            return list(OrderedDict.fromkeys(downloader.download(url).text.replace('"', '').splitlines()))
+                url = configuration["tags_list_url"]
+            return list(
+                OrderedDict.fromkeys(
+                    downloader.download(url).text.replace('"', "").splitlines()
+                )
+            )
 
     @classmethod
-    def create_approved_vocabulary(cls, url=None, configuration=None):
-        # type: (Optional[str], Optional[Configuration]) -> Vocabulary
+    def create_approved_vocabulary(
+        cls, url: Optional[str] = None, configuration: Optional[Configuration] = None
+    ) -> "Vocabulary":
         """
         Create the HDX approved vocabulary
 
@@ -258,15 +270,18 @@ class Vocabulary(HDXObject):
         """
         if configuration is None:
             configuration = Configuration.read()
-        vocabulary_name = configuration['approved_tags_vocabulary']
+        vocabulary_name = configuration["approved_tags_vocabulary"]
         tags = cls._read_approved_tags(url=url, configuration=configuration)
-        cls._approved_vocabulary = Vocabulary(name=vocabulary_name, tags=tags, configuration=configuration)
+        cls._approved_vocabulary = Vocabulary(
+            name=vocabulary_name, tags=tags, configuration=configuration
+        )
         cls._approved_vocabulary.create_in_hdx()
         return cls._approved_vocabulary
 
     @classmethod
-    def update_approved_vocabulary(cls, url=None, configuration=None):
-        # type: (Optional[str], Optional[Configuration]) -> Vocabulary
+    def update_approved_vocabulary(
+        cls, url: Optional[str] = None, configuration: Optional[Configuration] = None
+    ) -> "Vocabulary":
         """
         Update the HDX approved vocabulary
 
@@ -280,14 +295,17 @@ class Vocabulary(HDXObject):
         if configuration is None:
             configuration = Configuration.read()
         vocabulary = cls.get_approved_vocabulary(configuration=configuration)
-        vocabulary['tags'] = list()
-        vocabulary.add_tags(cls._read_approved_tags(url=url, configuration=configuration))
+        vocabulary["tags"] = list()
+        vocabulary.add_tags(
+            cls._read_approved_tags(url=url, configuration=configuration)
+        )
         vocabulary.update_in_hdx()
         return vocabulary
 
     @classmethod
-    def delete_approved_vocabulary(cls, configuration=None):
-        # type: (Optional[Configuration]) -> None
+    def delete_approved_vocabulary(
+        cls, configuration: Optional[Configuration] = None
+    ) -> None:
         """
         Delete the approved vocabulary
 
@@ -303,8 +321,7 @@ class Vocabulary(HDXObject):
         vocabulary.delete_from_hdx()
 
     @classmethod
-    def approved_tags(cls, configuration=None):
-        # type: (Optional[Configuration]) -> List[str]
+    def approved_tags(cls, configuration: Optional[Configuration] = None) -> List[str]:
         """
         Return list of approved tags
 
@@ -314,11 +331,15 @@ class Vocabulary(HDXObject):
         Returns:
             List[str]: List of approved tags
         """
-        return [x['name'] for x in cls.get_approved_vocabulary(configuration=configuration)['tags']]
+        return [
+            x["name"]
+            for x in cls.get_approved_vocabulary(configuration=configuration)["tags"]
+        ]
 
     @classmethod
-    def is_approved(cls, tag, configuration=None):
-        # type: (str, Optional[Configuration]) -> bool
+    def is_approved(
+        cls, tag: str, configuration: Optional[Configuration] = None
+    ) -> bool:
         """
         Return if tag is an approved one or not
 
@@ -334,8 +355,13 @@ class Vocabulary(HDXObject):
         return False
 
     @classmethod
-    def read_tags_mappings(cls, configuration=None, url=None, keycolumn=1, failchained=True):
-        # type: (Optional[Configuration], Optional[str], int, bool) -> Dict
+    def read_tags_mappings(
+        cls,
+        configuration: Optional[Configuration] = None,
+        url: Optional[str] = None,
+        keycolumn: int = 1,
+        failchained: bool = True,
+    ) -> Dict:
         """
         Read tag mappings and setup tags cleanup dictionaries
 
@@ -353,35 +379,45 @@ class Vocabulary(HDXObject):
                 configuration = Configuration.read()
             with Download(full_agent=configuration.get_user_agent()) as downloader:
                 if url is None:
-                    url = configuration['tags_mapping_url']
-                cls._tags_dict = downloader.download_tabular_rows_as_dicts(url, keycolumn=keycolumn)
+                    url = configuration["tags_mapping_url"]
+                cls._tags_dict = downloader.download_tabular_rows_as_dicts(
+                    url, keycolumn=keycolumn
+                )
                 keys = cls._tags_dict.keys()
                 chainerror = False
                 for i, tag in enumerate(keys):
                     whattodo = cls._tags_dict[tag]
-                    action = whattodo[u'Action to Take']
-                    final_tags = whattodo[u'New Tag(s)']
-                    for final_tag in final_tags.split(';'):
+                    action = whattodo["Action to Take"]
+                    final_tags = whattodo["New Tag(s)"]
+                    for final_tag in final_tags.split(";"):
                         if final_tag in keys:
                             index = list(keys).index(final_tag)
                             if index != i:
                                 whattodo2 = cls._tags_dict[final_tag]
-                                action2 = whattodo2[u'Action to Take']
-                                if action2 != 'ok' and action2 != 'other':
-                                    final_tags2 = whattodo2[u'New Tag(s)']
-                                    if final_tag not in final_tags2.split(';'):
+                                action2 = whattodo2["Action to Take"]
+                                if action2 != "ok" and action2 != "other":
+                                    final_tags2 = whattodo2["New Tag(s)"]
+                                    if final_tag not in final_tags2.split(";"):
                                         chainerror = True
                                         if failchained:
-                                            logger.error('Chained rules: %s (%s -> %s) | %s (%s -> %s)' %
-                                                         (action, tag, final_tags, action2, final_tag, final_tags2))
+                                            logger.error(
+                                                "Chained rules: %s (%s -> %s) | %s (%s -> %s)"
+                                                % (
+                                                    action,
+                                                    tag,
+                                                    final_tags,
+                                                    action2,
+                                                    final_tag,
+                                                    final_tags2,
+                                                )
+                                            )
 
                 if failchained and chainerror:
-                    raise ChainRuleError('Chained rules for tags detected!')
+                    raise ChainRuleError("Chained rules for tags detected!")
         return cls._tags_dict
 
     @classmethod
-    def set_tagsdict(cls, tags_dict):
-        # type: (Dict) -> None
+    def set_tagsdict(cls, tags_dict: Dict) -> None:
         """
         Set tags dictionary
 
@@ -394,8 +430,12 @@ class Vocabulary(HDXObject):
         cls._tags_dict = tags_dict
 
     @classmethod
-    def get_mapped_tag(cls, tag, log_deleted=True, configuration=None):
-        # type: (str, bool, Optional[Configuration]) -> Tuple[List[str], List[str]]
+    def get_mapped_tag(
+        cls,
+        tag: str,
+        log_deleted: bool = True,
+        configuration: Optional[Configuration] = None,
+    ) -> Tuple[List[str], List[str]]:
         """Given a tag, return a list of tag(s) to which it maps and any deleted tags
 
         Args:
@@ -415,27 +455,37 @@ class Vocabulary(HDXObject):
         if cls.is_approved(tag):
             tags.append(tag)
         elif tag not in tags_dict.keys():
-            logger.error(f"Unapproved tag {tag} not in tag mapping! For a list of approved tags see: {configuration['tags_list_url']}")
+            logger.error(
+                f"Unapproved tag {tag} not in tag mapping! For a list of approved tags see: {configuration['tags_list_url']}"
+            )
             deleted_tags.append(tag)
         else:
             whattodo = tags_dict[tag]
-            action = whattodo[u'Action to Take']
-            if action == u'ok':
-                logger.error(f"Tag {tag} is not in CKAN approved tags but is in tags mappings! For a list of approved tags see: {configuration['tags_list_url']}")
-            elif action == u'delete':
+            action = whattodo["Action to Take"]
+            if action == "ok":
+                logger.error(
+                    f"Tag {tag} is not in CKAN approved tags but is in tags mappings! For a list of approved tags see: {configuration['tags_list_url']}"
+                )
+            elif action == "delete":
                 if log_deleted:
-                    logger.info(f"Tag {tag} is invalid and won't be added! For a list of approved tags see: {configuration['tags_list_url']}")
+                    logger.info(
+                        f"Tag {tag} is invalid and won't be added! For a list of approved tags see: {configuration['tags_list_url']}"
+                    )
                 deleted_tags.append(tag)
-            elif action == u'merge':
-                final_tags = whattodo['New Tag(s)'].split(';')
+            elif action == "merge":
+                final_tags = whattodo["New Tag(s)"].split(";")
                 tags.extend(final_tags)
             else:
-                logger.error(f'Invalid action {action}!')
+                logger.error(f"Invalid action {action}!")
         return tags, deleted_tags
 
     @classmethod
-    def get_mapped_tags(cls, tags, log_deleted=True, configuration=None):
-        # type: (List[str], bool, Optional[Configuration]) -> Tuple[List[str], List[str]]
+    def get_mapped_tags(
+        cls,
+        tags: List[str],
+        log_deleted: bool = True,
+        configuration: Optional[Configuration] = None,
+    ) -> Tuple[List[str], List[str]]:
         """Given a list of tags, return a list of tags to which they map and any deleted tags
 
         Args:
@@ -449,14 +499,19 @@ class Vocabulary(HDXObject):
         new_tags = list()
         deleted_tags = list()
         for tag in tags:
-            mapped_tags, del_tags = cls.get_mapped_tag(tag, log_deleted=log_deleted, configuration=configuration)
+            mapped_tags, del_tags = cls.get_mapped_tag(
+                tag, log_deleted=log_deleted, configuration=configuration
+            )
             new_tags.extend(mapped_tags)
             deleted_tags.extend(del_tags)
-        return list(OrderedDict.fromkeys(new_tags)), list(OrderedDict.fromkeys(deleted_tags))
+        return list(OrderedDict.fromkeys(new_tags)), list(
+            OrderedDict.fromkeys(deleted_tags)
+        )
 
     @classmethod
-    def add_mapped_tag(cls, hdxobject, tag, log_deleted=True):
-        # type: (HDXObjectUpperBound, str, bool) -> Tuple[List[str], List[str]]
+    def add_mapped_tag(
+        cls, hdxobject: HDXObjectUpperBound, tag: str, log_deleted: bool = True
+    ) -> Tuple[List[str], List[str]]:
         """Add a tag to an HDX object that has tags
 
         Args:
@@ -470,8 +525,9 @@ class Vocabulary(HDXObject):
         return cls.add_mapped_tags(hdxobject, [tag], log_deleted=log_deleted)
 
     @classmethod
-    def add_mapped_tags(cls, hdxobject, tags, log_deleted=True):
-        # type: (HDXObjectUpperBound, List[str], bool) -> Tuple[List[str], List[str]]
+    def add_mapped_tags(
+        cls, hdxobject: HDXObjectUpperBound, tags: List[str], log_deleted: bool = True
+    ) -> Tuple[List[str], List[str]]:
         """Add a list of tag to an HDX object that has tags
 
         Args:
@@ -482,15 +538,21 @@ class Vocabulary(HDXObject):
         Returns:
             Tuple[List[str], List[str]]: Tuple containing list of added tags and list of deleted tags and tags not added
         """
-        new_tags, deleted_tags = cls.get_mapped_tags(tags, log_deleted=log_deleted, configuration=hdxobject.configuration)
-        added_tags = hdxobject._add_tags(new_tags, cls.get_approved_vocabulary(configuration=hdxobject.configuration)['id'])
+        new_tags, deleted_tags = cls.get_mapped_tags(
+            tags, log_deleted=log_deleted, configuration=hdxobject.configuration
+        )
+        added_tags = hdxobject._add_tags(
+            new_tags,
+            cls.get_approved_vocabulary(configuration=hdxobject.configuration)["id"],
+        )
         unadded_tags = [x for x in new_tags if x not in added_tags]
         unadded_tags.extend(deleted_tags)
         return added_tags, unadded_tags
 
     @classmethod
-    def clean_tags(cls, hdxobject, log_deleted=True):
-        # type: (HDXObjectUpperBound, bool) -> Tuple[List[str], List[str]]
+    def clean_tags(
+        cls, hdxobject: HDXObjectUpperBound, log_deleted: bool = True
+    ) -> Tuple[List[str], List[str]]:
         """Clean tags in an HDX object according to tags cleanup spreadsheet
 
         Args:
@@ -501,12 +563,17 @@ class Vocabulary(HDXObject):
             Tuple[List[str], List[str]]: Tuple containing list of mapped tags and list of deleted tags and tags not added
         """
         tags = hdxobject._get_tags()
-        hdxobject['tags'] = list()
+        hdxobject["tags"] = list()
         return cls.add_mapped_tags(hdxobject, tags, log_deleted=log_deleted)
 
     @classmethod
-    def autocomplete(cls, name, limit=20, configuration=None, **kwargs):
-        # type: (str, int, Optional[Configuration], Any) -> List
+    def autocomplete(
+        cls,
+        name: str,
+        limit: int = 20,
+        configuration: Optional[Configuration] = None,
+        **kwargs: Any,
+    ) -> List:
         """Autocomplete a tag name and return matches
 
         Args:

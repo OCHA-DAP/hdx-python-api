@@ -1,12 +1,11 @@
-# -*- coding: utf-8 -*-
 """Organization class containing all logic for creating, checking, and updating organizations."""
 import logging
 from os.path import join
-from typing import Optional, List, Dict, Union, Any
+from typing import Any, Dict, List, Optional, Union
 
 import hdx.data.dataset
 import hdx.data.user
-from hdx.data.hdxobject import HDXObject, HDXError
+from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.hdx_configuration import Configuration
 
 logger = logging.getLogger(__name__)
@@ -20,31 +19,34 @@ class Organization(HDXObject):
         configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
     """
 
-    def __init__(self, initial_data=None, configuration=None):
-        # type: (Optional[Dict], Optional[Configuration]) -> None
+    def __init__(
+        self,
+        initial_data: Optional[Dict] = None,
+        configuration: Optional[Configuration] = None,
+    ) -> None:
         if not initial_data:
             initial_data = dict()
-        super(Organization, self).__init__(initial_data, configuration=configuration)
+        super().__init__(initial_data, configuration=configuration)
 
     @staticmethod
-    def actions():
-        # type: () -> Dict[str, str]
+    def actions() -> Dict[str, str]:
         """Dictionary of actions that can be performed on object
 
         Returns:
             Dict[str, str]: Dictionary of actions that can be performed on object
         """
         return {
-            'show': 'organization_show',
-            'update': 'organization_update',
-            'create': 'organization_create',
-            'delete': 'organization_delete',
-            'list': 'organization_list',
-            'autocomplete': 'organization_autocomplete'
+            "show": "organization_show",
+            "update": "organization_update",
+            "create": "organization_create",
+            "delete": "organization_delete",
+            "list": "organization_list",
+            "autocomplete": "organization_autocomplete",
         }
 
-    def update_from_yaml(self, path=join('config', 'hdx_organization_static.yml')):
-        # type: (str) -> None
+    def update_from_yaml(
+        self, path: str = join("config", "hdx_organization_static.yml")
+    ) -> None:
         """Update organization metadata with static metadata from YAML file
 
         Args:
@@ -53,10 +55,11 @@ class Organization(HDXObject):
         Returns:
             None
         """
-        super(Organization, self).update_from_yaml(path)
+        super().update_from_yaml(path)
 
-    def update_from_json(self, path=join('config', 'hdx_organization_static.json')):
-        # type: (str) -> None
+    def update_from_json(
+        self, path: str = join("config", "hdx_organization_static.json")
+    ) -> None:
         """Update organization metadata with static metadata from JSON file
 
         Args:
@@ -65,11 +68,12 @@ class Organization(HDXObject):
         Returns:
             None
         """
-        super(Organization, self).update_from_json(path)
+        super().update_from_json(path)
 
     @classmethod
-    def read_from_hdx(cls, identifier, configuration=None):
-        # type: (str, Optional[Configuration]) -> Optional['Organization']
+    def read_from_hdx(
+        cls, identifier: str, configuration: Optional[Configuration] = None
+    ) -> Optional["Organization"]:
         """Reads the organization given by identifier from HDX and returns Organization object
 
         Args:
@@ -79,10 +83,9 @@ class Organization(HDXObject):
         Returns:
             Optional[Organization]: Organization object if successful read, None if not
         """
-        return cls._read_from_hdx_class('organization', identifier, configuration)
+        return cls._read_from_hdx_class("organization", identifier, configuration)
 
-    def check_required_fields(self, ignore_fields=list()):
-        # type: (List[str]) -> None
+    def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
         """Check that metadata for organization is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
@@ -92,60 +95,59 @@ class Organization(HDXObject):
         Returns:
             None
         """
-        self._check_required_fields('organization', ignore_fields)
+        self._check_required_fields("organization", ignore_fields)
 
-    def update_in_hdx(self, **kwargs):
-        # type: (Any) -> None
+    def update_in_hdx(self, **kwargs: Any) -> None:
         """Check if organization exists in HDX and if so, update organization
 
         Returns:
             None
         """
-        self._update_in_hdx('organization', 'id', **kwargs)
+        self._update_in_hdx("organization", "id", **kwargs)
 
-    def create_in_hdx(self, **kwargs):
-        # type: (Any) -> None
+    def create_in_hdx(self, **kwargs: Any) -> None:
         """Check if organization exists in HDX and if so, update it, otherwise create organization
 
         Returns:
             None
         """
-        self._create_in_hdx('organization', 'id', 'name', **kwargs)
+        self._create_in_hdx("organization", "id", "name", **kwargs)
 
-    def delete_from_hdx(self):
-        # type: () -> None
+    def delete_from_hdx(self) -> None:
         """Deletes a organization from HDX.
 
         Returns:
             None
         """
-        self._delete_from_hdx('organization', 'id')
+        self._delete_from_hdx("organization", "id")
 
-    def get_users(self, capacity=None):
-        # type: (Optional[str]) -> List[hdx.data.user.User]
+    def get_users(self, capacity: Optional[str] = None) -> List[hdx.data.user.User]:
         """Returns the organization's users.
 
         Args:
             capacity (Optional[str]): Filter by capacity eg. member, admin. Defaults to None.
         Returns:
-            List[hdx.data.user.User]: Organization's users.
+            List[User]: Organization's users.
         """
         users = list()
-        usersdicts = self.data.get('users')
+        usersdicts = self.data.get("users")
         if usersdicts is not None:
             for userdata in usersdicts:
-                if capacity is not None and userdata['capacity'] != capacity:
+                if capacity is not None and userdata["capacity"] != capacity:
                     continue
-                id = userdata.get('id')
+                id = userdata.get("id")
                 if id is None:
-                    id = userdata['name']
-                user = hdx.data.user.User.read_from_hdx(id, configuration=self.configuration)
-                user['capacity'] = userdata['capacity']
+                    id = userdata["name"]
+                user = hdx.data.user.User.read_from_hdx(
+                    id, configuration=self.configuration
+                )
+                user["capacity"] = userdata["capacity"]
                 users.append(user)
         return users
 
-    def add_update_user(self, user, capacity=None):
-        # type: (Union[hdx.data.user.User,Dict,str],Optional[str]) -> None
+    def add_update_user(
+        self, user: Union[hdx.data.user.User, Dict, str], capacity: Optional[str] = None
+    ) -> None:
         """Add new or update existing user in organization with new metadata. Capacity eg. member, admin
         must be supplied either within the User object or dictionary or using the capacity argument (which takes
         precedence).
@@ -159,22 +161,27 @@ class Organization(HDXObject):
 
         """
         if isinstance(user, str):
-            user = hdx.data.user.User.read_from_hdx(user, configuration=self.configuration)
+            user = hdx.data.user.User.read_from_hdx(
+                user, configuration=self.configuration
+            )
         elif isinstance(user, dict):
             user = hdx.data.user.User(user, configuration=self.configuration)
         if isinstance(user, hdx.data.user.User):
-            users = self.data.get('users')
+            users = self.data.get("users")
             if users is None:
                 users = list()
-                self.data['users'] = users
+                self.data["users"] = users
             if capacity is not None:
-                user['capacity'] = capacity
-            self._addupdate_hdxobject(users, 'name', user)
+                user["capacity"] = capacity
+            self._addupdate_hdxobject(users, "name", user)
             return
-        raise HDXError(f'Type {type(user).__name__} cannot be added as a user!')
+        raise HDXError(f"Type {type(user).__name__} cannot be added as a user!")
 
-    def add_update_users(self, users, capacity=None):
-        # type: (List[Union[hdx.data.user.User,Dict,str]],Optional[str]) -> None
+    def add_update_users(
+        self,
+        users: List[Union[hdx.data.user.User, Dict, str]],
+        capacity: Optional[str] = None,
+    ) -> None:
         """Add new or update existing users in organization with new metadata. Capacity eg. member, admin
         must be supplied either within the User object or dictionary or using the capacity argument (which takes
         precedence).
@@ -187,12 +194,11 @@ class Organization(HDXObject):
             None
         """
         if not isinstance(users, list):
-            raise HDXError('Users should be a list!')
+            raise HDXError("Users should be a list!")
         for user in users:
             self.add_update_user(user, capacity)
 
-    def remove_user(self, user):
-        # type: (Union[hdx.data.user.User,Dict,str]) -> bool
+    def remove_user(self, user: Union[hdx.data.user.User, Dict, str]) -> bool:
         """Remove a user from the organization
 
         Args:
@@ -201,10 +207,11 @@ class Organization(HDXObject):
         Returns:
             bool: True if user removed or False if not
         """
-        return self._remove_hdxobject(self.data.get('users'), user)
+        return self._remove_hdxobject(self.data.get("users"), user)
 
-    def get_datasets(self, query='*:*', **kwargs):
-        # type: (str, Any) -> List[hdx.data.dataset.Dataset]
+    def get_datasets(
+        self, query: str = "*:*", **kwargs: Any
+    ) -> List["Dataset"]:
         """Get list of datasets in organization
 
         Args:
@@ -222,13 +229,17 @@ class Organization(HDXObject):
         Returns:
             List[Dataset]: List of datasets in organization
         """
-        return hdx.data.dataset.Dataset.search_in_hdx(query=query,
-                                                      configuration=self.configuration,
-                                                      fq=f"organization:{self.data['name']}", **kwargs)
+        return hdx.data.dataset.Dataset.search_in_hdx(
+            query=query,
+            configuration=self.configuration,
+            fq=f"organization:{self.data['name']}",
+            **kwargs,
+        )
 
     @staticmethod
-    def get_all_organization_names(configuration=None, **kwargs):
-        # type: (Optional[Configuration], Any) -> List[str]
+    def get_all_organization_names(
+        configuration: Optional[Configuration] = None, **kwargs: Any
+    ) -> List[str]:
         """Get all organization names in HDX
 
         Args:
@@ -246,11 +257,12 @@ class Organization(HDXObject):
             List[str]: List of all organization names in HDX
         """
         organization = Organization(configuration=configuration)
-        return organization._write_to_hdx('list', kwargs)
+        return organization._write_to_hdx("list", kwargs)
 
     @classmethod
-    def autocomplete(cls, name, limit=20, configuration=None):
-        # type: (str, int, Optional[Configuration]) -> List
+    def autocomplete(
+        cls, name: str, limit: int = 20, configuration: Optional[Configuration] = None
+    ) -> List:
         """Autocomplete an organization name and return matches
 
         Args:

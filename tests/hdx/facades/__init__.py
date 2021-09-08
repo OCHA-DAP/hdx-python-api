@@ -1,4 +1,3 @@
-# -*- coding: UTF-8 -*-
 from hdx.hdx_configuration import Configuration
 
 
@@ -23,17 +22,17 @@ def my_testuafn():
 
 def my_excfn():
     testresult.actual_result = Configuration.read().get_hdx_site_url()
-    raise ValueError('Some failure!')
+    raise ValueError("Some failure!")
 
 
 def my_testfnkw(**kwargs):
-    fn = kwargs.get('fn')
-    if fn == 'site':
+    fn = kwargs.get("fn")
+    if fn == "site":
         testresult.actual_result = Configuration.read().get_hdx_site_url()
-    elif fn == 'api':
+    elif fn == "api":
         testresult.actual_result = Configuration.read().get_api_key()
-    elif fn == 'agent':
+    elif fn == "agent":
         testresult.actual_result = Configuration.read().user_agent
-    elif fn == 'exc':
+    elif fn == "exc":
         testresult.actual_result = Configuration.read().get_hdx_site_url()
-        raise ValueError('Some failure!')
+        raise ValueError("Some failure!")

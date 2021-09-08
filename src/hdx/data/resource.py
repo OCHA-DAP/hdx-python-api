@@ -1,21 +1,20 @@
-# -*- coding: utf-8 -*-
 """Resource class containing all logic for creating, checking, and updating resources."""
-import logging
 import datetime
+import logging
 from os import remove
 from os.path import join
 from pathlib import Path
-from typing import Optional, List, Tuple, Dict, Union, Any
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-from hdx.utilities import raisefrom, is_valid_uuid
+from hdx.utilities import is_valid_uuid, raisefrom
 from hdx.utilities.downloader import Download
-from hdx.utilities.loader import load_yaml, load_json
+from hdx.utilities.loader import load_json, load_yaml
 from hdx.utilities.path import script_dir_plus_file
 
 import hdx.data.dataset
 import hdx.data.filestore_helper
 from hdx.data.date_helper import DateHelper
-from hdx.data.hdxobject import HDXObject, HDXError
+from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.data.resource_view import ResourceView
 from hdx.hdx_configuration import Configuration
 
@@ -32,37 +31,40 @@ class Resource(HDXObject):
 
     _formats_dict = None
 
-    def __init__(self, initial_data=None, configuration=None):
-        # type: (Optional[Dict], Optional[Configuration]) -> None
+    def __init__(
+        self,
+        initial_data: Optional[Dict] = None,
+        configuration: Optional[Configuration] = None,
+    ) -> None:
         if not initial_data:
             initial_data = dict()
-        super(Resource, self).__init__(initial_data, configuration=configuration)
+        super().__init__(initial_data, configuration=configuration)
         self.file_to_upload = None
 
     @staticmethod
-    def actions():
-        # type: () -> Dict[str, str]
+    def actions() -> Dict[str, str]:
         """Dictionary of actions that can be performed on object
 
         Returns:
             Dict[str, str]: Dictionary of actions that can be performed on object
         """
         return {
-            'show': 'resource_show',
-            'update': 'resource_update',
-            'create': 'resource_create',
-            'patch': 'resource_patch',
-            'delete': 'resource_delete',
-            'search': 'resource_search',
-            'datastore_delete': 'datastore_delete',
-            'datastore_create': 'datastore_create',
-            'datastore_insert': 'datastore_insert',
-            'datastore_upsert': 'datastore_upsert',
-            'datastore_search': 'datastore_search'
+            "show": "resource_show",
+            "update": "resource_update",
+            "create": "resource_create",
+            "patch": "resource_patch",
+            "delete": "resource_delete",
+            "search": "resource_search",
+            "datastore_delete": "datastore_delete",
+            "datastore_create": "datastore_create",
+            "datastore_insert": "datastore_insert",
+            "datastore_upsert": "datastore_upsert",
+            "datastore_search": "datastore_search",
         }
 
-    def update_from_yaml(self, path=join('config', 'hdx_resource_static.yml')):
-        # type: (str) -> None
+    def update_from_yaml(
+        self, path: str = join("config", "hdx_resource_static.yml")
+    ) -> None:
         """Update resource metadata with static metadata from YAML file
 
         Args:
@@ -71,10 +73,11 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        super(Resource, self).update_from_yaml(path)
+        super().update_from_yaml(path)
 
-    def update_from_json(self, path=join('config', 'hdx_resource_static.json')):
-        # type: (str) -> None
+    def update_from_json(
+        self, path: str = join("config", "hdx_resource_static.json")
+    ) -> None:
         """Update resource metadata with static metadata from JSON file
 
         Args:
@@ -83,11 +86,12 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        super(Resource, self).update_from_json(path)
+        super().update_from_json(path)
 
     @classmethod
-    def read_from_hdx(cls, identifier, configuration=None):
-        # type: (str, Optional[Configuration]) -> Optional['Resource']
+    def read_from_hdx(
+        cls, identifier: str, configuration: Optional[Configuration] = None
+    ) -> Optional["Resource"]:
         """Reads the resource given by identifier from HDX and returns Resource object
 
         Args:
@@ -99,11 +103,14 @@ class Resource(HDXObject):
         """
 
         if is_valid_uuid(identifier) is False:
-            raise HDXError(f'{identifier} is not a valid resource id!')
-        return cls._read_from_hdx_class('resource', identifier, configuration)
+            raise HDXError(f"{identifier} is not a valid resource id!")
+        return cls._read_from_hdx_class("resource", identifier, configuration)
 
-    def get_date_of_resource(self, date_format=None, today=datetime.date.today()):
-        # type: (Optional[str], datetime.date) -> Dict
+    def get_date_of_resource(
+        self,
+        date_format: Optional[str] = None,
+        today: datetime.date = datetime.date.today(),
+    ) -> Dict:
         """Get resource date as datetimes and strings in specified format. If no format is supplied, the ISO 8601
         format is used. Returns a dictionary containing keys startdate (start date as datetime), enddate (end
         date as datetime), startdate_str (start date as string), enddate_str (end date as string) and ongoing
@@ -116,10 +123,15 @@ class Resource(HDXObject):
         Returns:
             Dict: Dictionary of date information
         """
-        return DateHelper.get_date_info(self.data.get('daterange_for_data'), date_format, today)
+        return DateHelper.get_date_info(
+            self.data.get("daterange_for_data"), date_format, today
+        )
 
-    def set_date_of_resource(self, startdate, enddate):
-        # type: (Union[datetime.datetime, str], Union[datetime.datetime, str]) -> None
+    def set_date_of_resource(
+        self,
+        startdate: Union[datetime.datetime, str],
+        enddate: Union[datetime.datetime, str],
+    ) -> None:
         """Set resource date from either datetime.datetime objects or strings.
 
         Args:
@@ -129,11 +141,12 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        self.data['daterange_for_data'] = DateHelper.get_hdx_date(startdate, enddate)
+        self.data["daterange_for_data"] = DateHelper.get_hdx_date(startdate, enddate)
 
     @classmethod
-    def read_formats_mappings(cls, configuration=None, url=None):
-        # type: (Optional[Configuration], Optional[str]) -> Dict
+    def read_formats_mappings(
+        cls, configuration: Optional[Configuration] = None, url: Optional[str] = None
+    ) -> Dict:
         """
         Read HDX formats list
 
@@ -149,12 +162,12 @@ class Resource(HDXObject):
                 configuration = Configuration.read()
             with Download(full_agent=configuration.get_user_agent()) as downloader:
                 if url is None:
-                    url = configuration['formats_mapping_url']
+                    url = configuration["formats_mapping_url"]
                 downloader.download(url)
                 cls._formats_dict = dict()
                 for format_data in downloader.get_json():
                     format = format_data[0].lower()
-                    if format == '_comment':
+                    if format == "_comment":
                         continue
                     cls._formats_dict[format] = format
                     for file_type in format_data[3]:
@@ -162,8 +175,7 @@ class Resource(HDXObject):
         return cls._formats_dict
 
     @classmethod
-    def set_formatsdict(cls, formats_dict):
-        # type: (Dict) -> None
+    def set_formatsdict(cls, formats_dict: Dict) -> None:
         """
         Set formats dictionary
 
@@ -176,8 +188,9 @@ class Resource(HDXObject):
         cls._formats_dict = formats_dict
 
     @classmethod
-    def get_mapped_format(cls, file_type, configuration=None):
-        # type: (str, Optional[Configuration]) -> Optional[str]
+    def get_mapped_format(
+        cls, file_type: str, configuration: Optional[Configuration] = None
+    ) -> Optional[str]:
         """Given a format, return a format to which it maps
 
         Args:
@@ -195,27 +208,25 @@ class Resource(HDXObject):
         mappings = cls.read_formats_mappings(configuration=configuration)
         format = mappings.get(file_type)
         if format is None:
-            if file_type[0] == '.':
+            if file_type[0] == ".":
                 file_type = file_type[1:]
             else:
-                file_type = f'.{file_type}'
+                file_type = f".{file_type}"
             format = mappings.get(file_type)
         return format
 
-    def get_file_type(self):
-        # type: () -> Optional[str]
+    def get_file_type(self) -> Optional[str]:
         """Get the resource's file type
 
         Returns:
             Optional[str]: Resource's file type or None if it has not been set
         """
-        format = self.data.get('format')
+        format = self.data.get("format")
         if format:
             format = format.lower()
         return format
 
-    def set_file_type(self, file_type):
-        # type: (str) -> str
+    def set_file_type(self, file_type: str) -> str:
         """Set the resource's file type
 
         Args:
@@ -227,21 +238,21 @@ class Resource(HDXObject):
         """
         format = self.get_mapped_format(file_type, configuration=self.configuration)
         if not format:
-            raise HDXError(f'Supplied file type {file_type} is invalid and could not be mapped to a known type!')
-        self.data['format'] = format
+            raise HDXError(
+                f"Supplied file type {file_type} is invalid and could not be mapped to a known type!"
+            )
+        self.data["format"] = format
         return format
 
-    def clean_file_type(self):
-        # type: () -> str
+    def clean_file_type(self) -> str:
         """Clean the resource's file type, setting it to None if it is invalid and cannot be mapped
 
         Returns:
             str: Format that was set
         """
-        return self.set_file_type(self.data.get('format'))
+        return self.set_file_type(self.data.get("format"))
 
-    def get_file_to_upload(self):
-        # type: () -> Optional[str]
+    def get_file_to_upload(self) -> Optional[str]:
         """Get the file uploaded
 
         Returns:
@@ -249,8 +260,9 @@ class Resource(HDXObject):
         """
         return self.file_to_upload
 
-    def set_file_to_upload(self, file_to_upload, guess_format_from_suffix=False):
-        # type: (str, bool) -> str
+    def set_file_to_upload(
+        self, file_to_upload: str, guess_format_from_suffix: bool = False
+    ) -> str:
         """Delete any existing url and set the file uploaded to the local path provided
 
         Args:
@@ -260,16 +272,15 @@ class Resource(HDXObject):
         Returns:
             Optional[str]: The format that was guessed or None if no format was set
         """
-        if 'url' in self.data:
-            del self.data['url']
+        if "url" in self.data:
+            del self.data["url"]
         self.file_to_upload = file_to_upload
         format = None
         if guess_format_from_suffix:
             format = self.set_file_type(Path(file_to_upload).suffix)
         return format
 
-    def check_url_filetoupload(self):
-        # type: () -> None
+    def check_url_filetoupload(self) -> None:
         """Check if url or file to upload provided for resource and add resource_type and url_type if not supplied.
         Correct the file type.
 
@@ -277,27 +288,31 @@ class Resource(HDXObject):
             None
         """
         if self.file_to_upload is None:
-            if 'url' in self.data:
-                if 'resource_type' not in self.data:
-                    self.data['resource_type'] = 'api'
-                if 'url_type' not in self.data:
-                    self.data['url_type'] = 'api'
+            if "url" in self.data:
+                if "resource_type" not in self.data:
+                    self.data["resource_type"] = "api"
+                if "url_type" not in self.data:
+                    self.data["url_type"] = "api"
             else:
-                raise HDXError('Either a url or a file to upload must be supplied!')
+                raise HDXError("Either a url or a file to upload must be supplied!")
         else:
-            if 'url' in self.data:
-                if self.data['url'] != hdx.data.filestore_helper.FilestoreHelper.temporary_url:
-                    raise HDXError('Either a url or a file to upload must be supplied not both!')
-            if 'resource_type' not in self.data:
-                self.data['resource_type'] = 'file.upload'
-            if 'url_type' not in self.data:
-                self.data['url_type'] = 'upload'
-            if 'tracking_summary' in self.data:
-                del self.data['tracking_summary']
+            if "url" in self.data:
+                if (
+                    self.data["url"]
+                    != hdx.data.filestore_helper.FilestoreHelper.temporary_url
+                ):
+                    raise HDXError(
+                        "Either a url or a file to upload must be supplied not both!"
+                    )
+            if "resource_type" not in self.data:
+                self.data["resource_type"] = "file.upload"
+            if "url_type" not in self.data:
+                self.data["url_type"] = "upload"
+            if "tracking_summary" in self.data:
+                del self.data["tracking_summary"]
         self.clean_file_type()
 
-    def check_required_fields(self, ignore_fields=list()):
-        # type: (List[str]) -> None
+    def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
         """Check that metadata for resource is complete. The parameter ignore_fields should be set if required to
         any fields that should be ignored for the particular operation.
 
@@ -308,10 +323,9 @@ class Resource(HDXObject):
             None
         """
         self.check_url_filetoupload()
-        self._check_required_fields('resource', ignore_fields)
+        self._check_required_fields("resource", ignore_fields)
 
-    def _get_files(self):
-        # type: () -> Dict
+    def _get_files(self) -> Dict:
         """Return the files parameter for CKANAPI
 
         Returns:
@@ -319,10 +333,9 @@ class Resource(HDXObject):
         """
         if self.file_to_upload is None:
             return dict()
-        return {'upload': self.file_to_upload}
+        return {"upload": self.file_to_upload}
 
-    def update_in_hdx(self, **kwargs):
-        # type: (Any) -> None
+    def update_in_hdx(self, **kwargs: Any) -> None:
         """Check if resource exists in HDX and if so, update it
 
         Args:
@@ -332,54 +345,52 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        self._check_load_existing_object('resource', 'id')
-        if self.file_to_upload and 'url' in self.data:
-            del self.data['url']
-        self._merge_hdx_update('resource', 'id', self._get_files(), True, **kwargs)
+        self._check_load_existing_object("resource", "id")
+        if self.file_to_upload and "url" in self.data:
+            del self.data["url"]
+        self._merge_hdx_update("resource", "id", self._get_files(), True, **kwargs)
 
-    def create_in_hdx(self, **kwargs):
-        # type: (Any) -> None
+    def create_in_hdx(self, **kwargs: Any) -> None:
         """Check if resource exists in HDX and if so, update it, otherwise create it
 
         Returns:
             None
         """
-        if 'ignore_check' not in kwargs:  # allow ignoring of field checks
+        if "ignore_check" not in kwargs:  # allow ignoring of field checks
             self.check_required_fields()
-        id = self.data.get('id')
+        id = self.data.get("id")
         files = self._get_files()
-        if id and self._load_from_hdx('resource', id):
+        if id and self._load_from_hdx("resource", id):
             logger.warning(f"{'resource'} exists. Updating {id}")
-            if self.file_to_upload and 'url' in self.data:
-                del self.data['url']
-            self._merge_hdx_update('resource', 'id', files, True, **kwargs)
+            if self.file_to_upload and "url" in self.data:
+                del self.data["url"]
+            self._merge_hdx_update("resource", "id", files, True, **kwargs)
         else:
-            self._save_to_hdx('create', 'name', files, True)
+            self._save_to_hdx("create", "name", files, True)
 
-    def delete_from_hdx(self):
-        # type: () -> None
+    def delete_from_hdx(self) -> None:
         """Deletes a resource from HDX
 
         Returns:
             None
         """
-        self._delete_from_hdx('resource', 'id')
+        self._delete_from_hdx("resource", "id")
 
-    def get_dataset(self):
-        # type: () -> hdx.data.dataset.Dataset
+    def get_dataset(self) -> "Dataset":
         """Return dataset containing this resource
 
         Returns:
-            hdx.data.dataset.Dataset: Dataset containing this resource
+            Dataset: Dataset containing this resource
         """
-        package_id = self.data.get('package_id')
+        package_id = self.data.get("package_id")
         if package_id is None:
-            raise HDXError('Resource has no package id!')
+            raise HDXError("Resource has no package id!")
         return hdx.data.dataset.Dataset.read_from_hdx(package_id)
 
     @staticmethod
-    def search_in_hdx(query, configuration=None, **kwargs):
-        # type: (str, Optional[Configuration], Any) -> List['Resource']
+    def search_in_hdx(
+        query: str, configuration: Optional[Configuration] = None, **kwargs: Any
+    ) -> List["Resource"]:
         """Searches for resources in HDX. NOTE: Does not search dataset metadata!
 
         Args:
@@ -395,19 +406,20 @@ class Resource(HDXObject):
 
         resources = []
         resource = Resource(configuration=configuration)
-        success, result = resource._read_from_hdx('resource', query, 'query', Resource.actions()['search'])
+        success, result = resource._read_from_hdx(
+            "resource", query, "query", Resource.actions()["search"]
+        )
         if result:
-            count = result.get('count', None)
+            count = result.get("count", None)
             if count:
-                for resourcedict in result['results']:
+                for resourcedict in result["results"]:
                     resource = Resource(resourcedict, configuration=configuration)
                     resources.append(resource)
         else:
             logger.debug(result)
         return resources
 
-    def download(self, folder=None):
-        # type: (Optional[str]) -> Tuple[str, str]
+    def download(self, folder: Optional[str] = None) -> Tuple[str, str]:
         """Download resource store to provided folder or temporary folder if no folder supplied
 
         Args:
@@ -418,21 +430,22 @@ class Resource(HDXObject):
 
         """
         # Download the resource
-        url = self.data.get('url', None)
+        url = self.data.get("url", None)
         if not url:
-            raise HDXError('No URL to download!')
-        logger.debug(f'Downloading {url}')
-        filename = self.data['name']
+            raise HDXError("No URL to download!")
+        logger.debug(f"Downloading {url}")
+        filename = self.data["name"]
         format = f".{self.data['format']}"
         if format not in filename:
-            filename = f'{filename}{format}'
+            filename = f"{filename}{format}"
         with Download(full_agent=self.configuration.get_user_agent()) as downloader:
             path = downloader.download_file(url, folder, filename)
             return url, path
 
     @staticmethod
-    def get_all_resource_ids_in_datastore(configuration=None):
-        # type: (Optional[Configuration]) -> List[str]
+    def get_all_resource_ids_in_datastore(
+        configuration: Optional[Configuration] = None,
+    ) -> List[str]:
         """Get list of resources that have a datastore returning their ids.
 
         Args:
@@ -442,25 +455,33 @@ class Resource(HDXObject):
             List[str]: List of resource ids that are in the datastore
         """
         resource = Resource(configuration=configuration)
-        success, result = resource._read_from_hdx('datastore', '_table_metadata', 'resource_id',
-                                                  Resource.actions()['datastore_search'], limit=10000)
+        success, result = resource._read_from_hdx(
+            "datastore",
+            "_table_metadata",
+            "resource_id",
+            Resource.actions()["datastore_search"],
+            limit=10000,
+        )
         resource_ids = list()
         if not success:
             logger.debug(result)
         else:
-            for record in result['records']:
-                resource_ids.append(record['name'])
+            for record in result["records"]:
+                resource_ids.append(record["name"])
         return resource_ids
 
-    def has_datastore(self):
-        # type: () -> bool
+    def has_datastore(self) -> bool:
         """Check if the resource has a datastore.
 
         Returns:
             bool: Whether the resource has a datastore or not
         """
-        success, result = self._read_from_hdx('datastore', self.data['id'], 'resource_id',
-                                              self.actions()['datastore_search'])
+        success, result = self._read_from_hdx(
+            "datastore",
+            self.data["id"],
+            "resource_id",
+            self.actions()["datastore_search"],
+        )
         if not success:
             logger.debug(result)
         else:
@@ -468,22 +489,29 @@ class Resource(HDXObject):
                 return True
         return False
 
-    def delete_datastore(self):
-        # type: () -> None
+    def delete_datastore(self) -> None:
         """Delete a resource from the HDX datastore
 
         Returns:
             None
         """
-        success, result = self._read_from_hdx('datastore', self.data['id'], 'resource_id',
-                                              self.actions()['datastore_delete'],
-                                              force=True)
+        success, result = self._read_from_hdx(
+            "datastore",
+            self.data["id"],
+            "resource_id",
+            self.actions()["datastore_delete"],
+            force=True,
+        )
         if not success:
             logger.debug(result)
 
-    def create_datastore(self, schema=None, primary_key=None,
-                         delete_first=0, path=None):
-        # type: (Optional[List[Dict]], Optional[str], int, Optional[str]) -> None
+    def create_datastore(
+        self,
+        schema: Optional[List[Dict]] = None,
+        primary_key: Optional[str] = None,
+        delete_first: int = 0,
+        path: Optional[str] = None,
+    ) -> None:
         """For tabular data, create a resource in the HDX datastore which enables data preview in HDX. If no schema is provided
         all fields are assumed to be text. If path is not supplied, the file is first downloaded from HDX.
 
@@ -504,7 +532,9 @@ class Resource(HDXObject):
             if primary_key is None:
                 self.delete_datastore()
         else:
-            raise HDXError('delete_first must be 0, 1 or 2! (0 = No, 1 = Yes, 2 = Delete if no primary key)')
+            raise HDXError(
+                "delete_first must be 0, 1 or 2! (0 = No, 1 = Yes, 2 = Delete if no primary key)"
+            )
         if path is None:
             # Download the resource
             url, path = self.download()
@@ -521,23 +551,32 @@ class Resource(HDXObject):
 
         with Download(full_agent=self.configuration.get_user_agent()) as downloader:
             try:
-                stream = downloader.get_tabular_stream(path, headers=1, post_parse=[convert_to_text],
-                                                       bytes_sample_size=1000000)
+                stream = downloader.get_tabular_stream(
+                    path,
+                    headers=1,
+                    post_parse=[convert_to_text],
+                    bytes_sample_size=1000000,
+                )
                 nonefieldname = False
                 if schema is None:
                     schema = list()
                     for fieldname in stream.headers:
                         if fieldname is not None:
-                            schema.append({'id': fieldname, 'type': 'text'})
+                            schema.append({"id": fieldname, "type": "text"})
                         else:
                             nonefieldname = True
-                data = {'resource_id': self.data['id'], 'force': True, 'fields': schema, 'primary_key': primary_key}
-                self._write_to_hdx('datastore_create', data, 'resource_id')
+                data = {
+                    "resource_id": self.data["id"],
+                    "force": True,
+                    "fields": schema,
+                    "primary_key": primary_key,
+                }
+                self._write_to_hdx("datastore_create", data, "resource_id")
                 if primary_key is None:
-                    method = 'insert'
+                    method = "insert"
                 else:
-                    method = 'upsert'
-                logger.debug(f'Uploading data from {url} to datastore')
+                    method = "upsert"
+                logger.debug(f"Uploading data from {url} to datastore")
                 offset = 0
                 chunksize = 100
                 rowset = stream.read(keyed=True, limit=chunksize)
@@ -545,19 +584,25 @@ class Resource(HDXObject):
                     if nonefieldname:
                         for row in rowset:
                             del row[None]
-                    data = {'resource_id': self.data['id'], 'force': True, 'method': method, 'records': rowset}
-                    self._write_to_hdx('datastore_upsert', data, 'resource_id')
+                    data = {
+                        "resource_id": self.data["id"],
+                        "force": True,
+                        "method": method,
+                        "records": rowset,
+                    }
+                    self._write_to_hdx("datastore_upsert", data, "resource_id")
                     rowset = stream.read(keyed=True, limit=chunksize)
-                    logger.debug(f'Uploading: {offset}')
+                    logger.debug(f"Uploading: {offset}")
                     offset += chunksize
             except Exception as e:
-                raisefrom(HDXError, f'Upload to datastore of {url} failed!', e)
+                raisefrom(HDXError, f"Upload to datastore of {url} failed!", e)
             finally:
                 if delete_after_download:
                     remove(path)
 
-    def create_datastore_from_dict_schema(self, data, delete_first=0, path=None):
-        # type: (dict, int, Optional[str]) -> None
+    def create_datastore_from_dict_schema(
+        self, data: dict, delete_first: int = 0, path: Optional[str] = None
+    ) -> None:
         """For tabular data, create a resource in the HDX datastore which enables data preview in HDX from a dictionary
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
         If path is not supplied, the file is first downloaded from HDX.
@@ -570,13 +615,16 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        schema = data['schema']
-        primary_key = data.get('primary_key')
+        schema = data["schema"]
+        primary_key = data.get("primary_key")
         self.create_datastore(schema, primary_key, delete_first, path=path)
 
-    def create_datastore_from_yaml_schema(self, yaml_path, delete_first=0,
-                                          path=None):
-        # type: (str, Optional[int], Optional[str]) -> None
+    def create_datastore_from_yaml_schema(
+        self,
+        yaml_path: str,
+        delete_first: Optional[int] = 0,
+        path: Optional[str] = None,
+    ) -> None:
         """For tabular data, create a resource in the HDX datastore which enables data preview in HDX from a YAML file
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
         If path is not supplied, the file is first downloaded from HDX.
@@ -592,8 +640,9 @@ class Resource(HDXObject):
         data = load_yaml(yaml_path)
         self.create_datastore_from_dict_schema(data, delete_first, path=path)
 
-    def create_datastore_from_json_schema(self, json_path, delete_first=0, path=None):
-        # type: (str, int, Optional[str]) -> None
+    def create_datastore_from_json_schema(
+        self, json_path: str, delete_first: int = 0, path: Optional[str] = None
+    ) -> None:
         """For tabular data, create a resource in the HDX datastore which enables data preview in HDX from a JSON file
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
         If path is not supplied, the file is first downloaded from HDX.
@@ -609,8 +658,9 @@ class Resource(HDXObject):
         data = load_json(json_path)
         self.create_datastore_from_dict_schema(data, delete_first, path=path)
 
-    def create_datastore_for_topline(self, delete_first=0, path=None):
-        # type: (int, Optional[str]) -> None
+    def create_datastore_for_topline(
+        self, delete_first: int = 0, path: Optional[str] = None
+    ) -> None:
         """For tabular data, create a resource in the HDX datastore which enables data preview in HDX using the built in
         YAML definition for a topline. If path is not supplied, the file is first downloaded from HDX.
 
@@ -621,12 +671,17 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        data = load_yaml(script_dir_plus_file(join('..', 'hdx_datasource_topline.yml'), Resource))
+        data = load_yaml(
+            script_dir_plus_file(join("..", "hdx_datasource_topline.yml"), Resource)
+        )
         self.create_datastore_from_dict_schema(data, delete_first, path=path)
 
-    def update_datastore(self, schema=None, primary_key=None,
-                         path=None):
-        # type: (Optional[List[Dict]], Optional[str], Optional[str]) -> None
+    def update_datastore(
+        self,
+        schema: Optional[List[Dict]] = None,
+        primary_key: Optional[str] = None,
+        path: Optional[str] = None,
+    ) -> None:
         """For tabular data, update a resource in the HDX datastore which enables data preview in HDX. If no schema is provided
         all fields are assumed to be text. If path is not supplied, the file is first downloaded from HDX.
 
@@ -640,8 +695,9 @@ class Resource(HDXObject):
         """
         self.create_datastore(schema, primary_key, 2, path=path)
 
-    def update_datastore_from_dict_schema(self, data, path=None):
-        # type: (dict, Optional[str]) -> None
+    def update_datastore_from_dict_schema(
+        self, data: dict, path: Optional[str] = None
+    ) -> None:
         """For tabular data, update a resource in the HDX datastore which enables data preview in HDX from a dictionary
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
         If path is not supplied, the file is first downloaded from HDX.
@@ -655,8 +711,9 @@ class Resource(HDXObject):
         """
         self.create_datastore_from_dict_schema(data, 2, path=path)
 
-    def update_datastore_from_yaml_schema(self, yaml_path, path=None):
-        # type: (str, Optional[str]) -> None
+    def update_datastore_from_yaml_schema(
+        self, yaml_path: str, path: Optional[str] = None
+    ) -> None:
         """For tabular data, update a resource in the HDX datastore which enables data preview in HDX from a YAML file
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
         If path is not supplied, the file is first downloaded from HDX.
@@ -670,8 +727,9 @@ class Resource(HDXObject):
         """
         self.create_datastore_from_yaml_schema(yaml_path, 2, path=path)
 
-    def update_datastore_from_json_schema(self, json_path, path=None):
-        # type: (str, Optional[str]) -> None
+    def update_datastore_from_json_schema(
+        self, json_path: str, path: Optional[str] = None
+    ) -> None:
         """For tabular data, update a resource in the HDX datastore which enables data preview in HDX from a JSON file
         containing a list of fields and types of form {'id': 'FIELD', 'type': 'TYPE'} and optionally a primary key.
         If path is not supplied, the file is first downloaded from HDX.
@@ -685,8 +743,7 @@ class Resource(HDXObject):
         """
         self.create_datastore_from_json_schema(json_path, 2, path=path)
 
-    def update_datastore_for_topline(self, path=None):
-        # type: (Optional[str]) -> None
+    def update_datastore_for_topline(self, path: Optional[str] = None) -> None:
         """For tabular data, update a resource in the HDX datastore which enables data preview in HDX using the built in YAML
         definition for a topline. If path is not supplied, the file is first downloaded from HDX.
 
@@ -698,17 +755,17 @@ class Resource(HDXObject):
         """
         self.create_datastore_for_topline(2, path=path)
 
-    def get_resource_views(self):
-        # type: () -> List[ResourceView]
+    def get_resource_views(self) -> List[ResourceView]:
         """Get any resource views in the resource
 
         Returns:
             List[ResourceView]: List of resource views
         """
-        return ResourceView.get_all_for_resource(self.data['id'])
+        return ResourceView.get_all_for_resource(self.data["id"])
 
-    def _get_resource_view(self, resource_view):
-        # type: (Union[ResourceView,Dict]) -> ResourceView
+    def _get_resource_view(
+        self, resource_view: Union[ResourceView, Dict]
+    ) -> ResourceView:
         """Get resource view id
 
         Args:
@@ -718,13 +775,18 @@ class Resource(HDXObject):
             ResourceView: ResourceView object
         """
         if isinstance(resource_view, dict):
-            resource_view = ResourceView(resource_view, configuration=self.configuration)
+            resource_view = ResourceView(
+                resource_view, configuration=self.configuration
+            )
         if isinstance(resource_view, ResourceView):
             return resource_view
-        raise HDXError(f'Type {type(resource_view).__name__} is not a valid resource view!')
+        raise HDXError(
+            f"Type {type(resource_view).__name__} is not a valid resource view!"
+        )
 
-    def add_update_resource_view(self, resource_view):
-        # type: (Union[ResourceView,Dict]) -> None
+    def add_update_resource_view(
+        self, resource_view: Union[ResourceView, Dict]
+    ) -> None:
         """Add new resource view in resource with new metadata
 
         Args:
@@ -737,8 +799,9 @@ class Resource(HDXObject):
         resource_view = self._get_resource_view(resource_view)
         resource_view.create_in_hdx()
 
-    def add_update_resource_views(self, resource_views):
-        # type: (List[Union[ResourceView,Dict]]) -> None
+    def add_update_resource_views(
+        self, resource_views: List[Union[ResourceView, Dict]]
+    ) -> None:
         """Add new or update existing resource views in resource with new metadata.
 
         Args:
@@ -748,12 +811,13 @@ class Resource(HDXObject):
             None
         """
         if not isinstance(resource_views, list):
-            raise HDXError('ResourceViews should be a list!')
+            raise HDXError("ResourceViews should be a list!")
         for resource_view in resource_views:
             self.add_update_resource_view(resource_view)
 
-    def reorder_resource_views(self, resource_views):
-        # type: (List[Union[ResourceView,Dict,str]]) -> None
+    def reorder_resource_views(
+        self, resource_views: List[Union[ResourceView, Dict, str]]
+    ) -> None:
         """Order resource views in resource.
 
         Args:
@@ -763,21 +827,27 @@ class Resource(HDXObject):
             None
         """
         if not isinstance(resource_views, list):
-            raise HDXError('ResourceViews should be a list!')
+            raise HDXError("ResourceViews should be a list!")
         ids = list()
         for resource_view in resource_views:
             if isinstance(resource_view, str):
                 resource_view_id = resource_view
             else:
-                resource_view_id = resource_view['id']
+                resource_view_id = resource_view["id"]
             if is_valid_uuid(resource_view_id) is False:
-                raise HDXError(f'{resource_view} is not a valid resource view id!')
+                raise HDXError(f"{resource_view} is not a valid resource view id!")
             ids.append(resource_view_id)
-        _, result = self._read_from_hdx('resource view', self.data['id'], 'id',
-                                        ResourceView.actions()['reorder'], order=ids)
+        _, result = self._read_from_hdx(
+            "resource view",
+            self.data["id"],
+            "id",
+            ResourceView.actions()["reorder"],
+            order=ids,
+        )
 
-    def delete_resource_view(self, resource_view):
-        # type: (Union[ResourceView,Dict,str]) -> None
+    def delete_resource_view(
+        self, resource_view: Union[ResourceView, Dict, str]
+    ) -> None:
         """Delete a resource view from the resource and HDX
 
         Args:
@@ -788,37 +858,38 @@ class Resource(HDXObject):
         """
         if isinstance(resource_view, str):
             if is_valid_uuid(resource_view) is False:
-                raise HDXError(f'{resource_view} is not a valid resource view id!')
-            resource_view = ResourceView({'id': resource_view}, configuration=self.configuration)
+                raise HDXError(f"{resource_view} is not a valid resource view id!")
+            resource_view = ResourceView(
+                {"id": resource_view}, configuration=self.configuration
+            )
         else:
             resource_view = self._get_resource_view(resource_view)
-            if 'id' not in resource_view:
+            if "id" not in resource_view:
                 found = False
-                title = resource_view.get('title')
+                title = resource_view.get("title")
                 for rv in self.get_resource_views():
-                    if resource_view['title'] == rv['title']:
+                    if resource_view["title"] == rv["title"]:
                         resource_view = rv
                         found = True
                         break
                 if not found:
-                    raise HDXError(f'No resource views have title {title} in this resource!')
+                    raise HDXError(
+                        f"No resource views have title {title} in this resource!"
+                    )
         resource_view.delete_from_hdx()
 
-    def enable_dataset_preview(self):
-        # type: () -> None
+    def enable_dataset_preview(self) -> None:
         """Enable dataset preview of resource
 
         Returns:
             None
         """
-        self.data['dataset_preview_enabled'] = 'True'
+        self.data["dataset_preview_enabled"] = "True"
 
-    def disable_dataset_preview(self):
-        # type: () -> None
+    def disable_dataset_preview(self) -> None:
         """Disable dataset preview of resource
 
         Returns:
             None
         """
-        self.data['dataset_preview_enabled'] = 'False'
-
+        self.data["dataset_preview_enabled"] = "False"

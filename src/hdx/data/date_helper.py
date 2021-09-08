@@ -1,17 +1,17 @@
-# -*- coding: utf-8 -*-
 """Helper to the Dataset and Resource classes for handling HDX dates.
 """
 from collections import Iterable
 from datetime import date, datetime
-from typing import Union, Dict, Optional, List, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 from hdx.utilities.dateparse import parse_date
 
 
-class DateHelper(object):
+class DateHelper:
     @staticmethod
-    def get_date_info(hdx_date, date_format=None, today=datetime.now()):
-        # type: (Dict, Optional[str], date) -> Dict
+    def get_date_info(
+        hdx_date: Dict, date_format: Optional[str] = None, today: date = datetime.now()
+    ) -> Dict:
         """Get date as datetimes and strings in specified format. If no format is supplied, the ISO 8601
         format is used. Returns a dictionary containing keys startdate (start date as datetime), enddate (end
         date as datetime), startdate_str (start date as string), enddate_str (end date as string) and ongoing
@@ -27,33 +27,36 @@ class DateHelper(object):
         """
         result = dict()
         if hdx_date:
-            if hdx_date[0] == '[' and hdx_date[-1] == ']':
+            if hdx_date[0] == "[" and hdx_date[-1] == "]":
                 hdx_date = hdx_date[1:-1]
-            dataset_dates = hdx_date.split(' TO ')
+            dataset_dates = hdx_date.split(" TO ")
             startdate = parse_date(dataset_dates[0])
             enddate = dataset_dates[1]
-            if enddate == '*':
+            if enddate == "*":
                 enddate = datetime(today.year, today.month, today.day, 0, 0)
                 ongoing = True
             else:
                 enddate = parse_date(enddate)
                 ongoing = False
-            result['startdate'] = startdate
-            result['enddate'] = enddate
+            result["startdate"] = startdate
+            result["enddate"] = enddate
             if date_format is None:
                 startdate_str = startdate.isoformat()
                 enddate_str = enddate.isoformat()
             else:
                 startdate_str = startdate.strftime(date_format)
                 enddate_str = enddate.strftime(date_format)
-            result['startdate_str'] = startdate_str
-            result['enddate_str'] = enddate_str
-            result['ongoing'] = ongoing
+            result["startdate_str"] = startdate_str
+            result["enddate_str"] = enddate_str
+            result["ongoing"] = ongoing
         return result
 
     @staticmethod
-    def get_hdx_date(startdate, enddate=None, ongoing=False):
-        # type: (Union[datetime, str], Union[datetime, str, None], bool) -> str
+    def get_hdx_date(
+        startdate: Union[datetime, str],
+        enddate: Union[datetime, str, None] = None,
+        ongoing: bool = False,
+    ) -> str:
         """Get an HDX date from either datetime.datetime objects or strings with option to set ongoing.
 
         Args:
@@ -68,18 +71,19 @@ class DateHelper(object):
             startdate = parse_date(startdate)
         startdate = startdate.isoformat()
         if ongoing:
-            enddate = '*'
+            enddate = "*"
         elif not enddate:
             enddate = startdate
-        if enddate != '*':
+        if enddate != "*":
             if isinstance(enddate, str):
                 enddate = parse_date(enddate)
             enddate = enddate.isoformat()
-        return f'[{startdate} TO {enddate}]'
+        return f"[{startdate} TO {enddate}]"
 
     @classmethod
-    def get_hdx_date_from_years(cls, startyear, endyear=None):
-        # type: (Union[str, int, Iterable], Union[str, int, None]) -> Tuple[str,List[int]]
+    def get_hdx_date_from_years(
+        cls, startyear: Union[str, int, Iterable], endyear: Union[str, int, None] = None
+    ) -> Tuple[str, List[int]]:
         """Get an HDX date from an iterable of years or a start and end year.
 
         Args:
@@ -99,10 +103,9 @@ class DateHelper(object):
                     endyear = int(endyear)
                 retval.append(endyear)
         else:
-            retval = sorted([int(x) for x in list(startyear)])
+            retval = sorted(int(x) for x in list(startyear))
         startyear = retval[0]
         endyear = retval[-1]
         startdate = datetime(startyear, 1, 1)
         enddate = datetime(endyear, 12, 31)
         return cls.get_hdx_date(startdate, enddate), retval
-

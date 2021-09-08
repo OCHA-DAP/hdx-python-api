@@ -1,31 +1,21 @@
-# -*- coding: utf-8 -*-
 """Configuration for HDX"""
+import logging
 import os
+from base64 import b64decode
+from collections import UserDict
+from os.path import expanduser, isfile, join
+from typing import Any, Dict, Optional, Tuple
 
+import ckanapi
 import requests
-import six
+from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.email import Email
+from hdx.utilities.loader import load_json, load_yaml
+from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.session import get_session
 from hdx.utilities.useragent import UserAgent, UserAgentError
 
 from hdx.version import get_api_version
-
-if six.PY2:
-    from UserDict import IterableUserDict as UserDict
-else:
-    from collections import UserDict
-
-
-import logging
-from base64 import b64decode
-from os.path import expanduser, join, isfile
-from typing import Optional, Any, Dict, Tuple
-
-import ckanapi
-
-from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.loader import load_yaml, load_json
-from hdx.utilities.path import script_dir_plus_file
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +24,7 @@ class ConfigurationError(Exception):
     pass
 
 
-class Configuration(UserDict, object):
+class Configuration(UserDict):
     """Configuration for HDX
 
     Args:
@@ -58,130 +48,148 @@ class Configuration(UserDict, object):
     """
 
     _configuration = None
-    home_folder = expanduser('~')
-    default_hdx_base_config_yaml = script_dir_plus_file('hdx_base_configuration.yml', ConfigurationError)
-    default_hdx_config_yaml = join(home_folder, '.hdx_configuration.yml')
+    home_folder = expanduser("~")
+    default_hdx_base_config_yaml = script_dir_plus_file(
+        "hdx_base_configuration.yml", ConfigurationError
+    )
+    default_hdx_config_yaml = join(home_folder, ".hdx_configuration.yml")
 
     apiversion = get_api_version()
-    prefix = f'HDXPythonLibrary/{apiversion}'
+    prefix = f"HDXPythonLibrary/{apiversion}"
 
-    def __init__(self, **kwargs):
-        # type: (Any) -> None
-        super(Configuration, self).__init__()
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__()
 
         self._remoteckan = None
         self._emailer = None
 
         hdx_base_config_found = False
-        hdx_base_config_dict = kwargs.get('hdx_base_config_dict', None)
+        hdx_base_config_dict = kwargs.get("hdx_base_config_dict", None)
         if hdx_base_config_dict:
             hdx_base_config_found = True
-            logger.info('Loading HDX base configuration from dictionary')
+            logger.info("Loading HDX base configuration from dictionary")
 
-        hdx_base_config_json = kwargs.get('hdx_base_config_json', '')
+        hdx_base_config_json = kwargs.get("hdx_base_config_json", "")
         if hdx_base_config_json:
             if hdx_base_config_found:
-                raise ConfigurationError('More than one HDX base configuration given!')
+                raise ConfigurationError("More than one HDX base configuration given!")
             hdx_base_config_found = True
-            logger.info(f'Loading HDX base configuration from: {hdx_base_config_json}')
+            logger.info(f"Loading HDX base configuration from: {hdx_base_config_json}")
             hdx_base_config_dict = load_json(hdx_base_config_json)
 
-        hdx_base_config_yaml = kwargs.get('hdx_base_config_yaml', '')
+        hdx_base_config_yaml = kwargs.get("hdx_base_config_yaml", "")
         if hdx_base_config_found:
             if hdx_base_config_yaml:
-                raise ConfigurationError('More than one HDX base configuration given!')
+                raise ConfigurationError("More than one HDX base configuration given!")
         else:
             if not hdx_base_config_yaml:
                 hdx_base_config_yaml = Configuration.default_hdx_base_config_yaml
-                logger.info(f'No HDX base configuration parameter. Using default base configuration file: {hdx_base_config_yaml}.')
-            logger.info(f'Loading HDX base configuration from: {hdx_base_config_yaml}')
+                logger.info(
+                    f"No HDX base configuration parameter. Using default base configuration file: {hdx_base_config_yaml}."
+                )
+            logger.info(f"Loading HDX base configuration from: {hdx_base_config_yaml}")
             hdx_base_config_dict = load_yaml(hdx_base_config_yaml)
 
         hdx_config_found = False
-        hdx_config_dict = kwargs.get('hdx_config_dict', None)
+        hdx_config_dict = kwargs.get("hdx_config_dict", None)
         if hdx_config_dict:
             hdx_config_found = True
-            logger.info('Loading HDX configuration from dictionary')
+            logger.info("Loading HDX configuration from dictionary")
 
-        hdx_config_json = kwargs.get('hdx_config_json', '')
+        hdx_config_json = kwargs.get("hdx_config_json", "")
         if hdx_config_json:
             if hdx_config_found:
-                raise ConfigurationError('More than one HDX configuration given!')
+                raise ConfigurationError("More than one HDX configuration given!")
             hdx_config_found = True
-            logger.info(f'Loading HDX configuration from: {hdx_config_json}')
+            logger.info(f"Loading HDX configuration from: {hdx_config_json}")
             hdx_config_dict = load_json(hdx_config_json)
 
-        hdx_config_yaml = kwargs.get('hdx_config_yaml', '')
+        hdx_config_yaml = kwargs.get("hdx_config_yaml", "")
         if hdx_config_found:
             if hdx_config_yaml:
-                raise ConfigurationError('More than one HDX configuration given!')
+                raise ConfigurationError("More than one HDX configuration given!")
         else:
             if not hdx_config_yaml:
                 hdx_config_yaml = Configuration.default_hdx_config_yaml
                 if isfile(hdx_config_yaml):
-                    logger.info(f'No HDX configuration parameter. Using default configuration file: {hdx_config_yaml}.')
+                    logger.info(
+                        f"No HDX configuration parameter. Using default configuration file: {hdx_config_yaml}."
+                    )
                 else:
-                    logger.info(f'No HDX configuration parameter and no configuration file at default path: {hdx_config_yaml}.')
+                    logger.info(
+                        f"No HDX configuration parameter and no configuration file at default path: {hdx_config_yaml}."
+                    )
                     hdx_config_yaml = None
                     hdx_config_dict = dict()
             if hdx_config_yaml:
-                logger.info(f'Loading HDX configuration from: {hdx_config_yaml}')
+                logger.info(f"Loading HDX configuration from: {hdx_config_yaml}")
                 hdx_config_dict = load_yaml(hdx_config_yaml)
 
         self.data = merge_two_dictionaries(hdx_base_config_dict, hdx_config_dict)
 
         project_config_found = False
-        project_config_dict = kwargs.get('project_config_dict', None)
+        project_config_dict = kwargs.get("project_config_dict", None)
         if project_config_dict is not None:
             project_config_found = True
-            logger.info('Loading project configuration from dictionary')
+            logger.info("Loading project configuration from dictionary")
 
-        project_config_json = kwargs.get('project_config_json', '')
+        project_config_json = kwargs.get("project_config_json", "")
         if project_config_json:
             if project_config_found:
-                raise ConfigurationError('More than one project configuration given!')
+                raise ConfigurationError("More than one project configuration given!")
             project_config_found = True
-            logger.info(f'Loading project configuration from: {project_config_json}')
+            logger.info(f"Loading project configuration from: {project_config_json}")
             project_config_dict = load_json(project_config_json)
 
-        project_config_yaml = kwargs.get('project_config_yaml', '')
+        project_config_yaml = kwargs.get("project_config_yaml", "")
         if project_config_found:
             if project_config_yaml:
-                raise ConfigurationError('More than one project configuration given!')
+                raise ConfigurationError("More than one project configuration given!")
         else:
             if project_config_yaml:
-                logger.info(f'Loading project configuration from: {project_config_yaml}')
+                logger.info(
+                    f"Loading project configuration from: {project_config_yaml}"
+                )
                 project_config_dict = load_yaml(project_config_yaml)
             else:
                 project_config_dict = dict()
 
         self.data = merge_two_dictionaries(hdx_base_config_dict, project_config_dict)
 
-        ua = kwargs.get('full_agent')
+        ua = kwargs.get("full_agent")
         if ua:
             self.user_agent = ua
         else:
             try:
                 self.user_agent = UserAgent.get(prefix=Configuration.prefix, **kwargs)
             except UserAgentError:
-                self.user_agent = UserAgent.get(prefix=Configuration.prefix, **self.data)
-        self.hdx_read_only = kwargs.get('hdx_read_only', self.data.get('hdx_read_only', False))
-        logger.info(f'Read only access to HDX: {str(self.hdx_read_only)}')
-        self.hdx_key = kwargs.get('hdx_key', self.data.get('hdx_key'))
+                self.user_agent = UserAgent.get(
+                    prefix=Configuration.prefix, **self.data
+                )
+        self.hdx_read_only = kwargs.get(
+            "hdx_read_only", self.data.get("hdx_read_only", False)
+        )
+        logger.info(f"Read only access to HDX: {str(self.hdx_read_only)}")
+        self.hdx_key = kwargs.get("hdx_key", self.data.get("hdx_key"))
         if not self.hdx_key and not self.hdx_read_only:
-            raise ConfigurationError('No HDX API key supplied as a parameter or in configuration!')
-        hdx_url = kwargs.get('hdx_url', self.data.get('hdx_url'))
+            raise ConfigurationError(
+                "No HDX API key supplied as a parameter or in configuration!"
+            )
+        hdx_url = kwargs.get("hdx_url", self.data.get("hdx_url"))
         if hdx_url:
-            self.hdx_site = 'hdx_custom_site'
-            hdx_url = hdx_url.rstrip('/')
-            self.data[self.hdx_site] = {'url': hdx_url}
+            self.hdx_site = "hdx_custom_site"
+            hdx_url = hdx_url.rstrip("/")
+            self.data[self.hdx_site] = {"url": hdx_url}
         else:
-            self.hdx_site = f"hdx_{kwargs.get('hdx_site', self.data.get('hdx_site', 'stage'))}_site"
+            self.hdx_site = (
+                f"hdx_{kwargs.get('hdx_site', self.data.get('hdx_site', 'stage'))}_site"
+            )
             if self.hdx_site not in self.data:
-                raise ConfigurationError(f'{self.hdx_site} not defined in configuration!')
+                raise ConfigurationError(
+                    f"{self.hdx_site} not defined in configuration!"
+                )
 
-    def set_read_only(self, read_only=True):
-        # type: (bool) -> None
+    def set_read_only(self, read_only: bool = True) -> None:
         """
         Set HDX read only flag
 
@@ -193,8 +201,7 @@ class Configuration(UserDict, object):
         """
         self.hdx_read_only = read_only
 
-    def set_api_key(self, apikey):
-        # type: (str) -> None
+    def set_api_key(self, apikey: str) -> None:
         """
         Set HDX api key
 
@@ -206,8 +213,7 @@ class Configuration(UserDict, object):
         """
         self.hdx_key = apikey
 
-    def get_api_key(self):
-        # type: () -> Optional[str]
+    def get_api_key(self) -> Optional[str]:
         """
         Return HDX api key or None if read only
 
@@ -219,8 +225,7 @@ class Configuration(UserDict, object):
             return None
         return self.hdx_key
 
-    def get_user_agent(self):
-        # type: () -> str
+    def get_user_agent(self) -> str:
         """
         Return user agent
 
@@ -230,8 +235,7 @@ class Configuration(UserDict, object):
         """
         return self.user_agent
 
-    def get_hdx_site_url(self):
-        # type: () -> str
+    def get_hdx_site_url(self) -> str:
         """
         Return HDX web site url
 
@@ -239,10 +243,9 @@ class Configuration(UserDict, object):
             str: HDX web site url
 
         """
-        return self.data[self.hdx_site]['url']
+        return self.data[self.hdx_site]["url"]
 
-    def get_dataset_url(self, name):
-        # type: (str) -> str
+    def get_dataset_url(self, name: str) -> str:
         """
         Return HDX dataset url given dataset name
 
@@ -253,10 +256,9 @@ class Configuration(UserDict, object):
             str: HDX dataset url
 
         """
-        return f'{self.get_hdx_site_url()}/dataset/{name}'
+        return f"{self.get_hdx_site_url()}/dataset/{name}"
 
-    def _get_credentials(self):
-        # type: () -> Optional[Tuple[str, str]]
+    def _get_credentials(self) -> Optional[Tuple[str, str]]:
         """
         Return HDX site username and password
 
@@ -265,14 +267,15 @@ class Configuration(UserDict, object):
 
         """
         site = self.data[self.hdx_site]
-        username = site.get('username')
+        username = site.get("username")
         if username:
-            return b64decode(username).decode('utf-8'), b64decode(site['password']).decode('utf-8')
+            return b64decode(username).decode("utf-8"), b64decode(
+                site["password"]
+            ).decode("utf-8")
         else:
             return None
 
-    def remoteckan(self):
-        # type: () -> ckanapi.RemoteCKAN
+    def remoteckan(self) -> ckanapi.RemoteCKAN:
         """
         Return the remote CKAN object (see ckanapi library)
 
@@ -281,11 +284,12 @@ class Configuration(UserDict, object):
 
         """
         if self._remoteckan is None:
-            raise ConfigurationError('There is no remote CKAN set up! Use Configuration.create(**kwargs)')
+            raise ConfigurationError(
+                "There is no remote CKAN set up! Use Configuration.create(**kwargs)"
+            )
         return self._remoteckan
 
-    def call_remoteckan(self, *args, **kwargs):
-        # type: (Any, Any) -> Dict
+    def call_remoteckan(self, *args: Any, **kwargs: Any) -> Dict:
         """
         Calls the remote CKAN
 
@@ -297,18 +301,17 @@ class Configuration(UserDict, object):
             Dict: The response from the remote CKAN call_action method
 
         """
-        requests_kwargs = kwargs.get('requests_kwargs', dict())
+        requests_kwargs = kwargs.get("requests_kwargs", dict())
         credentials = self._get_credentials()
         if credentials:
-            requests_kwargs['auth'] = credentials
-        kwargs['requests_kwargs'] = requests_kwargs
-        apikey = kwargs.get('apikey', self.get_api_key())
-        kwargs['apikey'] = apikey
+            requests_kwargs["auth"] = credentials
+        kwargs["requests_kwargs"] = requests_kwargs
+        apikey = kwargs.get("apikey", self.get_api_key())
+        kwargs["apikey"] = apikey
         return self.remoteckan().call_action(*args, **kwargs)
 
     @staticmethod
-    def _environment_variables(**kwargs):
-        # type: (Any) -> Any
+    def _environment_variables(**kwargs: Any) -> Any:
         """
         Overwrite keyword arguments with environment variables
 
@@ -323,22 +326,29 @@ class Configuration(UserDict, object):
 
         """
 
-        hdx_key = os.getenv('HDX_KEY')
+        hdx_key = os.getenv("HDX_KEY")
         if hdx_key is not None:
-            kwargs['hdx_key'] = hdx_key
-        hdx_url = os.getenv('HDX_URL')
+            kwargs["hdx_key"] = hdx_key
+        hdx_url = os.getenv("HDX_URL")
         if hdx_url is not None:
-            kwargs['hdx_url'] = hdx_url
+            kwargs["hdx_url"] = hdx_url
         else:
-            hdx_site = os.getenv('HDX_SITE')
+            hdx_site = os.getenv("HDX_SITE")
             if hdx_site is not None:
-                kwargs['hdx_site'] = hdx_site
+                kwargs["hdx_site"] = hdx_site
         return kwargs
 
     @classmethod
-    def create_remoteckan(cls, site_url, user_agent=None, user_agent_config_yaml=None, user_agent_lookup=None,
-                          use_env=False, session=None, **kwargs):
-        # type: (str, Optional[str], Optional[str], Optional[str], bool, requests.Session, Any) -> ckanapi.RemoteCKAN
+    def create_remoteckan(
+        cls,
+        site_url: str,
+        user_agent: Optional[str] = None,
+        user_agent_config_yaml: Optional[str] = None,
+        user_agent_lookup: Optional[str] = None,
+        use_env: bool = False,
+        session: requests.Session = None,
+        **kwargs: Any,
+    ) -> ckanapi.RemoteCKAN:
         """
         Create remote CKAN instance from configuration
 
@@ -355,19 +365,34 @@ class Configuration(UserDict, object):
 
         """
         if not session:
-            whitelist = frozenset(['HEAD', 'TRACE', 'GET', 'POST', 'PUT', 'OPTIONS', 'DELETE'])
-            session = get_session(user_agent, user_agent_config_yaml, user_agent_lookup, use_env,
-                                  prefix=Configuration.prefix, method_whitelist=whitelist, **kwargs)
-            ua = session.headers['User-Agent']
+            whitelist = frozenset(
+                ["HEAD", "TRACE", "GET", "POST", "PUT", "OPTIONS", "DELETE"]
+            )
+            session = get_session(
+                user_agent,
+                user_agent_config_yaml,
+                user_agent_lookup,
+                use_env,
+                prefix=Configuration.prefix,
+                method_whitelist=whitelist,
+                **kwargs,
+            )
+            ua = session.headers["User-Agent"]
         else:
-            ua = kwargs.get('full_agent')
+            ua = kwargs.get("full_agent")
             if not ua:
-                ua = UserAgent.get(user_agent, user_agent_config_yaml, user_agent_lookup, prefix=Configuration.prefix,
-                                   **kwargs)
+                ua = UserAgent.get(
+                    user_agent,
+                    user_agent_config_yaml,
+                    user_agent_lookup,
+                    prefix=Configuration.prefix,
+                    **kwargs,
+                )
         return ckanapi.RemoteCKAN(site_url, user_agent=ua, session=session)
 
-    def setup_remoteckan(self, remoteckan=None, **kwargs):
-        # type: (Optional[ckanapi.RemoteCKAN], Any) -> None
+    def setup_remoteckan(
+        self, remoteckan: Optional[ckanapi.RemoteCKAN] = None, **kwargs: Any
+    ) -> None:
         """
         Set up remote CKAN from provided CKAN or by creating from configuration
 
@@ -379,13 +404,13 @@ class Configuration(UserDict, object):
 
         """
         if remoteckan is None:
-            self._remoteckan = self.create_remoteckan(self.get_hdx_site_url(), full_agent=self.get_user_agent(),
-                                                      **kwargs)
+            self._remoteckan = self.create_remoteckan(
+                self.get_hdx_site_url(), full_agent=self.get_user_agent(), **kwargs
+            )
         else:
             self._remoteckan = remoteckan
 
-    def emailer(self):
-        # type: () -> Email
+    def emailer(self) -> Email:
         """
         Return the Email object (see :any:`Email`)
 
@@ -394,11 +419,12 @@ class Configuration(UserDict, object):
 
         """
         if self._emailer is None:
-            raise ConfigurationError('There is no emailer set up! Use setup_emailer(Any)')
+            raise ConfigurationError(
+                "There is no emailer set up! Use setup_emailer(Any)"
+            )
         return self._emailer
 
-    def setup_emailer(self, **kwargs):
-        # type: (Any) -> None
+    def setup_emailer(self, **kwargs: Any) -> None:
         """
         Set up emailer. Parameters in dictionary or file (eg. yaml below):
         | connection_type: "ssl"   ("ssl" for smtp ssl or "lmtp", otherwise basic smtp is assumed)
@@ -421,8 +447,7 @@ class Configuration(UserDict, object):
         self._emailer = Email(**kwargs)
 
     @classmethod
-    def read(cls):
-        # type: () -> 'Configuration'
+    def read(cls) -> "Configuration":
         """
         Read the HDX configuration
 
@@ -431,12 +456,15 @@ class Configuration(UserDict, object):
 
         """
         if cls._configuration is None:
-            raise ConfigurationError('There is no HDX configuration! Use Configuration.create(**kwargs)')
+            raise ConfigurationError(
+                "There is no HDX configuration! Use Configuration.create(**kwargs)"
+            )
         return cls._configuration
 
     @classmethod
-    def setup(cls, configuration=None, **kwargs):
-        # type: (Optional['Configuration'], Any) -> None
+    def setup(
+        cls, configuration: Optional["Configuration"] = None, **kwargs: Any
+    ) -> None:
         """
         Set up the HDX configuration
 
@@ -470,8 +498,12 @@ class Configuration(UserDict, object):
             cls._configuration = configuration
 
     @classmethod
-    def _create(cls, configuration=None, remoteckan=None, **kwargs):
-        # type: (Optional['Configuration'], Optional[ckanapi.RemoteCKAN], Any) -> str
+    def _create(
+        cls,
+        configuration: Optional["Configuration"] = None,
+        remoteckan: Optional[ckanapi.RemoteCKAN] = None,
+        **kwargs: Any,
+    ) -> str:
         """
         Create HDX configuration
 
@@ -506,8 +538,12 @@ class Configuration(UserDict, object):
         return cls._configuration.get_hdx_site_url()
 
     @classmethod
-    def create(cls, configuration=None, remoteckan=None, **kwargs):
-        # type: (Optional['Configuration'], Optional[ckanapi.RemoteCKAN], Any) -> str
+    def create(
+        cls,
+        configuration: Optional["Configuration"] = None,
+        remoteckan: Optional[ckanapi.RemoteCKAN] = None,
+        **kwargs: Any,
+    ) -> str:
         """
         Create HDX configuration. Can only be called once (will raise an error if called more than once).
 
@@ -537,12 +573,11 @@ class Configuration(UserDict, object):
 
         """
         if cls._configuration is not None:
-            raise ConfigurationError('Configuration already created!')
+            raise ConfigurationError("Configuration already created!")
         return cls._create(configuration=configuration, remoteckan=remoteckan, **kwargs)
 
     @classmethod
-    def delete(cls):
-        # type: () -> None
+    def delete(cls) -> None:
         """
         Delete global HDX configuration.
 

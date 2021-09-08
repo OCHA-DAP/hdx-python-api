@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 """Showcase class containing all logic for creating, checking, and updating showcases."""
 import logging
 import sys
 from os.path import join
-from typing import List, Union, Optional, Dict, Any, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from hdx.utilities import is_valid_uuid
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -23,37 +22,41 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         initial_data (Optional[Dict]): Initial showcase metadata dictionary. Defaults to None.
         configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
     """
-    max_int = sys.maxsize
-    dataset_ids_field = 'dataset_ids'
 
-    def __init__(self, initial_data=None, configuration=None):
-        # type: (Optional[Dict], Optional[Configuration]) -> None
+    max_int = sys.maxsize
+    dataset_ids_field = "dataset_ids"
+
+    def __init__(
+        self,
+        initial_data: Optional[Dict] = None,
+        configuration: Optional[Configuration] = None,
+    ) -> None:
         if not initial_data:
             initial_data = dict()
-        super(Showcase, self).__init__(initial_data, configuration=configuration)
+        super().__init__(initial_data, configuration=configuration)
 
     @staticmethod
-    def actions():
-        # type: () -> Dict[str, str]
+    def actions() -> Dict[str, str]:
         """Dictionary of actions that can be performed on object
 
         Returns:
             Dict[str, str]: Dictionary of actions that can be performed on object
         """
         return {
-            'show': 'ckanext_showcase_show',
-            'update': 'ckanext_showcase_update',
-            'create': 'ckanext_showcase_create',
-            'delete': 'ckanext_showcase_delete',
-            'list': 'ckanext_showcase_list',
-            'associate': 'ckanext_showcase_package_association_create',
-            'disassociate': 'ckanext_showcase_package_association_delete',
-            'list_datasets': 'ckanext_showcase_package_list',
-            'list_showcases': 'ckanext_package_showcase_list'
+            "show": "ckanext_showcase_show",
+            "update": "ckanext_showcase_update",
+            "create": "ckanext_showcase_create",
+            "delete": "ckanext_showcase_delete",
+            "list": "ckanext_showcase_list",
+            "associate": "ckanext_showcase_package_association_create",
+            "disassociate": "ckanext_showcase_package_association_delete",
+            "list_datasets": "ckanext_showcase_package_list",
+            "list_showcases": "ckanext_package_showcase_list",
         }
 
-    def update_from_yaml(self, path=join('config', 'hdx_showcase_static.yml')):
-        # type: (str) -> None
+    def update_from_yaml(
+        self, path: str = join("config", "hdx_showcase_static.yml")
+    ) -> None:
         """Update showcase metadata with static metadata from YAML file
 
         Args:
@@ -62,10 +65,11 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             None
         """
-        super(Showcase, self).update_from_yaml(path)
+        super().update_from_yaml(path)
 
-    def update_from_json(self, path=join('config', 'hdx_showcase_static.json')):
-        # type: (str) -> None
+    def update_from_json(
+        self, path: str = join("config", "hdx_showcase_static.json")
+    ) -> None:
         """Update showcase metadata with static metadata from JSON file
 
         Args:
@@ -74,11 +78,12 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             None
         """
-        super(Showcase, self).update_from_json(path)
+        super().update_from_json(path)
 
     @classmethod
-    def read_from_hdx(cls, identifier, configuration=None):
-        # type: (str, Optional[Configuration]) -> Optional['Showcase']
+    def read_from_hdx(
+        cls, identifier: str, configuration: Optional[Configuration] = None
+    ) -> Optional["Showcase"]:
         """Reads the showcase given by identifier from HDX and returns Showcase object
 
         Args:
@@ -88,10 +93,9 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             Optional[Showcase]: Showcase object if successful read, None if not
         """
-        return cls._read_from_hdx_class('showcase', identifier, configuration)
+        return cls._read_from_hdx_class("showcase", identifier, configuration)
 
-    def check_required_fields(self, ignore_fields=list()):
-        # type: (List[str]) -> None
+    def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
         """Check that metadata for showcase is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
@@ -101,55 +105,51 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             None
         """
-        self._check_required_fields('showcase', ignore_fields)
+        self._check_required_fields("showcase", ignore_fields)
 
-    def update_in_hdx(self, **kwargs):
-        # type: (Any) -> None
+    def update_in_hdx(self, **kwargs: Any) -> None:
         """Check if showcase exists in HDX and if so, update it
 
         Returns:
             None
         """
-        self._check_load_existing_object('showcase', 'name')
+        self._check_load_existing_object("showcase", "name")
         # We load an existing object even though it may well have been loaded already
         # to prevent an admittedly unlikely race condition where someone has updated
         # the object in the intervening time
         merge_two_dictionaries(self.data, self.old_data)
         self.clean_tags()
-        self._hdx_update('showcase', 'name', force_active=True, **kwargs)
-        self._update_in_hdx('showcase', 'name', **kwargs)
+        self._hdx_update("showcase", "name", force_active=True, **kwargs)
+        self._update_in_hdx("showcase", "name", **kwargs)
 
-    def create_in_hdx(self, **kwargs):
-        # type: (Any) -> None
+    def create_in_hdx(self, **kwargs: Any) -> None:
         """Check if showcase exists in HDX and if so, update it, otherwise create it
 
         Returns:
             None
         """
-        if 'ignore_check' not in kwargs:  # allow ignoring of field checks
+        if "ignore_check" not in kwargs:  # allow ignoring of field checks
             self.check_required_fields()
-        if 'name' in self.data and self._load_from_hdx('showcase', self.data['name']):
+        if "name" in self.data and self._load_from_hdx("showcase", self.data["name"]):
             logger.warning(f"{'showcase'} exists. Updating {self.data['name']}")
             merge_two_dictionaries(self.data, self.old_data)
             self.clean_tags()
-            self._hdx_update('showcase', 'name', force_active=True, **kwargs)
+            self._hdx_update("showcase", "name", force_active=True, **kwargs)
         else:
             self.clean_tags()
-            self._save_to_hdx('create', 'title', force_active=True)
+            self._save_to_hdx("create", "title", force_active=True)
 
-        self._create_in_hdx('showcase', 'name', 'title', **kwargs)
+        self._create_in_hdx("showcase", "name", "title", **kwargs)
 
-    def delete_from_hdx(self):
-        # type: () -> None
+    def delete_from_hdx(self) -> None:
         """Deletes a showcase from HDX.
 
         Returns:
             None
         """
-        self._delete_from_hdx('showcase', 'id')
+        self._delete_from_hdx("showcase", "id")
 
-    def get_tags(self):
-        # type: () -> List[str]
+    def get_tags(self) -> List[str]:
         """Return the dataset's list of tags
 
         Returns:
@@ -157,8 +157,9 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         """
         return self._get_tags()
 
-    def add_tag(self, tag, log_deleted=True):
-        # type: (str, bool) -> Tuple[List[str], List[str]]
+    def add_tag(
+        self, tag: str, log_deleted: bool = True
+    ) -> Tuple[List[str], List[str]]:
         """Add a tag
 
         Args:
@@ -168,10 +169,13 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             Tuple[List[str], List[str]]: Tuple containing list of added tags and list of deleted tags and tags not added
         """
-        return hdx.data.vocabulary.Vocabulary.add_mapped_tag(self, tag, log_deleted=log_deleted)
+        return hdx.data.vocabulary.Vocabulary.add_mapped_tag(
+            self, tag, log_deleted=log_deleted
+        )
 
-    def add_tags(self, tags, log_deleted=True):
-        # type: (List[str], bool) -> Tuple[List[str], List[str]]
+    def add_tags(
+        self, tags: List[str], log_deleted: bool = True
+    ) -> Tuple[List[str], List[str]]:
         """Add a list of tags
 
         Args:
@@ -181,10 +185,11 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             Tuple[List[str], List[str]]: Tuple containing list of added tags and list of deleted tags and tags not added
         """
-        return hdx.data.vocabulary.Vocabulary.add_mapped_tags(self, tags, log_deleted=log_deleted)
+        return hdx.data.vocabulary.Vocabulary.add_mapped_tags(
+            self, tags, log_deleted=log_deleted
+        )
 
-    def clean_tags(self, log_deleted=True):
-        # type: (bool) -> Tuple[List[str], List[str]]
+    def clean_tags(self, log_deleted: bool = True) -> Tuple[List[str], List[str]]:
         """Clean tags in an HDX object according to tags cleanup spreadsheet
 
         Args:
@@ -195,8 +200,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         """
         return hdx.data.vocabulary.Vocabulary.clean_tags(self, log_deleted=log_deleted)
 
-    def remove_tag(self, tag):
-        # type: (str) -> bool
+    def remove_tag(self, tag: str) -> bool:
         """Remove a tag
 
         Args:
@@ -205,26 +209,34 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             bool: True if tag removed or False if not
         """
-        return self._remove_hdxobject(self.data.get('tags'), tag.lower(), matchon='name')
+        return self._remove_hdxobject(
+            self.data.get("tags"), tag.lower(), matchon="name"
+        )
 
-    def get_datasets(self):
-        # type: () -> List[hdx.data.dataset.Dataset]
+    def get_datasets(self) -> List["Dataset"]:
         """Get any datasets in the showcase
 
         Returns:
             List[Dataset]: List of datasets
         """
-        assoc_result, datasets_dicts = self._read_from_hdx('showcase', self.data['id'], fieldname='showcase_id',
-                                                           action=self.actions()['list_datasets'])
+        assoc_result, datasets_dicts = self._read_from_hdx(
+            "showcase",
+            self.data["id"],
+            fieldname="showcase_id",
+            action=self.actions()["list_datasets"],
+        )
         datasets = list()
         if assoc_result:
             for dataset_dict in datasets_dicts:
-                dataset = hdx.data.dataset.Dataset(dataset_dict, configuration=self.configuration)
+                dataset = hdx.data.dataset.Dataset(
+                    dataset_dict, configuration=self.configuration
+                )
                 datasets.append(dataset)
         return datasets
 
-    def _get_showcase_dataset_dict(self, dataset):
-        # type: (Union[hdx.data.dataset.Dataset,Dict,str]) -> Dict
+    def _get_showcase_dataset_dict(
+        self, dataset: Union["Dataset", Dict, str]
+    ) -> Dict:
         """Get showcase dataset dict
 
         Args:
@@ -234,17 +246,22 @@ class Showcase(hdx.data.hdxobject.HDXObject):
             Dict: showcase dataset dict
         """
         if isinstance(dataset, hdx.data.dataset.Dataset) or isinstance(dataset, dict):
-            if 'id' not in dataset:
-                dataset = hdx.data.dataset.Dataset.read_from_hdx(dataset['name'])
-            dataset = dataset['id']
+            if "id" not in dataset:
+                dataset = hdx.data.dataset.Dataset.read_from_hdx(dataset["name"])
+            dataset = dataset["id"]
         elif not isinstance(dataset, str):
-            raise hdx.data.hdxobject.HDXError(f'Type {type(dataset).__name__} cannot be added as a dataset!')
+            raise hdx.data.hdxobject.HDXError(
+                f"Type {type(dataset).__name__} cannot be added as a dataset!"
+            )
         if is_valid_uuid(dataset) is False:
-            raise hdx.data.hdxobject.HDXError(f'{dataset} is not a valid dataset id!')
-        return {'showcase_id': self.data['id'], 'package_id': dataset}
+            raise hdx.data.hdxobject.HDXError(f"{dataset} is not a valid dataset id!")
+        return {"showcase_id": self.data["id"], "package_id": dataset}
 
-    def add_dataset(self, dataset, datasets_to_check=None):
-        # type: (Union[hdx.data.dataset.Dataset,Dict,str], List[hdx.data.dataset.Dataset]) -> bool
+    def add_dataset(
+        self,
+        dataset: Union["Dataset", Dict, str],
+        datasets_to_check: List["Dataset"] = None,
+    ) -> bool:
         """Add a dataset
 
         Args:
@@ -258,13 +275,16 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         if datasets_to_check is None:
             datasets_to_check = self.get_datasets()
         for dataset in datasets_to_check:
-            if showcase_dataset['package_id'] == dataset['id']:
+            if showcase_dataset["package_id"] == dataset["id"]:
                 return False
-        self._write_to_hdx('associate', showcase_dataset, 'package_id')
+        self._write_to_hdx("associate", showcase_dataset, "package_id")
         return True
 
-    def add_datasets(self, datasets, datasets_to_check=None):
-        # type: (List[Union[hdx.data.dataset.Dataset,Dict,str]], List[hdx.data.dataset.Dataset]) -> bool
+    def add_datasets(
+        self,
+        datasets: List[Union["Dataset", Dict, str]],
+        datasets_to_check: List["Dataset"] = None,
+    ) -> bool:
         """Add multiple datasets
 
         Args:
@@ -282,8 +302,9 @@ class Showcase(hdx.data.hdxobject.HDXObject):
                 alldatasetsadded = False
         return alldatasetsadded
 
-    def remove_dataset(self, dataset):
-        # type: (Union[hdx.data.dataset.Dataset,Dict,str]) -> None
+    def remove_dataset(
+        self, dataset: Union["Dataset", Dict, str]
+    ) -> None:
         """Remove a dataset
 
         Args:
@@ -292,11 +313,18 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             None
         """
-        self._write_to_hdx('disassociate', self._get_showcase_dataset_dict(dataset), 'package_id')
+        self._write_to_hdx(
+            "disassociate", self._get_showcase_dataset_dict(dataset), "package_id"
+        )
 
     @classmethod
-    def search_in_hdx(cls, query='*:*', configuration=None, page_size=1000, **kwargs):
-        # type: (Optional[str], Optional[Configuration], int, Any) -> List['Showcase']
+    def search_in_hdx(
+        cls,
+        query: Optional[str] = "*:*",
+        configuration: Optional[Configuration] = None,
+        page_size: int = 1000,
+        **kwargs: Any,
+    ) -> List["Showcase"]:
         """Searches for datasets in HDX
 
         Args:
@@ -317,12 +345,13 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             List[Dataset]: list of datasets resulting from query
         """
-        curfq = kwargs.get('fq')
-        kwargs['fq'] = 'dataset_type:showcase'
+        curfq = kwargs.get("fq")
+        kwargs["fq"] = "dataset_type:showcase"
         if curfq:
-            kwargs['fq'] = f"{kwargs['fq']} AND {curfq}"
-        datasets = hdx.data.dataset.Dataset.search_in_hdx(query=query, configuration=configuration,
-                                                          page_size=page_size, **kwargs)
+            kwargs["fq"] = f"{kwargs['fq']} AND {curfq}"
+        datasets = hdx.data.dataset.Dataset.search_in_hdx(
+            query=query, configuration=configuration, page_size=page_size, **kwargs
+        )
         showcases = list()
         for dataset in datasets:
             showcase = Showcase(configuration=configuration)
@@ -332,8 +361,12 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         return showcases
 
     @classmethod
-    def get_all_showcases(cls, configuration=None, page_size=1000, **kwargs):
-        # type: (Optional[Configuration], int, Any) -> List['Showcase']
+    def get_all_showcases(
+        cls,
+        configuration: Optional[Configuration] = None,
+        page_size: int = 1000,
+        **kwargs: Any,
+    ) -> List["Showcase"]:
         """Get all showcases in HDX
 
         Args:
@@ -346,4 +379,6 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             List[Showcase]: list of all showcases in HDX
         """
-        return cls.search_in_hdx(configuration=configuration, page_size=page_size, **kwargs)
+        return cls.search_in_hdx(
+            configuration=configuration, page_size=page_size, **kwargs
+        )

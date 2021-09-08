@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
 """Facade to simplify project setup that calls project main function"""
 import logging
+from typing import Callable, Any
 
 from hdx.utilities.easy_logging import setup_logging
 from hdx.utilities.useragent import UserAgent
@@ -12,8 +12,7 @@ logger = logging.getLogger(__name__)
 setup_logging(**logging_kwargs)
 
 
-def facade(projectmainfn, **kwargs):
-    # (Callable[[None], None], Any) -> None
+def facade(projectmainfn: Callable[[None], None], **kwargs: Any):
     """Facade to simplify project setup that calls project main function
 
     Args:
@@ -29,9 +28,9 @@ def facade(projectmainfn, **kwargs):
     #
     site_url = Configuration._create(**kwargs)
 
-    logger.info('--------------------------------------------------')
-    logger.info(f'> Using HDX Python API Library {Configuration.apiversion}')
-    logger.info(f'> HDX Site: {site_url}')
+    logger.info("--------------------------------------------------")
+    logger.info(f"> Using HDX Python API Library {Configuration.apiversion}")
+    logger.info(f"> HDX Site: {site_url}")
 
     UserAgent.user_agent = Configuration.read().user_agent
 
