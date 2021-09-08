@@ -12,7 +12,7 @@ RUN apk add --no-cache --upgrade \
         libxslt-dev \
         openssl-dev \
         python3-dev && \
-    pip --no-cache-dir install --upgrade hdx-python-api --ignore-installed six && \
+    pip --no-cache-dir install --upgrade hdx-python-api && \
     apk del .build-deps && \
     apk add --no-cache --upgrade libstdc++ && \
     rm -rf ./target ~/.cargo /var/lib/apk/*
