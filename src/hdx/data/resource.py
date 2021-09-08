@@ -376,7 +376,7 @@ class Resource(HDXObject):
         """
         self._delete_from_hdx("resource", "id")
 
-    def get_dataset(self) -> "Dataset":
+    def get_dataset(self) -> "Dataset":  # noqa: F821
         """Return dataset containing this resource
 
         Returns:

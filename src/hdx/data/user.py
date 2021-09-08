@@ -246,7 +246,7 @@ class User(HDXObject):
 
     def get_organizations(
         self, permission: str = "read"
-    ) -> List["Organization"]:
+    ) -> List["Organization"]:  # noqa: F821
         """Get organizations in HDX that this user is a member of.
 
         Args:

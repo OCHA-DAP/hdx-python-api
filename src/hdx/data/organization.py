@@ -211,7 +211,7 @@ class Organization(HDXObject):
 
     def get_datasets(
         self, query: str = "*:*", **kwargs: Any
-    ) -> List["Dataset"]:
+    ) -> List["Dataset"]:  # noqa: F821
         """Get list of datasets in organization
 
         Args:

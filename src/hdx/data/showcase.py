@@ -213,7 +213,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
             self.data.get("tags"), tag.lower(), matchon="name"
         )
 
-    def get_datasets(self) -> List["Dataset"]:
+    def get_datasets(self) -> List["Dataset"]:  # noqa: F821
         """Get any datasets in the showcase
 
         Returns:
@@ -235,7 +235,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         return datasets
 
     def _get_showcase_dataset_dict(
-        self, dataset: Union["Dataset", Dict, str]
+        self, dataset: Union["Dataset", Dict, str]  # noqa: F821
     ) -> Dict:
         """Get showcase dataset dict
 
@@ -259,8 +259,8 @@ class Showcase(hdx.data.hdxobject.HDXObject):
 
     def add_dataset(
         self,
-        dataset: Union["Dataset", Dict, str],
-        datasets_to_check: List["Dataset"] = None,
+        dataset: Union["Dataset", Dict, str],  # noqa: F821
+        datasets_to_check: List["Dataset"] = None,  # noqa: F821
     ) -> bool:
         """Add a dataset
 
@@ -282,8 +282,8 @@ class Showcase(hdx.data.hdxobject.HDXObject):
 
     def add_datasets(
         self,
-        datasets: List[Union["Dataset", Dict, str]],
-        datasets_to_check: List["Dataset"] = None,
+        datasets: List[Union["Dataset", Dict, str]],  # noqa: F821
+        datasets_to_check: List["Dataset"] = None,  # noqa: F821
     ) -> bool:
         """Add multiple datasets
 
@@ -303,7 +303,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         return alldatasetsadded
 
     def remove_dataset(
-        self, dataset: Union["Dataset", Dict, str]
+        self, dataset: Union["Dataset", Dict, str]  # noqa: F821
     ) -> None:
         """Remove a dataset
 
