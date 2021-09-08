@@ -169,12 +169,12 @@ class Dataset(HDXObject):
         """
         if isinstance(resource, str):
             if is_valid_uuid(resource) is False:
-                raise HDXError('%s is not a valid resource id!' % resource)
+                raise HDXError(f'{resource} is not a valid resource id!')
             resource = hdx.data.resource.Resource.read_from_hdx(resource, configuration=self.configuration)
         elif isinstance(resource, dict):
             resource = hdx.data.resource.Resource(resource, configuration=self.configuration)
         if not isinstance(resource, hdx.data.resource.Resource):
-            raise HDXError('Type %s cannot be added as a resource!' % type(resource).__name__)
+            raise HDXError(f'Type {type(resource).__name__} cannot be added as a resource!')
         return resource
 
     def add_update_resource(self, resource, ignore_datasetid=False):
@@ -191,7 +191,7 @@ class Dataset(HDXObject):
         resource = self._get_resource_from_obj(resource)
         if 'package_id' in resource:
             if not ignore_datasetid:
-                raise HDXError('Resource %s being added already has a dataset id!' % (resource['name']))
+                raise HDXError(f"Resource {resource['name']} being added already has a dataset id!")
         resource.check_url_filetoupload()
         resource_index = ResourceMatcher.match_resource_list(self.resources, resource)
         if resource_index is None:
@@ -218,7 +218,7 @@ class Dataset(HDXObject):
             resource = self._get_resource_from_obj(resource)
             if 'package_id' in resource:
                 if not ignore_datasetid:
-                    raise HDXError('Resource %s being added already has a dataset id!' % (resource['name']))
+                    raise HDXError(f"Resource {resource['name']} being added already has a dataset id!")
             resources[i] = resource
         resource_matches, updated_resource_matches, _, updated_resource_no_matches = ResourceMatcher.match_resource_lists(self.resources, resources)
         for i, resource_index in enumerate(resource_matches):
@@ -245,7 +245,7 @@ class Dataset(HDXObject):
         """
         if isinstance(resource, str):
             if is_valid_uuid(resource) is False:
-                raise HDXError('%s is not a valid resource id!' % resource)
+                raise HDXError(f'{resource} is not a valid resource id!')
         return self._remove_hdxobject(self.resources, resource, delete=delete)
 
     def get_resources(self):
@@ -451,11 +451,11 @@ class Dataset(HDXObject):
             del kwargs['updated_by_script']
         else:
             scriptinfo = self.configuration.get_user_agent()
-        self.data['updated_by_script'] = '%s (%s)' % (scriptinfo, datetime.utcnow().isoformat())
+        self.data['updated_by_script'] = f'{scriptinfo} ({datetime.utcnow().isoformat()})'
         batch = kwargs.get('batch')
         if batch:
             if not is_valid_uuid(batch):
-                raise HDXError('%s is not a valid UUID!' % batch)
+                raise HDXError(f'{batch} is not a valid UUID!')
             self.data['batch'] = batch
             del kwargs['batch']
             if 'batch_mode' not in kwargs:
@@ -481,7 +481,7 @@ class Dataset(HDXObject):
             self.data['state'] = 'active'
             filter = list()
             for key in keys_to_delete:
-                filter.append('-%s' % key)
+                filter.append(f'-{key}')
                 self.data.pop(key, None)
             files_to_upload = dict()
             if not self.is_requestable():
@@ -489,9 +489,9 @@ class Dataset(HDXObject):
                 for resource_index in resources_to_delete:
                     del resources[resource_index]
                     if resource_index == len(resources):
-                        filter.append('-resources__%d' % resource_index)
+                        filter.append(f'-resources__{resource_index}')
                 for resource_index, file_to_upload in filestore_resources.items():
-                    files_to_upload['update__resources__%d__upload' % resource_index] = file_to_upload
+                    files_to_upload[f'update__resources__{resource_index}__upload'] = file_to_upload
             new_dataset = self.revise({'id': self.data['id']}, filter=filter, update=self.data, files_to_upload=files_to_upload)
             self.data = new_dataset.data
             self.resources = new_dataset.resources
@@ -531,7 +531,7 @@ class Dataset(HDXObject):
                 for i, resource_index in enumerate(resource_matches):
                     resource = self.resources[resource_index]
                     updated_resource = updated_resources[updated_resource_matches[i]]
-                    logger.warning('Resource exists. Updating %s' % resource['name'])
+                    logger.warning(f"Resource exists. Updating {resource['name']}")
                     hdx.data.filestore_helper.FilestoreHelper.dataset_merge_filestore_resource(
                         resource, updated_resource, filestore_resources, resource_index, **kwargs)
                 for resource_index in updated_resource_no_matches:
@@ -542,7 +542,7 @@ class Dataset(HDXObject):
                 if remove_additional_resources:
                     for resource_index in resource_no_matches:
                         resource = self.resources[resource_index]
-                        logger.warning('Removing additional resource %s!' % resource['name'])
+                        logger.warning(f"Removing additional resource {resource['name']}!")
                         resources_to_delete.append(resource_index)
             else:  # update resources by position
                 for i, updated_resource in enumerate(updated_resources):
@@ -550,9 +550,9 @@ class Dataset(HDXObject):
                         updated_resource_name = updated_resource['name']
                         resource = self.resources[i]
                         resource_name = resource['name']
-                        logger.warning('Resource exists. Updating %s' % resource_name)
+                        logger.warning(f'Resource exists. Updating {resource_name}')
                         if resource_name != updated_resource_name:
-                            logger.warning('Changing resource name to: %s' % updated_resource_name)
+                            logger.warning(f'Changing resource name to: {updated_resource_name}')
                         hdx.data.filestore_helper.FilestoreHelper.dataset_merge_filestore_resource(
                             resource, updated_resource, filestore_resources, i, **kwargs)
                     else:
@@ -563,7 +563,7 @@ class Dataset(HDXObject):
                 if remove_additional_resources:
                     for i, resource in enumerate(self.resources):
                         if len(updated_resources) <= i:
-                            logger.warning('Removing additional resource %s!' % resource['name'])
+                            logger.warning(f"Removing additional resource {resource['name']}!")
                             resources_to_delete.append(i)
         resources_to_delete = sorted(resources_to_delete, reverse=True)
         self._save_dataset_add_filestore_resources('update', 'id', keys_to_delete, resources_to_delete, filestore_resources, hxl_update,
@@ -595,7 +595,7 @@ class Dataset(HDXObject):
             if self._dataset_load_from_hdx(self.data['id']):
                 loaded = True
             else:
-                logger.warning('Failed to load dataset with id %s' % self.data['id'])
+                logger.warning(f"Failed to load dataset with id {self.data['id']}")
         if not loaded:
             self._check_existing_object('dataset', 'name')
             if not self._dataset_load_from_hdx(self.data['name']):
@@ -606,7 +606,7 @@ class Dataset(HDXObject):
                                        remove_additional_resources=remove_additional_resources,
                                        create_default_views=create_default_views,
                                        hxl_update=hxl_update, **kwargs)
-        logger.info('Updated %s' % self.get_hdx_url())
+        logger.info(f'Updated {self.get_hdx_url()}')
 
     def create_in_hdx(self, allow_no_resources=False, update_resources=True, match_resources_by_metadata=True,
                       keys_to_delete=list(), remove_additional_resources=False, create_default_views=True,
@@ -637,7 +637,7 @@ class Dataset(HDXObject):
             if self._dataset_load_from_hdx(self.data['id']):
                 loadedid = self.data['id']
             else:
-                logger.warning('Failed to load dataset with id %s' % self.data['id'])
+                logger.warning(f"Failed to load dataset with id {self.data['id']}")
         if not loadedid:
             if self._dataset_load_from_hdx(self.data['name']):
                 loadedid = self.data['name']
@@ -648,7 +648,7 @@ class Dataset(HDXObject):
                                            remove_additional_resources=remove_additional_resources,
                                            create_default_views=create_default_views,
                                            hxl_update=hxl_update, **kwargs)
-            logger.info('Updated %s' % self.get_hdx_url())
+            logger.info(f'Updated {self.get_hdx_url()}')
             return
 
         filestore_resources = dict()
@@ -656,7 +656,7 @@ class Dataset(HDXObject):
             for i, resource in enumerate(self.resources):
                 hdx.data.filestore_helper.FilestoreHelper.check_filestore_resource(resource, filestore_resources, i, **kwargs)
         self._save_dataset_add_filestore_resources('create', 'name', keys_to_delete, list(), filestore_resources, hxl_update, **kwargs)
-        logger.info('Created %s' % self.get_hdx_url())
+        logger.info(f'Created {self.get_hdx_url()}')
 
     def delete_from_hdx(self):
         # type: () -> None
@@ -1085,7 +1085,7 @@ class Dataset(HDXObject):
         """
         iso3, match = Country.get_iso3_country_code_fuzzy(country, use_live=use_live)
         if iso3 is None:
-            raise HDXError('Country: %s - cannot find iso3 code!' % country)
+            raise HDXError(f'Country: {country} - cannot find iso3 code!')
         return self.add_other_location(iso3, exact=exact,
                                        alterror='Country: %s with iso3: %s could not be found in HDX list!' %
                                                 (country, iso3),
@@ -1144,7 +1144,7 @@ class Dataset(HDXObject):
                                                                        configuration=self.configuration)
         if hdx_code is None or (exact is True and match is False):
             if alterror is None:
-                raise HDXError('Location: %s - cannot find in HDX!' % location)
+                raise HDXError(f'Location: {location} - cannot find in HDX!')
             else:
                 raise HDXError(alterror)
         groups = self.data.get('groups', None)
@@ -1198,9 +1198,9 @@ class Dataset(HDXObject):
                 maintainer = hdx.data.user.User.read_from_hdx(maintainer['name'], configuration=self.configuration)
             maintainer = maintainer['id']
         elif not isinstance(maintainer, str):
-            raise HDXError('Type %s cannot be added as a maintainer!' % type(maintainer).__name__)
+            raise HDXError(f'Type {type(maintainer).__name__} cannot be added as a maintainer!')
         if is_valid_uuid(maintainer) is False:
-            raise HDXError('%s is not a valid user id for a maintainer!' % maintainer)
+            raise HDXError(f'{maintainer} is not a valid user id for a maintainer!')
         self.data['maintainer'] = maintainer
 
     def get_organization(self):
@@ -1226,9 +1226,9 @@ class Dataset(HDXObject):
                 organization = hdx.data.organization.Organization.read_from_hdx(organization['name'], configuration=self.configuration)
             organization = organization['id']
         elif not isinstance(organization, str):
-            raise HDXError('Type %s cannot be added as a organization!' % type(organization).__name__)
+            raise HDXError(f'Type {type(organization).__name__} cannot be added as a organization!')
         if is_valid_uuid(organization) is False and organization != 'hdx':
-            raise HDXError('%s is not a valid organization id!' % organization)
+            raise HDXError(f'{organization} is not a valid organization id!')
         self.data['owner_org'] = organization
 
     def get_showcases(self):
@@ -1262,9 +1262,9 @@ class Dataset(HDXObject):
                 showcase = hdx.data.showcase.Showcase.read_from_hdx(showcase['name'])
             showcase = showcase['id']
         elif not isinstance(showcase, str):
-            raise HDXError('Type %s cannot be added as a showcase!' % type(showcase).__name__)
+            raise HDXError(f'Type {type(showcase).__name__} cannot be added as a showcase!')
         if is_valid_uuid(showcase) is False:
-            raise HDXError('%s is not a valid showcase id!' % showcase)
+            raise HDXError(f'{showcase} is not a valid showcase id!')
         return {'package_id': self.data['id'], 'showcase_id': showcase}
 
     def add_showcase(self, showcase, showcases_to_check=None):
@@ -1489,7 +1489,7 @@ class Dataset(HDXObject):
             else:
                 resource = res
         elif not isinstance(resource, str):
-            raise hdx.data.hdxobject.HDXError('Resource id cannot be found in type %s!' % type(resource).__name__)
+            raise hdx.data.hdxobject.HDXError(f'Resource id cannot be found in type {type(resource).__name__}!')
         if is_valid_uuid(resource) is True:
             search = 'id'
         else:
@@ -1597,11 +1597,11 @@ class Dataset(HDXObject):
 
         def replace_col(hxl_preview_cfg, col_str, ind, col, with_quotes=False):
             if with_quotes:
-                col_str = '"%s"' % col_str
+                col_str = f'"{col_str}"'
             replace = ind.get(col)
             if replace:
                 if with_quotes:
-                    replace = '"%s"' % replace
+                    replace = f'"{replace}"'
             else:
                 replace = defaults[col]
             return replace_string(hxl_preview_cfg, col_str, replace)
@@ -1708,7 +1708,7 @@ class Dataset(HDXObject):
         name = self.data.get('name')
         if not name:
             return None
-        return '%s/dataset/%s' % (self.configuration.get_hdx_site_url(), name)
+        return f'{self.configuration.get_hdx_site_url()}/dataset/{name}'
 
     def remove_dates_from_title(self, change_title=True, set_dataset_date=False):
         # type: (bool, bool) -> List[Tuple[datetime,datetime]]
@@ -1914,11 +1914,11 @@ class Dataset(HDXObject):
                                 qcrow = {x: row[x] for x in qc['headers']}
                                 qc['rows'].append(qcrow)
         if len(rows) == 1:
-            logger.error('No data rows in %s!' % filename)
+            logger.error(f'No data rows in {filename}!')
             return False, retdict
         if yearcol is not None or date_function is not None:
             if dates[0] == default_enddate or dates[1] == default_date:
-                logger.error('No dates in %s!' % filename)
+                logger.error(f'No dates in {filename}!')
                 return False, retdict
             else:
                 retdict['startdate'] = dates[0]
@@ -1934,9 +1934,9 @@ class Dataset(HDXObject):
                 retdict['qcheaders'] = qc['headers']
                 retdict['qcrows'] = qc['rows']
                 if qc['cutdown'] == 2:
-                    qc_resourcedata = {'name': 'QuickCharts-%s' % resourcedata['name'],
+                    qc_resourcedata = {'name': f"QuickCharts-{resourcedata['name']}",
                                        'description': 'Cut down data for QuickCharts'}
-                    resource = self.generate_resource_from_rows(folder, 'qc_%s' % filename, qc['rows'], qc_resourcedata,
+                    resource = self.generate_resource_from_rows(folder, f'qc_{filename}', qc['rows'], qc_resourcedata,
                                                                 headers=qc['headers'])
                     retdict['qc_resource'] = resource
         return True, retdict

@@ -93,7 +93,7 @@ class DatasetTitleHelper(object):
             newtitle = title
             for date_component in date_components:
                 newtitle = remove_string(newtitle, date_component, PUNCTUATION_MINUS_BRACKETS)
-            logger.info('Removing date from title: %s -> %s' % (title, newtitle))
+            logger.info(f'Removing date from title: {title} -> {newtitle}')
             title = newtitle
         try:
             fuzzy = dict()
@@ -107,7 +107,7 @@ class DatasetTitleHelper(object):
                     return title
                 ranges.append((startdate, enddate))
                 newtitle = remove_string(title, date_component, PUNCTUATION_MINUS_BRACKETS)
-                logger.info('Removing date from title: %s -> %s' % (title, newtitle))
+                logger.info(f'Removing date from title: {title} -> {newtitle}')
                 title = newtitle
         except (ParserError, OverflowError):
             pass
@@ -138,7 +138,7 @@ class DatasetTitleHelper(object):
             if 1 <= two_digits <= 12:
                 return first_year, two_digits, None
             else:
-                second_year = int('%s%s' % (first_year_str[:2], two_digits_str))
+                second_year = int(f'{first_year_str[:2]}{two_digits_str}')
                 if second_year > first_year:
                     return first_year, None, second_year
                 else:
@@ -168,22 +168,22 @@ class DatasetTitleHelper(object):
                 continue
             if first_month is None:
                 first_month = 1
-            startdate = parse_date('%d-%d-01' % (first_year, first_month), '%Y-%m-%d', zero_time=True)
-            enddate = parse_date('%s-12-31' % match.group(5), '%Y-%m-%d', zero_time=True)
+            startdate = parse_date(f'{first_year}-{first_month}-01', '%Y-%m-%d', zero_time=True)
+            enddate = parse_date(f'{match.group(5)}-12-31', '%Y-%m-%d', zero_time=True)
             ranges.append((startdate, enddate))
             newtitle = remove_string(title, match.group(0))
-            logger.info('Removing date range from title: %s -> %s' % (title, newtitle))
+            logger.info(f'Removing date range from title: {title} -> {newtitle}')
             title = newtitle
 
         for match in cls.YEAR_RANGE_PATTERN2.finditer(title):
             first_year, first_month, second_year = cls.get_month_year_in_slash_range(match, ignore_wrong_years)
             if first_year is None or second_year is None:
                 continue
-            startdate = parse_date('%d-01-01' % first_year, '%Y-%m-%d', zero_time=True)
-            enddate = parse_date('%d-12-31' % second_year, '%Y-%m-%d', zero_time=True)
+            startdate = parse_date(f'{first_year}-01-01', '%Y-%m-%d', zero_time=True)
+            enddate = parse_date(f'{second_year}-12-31', '%Y-%m-%d', zero_time=True)
             ranges.append((startdate, enddate))
             newtitle = remove_string(title, match.group(0))
-            logger.info('Removing date range from title: %s -> %s' % (title, newtitle))
+            logger.info(f'Removing date range from title: {title} -> {newtitle}')
             title = newtitle
 
         title = cls.fuzzy_match_dates_in_title(title, ranges, ignore_wrong_years)
@@ -195,6 +195,6 @@ class DatasetTitleHelper(object):
 
         for match in cls.EMPTY_BRACKET_PATTERN.finditer(title):
             title = title.replace(match.group(0), ' ')
-        title = remove_end_characters(title, '%s%s' % (PUNCTUATION_MINUS_BRACKETS, whitespace))
+        title = remove_end_characters(title, f'{PUNCTUATION_MINUS_BRACKETS}{whitespace}')
         title = remove_from_end(title, ['as of'] + cls.DATE_INTRO_WORDS, 'Removing - from title: %s -> %s')
         return title, sorted(ranges)

@@ -252,7 +252,7 @@ class TestResource:
                         resultdictcopy['resource_type'] = 'file.upload'
                         filename = os.path.basename(files['upload'].name)
                         resultdictcopy[
-                            'url'] = 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/%s' % filename
+                            'url'] = f'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/{filename}'
                     resultdictcopy['state'] = datadict['state']
 
                     result = json.dumps(resultdictcopy)
@@ -295,7 +295,7 @@ class TestResource:
                         resultdictcopy['resource_type'] = 'file.upload'
                         filename = os.path.basename(files['upload'].name)
                         resultdictcopy[
-                            'url'] = 'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/%s' % filename
+                            'url'] = f'http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/{filename}'
                     result = json.dumps(resultdictcopy)
                     return MockResponse(200,
                                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}' % result)

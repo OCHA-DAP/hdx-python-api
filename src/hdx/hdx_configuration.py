@@ -63,7 +63,7 @@ class Configuration(UserDict, object):
     default_hdx_config_yaml = join(home_folder, '.hdx_configuration.yml')
 
     apiversion = get_api_version()
-    prefix = 'HDXPythonLibrary/%s' % apiversion
+    prefix = f'HDXPythonLibrary/{apiversion}'
 
     def __init__(self, **kwargs):
         # type: (Any) -> None
@@ -83,7 +83,7 @@ class Configuration(UserDict, object):
             if hdx_base_config_found:
                 raise ConfigurationError('More than one HDX base configuration given!')
             hdx_base_config_found = True
-            logger.info('Loading HDX base configuration from: %s' % hdx_base_config_json)
+            logger.info(f'Loading HDX base configuration from: {hdx_base_config_json}')
             hdx_base_config_dict = load_json(hdx_base_config_json)
 
         hdx_base_config_yaml = kwargs.get('hdx_base_config_yaml', '')
@@ -93,8 +93,8 @@ class Configuration(UserDict, object):
         else:
             if not hdx_base_config_yaml:
                 hdx_base_config_yaml = Configuration.default_hdx_base_config_yaml
-                logger.info('No HDX base configuration parameter. Using default base configuration file: %s.' % hdx_base_config_yaml)
-            logger.info('Loading HDX base configuration from: %s' % hdx_base_config_yaml)
+                logger.info(f'No HDX base configuration parameter. Using default base configuration file: {hdx_base_config_yaml}.')
+            logger.info(f'Loading HDX base configuration from: {hdx_base_config_yaml}')
             hdx_base_config_dict = load_yaml(hdx_base_config_yaml)
 
         hdx_config_found = False
@@ -108,7 +108,7 @@ class Configuration(UserDict, object):
             if hdx_config_found:
                 raise ConfigurationError('More than one HDX configuration given!')
             hdx_config_found = True
-            logger.info('Loading HDX configuration from: %s' % hdx_config_json)
+            logger.info(f'Loading HDX configuration from: {hdx_config_json}')
             hdx_config_dict = load_json(hdx_config_json)
 
         hdx_config_yaml = kwargs.get('hdx_config_yaml', '')
@@ -119,13 +119,13 @@ class Configuration(UserDict, object):
             if not hdx_config_yaml:
                 hdx_config_yaml = Configuration.default_hdx_config_yaml
                 if isfile(hdx_config_yaml):
-                    logger.info('No HDX configuration parameter. Using default configuration file: %s.' % hdx_config_yaml)
+                    logger.info(f'No HDX configuration parameter. Using default configuration file: {hdx_config_yaml}.')
                 else:
-                    logger.info('No HDX configuration parameter and no configuration file at default path: %s.' % hdx_config_yaml)
+                    logger.info(f'No HDX configuration parameter and no configuration file at default path: {hdx_config_yaml}.')
                     hdx_config_yaml = None
                     hdx_config_dict = dict()
             if hdx_config_yaml:
-                logger.info('Loading HDX configuration from: %s' % hdx_config_yaml)
+                logger.info(f'Loading HDX configuration from: {hdx_config_yaml}')
                 hdx_config_dict = load_yaml(hdx_config_yaml)
 
         self.data = merge_two_dictionaries(hdx_base_config_dict, hdx_config_dict)
@@ -141,7 +141,7 @@ class Configuration(UserDict, object):
             if project_config_found:
                 raise ConfigurationError('More than one project configuration given!')
             project_config_found = True
-            logger.info('Loading project configuration from: %s' % project_config_json)
+            logger.info(f'Loading project configuration from: {project_config_json}')
             project_config_dict = load_json(project_config_json)
 
         project_config_yaml = kwargs.get('project_config_yaml', '')
@@ -150,7 +150,7 @@ class Configuration(UserDict, object):
                 raise ConfigurationError('More than one project configuration given!')
         else:
             if project_config_yaml:
-                logger.info('Loading project configuration from: %s' % project_config_yaml)
+                logger.info(f'Loading project configuration from: {project_config_yaml}')
                 project_config_dict = load_yaml(project_config_yaml)
             else:
                 project_config_dict = dict()
@@ -166,7 +166,7 @@ class Configuration(UserDict, object):
             except UserAgentError:
                 self.user_agent = UserAgent.get(prefix=Configuration.prefix, **self.data)
         self.hdx_read_only = kwargs.get('hdx_read_only', self.data.get('hdx_read_only', False))
-        logger.info('Read only access to HDX: %s' % str(self.hdx_read_only))
+        logger.info(f'Read only access to HDX: {str(self.hdx_read_only)}')
         self.hdx_key = kwargs.get('hdx_key', self.data.get('hdx_key'))
         if not self.hdx_key and not self.hdx_read_only:
             raise ConfigurationError('No HDX API key supplied as a parameter or in configuration!')
@@ -176,9 +176,9 @@ class Configuration(UserDict, object):
             hdx_url = hdx_url.rstrip('/')
             self.data[self.hdx_site] = {'url': hdx_url}
         else:
-            self.hdx_site = 'hdx_%s_site' % kwargs.get('hdx_site', self.data.get('hdx_site', 'stage'))
+            self.hdx_site = f"hdx_{kwargs.get('hdx_site', self.data.get('hdx_site', 'stage'))}_site"
             if self.hdx_site not in self.data:
-                raise ConfigurationError('%s not defined in configuration!' % self.hdx_site)
+                raise ConfigurationError(f'{self.hdx_site} not defined in configuration!')
 
     def set_read_only(self, read_only=True):
         # type: (bool) -> None
@@ -253,7 +253,7 @@ class Configuration(UserDict, object):
             str: HDX dataset url
 
         """
-        return '%s/dataset/%s' % (self.get_hdx_site_url(), name)
+        return f'{self.get_hdx_site_url()}/dataset/{name}'
 
     def _get_credentials(self):
         # type: () -> Optional[Tuple[str, str]]

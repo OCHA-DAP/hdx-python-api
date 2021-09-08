@@ -171,7 +171,7 @@ class Organization(HDXObject):
                 user['capacity'] = capacity
             self._addupdate_hdxobject(users, 'name', user)
             return
-        raise HDXError('Type %s cannot be added as a user!' % type(user).__name__)
+        raise HDXError(f'Type {type(user).__name__} cannot be added as a user!')
 
     def add_update_users(self, users, capacity=None):
         # type: (List[Union[hdx.data.user.User,Dict,str]],Optional[str]) -> None
@@ -224,7 +224,7 @@ class Organization(HDXObject):
         """
         return hdx.data.dataset.Dataset.search_in_hdx(query=query,
                                                       configuration=self.configuration,
-                                                      fq='organization:%s' % self.data['name'], **kwargs)
+                                                      fq=f"organization:{self.data['name']}", **kwargs)
 
     @staticmethod
     def get_all_organization_names(configuration=None, **kwargs):

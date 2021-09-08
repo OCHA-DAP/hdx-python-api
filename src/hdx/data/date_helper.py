@@ -75,7 +75,7 @@ class DateHelper(object):
             if isinstance(enddate, str):
                 enddate = parse_date(enddate)
             enddate = enddate.isoformat()
-        return '[%s TO %s]' % (startdate, enddate)
+        return f'[{startdate} TO {enddate}]'
 
     @classmethod
     def get_hdx_date_from_years(cls, startyear, endyear=None):

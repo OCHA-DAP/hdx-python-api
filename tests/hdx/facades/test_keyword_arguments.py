@@ -30,25 +30,25 @@ class TestKeywordArguments:
         testresult.actual_result = None
         facade(my_testfnkw, user_agent=my_user_agent, hdx_config_yaml=hdx_config_yaml,
                project_config_yaml=project_config_yaml, fn='agent')
-        assert testresult.actual_result == 'HDXPythonLibrary/%s-%s' % (version, my_user_agent)
+        assert testresult.actual_result == f'HDXPythonLibrary/{version}-{my_user_agent}'
         UserAgent.clear_global()
         testresult.actual_result = None
         my_user_agent = 'lala'
         monkeypatch.setenv('USER_AGENT', my_user_agent)
         facade(my_testfnkw, hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml, fn='agent')
-        assert testresult.actual_result == 'HDXPythonLibrary/%s-%s' % (version, my_user_agent)
+        assert testresult.actual_result == f'HDXPythonLibrary/{version}-{my_user_agent}'
         UserAgent.clear_global()
         testresult.actual_result = None
         facade(my_testfnkw, user_agent='test', hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml,
                fn='agent')
-        assert testresult.actual_result == 'HDXPythonLibrary/%s-%s' % (version, my_user_agent)
+        assert testresult.actual_result == f'HDXPythonLibrary/{version}-{my_user_agent}'
         UserAgent.clear_global()
         testresult.actual_result = None
         my_preprefix = 'haha'
         monkeypatch.setenv('PREPREFIX', my_preprefix)
         facade(my_testfnkw, user_agent='test', hdx_config_yaml=hdx_config_yaml, project_config_yaml=project_config_yaml,
                fn='agent')
-        assert testresult.actual_result == '%s:HDXPythonLibrary/%s-%s' % (my_preprefix, version, my_user_agent)
+        assert testresult.actual_result == f'{my_preprefix}:HDXPythonLibrary/{version}-{my_user_agent}'
         UserAgent.clear_global()
         testresult.actual_result = None
         my_test_key = '1234'
@@ -66,13 +66,13 @@ class TestKeywordArguments:
         my_test_hdxsite = 'stage'
         facade(my_testfnkw, hdx_site=my_test_hdxsite, user_agent=my_user_agent, hdx_config_yaml=hdx_config_yaml,
                project_config_yaml=project_config_yaml, fn='site')
-        assert testresult.actual_result == 'https://%s.data-humdata-org.ahconu.org' % my_test_hdxsite
+        assert testresult.actual_result == f'https://{my_test_hdxsite}.data-humdata-org.ahconu.org'
         UserAgent.clear_global()
         testresult.actual_result = None
         monkeypatch.setenv('HDX_SITE', my_test_hdxsite)
         facade(my_testfnkw, hdx_site='feature', user_agent=my_user_agent, hdx_config_yaml=hdx_config_yaml,
                project_config_yaml=project_config_yaml, fn='site')
-        assert testresult.actual_result == 'https://%s.data-humdata-org.ahconu.org' % my_test_hdxsite
+        assert testresult.actual_result == f'https://{my_test_hdxsite}.data-humdata-org.ahconu.org'
         UserAgent.clear_global()
         my_test_hdxurl = 'http://other-data.humdata.org'
         monkeypatch.setenv('HDX_URL', my_test_hdxurl)

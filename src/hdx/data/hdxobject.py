@@ -108,7 +108,7 @@ class HDXObject(UserDict, object):
             Tuple[bool, Union[Dict, str]]: (True/False, HDX object metadata/Error)
         """
         if not fieldname:
-            raise HDXError('Empty %s field name!' % object_type)
+            raise HDXError(f'Empty {object_type} field name!')
         if action is None:
             action = self.actions()['show']
         data = {fieldname: value}
@@ -117,9 +117,9 @@ class HDXObject(UserDict, object):
             result = self.configuration.call_remoteckan(action, data)
             return True, result
         except NotFound:
-            return False, '%s=%s: not found!' % (fieldname, value)
+            return False, f'{fieldname}={value}: not found!'
         except Exception as e:
-            raisefrom(HDXError, 'Failed when trying to read: %s=%s! (POST)' % (fieldname, value), e)
+            raisefrom(HDXError, f'Failed when trying to read: {fieldname}={value}! (POST)', e)
 
     def _load_from_hdx(self, object_type, id_field):
         # type: (str, str) -> bool
@@ -177,9 +177,9 @@ class HDXObject(UserDict, object):
     def _check_existing_object(self, object_type, id_field_name):
         # type: (str, str) -> None
         if not self.data:
-            raise HDXError('No data in %s!' % object_type)
+            raise HDXError(f'No data in {object_type}!')
         if id_field_name not in self.data:
-            raise HDXError('No %s field (mandatory) in %s!' % (id_field_name, object_type))
+            raise HDXError(f'No {id_field_name} field (mandatory) in {object_type}!')
 
     def _check_load_existing_object(self, object_type, id_field_name, operation='update'):
         # type: (str, str, str) -> None
@@ -195,7 +195,7 @@ class HDXObject(UserDict, object):
         """
         self._check_existing_object(object_type, id_field_name)
         if not self._load_from_hdx(object_type, self.data[id_field_name]):
-            raise HDXError('No existing %s to %s!' % (object_type, operation))
+            raise HDXError(f'No existing {object_type} to {operation}!')
 
     @abc.abstractmethod
     def check_required_fields(self, ignore_fields=list()):
@@ -224,9 +224,9 @@ class HDXObject(UserDict, object):
         for field in self.configuration[object_type]['required_fields']:
             if field not in ignore_fields:
                 if field not in self.data:
-                    raise HDXError('Field %s is missing in %s!' % (field, object_type))
+                    raise HDXError(f'Field {field} is missing in {object_type}!')
                 if not self.data[field] and not isinstance(self.data[field], bool):
-                    raise HDXError('Field %s is empty in %s!' % (field, object_type))
+                    raise HDXError(f'Field {field} is empty in {object_type}!')
 
     def _check_kwargs_fields(self, object_type, **kwargs):
         # type: (str, Any) -> None
@@ -346,10 +346,10 @@ class HDXObject(UserDict, object):
             return self.configuration.call_remoteckan(self.actions()[action], data, files=files_to_upload)
         except Exception as e:
             if id_field_name:
-                idstr = ' %s' % data[id_field_name]
+                idstr = f' {data[id_field_name]}'
             else:
                 idstr = ''
-            raisefrom(HDXError, 'Failed when trying to %s%s! (POST)' % (action, idstr), e)
+            raisefrom(HDXError, f'Failed when trying to {action}{idstr}! (POST)', e)
         finally:
             for file in files_to_upload.values():
                 if isinstance(file, str):
@@ -405,7 +405,7 @@ class HDXObject(UserDict, object):
         if 'ignore_check' not in kwargs:  # allow ignoring of field checks
             self.check_required_fields()
         if id_field_name in self.data and self._load_from_hdx(object_type, self.data[id_field_name]):
-            logger.warning('%s exists. Updating %s' % (object_type, self.data[id_field_name]))
+            logger.warning(f'{object_type} exists. Updating {self.data[id_field_name]}')
             self._merge_hdx_update(object_type, id_field_name, files_to_upload, force_active, **kwargs)
         else:
             self._save_to_hdx('create', name_field_name, files_to_upload, force_active)
@@ -432,7 +432,7 @@ class HDXObject(UserDict, object):
             None
         """
         if id_field_name not in self.data:
-            raise HDXError('No %s field (mandatory) in %s!' % (id_field_name, object_type))
+            raise HDXError(f'No {id_field_name} field (mandatory) in {object_type}!')
         self._save_to_hdx('delete', id_field_name)
 
     @classmethod
@@ -658,7 +658,7 @@ class HDXObject(UserDict, object):
         """
         if string in self._get_stringlist_from_commastring(field):
             return False
-        strings = '%s,%s' % (self.data.get(field, ''), string)
+        strings = f"{self.data.get(field, '')},{string}"
         if strings[0] == ',':
             strings = strings[1:]
         self.data[field] = strings

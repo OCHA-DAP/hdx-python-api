@@ -129,7 +129,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         if 'ignore_check' not in kwargs:  # allow ignoring of field checks
             self.check_required_fields()
         if 'name' in self.data and self._load_from_hdx('showcase', self.data['name']):
-            logger.warning('%s exists. Updating %s' % ('showcase', self.data['name']))
+            logger.warning(f"{'showcase'} exists. Updating {self.data['name']}")
             merge_two_dictionaries(self.data, self.old_data)
             self.clean_tags()
             self._hdx_update('showcase', 'name', force_active=True, **kwargs)
@@ -238,9 +238,9 @@ class Showcase(hdx.data.hdxobject.HDXObject):
                 dataset = hdx.data.dataset.Dataset.read_from_hdx(dataset['name'])
             dataset = dataset['id']
         elif not isinstance(dataset, str):
-            raise hdx.data.hdxobject.HDXError('Type %s cannot be added as a dataset!' % type(dataset).__name__)
+            raise hdx.data.hdxobject.HDXError(f'Type {type(dataset).__name__} cannot be added as a dataset!')
         if is_valid_uuid(dataset) is False:
-            raise hdx.data.hdxobject.HDXError('%s is not a valid dataset id!' % dataset)
+            raise hdx.data.hdxobject.HDXError(f'{dataset} is not a valid dataset id!')
         return {'showcase_id': self.data['id'], 'package_id': dataset}
 
     def add_dataset(self, dataset, datasets_to_check=None):
@@ -320,7 +320,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         curfq = kwargs.get('fq')
         kwargs['fq'] = 'dataset_type:showcase'
         if curfq:
-            kwargs['fq'] = '%s AND %s' % (kwargs['fq'], curfq)
+            kwargs['fq'] = f"{kwargs['fq']} AND {curfq}"
         datasets = hdx.data.dataset.Dataset.search_in_hdx(query=query, configuration=configuration,
                                                           page_size=page_size, **kwargs)
         showcases = list()

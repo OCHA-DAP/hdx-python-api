@@ -99,7 +99,7 @@ class Resource(HDXObject):
         """
 
         if is_valid_uuid(identifier) is False:
-            raise HDXError('%s is not a valid resource id!' % identifier)
+            raise HDXError(f'{identifier} is not a valid resource id!')
         return cls._read_from_hdx_class('resource', identifier, configuration)
 
     def get_date_of_resource(self, date_format=None, today=datetime.date.today()):
@@ -198,7 +198,7 @@ class Resource(HDXObject):
             if file_type[0] == '.':
                 file_type = file_type[1:]
             else:
-                file_type = '.%s' % file_type
+                file_type = f'.{file_type}'
             format = mappings.get(file_type)
         return format
 
@@ -227,7 +227,7 @@ class Resource(HDXObject):
         """
         format = self.get_mapped_format(file_type, configuration=self.configuration)
         if not format:
-            raise HDXError('Supplied file type %s is invalid and could not be mapped to a known type!' % file_type)
+            raise HDXError(f'Supplied file type {file_type} is invalid and could not be mapped to a known type!')
         self.data['format'] = format
         return format
 
@@ -349,7 +349,7 @@ class Resource(HDXObject):
         id = self.data.get('id')
         files = self._get_files()
         if id and self._load_from_hdx('resource', id):
-            logger.warning('%s exists. Updating %s' % ('resource', id))
+            logger.warning(f"{'resource'} exists. Updating {id}")
             if self.file_to_upload and 'url' in self.data:
                 del self.data['url']
             self._merge_hdx_update('resource', 'id', files, True, **kwargs)
@@ -421,11 +421,11 @@ class Resource(HDXObject):
         url = self.data.get('url', None)
         if not url:
             raise HDXError('No URL to download!')
-        logger.debug('Downloading %s' % url)
+        logger.debug(f'Downloading {url}')
         filename = self.data['name']
-        format = '.%s' % self.data['format']
+        format = f".{self.data['format']}"
         if format not in filename:
-            filename = '%s%s' % (filename, format)
+            filename = f'{filename}{format}'
         with Download(full_agent=self.configuration.get_user_agent()) as downloader:
             path = downloader.download_file(url, folder, filename)
             return url, path
@@ -537,7 +537,7 @@ class Resource(HDXObject):
                     method = 'insert'
                 else:
                     method = 'upsert'
-                logger.debug('Uploading data from %s to datastore' % url)
+                logger.debug(f'Uploading data from {url} to datastore')
                 offset = 0
                 chunksize = 100
                 rowset = stream.read(keyed=True, limit=chunksize)
@@ -548,10 +548,10 @@ class Resource(HDXObject):
                     data = {'resource_id': self.data['id'], 'force': True, 'method': method, 'records': rowset}
                     self._write_to_hdx('datastore_upsert', data, 'resource_id')
                     rowset = stream.read(keyed=True, limit=chunksize)
-                    logger.debug('Uploading: %s' % offset)
+                    logger.debug(f'Uploading: {offset}')
                     offset += chunksize
             except Exception as e:
-                raisefrom(HDXError, 'Upload to datastore of %s failed!' % url, e)
+                raisefrom(HDXError, f'Upload to datastore of {url} failed!', e)
             finally:
                 if delete_after_download:
                     remove(path)
@@ -721,7 +721,7 @@ class Resource(HDXObject):
             resource_view = ResourceView(resource_view, configuration=self.configuration)
         if isinstance(resource_view, ResourceView):
             return resource_view
-        raise HDXError('Type %s is not a valid resource view!' % type(resource_view).__name__)
+        raise HDXError(f'Type {type(resource_view).__name__} is not a valid resource view!')
 
     def add_update_resource_view(self, resource_view):
         # type: (Union[ResourceView,Dict]) -> None
@@ -771,7 +771,7 @@ class Resource(HDXObject):
             else:
                 resource_view_id = resource_view['id']
             if is_valid_uuid(resource_view_id) is False:
-                raise HDXError('%s is not a valid resource view id!' % resource_view)
+                raise HDXError(f'{resource_view} is not a valid resource view id!')
             ids.append(resource_view_id)
         _, result = self._read_from_hdx('resource view', self.data['id'], 'id',
                                         ResourceView.actions()['reorder'], order=ids)
@@ -788,7 +788,7 @@ class Resource(HDXObject):
         """
         if isinstance(resource_view, str):
             if is_valid_uuid(resource_view) is False:
-                raise HDXError('%s is not a valid resource view id!' % resource_view)
+                raise HDXError(f'{resource_view} is not a valid resource view id!')
             resource_view = ResourceView({'id': resource_view}, configuration=self.configuration)
         else:
             resource_view = self._get_resource_view(resource_view)
@@ -801,7 +801,7 @@ class Resource(HDXObject):
                         found = True
                         break
                 if not found:
-                    raise HDXError('No resource views have title %s in this resource!' % title)
+                    raise HDXError(f'No resource views have title {title} in this resource!')
         resource_view.delete_from_hdx()
 
     def enable_dataset_preview(self):

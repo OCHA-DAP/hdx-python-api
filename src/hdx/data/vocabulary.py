@@ -415,22 +415,22 @@ class Vocabulary(HDXObject):
         if cls.is_approved(tag):
             tags.append(tag)
         elif tag not in tags_dict.keys():
-            logger.error('Unapproved tag %s not in tag mapping! For a list of approved tags see: %s' % (tag, configuration['tags_list_url']))
+            logger.error(f"Unapproved tag {tag} not in tag mapping! For a list of approved tags see: {configuration['tags_list_url']}")
             deleted_tags.append(tag)
         else:
             whattodo = tags_dict[tag]
             action = whattodo[u'Action to Take']
             if action == u'ok':
-                logger.error('Tag %s is not in CKAN approved tags but is in tags mappings! For a list of approved tags see: %s' % (tag, configuration['tags_list_url']))
+                logger.error(f"Tag {tag} is not in CKAN approved tags but is in tags mappings! For a list of approved tags see: {configuration['tags_list_url']}")
             elif action == u'delete':
                 if log_deleted:
-                    logger.info("Tag %s is invalid and won't be added! For a list of approved tags see: %s" % (tag, configuration['tags_list_url']))
+                    logger.info(f"Tag {tag} is invalid and won't be added! For a list of approved tags see: {configuration['tags_list_url']}")
                 deleted_tags.append(tag)
             elif action == u'merge':
                 final_tags = whattodo['New Tag(s)'].split(';')
                 tags.extend(final_tags)
             else:
-                logger.error('Invalid action %s!' % action)
+                logger.error(f'Invalid action {action}!')
         return tags, deleted_tags
 
     @classmethod

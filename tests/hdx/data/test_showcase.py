@@ -115,7 +115,7 @@ def mockallsearch(url, datadict):
         newsearchdict = copy.deepcopy(allsearchdict)
         newsearchdict['results'].extend(copy.deepcopy(newsearchdict['results']))
         for i, x in enumerate(newsearchdict['results']):
-            x['id'] = '%s%d' % (x['id'], i)
+            x['id'] = f'{x["id"]}{i}'
         return MockResponse(200,
                             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}' % json.dumps(
                                 newsearchdict))

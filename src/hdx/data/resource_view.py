@@ -137,7 +137,7 @@ class ResourceView(HDXObject):
                         break
         if update:
             if log:
-                logger.warning('resource view exists. Updating %s' % self.data['id'])
+                logger.warning(f"resource view exists. Updating {self.data['id']}")
             self._merge_hdx_update('resource view', 'id', **kwargs)
         return update
 
@@ -184,10 +184,10 @@ class ResourceView(HDXObject):
         """
         if isinstance(resource_view, str):
             if is_valid_uuid(resource_view) is False:
-                raise HDXError('%s is not a valid resource view id!' % resource_view)
+                raise HDXError(f'{resource_view} is not a valid resource view id!')
             resource_view = ResourceView.read_from_hdx(resource_view)
         if not isinstance(resource_view, dict) and not isinstance(resource_view, ResourceView):
-            raise HDXError('%s is not a valid resource view!' % resource_view)
+            raise HDXError(f'{resource_view} is not a valid resource view!')
         for key in resource_view:
             if key not in ('id', 'resource_id', 'package_id'):
                 self.data[key] = resource_view[key]

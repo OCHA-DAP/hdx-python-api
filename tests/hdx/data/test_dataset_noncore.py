@@ -620,7 +620,7 @@ class TestDatasetNoncore:
                 assert resources == [{'name': 'Conflict Data for Algeria', 'description': 'Conflict data with HXL tags', 'format': 'csv', 'resource_type': 'file.upload', 'url_type': 'upload'},
                                      {'name': 'QuickCharts-Conflict Data for Algeria', 'description': 'Cut down data for QuickCharts', 'format': 'csv', 'resource_type': 'file.upload', 'url_type': 'upload'}]
                 assert_files_same(join('tests', 'fixtures', 'gen_resource', filename), join(folder, filename))
-                qc_filename = 'qc_%s' % filename
+                qc_filename = f'qc_{filename}'
                 assert_files_same(join('tests', 'fixtures', 'gen_resource', qc_filename), join(folder, qc_filename))
 
                 success, results = dataset.download_and_generate_resource(
@@ -663,7 +663,7 @@ class TestDatasetNoncore:
                 assert results['startdate'] == datetime.datetime(2001, 1, 1, 0, 0)
                 assert results['enddate'] == datetime.datetime(2001, 12, 31, 0, 0)
                 assert dataset['dataset_date'] == '[2001-01-01T00:00:00 TO 2001-12-31T00:00:00]'
-                assert_files_same(join('tests', 'fixtures', 'gen_resource', 'min_%s' % qc_filename), join(folder, qc_filename))
+                assert_files_same(join('tests', 'fixtures', 'gen_resource', f'min_{qc_filename}'), join(folder, qc_filename))
 
                 with pytest.raises(HDXError):
                     dataset.download_and_generate_resource(downloader, TestDatasetNoncore.url, TestDatasetNoncore.hxltags, folder, filename, resourcedata,
