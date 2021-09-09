@@ -2,11 +2,11 @@ from os.path import join
 
 from hdx.utilities import CleanCommand, PackageCommand, PublishCommand
 from hdx.utilities.loader import load_file_to_str
-from setuptools import find_packages, setup
+from setuptools import find_namespace_packages, setup
 
 requirements = [
     "ckanapi >= 4.6",
-    "hdx-python-country>=3.0.0",
+    "hdx-python-country>=3.0.2",
     "ndg-httpsclient",
     "pyasn1",
     "pyOpenSSL",
@@ -37,7 +37,7 @@ setup(
     keywords=["HDX", "API", "library"],
     long_description=load_file_to_str("README.md"),
     long_description_content_type="text/markdown",
-    packages=find_packages(where="src"),
+    packages=find_namespace_packages(where="src"),
     package_dir={"": "src"},
     include_package_data=True,
     setup_requires=["pytest-runner"],

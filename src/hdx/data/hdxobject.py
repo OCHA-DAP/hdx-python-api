@@ -8,7 +8,6 @@ from collections import UserDict
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
 from ckanapi.errors import NotFound
-from hdx.utilities import raisefrom
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import (
     load_json_into_existing_dict,
@@ -119,9 +118,7 @@ class HDXObject(UserDict):
         except NotFound:
             return False, f"{fieldname}={value}: not found!"
         except Exception as e:
-            raisefrom(
-                HDXError, f"Failed when trying to read: {fieldname}={value}! (POST)", e
-            )
+            raise HDXError(f"Failed when trying to read: {fieldname}={value}! (POST)") from e
 
     def _load_from_hdx(self, object_type: str, id_field: str) -> bool:
         """Helper method to load the HDX object given by identifier from HDX
@@ -396,7 +393,7 @@ class HDXObject(UserDict):
                 idstr = f" {data[id_field_name]}"
             else:
                 idstr = ""
-            raisefrom(HDXError, f"Failed when trying to {action}{idstr}! (POST)", e)
+            raise HDXError(f"Failed when trying to {action}{idstr}! (POST)") from e
         finally:
             for file in files_to_upload.values():
                 if isinstance(file, str):

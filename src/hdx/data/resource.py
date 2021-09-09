@@ -6,7 +6,7 @@ from os.path import join
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from hdx.utilities import is_valid_uuid, raisefrom
+from hdx.utilities import is_valid_uuid
 from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_json, load_yaml
 from hdx.utilities.path import script_dir_plus_file
@@ -595,7 +595,7 @@ class Resource(HDXObject):
                     logger.debug(f"Uploading: {offset}")
                     offset += chunksize
             except Exception as e:
-                raisefrom(HDXError, f"Upload to datastore of {url} failed!", e)
+                raise HDXError(f"Upload to datastore of {url} failed!") from e
             finally:
                 if delete_after_download:
                     remove(path)
