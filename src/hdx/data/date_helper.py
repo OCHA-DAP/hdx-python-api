@@ -1,6 +1,6 @@
 """Helper to the Dataset and Resource classes for handling HDX dates.
 """
-from collections import Iterable
+from collections.abc import Iterable
 from datetime import date, datetime
 from typing import Dict, List, Optional, Tuple, Union
 

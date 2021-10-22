@@ -3,7 +3,7 @@
 import logging
 import re
 from datetime import datetime, timedelta
-from parser import ParserError
+from dateutil.parser import ParserError
 from string import punctuation, whitespace
 from typing import List, Match, Optional, Tuple
 
