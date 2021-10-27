@@ -1,9 +1,8 @@
 """Simple Facade Tests"""
 from os.path import join
 
-from hdx.utilities.useragent import UserAgent, UserAgentError
-
 from hdx.facades import logging_kwargs
+from hdx.utilities.useragent import UserAgent, UserAgentError
 from hdx.version import get_api_version
 
 logging_kwargs.update(

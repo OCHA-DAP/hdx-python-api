@@ -1,8 +1,7 @@
 """HDX Location Tests"""
-from hdx.location.country import Country
-
 from hdx.hdx_configuration import Configuration
 from hdx.hdx_locations import Locations
+from hdx.location.country import Country
 
 
 class MyConfiguration:

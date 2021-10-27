@@ -5,11 +5,6 @@ import json
 from os.path import join
 
 import pytest
-from hdx.location.country import Country
-from hdx.utilities.compare import assert_files_same
-from hdx.utilities.dateparse import parse_date_range
-from hdx.utilities.downloader import Download
-from hdx.utilities.path import temp_dir
 
 from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
@@ -17,6 +12,11 @@ from hdx.data.organization import Organization
 from hdx.data.user import User
 from hdx.data.vocabulary import Vocabulary
 from hdx.hdx_configuration import Configuration
+from hdx.location.country import Country
+from hdx.utilities.compare import assert_files_same
+from hdx.utilities.dateparse import parse_date_range
+from hdx.utilities.downloader import Download
+from hdx.utilities.path import temp_dir
 
 from . import (
     MockResponse,

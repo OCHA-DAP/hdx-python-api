@@ -4,10 +4,9 @@ from collections import OrderedDict
 from os.path import join
 from typing import Any, Dict, List, Optional, Tuple
 
-from hdx.utilities.downloader import Download
-
 from hdx.data.hdxobject import HDXObject, HDXObjectUpperBound
 from hdx.hdx_configuration import Configuration
+from hdx.utilities.downloader import Download
 
 logger = logging.getLogger(__name__)
 

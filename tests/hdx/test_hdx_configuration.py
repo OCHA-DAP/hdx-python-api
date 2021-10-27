@@ -3,10 +3,10 @@ from os.path import join
 
 import ckanapi
 import pytest
-from hdx.utilities.loader import LoadError
-from hdx.utilities.useragent import UserAgentError
 
 from hdx.hdx_configuration import Configuration, ConfigurationError
+from hdx.utilities.loader import LoadError
+from hdx.utilities.useragent import UserAgentError
 from hdx.version import get_api_version
 
 

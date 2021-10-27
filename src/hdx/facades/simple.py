@@ -1,12 +1,11 @@
 """Facade to simplify project setup that calls project main function"""
 import logging
-from typing import Callable, Any
-
-from hdx.utilities.easy_logging import setup_logging
-from hdx.utilities.useragent import UserAgent
+from typing import Any, Callable
 
 from hdx.facades import logging_kwargs
 from hdx.hdx_configuration import Configuration
+from hdx.utilities.easy_logging import setup_logging
+from hdx.utilities.useragent import UserAgent
 
 logger = logging.getLogger(__name__)
 setup_logging(**logging_kwargs)

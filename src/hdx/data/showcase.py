@@ -4,13 +4,12 @@ import sys
 from os.path import join
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from hdx.utilities import is_valid_uuid
-from hdx.utilities.dictandlist import merge_two_dictionaries
-
 import hdx.data.dataset
 import hdx.data.hdxobject
 import hdx.data.vocabulary
 from hdx.hdx_configuration import Configuration
+from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.uuid import is_valid_uuid
 
 logger = logging.getLogger(__name__)
 
