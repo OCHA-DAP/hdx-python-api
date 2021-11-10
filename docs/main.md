@@ -47,7 +47,7 @@ The library has detailed API documentation which can be found in the menu on the
 
 
 ## Breaking Changes
-From 5.4.0, Configuration and Locations classes have moved to hdx.api
+From 5.4.0, Configuration class moved to hdx.api.configuration and Locations class moved to hdx.api.locations
 
 From 5.3.0, only supports Python 3.6 and above
 
