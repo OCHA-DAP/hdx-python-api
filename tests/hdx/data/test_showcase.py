@@ -4,12 +4,12 @@ import json
 from os.path import join
 
 import pytest
-
-from hdx.data.hdxobject import HDXError
-from hdx.data.showcase import Showcase
-from hdx.api.configuration import Configuration
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
+
+from hdx.api.configuration import Configuration
+from hdx.data.hdxobject import HDXError
+from hdx.data.showcase import Showcase
 
 from . import MockResponse
 from .test_vocabulary import vocabulary_mockshow

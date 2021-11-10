@@ -8,13 +8,13 @@ from collections import UserDict
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
 from ckanapi.errors import NotFound
-
-from hdx.api.configuration import Configuration
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import (
     load_json_into_existing_dict,
     load_yaml_into_existing_dict,
 )
+
+from hdx.api.configuration import Configuration
 
 logger = logging.getLogger(__name__)
 

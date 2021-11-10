@@ -8,14 +8,14 @@ from typing import Any, Dict, Optional, Tuple
 
 import ckanapi
 import requests
-
-from hdx.api import __version__
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.email import Email
 from hdx.utilities.loader import load_json, load_yaml
 from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.session import get_session
 from hdx.utilities.useragent import UserAgent, UserAgentError
+
+from hdx.api import __version__
 
 logger = logging.getLogger(__name__)
 

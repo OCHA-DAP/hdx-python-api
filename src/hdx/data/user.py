@@ -4,8 +4,8 @@ from os.path import join
 from typing import Any, Dict, List, Optional
 
 import hdx.data.organization
-from hdx.data.hdxobject import HDXObject
 from hdx.api.configuration import Configuration
+from hdx.data.hdxobject import HDXObject
 
 logger = logging.getLogger(__name__)
 

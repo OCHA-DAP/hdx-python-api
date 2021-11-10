@@ -18,19 +18,6 @@ from typing import (
     Union,
 )
 
-import hdx.data.filestore_helper
-import hdx.data.organization
-import hdx.data.resource
-import hdx.data.resource_view
-import hdx.data.showcase
-import hdx.data.user
-import hdx.data.vocabulary
-from hdx.data.dataset_title_helper import DatasetTitleHelper
-from hdx.data.date_helper import DateHelper
-from hdx.data.hdxobject import HDXError, HDXObject
-from hdx.data.resource_matcher import ResourceMatcher
-from hdx.api.configuration import Configuration
-from hdx.api.locations import Locations
 from hdx.location.country import Country
 from hdx.utilities.dateparse import (
     default_date,
@@ -46,6 +33,20 @@ from hdx.utilities.dictandlist import (
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.uuid import is_valid_uuid
+
+import hdx.data.filestore_helper
+import hdx.data.organization
+import hdx.data.resource
+import hdx.data.resource_view
+import hdx.data.showcase
+import hdx.data.user
+import hdx.data.vocabulary
+from hdx.api.configuration import Configuration
+from hdx.api.locations import Locations
+from hdx.data.dataset_title_helper import DatasetTitleHelper
+from hdx.data.date_helper import DateHelper
+from hdx.data.hdxobject import HDXError, HDXObject
+from hdx.data.resource_matcher import ResourceMatcher
 
 logger = logging.getLogger(__name__)
 

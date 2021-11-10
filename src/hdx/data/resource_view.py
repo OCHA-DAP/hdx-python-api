@@ -3,9 +3,10 @@ import logging
 from os.path import join
 from typing import Any, Dict, List, Optional, Union
 
-from hdx.data.hdxobject import HDXError, HDXObject
-from hdx.api.configuration import Configuration
 from hdx.utilities.uuid import is_valid_uuid
+
+from hdx.api.configuration import Configuration
+from hdx.data.hdxobject import HDXError, HDXObject
 
 logger = logging.getLogger(__name__)
 

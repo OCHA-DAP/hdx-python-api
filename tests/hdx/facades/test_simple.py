@@ -2,11 +2,11 @@
 from os.path import join
 
 import pytest
+from hdx.utilities.useragent import UserAgent, UserAgentError
 
 from hdx.api import __version__
 from hdx.facades import logging_kwargs
 from hdx.facades.simple import facade
-from hdx.utilities.useragent import UserAgent, UserAgentError
 
 from . import my_excfn, my_testfn, my_testkeyfn, my_testuafn, testresult
 

@@ -2,8 +2,9 @@
 """
 from typing import Any, Dict, List
 
-import hdx.data.resource
 from hdx.utilities.dictandlist import merge_two_dictionaries
+
+import hdx.data.resource
 
 
 class FilestoreHelper:

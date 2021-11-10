@@ -7,8 +7,6 @@ from string import punctuation, whitespace
 from typing import List, Match, Optional, Tuple
 
 from dateutil.parser import ParserError
-from quantulum3 import parser
-
 from hdx.utilities.dateparse import parse_date, parse_date_range
 from hdx.utilities.text import (
     PUNCTUATION_MINUS_BRACKETS,
@@ -16,6 +14,7 @@ from hdx.utilities.text import (
     remove_from_end,
     remove_string,
 )
+from quantulum3 import parser
 
 logger = logging.getLogger(__name__)
 

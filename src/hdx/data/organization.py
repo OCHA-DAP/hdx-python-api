@@ -5,8 +5,8 @@ from typing import Any, Dict, List, Optional, Union
 
 import hdx.data.dataset
 import hdx.data.user
-from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.api.configuration import Configuration
+from hdx.data.hdxobject import HDXError, HDXObject
 
 logger = logging.getLogger(__name__)
 

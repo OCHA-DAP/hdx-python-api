@@ -7,15 +7,15 @@ from os import remove
 from os.path import join
 
 import pytest
+from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.loader import load_yaml
 
 from hdx.api import __version__
+from hdx.api.configuration import Configuration
 from hdx.data.dataset import Dataset, NotRequestableError
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
 from hdx.data.resource_view import ResourceView
-from hdx.api.configuration import Configuration
-from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.loader import load_yaml
 
 from . import (
     MockResponse,

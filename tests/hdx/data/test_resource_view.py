@@ -4,11 +4,11 @@ import json
 from os.path import join
 
 import pytest
+from hdx.utilities.dictandlist import merge_two_dictionaries
 
+from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource_view import ResourceView
-from hdx.api.configuration import Configuration
-from hdx.utilities.dictandlist import merge_two_dictionaries
 
 from . import MockResponse
 

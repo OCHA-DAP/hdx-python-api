@@ -2,11 +2,12 @@
 import logging
 from typing import Any, Callable
 
-from hdx.api import __version__
-from hdx.facades import logging_kwargs
-from hdx.api.configuration import Configuration
 from hdx.utilities.easy_logging import setup_logging
 from hdx.utilities.useragent import UserAgent
+
+from hdx.api import __version__
+from hdx.api.configuration import Configuration
+from hdx.facades import logging_kwargs
 
 logger = logging.getLogger(__name__)
 setup_logging(**logging_kwargs)
