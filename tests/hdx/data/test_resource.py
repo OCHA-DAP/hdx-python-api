@@ -10,7 +10,7 @@ import pytest
 
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
-from hdx.hdx_configuration import Configuration
+from hdx.api.configuration import Configuration
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.downloader import DownloadError
 
@@ -339,11 +339,15 @@ class TestResource:
 
     @pytest.fixture(scope="class")
     def topline_yaml(self):
-        return join("tests", "fixtures", "config", "hdx_datasource_topline.yml")
+        return join(
+            "tests", "fixtures", "config", "hdx_datasource_topline.yml"
+        )
 
     @pytest.fixture(scope="class")
     def topline_json(self):
-        return join("tests", "fixtures", "config", "hdx_datasource_topline.json")
+        return join(
+            "tests", "fixtures", "config", "hdx_datasource_topline.json"
+        )
 
     @pytest.fixture(scope="function")
     def read(self):
@@ -362,7 +366,8 @@ class TestResource:
             def post(url, data, headers, files, allow_redirects, auth=None):
                 if isinstance(data, dict):
                     datadict = {
-                        k.decode("utf8"): v.decode("utf8") for k, v in data.items()
+                        k.decode("utf8"): v.decode("utf8")
+                        for k, v in data.items()
                     }
                 else:
                     datadict = json.loads(data.decode("utf-8"))
@@ -423,7 +428,8 @@ class TestResource:
             def post(url, data, headers, files, allow_redirects, auth=None):
                 if isinstance(data, dict):
                     datadict = {
-                        k.decode("utf8"): v.decode("utf8") for k, v in data.items()
+                        k.decode("utf8"): v.decode("utf8")
+                        for k, v in data.items()
                     }
                 else:
                     datadict = json.loads(data.decode("utf-8"))
@@ -559,7 +565,10 @@ class TestResource:
                         404,
                         '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}',
                     )
-                if "search" in url and datadict["resource_id"] == "_table_metadata":
+                if (
+                    "search" in url
+                    and datadict["resource_id"] == "_table_metadata"
+                ):
                     return MockResponse(
                         200,
                         '{"success": true, "result": {"include_total": true, "resource_id": "_table_metadata", "fields": [{"type": "int", "id": "_id"}, {"type": "name", "id": "name"}, {"type": "oid", "id": "oid"}, {"type": "name", "id": "alias_of"}], "records_format": "objects", "records": [{"_id":"f9cd60f3d7f2f6d0","name":"f9228459-d808-4b51-948f-68a5850abfde","oid":"919290","alias_of":null},{"_id":"7ae63490de9b7d7b","name":"af618a0b-09b8-42c8-836f-2be597e1ea34","oid":"135294","alias_of":null},{"_id":"1dc37f4e89988644","name":"748b40dd-7bd3-40a3-941b-e76f0bfbe0eb","oid":"117144","alias_of":null},{"_id":"2a554a61bd366206","name":"91c78d24-eab3-40b5-ba91-6b29bcda7178","oid":"116963","alias_of":null},{"_id":"fd787575143afe90","name":"9320cfce-4620-489a-bcbe-25c73867d4fc","oid":"107430","alias_of":null},{"_id":"a70093abd230f647","name":"b9d2eb36-e65c-417a-bc28-f4dadb149302","oid":"107409","alias_of":null},{"_id":"95fbdd2d06c07aea","name":"ca6a0891-8395-4d58-9168-6c44e17e0193","oid":"107385","alias_of":null}], "limit": 10000, "_links": {"start": "/api/action/datastore_search?limit=10000&resource_id=_table_metadata", "next": "/api/action/datastore_search?offset=10000&limit=10000&resource_id=_table_metadata"}, "total": 7}}',
@@ -569,7 +578,9 @@ class TestResource:
                     or "insert" in url
                     or "upsert" in url
                     or "search" in url
-                ) and datadict["resource_id"] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5":
+                ) and datadict[
+                    "resource_id"
+                ] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5":
                     TestResource.datastore = "create"
                     return MockResponse(
                         200,
@@ -625,13 +636,19 @@ class TestResource:
         Configuration.read().remoteckan().session = MockSession()
 
     def test_read_from_hdx(self, configuration, read):
-        resource = Resource.read_from_hdx("74b74ae1-df0c-4716-829f-4f939a046811")
+        resource = Resource.read_from_hdx(
+            "74b74ae1-df0c-4716-829f-4f939a046811"
+        )
         assert resource["id"] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
         assert resource["name"] == "MyResource1"
         assert resource["package_id"] == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
-        resource = Resource.read_from_hdx("74b74ae1-df0c-4716-829f-4f939a046812")
+        resource = Resource.read_from_hdx(
+            "74b74ae1-df0c-4716-829f-4f939a046812"
+        )
         assert resource is None
-        resource = Resource.read_from_hdx("74b74ae1-df0c-4716-829f-4f939a046813")
+        resource = Resource.read_from_hdx(
+            "74b74ae1-df0c-4716-829f-4f939a046813"
+        )
         assert resource is None
         with pytest.raises(HDXError):
             Resource.read_from_hdx("ABC")
@@ -656,8 +673,12 @@ class TestResource:
             resource.check_url_filetoupload()
 
     def test_get_set_date_of_resource(self):
-        resource = Resource({"daterange_for_data": "[2020-01-07T00:00:00 TO *]"})
-        result = resource.get_date_of_resource(today=datetime.date(2020, 11, 17))
+        resource = Resource(
+            {"daterange_for_data": "[2020-01-07T00:00:00 TO *]"}
+        )
+        result = resource.get_date_of_resource(
+            today=datetime.date(2020, 11, 17)
+        )
         assert result == {
             "startdate": datetime.datetime(2020, 1, 7, 0, 0),
             "enddate": datetime.datetime(2020, 11, 17, 0, 0),
@@ -739,7 +760,9 @@ class TestResource:
         with pytest.raises(HDXError):
             resource.update_in_hdx()
 
-        resource = Resource.read_from_hdx("74b74ae1-df0c-4716-829f-4f939a046811")
+        resource = Resource.read_from_hdx(
+            "74b74ae1-df0c-4716-829f-4f939a046811"
+        )
         assert resource["id"] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
         assert resource.get_file_type() == "csv"
 
@@ -762,7 +785,9 @@ class TestResource:
         assert resource["state"] == "active"
 
         filetoupload = join("tests", "fixtures", "test_data.csv")
-        resource.set_file_to_upload(filetoupload, guess_format_from_suffix=True)
+        resource.set_file_to_upload(
+            filetoupload, guess_format_from_suffix=True
+        )
         assert resource["format"] == "csv"
         resource.update_in_hdx()
         assert resource["url_type"] == "upload"
@@ -801,7 +826,9 @@ class TestResource:
             resource.update_in_hdx()
 
     def test_delete_from_hdx(self, configuration, post_delete):
-        resource = Resource.read_from_hdx("74b74ae1-df0c-4716-829f-4f939a046811")
+        resource = Resource.read_from_hdx(
+            "74b74ae1-df0c-4716-829f-4f939a046811"
+        )
         resource.delete_from_hdx()
         del resource["id"]
         with pytest.raises(HDXError):
@@ -851,8 +878,12 @@ class TestResource:
             Resource.search_in_hdx("fail")
 
     def test_download(self, configuration, read):
-        resource = Resource.read_from_hdx("74b74ae1-df0c-4716-829f-4f939a046811")
-        resource2 = Resource.read_from_hdx("74b74ae1-df0c-4716-829f-4f939a046814")
+        resource = Resource.read_from_hdx(
+            "74b74ae1-df0c-4716-829f-4f939a046811"
+        )
+        resource2 = Resource.read_from_hdx(
+            "74b74ae1-df0c-4716-829f-4f939a046814"
+        )
         url, path = resource.download()
         remove(path)
         assert (
@@ -866,7 +897,9 @@ class TestResource:
         with pytest.raises(DownloadError):
             resource2.download()
 
-    def test_datastore(self, configuration, post_datastore, topline_yaml, topline_json):
+    def test_datastore(
+        self, configuration, post_datastore, topline_yaml, topline_json
+    ):
         resource_ids = Resource.get_all_resource_ids_in_datastore()
         assert resource_ids == [
             "f9228459-d808-4b51-948f-68a5850abfde",
@@ -877,8 +910,12 @@ class TestResource:
             "b9d2eb36-e65c-417a-bc28-f4dadb149302",
             "ca6a0891-8395-4d58-9168-6c44e17e0193",
         ]
-        resource = Resource.read_from_hdx("74b74ae1-df0c-4716-829f-4f939a046811")
-        resource2 = Resource.read_from_hdx("74b74ae1-df0c-4716-829f-4f939a046815")
+        resource = Resource.read_from_hdx(
+            "74b74ae1-df0c-4716-829f-4f939a046811"
+        )
+        resource2 = Resource.read_from_hdx(
+            "74b74ae1-df0c-4716-829f-4f939a046815"
+        )
         TestResource.datastore = None
         resource.create_datastore(delete_first=0)
         assert TestResource.datastore == "create"
@@ -911,7 +948,9 @@ class TestResource:
         assert TestResource.datastore == "create"
         TestResource.datastore = None
         filefordatastore = join("tests", "fixtures", "test_data.csv")
-        resource.update_datastore_from_json_schema(topline_json, path=filefordatastore)
+        resource.update_datastore_from_json_schema(
+            topline_json, path=filefordatastore
+        )
         assert TestResource.datastore == "create"
         TestResource.datastore = None
         assert resource.has_datastore() is True
@@ -936,7 +975,9 @@ class TestResource:
             del resource["url"]
             resource.create_datastore()
         filefordatastore = join("tests", "fixtures", "test_data.zip")
-        resource.update_datastore_from_json_schema(topline_json, path=filefordatastore)
+        resource.update_datastore_from_json_schema(
+            topline_json, path=filefordatastore
+        )
         assert TestResource.datastore == "create"
 
     def test_resource_views(self, configuration, post_resourceview):
@@ -954,8 +995,12 @@ class TestResource:
             resource.add_update_resource_views("123")
         resource.add_update_resource_views([resource_view])
         resource_views = resource.get_resource_views()
-        assert resource_views[0]["id"] == "d80301b5-4abd-49bd-bf94-fa4af7b6e7a4"
-        assert resource_views[1]["id"] == "c06b5a0d-1d41-4a74-a196-41c251c76023"
+        assert (
+            resource_views[0]["id"] == "d80301b5-4abd-49bd-bf94-fa4af7b6e7a4"
+        )
+        assert (
+            resource_views[1]["id"] == "c06b5a0d-1d41-4a74-a196-41c251c76023"
+        )
         with pytest.raises(HDXError):
             resource.delete_resource_view("123")
         resource.delete_resource_view("d80301b5-4abd-49bd-bf94-fa4af7b6e7a4")
@@ -975,4 +1020,6 @@ class TestResource:
         resource_view = copy.deepcopy(resource_view_list[0])
         resource_view["id"] = "123"
         with pytest.raises(HDXError):
-            resource.reorder_resource_views([resource_view_list[1], resource_view])
+            resource.reorder_resource_views(
+                [resource_view_list[1], resource_view]
+            )

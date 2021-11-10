@@ -4,10 +4,10 @@ from os.path import join
 import ckanapi
 import pytest
 
-from hdx.hdx_configuration import Configuration, ConfigurationError
+from hdx.api import __version__
+from hdx.api.configuration import Configuration, ConfigurationError
 from hdx.utilities.loader import LoadError
 from hdx.utilities.useragent import UserAgentError
-from hdx.version import get_api_version
 
 
 class TestConfiguration:
@@ -73,7 +73,8 @@ class TestConfiguration:
 
         with pytest.raises(IOError):
             Configuration(
-                hdx_config_yaml="NOT_EXIST", project_config_yaml=project_config_yaml
+                hdx_config_yaml="NOT_EXIST",
+                project_config_yaml=project_config_yaml,
             )
 
         with pytest.raises(IOError):
@@ -140,12 +141,14 @@ class TestConfiguration:
 
         with pytest.raises(IOError):
             Configuration(
-                hdx_config_yaml=hdx_config_yaml, project_config_yaml="NOT_EXIST"
+                hdx_config_yaml=hdx_config_yaml,
+                project_config_yaml="NOT_EXIST",
             )
 
         with pytest.raises(IOError):
             Configuration(
-                hdx_config_yaml=hdx_config_yaml, project_config_json="NOT_EXIST"
+                hdx_config_yaml=hdx_config_yaml,
+                project_config_json="NOT_EXIST",
             )
 
         with pytest.raises(ConfigurationError):
@@ -220,8 +223,10 @@ class TestConfiguration:
 
         configuration = Configuration.read()
         assert configuration == expected_configuration
-        version = get_api_version()
-        assert configuration.get_user_agent() == f"HDXPythonLibrary/{version}-test"
+        assert (
+            configuration.get_user_agent()
+            == f"HDXPythonLibrary/{__version__}-test"
+        )
 
         Configuration._create(
             hdx_config_dict={
@@ -241,7 +246,10 @@ class TestConfiguration:
         configuration = Configuration.read()
         expected_configuration["user_agent"] = "test"
         assert configuration == expected_configuration
-        assert configuration.get_user_agent() == f"HDXPythonLibrary/{version}-test"
+        assert (
+            configuration.get_user_agent()
+            == f"HDXPythonLibrary/{__version__}-test"
+        )
 
         smtp_initargs = {
             "host": "localhost",
@@ -364,7 +372,9 @@ hello there"""
                     "dataset_date",
                 ]
             },
-            "resource": {"required_fields": ["package_id", "name", "description"]},
+            "resource": {
+                "required_fields": ["package_id", "name", "description"]
+            },
             "showcase": {"required_fields": ["name", "title"]},
             "approved_tags_vocabulary": "Topics",
             "tags_list_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Accepted_Tags.csv",
@@ -374,7 +384,9 @@ hello there"""
         assert Configuration.read() == expected_configuration
 
     def test_project_configuration_dict(self, hdx_config_yaml):
-        Configuration._create(user_agent="test", hdx_config_yaml=hdx_config_yaml)
+        Configuration._create(
+            user_agent="test", hdx_config_yaml=hdx_config_yaml
+        )
         expected_configuration = {
             "hdx_site": "prod",
             "hdx_read_only": False,
@@ -492,7 +504,9 @@ hello there"""
         expected_configuration["abc"] = "123"
         assert Configuration.read() == expected_configuration
 
-    def test_project_configuration_json(self, hdx_config_yaml, project_config_json):
+    def test_project_configuration_json(
+        self, hdx_config_yaml, project_config_json
+    ):
         Configuration._create(
             user_agent="test",
             hdx_config_yaml=hdx_config_yaml,
@@ -609,7 +623,9 @@ hello there"""
         }
         assert Configuration.read() == expected_configuration
 
-    def test_project_configuration_yaml(self, hdx_config_yaml, project_config_yaml):
+    def test_project_configuration_yaml(
+        self, hdx_config_yaml, project_config_yaml
+    ):
         Configuration._create(
             user_agent="test",
             hdx_config_yaml=hdx_config_yaml,
@@ -734,7 +750,10 @@ hello there"""
         )
         actual_configuration = Configuration.read()
         assert actual_configuration.get_api_key() == "12345"
-        assert actual_configuration.get_hdx_site_url() == "https://data.humdata.org"
+        assert (
+            actual_configuration.get_hdx_site_url()
+            == "https://data.humdata.org"
+        )
         assert actual_configuration._get_credentials() is None
         assert (
             actual_configuration.get_dataset_url("mydataset")
@@ -857,10 +876,9 @@ hello there"""
             hdx_base_config_dict={},
             project_config_yaml=project_config_yaml,
         )
-        version = get_api_version()
         assert (
             Configuration.read().remoteckan().user_agent
-            == f"lala:HDXPythonLibrary/{version}-myua"
+            == f"lala:HDXPythonLibrary/{__version__}-myua"
         )
         Configuration._create(
             user_agent_config_yaml=user_agent_config2_yaml,
@@ -871,7 +889,7 @@ hello there"""
         )
         assert (
             Configuration.read().remoteckan().user_agent
-            == f"HDXPythonLibrary/{version}-myuseragent"
+            == f"HDXPythonLibrary/{__version__}-myuseragent"
         )
         Configuration._create(
             user_agent_config_yaml=user_agent_config3_yaml,
@@ -883,7 +901,7 @@ hello there"""
         )
         assert (
             Configuration.read().remoteckan().user_agent
-            == f"HDXPythonLibrary/{version}-mylookupagent"
+            == f"HDXPythonLibrary/{__version__}-mylookupagent"
         )
         Configuration._create(
             user_agent_config_yaml=user_agent_config3_yaml,
@@ -895,7 +913,7 @@ hello there"""
         )
         assert (
             Configuration.read().remoteckan().user_agent
-            == f"HDXPythonLibrary/{version}-mylookupagent2"
+            == f"HDXPythonLibrary/{__version__}-mylookupagent2"
         )
         Configuration._create(
             user_agent="my_ua",
@@ -907,7 +925,7 @@ hello there"""
         )
         assert (
             Configuration.read().remoteckan().user_agent
-            == f"papa:HDXPythonLibrary/{version}-my_ua"
+            == f"papa:HDXPythonLibrary/{__version__}-my_ua"
         )
         with pytest.raises(UserAgentError):
             Configuration._create(

@@ -1,16 +1,13 @@
 include *.txt
-include .coveragerc
+include pyproject.toml
 include Dockerfile
 include LICENSE
-include pytest.ini
-recursive-include documentation *.py
-recursive-include documentation *.rst
-recursive-include documentation *.sh
-recursive-include documentation Makefile
+include docs/*.yml
+include docs/*.txt
+include docs/*.md
 recursive-include src *.txt
 recursive-include src *.yml
 recursive-include tests *.csv
-recursive-include tests *.hdxkey
 recursive-include tests *.json
 recursive-include tests *.py
 recursive-include tests *.txt

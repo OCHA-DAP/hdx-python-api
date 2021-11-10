@@ -1,0 +1,3 @@
+steps:
+- |
+  pydoc-markdown --build --site-dir "$PWD/_build/html"

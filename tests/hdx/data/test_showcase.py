@@ -7,7 +7,7 @@ import pytest
 
 from hdx.data.hdxobject import HDXError
 from hdx.data.showcase import Showcase
-from hdx.hdx_configuration import Configuration
+from hdx.api.configuration import Configuration
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
 
@@ -56,8 +56,12 @@ showcase_resultdict = {
     "name": "showcase-1",
 }
 
-datasetsdict = load_yaml(join("tests", "fixtures", "dataset_search_results.yml"))
-allsearchdict = load_yaml(join("tests", "fixtures", "showcase_all_search_results.yml"))
+datasetsdict = load_yaml(
+    join("tests", "fixtures", "dataset_search_results.yml")
+)
+allsearchdict = load_yaml(
+    join("tests", "fixtures", "showcase_all_search_results.yml")
+)
 
 
 def mockshow(url, datadict):
@@ -138,7 +142,9 @@ def mockallsearch(url, datadict):
         )
     if datadict["q"] == "*:*":
         newsearchdict = copy.deepcopy(allsearchdict)
-        newsearchdict["results"].extend(copy.deepcopy(newsearchdict["results"]))
+        newsearchdict["results"].extend(
+            copy.deepcopy(newsearchdict["results"])
+        )
         for i, x in enumerate(newsearchdict["results"]):
             x["id"] = f'{x["id"]}{i}'
         return MockResponse(
@@ -332,7 +338,9 @@ class TestShowcase:
         Configuration.read().remoteckan().session = MockSession()
 
     def test_read_from_hdx(self, configuration, read):
-        showcase = Showcase.read_from_hdx("05e392bf-04e0-4ca6-848c-4e87bba10746")
+        showcase = Showcase.read_from_hdx(
+            "05e392bf-04e0-4ca6-848c-4e87bba10746"
+        )
         assert showcase["id"] == "05e392bf-04e0-4ca6-848c-4e87bba10746"
         assert showcase["title"] == "MyShowcase1"
         showcase = Showcase.read_from_hdx("TEST2")
@@ -374,7 +382,9 @@ class TestShowcase:
         with pytest.raises(HDXError):
             showcase.update_in_hdx()
 
-        showcase = Showcase.read_from_hdx("05e392bf-04e0-4ca6-848c-4e87bba10746")
+        showcase = Showcase.read_from_hdx(
+            "05e392bf-04e0-4ca6-848c-4e87bba10746"
+        )
         assert showcase["id"] == "05e392bf-04e0-4ca6-848c-4e87bba10746"
         assert showcase["title"] == "MyShowcase1"
 
@@ -392,7 +402,10 @@ class TestShowcase:
                 "name": "economics",
                 "vocabulary_id": "4381925f-0ae9-44a3-b30d-cae35598757b",
             },
-            {"name": "health", "vocabulary_id": "4381925f-0ae9-44a3-b30d-cae35598757b"},
+            {
+                "name": "health",
+                "vocabulary_id": "4381925f-0ae9-44a3-b30d-cae35598757b",
+            },
         ]
         assert showcase.get_old_data_dict() == expected
 
@@ -414,7 +427,9 @@ class TestShowcase:
         assert showcase["state"] == "active"
 
     def test_delete_from_hdx(self, configuration, post_delete):
-        showcase = Showcase.read_from_hdx("05e392bf-04e0-4ca6-848c-4e87bba10746")
+        showcase = Showcase.read_from_hdx(
+            "05e392bf-04e0-4ca6-848c-4e87bba10746"
+        )
         showcase.delete_from_hdx()
         del showcase["id"]
         with pytest.raises(HDXError):
@@ -462,7 +477,9 @@ class TestShowcase:
         assert result is False
 
     def test_datasets(self, configuration, read):
-        showcase = Showcase.read_from_hdx("05e392bf-04e0-4ca6-848c-4e87bba10746")
+        showcase = Showcase.read_from_hdx(
+            "05e392bf-04e0-4ca6-848c-4e87bba10746"
+        )
         datasets = showcase.get_datasets()
         assert len(datasets) == 10
         assert datasets[0].data == datasetsdict["results"][0]
@@ -473,7 +490,10 @@ class TestShowcase:
         showcase.remove_dataset(datasets[0])
         assert TestShowcase.association == "delete"
         TestShowcase.association = None
-        assert showcase.add_dataset("a2f32edd-bac2-4940-aa58-49e565041055") is True
+        assert (
+            showcase.add_dataset("a2f32edd-bac2-4940-aa58-49e565041055")
+            is True
+        )
         assert TestShowcase.association == "create"
         TestShowcase.association = None
         assert (

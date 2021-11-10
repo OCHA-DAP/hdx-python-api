@@ -2,8 +2,9 @@
 import logging
 from typing import Any, Callable
 
+from hdx.api import __version__
 from hdx.facades import logging_kwargs
-from hdx.hdx_configuration import Configuration
+from hdx.api.configuration import Configuration
 from hdx.utilities.easy_logging import setup_logging
 from hdx.utilities.useragent import UserAgent
 
@@ -28,7 +29,7 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
     site_url = Configuration._create(**kwargs)
 
     logger.info("--------------------------------------------------")
-    logger.info(f"> Using HDX Python API Library {Configuration.apiversion}")
+    logger.info(f"> Using HDX Python API Library {__version__}")
     logger.info(f"> HDX Site: {site_url}")
 
     UserAgent.user_agent = Configuration.read().user_agent

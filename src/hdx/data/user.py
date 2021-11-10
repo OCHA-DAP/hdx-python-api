@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Optional
 
 import hdx.data.organization
 from hdx.data.hdxobject import HDXObject
-from hdx.hdx_configuration import Configuration
+from hdx.api.configuration import Configuration
 
 logger = logging.getLogger(__name__)
 
@@ -265,15 +265,20 @@ class User(HDXObject):
         organizations = list()
         if success:
             for organizationdict in result:
-                organization = hdx.data.organization.Organization.read_from_hdx(
-                    organizationdict["id"]
+                organization = (
+                    hdx.data.organization.Organization.read_from_hdx(
+                        organizationdict["id"]
+                    )
                 )
                 organizations.append(organization)
         return organizations
 
     @classmethod
     def autocomplete(
-        cls, name: str, limit: int = 20, configuration: Optional[Configuration] = None
+        cls,
+        name: str,
+        limit: int = 20,
+        configuration: Optional[Configuration] = None,
     ) -> List:
         """Autocomplete a user name and return matches
 

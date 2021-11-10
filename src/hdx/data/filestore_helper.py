@@ -43,7 +43,9 @@ class FilestoreHelper:
             None
         """
         if "ignore_check" not in kwargs:  # allow ignoring of field checks
-            resource.check_required_fields(ignore_fields=cls._get_ignore_fields(kwargs))
+            resource.check_required_fields(
+                ignore_fields=cls._get_ignore_fields(kwargs)
+            )
         file_to_upload = resource.get_file_to_upload()
         if file_to_upload:
             filestore_resources[resource_index] = file_to_upload
@@ -77,6 +79,8 @@ class FilestoreHelper:
         if "ignore_check" not in kwargs:  # allow ignoring of field checks
             if resource.get_file_to_upload() and "url" in resource.data:
                 del resource.data["url"]
-            resource.check_required_fields(ignore_fields=cls._get_ignore_fields(kwargs))
+            resource.check_required_fields(
+                ignore_fields=cls._get_ignore_fields(kwargs)
+            )
         if resource.get_file_to_upload():
             resource["url"] = cls.temporary_url

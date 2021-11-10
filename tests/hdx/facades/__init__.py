@@ -1,4 +1,4 @@
-from hdx.hdx_configuration import Configuration
+from hdx.api.configuration import Configuration
 
 
 class TestResult:
