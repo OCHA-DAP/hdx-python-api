@@ -206,12 +206,12 @@ Once you have it, then put it into a file in your home directory:
         dataset = Dataset.read_from_hdx("ID OR NAME OF DATASET")
         print(dataset.get_date_of_dataset())  # record this
         dataset.set_date_of_dataset("2015-07-26")
-        print(dataset.get_dataset_date())
+        print(dataset.get_date_of_dataset())
         dataset.update_in_hdx()
 
 1.  You can view it on HDX before changing it back (if you have an API key):
 
-        dataset.set_dataset_date("PREVIOUS DATE")
+        dataset.set_date_of_dataset("PREVIOUS DATE")
         dataset.update_in_hdx()
 
 1. Exit and remove virtualenv:
