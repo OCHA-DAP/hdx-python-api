@@ -14,7 +14,9 @@ class TestDatasetTitleHelper:
             )
             == "Myanmar Town"
         )
-        assert ranges == [(datetime(2019, 7, 1, 0, 0), datetime(2019, 7, 31, 0, 0))]
+        assert ranges == [
+            (datetime(2019, 7, 1, 0, 0), datetime(2019, 7, 31, 0, 0))
+        ]
         ranges = list()
         assert (
             DatasetTitleHelper.fuzzy_match_dates_in_title(
@@ -22,13 +24,20 @@ class TestDatasetTitleHelper:
             )
             == "Myanmar Town"
         )
-        assert ranges == [(datetime(2019, 7, 1, 0, 0), datetime(2019, 7, 31, 0, 0))]
+        assert ranges == [
+            (datetime(2019, 7, 1, 0, 0), datetime(2019, 7, 31, 0, 0))
+        ]
 
     def test_get_date_from_title(self):
         assert DatasetTitleHelper.get_dates_from_title(
             "Myanmar Self Administered Regions Boundaries MIMU v9.2.1"
-        ) == ("Myanmar Self Administered Regions Boundaries MIMU v9.2.1", list())
-        assert DatasetTitleHelper.get_dates_from_title("Myanmar Town 2019 July") == (
+        ) == (
+            "Myanmar Self Administered Regions Boundaries MIMU v9.2.1",
+            list(),
+        )
+        assert DatasetTitleHelper.get_dates_from_title(
+            "Myanmar Town 2019 July"
+        ) == (
             "Myanmar Town",
             [(datetime(2019, 7, 1, 0, 0), datetime(2019, 7, 31, 0, 0))],
         )
@@ -157,7 +166,9 @@ class TestDatasetTitleHelper:
                 (datetime(2016, 1, 1, 0, 0), datetime(2016, 12, 31, 0, 0)),
             ],
         )
-        assert DatasetTitleHelper.get_dates_from_title("Risk, 2020/19-2014") == (
+        assert DatasetTitleHelper.get_dates_from_title(
+            "Risk, 2020/19-2014"
+        ) == (
             "Risk, 2020/19",
             [(datetime(2014, 1, 1, 0, 0), datetime(2014, 12, 31, 0, 0))],
         )

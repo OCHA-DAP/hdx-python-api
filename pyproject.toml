@@ -1,0 +1,169 @@
+[build-system]
+requires = [ "setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 79
+
+[tool.isort]
+profile = "black"
+line_length = 79
+multi_line_output = 3
+
+[tool.flakehell]
+# make output nice
+format = "grouped"
+max_line_length = 79
+# show line of source code in output
+show_source = true
+
+    # list of plugins and rules for them
+    [tool.flakehell.plugins]
+    mccabe = ["+*"]
+    pycodestyle = ["+*", "-E203", "-E501", "-W503"]
+    pyflakes = ["+*"]
+    pylint = ["+*"]
+    flake8-isort = ["+*"]
+    flake8-black = ["+*"]
+
+[tool.pytest.ini_options]
+site_dirs = "src"
+
+[tool.coverage.paths]
+source = ["src/hdx", "*/site-packages/hdx"]
+
+[tool.coverage.report]
+omit = [
+    "*/setup.py",
+    "*/python?.?/*",
+    "*/venv/*",
+    "*/site-packages/*",
+    "*/tests/*",
+    "*__init__*"
+]
+
+exclude_lines = [
+    "pragma: no cover",  # Have to re-enable the standard pragma
+    "def __repr__",  # Don't complain about missing
+    "if self.debug",  # debug-only code
+    "raise AssertionError",  # Don't complain if tests don't hit
+    "raise NotImplementedError",  # defensive assertion code
+    "if 0:",  # Don't complain if non-runnable code
+    "if __name__ == .__main__.:"  # isn't run
+]
+
+[[tool.pydoc-markdown.loaders]]
+type = "python"
+search_path = ["src"]
+packages = ["hdx.api", "hdx.data", "hdx.facades"]
+
+[tool.pydoc-markdown.renderer]
+type = "mkdocs"
+output_directory = "docs/build"
+
+    [tool.pydoc-markdown.renderer.mkdocs_config]
+    site_name = "HDX Python API"
+    theme = "readthedocs"
+    repo_url = "https://github.com/OCHA-DAP/hdx-python-api"
+
+    [tool.pydoc-markdown.renderer.markdown.source_linker]
+    type = "github"
+    repo = "OCHA-DAP/hdx-python-api"
+
+    [[tool.pydoc-markdown.renderer.pages]]
+    title = "Home"
+    name = "index"
+    source ="docs/main.md"
+
+    [[tool.pydoc-markdown.renderer.pages]]
+    title = "API Documentation"
+
+        [[tool.pydoc-markdown.renderer.pages.children]]
+        title = "Configuration"
+        contents = ["hdx.api.configuration.*"]
+
+        [[tool.pydoc-markdown.renderer.pages.children]]
+        title = "Locations"
+        contents = ["hdx.api.locations.*"]
+
+        [[tool.pydoc-markdown.renderer.pages.children]]
+        title = "Dataset"
+        contents = ["hdx.data.dataset.*"]
+
+        [[tool.pydoc-markdown.renderer.pages.children]]
+        title = "Resource"
+        contents = ["hdx.data.resource.*"]
+
+        [[tool.pydoc-markdown.renderer.pages.children]]
+        title = "Resource View"
+        contents = ["hdx.data.resource_view.*"]
+
+        [[tool.pydoc-markdown.renderer.pages.children]]
+        title = "Showcase"
+        contents = ["hdx.data.showcase.*"]
+
+        [[tool.pydoc-markdown.renderer.pages.children]]
+        title = "User"
+        contents = ["hdx.data.user.*"]
+
+        [[tool.pydoc-markdown.renderer.pages.children]]
+        title = "Organization"
+        contents = ["hdx.data.organization.*"]
+
+        [[tool.pydoc-markdown.renderer.pages.children]]
+        title = "Vocabulary"
+        contents = ["hdx.data.vocabulary.*"]
+
+        [[tool.pydoc-markdown.renderer.pages.children]]
+        title = "Simple Facade"
+        contents = ["hdx.facades.simple.*"]
+
+        [[tool.pydoc-markdown.renderer.pages.children]]
+        title = "Keyword Arguments Facade"
+        contents = ["hdx.facades.keyword_arguments.*"]
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+isolated_build = true
+envlist = py38, lint
+
+[gh-actions]
+python =
+    3: py38, lint
+
+[testenv]
+recreate = true
+wheel = true
+deps =
+    -r test-requirements.txt
+commands =
+    pytest --cov=hdx --no-cov-on-fail --junitxml=.tox/test-results.xml --cov-report=xml --cov-report=term-missing
+
+[testenv:lint]
+wheel_build_env = py38
+deps =
+    git+git://github.com/mcarans/flakehell.git#egg=flakehell
+    flake8
+    flake8-isort
+    flake8-black
+commands =
+    flakehell lint src tests
+
+[testenv:docs]
+wheel_build_env = py38
+deps =
+    pydoc-markdown
+commands =
+    pydoc-markdown
+
+[testenv:publish]
+wheel_build_env = py38
+passenv = SSH_AUTH_SOCK
+deps =
+    twine
+
+commands =
+    python -c \"from hdx.utilities.wheel import git_tag_whl; git_tag_whl('{distdir}')\"
+    twine upload {distdir}/*
+"""

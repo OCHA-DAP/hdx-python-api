@@ -4,12 +4,12 @@ import json
 from os.path import join
 
 import pytest
-
-from hdx.data.hdxobject import HDXError
-from hdx.data.user import User
-from hdx.hdx_configuration import Configuration
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
+
+from hdx.api.configuration import Configuration
+from hdx.data.hdxobject import HDXError
+from hdx.data.user import User
 
 from . import MockResponse, user_data
 
@@ -284,7 +284,8 @@ class TestUser:
                     if "show" in url:
                         result = json.dumps(orgdict)
                         if (
-                            datadict["id"] == "b67e6c74-c185-4f43-b561-0e114a736f19"
+                            datadict["id"]
+                            == "b67e6c74-c185-4f43-b561-0e114a736f19"
                             or datadict["id"] == "TEST1"
                         ):
                             return MockResponse(

@@ -4,18 +4,20 @@ import json
 from os.path import join
 
 import pytest
+from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.loader import load_yaml
 
+from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.organization import Organization
 from hdx.data.user import User
-from hdx.hdx_configuration import Configuration
-from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.loader import load_yaml
 
 from . import MockResponse, organization_data, user_data
 from .test_user import user_mockshow
 
-resultdict = load_yaml(join("tests", "fixtures", "organization_show_results.yml"))
+resultdict = load_yaml(
+    join("tests", "fixtures", "organization_show_results.yml")
+)
 
 organization_list = [
     "acaps",
@@ -32,7 +34,11 @@ organization_list = [
 searchdict = load_yaml(join("tests", "fixtures", "dataset_search_results.yml"))
 
 organization_autocomplete = [
-    {"title": "INNAGO", "id": "5a63012e-6c41-420c-8c33-e84b277fdc90", "name": "innago"}
+    {
+        "title": "INNAGO",
+        "id": "5a63012e-6c41-420c-8c33-e84b277fdc90",
+        "name": "innago",
+    }
 ]
 
 
@@ -98,11 +104,15 @@ def mockgetdatasets(url, datadict):
 class TestOrganization:
     @pytest.fixture(scope="class")
     def static_yaml(self):
-        return join("tests", "fixtures", "config", "hdx_organization_static.yml")
+        return join(
+            "tests", "fixtures", "config", "hdx_organization_static.yml"
+        )
 
     @pytest.fixture(scope="class")
     def static_json(self):
-        return join("tests", "fixtures", "config", "hdx_organization_static.json")
+        return join(
+            "tests", "fixtures", "config", "hdx_organization_static.json"
+        )
 
     @pytest.fixture(scope="function")
     def read(self):

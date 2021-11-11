@@ -4,17 +4,21 @@ import json
 from os.path import join
 
 import pytest
+from hdx.utilities.dictandlist import merge_two_dictionaries
 from requests.exceptions import RetryError
 
+from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.vocabulary import ChainRuleError, Vocabulary
-from hdx.hdx_configuration import Configuration
-from hdx.utilities.dictandlist import merge_two_dictionaries
 
 from . import MockResponse
 
 vocabulary_list = [
-    {"tags": [], "id": "57f71f5f-adb0-48fd-ab2c-6b93b9d30332", "name": "Topics"},
+    {
+        "tags": [],
+        "id": "57f71f5f-adb0-48fd-ab2c-6b93b9d30332",
+        "name": "Topics",
+    },
     {
         "tags": [
             {
@@ -2295,7 +2299,9 @@ class TestVocabulary:
 
     @pytest.fixture(scope="class")
     def static_json(self):
-        return join("tests", "fixtures", "config", "hdx_vocabulary_static.json")
+        return join(
+            "tests", "fixtures", "config", "hdx_vocabulary_static.json"
+        )
 
     @pytest.fixture(scope="function")
     def read(self):
@@ -2453,10 +2459,15 @@ class TestVocabulary:
     def test_init(self, configuration):
         vocabulary = Vocabulary(name="test", tags=["mytesttag1", "mytesttag2"])
         assert vocabulary["name"] == "test"
-        assert vocabulary["tags"] == [{"name": "mytesttag1"}, {"name": "mytesttag2"}]
+        assert vocabulary["tags"] == [
+            {"name": "mytesttag1"},
+            {"name": "mytesttag2"},
+        ]
 
     def test_read_from_hdx(self, configuration, read):
-        vocabulary = Vocabulary.read_from_hdx("1731e7fc-ff62-4551-8a70-2a5878e1142b")
+        vocabulary = Vocabulary.read_from_hdx(
+            "1731e7fc-ff62-4551-8a70-2a5878e1142b"
+        )
         assert vocabulary["id"] == "1731e7fc-ff62-4551-8a70-2a5878e1142b"
         assert vocabulary["name"] == "miketest"
         vocabulary = Vocabulary.read_from_hdx("TEST2")
@@ -2499,7 +2510,9 @@ class TestVocabulary:
         with pytest.raises(HDXError):
             vocabulary.update_in_hdx()
 
-        vocabulary = Vocabulary.read_from_hdx("1731e7fc-ff62-4551-8a70-2a5878e1142b")
+        vocabulary = Vocabulary.read_from_hdx(
+            "1731e7fc-ff62-4551-8a70-2a5878e1142b"
+        )
         assert vocabulary["id"] == "1731e7fc-ff62-4551-8a70-2a5878e1142b"
         assert vocabulary["name"] == "miketest"
 
@@ -2535,11 +2548,15 @@ class TestVocabulary:
         assert "state" not in vocabulary
 
     def test_delete_from_hdx(self, configuration, post_delete):
-        vocabulary = Vocabulary.read_from_hdx("1731e7fc-ff62-4551-8a70-2a5878e1142b")
+        vocabulary = Vocabulary.read_from_hdx(
+            "1731e7fc-ff62-4551-8a70-2a5878e1142b"
+        )
         with pytest.raises(HDXError):
             vocabulary.delete_from_hdx(empty=False)
         vocabulary.delete_from_hdx()
-        vocabulary = Vocabulary.read_from_hdx("1731e7fc-ff62-4551-8a70-2a5878e1142b")
+        vocabulary = Vocabulary.read_from_hdx(
+            "1731e7fc-ff62-4551-8a70-2a5878e1142b"
+        )
         del vocabulary["id"]
         with pytest.raises(HDXError):
             vocabulary.delete_from_hdx()
@@ -2574,7 +2591,12 @@ class TestVocabulary:
         vocabulary.add_tag("wash")
         assert vocabulary.get_tags() == ["economy", "health", "wash"]
         vocabulary.add_tags(["sanitation"])
-        assert vocabulary.get_tags() == ["economy", "health", "wash", "sanitation"]
+        assert vocabulary.get_tags() == [
+            "economy",
+            "health",
+            "wash",
+            "sanitation",
+        ]
         result = vocabulary.remove_tag("wash")
         assert result is True
         assert vocabulary.get_tags() == ["economy", "health", "sanitation"]
@@ -2621,7 +2643,10 @@ class TestVocabulary:
             "non-accepted tag + merge": "",
         }
         assert Vocabulary.get_mapped_tag("refugee") == (["refugees"], list())
-        assert Vocabulary.get_mapped_tag("monitoring") == (list(), ["monitoring"])
+        assert Vocabulary.get_mapped_tag("monitoring") == (
+            list(),
+            ["monitoring"],
+        )
         tags_dict["refugee"]["Action to Take"] = "ERROR"
         assert Vocabulary.get_mapped_tag("refugee") == (list(), list())
         refugeesdict = copy.deepcopy(tags_dict["refugees"])

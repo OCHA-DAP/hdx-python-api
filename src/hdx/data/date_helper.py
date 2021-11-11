@@ -10,7 +10,9 @@ from hdx.utilities.dateparse import parse_date
 class DateHelper:
     @staticmethod
     def get_date_info(
-        hdx_date: Dict, date_format: Optional[str] = None, today: date = datetime.now()
+        hdx_date: Dict,
+        date_format: Optional[str] = None,
+        today: date = datetime.now(),
     ) -> Dict:
         """Get date as datetimes and strings in specified format. If no format is supplied, the ISO 8601
         format is used. Returns a dictionary containing keys startdate (start date as datetime), enddate (end
@@ -82,7 +84,9 @@ class DateHelper:
 
     @classmethod
     def get_hdx_date_from_years(
-        cls, startyear: Union[str, int, Iterable], endyear: Union[str, int, None] = None
+        cls,
+        startyear: Union[str, int, Iterable],
+        endyear: Union[str, int, None] = None,
     ) -> Tuple[str, List[int]]:
         """Get an HDX date from an iterable of years or a start and end year.
 

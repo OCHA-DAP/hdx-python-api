@@ -4,11 +4,11 @@ import json
 from os.path import join
 
 import pytest
+from hdx.utilities.dictandlist import merge_two_dictionaries
 
+from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource_view import ResourceView
-from hdx.hdx_configuration import Configuration
-from hdx.utilities.dictandlist import merge_two_dictionaries
 
 from . import MockResponse
 
@@ -134,11 +134,15 @@ class TestResourceView:
 
     @pytest.fixture(scope="class")
     def static_yaml(self):
-        return join("tests", "fixtures", "config", "hdx_resource_view_static.yml")
+        return join(
+            "tests", "fixtures", "config", "hdx_resource_view_static.yml"
+        )
 
     @pytest.fixture(scope="class")
     def static_json(self):
-        return join("tests", "fixtures", "config", "hdx_resource_view_static.json")
+        return join(
+            "tests", "fixtures", "config", "hdx_resource_view_static.json"
+        )
 
     @pytest.fixture(scope="function")
     def read(self):
@@ -319,7 +323,10 @@ class TestResourceView:
         resource_view.update_in_hdx()
         assert resource_view["id"] == "NOTEXIST"
         assert resource_view["view_type"] == "hdx_hxl_preview"
-        assert resource_view["resource_id"] == "25982d1c-f45a-45e1-b14e-87d367413045"
+        assert (
+            resource_view["resource_id"]
+            == "25982d1c-f45a-45e1-b14e-87d367413045"
+        )
 
         del resource_view["id"]
         resource_view["title"] = "NOTEXIST"
@@ -358,7 +365,10 @@ class TestResourceView:
         assert resource_view["view_type"] == "hdx_hxl_preview"
         assert resource_view["title"] == "Quick Charts"
         assert resource_view["description"] == "lala"
-        assert resource_view["resource_id"] == "25982d1c-f45a-45e1-b14e-87d367413045"
+        assert (
+            resource_view["resource_id"]
+            == "25982d1c-f45a-45e1-b14e-87d367413045"
+        )
 
     def test_update_json(self, configuration, static_json):
         data = copy.deepcopy(self.resource_view_data)
@@ -370,19 +380,28 @@ class TestResourceView:
         assert resource_view["view_type"] == "recline_view"
         assert resource_view["title"] == "Data Explorer"
         assert resource_view["description"] == "haha"
-        assert resource_view["resource_id"] == "25982d1c-f45a-45e1-b14e-87d367413045"
+        assert (
+            resource_view["resource_id"]
+            == "25982d1c-f45a-45e1-b14e-87d367413045"
+        )
 
     def test_copy(self, configuration, read):
         data = copy.deepcopy(self.resource_view_data)
         resource_view = ResourceView(data)
         resource_view.copy(resultdict)
-        assert resource_view["resource_id"] == self.resource_view_data["resource_id"]
+        assert (
+            resource_view["resource_id"]
+            == self.resource_view_data["resource_id"]
+        )
         assert resource_view["view_type"] == "hdx_hxl_preview"
         assert resource_view["hxl_preview_config"] == hxl_preview_config
         data = copy.deepcopy(self.resource_view_data)
         resource_view = ResourceView(data)
         resource_view.copy("c06b5a0d-1d41-4a74-a196-41c251c76023")
-        assert resource_view["resource_id"] == self.resource_view_data["resource_id"]
+        assert (
+            resource_view["resource_id"]
+            == self.resource_view_data["resource_id"]
+        )
         assert resource_view["view_type"] == "hdx_hxl_preview"
         assert resource_view["hxl_preview_config"] == hxl_preview_config
         with pytest.raises(HDXError):
@@ -394,5 +413,9 @@ class TestResourceView:
         resource_views = ResourceView.get_all_for_resource(
             "25982d1c-f45a-45e1-b14e-87d367413045"
         )
-        assert resource_views[0]["id"] == "d80301b5-4abd-49bd-bf94-fa4af7b6e7a4"
-        assert resource_views[1]["id"] == "c06b5a0d-1d41-4a74-a196-41c251c76023"
+        assert (
+            resource_views[0]["id"] == "d80301b5-4abd-49bd-bf94-fa4af7b6e7a4"
+        )
+        assert (
+            resource_views[1]["id"] == "c06b5a0d-1d41-4a74-a196-41c251c76023"
+        )

@@ -7,8 +7,6 @@ from string import punctuation, whitespace
 from typing import List, Match, Optional, Tuple
 
 from dateutil.parser import ParserError
-from quantulum3 import parser
-
 from hdx.utilities.dateparse import parse_date, parse_date_range
 from hdx.utilities.text import (
     PUNCTUATION_MINUS_BRACKETS,
@@ -16,6 +14,7 @@ from hdx.utilities.text import (
     remove_from_end,
     remove_string,
 )
+from quantulum3 import parser
 
 logger = logging.getLogger(__name__)
 
@@ -105,7 +104,9 @@ class DatasetTitleHelper:
             title = newtitle
         try:
             fuzzy = dict()
-            startdate, enddate = parse_date_range(title, fuzzy=fuzzy, zero_time=True)
+            startdate, enddate = parse_date_range(
+                title, fuzzy=fuzzy, zero_time=True
+            )
             datestrs = fuzzy["date"]
             if (
                 startdate == enddate and len(datestrs) == 1
@@ -177,9 +178,11 @@ class DatasetTitleHelper:
         ranges = list()
         ignore_wrong_years = list()
         for match in cls.YEAR_RANGE_PATTERN.finditer(title):
-            first_year, first_month, second_year = cls.get_month_year_in_slash_range(
-                match, ignore_wrong_years
-            )
+            (
+                first_year,
+                first_month,
+                second_year,
+            ) = cls.get_month_year_in_slash_range(match, ignore_wrong_years)
             if first_year is None:
                 continue
             if first_month is None:
@@ -187,26 +190,40 @@ class DatasetTitleHelper:
             startdate = parse_date(
                 f"{first_year}-{first_month}-01", "%Y-%m-%d", zero_time=True
             )
-            enddate = parse_date(f"{match.group(5)}-12-31", "%Y-%m-%d", zero_time=True)
+            enddate = parse_date(
+                f"{match.group(5)}-12-31", "%Y-%m-%d", zero_time=True
+            )
             ranges.append((startdate, enddate))
             newtitle = remove_string(title, match.group(0))
-            logger.info(f"Removing date range from title: {title} -> {newtitle}")
+            logger.info(
+                f"Removing date range from title: {title} -> {newtitle}"
+            )
             title = newtitle
 
         for match in cls.YEAR_RANGE_PATTERN2.finditer(title):
-            first_year, first_month, second_year = cls.get_month_year_in_slash_range(
-                match, ignore_wrong_years
-            )
+            (
+                first_year,
+                first_month,
+                second_year,
+            ) = cls.get_month_year_in_slash_range(match, ignore_wrong_years)
             if first_year is None or second_year is None:
                 continue
-            startdate = parse_date(f"{first_year}-01-01", "%Y-%m-%d", zero_time=True)
-            enddate = parse_date(f"{second_year}-12-31", "%Y-%m-%d", zero_time=True)
+            startdate = parse_date(
+                f"{first_year}-01-01", "%Y-%m-%d", zero_time=True
+            )
+            enddate = parse_date(
+                f"{second_year}-12-31", "%Y-%m-%d", zero_time=True
+            )
             ranges.append((startdate, enddate))
             newtitle = remove_string(title, match.group(0))
-            logger.info(f"Removing date range from title: {title} -> {newtitle}")
+            logger.info(
+                f"Removing date range from title: {title} -> {newtitle}"
+            )
             title = newtitle
 
-        title = cls.fuzzy_match_dates_in_title(title, ranges, ignore_wrong_years)
+        title = cls.fuzzy_match_dates_in_title(
+            title, ranges, ignore_wrong_years
+        )
 
         for match in cls.WORD_RIGHT_BRACKET_PATTERN.finditer(title):
             word = match.group(2)
@@ -219,6 +236,8 @@ class DatasetTitleHelper:
             title, f"{PUNCTUATION_MINUS_BRACKETS}{whitespace}"
         )
         title = remove_from_end(
-            title, ["as of"] + cls.DATE_INTRO_WORDS, "Removing - from title: %s -> %s"
+            title,
+            ["as of"] + cls.DATE_INTRO_WORDS,
+            "Removing - from title: %s -> %s",
         )
         return title, sorted(ranges)

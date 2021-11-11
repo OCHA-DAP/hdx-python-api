@@ -1,21 +1,22 @@
 """Simple Facade Tests"""
 from os.path import join
 
-from hdx.facades import logging_kwargs
-from hdx.utilities.useragent import UserAgent, UserAgentError
-from hdx.version import get_api_version
-
-logging_kwargs.update(
-    {
-        "smtp_config_yaml": join("tests", "fixtures", "config", "smtp_config.yml"),
-    }
-)
-
 import pytest
+from hdx.utilities.useragent import UserAgent, UserAgentError
 
+from hdx.api import __version__
+from hdx.facades import logging_kwargs
 from hdx.facades.keyword_arguments import facade
 
 from . import my_testfnkw, testresult
+
+logging_kwargs.update(
+    {
+        "smtp_config_yaml": join(
+            "tests", "fixtures", "config", "smtp_config.yml"
+        ),
+    }
+)
 
 
 class TestKeywordArguments:
@@ -32,7 +33,6 @@ class TestKeywordArguments:
         )
         assert testresult.actual_result == "https://data.humdata.org"
         UserAgent.clear_global()
-        version = get_api_version()
         testresult.actual_result = None
         facade(
             my_testfnkw,
@@ -41,7 +41,10 @@ class TestKeywordArguments:
             project_config_yaml=project_config_yaml,
             fn="agent",
         )
-        assert testresult.actual_result == f"HDXPythonLibrary/{version}-{my_user_agent}"
+        assert (
+            testresult.actual_result
+            == f"HDXPythonLibrary/{__version__}-{my_user_agent}"
+        )
         UserAgent.clear_global()
         testresult.actual_result = None
         my_user_agent = "lala"
@@ -52,7 +55,10 @@ class TestKeywordArguments:
             project_config_yaml=project_config_yaml,
             fn="agent",
         )
-        assert testresult.actual_result == f"HDXPythonLibrary/{version}-{my_user_agent}"
+        assert (
+            testresult.actual_result
+            == f"HDXPythonLibrary/{__version__}-{my_user_agent}"
+        )
         UserAgent.clear_global()
         testresult.actual_result = None
         facade(
@@ -62,7 +68,10 @@ class TestKeywordArguments:
             project_config_yaml=project_config_yaml,
             fn="agent",
         )
-        assert testresult.actual_result == f"HDXPythonLibrary/{version}-{my_user_agent}"
+        assert (
+            testresult.actual_result
+            == f"HDXPythonLibrary/{__version__}-{my_user_agent}"
+        )
         UserAgent.clear_global()
         testresult.actual_result = None
         my_preprefix = "haha"
@@ -76,7 +85,7 @@ class TestKeywordArguments:
         )
         assert (
             testresult.actual_result
-            == f"{my_preprefix}:HDXPythonLibrary/{version}-{my_user_agent}"
+            == f"{my_preprefix}:HDXPythonLibrary/{__version__}-{my_user_agent}"
         )
         UserAgent.clear_global()
         testresult.actual_result = None

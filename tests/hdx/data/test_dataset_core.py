@@ -7,15 +7,15 @@ from os import remove
 from os.path import join
 
 import pytest
+from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.loader import load_yaml
 
+from hdx.api import __version__
+from hdx.api.configuration import Configuration
 from hdx.data.dataset import Dataset, NotRequestableError
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
 from hdx.data.resource_view import ResourceView
-from hdx.hdx_configuration import Configuration
-from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.loader import load_yaml
-from hdx.version import get_api_version
 
 from . import (
     MockResponse,
@@ -140,7 +140,9 @@ def mockall(url, datadict):
         if datadict["start"] == 2:
             newsearchdict["results"] = newsearchdict["results"][2:9]
         else:
-            newsearchdict["results"] = newsearchdict["results"][4:5]  # repeated dataset
+            newsearchdict["results"] = newsearchdict["results"][
+                4:5
+            ]  # repeated dataset
     elif datadict["rows"] == 5:
         newsearchdict["count"] = 6
         if datadict["sort"] == "metadata_modified desc":
@@ -213,7 +215,8 @@ class TestDatasetCore:
             def post(url, data, headers, files, allow_redirects, auth=None):
                 if isinstance(data, dict):
                     datadict = {
-                        k.decode("utf8"): v.decode("utf8") for k, v in data.items()
+                        k.decode("utf8"): v.decode("utf8")
+                        for k, v in data.items()
                     }
                 else:
                     datadict = json.loads(data.decode("utf-8"))
@@ -241,7 +244,8 @@ class TestDatasetCore:
             def post(url, data, headers, files, allow_redirects, auth=None):
                 if isinstance(data, dict):
                     datadict = {
-                        k.decode("utf8"): v.decode("utf8") for k, v in data.items()
+                        k.decode("utf8"): v.decode("utf8")
+                        for k, v in data.items()
                     }
                 else:
                     datadict = json.loads(data.decode("utf-8"))
@@ -314,7 +318,8 @@ class TestDatasetCore:
             def post(url, data, headers, files, allow_redirects, auth=None):
                 if isinstance(data, dict):
                     datadict = {
-                        k.decode("utf8"): v.decode("utf8") for k, v in data.items()
+                        k.decode("utf8"): v.decode("utf8")
+                        for k, v in data.items()
                     }
                 else:
                     datadict = json.loads(data.decode("utf-8"))
@@ -362,8 +367,12 @@ class TestDatasetCore:
                     if datadict["name"] in ["MyDataset1", "DatasetExist"]:
                         resultdictcopy = copy.deepcopy(dataset_resultdict)
                         merge_two_dictionaries(resultdictcopy, datadict)
-                        for i, resource in enumerate(resultdictcopy["resources"]):
-                            for j, resource2 in enumerate(resultdictcopy["resources"]):
+                        for i, resource in enumerate(
+                            resultdictcopy["resources"]
+                        ):
+                            for j, resource2 in enumerate(
+                                resultdictcopy["resources"]
+                            ):
                                 if i != j:
                                     if resource == resource2:
                                         del resultdictcopy["resources"][j]
@@ -635,7 +644,7 @@ class TestDatasetCore:
         assert dataset["state"] == "active"
         pattern = (
             r"HDXPythonLibrary/%s-test \([12]\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d\)"
-            % get_api_version()
+            % __version__
         )
         match = re.search(pattern, dataset["updated_by_script"])
         assert match
@@ -652,7 +661,8 @@ class TestDatasetCore:
         match = re.search(pattern, dataset["updated_by_script"])
         assert match
         dataset.update_in_hdx(
-            updated_by_script="hi", batch="6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
+            updated_by_script="hi",
+            batch="6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d",
         )
         match = re.search(pattern, dataset["updated_by_script"])
         assert match

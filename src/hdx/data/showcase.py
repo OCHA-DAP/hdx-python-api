@@ -4,12 +4,13 @@ import sys
 from os.path import join
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.uuid import is_valid_uuid
+
 import hdx.data.dataset
 import hdx.data.hdxobject
 import hdx.data.vocabulary
-from hdx.hdx_configuration import Configuration
-from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.uuid import is_valid_uuid
+from hdx.api.configuration import Configuration
 
 logger = logging.getLogger(__name__)
 
@@ -129,8 +130,12 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         """
         if "ignore_check" not in kwargs:  # allow ignoring of field checks
             self.check_required_fields()
-        if "name" in self.data and self._load_from_hdx("showcase", self.data["name"]):
-            logger.warning(f"{'showcase'} exists. Updating {self.data['name']}")
+        if "name" in self.data and self._load_from_hdx(
+            "showcase", self.data["name"]
+        ):
+            logger.warning(
+                f"{'showcase'} exists. Updating {self.data['name']}"
+            )
             merge_two_dictionaries(self.data, self.old_data)
             self.clean_tags()
             self._hdx_update("showcase", "name", force_active=True, **kwargs)
@@ -188,7 +193,9 @@ class Showcase(hdx.data.hdxobject.HDXObject):
             self, tags, log_deleted=log_deleted
         )
 
-    def clean_tags(self, log_deleted: bool = True) -> Tuple[List[str], List[str]]:
+    def clean_tags(
+        self, log_deleted: bool = True
+    ) -> Tuple[List[str], List[str]]:
         """Clean tags in an HDX object according to tags cleanup spreadsheet
 
         Args:
@@ -197,7 +204,9 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             Tuple[List[str], List[str]]: Tuple containing list of mapped tags and list of deleted tags and tags not added
         """
-        return hdx.data.vocabulary.Vocabulary.clean_tags(self, log_deleted=log_deleted)
+        return hdx.data.vocabulary.Vocabulary.clean_tags(
+            self, log_deleted=log_deleted
+        )
 
     def remove_tag(self, tag: str) -> bool:
         """Remove a tag
@@ -244,16 +253,22 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             Dict: showcase dataset dict
         """
-        if isinstance(dataset, hdx.data.dataset.Dataset) or isinstance(dataset, dict):
+        if isinstance(dataset, hdx.data.dataset.Dataset) or isinstance(
+            dataset, dict
+        ):
             if "id" not in dataset:
-                dataset = hdx.data.dataset.Dataset.read_from_hdx(dataset["name"])
+                dataset = hdx.data.dataset.Dataset.read_from_hdx(
+                    dataset["name"]
+                )
             dataset = dataset["id"]
         elif not isinstance(dataset, str):
             raise hdx.data.hdxobject.HDXError(
                 f"Type {type(dataset).__name__} cannot be added as a dataset!"
             )
         if is_valid_uuid(dataset) is False:
-            raise hdx.data.hdxobject.HDXError(f"{dataset} is not a valid dataset id!")
+            raise hdx.data.hdxobject.HDXError(
+                f"{dataset} is not a valid dataset id!"
+            )
         return {"showcase_id": self.data["id"], "package_id": dataset}
 
     def add_dataset(
@@ -297,7 +312,9 @@ class Showcase(hdx.data.hdxobject.HDXObject):
             datasets_to_check = self.get_datasets()
         alldatasetsadded = True
         for dataset in datasets:
-            if not self.add_dataset(dataset, datasets_to_check=datasets_to_check):
+            if not self.add_dataset(
+                dataset, datasets_to_check=datasets_to_check
+            ):
                 alldatasetsadded = False
         return alldatasetsadded
 
@@ -313,7 +330,9 @@ class Showcase(hdx.data.hdxobject.HDXObject):
             None
         """
         self._write_to_hdx(
-            "disassociate", self._get_showcase_dataset_dict(dataset), "package_id"
+            "disassociate",
+            self._get_showcase_dataset_dict(dataset),
+            "package_id",
         )
 
     @classmethod
@@ -349,7 +368,10 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         if curfq:
             kwargs["fq"] = f"{kwargs['fq']} AND {curfq}"
         datasets = hdx.data.dataset.Dataset.search_in_hdx(
-            query=query, configuration=configuration, page_size=page_size, **kwargs
+            query=query,
+            configuration=configuration,
+            page_size=page_size,
+            **kwargs,
         )
         showcases = list()
         for dataset in datasets:

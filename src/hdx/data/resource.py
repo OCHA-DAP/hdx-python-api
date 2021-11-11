@@ -6,16 +6,17 @@ from os.path import join
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-import hdx.data.dataset
-import hdx.data.filestore_helper
-from hdx.data.date_helper import DateHelper
-from hdx.data.hdxobject import HDXError, HDXObject
-from hdx.data.resource_view import ResourceView
-from hdx.hdx_configuration import Configuration
 from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_json, load_yaml
 from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.uuid import is_valid_uuid
+
+import hdx.data.dataset
+import hdx.data.filestore_helper
+from hdx.api.configuration import Configuration
+from hdx.data.date_helper import DateHelper
+from hdx.data.hdxobject import HDXError, HDXObject
+from hdx.data.resource_view import ResourceView
 
 logger = logging.getLogger(__name__)
 
@@ -140,11 +141,15 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        self.data["daterange_for_data"] = DateHelper.get_hdx_date(startdate, enddate)
+        self.data["daterange_for_data"] = DateHelper.get_hdx_date(
+            startdate, enddate
+        )
 
     @classmethod
     def read_formats_mappings(
-        cls, configuration: Optional[Configuration] = None, url: Optional[str] = None
+        cls,
+        configuration: Optional[Configuration] = None,
+        url: Optional[str] = None,
     ) -> Dict:
         """
         Read HDX formats list
@@ -159,7 +164,9 @@ class Resource(HDXObject):
         if not cls._formats_dict:
             if configuration is None:
                 configuration = Configuration.read()
-            with Download(full_agent=configuration.get_user_agent()) as downloader:
+            with Download(
+                full_agent=configuration.get_user_agent()
+            ) as downloader:
                 if url is None:
                     url = configuration["formats_mapping_url"]
                 downloader.download(url)
@@ -235,7 +242,9 @@ class Resource(HDXObject):
         Returns:
             str: Format that was set
         """
-        format = self.get_mapped_format(file_type, configuration=self.configuration)
+        format = self.get_mapped_format(
+            file_type, configuration=self.configuration
+        )
         if not format:
             raise HDXError(
                 f"Supplied file type {file_type} is invalid and could not be mapped to a known type!"
@@ -293,7 +302,9 @@ class Resource(HDXObject):
                 if "url_type" not in self.data:
                     self.data["url_type"] = "api"
             else:
-                raise HDXError("Either a url or a file to upload must be supplied!")
+                raise HDXError(
+                    "Either a url or a file to upload must be supplied!"
+                )
         else:
             if "url" in self.data:
                 if (
@@ -347,7 +358,9 @@ class Resource(HDXObject):
         self._check_load_existing_object("resource", "id")
         if self.file_to_upload and "url" in self.data:
             del self.data["url"]
-        self._merge_hdx_update("resource", "id", self._get_files(), True, **kwargs)
+        self._merge_hdx_update(
+            "resource", "id", self._get_files(), True, **kwargs
+        )
 
     def create_in_hdx(self, **kwargs: Any) -> None:
         """Check if resource exists in HDX and if so, update it, otherwise create it
@@ -388,7 +401,9 @@ class Resource(HDXObject):
 
     @staticmethod
     def search_in_hdx(
-        query: str, configuration: Optional[Configuration] = None, **kwargs: Any
+        query: str,
+        configuration: Optional[Configuration] = None,
+        **kwargs: Any,
     ) -> List["Resource"]:
         """Searches for resources in HDX. NOTE: Does not search dataset metadata!
 
@@ -412,7 +427,9 @@ class Resource(HDXObject):
             count = result.get("count", None)
             if count:
                 for resourcedict in result["results"]:
-                    resource = Resource(resourcedict, configuration=configuration)
+                    resource = Resource(
+                        resourcedict, configuration=configuration
+                    )
                     resources.append(resource)
         else:
             logger.debug(result)
@@ -437,7 +454,9 @@ class Resource(HDXObject):
         format = f".{self.data['format']}"
         if format not in filename:
             filename = f"{filename}{format}"
-        with Download(full_agent=self.configuration.get_user_agent()) as downloader:
+        with Download(
+            full_agent=self.configuration.get_user_agent()
+        ) as downloader:
             path = downloader.download_file(url, folder, filename)
             return url, path
 
@@ -548,7 +567,9 @@ class Resource(HDXObject):
                     row[i] = str(val)
                 yield (number, headers, row)
 
-        with Download(full_agent=self.configuration.get_user_agent()) as downloader:
+        with Download(
+            full_agent=self.configuration.get_user_agent()
+        ) as downloader:
             try:
                 stream = downloader.get_tabular_stream(
                     path,
@@ -671,7 +692,7 @@ class Resource(HDXObject):
             None
         """
         data = load_yaml(
-            script_dir_plus_file(join("..", "hdx_datasource_topline.yml"), Resource)
+            script_dir_plus_file("hdx_datasource_topline.yml", Resource)
         )
         self.create_datastore_from_dict_schema(data, delete_first, path=path)
 
@@ -834,7 +855,9 @@ class Resource(HDXObject):
             else:
                 resource_view_id = resource_view["id"]
             if is_valid_uuid(resource_view_id) is False:
-                raise HDXError(f"{resource_view} is not a valid resource view id!")
+                raise HDXError(
+                    f"{resource_view} is not a valid resource view id!"
+                )
             ids.append(resource_view_id)
         _, result = self._read_from_hdx(
             "resource view",
@@ -857,7 +880,9 @@ class Resource(HDXObject):
         """
         if isinstance(resource_view, str):
             if is_valid_uuid(resource_view) is False:
-                raise HDXError(f"{resource_view} is not a valid resource view id!")
+                raise HDXError(
+                    f"{resource_view} is not a valid resource view id!"
+                )
             resource_view = ResourceView(
                 {"id": resource_view}, configuration=self.configuration
             )

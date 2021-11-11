@@ -5,8 +5,8 @@ from typing import Any, Dict, List, Optional, Union
 
 import hdx.data.dataset
 import hdx.data.user
+from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError, HDXObject
-from hdx.hdx_configuration import Configuration
 
 logger = logging.getLogger(__name__)
 
@@ -83,7 +83,9 @@ class Organization(HDXObject):
         Returns:
             Optional[Organization]: Organization object if successful read, None if not
         """
-        return cls._read_from_hdx_class("organization", identifier, configuration)
+        return cls._read_from_hdx_class(
+            "organization", identifier, configuration
+        )
 
     def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
         """Check that metadata for organization is complete. The parameter ignore_fields should
@@ -121,7 +123,9 @@ class Organization(HDXObject):
         """
         self._delete_from_hdx("organization", "id")
 
-    def get_users(self, capacity: Optional[str] = None) -> List[hdx.data.user.User]:
+    def get_users(
+        self, capacity: Optional[str] = None
+    ) -> List[hdx.data.user.User]:
         """Returns the organization's users.
 
         Args:
@@ -146,7 +150,9 @@ class Organization(HDXObject):
         return users
 
     def add_update_user(
-        self, user: Union[hdx.data.user.User, Dict, str], capacity: Optional[str] = None
+        self,
+        user: Union[hdx.data.user.User, Dict, str],
+        capacity: Optional[str] = None,
     ) -> None:
         """Add new or update existing user in organization with new metadata. Capacity eg. member, admin
         must be supplied either within the User object or dictionary or using the capacity argument (which takes
@@ -175,7 +181,9 @@ class Organization(HDXObject):
                 user["capacity"] = capacity
             self._addupdate_hdxobject(users, "name", user)
             return
-        raise HDXError(f"Type {type(user).__name__} cannot be added as a user!")
+        raise HDXError(
+            f"Type {type(user).__name__} cannot be added as a user!"
+        )
 
     def add_update_users(
         self,
@@ -261,7 +269,10 @@ class Organization(HDXObject):
 
     @classmethod
     def autocomplete(
-        cls, name: str, limit: int = 20, configuration: Optional[Configuration] = None
+        cls,
+        name: str,
+        limit: int = 20,
+        configuration: Optional[Configuration] = None,
     ) -> List:
         """Autocomplete an organization name and return matches
 

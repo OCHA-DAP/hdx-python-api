@@ -8,14 +8,14 @@ from typing import Any, Dict, Optional, Tuple
 
 import ckanapi
 import requests
-
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.email import Email
 from hdx.utilities.loader import load_json, load_yaml
 from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.session import get_session
 from hdx.utilities.useragent import UserAgent, UserAgentError
-from hdx.version import get_api_version
+
+from hdx.api import __version__
 
 logger = logging.getLogger(__name__)
 
@@ -54,8 +54,7 @@ class Configuration(UserDict):
     )
     default_hdx_config_yaml = join(home_folder, ".hdx_configuration.yml")
 
-    apiversion = get_api_version()
-    prefix = f"HDXPythonLibrary/{apiversion}"
+    prefix = f"HDXPythonLibrary/{__version__}"
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__()
@@ -72,22 +71,32 @@ class Configuration(UserDict):
         hdx_base_config_json = kwargs.get("hdx_base_config_json", "")
         if hdx_base_config_json:
             if hdx_base_config_found:
-                raise ConfigurationError("More than one HDX base configuration given!")
+                raise ConfigurationError(
+                    "More than one HDX base configuration given!"
+                )
             hdx_base_config_found = True
-            logger.info(f"Loading HDX base configuration from: {hdx_base_config_json}")
+            logger.info(
+                f"Loading HDX base configuration from: {hdx_base_config_json}"
+            )
             hdx_base_config_dict = load_json(hdx_base_config_json)
 
         hdx_base_config_yaml = kwargs.get("hdx_base_config_yaml", "")
         if hdx_base_config_found:
             if hdx_base_config_yaml:
-                raise ConfigurationError("More than one HDX base configuration given!")
+                raise ConfigurationError(
+                    "More than one HDX base configuration given!"
+                )
         else:
             if not hdx_base_config_yaml:
-                hdx_base_config_yaml = Configuration.default_hdx_base_config_yaml
+                hdx_base_config_yaml = (
+                    Configuration.default_hdx_base_config_yaml
+                )
                 logger.info(
                     f"No HDX base configuration parameter. Using default base configuration file: {hdx_base_config_yaml}."
                 )
-            logger.info(f"Loading HDX base configuration from: {hdx_base_config_yaml}")
+            logger.info(
+                f"Loading HDX base configuration from: {hdx_base_config_yaml}"
+            )
             hdx_base_config_dict = load_yaml(hdx_base_config_yaml)
 
         hdx_config_found = False
@@ -99,7 +108,9 @@ class Configuration(UserDict):
         hdx_config_json = kwargs.get("hdx_config_json", "")
         if hdx_config_json:
             if hdx_config_found:
-                raise ConfigurationError("More than one HDX configuration given!")
+                raise ConfigurationError(
+                    "More than one HDX configuration given!"
+                )
             hdx_config_found = True
             logger.info(f"Loading HDX configuration from: {hdx_config_json}")
             hdx_config_dict = load_json(hdx_config_json)
@@ -107,7 +118,9 @@ class Configuration(UserDict):
         hdx_config_yaml = kwargs.get("hdx_config_yaml", "")
         if hdx_config_found:
             if hdx_config_yaml:
-                raise ConfigurationError("More than one HDX configuration given!")
+                raise ConfigurationError(
+                    "More than one HDX configuration given!"
+                )
         else:
             if not hdx_config_yaml:
                 hdx_config_yaml = Configuration.default_hdx_config_yaml
@@ -122,10 +135,14 @@ class Configuration(UserDict):
                     hdx_config_yaml = None
                     hdx_config_dict = dict()
             if hdx_config_yaml:
-                logger.info(f"Loading HDX configuration from: {hdx_config_yaml}")
+                logger.info(
+                    f"Loading HDX configuration from: {hdx_config_yaml}"
+                )
                 hdx_config_dict = load_yaml(hdx_config_yaml)
 
-        self.data = merge_two_dictionaries(hdx_base_config_dict, hdx_config_dict)
+        self.data = merge_two_dictionaries(
+            hdx_base_config_dict, hdx_config_dict
+        )
 
         project_config_found = False
         project_config_dict = kwargs.get("project_config_dict", None)
@@ -136,15 +153,21 @@ class Configuration(UserDict):
         project_config_json = kwargs.get("project_config_json", "")
         if project_config_json:
             if project_config_found:
-                raise ConfigurationError("More than one project configuration given!")
+                raise ConfigurationError(
+                    "More than one project configuration given!"
+                )
             project_config_found = True
-            logger.info(f"Loading project configuration from: {project_config_json}")
+            logger.info(
+                f"Loading project configuration from: {project_config_json}"
+            )
             project_config_dict = load_json(project_config_json)
 
         project_config_yaml = kwargs.get("project_config_yaml", "")
         if project_config_found:
             if project_config_yaml:
-                raise ConfigurationError("More than one project configuration given!")
+                raise ConfigurationError(
+                    "More than one project configuration given!"
+                )
         else:
             if project_config_yaml:
                 logger.info(
@@ -154,14 +177,18 @@ class Configuration(UserDict):
             else:
                 project_config_dict = dict()
 
-        self.data = merge_two_dictionaries(hdx_base_config_dict, project_config_dict)
+        self.data = merge_two_dictionaries(
+            hdx_base_config_dict, project_config_dict
+        )
 
         ua = kwargs.get("full_agent")
         if ua:
             self.user_agent = ua
         else:
             try:
-                self.user_agent = UserAgent.get(prefix=Configuration.prefix, **kwargs)
+                self.user_agent = UserAgent.get(
+                    prefix=Configuration.prefix, **kwargs
+                )
             except UserAgentError:
                 self.user_agent = UserAgent.get(
                     prefix=Configuration.prefix, **self.data
@@ -181,9 +208,7 @@ class Configuration(UserDict):
             hdx_url = hdx_url.rstrip("/")
             self.data[self.hdx_site] = {"url": hdx_url}
         else:
-            self.hdx_site = (
-                f"hdx_{kwargs.get('hdx_site', self.data.get('hdx_site', 'stage'))}_site"
-            )
+            self.hdx_site = f"hdx_{kwargs.get('hdx_site', self.data.get('hdx_site', 'stage'))}_site"
             if self.hdx_site not in self.data:
                 raise ConfigurationError(
                     f"{self.hdx_site} not defined in configuration!"
@@ -405,7 +430,9 @@ class Configuration(UserDict):
         """
         if remoteckan is None:
             self._remoteckan = self.create_remoteckan(
-                self.get_hdx_site_url(), full_agent=self.get_user_agent(), **kwargs
+                self.get_hdx_site_url(),
+                full_agent=self.get_user_agent(),
+                **kwargs,
             )
         else:
             self._remoteckan = remoteckan
@@ -574,7 +601,9 @@ class Configuration(UserDict):
         """
         if cls._configuration is not None:
             raise ConfigurationError("Configuration already created!")
-        return cls._create(configuration=configuration, remoteckan=remoteckan, **kwargs)
+        return cls._create(
+            configuration=configuration, remoteckan=remoteckan, **kwargs
+        )
 
     @classmethod
     def delete(cls) -> None:
