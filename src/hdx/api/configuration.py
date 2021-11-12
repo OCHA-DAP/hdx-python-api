@@ -15,7 +15,7 @@ from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.session import get_session
 from hdx.utilities.useragent import UserAgent, UserAgentError
 
-from hdx.api import __version__
+from . import __version__
 
 logger = logging.getLogger(__name__)
 
