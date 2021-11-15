@@ -11,7 +11,9 @@ recursive-include tests *.csv
 recursive-include tests *.json
 recursive-include tests *.py
 recursive-include tests *.txt
+recursive-include tests *.xlsx
 recursive-include tests *.yml
+recursive-include tests *.zip
 recursive-include workingexample *.csv
 recursive-include workingexample *.py
 recursive-include workingexample *.xlsx
