@@ -238,7 +238,7 @@ class Dataset(HDXObject):
         resources: List[Union[hdx.data.resource.Resource, Dict, str]],
         ignore_datasetid: bool = False,
     ) -> None:
-        """Add new or update existing resources with new metadata to the dataset
+        """Add new to the dataset or update existing resources with new metadata
 
         Args:
             resources (List[Union[Resource,Dict,str]]): A list of either resource ids or resources metadata from either Resource objects or dictionaries
@@ -502,7 +502,7 @@ class Dataset(HDXObject):
         hxl_update: bool,
         create_default_views: bool = False,
         **kwargs: Any,
-    ) -> None:
+    ) -> Dict:
         """Helper method to save the modified dataset and add any filestore resources
 
         Args:
@@ -517,7 +517,7 @@ class Dataset(HDXObject):
             ignore_field (str): Any field to ignore when checking dataset metadata. Defaults to None.
 
         Returns:
-            None
+            Dict: Dictionary of what gets passed to the revise call (for testing)
         """
         if self.resources:
             self.data["resources"] = self._convert_hdxobjects(self.resources)
@@ -544,6 +544,11 @@ class Dataset(HDXObject):
         kwargs["operation"] = operation
         existing_ignore_check = kwargs.get("ignore_check")
         revise = True
+        if "test" in kwargs:
+            test = True
+            del kwargs["test"]
+        else:
+            test = False
         if operation == "create":
             if not existing_ignore_check:
                 kwargs["ignore_check"] = True
@@ -554,7 +559,7 @@ class Dataset(HDXObject):
                 revise = False
                 self.init_resources()
                 self.separate_resources()
-
+        results = dict()
         if revise:
             self.old_data = self.data
             self._check_kwargs_fields("dataset", **kwargs)
@@ -577,6 +582,11 @@ class Dataset(HDXObject):
                     files_to_upload[
                         f"update__resources__{resource_index}__upload"
                     ] = file_to_upload
+            results["filter"] = filter
+            results["update"] = self.data
+            results["files_to_upload"] = files_to_upload
+            if test:
+                return results
             new_dataset = self.revise(
                 {"id": self.data["id"]},
                 filter=filter,
@@ -591,6 +601,7 @@ class Dataset(HDXObject):
         self._create_preview_resourceview()
         if hxl_update:
             self.hxl_update()
+        return results
 
     def _dataset_merge_hdx_update(
         self,
@@ -601,7 +612,7 @@ class Dataset(HDXObject):
         create_default_views: bool,
         hxl_update: bool,
         **kwargs: Any,
-    ) -> None:
+    ) -> Dict:
         """Helper method to check if dataset or its resources exist and update them
 
         Args:
@@ -613,7 +624,7 @@ class Dataset(HDXObject):
             hxl_update (bool): Whether to call package_hxl_update.
 
         Returns:
-            None
+            Dict: Dictionary of what gets passed to the revise call (for testing)
         """
         # 'old_data' here is the data we want to use for updating while 'data' is the data read from HDX
         merge_two_dictionaries(self.data, self.old_data)
@@ -697,7 +708,7 @@ class Dataset(HDXObject):
                             )
                             resources_to_delete.append(i)
         resources_to_delete = sorted(resources_to_delete, reverse=True)
-        self._save_dataset_add_filestore_resources(
+        return self._save_dataset_add_filestore_resources(
             "update",
             "id",
             keys_to_delete,
