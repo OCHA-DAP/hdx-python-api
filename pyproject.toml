@@ -126,11 +126,11 @@ output_directory = "docs/build"
 legacy_tox_ini = """
 [tox]
 isolated_build = true
-envlist = py38, lint
+envlist = py310, lint
 
 [gh-actions]
 python =
-    3: py38, lint
+    3: py310, lint
 
 [testenv]
 recreate = true
@@ -141,7 +141,7 @@ commands =
     pytest --cov=hdx --no-cov-on-fail --junitxml=.tox/test-results.xml --cov-report=xml --cov-report=term-missing
 
 [testenv:lint]
-wheel_build_env = py38
+wheel_build_env = py310
 deps =
     git+git://github.com/mcarans/flakehell.git#egg=flakehell
     flake8
@@ -151,14 +151,14 @@ commands =
     flakehell lint src tests
 
 [testenv:docs]
-wheel_build_env = py38
+wheel_build_env = py310
 deps =
     pydoc-markdown
 commands =
     pydoc-markdown
 
 [testenv:publish]
-wheel_build_env = py38
+wheel_build_env = py310
 passenv = SSH_AUTH_SOCK
 deps =
     twine

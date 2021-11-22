@@ -3,6 +3,8 @@ from os.path import join
 import pytest
 from hdx.location.country import Country
 from hdx.utilities.loader import load_yaml
+from hdx.utilities.text import multiple_replace
+from slugify import slugify
 
 from hdx.api.configuration import Configuration
 from hdx.api.locations import Locations
@@ -103,8 +105,9 @@ class TestUpdateLogic:
             test=True,
         )
         assert results["filter"] == list()
-        del results["update"]["updated_by_script"]
-        assert results["update"] == {
+        update = results["update"]
+        del update["updated_by_script"]
+        assert update == {
             "name": "who-data-for-zambia",
             "title": "Zambia - Health Indicators",
             "private": False,
@@ -607,58 +610,24 @@ class TestUpdateLogic:
             ],
             "state": "active",
         }
-        assert results["files_to_upload"] == {
-            "update__resources__0__upload": "/tmp/WHO/health_indicators_ZMB.csv",
-            "update__resources__1__upload": "/tmp/WHO/Mortality and global health estimates_indicators_ZMB.csv",
-            "update__resources__2__upload": "/tmp/WHO/Sustainable development goals_indicators_ZMB.csv",
-            "update__resources__3__upload": "/tmp/WHO/Millennium Development Goals (MDGs)_indicators_ZMB.csv",
-            "update__resources__4__upload": "/tmp/WHO/Health systems_indicators_ZMB.csv",
-            "update__resources__5__upload": "/tmp/WHO/Malaria_indicators_ZMB.csv",
-            "update__resources__6__upload": "/tmp/WHO/Tuberculosis_indicators_ZMB.csv",
-            "update__resources__7__upload": "/tmp/WHO/Child health_indicators_ZMB.csv",
-            "update__resources__8__upload": "/tmp/WHO/Infectious diseases_indicators_ZMB.csv",
-            "update__resources__9__upload": "/tmp/WHO/World Health Statistics_indicators_ZMB.csv",
-            "update__resources__10__upload": "/tmp/WHO/Health financing_indicators_ZMB.csv",
-            "update__resources__11__upload": "/tmp/WHO/Public health and environment_indicators_ZMB.csv",
-            "update__resources__12__upload": "/tmp/WHO/Substance use and mental health_indicators_ZMB.csv",
-            "update__resources__14__upload": "/tmp/WHO/Injuries and violence_indicators_ZMB.csv",
-            "update__resources__15__upload": "/tmp/WHO/HIV/AIDS and other STIs_indicators_ZMB.csv",
-            "update__resources__16__upload": "/tmp/WHO/Nutrition_indicators_ZMB.csv",
-            "update__resources__17__upload": "/tmp/WHO/Urban health_indicators_ZMB.csv",
-            "update__resources__18__upload": "/tmp/WHO/Noncommunicable diseases_indicators_ZMB.csv",
-            "update__resources__19__upload": "/tmp/WHO/Noncommunicable diseases CCS_indicators_ZMB.csv",
-            "update__resources__20__upload": "/tmp/WHO/Negelected tropical diseases_indicators_ZMB.csv",
-            "update__resources__21__upload": "/tmp/WHO/Health Equity Monitor_indicators_ZMB.csv",
-            "update__resources__22__upload": "/tmp/WHO/Infrastructure_indicators_ZMB.csv",
-            "update__resources__23__upload": "/tmp/WHO/Essential health technologies_indicators_ZMB.csv",
-            "update__resources__24__upload": "/tmp/WHO/Medical equipment_indicators_ZMB.csv",
-            "update__resources__25__upload": "/tmp/WHO/Demographic and socioeconomic statistics_indicators_ZMB.csv",
-            "update__resources__26__upload": "/tmp/WHO/Neglected tropical diseases_indicators_ZMB.csv",
-            "update__resources__27__upload": "/tmp/WHO/International Health Regulations (2005) monitoring framework_indicators_ZMB.csv",
-            "update__resources__28__upload": "/tmp/WHO/Insecticide resistance_indicators_ZMB.csv",
-            "update__resources__29__upload": "/tmp/WHO/Universal Health Coverage_indicators_ZMB.csv",
-            "update__resources__30__upload": "/tmp/WHO/Global Observatory for eHealth (GOe)_indicators_ZMB.csv",
-            "update__resources__31__upload": "/tmp/WHO/RSUD: GOVERNANCE, POLICY AND FINANCING : PREVENTION_indicators_ZMB.csv",
-            "update__resources__32__upload": "/tmp/WHO/RSUD: GOVERNANCE, POLICY AND FINANCING: TREATMENT_indicators_ZMB.csv",
-            "update__resources__33__upload": "/tmp/WHO/RSUD: GOVERNANCE, POLICY AND FINANCING: FINANCING_indicators_ZMB.csv",
-            "update__resources__34__upload": "/tmp/WHO/RSUD: SERVICE ORGANIZATION AND DELIVERY: TREATMENT SECTORS AND PROVIDERS_indicators_ZMB.csv",
-            "update__resources__35__upload": "/tmp/WHO/RSUD: SERVICE ORGANIZATION AND DELIVERY: TREATMENT CAPACITY AND TREATMENT COVERAGE_indicators_ZMB.csv",
-            "update__resources__36__upload": "/tmp/WHO/RSUD: SERVICE ORGANIZATION AND DELIVERY: PHARMACOLOGICAL TREATMENT_indicators_ZMB.csv",
-            "update__resources__37__upload": "/tmp/WHO/RSUD: SERVICE ORGANIZATION AND DELIVERY: SCREENING AND BRIEF INTERVENTIONS_indicators_ZMB.csv",
-            "update__resources__38__upload": "/tmp/WHO/RSUD: SERVICE ORGANIZATION AND DELIVERY: PREVENTION PROGRAMS AND PROVIDERS_indicators_ZMB.csv",
-            "update__resources__39__upload": "/tmp/WHO/RSUD: SERVICE ORGANIZATION AND DELIVERY: SPECIAL PROGRAMMES AND SERVICES_indicators_ZMB.csv",
-            "update__resources__40__upload": "/tmp/WHO/RSUD: HUMAN RESOURCES_indicators_ZMB.csv",
-            "update__resources__41__upload": "/tmp/WHO/RSUD: INFORMATION SYSTEMS_indicators_ZMB.csv",
-            "update__resources__42__upload": "/tmp/WHO/RSUD: YOUTH_indicators_ZMB.csv",
-            "update__resources__43__upload": "/tmp/WHO/FINANCIAL PROTECTION_indicators_ZMB.csv",
-            "update__resources__44__upload": "/tmp/WHO/Noncommunicable diseases and mental health_indicators_ZMB.csv",
-            "update__resources__45__upload": "/tmp/WHO/Health workforce_indicators_ZMB.csv",
-            "update__resources__46__upload": "/tmp/WHO/Neglected Tropical Diseases_indicators_ZMB.csv",
-            "update__resources__47__upload": "/tmp/WHO/qc_health_indicators_ZMB.csv",
-            "update__resources__48__upload": "/tmp/WHO/TOBACCO_indicators_ZMB.csv",
-            "update__resources__49__upload": "/tmp/WHO/UHC_indicators_ZMB.csv",
-            "update__resources__50__upload": "/tmp/WHO/ICD_indicators_ZMB.csv",
-            "update__resources__51__upload": "/tmp/WHO/SEXUAL AND REPRODUCTIVE HEALTH_indicators_ZMB.csv",
-            "update__resources__52__upload": "/tmp/WHO/Immunization_indicators_ZMB.csv",
-            "update__resources__53__upload": "/tmp/WHO/NLIS_indicators_ZMB.csv",
-        }
+        resources = update["resources"]
+        files_to_upload = results["files_to_upload"]
+        for key in files_to_upload:
+            index = key.replace("update__resources__", "")
+            index = int(index.replace("__upload", ""))
+            resource = resources[index]
+            rn = resource["name"]
+            name = slugify(rn, separator="_")
+            name = multiple_replace(
+                name,
+                {
+                    "all_health": "health",
+                    "quickcharts": "qc_health",
+                    "for_zambia": "ZMB.csv",
+                },
+            )
+            name = f"/tmp/WHO/{name}"
+            fu = files_to_upload[key]
+            assert (
+                name == fu
+            ), f'Mismatch at index {index}: "{rn}", file to upload is "{fu}"'

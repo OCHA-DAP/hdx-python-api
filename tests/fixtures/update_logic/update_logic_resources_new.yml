@@ -4,215 +4,209 @@
 - resource: {name: Mortality and global health estimates Indicators for Zambia, description: "*Mortality\
       \ and global health estimates:*\n[Infant mortality rate (proba", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Mortality and global health estimates_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/mortality_and_global_health_estimates_indicators_ZMB.csv
 - resource: {name: Sustainable development goals Indicators for Zambia, description: "*Sustainable\
       \ development goals:*\n[Adolescent birth rate (per 1000 wome", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Sustainable development goals_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/sustainable_development_goals_indicators_ZMB.csv
 - resource: {name: Millennium Development Goals (MDGs) Indicators for Zambia, description: "*Millennium\
       \ Development Goals (MDGs):*\n[Contraceptive prevalence (%)](", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Millennium Development Goals (MDGs)_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/millennium_development_goals_mdgs_indicators_ZMB.csv
 - resource: {name: Health systems Indicators for Zambia, description: "*Health systems:*\n\
       [Median availability of selected generic medicines (", format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Health systems_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/health_systems_indicators_ZMB.csv
 - resource: {name: Malaria Indicators for Zambia, description: "*Malaria:*\n[Children\
       \ aged <5 years sleeping under insecticide-treated ", format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Malaria_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/malaria_indicators_ZMB.csv
 - resource: {name: Tuberculosis Indicators for Zambia, description: "*Tuberculosis:*\n\
       [Deaths due to tuberculosis among HIV-negative people ", format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Tuberculosis_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/tuberculosis_indicators_ZMB.csv
 - resource: {name: Child health Indicators for Zambia, description: "*Child health:*\n\
       [Children aged <5 years stunted (%)](https://www.who.i", format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Child health_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/child_health_indicators_ZMB.csv
 - resource: {name: Infectious diseases Indicators for Zambia, description: "*Infectious\
       \ diseases:*\n[Cholera - number of reported cases](https://ww", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Infectious diseases_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/infectious_diseases_indicators_ZMB.csv
 - resource: {name: Neglected Tropical Diseases Indicators for Zambia, description: "*Neglected\
       \ Tropical Diseases:*\n[Number of new leprosy cases](https://w", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Neglected Tropical Diseases_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/neglected_tropical_diseases_indicators_ZMB.csv
 - resource: {name: World Health Statistics Indicators for Zambia, description: "*World\
       \ Health Statistics:*\n[Literacy rate among adults aged >= 15 year", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/World Health Statistics_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/world_health_statistics_indicators_ZMB.csv
 - resource: {name: Health financing Indicators for Zambia, description: "*Health financing:*\n\
       [Private prepaid plans as a percentage of private ", format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Health financing_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/health_financing_indicators_ZMB.csv
 - resource: {name: Substance use and mental health Indicators for Zambia, description: "*Substance\
       \ use and mental health:*\n[Fines for violations](https://www.", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Substance use and mental health_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/substance_use_and_mental_health_indicators_ZMB.csv
 - resource: {name: Injuries and violence Indicators for Zambia, description: "*Injuries\
       \ and violence:*\n[Income level](https://www.who.int/data/gho/i", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Injuries and violence_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/injuries_and_violence_indicators_ZMB.csv
 - resource: {name: HIV/AIDS and other STIs Indicators for Zambia, description: "*HIV/AIDS\
       \ and other STIs:*\n[Prevalence of HIV among adults aged 15 to ", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/HIV/AIDS and other STIs_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/hiv_aids_and_other_stis_indicators_ZMB.csv
 - resource: {name: Public health and environment Indicators for Zambia, description: "*Public\
       \ health and environment:*\n[Population using solid fuels (%)](ht", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Public health and environment_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/public_health_and_environment_indicators_ZMB.csv
 - resource: {name: Nutrition Indicators for Zambia, description: "*Nutrition:*\n[Early\
       \ initiation of breastfeeding (%)](https://www.who.i", format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Nutrition_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/nutrition_indicators_ZMB.csv
 - resource: {name: Urban health Indicators for Zambia, description: "*Urban health:*\n\
       [Percentage of the total population living in cities >", format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Urban health_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/urban_health_indicators_ZMB.csv
 - resource: {name: Noncommunicable diseases Indicators for Zambia, description: "*Noncommunicable\
       \ diseases:*\n[Prevalence of overweight among adults, BM", format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Noncommunicable diseases_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/noncommunicable_diseases_indicators_ZMB.csv
 - resource: {name: Noncommunicable diseases CCS Indicators for Zambia, description: "*Noncommunicable\
       \ diseases CCS:*\n[Existence of operational policy/strat", format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Noncommunicable diseases CCS_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/noncommunicable_diseases_ccs_indicators_ZMB.csv
 - resource: {name: Negelected tropical diseases Indicators for Zambia, description: "*Negelected\
       \ tropical diseases:*\n[Number of new reported cases of Burul", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Negelected tropical diseases_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/negelected_tropical_diseases_indicators_ZMB.csv
 - resource: {name: Infrastructure Indicators for Zambia, description: "*Infrastructure:*\n\
       [Total density per 100 000 population: Health posts]", format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Infrastructure_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/infrastructure_indicators_ZMB.csv
 - resource: {name: Essential health technologies Indicators for Zambia, description: "*Essential\
       \ health technologies:*\n[Availability of national standards o", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Essential health technologies_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/essential_health_technologies_indicators_ZMB.csv
 - resource: {name: Medical equipment Indicators for Zambia, description: "*Medical\
       \ equipment:*\n[Total density per million population: Magnetic R", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Medical equipment_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/medical_equipment_indicators_ZMB.csv
 - resource: {name: Demographic and socioeconomic statistics Indicators for Zambia,
     description: "*Demographic and socioeconomic statistics:*\n[Cellular subscribers\
       \ (per", format: csv, url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Demographic and socioeconomic statistics_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/demographic_and_socioeconomic_statistics_indicators_ZMB.csv
 - resource: {name: Health Equity Monitor Indicators for Zambia, description: "*Health\
       \ Equity Monitor:*\n[Antenatal care coverage - at least one visit", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Health Equity Monitor_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/health_equity_monitor_indicators_ZMB.csv
 - resource: {name: TOBACCO Indicators for Zambia, description: "*TOBACCO:*\n[Monitor](https://www.who.int/data/gho/indicator-metadata-r",
     format: csv, url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/TOBACCO_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/tobacco_indicators_ZMB.csv
 - resource: {name: Neglected tropical diseases Indicators for Zambia, description: "*Neglected\
       \ tropical diseases:*\n[Status of yaws endemicity](https://www", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Neglected tropical diseases_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/neglected_tropical_diseases_indicators_ZMB.csv
 - resource: {name: International Health Regulations (2005) monitoring framework Indicators
       for Zambia, description: "*International Health Regulations (2005) monitoring\
       \ framework:*\n[Legis", format: csv, url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/International Health Regulations (2005) monitoring framework_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/international_health_regulations_2005_monitoring_framework_indicators_ZMB.csv
 - resource: {name: Insecticide resistance Indicators for Zambia, description: "*Insecticide\
       \ resistance:*\n[Number of insecticide classes to which resi", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Insecticide resistance_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/insecticide_resistance_indicators_ZMB.csv
 - resource: {name: Universal Health Coverage Indicators for Zambia, description: "*Universal\
       \ Health Coverage:*\n[Cataract surgical coverage of adults age", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Universal Health Coverage_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/universal_health_coverage_indicators_ZMB.csv
 - resource: {name: UHC Indicators for Zambia, description: "*UHC:*\n[Population in\
       \ malaria-endemic areas who slept under an insecti", format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: /tmp/WHO/UHC_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/uhc_indicators_ZMB.csv
 - resource: {name: Global Observatory for eHealth (GOe) Indicators for Zambia, description: "*Global\
       \ Observatory for eHealth (GOe):*\n[National universal health cov", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Global Observatory for eHealth (GOe)_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/global_observatory_for_ehealth_goe_indicators_ZMB.csv
 - resource: {name: 'RSUD: GOVERNANCE, POLICY AND FINANCING : PREVENTION Indicators
       for Zambia', description: "*RSUD: GOVERNANCE, POLICY AND FINANCING : PREVENTION:*\n\
       [Government uni", format: csv, url_type: upload, resource_type: file.upload}
-  file_to_upload: '/tmp/WHO/RSUD: GOVERNANCE, POLICY AND FINANCING : PREVENTION_indicators_ZMB.csv'
+  file_to_upload: /tmp/WHO/rsud_governance_policy_and_financing_prevention_indicators_ZMB.csv
 - resource: {name: 'RSUD: GOVERNANCE, POLICY AND FINANCING: TREATMENT Indicators for
       Zambia', description: "*RSUD: GOVERNANCE, POLICY AND FINANCING: TREATMENT:*\n\
       [Government unit/", format: csv, url_type: upload, resource_type: file.upload}
-  file_to_upload: '/tmp/WHO/RSUD: GOVERNANCE, POLICY AND FINANCING: TREATMENT_indicators_ZMB.csv'
+  file_to_upload: /tmp/WHO/rsud_governance_policy_and_financing_treatment_indicators_ZMB.csv
 - resource: {name: 'RSUD: GOVERNANCE, POLICY AND FINANCING: FINANCING Indicators for
       Zambia', description: "*RSUD: GOVERNANCE, POLICY AND FINANCING: FINANCING:*\n\
       [Five-year change", format: csv, url_type: upload, resource_type: file.upload}
-  file_to_upload: '/tmp/WHO/RSUD: GOVERNANCE, POLICY AND FINANCING: FINANCING_indicators_ZMB.csv'
+  file_to_upload: /tmp/WHO/rsud_governance_policy_and_financing_financing_indicators_ZMB.csv
 - resource: {name: 'RSUD: SERVICE ORGANIZATION AND DELIVERY: TREATMENT SECTORS AND
       PROVIDERS Indicators for Zambia', description: '*RSUD: SERVICE ORGANIZATION
       AND DELIVERY: TREATMENT SECTORS AND PROVID', format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: '/tmp/WHO/RSUD: SERVICE ORGANIZATION AND DELIVERY: TREATMENT SECTORS
-    AND PROVIDERS_indicators_ZMB.csv'
+  file_to_upload: /tmp/WHO/rsud_service_organization_and_delivery_treatment_sectors_and_providers_indicators_ZMB.csv
 - resource: {name: 'RSUD: SERVICE ORGANIZATION AND DELIVERY: TREATMENT CAPACITY AND
       TREATMENT COVERAGE Indicators for Zambia', description: '*RSUD: SERVICE ORGANIZATION
       AND DELIVERY: TREATMENT CAPACITY AND TREAT', format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: '/tmp/WHO/RSUD: SERVICE ORGANIZATION AND DELIVERY: TREATMENT CAPACITY
-    AND TREATMENT COVERAGE_indicators_ZMB.csv'
+  file_to_upload: /tmp/WHO/rsud_service_organization_and_delivery_treatment_capacity_and_treatment_coverage_indicators_ZMB.csv
 - resource: {name: 'RSUD: SERVICE ORGANIZATION AND DELIVERY: PHARMACOLOGICAL TREATMENT
       Indicators for Zambia', description: "*RSUD: SERVICE ORGANIZATION AND DELIVERY:\
       \ PHARMACOLOGICAL TREATMENT:*\n", format: csv, url_type: upload, resource_type: file.upload}
-  file_to_upload: '/tmp/WHO/RSUD: SERVICE ORGANIZATION AND DELIVERY: PHARMACOLOGICAL
-    TREATMENT_indicators_ZMB.csv'
+  file_to_upload: /tmp/WHO/rsud_service_organization_and_delivery_pharmacological_treatment_indicators_ZMB.csv
 - resource: {name: 'RSUD: SERVICE ORGANIZATION AND DELIVERY: SCREENING AND BRIEF INTERVENTIONS
       Indicators for Zambia', description: '*RSUD: SERVICE ORGANIZATION AND DELIVERY:
       SCREENING AND BRIEF INTERVEN', format: csv, url_type: upload, resource_type: file.upload}
-  file_to_upload: '/tmp/WHO/RSUD: SERVICE ORGANIZATION AND DELIVERY: SCREENING AND
-    BRIEF INTERVENTIONS_indicators_ZMB.csv'
+  file_to_upload: /tmp/WHO/rsud_service_organization_and_delivery_screening_and_brief_interventions_indicators_ZMB.csv
 - resource: {name: 'RSUD: SERVICE ORGANIZATION AND DELIVERY: PREVENTION PROGRAMS AND
       PROVIDERS Indicators for Zambia', description: '*RSUD: SERVICE ORGANIZATION
       AND DELIVERY: PREVENTION PROGRAMS AND PROV', format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: '/tmp/WHO/RSUD: SERVICE ORGANIZATION AND DELIVERY: PREVENTION PROGRAMS
-    AND PROVIDERS_indicators_ZMB.csv'
+  file_to_upload: /tmp/WHO/rsud_service_organization_and_delivery_prevention_programs_and_providers_indicators_ZMB.csv
 - resource: {name: 'RSUD: SERVICE ORGANIZATION AND DELIVERY: SPECIAL PROGRAMMES AND
       SERVICES Indicators for Zambia', description: '*RSUD: SERVICE ORGANIZATION AND
       DELIVERY: SPECIAL PROGRAMMES AND SERVI', format: csv, url_type: upload, resource_type: file.upload}
-  file_to_upload: '/tmp/WHO/RSUD: SERVICE ORGANIZATION AND DELIVERY: SPECIAL PROGRAMMES
-    AND SERVICES_indicators_ZMB.csv'
+  file_to_upload: /tmp/WHO/rsud_service_organization_and_delivery_special_programmes_and_services_indicators_ZMB.csv
 - resource: {name: 'RSUD: HUMAN RESOURCES Indicators for Zambia', description: "*RSUD:\
       \ HUMAN RESOURCES:*\n[Health professionals providing treatment for", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: '/tmp/WHO/RSUD: HUMAN RESOURCES_indicators_ZMB.csv'
+  file_to_upload: /tmp/WHO/rsud_human_resources_indicators_ZMB.csv
 - resource: {name: 'RSUD: INFORMATION SYSTEMS Indicators for Zambia', description: "*RSUD:\
       \ INFORMATION SYSTEMS:*\n[Epidemiological data collection for subs", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: '/tmp/WHO/RSUD: INFORMATION SYSTEMS_indicators_ZMB.csv'
+  file_to_upload: /tmp/WHO/rsud_information_systems_indicators_ZMB.csv
 - resource: {name: 'RSUD: YOUTH Indicators for Zambia', description: "*RSUD: YOUTH:*\n\
       [Epidemiological data collection system for substance u", format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: '/tmp/WHO/RSUD: YOUTH_indicators_ZMB.csv'
+  file_to_upload: /tmp/WHO/rsud_youth_indicators_ZMB.csv
 - resource: {name: FINANCIAL PROTECTION Indicators for Zambia, description: "*FINANCIAL\
       \ PROTECTION:*\n[Population with household expenditures on hea", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/FINANCIAL PROTECTION_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/financial_protection_indicators_ZMB.csv
 - resource: {name: Noncommunicable diseases and mental health Indicators for Zambia,
     description: "*Noncommunicable diseases and mental health:*\n[Number of deaths\
       \ attrib", format: csv, url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Noncommunicable diseases and mental health_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/noncommunicable_diseases_and_mental_health_indicators_ZMB.csv
 - resource: {name: Health workforce Indicators for Zambia, description: "*Health workforce:*\n\
       [Medical doctors (per 10 000 population)](https://", format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Health workforce_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/health_workforce_indicators_ZMB.csv
 - resource: {name: ICD Indicators for Zambia, description: "*ICD:*\n[ICD-11 implementation\
       \ progress level](https://web-prod.who.int", format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: /tmp/WHO/ICD_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/icd_indicators_ZMB.csv
 - resource: {name: SEXUAL AND REPRODUCTIVE HEALTH Indicators for Zambia, description: "*SEXUAL\
       \ AND REPRODUCTIVE HEALTH:*\n[Institutional Births (birth taken p", format: csv,
     url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/SEXUAL AND REPRODUCTIVE HEALTH_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/sexual_and_reproductive_health_indicators_ZMB.csv
 - resource: {name: Immunization Indicators for Zambia, description: "*Immunization:*\n\
       [Proportion of vaccination cards seen (%)](https://www", format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: /tmp/WHO/Immunization_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/immunization_indicators_ZMB.csv
 - resource: {name: NLIS Indicators for Zambia, description: "*NLIS:*\n[Subclinical\
       \ vitamin A deficiency in preschool-age children (s", format: csv, url_type: upload,
     resource_type: file.upload}
-  file_to_upload: /tmp/WHO/NLIS_indicators_ZMB.csv
+  file_to_upload: /tmp/WHO/nlis_indicators_ZMB.csv
 - resource: {name: QuickCharts Indicators for Zambia, description: Cut down data for
       QuickCharts, format: csv, url_type: upload, resource_type: file.upload}
   file_to_upload: /tmp/WHO/qc_health_indicators_ZMB.csv

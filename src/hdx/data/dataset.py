@@ -575,6 +575,19 @@ class Dataset(HDXObject):
                     del resources[resource_index]
                     if resource_index == len(resources):
                         filter.append(f"-resources__{resource_index}")
+                    new_fsresources = dict()
+                    for index in filestore_resources:
+                        if index == resource_index:
+                            raise HDXError(
+                                "Trying to to upload to a deleted resource! This should never happen!"
+                            )
+                        if index > resource_index:
+                            new_fsresources[index - 1] = filestore_resources[
+                                index
+                            ]
+                        else:
+                            new_fsresources[index] = filestore_resources[index]
+                    filestore_resources = new_fsresources
                 for (
                     resource_index,
                     file_to_upload,
