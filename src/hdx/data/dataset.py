@@ -346,7 +346,9 @@ class Dataset(HDXObject):
         ordered_ids = results["order"]
         reordered_resources = list()
         for resource_id in ordered_ids:
-            resource = next(x for x in self.resources if x["id"] == resource_id)
+            resource = next(
+                x for x in self.resources if x["id"] == resource_id
+            )
             reordered_resources.append(resource)
         self.resources = reordered_resources
         if hxl_update:
@@ -618,7 +620,9 @@ class Dataset(HDXObject):
             if existing_order != new_resource_order:
                 sorted_resources = sorted(
                     self.resources,
-                    key=lambda x: new_resource_order.index((x["name"], x["format"])),
+                    key=lambda x: new_resource_order.index(
+                        (x["name"], x["format"])
+                    ),
                 )
                 self.reorder_resources(
                     [x["id"] for x in sorted_resources], hxl_update=False
@@ -742,7 +746,9 @@ class Dataset(HDXObject):
                             resources_to_delete.append(i)
         resources_to_delete = sorted(resources_to_delete, reverse=True)
         if match_resource_order:
-            new_resource_order = [(x["name"], x["format"]) for x in updated_resources]
+            new_resource_order = [
+                (x["name"], x["format"]) for x in updated_resources
+            ]
         else:
             new_resource_order = None
         return self._save_dataset_add_filestore_resources(
@@ -1789,9 +1795,7 @@ class Dataset(HDXObject):
             List[str]: List of filetypes
         """
         if not self.is_requestable():
-            return [
-                resource.get_file_type() for resource in self.resources
-            ]
+            return [resource.get_file_type() for resource in self.resources]
         return self._get_stringlist_from_commastring("file_types")
 
     def add_filetype(self, filetype: str) -> bool:
