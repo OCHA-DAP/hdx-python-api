@@ -801,6 +801,25 @@ class TestDatasetCore:
         assert dataset["state"] == "active"
         assert len(dataset.resources) == 1
 
+        dataset = Dataset.read_from_hdx("TEST1")
+        resources = dataset.get_resources()
+        resource_ids = [x["id"] for x in resources]
+        assert resource_ids == [
+            "de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
+            "3d777226-96aa-4239-860a-703389d16d1f",
+            "3d777226-96aa-4239-860a-703389d16d1g",
+        ]
+        dataset["id"] = "TEST1"
+        dataset["name"] = "MyDataset1"
+        dataset.resources = [resources[2], resources[0], resources[1]]
+        dataset.update_in_hdx(match_resource_order=True)
+        resource_ids = [x["id"] for x in dataset.get_resources()]
+        assert resource_ids == [
+            "3d777226-96aa-4239-860a-703389d16d1g",
+            "de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
+            "3d777226-96aa-4239-860a-703389d16d1f",
+        ]
+
     def test_delete_from_hdx(self, configuration, post_delete):
         dataset = Dataset.read_from_hdx("TEST1")
         dataset.delete_from_hdx()
@@ -966,18 +985,32 @@ class TestDatasetCore:
 
     def test_reorder_resources(self, configuration, post_reorder):
         dataset = Dataset.read_from_hdx("TEST1")
+        resource_ids = [x["id"] for x in dataset.get_resources()]
+        assert resource_ids == [
+            "de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
+            "3d777226-96aa-4239-860a-703389d16d1f",
+            "3d777226-96aa-4239-860a-703389d16d1g",
+        ]
         dataset.reorder_resources(
             [
                 "3d777226-96aa-4239-860a-703389d16d1f",
                 "de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
+                "3d777226-96aa-4239-860a-703389d16d1g",
             ]
         )
+        resource_ids = [x["id"] for x in dataset.get_resources()]
+        assert resource_ids == [
+            "3d777226-96aa-4239-860a-703389d16d1f",
+            "de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
+            "3d777226-96aa-4239-860a-703389d16d1g",
+        ]
         del dataset["id"]
         with pytest.raises(HDXError):
             dataset.reorder_resources(
                 [
                     "3d777226-96aa-4239-860a-703389d16d1f",
                     "de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
+                    "3d777226-96aa-4239-860a-703389d16d1g",
                 ]
             )
 

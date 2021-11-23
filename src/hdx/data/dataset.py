@@ -107,13 +107,9 @@ class Dataset(HDXObject):
     ) -> None:
         if not initial_data:
             initial_data = dict()
-        super().__init__(dict(), configuration=configuration)
         self.init_resources()
+        super().__init__(initial_data, configuration=configuration)
         self.preview_resourceview = None
-        # workaround: python2 IterableUserDict does not call __setitem__ in __init__,
-        # while python3 collections.UserDict does
-        for key in initial_data:
-            self[key] = initial_data[key]
 
     @staticmethod
     def actions() -> Dict[str, str]:
@@ -327,10 +323,11 @@ class Dataset(HDXObject):
     def reorder_resources(
         self, resource_ids: List[str], hxl_update: bool = True
     ) -> None:
-        """Reorder resources in dataset according to provided list.
-        If only some resource ids are supplied then these are
-        assumed to be first and the other resources will stay in
-        their original order.
+        """Reorder resources in dataset according to provided list. Resources are
+        updated in the dataset object to match new order. However, the dataset is not
+        refreshed by rereading from HDX. If only some resource ids are supplied then
+        these are assumed to be first and the other resources will stay in their
+        original order.
 
         Args:
             resource_ids (List[str]): List of resource ids
@@ -345,7 +342,13 @@ class Dataset(HDXObject):
                 "Dataset has no id! It must be read, created or updated first."
             )
         data = {"id": dataset_id, "order": resource_ids}
-        self._write_to_hdx("reorder", data, "package_id")
+        results = self._write_to_hdx("reorder", data)
+        ordered_ids = results["order"]
+        reordered_resources = list()
+        for resource_id in ordered_ids:
+            resource = next(x for x in self.resources if x["id"] == resource_id)
+            reordered_resources.append(resource)
+        self.resources = reordered_resources
         if hxl_update:
             self.hxl_update()
 
@@ -498,6 +501,7 @@ class Dataset(HDXObject):
         id_field_name: str,
         keys_to_delete: List[str],
         resources_to_delete: List[int],
+        new_resource_order: Optional[List[str]],
         filestore_resources: Dict[int, str],
         hxl_update: bool,
         create_default_views: bool = False,
@@ -510,6 +514,7 @@ class Dataset(HDXObject):
             id_field_name (str): Name of field containing HDX object identifier
             keys_to_delete (List[str]): List of top level metadata keys to delete
             resources_to_delete (List[int]): List of indexes of resources to delete
+            new_resource_order (Optional[List[str]]): New resource order to use or None
             filestore_resources (Dict[int, str]): List of (index of resources, file to upload)
             hxl_update (bool): Whether to call package_hxl_update.
             create_default_views (bool): Whether to create default views. Defaults to False.
@@ -608,7 +613,16 @@ class Dataset(HDXObject):
             )
             self.data = new_dataset.data
             self.resources = new_dataset.resources
-
+        if new_resource_order:
+            existing_order = [(x["name"], x["format"]) for x in self.resources]
+            if existing_order != new_resource_order:
+                sorted_resources = sorted(
+                    self.resources,
+                    key=lambda x: new_resource_order.index((x["name"], x["format"])),
+                )
+                self.reorder_resources(
+                    [x["id"] for x in sorted_resources], hxl_update=False
+                )
         if create_default_views:
             self.create_default_views()
         self._create_preview_resourceview()
@@ -622,6 +636,7 @@ class Dataset(HDXObject):
         match_resources_by_metadata: bool,
         keys_to_delete: List[str],
         remove_additional_resources: bool,
+        match_resource_order: bool,
         create_default_views: bool,
         hxl_update: bool,
         **kwargs: Any,
@@ -633,13 +648,18 @@ class Dataset(HDXObject):
             match_resources_by_metadata (bool): Compare resource metadata rather than position in list
             keys_to_delete (List[str]): List of top level metadata keys to delete
             remove_additional_resources (bool): Remove additional resources found in dataset (if updating)
+            match_resource_order (bool): Match order of given resources by name
             create_default_views (bool): Whether to call package_create_default_resource_views.
             hxl_update (bool): Whether to call package_hxl_update.
 
         Returns:
             Dict: Dictionary of what gets passed to the revise call (for testing)
         """
-        # 'old_data' here is the data we want to use for updating while 'data' is the data read from HDX
+        # When the user sets up a dataset, "data" contains the metadata. The HDX dataset
+        # update process involves copying "data" to "old_data" and then reading the
+        # existing dataset on HDX into "data". Hence, "old_data" below contains the
+        # user-supplied data we want to use for updating while "data" contains the data
+        # read from HDX
         merge_two_dictionaries(self.data, self.old_data)
         if "resources" in self.data:
             del self.data["resources"]
@@ -721,11 +741,16 @@ class Dataset(HDXObject):
                             )
                             resources_to_delete.append(i)
         resources_to_delete = sorted(resources_to_delete, reverse=True)
+        if match_resource_order:
+            new_resource_order = [(x["name"], x["format"]) for x in updated_resources]
+        else:
+            new_resource_order = None
         return self._save_dataset_add_filestore_resources(
             "update",
             "id",
             keys_to_delete,
             resources_to_delete,
+            new_resource_order,
             filestore_resources,
             hxl_update,
             create_default_views=create_default_views,
@@ -738,6 +763,7 @@ class Dataset(HDXObject):
         match_resources_by_metadata: bool = True,
         keys_to_delete: List[str] = list(),
         remove_additional_resources: bool = False,
+        match_resource_order: bool = False,
         create_default_views: bool = True,
         hxl_update: bool = True,
         **kwargs: Any,
@@ -750,6 +776,7 @@ class Dataset(HDXObject):
             match_resources_by_metadata (bool): Compare resource metadata rather than position in list. Defaults to True.
             keys_to_delete (List[str]): List of top level metadata keys to delete. Defaults to empty list.
             remove_additional_resources (bool): Remove additional resources found in dataset. Defaults to False.
+            match_resource_order (bool): Match order of given resources by name. Defaults to False.
             create_default_views (bool): Whether to call package_create_default_resource_views. Defaults to True.
             hxl_update (bool): Whether to call package_hxl_update. Defaults to True.
             **kwargs: See below
@@ -777,6 +804,7 @@ class Dataset(HDXObject):
             match_resources_by_metadata=match_resources_by_metadata,
             keys_to_delete=keys_to_delete,
             remove_additional_resources=remove_additional_resources,
+            match_resource_order=match_resource_order,
             create_default_views=create_default_views,
             hxl_update=hxl_update,
             **kwargs,
@@ -790,6 +818,7 @@ class Dataset(HDXObject):
         match_resources_by_metadata: bool = True,
         keys_to_delete: List[str] = list(),
         remove_additional_resources: bool = False,
+        match_resource_order: bool = False,
         create_default_views: bool = True,
         hxl_update: bool = True,
         **kwargs: Any,
@@ -803,6 +832,7 @@ class Dataset(HDXObject):
             match_resources_by_metadata (bool): Compare resource metadata rather than position in list. Defaults to True.
             keys_to_delete (List[str]): List of top level metadata keys to delete. Defaults to empty list.
             remove_additional_resources (bool): Remove additional resources found in dataset (if updating). Defaults to False.
+            match_resource_order (bool): Match order of given resources by name. Defaults to False.
             create_default_views (bool): Whether to call package_create_default_resource_views (if updating). Defaults to True.
             hxl_update (bool): Whether to call package_hxl_update. Defaults to True.
             **kwargs: See below
@@ -833,6 +863,7 @@ class Dataset(HDXObject):
                 match_resources_by_metadata=match_resources_by_metadata,
                 keys_to_delete=keys_to_delete,
                 remove_additional_resources=remove_additional_resources,
+                match_resource_order=match_resource_order,
                 create_default_views=create_default_views,
                 hxl_update=hxl_update,
                 **kwargs,
@@ -851,6 +882,7 @@ class Dataset(HDXObject):
             "name",
             keys_to_delete,
             list(),
+            None,
             filestore_resources,
             hxl_update,
             **kwargs,
@@ -1758,7 +1790,7 @@ class Dataset(HDXObject):
         """
         if not self.is_requestable():
             return [
-                resource.get_file_type() for resource in self.get_resources()
+                resource.get_file_type() for resource in self.resources
             ]
         return self._get_stringlist_from_commastring("file_types")
 
@@ -1837,7 +1869,7 @@ class Dataset(HDXObject):
             Resource: Resource that is used for preview or None if no preview set
         """
         if isinstance(resource, int) and not isinstance(resource, bool):
-            resource = self.get_resources()[resource]
+            resource = self.resources[resource]
         if isinstance(resource, hdx.data.resource.Resource) or isinstance(
             resource, dict
         ):
@@ -1907,7 +1939,7 @@ class Dataset(HDXObject):
             None
         """
         if self.preview_resourceview:
-            for resource in self.get_resources():
+            for resource in self.resources:
                 if (
                     resource["name"]
                     == self.preview_resourceview["resource_name"]

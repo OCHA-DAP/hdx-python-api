@@ -49,12 +49,12 @@ class HDXObject(UserDict):
     def __init__(
         self, initial_data: Dict, configuration: Optional[Configuration] = None
     ) -> None:
-        super().__init__(initial_data)
         self.old_data = None
         if configuration is None:
             self.configuration = Configuration.read()
         else:
             self.configuration = configuration
+        super().__init__(initial_data)
 
     def get_old_data_dict(self) -> None:
         """Get previous internal dictionary

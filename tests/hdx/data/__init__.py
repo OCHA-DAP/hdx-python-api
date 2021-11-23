@@ -142,7 +142,7 @@ dataset_resultdict = {
             "revision_id": "387e5d1a-50ca-4039-b5a7-f7b6b88d0f2b",
             "cache_url": None,
             "datastore_active": False,
-            "format": "zipped csv",
+            "format": "csv",
             "webstore_url": None,
             "last_modified": None,
             "tracking_summary": {"recent": 0, "total": 0},
