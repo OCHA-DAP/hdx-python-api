@@ -35,7 +35,7 @@ class ResourceMatcher:
                     pass
         names1 = [(x["name"], x.get("grouping")) for x in resources1]
         name2 = (resource2["name"], grouping2)
-        formats1 = [x["format"] for x in resources1]
+        formats1 = [x["format"].lower() for x in resources1]
         format2 = resource2["format"].lower()
 
         dupnames = {
@@ -47,7 +47,7 @@ class ResourceMatcher:
             if name1 != name2:
                 continue
             if name1 in dupnames:
-                if formats1[i].lower() != format2:
+                if formats1[i] != format2:
                     continue
             index1_match = i
         return index1_match
@@ -70,11 +70,11 @@ class ResourceMatcher:
         ids1 = [x.get("id") for x in resources1]
         groups1 = [x.get("grouping") for x in resources1]
         names1 = [x["name"] for x in resources1]
-        formats1 = [x["format"] for x in resources1]
+        formats1 = [x["format"].lower() for x in resources1]
         ids2 = [x.get("id") for x in resources2]
         groups2 = [x.get("grouping") for x in resources2]
         names2 = [x["name"] for x in resources2]
-        formats2 = [x["format"] for x in resources2]
+        formats2 = [x["format"].lower() for x in resources2]
         index1_matches = list()
         index2_matches = list()
         for i, id1 in enumerate(ids1):
@@ -107,7 +107,7 @@ class ResourceMatcher:
                 if name1 != name2:
                     continue
                 if name1 in dupnames:
-                    if formats1[i].lower() != formats2[j].lower():
+                    if formats1[i] != formats2[j]:
                         continue
                 if groups1[i] == groups2[j]:
                     index1_matches.append(i)

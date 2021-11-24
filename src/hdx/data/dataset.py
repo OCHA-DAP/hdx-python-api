@@ -616,12 +616,14 @@ class Dataset(HDXObject):
             self.data = new_dataset.data
             self.resources = new_dataset.resources
         if new_resource_order:
-            existing_order = [(x["name"], x["format"]) for x in self.resources]
+            existing_order = [
+                (x["name"], x["format"].lower()) for x in self.resources
+            ]
             if existing_order != new_resource_order:
                 sorted_resources = sorted(
                     self.resources,
                     key=lambda x: new_resource_order.index(
-                        (x["name"], x["format"])
+                        (x["name"], x["format"].lower())
                     ),
                 )
                 self.reorder_resources(
