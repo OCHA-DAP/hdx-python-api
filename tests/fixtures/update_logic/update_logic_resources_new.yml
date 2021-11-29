@@ -49,6 +49,10 @@
       \ use and mental health:*\n[Fines for violations](https://www.", format: csv,
     url_type: upload, resource_type: file.upload}
   file_to_upload: /tmp/WHO/substance_use_and_mental_health_indicators_ZMB.csv
+- resource: {name: Tobacco Indicators for Zambia, description: "*Tobacco:*\n[Prevalence of smoking\
+      \ any tobacco product among persons ag", format: csv,
+    url_type: upload, resource_type: file.upload}
+  file_to_upload: /tmp/WHO/tobacco_indicators_ZMB.csv
 - resource: {name: Injuries and violence Indicators for Zambia, description: "*Injuries\
       \ and violence:*\n[Income level](https://www.who.int/data/gho/i", format: csv,
     url_type: upload, resource_type: file.upload}
