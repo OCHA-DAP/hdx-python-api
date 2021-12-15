@@ -51,9 +51,9 @@ class HDXObject(UserDict):
     ) -> None:
         self.old_data = None
         if configuration is None:
-            self.configuration = Configuration.read()
+            self.configuration: Configuration = Configuration.read()
         else:
-            self.configuration = configuration
+            self.configuration: Configuration = configuration
         super().__init__(initial_data)
 
     def get_old_data_dict(self) -> None:
@@ -171,7 +171,7 @@ class HDXObject(UserDict):
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
-            Optional[HDXObjectUpperBound]: HDX object if successful read, None if not
+            Optional[T <= HDXObject]: HDX object if successful read, None if not
         """
         hdxobject = cls(configuration=configuration)
         result = hdxobject._load_from_hdx(object_type, identifier)
@@ -605,7 +605,7 @@ class HDXObject(UserDict):
 
     def _convert_hdxobjects(
         self, hdxobjects: List[HDXObjectUpperBound]
-    ) -> List[HDXObjectUpperBound]:
+    ) -> List[Dict]:
         """Helper function to convert supplied list of HDX objects to a list of dict
 
         Args:

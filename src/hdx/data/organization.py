@@ -1,12 +1,15 @@
 """Organization class containing all logic for creating, checking, and updating organizations."""
 import logging
 from os.path import join
-from typing import Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
-import hdx.data.dataset
-import hdx.data.user
+import hdx.data.dataset as dataset
+import hdx.data.user as user_module
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError, HDXObject
+
+if TYPE_CHECKING:
+    from hdx.data.user import User
 
 logger = logging.getLogger(__name__)
 
@@ -123,9 +126,7 @@ class Organization(HDXObject):
         """
         self._delete_from_hdx("organization", "id")
 
-    def get_users(
-        self, capacity: Optional[str] = None
-    ) -> List[hdx.data.user.User]:
+    def get_users(self, capacity: Optional[str] = None) -> List["User"]:
         """Returns the organization's users.
 
         Args:
@@ -142,7 +143,7 @@ class Organization(HDXObject):
                 id = userdata.get("id")
                 if id is None:
                     id = userdata["name"]
-                user = hdx.data.user.User.read_from_hdx(
+                user = user_module.User.read_from_hdx(
                     id, configuration=self.configuration
                 )
                 user["capacity"] = userdata["capacity"]
@@ -151,7 +152,7 @@ class Organization(HDXObject):
 
     def add_update_user(
         self,
-        user: Union[hdx.data.user.User, Dict, str],
+        user: Union["User", Dict, str],
         capacity: Optional[str] = None,
     ) -> None:
         """Add new or update existing user in organization with new metadata. Capacity eg. member, admin
@@ -167,12 +168,12 @@ class Organization(HDXObject):
 
         """
         if isinstance(user, str):
-            user = hdx.data.user.User.read_from_hdx(
+            user = user_module.User.read_from_hdx(
                 user, configuration=self.configuration
             )
         elif isinstance(user, dict):
-            user = hdx.data.user.User(user, configuration=self.configuration)
-        if isinstance(user, hdx.data.user.User):
+            user = user_module.User(user, configuration=self.configuration)
+        if isinstance(user, user_module.User):
             users = self.data.get("users")
             if users is None:
                 users = list()
@@ -187,7 +188,7 @@ class Organization(HDXObject):
 
     def add_update_users(
         self,
-        users: List[Union[hdx.data.user.User, Dict, str]],
+        users: List[Union["User", Dict, str]],
         capacity: Optional[str] = None,
     ) -> None:
         """Add new or update existing users in organization with new metadata. Capacity eg. member, admin
@@ -206,7 +207,7 @@ class Organization(HDXObject):
         for user in users:
             self.add_update_user(user, capacity)
 
-    def remove_user(self, user: Union[hdx.data.user.User, Dict, str]) -> bool:
+    def remove_user(self, user: Union["User", Dict, str]) -> bool:
         """Remove a user from the organization
 
         Args:
@@ -237,7 +238,7 @@ class Organization(HDXObject):
         Returns:
             List[Dataset]: List of datasets in organization
         """
-        return hdx.data.dataset.Dataset.search_in_hdx(
+        return dataset.Dataset.search_in_hdx(
             query=query,
             configuration=self.configuration,
             fq=f"organization:{self.data['name']}",

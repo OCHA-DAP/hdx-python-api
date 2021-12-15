@@ -1,16 +1,17 @@
 """Helper to the Dataset class for handling matching resources.
 """
 import collections
-from typing import List, Optional, Tuple
+from typing import TYPE_CHECKING, List, Optional, Tuple
 
-import hdx.data.resource
+if TYPE_CHECKING:
+    from hdx.data.resource import Resource
 
 
 class ResourceMatcher:
     @staticmethod
     def match_resource_list(
-        resources1: List[hdx.data.resource.Resource],
-        resource2: hdx.data.resource.Resource,
+        resources1: List["Resource"],
+        resource2: "Resource",
     ) -> Optional[int]:
         """Helper method to find the index of a resource that matches a given resource
 
@@ -54,8 +55,8 @@ class ResourceMatcher:
 
     @staticmethod
     def match_resource_lists(
-        resources1: List[hdx.data.resource.Resource],
-        resources2: List[hdx.data.resource.Resource],
+        resources1: List["Resource"],
+        resources2: List["Resource"],
     ) -> Tuple[List, List, List, List]:
         """Helper method to match two lists of resources returning the indices that match in two lists and
         that don't match in two more lists

@@ -11,8 +11,8 @@ from hdx.utilities.loader import load_json, load_yaml
 from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.uuid import is_valid_uuid
 
-import hdx.data.dataset
-import hdx.data.filestore_helper
+import hdx.data.dataset as dataset
+import hdx.data.filestore_helper as filestore_helper
 from hdx.api.configuration import Configuration
 from hdx.data.date_helper import DateHelper
 from hdx.data.hdxobject import HDXError, HDXObject
@@ -309,7 +309,7 @@ class Resource(HDXObject):
             if "url" in self.data:
                 if (
                     self.data["url"]
-                    != hdx.data.filestore_helper.FilestoreHelper.temporary_url
+                    != filestore_helper.FilestoreHelper.temporary_url
                 ):
                     raise HDXError(
                         "Either a url or a file to upload must be supplied not both!"
@@ -397,7 +397,7 @@ class Resource(HDXObject):
         package_id = self.data.get("package_id")
         if package_id is None:
             raise HDXError("Resource has no package id!")
-        return hdx.data.dataset.Dataset.read_from_hdx(package_id)
+        return dataset.Dataset.read_from_hdx(package_id)
 
     @staticmethod
     def search_in_hdx(

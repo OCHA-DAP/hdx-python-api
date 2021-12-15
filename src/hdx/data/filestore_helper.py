@@ -1,10 +1,11 @@
 """Helper to the Dataset class for handling resources with filestores.
 """
-from typing import Any, Dict, List
+from typing import TYPE_CHECKING, Any, Dict, List
 
 from hdx.utilities.dictandlist import merge_two_dictionaries
 
-import hdx.data.resource
+if TYPE_CHECKING:
+    from hdx.data.resource import Resource
 
 
 class FilestoreHelper:
@@ -28,7 +29,7 @@ class FilestoreHelper:
     @classmethod
     def check_filestore_resource(
         cls,
-        resource: hdx.data.resource.Resource,
+        resource: "Resource",
         filestore_resources: Dict[int, str],
         resource_index: int,
         **kwargs: Any,
@@ -55,8 +56,8 @@ class FilestoreHelper:
     @classmethod
     def dataset_merge_filestore_resource(
         cls,
-        resource: hdx.data.resource.Resource,
-        updated_resource: hdx.data.resource.Resource,
+        resource: "Resource",
+        updated_resource: "Resource",
         filestore_resources: Dict[int, str],
         resource_index: int,
         **kwargs: Any,

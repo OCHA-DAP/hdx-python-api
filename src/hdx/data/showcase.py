@@ -7,15 +7,15 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.uuid import is_valid_uuid
 
-import hdx.data.dataset
-import hdx.data.hdxobject
+import hdx.data.dataset as ds_module
 import hdx.data.vocabulary
 from hdx.api.configuration import Configuration
+from hdx.data.hdxobject import HDXObject
 
 logger = logging.getLogger(__name__)
 
 
-class Showcase(hdx.data.hdxobject.HDXObject):
+class Showcase(HDXObject):
     """Showcase class containing all logic for creating, checking, and updating showcases.
 
     Args:
@@ -236,7 +236,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         datasets = list()
         if assoc_result:
             for dataset_dict in datasets_dicts:
-                dataset = hdx.data.dataset.Dataset(
+                dataset = ds_module.Dataset(
                     dataset_dict, configuration=self.configuration
                 )
                 datasets.append(dataset)
@@ -253,13 +253,9 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         Returns:
             Dict: showcase dataset dict
         """
-        if isinstance(dataset, hdx.data.dataset.Dataset) or isinstance(
-            dataset, dict
-        ):
+        if isinstance(dataset, ds_module.Dataset) or isinstance(dataset, dict):
             if "id" not in dataset:
-                dataset = hdx.data.dataset.Dataset.read_from_hdx(
-                    dataset["name"]
-                )
+                dataset = ds_module.Dataset.read_from_hdx(dataset["name"])
             dataset = dataset["id"]
         elif not isinstance(dataset, str):
             raise hdx.data.hdxobject.HDXError(
@@ -367,7 +363,7 @@ class Showcase(hdx.data.hdxobject.HDXObject):
         kwargs["fq"] = "dataset_type:showcase"
         if curfq:
             kwargs["fq"] = f"{kwargs['fq']} AND {curfq}"
-        datasets = hdx.data.dataset.Dataset.search_in_hdx(
+        datasets = ds_module.Dataset.search_in_hdx(
             query=query,
             configuration=configuration,
             page_size=page_size,

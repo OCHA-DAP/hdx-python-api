@@ -3,7 +3,7 @@ import logging
 from os.path import join
 from typing import Any, Dict, List, Optional
 
-import hdx.data.organization
+import hdx.data.organization as organization
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXObject
 
@@ -265,12 +265,10 @@ class User(HDXObject):
         organizations = list()
         if success:
             for organizationdict in result:
-                organization = (
-                    hdx.data.organization.Organization.read_from_hdx(
-                        organizationdict["id"]
-                    )
+                org = organization.Organization.read_from_hdx(
+                    organizationdict["id"]
                 )
-                organizations.append(organization)
+                organizations.append(org)
         return organizations
 
     @classmethod
