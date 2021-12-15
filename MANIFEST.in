@@ -1,6 +1,5 @@
 include *.txt
 include pyproject.toml
-include Dockerfile
 include LICENSE
 include docs/*.yml
 include docs/*.txt

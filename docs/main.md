@@ -110,8 +110,8 @@ will pull in the other dependencies).
 
 The library is also available set up and ready to go in a Docker image:
 
-    docker pull mcarans/hdx-python-api
-    docker run -i -t mcarans/hdx-python-api:latest python3
+    docker pull public.ecr.aws/unocha/hdx-scraper-baseimage:stable
+    docker run -i -t public.ecr.aws/unocha/hdx-scraper-baseimage:stable python3
 
 ## A Quick Example
 
