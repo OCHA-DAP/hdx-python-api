@@ -4,6 +4,6 @@ pytest-cov==3.0.0
 pytest-pythonpath==0.7.3
 pytest-runner==5.3.1
 logging_tree==1.9
-tox==3.24.4
-git+git://github.com/mcarans/tox-wheel.git#egg=tox-wheel
+tox==3.24.5
+tox-wheel==0.7.0
 -r requirements.txt
