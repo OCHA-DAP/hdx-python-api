@@ -3,7 +3,7 @@ import logging
 from os.path import join
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
-import hdx.data.dataset as dataset
+import hdx.data.dataset
 import hdx.data.user as user_module
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError, HDXObject
@@ -238,7 +238,7 @@ class Organization(HDXObject):
         Returns:
             List[Dataset]: List of datasets in organization
         """
-        return dataset.Dataset.search_in_hdx(
+        return hdx.data.dataset.Dataset.search_in_hdx(
             query=query,
             configuration=self.configuration,
             fq=f"organization:{self.data['name']}",
