@@ -143,12 +143,12 @@ commands =
 [testenv:lint]
 wheel_build_env = py310
 deps =
-    git+git://github.com/mcarans/flakehell.git#egg=flakehell
+    git+git://github.com/flakeheaven/flakeheaven.git#egg=flakeheaven
     flake8
     flake8-isort
     flake8-black
 commands =
-    flakehell lint src tests
+    flakeheaven lint src tests
 
 [testenv:docs]
 wheel_build_env = py310
