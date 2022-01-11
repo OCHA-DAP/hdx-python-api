@@ -261,16 +261,16 @@ class HDXObject(UserDict):
             "skip_validation" in kwargs
         ):  # Whether or not CKAN should perform validation steps (checking fields present)
             self.data["skip_validation"] = kwargs["skip_validation"]
-        ignore_fields = kwargs.get("ignore_fields", list())
-        ignore_field = self.configuration[object_type].get("ignore_on_update")
-        if ignore_field and ignore_field not in ignore_fields:
-            ignore_fields.append(ignore_field)
-        ignore_field = kwargs.get("ignore_field")
-        if ignore_field and ignore_field not in ignore_fields:
-            ignore_fields.append(ignore_field)
         if "ignore_check" not in kwargs or not kwargs.get(
             "ignore_check"
         ):  # allow ignoring of field checks
+            ignore_fields = kwargs.get("ignore_fields", list())
+            ignore_field = self.configuration[object_type].get("ignore_on_update")
+            if ignore_field and ignore_field not in ignore_fields:
+                ignore_fields.append(ignore_field)
+            ignore_field = kwargs.get("ignore_field")
+            if ignore_field and ignore_field not in ignore_fields:
+                ignore_fields.append(ignore_field)
             self.check_required_fields(ignore_fields=ignore_fields)
 
     def _hdx_update(
