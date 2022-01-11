@@ -457,18 +457,22 @@ class Dataset(HDXObject):
                 resource_ignore_fields.append(resource_ignore_field)
             else:
                 dataset_ignore_fields.append(ignore_field)
-        if "package_id" not in resource_ignore_fields:
-            resource_ignore_fields.append("package_id")
         if self.is_requestable():
-            self._check_required_fields("dataset-requestable", dataset_ignore_fields)
+            self._check_required_fields(
+                "dataset-requestable", dataset_ignore_fields
+            )
         else:
             self._check_required_fields("dataset", dataset_ignore_fields)
             if len(self.resources) == 0 and not allow_no_resources:
                 raise HDXError(
                     "There are no resources! Please add at least one resource!"
                 )
+            if "package_id" not in resource_ignore_fields:
+                resource_ignore_fields.append("package_id")
             for resource in self.resources:
-                resource.check_required_fields(ignore_fields=resource_ignore_fields)
+                resource.check_required_fields(
+                    ignore_fields=resource_ignore_fields
+                )
 
     @staticmethod
     def revise(
