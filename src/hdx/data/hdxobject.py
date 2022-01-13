@@ -3,7 +3,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
 """
 import copy
 import logging
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 from collections import UserDict
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
@@ -25,7 +25,7 @@ class HDXError(Exception):
     pass
 
 
-class HDXObject(UserDict):
+class HDXObject(UserDict, ABC):
     """HDXObject abstract class containing helper functions for creating, checking, and updating HDX objects.
     New HDX objects should extend this in similar fashion to Resource for example.
 
@@ -33,8 +33,6 @@ class HDXObject(UserDict):
         initial_data (Dict): Initial metadata dictionary
         configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
     """
-
-    __metaclass__ = ABCMeta
 
     @staticmethod
     @abstractmethod
@@ -44,7 +42,6 @@ class HDXObject(UserDict):
         Returns:
             Dict[str, str]: Dictionary of actions that can be performed on object
         """
-        raise NotImplementedError
 
     def __init__(
         self, initial_data: Dict, configuration: Optional[Configuration] = None
@@ -154,7 +151,6 @@ class HDXObject(UserDict):
         Returns:
             Optional[T <= HDXObject]: HDX object if successful read, None if not
         """
-        raise NotImplementedError
 
     @classmethod
     def _read_from_hdx_class(
@@ -217,7 +213,6 @@ class HDXObject(UserDict):
         Returns:
             None
         """
-        raise NotImplementedError
 
     def _check_required_fields(
         self, object_type: str, ignore_fields: List[str]
@@ -341,7 +336,6 @@ class HDXObject(UserDict):
         Returns:
             None
         """
-        raise NotImplementedError
 
     def _update_in_hdx(
         self,
@@ -450,7 +444,6 @@ class HDXObject(UserDict):
         Returns:
             None
         """
-        raise NotImplementedError
 
     def _create_in_hdx(
         self,
@@ -501,7 +494,6 @@ class HDXObject(UserDict):
         Returns:
             None
         """
-        raise NotImplementedError
 
     def _delete_from_hdx(self, object_type: str, id_field_name: str) -> None:
         """Helper method to deletes a resource from HDX
