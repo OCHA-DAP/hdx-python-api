@@ -3,7 +3,7 @@ New HDX objects should extend this in similar fashion to Resource for example.
 """
 import copy
 import logging
-from abc import abstractmethod
+from abc import ABCMeta, abstractmethod
 from collections import UserDict
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
@@ -34,7 +34,7 @@ class HDXObject(UserDict):
         configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
     """
 
-    __metaclass__ = abc.ABCMeta
+    __metaclass__ = ABCMeta
 
     @staticmethod
     @abstractmethod
