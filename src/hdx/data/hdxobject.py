@@ -1,9 +1,9 @@
 """HDXObject abstract class containing helper functions for creating, checking, and updating HDX objects.
 New HDX objects should extend this in similar fashion to Resource for example.
 """
-import abc
 import copy
 import logging
+from abc import abstractmethod
 from collections import UserDict
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
@@ -37,7 +37,7 @@ class HDXObject(UserDict):
     __metaclass__ = abc.ABCMeta
 
     @staticmethod
-    @abc.abstractmethod
+    @abstractmethod
     def actions() -> Dict[str, str]:
         """Dictionary of actions that can be performed on object
 
@@ -141,7 +141,7 @@ class HDXObject(UserDict):
         return False
 
     @staticmethod
-    @abc.abstractmethod
+    @abstractmethod
     def read_from_hdx(
         id_field: str, configuration: Optional[Configuration] = None
     ) -> Optional[HDXObjectUpperBound]:
@@ -206,7 +206,7 @@ class HDXObject(UserDict):
         if not self._load_from_hdx(object_type, self.data[id_field_name]):
             raise HDXError(f"No existing {object_type} to {operation}!")
 
-    @abc.abstractmethod
+    @abstractmethod
     def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
         """Abstract method to check that metadata for HDX object is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
@@ -332,7 +332,7 @@ class HDXObject(UserDict):
             **kwargs,
         )
 
-    @abc.abstractmethod
+    @abstractmethod
     def update_in_hdx(self) -> None:
         """Abstract method to check if HDX object exists in HDX and if so, update it
 
@@ -441,7 +441,7 @@ class HDXObject(UserDict):
         self.old_data = self.data
         self.data = result
 
-    @abc.abstractmethod
+    @abstractmethod
     def create_in_hdx(self) -> None:
         """Abstract method to check if resource exists in HDX and if so, update it, otherwise create it
 
@@ -492,7 +492,7 @@ class HDXObject(UserDict):
                 "create", name_field_name, files_to_upload, force_active
             )
 
-    @abc.abstractmethod
+    @abstractmethod
     def delete_from_hdx(self) -> None:
         """Abstract method to deletes a resource from HDX
 
