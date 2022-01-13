@@ -265,7 +265,9 @@ class HDXObject(UserDict):
             "ignore_check"
         ):  # allow ignoring of field checks
             ignore_fields = kwargs.get("ignore_fields", list())
-            ignore_field = self.configuration[object_type].get("ignore_on_update")
+            ignore_field = self.configuration[object_type].get(
+                "ignore_on_update"
+            )
             if ignore_field and ignore_field not in ignore_fields:
                 ignore_fields.append(ignore_field)
             ignore_field = kwargs.get("ignore_field")
