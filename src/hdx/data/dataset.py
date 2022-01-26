@@ -441,6 +441,7 @@ class Dataset(HDXObject):
     ) -> None:
         """Check that metadata for dataset and its resources is complete. The parameter ignore_fields
         should be set if required to any fields that should be ignored for the particular operation.
+        Prepend "resource:" for resource fields.
 
         Args:
             ignore_fields (List[str]): Fields to ignore. Default is [].
@@ -450,12 +451,8 @@ class Dataset(HDXObject):
             None
         """
         dataset_ignore_fields = list()
-        resource_ignore_fields = list()
         for ignore_field in ignore_fields:
-            if ignore_field.startswith("resource:"):
-                resource_ignore_field = ignore_field[9:].strip()
-                resource_ignore_fields.append(resource_ignore_field)
-            else:
+            if not ignore_field.startswith("resource:"):
                 dataset_ignore_fields.append(ignore_field)
         if self.is_requestable():
             self._check_required_fields(
@@ -467,11 +464,9 @@ class Dataset(HDXObject):
                 raise HDXError(
                     "There are no resources! Please add at least one resource!"
                 )
-            if "package_id" not in resource_ignore_fields:
-                resource_ignore_fields.append("package_id")
             for resource in self.resources:
-                resource.check_required_fields(
-                    ignore_fields=resource_ignore_fields
+                filestore_helper.FilestoreHelper.resource_check_required_fields(
+                    resource, ignore_fields=ignore_fields
                 )
 
     @staticmethod

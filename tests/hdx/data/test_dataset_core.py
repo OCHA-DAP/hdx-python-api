@@ -563,6 +563,15 @@ class TestDatasetCore:
         dataset = Dataset(datasetdata)
         resourcesdata = copy.deepcopy(resources_data)
         resource = Resource(resourcesdata[0])
+        del resource["description"]
+        del dataset["tags"]
+        dataset.add_update_resources([resource, resource])
+        with pytest.raises(HDXError):
+            dataset.create_in_hdx()
+        dataset.create_in_hdx(ignore_fields=["tags", "resource:description"])
+        dataset = Dataset(datasetdata)
+        resourcesdata = copy.deepcopy(resources_data)
+        resource = Resource(resourcesdata[0])
         dataset.add_update_resources([resource, resource])
         dataset.create_in_hdx()
         assert dataset["id"] == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"

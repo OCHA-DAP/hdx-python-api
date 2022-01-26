@@ -12,19 +12,36 @@ class FilestoreHelper:
     temporary_url = "updated_by_file_upload_step"
 
     @staticmethod
-    def _get_ignore_fields(kwargs: Dict) -> List[str]:
+    def resource_check_required_fields(
+        resource: "Resource", check_upload: bool = False, **kwargs: Any
+    ) -> None:
         """Helper method to get ignore_fields from kwargs if it exists and add package_id
 
         Args:
-            kwargs (Dict): Keyword arguments dictionary
+            resource (Resource): Resource to check
+            check_upload (bool): Whether to check for file upload. Defaults to False.
+            **kwargs: Keyword arguments
 
         Returns:
-            List[str]: Fields to ignore
+            None
         """
+        if "ignore_check" in kwargs:  # allow ignoring of field checks
+            return
+        if (
+            check_upload
+            and resource.get_file_to_upload()
+            and "url" in resource.data
+        ):
+            del resource.data["url"]
         ignore_fields = kwargs.get("ignore_fields", list())
-        if "package_id" not in ignore_fields:
-            ignore_fields.append("package_id")
-        return ignore_fields
+        resource_ignore_fields = list()
+        for ignore_field in ignore_fields:
+            if ignore_field.startswith("resource:"):
+                resource_ignore_field = ignore_field[9:].strip()
+                resource_ignore_fields.append(resource_ignore_field)
+        if "package_id" not in resource_ignore_fields:
+            resource_ignore_fields.append("package_id")
+        resource.check_required_fields(ignore_fields=resource_ignore_fields)
 
     @classmethod
     def check_filestore_resource(
@@ -44,10 +61,7 @@ class FilestoreHelper:
         Returns:
             None
         """
-        if "ignore_check" not in kwargs:  # allow ignoring of field checks
-            resource.check_required_fields(
-                ignore_fields=cls._get_ignore_fields(kwargs)
-            )
+        cls.resource_check_required_fields(resource, **kwargs)
         file_to_upload = resource.get_file_to_upload()
         if file_to_upload:
             filestore_resources[resource_index] = file_to_upload
@@ -78,11 +92,8 @@ class FilestoreHelper:
             resource.set_file_to_upload(file_to_upload)
             filestore_resources[resource_index] = file_to_upload
         merge_two_dictionaries(resource, updated_resource)
-        if "ignore_check" not in kwargs:  # allow ignoring of field checks
-            if resource.get_file_to_upload() and "url" in resource.data:
-                del resource.data["url"]
-            resource.check_required_fields(
-                ignore_fields=cls._get_ignore_fields(kwargs)
-            )
+        cls.resource_check_required_fields(
+            resource, check_upload=True, **kwargs
+        )
         if resource.get_file_to_upload():
             resource["url"] = cls.temporary_url

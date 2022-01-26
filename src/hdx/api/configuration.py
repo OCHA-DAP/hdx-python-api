@@ -193,26 +193,33 @@ class Configuration(UserDict):
                 self.user_agent = UserAgent.get(
                     prefix=Configuration.prefix, **self.data
                 )
-        self.hdx_read_only = kwargs.get(
-            "hdx_read_only", self.data.get("hdx_read_only", False)
-        )
-        logger.info(f"Read only access to HDX: {str(self.hdx_read_only)}")
-        self.hdx_key = kwargs.get("hdx_key", self.data.get("hdx_key"))
-        if not self.hdx_key and not self.hdx_read_only:
-            raise ConfigurationError(
-                "No HDX API key supplied as a parameter or in configuration!"
-            )
         hdx_url = kwargs.get("hdx_url", self.data.get("hdx_url"))
         if hdx_url:
+            hdx_site = "custom"
             self.hdx_site = "hdx_custom_site"
             hdx_url = hdx_url.rstrip("/")
             self.data[self.hdx_site] = {"url": hdx_url}
         else:
-            self.hdx_site = f"hdx_{kwargs.get('hdx_site', self.data.get('hdx_site', 'stage'))}_site"
+            hdx_site = kwargs.get('hdx_site', self.data.get('hdx_site', 'stage'))
+            self.hdx_site = f"hdx_{hdx_site}_site"
             if self.hdx_site not in self.data:
                 raise ConfigurationError(
                     f"{self.hdx_site} not defined in configuration!"
                 )
+        self.hdx_read_only = kwargs.get(
+            "hdx_read_only", self.data.get("hdx_read_only", False)
+        )
+        logger.info(f"Read only access to HDX: {str(self.hdx_read_only)}")
+        hdx_key_site = f"hdx_key_{hdx_site}"
+        hdx_key = kwargs.get(hdx_key_site, self.data.get(hdx_key_site))
+        if hdx_key:
+            self.hdx_key = hdx_key
+        else:
+            self.hdx_key = kwargs.get("hdx_key", self.data.get("hdx_key"))
+        if not self.hdx_key and not self.hdx_read_only:
+            raise ConfigurationError(
+                "No HDX API key supplied as a parameter or in configuration!"
+            )
 
     def set_read_only(self, read_only: bool = True) -> None:
         """

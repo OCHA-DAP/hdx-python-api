@@ -320,7 +320,7 @@ hello there"""
         expected_configuration = {
             "hdx_site": "stage",
             "hdx_read_only": False,
-            "hdx_key": "54321",
+            "hdx_key_stage": "54321",
             "hdx_prod_site": {
                 "url": "https://data.humdata.org",
             },
@@ -342,7 +342,10 @@ hello there"""
             "tags_mapping_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv",
             "formats_mapping_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/resource_formats.json",
         }
-        assert Configuration.read() == expected_configuration
+        configuration = Configuration.read()
+        assert configuration == expected_configuration
+        assert configuration.hdx_site == "hdx_stage_site"
+        assert configuration.hdx_key == "54321"
 
     def test_hdx_configuration_yaml(
         self, hdx_config_yaml, hdx_base_config_yaml, project_config_yaml
@@ -381,7 +384,10 @@ hello there"""
             "tags_mapping_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping.csv",
             "formats_mapping_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/resource_formats.json",
         }
-        assert Configuration.read() == expected_configuration
+        configuration = Configuration.read()
+        assert configuration == expected_configuration
+        assert configuration.hdx_site == "hdx_prod_site"
+        assert configuration.hdx_key == "12345"
 
     def test_project_configuration_dict(self, hdx_config_yaml):
         Configuration._create(
