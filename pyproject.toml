@@ -27,7 +27,7 @@ show_source = true
     flake8-black = ["+*"]
 
 [tool.pytest.ini_options]
-site_dirs = "src"
+pythonpath = "src"
 
 [tool.coverage.paths]
 source = ["src/hdx", "*/site-packages/hdx"]
