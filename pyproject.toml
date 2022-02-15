@@ -28,6 +28,7 @@ show_source = true
 
 [tool.pytest.ini_options]
 pythonpath = "src"
+log_cli = 1
 
 [tool.coverage.paths]
 source = ["src/hdx", "*/site-packages/hdx"]
