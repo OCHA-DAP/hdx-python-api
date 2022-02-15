@@ -1,6 +1,6 @@
 """Helper to the Dataset class for handling resources with filestores.
 """
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING, Any, Dict
 
 from hdx.utilities.dictandlist import merge_two_dictionaries
 

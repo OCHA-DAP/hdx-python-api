@@ -200,7 +200,9 @@ class Configuration(UserDict):
             hdx_url = hdx_url.rstrip("/")
             self.data[self.hdx_site] = {"url": hdx_url}
         else:
-            hdx_site = kwargs.get('hdx_site', self.data.get('hdx_site', 'stage'))
+            hdx_site = kwargs.get(
+                "hdx_site", self.data.get("hdx_site", "stage")
+            )
             self.hdx_site = f"hdx_{hdx_site}_site"
             if self.hdx_site not in self.data:
                 raise ConfigurationError(
