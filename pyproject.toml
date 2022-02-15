@@ -10,7 +10,7 @@ profile = "black"
 line_length = 79
 multi_line_output = 3
 
-[tool.flakehell]
+[tool.flakeheaven]
 # make output nice
 format = "grouped"
 max_line_length = 79
@@ -18,7 +18,7 @@ max_line_length = 79
 show_source = true
 
     # list of plugins and rules for them
-    [tool.flakehell.plugins]
+    [tool.flakeheaven.plugins]
     mccabe = ["+*"]
     pycodestyle = ["+*", "-E203", "-E501", "-W503"]
     pyflakes = ["+*"]
