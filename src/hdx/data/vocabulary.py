@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from hdx.utilities.downloader import Download
 
 from hdx.api.configuration import Configuration
-from hdx.data.hdxobject import HDXObject, HDXObjectUpperBound
+from hdx.data.hdxobject import HDXObject
 
 logger = logging.getLogger(__name__)
 
@@ -530,12 +530,12 @@ class Vocabulary(HDXObject):
 
     @classmethod
     def add_mapped_tag(
-        cls, hdxobject: HDXObjectUpperBound, tag: str, log_deleted: bool = True
+        cls, hdxobject: HDXObject, tag: str, log_deleted: bool = True
     ) -> Tuple[List[str], List[str]]:
         """Add a tag to an HDX object that has tags
 
         Args:
-            hdxobject (T <= HDXObject): HDX object such as dataset
+            hdxobject (HDXObject): HDX object such as dataset
             tag (str): Tag to add
             log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
 
@@ -547,14 +547,14 @@ class Vocabulary(HDXObject):
     @classmethod
     def add_mapped_tags(
         cls,
-        hdxobject: HDXObjectUpperBound,
+        hdxobject: HDXObject,
         tags: List[str],
         log_deleted: bool = True,
     ) -> Tuple[List[str], List[str]]:
         """Add a list of tag to an HDX object that has tags
 
         Args:
-            hdxobject (T <= HDXObject): HDX object such as dataset
+            hdxobject (HDXObject): HDX object such as dataset
             tags (List[str]): List of tags to add
             log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
 
@@ -578,12 +578,12 @@ class Vocabulary(HDXObject):
 
     @classmethod
     def clean_tags(
-        cls, hdxobject: HDXObjectUpperBound, log_deleted: bool = True
+        cls, hdxobject: HDXObject, log_deleted: bool = True
     ) -> Tuple[List[str], List[str]]:
         """Clean tags in an HDX object according to tags cleanup spreadsheet
 
         Args:
-            hdxobject (T <= HDXObject): HDX object such as dataset
+            hdxobject (HDXObject): HDX object such as dataset
             log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
 
         Returns:

@@ -18,8 +18,6 @@ from hdx.api.configuration import Configuration
 
 logger = logging.getLogger(__name__)
 
-HDXObjectUpperBound = TypeVar("HDXObjectUpperBound", bound="HDXObject")
-
 
 class HDXError(Exception):
     pass
@@ -141,7 +139,7 @@ class HDXObject(UserDict, ABC):
     @abstractmethod
     def read_from_hdx(
         id_field: str, configuration: Optional[Configuration] = None
-    ) -> Optional[HDXObjectUpperBound]:
+    ) -> Optional["HDXObject"]:
         """Abstract method to read the HDX object given by identifier from HDX and return it
 
         Args:
@@ -149,7 +147,7 @@ class HDXObject(UserDict, ABC):
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
-            Optional[T <= HDXObject]: HDX object if successful read, None if not
+            Optional[HDXObject]: HDX object if successful read, None if not
         """
 
     @classmethod
@@ -158,7 +156,7 @@ class HDXObject(UserDict, ABC):
         object_type: str,
         identifier: str,
         configuration: Optional[Configuration] = None,
-    ) -> Optional[HDXObjectUpperBound]:
+    ) -> Optional["HDXObject"]:
         """Reads the HDX object given by identifier from HDX and returns it
 
         Args:
@@ -167,7 +165,7 @@ class HDXObject(UserDict, ABC):
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
-            Optional[T <= HDXObject]: HDX object if successful read, None if not
+            Optional[HDXObject]: HDX object if successful read, None if not
         """
         hdxobject = cls(configuration=configuration)
         result = hdxobject._load_from_hdx(object_type, identifier)
@@ -538,20 +536,20 @@ class HDXObject(UserDict, ABC):
 
     def _addupdate_hdxobject(
         self,
-        hdxobjects: List[HDXObjectUpperBound],
+        hdxobjects: List["HDXObject"],
         id_field: str,
-        new_hdxobject: HDXObjectUpperBound,
-    ) -> HDXObjectUpperBound:
+        new_hdxobject: "HDXObject",
+    ) -> "HDXObject":
         """Helper function to add a new HDX object to a supplied list of HDX objects or update existing metadata if the object
         already exists in the list
 
         Args:
-            hdxobjects (List[T <= HDXObject]): list of HDX objects to which to add new objects or update existing ones
+            hdxobjects (List[HDXObject]): list of HDX objects to which to add new objects or update existing ones
             id_field (str): Field on which to match to determine if object already exists in list
-            new_hdxobject (T <= HDXObject): The HDX object to be added/updated
+            new_hdxobject (HDXObject): The HDX object to be added/updated
 
         Returns:
-            T <= HDXObject: The HDX object which was added or updated
+            HDXObject: The HDX object which was added or updated
         """
         for hdxobject in hdxobjects:
             if hdxobject[id_field] == new_hdxobject[id_field]:
@@ -562,16 +560,16 @@ class HDXObject(UserDict, ABC):
 
     def _remove_hdxobject(
         self,
-        objlist: List[Union[HDXObjectUpperBound, Dict]],
-        obj: Union[HDXObjectUpperBound, Dict, str],
+        objlist: List[Union["HDXObject", Dict]],
+        obj: Union["HDXObject", Dict, str],
         matchon: str = "id",
         delete: bool = False,
     ) -> bool:
         """Remove an HDX object from a list within the parent HDX object
 
         Args:
-            objlist (List[Union[T <= HDXObject,Dict]]): list of HDX objects
-            obj (Union[T <= HDXObject,Dict,str]): Either an id or hdx object metadata either from an HDX object or a dictionary
+            objlist (List[Union[HDXObject,Dict]]): list of HDX objects
+            obj (Union[HDXObject,Dict,str]): Either an id or hdx object metadata either from an HDX object or a dictionary
             matchon (str): Field to match on. Defaults to id.
             delete (bool): Whether to delete HDX object. Defaults to False.
 
@@ -598,12 +596,12 @@ class HDXObject(UserDict, ABC):
         return False
 
     def _convert_hdxobjects(
-        self, hdxobjects: List[HDXObjectUpperBound]
+        self, hdxobjects: List["HDXObject"]
     ) -> List[Dict]:
         """Helper function to convert supplied list of HDX objects to a list of dict
 
         Args:
-            hdxobjects (List[T <= HDXObject]): List of HDX objects to convert
+            hdxobjects (List[HDXObject]): List of HDX objects to convert
 
         Returns:
             List[Dict]: List of HDX objects converted to simple dictionaries
@@ -615,19 +613,19 @@ class HDXObject(UserDict, ABC):
 
     def _copy_hdxobjects(
         self,
-        hdxobjects: List[HDXObjectUpperBound],
+        hdxobjects: List["HDXObject"],
         hdxobjectclass: type,
         attribute_to_copy: Optional[str] = None,
-    ) -> List[HDXObjectUpperBound]:
+    ) -> List["HDXObject"]:
         """Helper function to make a deep copy of a supplied list of HDX objects
 
         Args:
-            hdxobjects (List[T <= HDXObject]): list of HDX objects to copy
+            hdxobjects (List[HDXObject]): list of HDX objects to copy
             hdxobjectclass (type): Type of the HDX Objects to be copied
             attribute_to_copy (Optional[str]): An attribute to copy over from the HDX object. Defaults to None.
 
         Returns:
-            List[T <= HDXObject]: Deep copy of list of HDX objects
+            List[HDXObject]: Deep copy of list of HDX objects
         """
         newhdxobjects = list()
         for hdxobject in hdxobjects:
@@ -643,7 +641,7 @@ class HDXObject(UserDict, ABC):
 
     def _separate_hdxobjects(
         self,
-        hdxobjects: List[HDXObjectUpperBound],
+        hdxobjects: List["HDXObject"],
         hdxobjects_name: str,
         id_field: str,
         hdxobjectclass: type,
@@ -653,7 +651,7 @@ class HDXObject(UserDict, ABC):
         the internal dictionary is then deleted.
 
         Args:
-            hdxobjects (List[T <= HDXObject]): list of HDX objects to which to add new objects or update existing ones
+            hdxobjects (List[HDXObject]): list of HDX objects to which to add new objects or update existing ones
             hdxobjects_name (str): Name of key in internal dictionary from which to obtain list of HDX objects
             id_field (str): Field on which to match to determine if object already exists in list
             hdxobjectclass (type): Type of the HDX Object to be added/updated
@@ -662,7 +660,7 @@ class HDXObject(UserDict, ABC):
             None
         """
         new_hdxobjects = self.data.get(hdxobjects_name, list())
-        """:type : List[HDXObjectUpperBound]"""
+        """:type : List["HDXObject"]"""
         if new_hdxobjects:
             hdxobject_names = set()
             for hdxobject in hdxobjects:
