@@ -5,7 +5,7 @@ import copy
 import logging
 from abc import ABC, abstractmethod
 from collections import UserDict
-from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from ckanapi.errors import NotFound
 from hdx.utilities.dictandlist import merge_two_dictionaries
