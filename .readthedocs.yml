@@ -5,4 +5,4 @@ python:
   install:
   - method: pip
     path: .
-  - requirements: docs/.readthedocs-requirements.txt
+  - requirements: .readthedocs-requirements.txt

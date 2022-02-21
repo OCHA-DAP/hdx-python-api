@@ -1,2 +1,0 @@
-pydoc-markdown
-readthedocs-custom-steps==0.5.1
