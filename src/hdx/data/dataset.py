@@ -14,6 +14,7 @@ from typing import (
     Iterable,
     Iterator,
     List,
+    MutableMapping,
     Optional,
     Tuple,
     Union,
@@ -26,11 +27,7 @@ from hdx.utilities.dateparse import (
     parse_date,
     parse_date_range,
 )
-from hdx.utilities.dictandlist import (
-    DictUpperBound,
-    merge_two_dictionaries,
-    write_list_to_csv,
-)
+from hdx.utilities.dictandlist import merge_two_dictionaries, write_list_to_csv
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.uuid import is_valid_uuid
@@ -2227,7 +2224,7 @@ class Dataset(HDXObject):
         self,
         folder: str,
         filename: str,
-        rows: List[Union[DictUpperBound, List]],
+        rows: List[Union[MutableMapping, List]],
         resourcedata: Dict,
         headers: Optional[List[str]] = None,
     ) -> "Resource":
@@ -2236,7 +2233,7 @@ class Dataset(HDXObject):
         Args:
             folder (str): Folder to which to write file containing rows
             filename (str): Filename of file to write rows
-            rows (List[Union[DictUpperBound, List]]): List of rows
+            rows (List[Union[MutableMapping, List]]): List of rows
             resourcedata (Dict): Resource data
             headers (Optional[List[str]]): List of headers. Defaults to None.
 
@@ -2255,7 +2252,7 @@ class Dataset(HDXObject):
         self,
         folder: str,
         filename: str,
-        rows: List[DictUpperBound],
+        rows: List[MutableMapping],
         resourcedata: Dict,
         columnname: str,
         hxltags: Dict[str, str],
@@ -2268,7 +2265,7 @@ class Dataset(HDXObject):
         Args:
             folder (str): Folder to which to write file containing rows
             filename (str): Filename of file to write rows
-            rows (List[DictUpperBound]): List of rows in dict form
+            rows (List[MutableMapping]): List of rows in dict form
             resourcedata (Dict): Resource data
             columnname (str): Name of column containing indicator code
             hxltags (Dict[str,str]): Header to HXL hashtag mapping

@@ -59,6 +59,7 @@ class Configuration(UserDict):
     def __init__(self, **kwargs: Any) -> None:
         super().__init__()
 
+        self._session = None
         self._remoteckan = None
         self._emailer = None
 
@@ -309,6 +310,20 @@ class Configuration(UserDict):
         else:
             return None
 
+    def get_session(self) -> requests.Session:
+        """
+        Return the session object
+
+        Returns:
+            requests.Session: The session object
+
+        """
+        if self._session is None:
+            raise ConfigurationError(
+                "There is no session set up! Use Configuration.create(**kwargs)"
+            )
+        return self._session
+
     def remoteckan(self) -> ckanapi.RemoteCKAN:
         """
         Return the remote CKAN object (see ckanapi library)
@@ -373,29 +388,27 @@ class Configuration(UserDict):
         return kwargs
 
     @classmethod
-    def create_remoteckan(
+    def create_session_user_agent(
         cls,
-        site_url: str,
+        session: requests.Session = None,
         user_agent: Optional[str] = None,
         user_agent_config_yaml: Optional[str] = None,
         user_agent_lookup: Optional[str] = None,
         use_env: bool = False,
-        session: requests.Session = None,
         **kwargs: Any,
-    ) -> ckanapi.RemoteCKAN:
+    ) -> Tuple[requests.Session, str]:
         """
-        Create remote CKAN instance from configuration
+        Create session and user agent from configuration
 
         Args:
-            site_url (str): Site url.
+            session (requests.Session): requests Session object to use. Defaults to calling hdx.utilities.session.get_session()
             user_agent (Optional[str]): User agent string. HDXPythonLibrary/X.X.X- is prefixed.
             user_agent_config_yaml (Optional[str]): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yml.
             user_agent_lookup (Optional[str]): Lookup key for YAML. Ignored if user_agent supplied.
             use_env (bool): Whether to read environment variables. Defaults to False.
-            session (requests.Session): requests Session object to use. Defaults to calling hdx.utilities.session.get_session()
 
         Returns:
-            ckanapi.RemoteCKAN: Remote CKAN instance
+            Tuple[requests.Session, str]: Tuple of (session, user agent)
 
         """
         if not session:
@@ -422,9 +435,9 @@ class Configuration(UserDict):
                     prefix=Configuration.prefix,
                     **kwargs,
                 )
-        return ckanapi.RemoteCKAN(site_url, user_agent=ua, session=session)
+        return session, ua
 
-    def setup_remoteckan(
+    def setup_session_remoteckan(
         self, remoteckan: Optional[ckanapi.RemoteCKAN] = None, **kwargs: Any
     ) -> None:
         """
@@ -437,11 +450,14 @@ class Configuration(UserDict):
             None
 
         """
+        self._session, user_agent = self.create_session_user_agent(
+            full_agent=self.get_user_agent(), **kwargs
+        )
         if remoteckan is None:
-            self._remoteckan = self.create_remoteckan(
+            self._remoteckan = ckanapi.RemoteCKAN(
                 self.get_hdx_site_url(),
-                full_agent=self.get_user_agent(),
-                **kwargs,
+                user_agent=user_agent,
+                session=self._session,
             )
         else:
             self._remoteckan = remoteckan
@@ -502,7 +518,7 @@ class Configuration(UserDict):
         cls, configuration: Optional["Configuration"] = None, **kwargs: Any
     ) -> None:
         """
-        Set up the HDX configuration
+        Construct the HDX configuration
 
         Args:
             configuration (Optional[Configuration]): Configuration instance. Defaults to setting one up from passed arguments.
@@ -570,7 +586,7 @@ class Configuration(UserDict):
         """
         kwargs = cls._environment_variables(**kwargs)
         cls.setup(configuration, **kwargs)
-        cls._configuration.setup_remoteckan(remoteckan, **kwargs)
+        cls._configuration.setup_session_remoteckan(remoteckan, **kwargs)
         return cls._configuration.get_hdx_site_url()
 
     @classmethod

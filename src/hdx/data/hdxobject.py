@@ -595,9 +595,7 @@ class HDXObject(UserDict, ABC):
                 return True
         return False
 
-    def _convert_hdxobjects(
-        self, hdxobjects: List["HDXObject"]
-    ) -> List[Dict]:
+    def _convert_hdxobjects(self, hdxobjects: List["HDXObject"]) -> List[Dict]:
         """Helper function to convert supplied list of HDX objects to a list of dict
 
         Args:

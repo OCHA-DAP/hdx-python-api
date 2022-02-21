@@ -845,7 +845,7 @@ hello there"""
         remoteckan = ckanapi.RemoteCKAN(
             "http://lalala", apikey="12345", user_agent="HDXPythonLibrary/1.0"
         )
-        Configuration.read().setup_remoteckan(remoteckan=remoteckan)
+        Configuration.read().setup_session_remoteckan(remoteckan=remoteckan)
         assert Configuration.read().remoteckan() == remoteckan
         remoteckan = ckanapi.RemoteCKAN(
             "http://hahaha", apikey="54321", user_agent="HDXPythonLibrary/0.5"

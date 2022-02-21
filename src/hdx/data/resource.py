@@ -454,9 +454,7 @@ class Resource(HDXObject):
         format = f".{self.data['format']}"
         if format not in filename:
             filename = f"{filename}{format}"
-        with Download(
-            full_agent=self.configuration.get_user_agent()
-        ) as downloader:
+        with Download(session=self.configuration.get_session()) as downloader:
             path = downloader.download_file(url, folder, filename)
             return url, path
 
