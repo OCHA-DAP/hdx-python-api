@@ -123,21 +123,6 @@ output_directory = "docs/build"
         title = "Keyword Arguments Facade"
         contents = ["hdx.facades.keyword_arguments.*"]
 
-[tool.readthedocs-custom-steps]
-script = """
-"$PYTHON" -m virtualenv .venv
-.venv/bin/python -m pip install pydoc-markdown
-
-echo
-echo "pwd: $PWD"
-echo
-.venv/bin/pydoc-markdown --build --site-dir "$PWD/_build/html" -vv
-echo
-echo ls
-echo
-echo ls _build/html
-"""
-
 [tool.tox]
 legacy_tox_ini = """
 [tox]
