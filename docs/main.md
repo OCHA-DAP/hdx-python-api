@@ -322,49 +322,17 @@ the constructors of HDX objects like Dataset eg.
 
 ## Configuring Logging
 
-If you wish to change the logging configuration from the defaults, you will need to call **setup\_logging** with 
-arguments unless you have used the simple or ScraperWiki facades, in which case you must update the **hdx.facades** 
-module variable **logging\_kwargs** before importing the facade.
+If you use a facade from **hdx.facades**, then logging will go to console and errors to 
+file. If you are not using facades you can call **setup\_logging**  which takes 
+an argument error_file which is False by default. If set to True, errors will be written
+to a file.
 
 If not using facade:
 
     from hdx.utilities.easy_logging import setup_logging
     ...
     logger = logging.getLogger(__name__)
-    setup_logging(KEYWORD ARGUMENTS)
-
-If using facade:
-
-    from hdx.facades import logging_kwargs
-
-    logging_kwargs.update(DICTIONARY OF KEYWORD ARGUMENTS)
-    from hdx.facades.simple import facade
-
-**KEYWORD ARGUMENTS** can be:
-
-|Choose|Argument|Type|Value|Default|
-|---|---|---|---|---|
-|One of:|logging\_config\_dict|dict|Logging configuration<br>dictionary|
-|or|logging\_config\_json|str|Path to JSON<br>Logging configuration|
-|or| logging\_config\_yaml|str|Path to YAML<br>Logging configuration|Library's internal<br>logging\_configuration.yml|
-|One of:|smtp\_config\_dict|dict|Email Logging<br>configuration dictionary|
-|or|smtp\_config\_json|str|Path to JSON Email<br>Logging configuration|
-|or|smtp\_config\_yaml|str|Path to YAML Email<br>Logging configuration|
-
-Do not supply **smtp\_config\_dict**, **smtp\_config\_json** or **smtp\_config\_yaml** unless you are using the default 
-logging configuration!
-
-If you are using the default logging configuration, you have the option to have a default SMTP handler that sends an 
-email in the event of a CRITICAL error by supplying either **smtp\_config\_dict**, **smtp\_config\_json** or 
-**smtp\_config\_yaml**. Here is a template of a YAML file that can be passed as the **smtp\_config\_yaml** parameter:
-
-    handlers:
-        error_mail_handler:
-            toaddrs: EMAIL_ADDRESSES
-            subject: "RUN FAILED: MY_PROJECT_NAME"
-
-Unless you override it, the mail server **mailhost** for the default SMTP handler is **localhost** and the from address 
-**fromaddr** is <**noreply@localhost**>.
+    setup_logging(error_file=True)
 
 To use logging in your files, simply add the line below to the top of each Python file:
 
