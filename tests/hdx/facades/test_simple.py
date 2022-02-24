@@ -1,6 +1,4 @@
 """Simple Facade Tests"""
-from os.path import join
-
 import pytest
 from hdx.utilities.useragent import UserAgent, UserAgentError
 
