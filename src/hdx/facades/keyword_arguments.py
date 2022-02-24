@@ -8,10 +8,8 @@ from hdx.utilities.useragent import UserAgent
 from hdx.api import __version__
 from hdx.api.configuration import Configuration
 
-from . import logging_kwargs
-
 logger = logging.getLogger(__name__)
-setup_logging(**logging_kwargs)
+setup_logging(error_file=True)
 
 
 def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
