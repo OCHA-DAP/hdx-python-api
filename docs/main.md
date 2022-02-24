@@ -323,7 +323,7 @@ the constructors of HDX objects like Dataset eg.
 ## Configuring Logging
 
 If you use a facade from **hdx.facades**, then logging will go to console and errors to 
-file. If you are not using facades you can call **setup\_logging**  which takes 
+file. If you are not using a facade, you can call **setup\_logging**  which takes 
 an argument error_file which is False by default. If set to True, errors will be written
 to a file.
 
