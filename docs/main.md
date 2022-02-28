@@ -240,7 +240,7 @@ relative to your working directory at **config/project\_configuration.yml** whic
 configuration is used for any configuration specific to your project.
 
 The default logging configuration reads a configuration file internal to the library that sets up an coloured console 
-handler outputting at DEBUG level and a file handler writing to errors.log at ERROR level.
+handler outputting at INFO level and a file handler writing to errors.log at ERROR level.
 
 ## Facades
 
@@ -332,7 +332,8 @@ If not using facade:
     from hdx.utilities.easy_logging import setup_logging
     ...
     logger = logging.getLogger(__name__)
-    setup_logging(error_file=True)
+    setup_logging(console_log_level="DEBUG", log_file="output.log", 
+    file_log_level="INFO")
 
 To use logging in your files, simply add the line below to the top of each Python file:
 

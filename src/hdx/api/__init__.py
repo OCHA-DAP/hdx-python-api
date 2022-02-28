@@ -1,1 +1,1 @@
-__version__ = "5.5.5"
+from ._version import version as __version__  # noqa: F401

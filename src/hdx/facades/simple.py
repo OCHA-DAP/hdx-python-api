@@ -9,7 +9,7 @@ from hdx.api import __version__
 from hdx.api.configuration import Configuration
 
 logger = logging.getLogger(__name__)
-setup_logging(error_file=True)
+setup_logging(log_file="errors.log")
 
 
 def facade(projectmainfn: Callable[[None], None], **kwargs: Any):
