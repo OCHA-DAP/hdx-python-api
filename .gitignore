@@ -45,6 +45,7 @@ coverage.xml
 *,cover
 .hypothesis/
 tests/*.log
+.pytest_cache/
 
 # Translations
 *.mo
@@ -89,3 +90,9 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# IntelliJ
+.idea/
+
+# setuptools_scm
+_version.py
