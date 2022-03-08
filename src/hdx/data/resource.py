@@ -457,6 +457,8 @@ class Resource(HDXObject):
         apikey = self.configuration.get_api_key()
         if apikey:
             headers = {"Authorization": self.configuration.get_api_key()}
+        else:
+            headers = None
         with Download(
             full_agent=self.configuration.get_user_agent(), headers=headers
         ) as downloader:
