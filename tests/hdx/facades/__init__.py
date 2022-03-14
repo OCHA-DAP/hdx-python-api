@@ -1,3 +1,5 @@
+from typing import Optional
+
 from hdx.api.configuration import Configuration
 
 
@@ -36,3 +38,7 @@ def my_testfnkw(**kwargs):
     elif fn == "exc":
         testresult.actual_result = Configuration.read().get_hdx_site_url()
         raise ValueError("Some failure!")
+
+
+def my_testfnia(mydata: Optional[str] = None) -> str:
+    testresult.actual_result = mydata
