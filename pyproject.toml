@@ -166,7 +166,7 @@ commands =
 [testenv:docs]
 wheel_build_env = py310
 deps =
-    pydoc-markdown==4.5.1
+    pydoc-markdown
 commands =
     pydoc-markdown
 
