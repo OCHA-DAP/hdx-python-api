@@ -1,2 +1,2 @@
-pydoc-markdown
+pydoc-markdown==4.5.1
 readthedocs-custom-steps
