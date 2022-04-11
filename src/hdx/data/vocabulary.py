@@ -407,8 +407,10 @@ class Vocabulary(HDXObject):
                 chainerror = False
                 for i, tag in enumerate(keys):
                     whattodo = cls._tags_dict[tag]
-                    action = whattodo["Action to Take"]
                     final_tags = whattodo["New Tag(s)"]
+                    if final_tags is None:
+                        continue
+                    action = whattodo["Action to Take"]
                     for final_tag in final_tags.split(";"):
                         if final_tag in keys:
                             index = list(keys).index(final_tag)

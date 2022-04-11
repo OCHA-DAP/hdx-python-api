@@ -67,7 +67,7 @@ packages = ["hdx.api", "hdx.data", "hdx.facades"]
 
 [tool.pydoc-markdown.renderer]
 type = "mkdocs"
-output_directory = "docs/build"
+output_directory = "docs"
 
     [tool.pydoc-markdown.renderer.mkdocs_config]
     site_name = "HDX Python API"
@@ -81,7 +81,7 @@ output_directory = "docs/build"
     [[tool.pydoc-markdown.renderer.pages]]
     title = "Home"
     name = "index"
-    source ="docs/main.md"
+    source ="doc/main.md"
 
     [[tool.pydoc-markdown.renderer.pages]]
     title = "API Documentation"
@@ -129,11 +129,6 @@ output_directory = "docs/build"
         [[tool.pydoc-markdown.renderer.pages.children]]
         title = "Keyword Arguments Facade"
         contents = ["hdx.facades.keyword_arguments.*"]
-
-[tool.readthedocs-custom-steps]
-script = """
-pydoc-markdown --build --site-dir "$PWD/_build/html"
-"""
 
 [tool.tox]
 legacy_tox_ini = """

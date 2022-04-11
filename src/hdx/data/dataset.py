@@ -2241,7 +2241,7 @@ class Dataset(HDXObject):
             Resource: The created resource
         """
         filepath = join(folder, filename)
-        write_list_to_csv(filepath, rows, headers=headers)
+        write_list_to_csv(filepath, rows, columns=headers)
         resource = res_module.Resource(resourcedata)
         resource.set_file_type("csv")
         resource.set_file_to_upload(filepath)
@@ -2437,7 +2437,7 @@ class Dataset(HDXObject):
                             if qc["numeric"]:
                                 try:
                                     float(row[qc["numeric"]])
-                                except ValueError:
+                                except (TypeError, ValueError):
                                     continue
                             bites_disabled[i] = False
                             if qc["cutdown"]:

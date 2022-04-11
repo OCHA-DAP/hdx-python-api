@@ -917,68 +917,10 @@ class TestResource:
             "74b74ae1-df0c-4716-829f-4f939a046815"
         )
         TestResource.datastore = None
-        resource.create_datastore(delete_first=0)
-        assert TestResource.datastore == "create"
-        TestResource.datastore = None
-        resource.create_datastore(delete_first=1)
-        assert TestResource.datastore == "create"
-        TestResource.datastore = None
-        resource.create_datastore(delete_first=2)
-        assert TestResource.datastore == "create"
-        TestResource.datastore = None
-        with pytest.raises(HDXError):
-            resource.create_datastore(delete_first=3)
-        resource.update_datastore()
-        assert TestResource.datastore == "create"
-        TestResource.datastore = None
-        resource.update_datastore_for_topline()
-        assert TestResource.datastore == "create"
-        TestResource.datastore = None
-        resource.update_datastore_from_dict_schema(
-            {
-                "schema": [
-                    {"id": "code", "type": "text"},
-                ],
-                "primary_key": "code",
-            }
-        )
-        assert TestResource.datastore == "create"
-        TestResource.datastore = None
-        resource.update_datastore_from_yaml_schema(topline_yaml)
-        assert TestResource.datastore == "create"
-        TestResource.datastore = None
-        filefordatastore = join("tests", "fixtures", "test_data.csv")
-        resource.update_datastore_from_json_schema(
-            topline_json, path=filefordatastore
-        )
-        assert TestResource.datastore == "create"
-        TestResource.datastore = None
         assert resource.has_datastore() is True
         assert TestResource.datastore == "create"
         TestResource.datastore = None
         assert resource2.has_datastore() is False
-        TestResource.datastore = None
-        filefordatastore = join(
-            "tests",
-            "fixtures",
-            "datastore",
-            "ACLED-All-Africa-File_20170101-to-20170708.xlsx",
-        )
-        resource.update_datastore(path=filefordatastore)
-        assert TestResource.datastore == "create"
-        with pytest.raises(HDXError):
-            resource2.update_datastore_from_json_schema(topline_json)
-        resource.delete_datastore()
-        assert TestResource.datastore == "delete"
-        TestResource.datastore = None
-        with pytest.raises(HDXError):
-            del resource["url"]
-            resource.create_datastore()
-        filefordatastore = join("tests", "fixtures", "test_data.zip")
-        resource.update_datastore_from_json_schema(
-            topline_json, path=filefordatastore
-        )
-        assert TestResource.datastore == "create"
 
     def test_resource_views(self, configuration, post_resourceview):
         resource = Resource({"id": "25982d1c-f45a-45e1-b14e-87d367413045"})

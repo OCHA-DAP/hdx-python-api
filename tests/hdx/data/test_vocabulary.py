@@ -2635,12 +2635,12 @@ class TestVocabulary:
             "Action to Take": "merge",
             "New Tag(s)": "refugees",
             "Number of Public Datasets": "1822",
-            "good tag + delete": "",
-            "new tag + delete": "",
-            "new tag + ok": "",
-            "no tag + merge": "",
-            "non-accepted tag + ok": "",
-            "non-accepted tag + merge": "",
+            "good tag + delete": None,
+            "new tag + delete": None,
+            "new tag + ok": None,
+            "no tag + merge": None,
+            "non-accepted tag + ok": None,
+            "non-accepted tag + merge": None,
         }
         assert Vocabulary.get_mapped_tag("refugee") == (["refugees"], list())
         assert Vocabulary.get_mapped_tag("monitoring") == (

@@ -47,6 +47,8 @@ The library has detailed API documentation which can be found in the menu on the
 
 
 ## Breaking Changes
+From 5.6.0, creating and updating datastores removed
+
 From 5.4.0, Configuration class moved to hdx.api.configuration and Locations class moved to hdx.api.locations
 
 From 5.3.0, only supports Python 3.6 and above
@@ -669,20 +671,6 @@ your server or api, in this case the url will point to a location in the HDX fil
 There is a getter to read the value back:
 
     file_to_upload = resource.get_file_to_upload()
-
-If you wish to set up the data preview feature in HDX and your file (HDX or externally hosted) is a csv, then you can 
-call the **create\_datastore** or **update\_datastore** methods. If you do not pass any parameters, all fields in the 
-csv will be assumed to be text.
-
-    resource.create_datastore()
-    resource.update_datastore()
-
-More fine grained control is possible by passing certain parameters and using other related methods eg.
-
-    resource.create_datastore(schema={"id": "FIELD", "type": "TYPE"}, primary_key="PRIMARY_KEY_OF_SCHEMA", delete_first=0 (No) / 1 (Yes) / 2 (If no primary key), path="LOCAL_PATH_OF_UPLOADED_FILE") -> None:
-    resource.create_datastore_from_yaml_schema(yaml_path="PATH_TO_YAML_SCHEMA", delete_first=0 (No) / 1 (Yes) / 2 (If no primary key), path="LOCAL_PATH_OF_UPLOADED_FILE")
-    resource.update_datastore(schema={"id": "FIELD", "type": "TYPE"}, primary_key="PRIMARY_KEY_OF_SCHEMA", path="LOCAL_PATH_OF_UPLOADED_FILE") -> None:
-    resource.update_datastore_from_json_schema(json_path="PATH_TO_JSON_SCHEMA", path="LOCAL_PATH_OF_UPLOADED_FILE")
 
 ## Showcase Management
 The **Showcase** class enables you to manage showcases, creating, deleting and updating (as for other HDX objects) 
