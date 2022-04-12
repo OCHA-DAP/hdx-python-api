@@ -1,6 +1,6 @@
 python-slugify==6.1.1
-pytest==7.0.1
+pytest==7.1.1
 pytest-cov==3.0.0
-tox==3.24.5
+tox==3.25.0
 tox-wheel==0.7.0
 -r requirements.txt
