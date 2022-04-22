@@ -456,7 +456,9 @@ class Resource(HDXObject):
         with Download(
             full_agent=self.configuration.get_user_agent(), headers=headers
         ) as downloader:
-            path = downloader.download_file(url, folder, filename)
+            path = downloader.download_file(
+                url, folder=folder, filename=filename
+            )
             return url, path
 
     @staticmethod
