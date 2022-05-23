@@ -1675,3 +1675,47 @@ class TestDatasetNoncore:
                     yearcol="YEAR",
                 )
                 assert success is False
+
+    def test_load_save_to_json(self, vocabulary_read):
+        with temp_dir(
+            "LoadSaveDatasetJSON",
+            delete_on_success=True,
+            delete_on_failure=False,
+        ) as temp_folder:
+            name = "mydatasetname"
+            dataset = Dataset(
+                {"name": name, "title": "title", "notes": "description"}
+            )
+            maintainer = "196196be-6037-4488-8b71-d786adf4c081"
+            dataset.set_maintainer(maintainer)
+            dataset.set_organization("fb7c2910-6080-4b66-8b4f-0be9b6dc4d8e")
+            start_date = "2020-02-09"
+            end_date = "2020-10-20"
+            dataset.set_date_of_dataset(start_date, end_date)
+            expected_update_frequency = "Every day"
+            dataset.set_expected_update_frequency(expected_update_frequency)
+            dataset.set_subnational(False)
+            tags = ["hxl", "aid funding"]
+            dataset.add_tags(tags)
+            resource_name = "filename.csv"
+            resourcedata = {
+                "name": resource_name,
+                "description": "resource description",
+                "format": "csv",
+                "url": "http://lala",
+            }
+            dataset.add_update_resource(resourcedata)
+            path = join(temp_folder, "dataset.json")
+            dataset.save_to_json(path)
+            dataset = Dataset.load_from_json(path)
+            assert dataset["name"] == name
+            assert dataset["maintainer"] == maintainer
+            dateinfo = dataset.get_date_of_dataset()
+            assert dateinfo["startdate_str"][:10] == start_date
+            assert dateinfo["enddate_str"][:10] == end_date
+            assert (
+                dataset.get_expected_update_frequency()
+                == expected_update_frequency
+            )
+            assert dataset.get_tags() == tags
+            assert dataset.get_resource()["name"] == resource_name

@@ -131,6 +131,12 @@ vocabulary_list = [
             },
             {
                 "vocabulary_id": "4381925f-0ae9-44a3-b30d-cae35598757b",
+                "display_name": "aid funding",
+                "id": "408fd5d4-5842-4066-967c-4b1978f8d806",
+                "name": "aid funding",
+            },
+            {
+                "vocabulary_id": "4381925f-0ae9-44a3-b30d-cae35598757b",
                 "display_name": "aid workers",
                 "id": "408fd5d4-5842-4066-967c-4b1978f8d806",
                 "name": "aid workers",

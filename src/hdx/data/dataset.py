@@ -29,7 +29,9 @@ from hdx.utilities.dateparse import (
 )
 from hdx.utilities.dictandlist import merge_two_dictionaries, write_list_to_csv
 from hdx.utilities.downloader import Download
+from hdx.utilities.loader import load_json
 from hdx.utilities.path import script_dir_plus_file
+from hdx.utilities.saver import save_json
 from hdx.utilities.uuid import is_valid_uuid
 
 import hdx.data.filestore_helper as filestore_helper
@@ -161,6 +163,51 @@ class Dataset(HDXObject):
         self._separate_hdxobjects(
             self.resources, "resources", "name", res_module.Resource
         )
+
+    def unseparate_resources(self) -> None:
+        """Move self.resources into resources key in internal dictionary
+
+        Returns:
+            None
+        """
+        if self.resources:
+            self.data["resources"] = self._convert_hdxobjects(self.resources)
+
+    def get_dataset_dict(self) -> Dict:
+        """Move self.resources into resources key in internal dictionary
+
+        Returns:
+            Dict: Dataset dictionary
+        """
+        package = deepcopy(self.data)
+        if self.resources:
+            package["resources"] = self._convert_hdxobjects(self.resources)
+        return package
+
+    def save_to_json(self, path: str):
+        """Save dataset to JSON
+
+        Args:
+            path (str): Path to save dataset
+
+        Returns:
+            None
+        """
+        save_json(self.get_dataset_dict(), path)
+
+    @staticmethod
+    def load_from_json(path: str) -> "Dataset":
+        """Load dataset from JSON
+
+        Args:
+            path (str): Path to load dataset
+
+        Returns:
+            Dataset: Dataset created from JSON
+        """
+        dataset = Dataset(load_json(path))
+        dataset.separate_resources()
+        return dataset
 
     def init_resources(self) -> None:
         """Initialise self.resources list
@@ -537,8 +584,7 @@ class Dataset(HDXObject):
         Returns:
             Dict: Dictionary of what gets passed to the revise call (for testing)
         """
-        if self.resources:
-            self.data["resources"] = self._convert_hdxobjects(self.resources)
+        self.unseparate_resources()
         self.clean_tags()
         scriptinfo = kwargs.get("updated_by_script")
         if scriptinfo:
@@ -1923,12 +1969,8 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        package = deepcopy(self.data)
-        if self.resources:
-            package["resources"] = self._convert_hdxobjects(self.resources)
-
         data = {
-            "package": package,
+            "package": self.get_dataset_dict(),
             "create_datastore_views": create_datastore_views,
         }
         self._write_to_hdx("create_default_views", data, "package")
