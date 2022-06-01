@@ -1703,11 +1703,11 @@ class TestDatasetNoncore:
                 "name": resource_name,
                 "description": "resource description",
                 "format": "csv",
-                "url": "http://lala",
+                "url": "https://docs.google.com/spreadsheets/d/1NjSI2LaS3SqbgYc0HdD8oIb7lofGtiHgoKKATCpwVdY/edit#gid=1088874596",
             }
             dataset.add_update_resource(resourcedata)
             path = join(temp_folder, "dataset.json")
-            dataset.save_to_json(path)
+            dataset.save_to_json(path, follow_urls=True)
             dataset = Dataset.load_from_json(path)
             assert dataset["name"] == name
             assert dataset["maintainer"] == maintainer
@@ -1719,7 +1719,12 @@ class TestDatasetNoncore:
                 == expected_update_frequency
             )
             assert dataset.get_tags() == tags
-            assert dataset.get_resource()["name"] == resource_name
+            resource = dataset.get_resource()
+            assert resource["name"] == resource_name
+            assert (
+                resource["url"]
+                == "https://docs.google.com/spreadsheets/d/1NjSI2LaS3SqbgYc0HdD8oIb7lofGtiHgoKKATCpwVdY/export?format=csv&gid=1088874596"
+            )
 
             save_text("null", path)
             dataset = Dataset.load_from_json(path)

@@ -32,6 +32,7 @@ from hdx.utilities.downloader import Download
 from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.saver import save_json
 from hdx.utilities.uuid import is_valid_uuid
+from hxl.input import _munge_url
 
 import hdx.data.filestore_helper as filestore_helper
 import hdx.data.organization as org_module
@@ -183,16 +184,22 @@ class Dataset(HDXObject):
             package["resources"] = self._convert_hdxobjects(self.resources)
         return package
 
-    def save_to_json(self, path: str):
-        """Save dataset to JSON
+    def save_to_json(self, path: str, follow_urls: bool = False):
+        """Save dataset to JSON. If follow_urls is True, resource urls that point to
+        datasets, HXL proxy urls etc. are followed to retrieve final urls.
 
         Args:
             path (str): Path to save dataset
+            follow_urls (bool): Whether to follow urls. Defaults to False.
 
         Returns:
             None
         """
-        save_json(self.get_dataset_dict(), path)
+        dataset_dict = self.get_dataset_dict()
+        if follow_urls:
+            for resource in dataset_dict.get("resources", tuple()):
+                resource["url"] = _munge_url(resource["url"])
+        save_json(dataset_dict, path)
 
     @staticmethod
     def load_from_json(path: str) -> Optional["Dataset"]:
