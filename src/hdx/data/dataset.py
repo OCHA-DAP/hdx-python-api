@@ -29,7 +29,6 @@ from hdx.utilities.dateparse import (
 )
 from hdx.utilities.dictandlist import merge_two_dictionaries, write_list_to_csv
 from hdx.utilities.downloader import Download
-from hdx.utilities.loader import load_json
 from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.saver import save_json
 from hdx.utilities.uuid import is_valid_uuid
