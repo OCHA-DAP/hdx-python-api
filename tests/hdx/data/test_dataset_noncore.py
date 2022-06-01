@@ -10,6 +10,7 @@ from hdx.utilities.compare import assert_files_same
 from hdx.utilities.dateparse import parse_date_range
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import temp_dir
+from hdx.utilities.saver import save_text
 
 from hdx.api.configuration import Configuration
 from hdx.data.dataset import Dataset
@@ -1719,3 +1720,7 @@ class TestDatasetNoncore:
             )
             assert dataset.get_tags() == tags
             assert dataset.get_resource()["name"] == resource_name
+
+            save_text("null", path)
+            dataset = Dataset.load_from_json(path)
+            assert dataset is None

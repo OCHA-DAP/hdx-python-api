@@ -196,18 +196,22 @@ class Dataset(HDXObject):
         save_json(self.get_dataset_dict(), path)
 
     @staticmethod
-    def load_from_json(path: str) -> "Dataset":
+    def load_from_json(path: str) -> Optional["Dataset"]:
         """Load dataset from JSON
 
         Args:
             path (str): Path to load dataset
 
         Returns:
-            Dataset: Dataset created from JSON
+            Optional[Dataset]: Dataset created from JSON or None
         """
-        dataset = Dataset(load_json(path))
-        dataset.separate_resources()
-        return dataset
+        with open(path) as f:
+            jsonobj = json.loads(f.read())
+            if jsonobj is None:
+                return None
+            dataset = Dataset(jsonobj)
+            dataset.separate_resources()
+            return dataset
 
     def init_resources(self) -> None:
         """Initialise self.resources list
