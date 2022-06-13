@@ -445,9 +445,9 @@ class Resource(HDXObject):
             raise HDXError("No URL to download!")
         logger.debug(f"Downloading {url}")
         filename = self.data["name"]
-        format = f".{self.data['format']}"
-        if format not in filename:
-            filename = f"{filename}{format}"
+        file_type = f".{self.get_file_type()}"
+        if not filename.endswith(file_type):
+            filename = f"{filename}{file_type}"
         apikey = self.configuration.get_api_key()
         if apikey:
             headers = {"Authorization": self.configuration.get_api_key()}
