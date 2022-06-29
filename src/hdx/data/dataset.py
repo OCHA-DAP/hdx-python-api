@@ -32,7 +32,7 @@ from hdx.utilities.downloader import Download
 from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.saver import save_json
 from hdx.utilities.uuid import is_valid_uuid
-from hxl.input import _munge_url
+from hxl.input import InputOptions, _munge_url
 
 import hdx.data.filestore_helper as filestore_helper
 import hdx.data.organization as org_module
@@ -198,7 +198,7 @@ class Dataset(HDXObject):
         dataset_dict = self.get_dataset_dict()
         if follow_urls:
             for resource in dataset_dict.get("resources", tuple()):
-                resource["url"] = _munge_url(resource["url"])
+                resource["url"] = _munge_url(resource["url"], InputOptions())
         save_json(dataset_dict, path)
 
     @staticmethod
