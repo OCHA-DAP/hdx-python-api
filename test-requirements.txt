@@ -1,5 +1,5 @@
 pytest==7.1.2
 pytest-cov==3.0.0
-tox==3.25.0
+tox==3.25.1
 tox-wheel==0.7.0
 -r requirements.txt
