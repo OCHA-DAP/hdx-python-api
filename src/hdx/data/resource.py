@@ -52,6 +52,7 @@ class Resource(HDXObject):
             "patch": "resource_patch",
             "delete": "resource_delete",
             "search": "resource_search",
+            "broken": "hdx_mark_broken_link_in_resource",
             "datastore_delete": "datastore_delete",
             "datastore_search": "datastore_search",
         }
@@ -666,3 +667,19 @@ class Resource(HDXObject):
             None
         """
         self.data["dataset_preview_enabled"] = "False"
+
+    def mark_broken(self) -> None:
+        """Mark resource as broken
+
+        Returns:
+            None
+        """
+        success, result = self._read_from_hdx(
+            "resource",
+            self.data["id"],
+            action=self.actions()["broken"],
+        )
+        if success:
+            self.data = result
+        else:
+            logger.debug(result)

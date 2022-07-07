@@ -635,6 +635,36 @@ class TestResource:
 
         Configuration.read().remoteckan().session = MockSession()
 
+    @pytest.fixture(scope="function")
+    def post_broken(self):
+        class MockSession:
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth=None):
+                if isinstance(data, dict):
+                    datadict = {
+                        k.decode("utf8"): v.decode("utf8")
+                        for k, v in data.items()
+                    }
+                else:
+                    datadict = json.loads(data.decode("utf-8"))
+                if "show" in url:
+                    return mockshow(url, datadict)
+                if "broken" not in url:
+                    return MockResponse(
+                        404,
+                        '{"success": false, "error": {"message": "TEST ERROR: Not mark broken", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=hdx_mark_broken_link_in_resource"}',
+                    )
+                resultdictcopy = copy.deepcopy(resultdict)
+                resultdictcopy["broken_link"] = True
+                result = json.dumps(resultdictcopy)
+                return MockResponse(
+                    200,
+                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=hdx_mark_broken_link_in_resource"}'
+                    % result,
+                )
+
+        Configuration.read().remoteckan().session = MockSession()
+
     def test_read_from_hdx(self, configuration, read):
         resource = Resource.read_from_hdx(
             "74b74ae1-df0c-4716-829f-4f939a046811"
@@ -965,3 +995,13 @@ class TestResource:
             resource.reorder_resource_views(
                 [resource_view_list[1], resource_view]
             )
+
+    def test_mark_broken(self, configuration, post_broken):
+        resource = Resource.read_from_hdx(
+            "74b74ae1-df0c-4716-829f-4f939a046811"
+        )
+        assert resource["id"] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
+        assert resource["name"] == "MyResource1"
+        assert resource["package_id"] == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
+        resource.mark_broken()
+        assert resource["broken_link"] is True
