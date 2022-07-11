@@ -19,7 +19,8 @@ logger = logging.getLogger(__name__)
 
 
 class Resource(HDXObject):
-    """Resource class containing all logic for creating, checking, and updating resources.
+    """Resource class containing all logic for creating, checking, and updating
+    resources.
 
     Args:
         initial_data (Optional[Dict]): Initial resource metadata dictionary. Defaults to None.
@@ -106,10 +107,11 @@ class Resource(HDXObject):
         date_format: Optional[str] = None,
         today: datetime.date = datetime.date.today(),
     ) -> Dict:
-        """Get resource date as datetimes and strings in specified format. If no format is supplied, the ISO 8601
-        format is used. Returns a dictionary containing keys startdate (start date as datetime), enddate (end
-        date as datetime), startdate_str (start date as string), enddate_str (end date as string) and ongoing
-        (whether the end date is a rolls forward every day).
+        """Get resource date as datetimes and strings in specified format. If no format
+        is supplied, the ISO 8601 format is used. Returns a dictionary containing keys
+        startdate (start date as datetime), enddate (end date as datetime),
+        startdate_str (start date as string), enddate_str (end date as string) and
+        ongoing (whether the end date is a rolls forward every day).
 
         Args:
             date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
@@ -201,10 +203,10 @@ class Resource(HDXObject):
         Returns:
             Optional[str]: Mapped format or None if no mapping found
         """
-        if configuration is None:
-            configuration = Configuration.read()
         if not file_type:
             return None
+        if configuration is None:
+            configuration = Configuration.read()
         file_type = file_type.lower()
         mappings = cls.read_formats_mappings(configuration=configuration)
         format = mappings.get(file_type)
@@ -232,7 +234,6 @@ class Resource(HDXObject):
 
         Args:
             file_type (str): File type to set on resource
-            log_none (bool): Whether to log an informational message about the file type being None. Defaults to True.
 
         Returns:
             str: Format that was set
@@ -248,7 +249,8 @@ class Resource(HDXObject):
         return format
 
     def clean_file_type(self) -> str:
-        """Clean the resource's file type, setting it to None if it is invalid and cannot be mapped
+        """Clean the resource's file type, setting it to None if it is invalid and
+        cannot be mapped
 
         Returns:
             str: Format that was set
@@ -270,7 +272,7 @@ class Resource(HDXObject):
 
         Args:
             file_to_upload (str): Local path to file to upload
-            guess_format_from_suffix (bool): Whether to try to set format based on file suffix. Defaults to False.
+            guess_format_from_suffix (bool): Set format from file suffix. Defaults to False.
 
         Returns:
             Optional[str]: The format that was guessed or None if no format was set
@@ -284,8 +286,8 @@ class Resource(HDXObject):
         return format
 
     def check_url_filetoupload(self) -> None:
-        """Check if url or file to upload provided for resource and add resource_type and url_type if not supplied.
-        Correct the file type.
+        """Check if url or file to upload provided for resource and add resource_type
+        and url_type if not supplied. Correct the file type.
 
         Returns:
             None
@@ -318,8 +320,9 @@ class Resource(HDXObject):
         self.clean_file_type()
 
     def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
-        """Check that metadata for resource is complete. The parameter ignore_fields should be set if required to
-        any fields that should be ignored for the particular operation.
+        """Check that metadata for resource is complete. The parameter ignore_fields
+        should be set if required to any fields that should be ignored for the
+        particular operation.
 
         Args:
             ignore_fields (List[str]): Fields to ignore. Default is [].
@@ -431,7 +434,8 @@ class Resource(HDXObject):
         return resources
 
     def download(self, folder: Optional[str] = None) -> Tuple[str, str]:
-        """Download resource store to provided folder or temporary folder if no folder supplied
+        """Download resource store to provided folder or temporary folder if no folder
+        supplied
 
         Args:
             folder (Optional[str]): Folder to download resource to. Defaults to None.
