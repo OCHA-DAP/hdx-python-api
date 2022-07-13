@@ -682,6 +682,8 @@ class Resource(HDXObject):
             "resource",
             self.data["id"],
             action=self.actions()["broken"],
+            batch_mode="KEEP_OLD",
+            skip_validation=True,
         )
         if success:
             self.data = result
