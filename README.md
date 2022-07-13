@@ -2,7 +2,7 @@
 [![Coverage Status](https://codecov.io/gh/OCHA-DAP/hdx-python-api/branch/main/graph/badge.svg?token=JpWZc5js4y)](https://codecov.io/gh/OCHA-DAP/hdx-python-api)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
-[![Downloads](https://pepy.tech/badge/hdx-python-api)](https://pepy.tech/project/hdx-python-api)
+[![Downloads](https://img.shields.io/pypi/dm/hdx-python-api.svg)](https://pypistats.org/packages/hdx-python-api)
 
 The HDX Python API Library is designed to enable you to easily develop code that interacts with the [Humanitarian Data
 Exchange](https://data.humdata.org/) (HDX) platform. The major goal of the library is to make pushing and pulling data 
