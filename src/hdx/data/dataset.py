@@ -2279,6 +2279,7 @@ class Dataset(HDXObject):
         rows: List[Union[MutableMapping, List]],
         resourcedata: Dict,
         headers: Optional[List[str]] = None,
+        encoding: Optional[str] = None,
     ) -> "Resource":
         """Write rows to csv and create resource, adding to it the dataset
 
@@ -2288,12 +2289,13 @@ class Dataset(HDXObject):
             rows (List[Union[MutableMapping, List]]): List of rows
             resourcedata (Dict): Resource data
             headers (Optional[List[str]]): List of headers. Defaults to None.
+            encoding (Optional[str]): Encoding to use. Defaults to None (infer encoding).
 
         Returns:
             Resource: The created resource
         """
         filepath = join(folder, filename)
-        write_list_to_csv(filepath, rows, columns=headers)
+        write_list_to_csv(filepath, rows, columns=headers, encoding=encoding)
         resource = res_module.Resource(resourcedata)
         resource.set_file_type("csv")
         resource.set_file_to_upload(filepath)
@@ -2310,6 +2312,7 @@ class Dataset(HDXObject):
         hxltags: Dict[str, str],
         qc_indicator_codes: List[str],
         headers: Optional[List[str]] = None,
+        encoding: Optional[str] = None,
     ) -> Optional["Resource"]:
         """Generate QuickCharts rows by cutting down input rows by indicator code and optionally restricting to certain
         columns. Output to csv and create resource, adding to it the dataset.
@@ -2323,6 +2326,7 @@ class Dataset(HDXObject):
             hxltags (Dict[str,str]): Header to HXL hashtag mapping
             qc_indicator_codes (List[str]): List of indicator codes to match
             headers (Optional[List[str]]): List of headers to output. Defaults to None (all headers).
+            encoding (Optional[str]): Encoding to use. Defaults to None (infer encoding).
 
         Returns:
             Optional[Resource]: The created resource or None
@@ -2339,7 +2343,12 @@ class Dataset(HDXObject):
             return None
         qc_rows.insert(0, hxltags)
         return self.generate_resource_from_rows(
-            folder, filename, qc_rows, resourcedata, headers=headers
+            folder,
+            filename,
+            qc_rows,
+            resourcedata,
+            headers=headers,
+            encoding=encoding,
         )
 
     def generate_resource_from_iterator(
@@ -2354,6 +2363,7 @@ class Dataset(HDXObject):
         yearcol: Optional[Union[int, str]] = None,
         date_function: Optional[Callable[[Dict], Optional[Dict]]] = None,
         quickcharts: Optional[Dict] = None,
+        encoding: Optional[str] = None,
     ) -> Tuple[bool, Dict]:
         """Given headers and an iterator, write rows to csv and create resource, adding to it the dataset. The returned
         dictionary will contain the resource in the key resource, headers in the key headers and list of rows in
@@ -2389,6 +2399,7 @@ class Dataset(HDXObject):
             yearcol (Optional[Union[int,str]]): Year column for setting dataset year range. Defaults to None (don't set).
             date_function (Optional[Callable[[Dict],Optional[Dict]]]): Date function to call for each row. Defaults to None.
             quickcharts (Optional[Dict]): Dictionary containing optional keys: hashtag, values, cutdown and/or cutdownhashtags
+            encoding (Optional[str]): Encoding to use. Defaults to None (infer encoding).
 
         Returns:
             Tuple[bool, Dict]: (True if resource added, dictionary of results)
@@ -2507,7 +2518,12 @@ class Dataset(HDXObject):
                 retdict["enddate"] = dates[1]
                 self.set_date_of_dataset(dates[0], dates[1])
         resource = self.generate_resource_from_rows(
-            folder, filename, rows, resourcedata, headers=headers
+            folder,
+            filename,
+            rows,
+            resourcedata,
+            headers=headers,
+            encoding=encoding,
         )
         retdict["resource"] = resource
         retdict["headers"] = headers
@@ -2528,6 +2544,7 @@ class Dataset(HDXObject):
                         qc["rows"],
                         qc_resourcedata,
                         headers=qc["headers"],
+                        encoding=encoding,
                     )
                     retdict["qc_resource"] = resource
         return True, retdict
@@ -2612,4 +2629,5 @@ class Dataset(HDXObject):
             yearcol=yearcol,
             date_function=date_function,
             quickcharts=quickcharts,
+            encoding=kwargs.get("encoding", None),
         )
