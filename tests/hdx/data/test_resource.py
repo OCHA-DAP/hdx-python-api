@@ -1004,4 +1004,4 @@ class TestResource:
         assert resource["name"] == "MyResource1"
         assert resource["package_id"] == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
         resource.mark_broken()
-        assert resource["broken_link"] is True
+        assert resource.is_broken() is True

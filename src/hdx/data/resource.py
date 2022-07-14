@@ -672,6 +672,14 @@ class Resource(HDXObject):
         """
         self.data["dataset_preview_enabled"] = "False"
 
+    def is_broken(self) -> bool:
+        """Return if resource is broken
+
+        Returns:
+            bool: Whether resource is broken
+        """
+        return self.data.get("broken_link", False)
+
     def mark_broken(self) -> None:
         """Mark resource as broken
 
