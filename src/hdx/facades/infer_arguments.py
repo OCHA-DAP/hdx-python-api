@@ -1,8 +1,6 @@
 """Facade to simplify project setup that calls project main function with kwargs"""
 import logging
-import sys
-from inspect import BoundArguments
-from typing import Any, Callable, List, Optional, Tuple
+from typing import Any, Callable, Optional
 
 import defopt
 from hdx.utilities.easy_logging import setup_logging
@@ -13,38 +11,6 @@ from hdx.api.configuration import Configuration
 
 logger = logging.getLogger(__name__)
 setup_logging(log_file="errors.log")
-
-
-def _bind_known(fn: Callable) -> Tuple[Callable, BoundArguments, List[str]]:
-    parser = defopt._create_parser(fn, cli_options="all")
-    with defopt._colorama_text():
-        args, argv = parser.parse_known_args()
-        parsed_argv = vars(args)
-    try:
-        func = parsed_argv.pop("_func")
-    except KeyError:
-        # Workaround for http://bugs.python.org/issue9253#msg186387 (and
-        # https://bugs.python.org/issue29298 which blocks using required=True).
-        parser.error("too few arguments")
-    sig = defopt.signature(func)
-    ba = sig.bind_partial()
-    ba.arguments.update(parsed_argv)
-    return func, ba, argv
-
-
-def _run_known(func: Callable, ba: BoundArguments) -> Any:
-    sig = defopt.signature(func)
-    (raises,) = [
-        # typing_inspect does not allow fetching metadata; see e.g. ti#82.
-        arg
-        for arg in getattr(sig.return_annotation, "__metadata__", [])
-        if isinstance(arg, defopt._Raises)
-    ]
-    # The function call should occur here to minimize effects on the traceback.
-    try:
-        return func(*ba.args, **ba.kwargs)
-    except raises as e:
-        sys.exit(e)
 
 
 def _create_configuration(
@@ -104,7 +70,7 @@ def facade(projectmainfn: Callable[[Any], None]):
     #
     # Setting up configuration
     #
-    func, ba, argv = _bind_known(projectmainfn)
+    func, argv = defopt.bind_known(projectmainfn, cli_options="all")
     site_url = defopt.run(_create_configuration, argv=argv, cli_options="all")
 
     logger.info("--------------------------------------------------")
@@ -112,4 +78,4 @@ def facade(projectmainfn: Callable[[Any], None]):
     logger.info(f"> HDX Site: {site_url}")
 
     UserAgent.user_agent = Configuration.read().user_agent
-    _run_known(func, ba)
+    func()

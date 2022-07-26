@@ -42,3 +42,4 @@ def my_testfnkw(**kwargs):
 
 def my_testfnia(mydata: Optional[str] = None) -> str:
     testresult.actual_result = mydata
+    return mydata
