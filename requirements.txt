@@ -1,7 +1,7 @@
 ckanapi==4.7
 defopt==6.4.0
 email_validator==1.2.1
-hdx-python-country==3.3.1
+git+https://github.com/OCHA-DAP/hdx-python-country@new_fx#egg=hdx-python-country
 git+https://github.com/OCHA-DAP/hdx-python-utilities@main#egg=hdx-python-utilities
 ndg-httpsclient==0.5.1
 pyasn1==0.4.8
