@@ -1,7 +1,7 @@
 """Dataset Tests (noncore methods)"""
 import copy
-import datetime
 import json
+from datetime import datetime, timezone
 from os.path import join
 
 import pytest
@@ -194,19 +194,23 @@ class TestDatasetNoncore:
 
     def test_get_set_date_of_dataset(self):
         dataset = Dataset({"dataset_date": "[2020-01-07T00:00:00 TO *]"})
-        result = dataset.get_date_of_dataset(today=datetime.date(2020, 11, 17))
+        result = dataset.get_date_of_dataset(today=datetime(2020, 11, 17))
         assert result == {
-            "startdate": datetime.datetime(2020, 1, 7, 0, 0),
-            "enddate": datetime.datetime(2020, 11, 17, 0, 0),
-            "startdate_str": "2020-01-07T00:00:00",
-            "enddate_str": "2020-11-17T00:00:00",
+            "startdate": datetime(2020, 1, 7, 0, 0, tzinfo=timezone.utc),
+            "enddate": datetime(
+                2020, 11, 17, 23, 59, 59, 999999, tzinfo=timezone.utc
+            ),
+            "startdate_str": "2020-01-07T00:00:00+00:00",
+            "enddate_str": "2020-11-17T23:59:59.999999+00:00",
             "ongoing": True,
         }
         dataset.set_date_of_dataset("2020-02-09")
         result = dataset.get_date_of_dataset("%d/%m/%Y")
         assert result == {
-            "startdate": datetime.datetime(2020, 2, 9, 0, 0),
-            "enddate": datetime.datetime(2020, 2, 9, 0, 0),
+            "startdate": datetime(2020, 2, 9, 0, 0, tzinfo=timezone.utc),
+            "enddate": datetime(
+                2020, 2, 9, 23, 59, 59, 999999, tzinfo=timezone.utc
+            ),
             "startdate_str": "09/02/2020",
             "enddate_str": "09/02/2020",
             "ongoing": False,
@@ -214,19 +218,23 @@ class TestDatasetNoncore:
         dataset.set_date_of_dataset("2020-02-09", "2020-10-20")
         result = dataset.get_date_of_dataset("%d/%m/%Y")
         assert result == {
-            "startdate": datetime.datetime(2020, 2, 9, 0, 0),
-            "enddate": datetime.datetime(2020, 10, 20, 0, 0),
+            "startdate": datetime(2020, 2, 9, 0, 0, tzinfo=timezone.utc),
+            "enddate": datetime(
+                2020, 10, 20, 23, 59, 59, 999999, tzinfo=timezone.utc
+            ),
             "startdate_str": "09/02/2020",
             "enddate_str": "20/10/2020",
             "ongoing": False,
         }
         dataset.set_date_of_dataset("2020-02-09", ongoing=True)
         result = dataset.get_date_of_dataset(
-            "%d/%m/%Y", today=datetime.datetime(2020, 3, 9, 0, 0)
+            "%d/%m/%Y", today=datetime(2020, 3, 9, 0, 0)
         )
         assert result == {
-            "startdate": datetime.datetime(2020, 2, 9, 0, 0),
-            "enddate": datetime.datetime(2020, 3, 9, 0, 0),
+            "startdate": datetime(2020, 2, 9, 0, 0, tzinfo=timezone.utc),
+            "enddate": datetime(
+                2020, 3, 9, 23, 59, 59, 999999, tzinfo=timezone.utc
+            ),
             "startdate_str": "09/02/2020",
             "enddate_str": "09/03/2020",
             "ongoing": True,
@@ -884,12 +892,16 @@ class TestDatasetNoncore:
         dataset["title"] = title
         expected = [
             (
-                datetime.datetime(1981, 1, 1, 0, 0),
-                datetime.datetime(2015, 12, 31, 0, 0),
+                datetime(1981, 1, 1, 0, 0, tzinfo=timezone.utc),
+                datetime(
+                    2015, 12, 31, 23, 59, 59, 999999, tzinfo=timezone.utc
+                ),
             ),
             (
-                datetime.datetime(2017, 1, 1, 0, 0),
-                datetime.datetime(2017, 12, 31, 0, 0),
+                datetime(2017, 1, 1, 0, 0, tzinfo=timezone.utc),
+                datetime(
+                    2017, 12, 31, 23, 59, 59, 999999, tzinfo=timezone.utc
+                ),
             ),
         ]
         assert dataset.remove_dates_from_title(change_title=False) == expected
@@ -906,14 +918,16 @@ class TestDatasetNoncore:
         assert dataset["title"] == newtitle
         assert (
             dataset["dataset_date"]
-            == "[1981-01-01T00:00:00 TO 2015-12-31T00:00:00]"
+            == "[1981-01-01T00:00:00 TO 2015-12-31T23:59:59]"
         )
         assert dataset.remove_dates_from_title() == list()
         dataset["title"] = "Mon_State_Village_Tract_Boundaries 9999 2001"
         expected = [
             (
-                datetime.datetime(2001, 1, 1, 0, 0),
-                datetime.datetime(2001, 12, 31, 0, 0),
+                datetime(2001, 1, 1, 0, 0, tzinfo=timezone.utc),
+                datetime(
+                    2001, 12, 31, 23, 59, 59, 999999, tzinfo=timezone.utc
+                ),
             )
         ]
         assert (
@@ -922,7 +936,7 @@ class TestDatasetNoncore:
         assert dataset["title"] == "Mon_State_Village_Tract_Boundaries 9999"
         assert (
             dataset["dataset_date"]
-            == "[2001-01-01T00:00:00 TO 2001-12-31T00:00:00]"
+            == "[2001-01-01T00:00:00 TO 2001-12-31T23:59:59]"
         )
         dataset["title"] = "Mon_State_Village_Tract_Boundaries 2001 99"
         assert (
@@ -931,7 +945,7 @@ class TestDatasetNoncore:
         assert dataset["title"] == "Mon_State_Village_Tract_Boundaries 99"
         assert (
             dataset["dataset_date"]
-            == "[2001-01-01T00:00:00 TO 2001-12-31T00:00:00]"
+            == "[2001-01-01T00:00:00 TO 2001-12-31T23:59:59]"
         )
         dataset["title"] = "Mon_State_Village_Tract_Boundaries 9999 2001 99"
         assert (
@@ -940,7 +954,7 @@ class TestDatasetNoncore:
         assert dataset["title"] == "Mon_State_Village_Tract_Boundaries 9999 99"
         assert (
             dataset["dataset_date"]
-            == "[2001-01-01T00:00:00 TO 2001-12-31T00:00:00]"
+            == "[2001-01-01T00:00:00 TO 2001-12-31T23:59:59]"
         )
 
     def test_generate_qc_resource_from_rows(self, configuration):
@@ -1042,8 +1056,12 @@ class TestDatasetNoncore:
                 )
                 assert success is True
                 assert results == {
-                    "startdate": datetime.datetime(2001, 1, 1, 0, 0),
-                    "enddate": datetime.datetime(2002, 12, 31, 0, 0),
+                    "startdate": datetime(
+                        2001, 1, 1, 0, 0, tzinfo=timezone.utc
+                    ),
+                    "enddate": datetime(
+                        2002, 12, 31, 23, 59, 59, 999999, tzinfo=timezone.utc
+                    ),
                     "bites_disabled": [False, True, False],
                     "resource": {
                         "description": "Conflict data with HXL tags",
@@ -1306,7 +1324,7 @@ class TestDatasetNoncore:
                 }
                 assert (
                     dataset["dataset_date"]
-                    == "[2001-01-01T00:00:00 TO 2002-12-31T00:00:00]"
+                    == "[2001-01-01T00:00:00 TO 2002-12-31T23:59:59]"
                 )
                 assert admin1s == {"Bejaia", "Tizi Ouzou"}
                 resources = dataset.get_resources()
@@ -1351,7 +1369,7 @@ class TestDatasetNoncore:
                 assert success is True
                 assert (
                     dataset["dataset_date"]
-                    == "[2001-04-18T00:00:00 TO 2001-04-21T00:00:00]"
+                    == "[2001-04-18T00:00:00 TO 2001-04-21T23:59:59]"
                 )
 
                 quickcharts = {
@@ -1375,8 +1393,12 @@ class TestDatasetNoncore:
                 )
                 assert success is True
                 assert results == {
-                    "startdate": datetime.datetime(2001, 1, 1, 0, 0),
-                    "enddate": datetime.datetime(2002, 12, 31, 0, 0),
+                    "startdate": datetime(
+                        2001, 1, 1, 0, 0, tzinfo=timezone.utc
+                    ),
+                    "enddate": datetime(
+                        2002, 12, 31, 23, 59, 59, 999999, tzinfo=timezone.utc
+                    ),
                     "bites_disabled": [False, True, False],
                     "resource": {
                         "description": "Conflict data with HXL tags",
@@ -1577,7 +1599,9 @@ class TestDatasetNoncore:
                     year = row["YEAR"]
                     if year == "2002":
                         return None
-                    startdate, enddate = parse_date_range(year)
+                    startdate, enddate = parse_date_range(
+                        year, zero_time=True, max_endtime=True, force_utc=True
+                    )
                     return {"startdate": startdate, "enddate": enddate}
 
                 del quickcharts["hashtag"]
@@ -1595,15 +1619,11 @@ class TestDatasetNoncore:
                     quickcharts=quickcharts,
                 )
                 assert success is True
-                assert results["startdate"] == datetime.datetime(
-                    2001, 1, 1, 0, 0
-                )
-                assert results["enddate"] == datetime.datetime(
-                    2001, 12, 31, 0, 0
-                )
+                assert results["startdate"] == datetime(2001, 1, 1, 0, 0, tzinfo=timezone.utc)
+                assert results["enddate"] == datetime(2001, 12, 31, 23, 59, 59, 999999, tzinfo=timezone.utc)
                 assert (
                     dataset["dataset_date"]
-                    == "[2001-01-01T00:00:00 TO 2001-12-31T00:00:00]"
+                    == "[2001-01-01T00:00:00 TO 2001-12-31T23:59:59]"
                 )
                 assert_files_same(
                     join(

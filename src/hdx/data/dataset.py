@@ -22,8 +22,8 @@ from typing import (
 
 from hdx.location.country import Country
 from hdx.utilities.dateparse import (
-    default_date,
-    default_enddate,
+    default_date_utc,
+    default_enddate_utc,
     parse_date,
     parse_date_range,
 )
@@ -1192,7 +1192,7 @@ class Dataset(HDXObject):
     def get_date_of_dataset(
         self,
         date_format: Optional[str] = None,
-        today: datetime = datetime.now(),
+        today: datetime = datetime.utcnow(),
     ) -> Dict:
         """Get dataset date as datetimes and strings in specified format. If no format is supplied, the ISO 8601
         format is used. Returns a dictionary containing keys startdate (start date as datetime), enddate (end
@@ -1201,7 +1201,7 @@ class Dataset(HDXObject):
 
         Args:
             date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
-            today (datetime): Date to use for today. Defaults to datetime.now.
+            today (datetime): Date to use for today. Defaults to datetime.utcnow.
 
         Returns:
             Dict: Dictionary of date information
@@ -1215,19 +1215,25 @@ class Dataset(HDXObject):
         startdate: Union[datetime, str],
         enddate: Union[datetime, str, None] = None,
         ongoing: bool = False,
+        ignore_timeinfo: bool = True,
     ) -> None:
-        """Set dataset date from either datetime.datetime objects or strings.
+        """Set dataset date from either datetime objects or strings. Any time and time
+        zone information will be ignored by default (meaning that the time of the start
+        date is set to 00:00:00, the time of any end date is set to 23:59:59 and the
+        time zone is set to UTC). To have the time and time zone accounted for, set
+        ignore_timeinfo to False. In this case, the time will be converted to UTC.
 
         Args:
             startdate (Union[datetime, str]): Dataset start date
             enddate (Union[datetime, str, None]): Dataset end date. Defaults to None.
             ongoing (bool): True if ongoing, False if not. Defaults to False.
+            ignore_timeinfo (bool): Ignore time and time zone of date. Defaults to True.
 
         Returns:
             None
         """
         self.data["dataset_date"] = DateHelper.get_hdx_date(
-            startdate, enddate, ongoing
+            startdate, enddate, ongoing, ignore_timeinfo
         )
 
     def set_dataset_year_range(
@@ -2410,7 +2416,7 @@ class Dataset(HDXObject):
         if headers is None:
             return False, retdict
         rows = [Download.hxl_row(headers, hxltags, dict_form=True)]
-        dates = [default_enddate, default_date]
+        dates = [default_enddate_utc, default_date_utc]
         qc = {"cutdown": 0}
         bites_disabled = [True, True, True]
         if quickcharts is not None:
@@ -2456,7 +2462,7 @@ class Dataset(HDXObject):
                 year = row[yearcol]
                 if year:
                     result["startdate"], result["enddate"] = parse_date_range(
-                        year
+                        year, zero_time=True, max_endtime=True, force_utc=True
                     )
                 return result
 
@@ -2467,7 +2473,7 @@ class Dataset(HDXObject):
                 result = dict()
                 date = row[datecol]
                 if date:
-                    date = parse_date(date)
+                    date = parse_date(date, force_utc=True)
                     result["startdate"] = date
                     result["enddate"] = date
                 return result
@@ -2510,7 +2516,7 @@ class Dataset(HDXObject):
             logger.error(f"No data rows in {filename}!")
             return False, retdict
         if yearcol is not None or date_function is not None:
-            if dates[0] == default_enddate or dates[1] == default_date:
+            if dates[0] == default_enddate_utc or dates[1] == default_date_utc:
                 logger.error(f"No dates in {filename}!")
                 return False, retdict
             else:

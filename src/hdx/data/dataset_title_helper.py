@@ -67,7 +67,11 @@ class DatasetTitleHelper:
             deltalr = timedelta(days=1000)
             try:
                 startdatelr, enddatelr = parse_date_range(
-                    stringlr, fuzzy=fuzzylr, zero_time=True
+                    stringlr,
+                    fuzzy=fuzzylr,
+                    zero_time=True,
+                    max_endtime=True,
+                    force_utc=True,
                 )
                 if startdatelr and enddatelr:
                     deltalr = enddatelr - startdatelr
@@ -80,7 +84,11 @@ class DatasetTitleHelper:
             deltarl = timedelta(days=1000)
             try:
                 startdaterl, enddaterl = parse_date_range(
-                    stringrl, fuzzy=fuzzyrl, zero_time=True
+                    stringrl,
+                    fuzzy=fuzzyrl,
+                    zero_time=True,
+                    max_endtime=True,
+                    force_utc=True,
                 )
                 if startdaterl and enddaterl:
                     deltarl = enddaterl - startdaterl
@@ -94,7 +102,11 @@ class DatasetTitleHelper:
                 ranges.append((startdaterl, enddaterl))
             else:
                 date_components = year
-                ranges.append(parse_date_range(year, zero_time=True))
+                ranges.append(
+                    parse_date_range(
+                        year, zero_time=True, max_endtime=True, force_utc=True
+                    )
+                )
             newtitle = title
             for date_component in date_components:
                 newtitle = remove_string(
@@ -105,11 +117,15 @@ class DatasetTitleHelper:
         try:
             fuzzy = dict()
             startdate, enddate = parse_date_range(
-                title, fuzzy=fuzzy, zero_time=True
+                title,
+                fuzzy=fuzzy,
+                zero_time=True,
+                max_endtime=True,
+                force_utc=True,
             )
             datestrs = fuzzy["date"]
             if (
-                startdate == enddate and len(datestrs) == 1
+                startdate.date() == enddate.date() and len(datestrs) == 1
             ):  # only accept dates where day, month and year are
                 # all together not split throughout the string and where the date is a precise day not a range
                 date_component = datestrs[0]
@@ -188,10 +204,16 @@ class DatasetTitleHelper:
             if first_month is None:
                 first_month = 1
             startdate = parse_date(
-                f"{first_year}-{first_month}-01", "%Y-%m-%d", zero_time=True
+                f"{first_year}-{first_month}-01",
+                "%Y-%m-%d",
+                zero_time=True,
+                force_utc=True,
             )
             enddate = parse_date(
-                f"{match.group(5)}-12-31", "%Y-%m-%d", zero_time=True
+                f"{match.group(5)}-12-31",
+                "%Y-%m-%d",
+                max_time=True,
+                force_utc=True,
             )
             ranges.append((startdate, enddate))
             newtitle = remove_string(title, match.group(0))
@@ -209,10 +231,16 @@ class DatasetTitleHelper:
             if first_year is None or second_year is None:
                 continue
             startdate = parse_date(
-                f"{first_year}-01-01", "%Y-%m-%d", zero_time=True
+                f"{first_year}-01-01",
+                "%Y-%m-%d",
+                zero_time=True,
+                force_utc=True,
             )
             enddate = parse_date(
-                f"{second_year}-12-31", "%Y-%m-%d", zero_time=True
+                f"{second_year}-12-31",
+                "%Y-%m-%d",
+                max_time=True,
+                force_utc=True,
             )
             ranges.append((startdate, enddate))
             newtitle = remove_string(title, match.group(0))
