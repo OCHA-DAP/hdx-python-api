@@ -81,7 +81,7 @@ class DateHelper:
         if ignore_timeinfo:
             timezone_handling = 0
         else:
-            timezone_handling = 2
+            timezone_handling = 3
 
         def get_date_str(dt, max=False):
             if ignore_timeinfo:
