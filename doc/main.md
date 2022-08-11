@@ -48,7 +48,8 @@ The library has detailed API documentation which can be found in the menu at the
 
 
 ## Breaking Changes
-From 5.8.2, date handling uses timezone aware dates instead of naive dates
+From 5.8.2, date handling uses timezone aware dates instead of naive dates and defaults
+to UTC
 
 From 5.6.0, creating and updating datastores removed
 
