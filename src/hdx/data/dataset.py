@@ -22,8 +22,8 @@ from typing import (
 
 from hdx.location.country import Country
 from hdx.utilities.dateparse import (
-    default_date_utc,
-    default_enddate_utc,
+    default_date,
+    default_enddate,
     parse_date,
     parse_date_range,
 )
@@ -2426,7 +2426,7 @@ class Dataset(HDXObject):
         if headers is None:
             return False, retdict
         rows = [Download.hxl_row(headers, hxltags, dict_form=True)]
-        dates = [default_enddate_utc, default_date_utc]
+        dates = [default_enddate, default_date]
         qc = {"cutdown": 0}
         bites_disabled = [True, True, True]
         if quickcharts is not None:
@@ -2528,7 +2528,7 @@ class Dataset(HDXObject):
             logger.error(f"No data rows in {filename}!")
             return False, retdict
         if yearcol is not None or date_function is not None:
-            if dates[0] == default_enddate_utc or dates[1] == default_date_utc:
+            if dates[0] == default_enddate or dates[1] == default_date:
                 logger.error(f"No dates in {filename}!")
                 return False, retdict
             else:
