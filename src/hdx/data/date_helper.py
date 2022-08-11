@@ -33,19 +33,18 @@ class DateHelper:
             if hdx_date[0] == "[" and hdx_date[-1] == "]":
                 hdx_date = hdx_date[1:-1]
             dataset_dates = hdx_date.split(" TO ")
-            startdate = parse_date(dataset_dates[0], force_utc=True)
+            startdate = parse_date(dataset_dates[0])
             enddate = dataset_dates[1]
             if enddate == "*":
                 enddate = today.replace(
                     hour=23,
                     minute=59,
                     second=59,
-                    microsecond=999999,
                     tzinfo=timezone.utc,
                 )
                 ongoing = True
             else:
-                enddate = parse_date(enddate, max_time=True, force_utc=True)
+                enddate = parse_date(enddate, max_time=True)
                 ongoing = False
             result["startdate"] = startdate
             result["enddate"] = enddate
@@ -80,9 +79,9 @@ class DateHelper:
             str: HDX date
         """
         if ignore_timeinfo:
-            infer_timezone = False
+            timezone_handling = 0
         else:
-            infer_timezone = True
+            timezone_handling = 2
 
         def get_date_str(dt, max=False):
             if ignore_timeinfo:
@@ -105,7 +104,9 @@ class DateHelper:
             return dt.isoformat()
 
         if isinstance(startdate, str):
-            startdate = parse_date(startdate, infer_timezone=infer_timezone)
+            startdate = parse_date(
+                startdate, timezone_handling=timezone_handling
+            )
         startdate = get_date_str(startdate)
         if ongoing:
             enddate = "*"
@@ -115,7 +116,7 @@ class DateHelper:
             else:
                 if isinstance(enddate, str):
                     enddate = parse_date(
-                        enddate, infer_timezone=infer_timezone
+                        enddate, timezone_handling=timezone_handling
                     )
                 enddate = get_date_str(enddate, max=True)
         return f"[{startdate} TO {enddate}]"

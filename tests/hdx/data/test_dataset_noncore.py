@@ -197,20 +197,16 @@ class TestDatasetNoncore:
         result = dataset.get_date_of_dataset(today=datetime(2020, 11, 17))
         assert result == {
             "startdate": datetime(2020, 1, 7, 0, 0, tzinfo=timezone.utc),
-            "enddate": datetime(
-                2020, 11, 17, 23, 59, 59, 999999, tzinfo=timezone.utc
-            ),
+            "enddate": datetime(2020, 11, 17, 23, 59, 59, tzinfo=timezone.utc),
             "startdate_str": "2020-01-07T00:00:00+00:00",
-            "enddate_str": "2020-11-17T23:59:59.999999+00:00",
+            "enddate_str": "2020-11-17T23:59:59+00:00",
             "ongoing": True,
         }
         dataset.set_date_of_dataset("2020-02-09")
         result = dataset.get_date_of_dataset("%d/%m/%Y")
         assert result == {
             "startdate": datetime(2020, 2, 9, 0, 0, tzinfo=timezone.utc),
-            "enddate": datetime(
-                2020, 2, 9, 23, 59, 59, 999999, tzinfo=timezone.utc
-            ),
+            "enddate": datetime(2020, 2, 9, 23, 59, 59, tzinfo=timezone.utc),
             "startdate_str": "09/02/2020",
             "enddate_str": "09/02/2020",
             "ongoing": False,
@@ -219,9 +215,7 @@ class TestDatasetNoncore:
         result = dataset.get_date_of_dataset("%d/%m/%Y")
         assert result == {
             "startdate": datetime(2020, 2, 9, 0, 0, tzinfo=timezone.utc),
-            "enddate": datetime(
-                2020, 10, 20, 23, 59, 59, 999999, tzinfo=timezone.utc
-            ),
+            "enddate": datetime(2020, 10, 20, 23, 59, 59, tzinfo=timezone.utc),
             "startdate_str": "09/02/2020",
             "enddate_str": "20/10/2020",
             "ongoing": False,
@@ -232,9 +226,7 @@ class TestDatasetNoncore:
         )
         assert result == {
             "startdate": datetime(2020, 2, 9, 0, 0, tzinfo=timezone.utc),
-            "enddate": datetime(
-                2020, 3, 9, 23, 59, 59, 999999, tzinfo=timezone.utc
-            ),
+            "enddate": datetime(2020, 3, 9, 23, 59, 59, tzinfo=timezone.utc),
             "startdate_str": "09/02/2020",
             "enddate_str": "09/03/2020",
             "ongoing": True,
@@ -893,15 +885,11 @@ class TestDatasetNoncore:
         expected = [
             (
                 datetime(1981, 1, 1, 0, 0, tzinfo=timezone.utc),
-                datetime(
-                    2015, 12, 31, 23, 59, 59, 999999, tzinfo=timezone.utc
-                ),
+                datetime(2015, 12, 31, 23, 59, 59, tzinfo=timezone.utc),
             ),
             (
                 datetime(2017, 1, 1, 0, 0, tzinfo=timezone.utc),
-                datetime(
-                    2017, 12, 31, 23, 59, 59, 999999, tzinfo=timezone.utc
-                ),
+                datetime(2017, 12, 31, 23, 59, 59, tzinfo=timezone.utc),
             ),
         ]
         assert dataset.remove_dates_from_title(change_title=False) == expected
@@ -925,9 +913,7 @@ class TestDatasetNoncore:
         expected = [
             (
                 datetime(2001, 1, 1, 0, 0, tzinfo=timezone.utc),
-                datetime(
-                    2001, 12, 31, 23, 59, 59, 999999, tzinfo=timezone.utc
-                ),
+                datetime(2001, 12, 31, 23, 59, 59, tzinfo=timezone.utc),
             )
         ]
         assert (
@@ -1060,7 +1046,7 @@ class TestDatasetNoncore:
                         2001, 1, 1, 0, 0, tzinfo=timezone.utc
                     ),
                     "enddate": datetime(
-                        2002, 12, 31, 23, 59, 59, 999999, tzinfo=timezone.utc
+                        2002, 12, 31, 23, 59, 59, tzinfo=timezone.utc
                     ),
                     "bites_disabled": [False, True, False],
                     "resource": {
@@ -1397,7 +1383,7 @@ class TestDatasetNoncore:
                         2001, 1, 1, 0, 0, tzinfo=timezone.utc
                     ),
                     "enddate": datetime(
-                        2002, 12, 31, 23, 59, 59, 999999, tzinfo=timezone.utc
+                        2002, 12, 31, 23, 59, 59, tzinfo=timezone.utc
                     ),
                     "bites_disabled": [False, True, False],
                     "resource": {
@@ -1600,7 +1586,7 @@ class TestDatasetNoncore:
                     if year == "2002":
                         return None
                     startdate, enddate = parse_date_range(
-                        year, zero_time=True, max_endtime=True, force_utc=True
+                        year, zero_time=True, max_endtime=True
                     )
                     return {"startdate": startdate, "enddate": enddate}
 
@@ -1619,8 +1605,12 @@ class TestDatasetNoncore:
                     quickcharts=quickcharts,
                 )
                 assert success is True
-                assert results["startdate"] == datetime(2001, 1, 1, 0, 0, tzinfo=timezone.utc)
-                assert results["enddate"] == datetime(2001, 12, 31, 23, 59, 59, 999999, tzinfo=timezone.utc)
+                assert results["startdate"] == datetime(
+                    2001, 1, 1, 0, 0, tzinfo=timezone.utc
+                )
+                assert results["enddate"] == datetime(
+                    2001, 12, 31, 23, 59, 59, tzinfo=timezone.utc
+                )
                 assert (
                     dataset["dataset_date"]
                     == "[2001-01-01T00:00:00 TO 2001-12-31T23:59:59]"

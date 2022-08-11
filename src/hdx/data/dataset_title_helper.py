@@ -71,7 +71,6 @@ class DatasetTitleHelper:
                     fuzzy=fuzzylr,
                     zero_time=True,
                     max_endtime=True,
-                    force_utc=True,
                 )
                 if startdatelr and enddatelr:
                     deltalr = enddatelr - startdatelr
@@ -88,7 +87,6 @@ class DatasetTitleHelper:
                     fuzzy=fuzzyrl,
                     zero_time=True,
                     max_endtime=True,
-                    force_utc=True,
                 )
                 if startdaterl and enddaterl:
                     deltarl = enddaterl - startdaterl
@@ -103,9 +101,7 @@ class DatasetTitleHelper:
             else:
                 date_components = year
                 ranges.append(
-                    parse_date_range(
-                        year, zero_time=True, max_endtime=True, force_utc=True
-                    )
+                    parse_date_range(year, zero_time=True, max_endtime=True)
                 )
             newtitle = title
             for date_component in date_components:
@@ -121,7 +117,6 @@ class DatasetTitleHelper:
                 fuzzy=fuzzy,
                 zero_time=True,
                 max_endtime=True,
-                force_utc=True,
             )
             datestrs = fuzzy["date"]
             if (
@@ -207,13 +202,11 @@ class DatasetTitleHelper:
                 f"{first_year}-{first_month}-01",
                 "%Y-%m-%d",
                 zero_time=True,
-                force_utc=True,
             )
             enddate = parse_date(
                 f"{match.group(5)}-12-31",
                 "%Y-%m-%d",
                 max_time=True,
-                force_utc=True,
             )
             ranges.append((startdate, enddate))
             newtitle = remove_string(title, match.group(0))
@@ -234,13 +227,11 @@ class DatasetTitleHelper:
                 f"{first_year}-01-01",
                 "%Y-%m-%d",
                 zero_time=True,
-                force_utc=True,
             )
             enddate = parse_date(
                 f"{second_year}-12-31",
                 "%Y-%m-%d",
                 max_time=True,
-                force_utc=True,
             )
             ranges.append((startdate, enddate))
             newtitle = remove_string(title, match.group(0))

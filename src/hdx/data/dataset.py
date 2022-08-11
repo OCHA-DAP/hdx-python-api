@@ -2475,7 +2475,6 @@ class Dataset(HDXObject):
                         year,
                         zero_time=True,
                         max_endtime=True,
-                        force_utc=True,
                     )
                 return result
 
@@ -2486,7 +2485,7 @@ class Dataset(HDXObject):
                 result = dict()
                 date = row[datecol]
                 if date:
-                    date = parse_date(date, force_utc=True)
+                    date = parse_date(date)
                     result["startdate"] = date
                     result["enddate"] = date
                 return result
