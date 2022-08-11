@@ -1,6 +1,6 @@
 """Resource class containing all logic for creating, checking, and updating resources."""
-import datetime
 import logging
+from datetime import datetime
 from os.path import join
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -105,7 +105,7 @@ class Resource(HDXObject):
     def get_date_of_resource(
         self,
         date_format: Optional[str] = None,
-        today: datetime.date = datetime.date.today(),
+        today: datetime = datetime.utcnow(),
     ) -> Dict:
         """Get resource date as datetimes and strings in specified format. If no format
         is supplied, the ISO 8601 format is used. Returns a dictionary containing keys
@@ -115,7 +115,7 @@ class Resource(HDXObject):
 
         Args:
             date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
-            today (datetime.date): Date to use for today. Defaults to date.today.
+            today (datetime): Date to use for today. Defaults to datetime.utcnow.
 
         Returns:
             Dict: Dictionary of date information
@@ -126,20 +126,26 @@ class Resource(HDXObject):
 
     def set_date_of_resource(
         self,
-        startdate: Union[datetime.datetime, str],
-        enddate: Union[datetime.datetime, str],
+        startdate: Union[datetime, str],
+        enddate: Union[datetime, str],
+        ignore_timeinfo: bool = True,
     ) -> None:
-        """Set resource date from either datetime.datetime objects or strings.
+        """Set resource date from either datetime objects or strings. Any time and time
+        zone information will be ignored by default (meaning that the time of the start
+        date is set to 00:00:00, the time of any end date is set to 23:59:59 and the
+        time zone is set to UTC). To have the time and time zone accounted for, set
+        ignore_timeinfo to False. In this case, the time will be converted to UTC.
 
         Args:
-            startdate (Union[datetime.datetime, str]): Dataset start date
-            enddate (Union[datetime.datetime, str]): Dataset end date
+            startdate (Union[datetime, str]): Resource start date
+            enddate (Union[datetime, str]): Resource end date
+            ignore_timeinfo (bool): Ignore time and time zone of date. Defaults to True.
 
         Returns:
             None
         """
         self.data["daterange_for_data"] = DateHelper.get_hdx_date(
-            startdate, enddate
+            startdate, enddate, ignore_timeinfo=ignore_timeinfo
         )
 
     @classmethod

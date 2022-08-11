@@ -1192,7 +1192,7 @@ class Dataset(HDXObject):
     def get_date_of_dataset(
         self,
         date_format: Optional[str] = None,
-        today: datetime = datetime.now(),
+        today: datetime = datetime.utcnow(),
     ) -> Dict:
         """Get dataset date as datetimes and strings in specified format. If no format is supplied, the ISO 8601
         format is used. Returns a dictionary containing keys startdate (start date as datetime), enddate (end
@@ -1201,7 +1201,7 @@ class Dataset(HDXObject):
 
         Args:
             date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
-            today (datetime): Date to use for today. Defaults to datetime.now.
+            today (datetime): Date to use for today. Defaults to datetime.utcnow.
 
         Returns:
             Dict: Dictionary of date information
@@ -1215,19 +1215,25 @@ class Dataset(HDXObject):
         startdate: Union[datetime, str],
         enddate: Union[datetime, str, None] = None,
         ongoing: bool = False,
+        ignore_timeinfo: bool = True,
     ) -> None:
-        """Set dataset date from either datetime.datetime objects or strings.
+        """Set dataset date from either datetime objects or strings. Any time and time
+        zone information will be ignored by default (meaning that the time of the start
+        date is set to 00:00:00, the time of any end date is set to 23:59:59 and the
+        time zone is set to UTC). To have the time and time zone accounted for, set
+        ignore_timeinfo to False. In this case, the time will be converted to UTC.
 
         Args:
             startdate (Union[datetime, str]): Dataset start date
             enddate (Union[datetime, str, None]): Dataset end date. Defaults to None.
             ongoing (bool): True if ongoing, False if not. Defaults to False.
+            ignore_timeinfo (bool): Ignore time and time zone of date. Defaults to True.
 
         Returns:
             None
         """
         self.data["dataset_date"] = DateHelper.get_hdx_date(
-            startdate, enddate, ongoing
+            startdate, enddate, ongoing, ignore_timeinfo
         )
 
     def set_dataset_year_range(
@@ -2249,14 +2255,15 @@ class Dataset(HDXObject):
     def remove_dates_from_title(
         self, change_title: bool = True, set_dataset_date: bool = False
     ) -> List[Tuple[datetime, datetime]]:
-        """Remove dates from dataset title returning sorted the dates that were found in title. The title in
-        the dataset metadata will be changed by default. The dataset's metadata field dataset date will not
-        be changed by default, but if set_dataset_date is True, then the range with the lowest start date
-        will be used to set the dataset date field.
+        """Remove dates from dataset title returning sorted the dates that were found in
+        title. The title in the dataset metadata will be changed by default. The
+        dataset's metadata field dataset date will not be changed by default, but if
+        set_dataset_date is True, then the range with the lowest start date will be used
+        to set the dataset date field.
 
         Args:
             change_title (bool): Whether to change the dataset title. Defaults to True.
-            set_dataset_date (bool): Whether to set the dataset date from date or range in the title. Defaults to False.
+            set_dataset_date (bool): Whether to set dataset date from date or range in title. Defaults to False.
 
         Returns:
             List[Tuple[datetime,datetime]]: Date ranges found in title
@@ -2314,8 +2321,9 @@ class Dataset(HDXObject):
         headers: Optional[List[str]] = None,
         encoding: Optional[str] = None,
     ) -> Optional["Resource"]:
-        """Generate QuickCharts rows by cutting down input rows by indicator code and optionally restricting to certain
-        columns. Output to csv and create resource, adding to it the dataset.
+        """Generate QuickCharts rows by cutting down input rows by indicator code and
+        optionally restricting to certain columns. Output to csv and create resource,
+        adding to it the dataset.
 
         Args:
             folder (str): Folder to which to write file containing rows
@@ -2365,28 +2373,36 @@ class Dataset(HDXObject):
         quickcharts: Optional[Dict] = None,
         encoding: Optional[str] = None,
     ) -> Tuple[bool, Dict]:
-        """Given headers and an iterator, write rows to csv and create resource, adding to it the dataset. The returned
-        dictionary will contain the resource in the key resource, headers in the key headers and list of rows in
-        the key rows.
+        """Given headers and an iterator, write rows to csv and create resource, adding
+        to it the dataset. The returned dictionary will contain the resource in the key
+        resource, headers in the key headers and list of rows in the key rows.
 
-        The date of dataset can optionally be set by supplying a column in which the year is to be looked up or
-        a function to obtain handle any dates in a row. The function should accept a row and should return None to
-        ignore the row or a dictionary which can either be empty if there are no dates in the row or can be populated
-        with keys startdate and/or enddate which are of type datetime. The lowest start date and highest end date are
-        used to set the date of dataset and are returned in the results dictionary in keys: startdate and enddate.
+        The date of dataset can optionally be set by supplying a column in which the
+        date or year is to be looked up. Note that any timezone information is ignored
+        and UTC assumed. Alternatively, a function can be supplied to handle any dates
+        in a row. It should accept a row and should return None to ignore the row or a
+        dictionary which can either be empty if there are no dates in the row or can be
+        populated with keys startdate and/or enddate which are of type timezone-aware
+        datetime. The lowest start date and highest end date are used to set the date of
+        dataset and are returned in the results dictionary in keys startdate and
+        enddate.
 
-        If the parameter quickcharts is supplied then various QuickCharts related actions will occur depending upon the
-        keys given in the dictionary and the returned dictionary will contain the QuickCharts resource in the key
-        qc_resource. If the keys: hashtag - the HXL hashtag to examine - and values - the 3 values to look for in that
-        column - are supplied, then a list of booleans indicating which QuickCharts bites should be enabled will be
-        returned in the key bites_disabled in the returned dictionary. For the 3 values, if the key: numeric_hashtag
-        is supplied then if that column for a given value contains no numbers, then the corresponding bite will be
-        disabled. If the key: cutdown is given, if it is 1, then a separate cut down list is created containing only
-        columns with HXL hashtags and rows with desired values (if hashtag and values are supplied) for the purpose of
-        driving QuickCharts. It is returned in the key qcrows in the returned dictionary with the matching headers in
-        qcheaders. If cutdown is 2, then a resource is created using the cut down list. If the key cutdownhashtags is
-        supplied, then only the provided hashtags are used for cutting down otherwise the full list of hxl tags is
-        used.
+        If the parameter quickcharts is supplied then various QuickCharts related
+        actions will occur depending upon the keys given in the dictionary and the
+        returned dictionary will contain the QuickCharts resource in the key
+        qc_resource. If the keys: hashtag - the HXL hashtag to examine - and values -
+        the 3 values to look for in that column - are supplied, then a list of booleans
+        indicating which QuickCharts bites should be enabled will be returned in the key
+        bites_disabled in the returned dictionary. For the 3 values, if the key:
+        numeric_hashtag is supplied then if that column for a given value contains no
+        numbers, then the corresponding bite will be disabled. If the key: cutdown is
+        given, if it is 1, then a separate cut down list is created containing only
+        columns with HXL hashtags and rows with desired values (if hashtag and values
+        are supplied) for the purpose of driving QuickCharts. It is returned in the key
+        qcrows in the returned dictionary with the matching headers in qcheaders. If
+        cutdown is 2, then a resource is created using the cut down list. If the key
+        cutdownhashtags is supplied, then only the provided hashtags are used for
+        cutting down otherwise the full list of hxl tags is used.
 
         Args:
             headers (List[str]): Headers
@@ -2456,7 +2472,9 @@ class Dataset(HDXObject):
                 year = row[yearcol]
                 if year:
                     result["startdate"], result["enddate"] = parse_date_range(
-                        year
+                        year,
+                        zero_time=True,
+                        max_endtime=True,
                     )
                 return result
 
@@ -2565,32 +2583,43 @@ class Dataset(HDXObject):
         quickcharts: Optional[Dict] = None,
         **kwargs: Any,
     ) -> Tuple[bool, Dict]:
-        """Download url, write rows to csv and create resource, adding to it the dataset. The returned dictionary
-        will contain the resource in the key resource, headers in the key headers and list of rows in the key rows.
+        """Download url, write rows to csv and create resource, adding to it the
+        dataset. The returned dictionary will contain the resource in the key resource,
+        headers in the key headers and list of rows in the key rows.
 
-        Optionally, headers can be inserted at specific positions. This is achieved using the header_insertions
-        argument. If supplied, it is a list of tuples of the form (position, header) to be inserted. A function is
-        called for each row. If supplied, it takes as arguments: headers (prior to any insertions) and
-        row (which will be in dict or list form depending upon the dict_rows argument) and outputs a modified row.
+        Optionally, headers can be inserted at specific positions. This is achieved
+        using the header_insertions argument. If supplied, it is a list of tuples of the
+        form (position, header) to be inserted. A function is called for each row. If
+        supplied, it takes as arguments: headers (prior to any insertions) and row
+        (which will be in dict or list form depending upon the dict_rows argument) and
+        outputs a modified row.
 
-        The date of dataset can optionally be set by supplying a column in which the year is to be looked up or
-        a function to obtain handle any dates in a row. The function should accept a row and should return None to
-        ignore the row or a dictionary which can either be empty if there are no dates in the row or can be populated
-        with keys startdate and/or enddate which are of type datetime. The lowest start date and highest end date are
-        used to set the date of dataset and are returned in the results dictionary in keys: startdate and enddate.
+        The date of dataset can optionally be set by supplying a column in which the
+        date or year is to be looked up. Note that any timezone information is ignored
+        and UTC assumed. Alternatively, a function can be supplied to handle any dates
+        in a row. It should accept a row and should return None to ignore the row or a
+        dictionary which can either be empty if there are no dates in the row or can be
+        populated with keys startdate and/or enddate which are of type timezone-aware
+        datetime. The lowest start date and highest end date are used to set the date of
+        dataset and are returned in the results dictionary in keys startdate and
+        enddate.
 
-        If the parameter quickcharts is supplied then various QuickCharts related actions will occur depending upon the
-        keys given in the dictionary and the returned dictionary will contain the QuickCharts resource in the key
-        qc_resource. If the keys: hashtag - the HXL hashtag to examine - and values - the 3 values to look for in that
-        column - are supplied, then a list of booleans indicating which QuickCharts bites should be enabled will be
-        returned in the key bites_disabled in the returned dictionary. For the 3 values, if the key: numeric_hashtag
-        is supplied then if that column for a given value contains no numbers, then the corresponding bite will be
-        disabled. If the key: cutdown is given, if it is 1, then a separate cut down list is created containing only
-        columns with HXL hashtags and rows with desired values (if hashtag and values are supplied) for the purpose of
-        driving QuickCharts. It is returned in the key qcrows in the returned dictionary with the matching headers in
-        qcheaders. If cutdown is 2, then a resource is created using the cut down list. If the key cutdownhashtags is
-        supplied, then only the provided hashtags are used for cutting down otherwise the full list of hxl tags is
-        used.
+        If the parameter quickcharts is supplied then various QuickCharts related
+        actions will occur depending upon the keys given in the dictionary and the
+        returned dictionary will contain the QuickCharts resource in the key
+        qc_resource. If the keys: hashtag - the HXL hashtag to examine - and values -
+        the 3 values to look for in that column - are supplied, then a list of booleans
+        indicating which QuickCharts bites should be enabled will be returned in the key
+        bites_disabled in the returned dictionary. For the 3 values, if the key:
+        numeric_hashtag is supplied then if that column for a given value contains no
+        numbers, then the corresponding bite will be disabled. If the key: cutdown is
+        given, if it is 1, then a separate cut down list is created containing only
+        columns with HXL hashtags and rows with desired values (if hashtag and values
+        are supplied) for the purpose of driving QuickCharts. It is returned in the key
+        qcrows in the returned dictionary with the matching headers in qcheaders. If
+        cutdown is 2, then a resource is created using the cut down list. If the key
+        cutdownhashtags is supplied, then only the provided hashtags are used for
+        cutting down otherwise the full list of hxl tags is used.
 
         Args:
             downloader (Download): Download object

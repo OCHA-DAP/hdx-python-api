@@ -186,7 +186,7 @@ class TestUpdateLogic:
             "owner_org": "c021f6be-3598-418e-8f7f-c7a799194dba",
             "data_update_frequency": "30",
             "subnational": "0",
-            "dataset_date": "[1961-01-01T00:00:00 TO 2019-12-31T00:00:00]",
+            "dataset_date": "[1961-01-01T00:00:00 TO 2019-12-31T23:59:59]",
             "groups": [{"name": "zmb"}],
             "tags": [
                 {
@@ -718,7 +718,7 @@ class TestUpdateLogic:
             "owner_org": "c021f6be-3598-418e-8f7f-c7a799194dba",
             "data_update_frequency": "30",
             "subnational": "0",
-            "dataset_date": "[1961-01-01T00:00:00 TO 2019-12-31T00:00:00]",
+            "dataset_date": "[1961-01-01T00:00:00 TO 2019-12-31T23:59:59]",
             "groups": [{"name": "zmb"}],
             "tags": [
                 {
@@ -1250,7 +1250,7 @@ class TestUpdateLogic:
             "owner_org": "c021f6be-3598-418e-8f7f-c7a799194dba",
             "data_update_frequency": "30",
             "subnational": "0",
-            "dataset_date": "[1961-01-01T00:00:00 TO 2019-12-31T00:00:00]",
+            "dataset_date": "[1961-01-01T00:00:00 TO 2019-12-31T23:59:59]",
             "groups": [{"name": "zmb"}],
             "tags": [
                 {
