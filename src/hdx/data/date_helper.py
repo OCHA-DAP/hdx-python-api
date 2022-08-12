@@ -4,7 +4,7 @@ from collections.abc import Iterable
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple, Union
 
-from hdx.utilities.dateparse import parse_date
+from hdx.utilities.dateparse import now_utc, parse_date
 
 
 class DateHelper:
@@ -12,7 +12,7 @@ class DateHelper:
     def get_date_info(
         hdx_date: Dict,
         date_format: Optional[str] = None,
-        today: datetime = datetime.utcnow(),
+        today: datetime = now_utc(),
     ) -> Dict:
         """Get date as datetimes and strings in specified format. If no format is
         supplied, the ISO 8601 format is used. Returns a dictionary containing keys
@@ -23,7 +23,7 @@ class DateHelper:
         Args:
             hdx_date (str): Input date
             date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
-            today (datetime): Date to use for today. Defaults to datetime.utcnow.
+            today (datetime): Date to use for today. Defaults to now_utc().
 
         Returns:
             Dict: Dictionary of date information

@@ -24,6 +24,7 @@ from hdx.location.country import Country
 from hdx.utilities.dateparse import (
     default_date,
     default_enddate,
+    now_utc,
     parse_date,
     parse_date_range,
 )
@@ -601,6 +602,7 @@ class Dataset(HDXObject):
             del kwargs["updated_by_script"]
         else:
             scriptinfo = self.configuration.get_user_agent()
+        # No need to output timezone info here so no need to use now_utc()
         self.data[
             "updated_by_script"
         ] = f"{scriptinfo} ({datetime.utcnow().isoformat()})"
@@ -1192,7 +1194,7 @@ class Dataset(HDXObject):
     def get_date_of_dataset(
         self,
         date_format: Optional[str] = None,
-        today: datetime = datetime.utcnow(),
+        today: datetime = now_utc(),
     ) -> Dict:
         """Get dataset date as datetimes and strings in specified format. If no format is supplied, the ISO 8601
         format is used. Returns a dictionary containing keys startdate (start date as datetime), enddate (end
@@ -1201,7 +1203,7 @@ class Dataset(HDXObject):
 
         Args:
             date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
-            today (datetime): Date to use for today. Defaults to datetime.utcnow.
+            today (datetime): Date to use for today. Defaults to now_utc().
 
         Returns:
             Dict: Dictionary of date information
