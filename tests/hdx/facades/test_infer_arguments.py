@@ -34,6 +34,25 @@ class TestInferArguments:
         assert testresult.actual_result == mydata
 
         UserAgent.clear_global()
+        mydata = "hello"
+        monkeypatch.setattr(
+            sys,
+            "argv",
+            [
+                "test",
+                "--mydata",
+                mydata,
+                "--hdx-site",
+                "prod",
+                "--user-agent",
+                "test",
+            ],
+        )
+        testresult.actual_result = None
+        facade(my_testfnia, hdx_site="stage", hdx_key="123")
+        assert testresult.actual_result == mydata
+
+        UserAgent.clear_global()
         monkeypatch.setattr(
             sys,
             "argv",

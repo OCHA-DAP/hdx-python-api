@@ -1,5 +1,6 @@
 """Facade to simplify project setup that calls project main function with kwargs"""
 import logging
+from copy import deepcopy
 from typing import Any, Callable, Optional
 
 import defopt
@@ -54,14 +55,16 @@ def _create_configuration(
     return Configuration._create(**arguments)
 
 
-def facade(projectmainfn: Callable[[Any], None]):
+def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
     """Facade to simplify project setup that calls project main function. It infers
     command line arguments from the passed in function using defopt. The function passed
-    in should have either type hints or a docstring from which to infer the command
-    line arguments.
+    in should have type hints and a docstring from which to infer the command line
+    arguments. Any **kwargs given will be merged with command line arguments, with the
+    command line arguments taking precedence.
 
     Args:
         projectmainfn ((Any) -> None): main function of project
+        **kwargs: Configuration parameters to pass to HDX Configuration & other parameters to pass to main function
 
     Returns:
         None
@@ -71,6 +74,11 @@ def facade(projectmainfn: Callable[[Any], None]):
     # Setting up configuration
     #
     func, argv = defopt.bind_known(projectmainfn, cli_options="all")
+    for key in kwargs:
+        name = f"--{key.replace('_', '-')}"
+        if name not in argv:
+            argv.append(name)
+            argv.append(kwargs[key])
     site_url = defopt.run(_create_configuration, argv=argv, cli_options="all")
 
     logger.info("--------------------------------------------------")
