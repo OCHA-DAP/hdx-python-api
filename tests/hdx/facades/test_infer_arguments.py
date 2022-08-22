@@ -11,7 +11,13 @@ from . import my_testfnia, testresult
 
 
 class TestInferArguments:
-    def test_facade(self, monkeypatch, hdx_config_yaml, project_config_yaml):
+    def test_facade(
+        self,
+        monkeypatch,
+        hdx_config_yaml,
+        hdx_config_json,
+        project_config_yaml,
+    ):
         UserAgent.clear_global()
         mydata = "hello"
         monkeypatch.setattr(
@@ -66,8 +72,29 @@ class TestInferArguments:
                 "test",
             ],
         )
+        with pytest.raises(FileNotFoundError):
+            facade(my_testfnia, hdx_config_yaml="NOT EXIST")
+
+        UserAgent.clear_global()
+        monkeypatch.setattr(
+            sys,
+            "argv",
+            [
+                "test",
+                "--mydata",
+                mydata,
+                "--hdx-site",
+                "prod",
+                "--user-agent",
+                "test",
+            ],
+        )
         with pytest.raises(ConfigurationError):
-            facade(my_testfnia)
+            facade(
+                my_testfnia,
+                hdx_config_yaml=hdx_config_yaml,
+                hdx_config_json=hdx_config_json,
+            )
 
         UserAgent.clear_global()
         monkeypatch.setattr(

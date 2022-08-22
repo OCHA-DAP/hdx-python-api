@@ -206,24 +206,32 @@ class Configuration(UserDict):
             hdx_site = kwargs.get("hdx_site")
             if not hdx_site:
                 hdx_site = self.data.get("hdx_site")
-            if not hdx_site:
-                hdx_site = "stage"
+                if not hdx_site:
+                    hdx_site = "stage"
             self.hdx_site = f"hdx_{hdx_site}_site"
             if self.hdx_site not in self.data:
                 raise ConfigurationError(
                     f"{self.hdx_site} not defined in configuration!"
                 )
-        self.hdx_read_only = kwargs.get(
-            "hdx_read_only", self.data.get("hdx_read_only", False)
-        )
+        hdx_read_only = kwargs.get("hdx_read_only")
+        if hdx_read_only is None:
+            hdx_read_only = self.data.get("hdx_read_only")
+            if hdx_read_only is None:
+                hdx_read_only = False
+        self.hdx_read_only = hdx_read_only
         logger.info(f"Read only access to HDX: {str(self.hdx_read_only)}")
         hdx_key_site = f"hdx_key_{hdx_site}"
-        hdx_key = kwargs.get(hdx_key_site, self.data.get(hdx_key_site))
+        hdx_key = kwargs.get(hdx_key_site)
+        if not hdx_key:
+            hdx_key = self.data.get(hdx_key_site)
+            if not hdx_key:
+                hdx_key = kwargs.get("hdx_key")
+                if not hdx_key:
+                    hdx_key = self.data.get("hdx_key")
         if hdx_key:
             self.hdx_key = hdx_key
-        else:
-            self.hdx_key = kwargs.get("hdx_key", self.data.get("hdx_key"))
-        if not self.hdx_key and not self.hdx_read_only:
+            return
+        if not self.hdx_read_only:
             raise ConfigurationError(
                 "No HDX API key supplied as a parameter or in configuration!"
             )

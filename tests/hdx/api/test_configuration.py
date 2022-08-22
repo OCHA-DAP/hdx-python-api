@@ -20,10 +20,6 @@ class TestConfiguration:
         return join(configfolder, "hdx_base_config.json")
 
     @pytest.fixture(scope="class")
-    def hdx_config_json(self, configfolder):
-        return join(configfolder, "hdx_config.json")
-
-    @pytest.fixture(scope="class")
     def hdx_missing_site_config_json(self, configfolder):
         return join(configfolder, "hdx_missing_site_config.json")
 
