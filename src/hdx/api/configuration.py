@@ -64,7 +64,7 @@ class Configuration(UserDict):
         self._emailer = None
 
         hdx_base_config_found = False
-        hdx_base_config_dict = kwargs.get("hdx_base_config_dict", None)
+        hdx_base_config_dict = kwargs.get("hdx_base_config_dict")
         if hdx_base_config_dict:
             hdx_base_config_found = True
             logger.info("Loading HDX base configuration from dictionary")
@@ -101,7 +101,7 @@ class Configuration(UserDict):
             hdx_base_config_dict = load_yaml(hdx_base_config_yaml)
 
         hdx_config_found = False
-        hdx_config_dict = kwargs.get("hdx_config_dict", None)
+        hdx_config_dict = kwargs.get("hdx_config_dict")
         if hdx_config_dict:
             hdx_config_found = True
             logger.info("Loading HDX configuration from dictionary")
@@ -146,7 +146,7 @@ class Configuration(UserDict):
         )
 
         project_config_found = False
-        project_config_dict = kwargs.get("project_config_dict", None)
+        project_config_dict = kwargs.get("project_config_dict")
         if project_config_dict is not None:
             project_config_found = True
             logger.info("Loading project configuration from dictionary")
@@ -194,16 +194,20 @@ class Configuration(UserDict):
                 self.user_agent = UserAgent.get(
                     prefix=Configuration.prefix, **self.data
                 )
-        hdx_url = kwargs.get("hdx_url", self.data.get("hdx_url"))
+        hdx_url = kwargs.get("hdx_url")
+        if not hdx_url:
+            hdx_url = self.data.get("hdx_url")
         if hdx_url:
             hdx_site = "custom"
             self.hdx_site = "hdx_custom_site"
             hdx_url = hdx_url.rstrip("/")
             self.data[self.hdx_site] = {"url": hdx_url}
         else:
-            hdx_site = kwargs.get(
-                "hdx_site", self.data.get("hdx_site", "stage")
-            )
+            hdx_site = kwargs.get("hdx_site")
+            if not hdx_site:
+                hdx_site = self.data.get("hdx_site")
+            if not hdx_site:
+                hdx_site = "stage"
             self.hdx_site = f"hdx_{hdx_site}_site"
             if self.hdx_site not in self.data:
                 raise ConfigurationError(
