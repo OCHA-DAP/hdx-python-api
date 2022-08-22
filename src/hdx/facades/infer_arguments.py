@@ -1,6 +1,5 @@
 """Facade to simplify project setup that calls project main function with kwargs"""
 import logging
-from copy import deepcopy
 from typing import Any, Callable, Optional
 
 import defopt
