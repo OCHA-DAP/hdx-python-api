@@ -13,6 +13,7 @@ from hdx.utilities.loader import (
     load_json_into_existing_dict,
     load_yaml_into_existing_dict,
 )
+from hdx.utilities.typehint import ListTuple
 
 from hdx.api.configuration import Configuration
 
@@ -201,24 +202,26 @@ class HDXObject(UserDict, ABC):
             raise HDXError(f"No existing {object_type} to {operation}!")
 
     @abstractmethod
-    def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
+    def check_required_fields(
+        self, ignore_fields: ListTuple[str] = list()
+    ) -> None:
         """Abstract method to check that metadata for HDX object is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
         Args:
-            ignore_fields (List[str]): Fields to ignore. Default is [].
+            ignore_fields (ListTuple[str]): Fields to ignore. Default is [].
 
         Returns:
             None
         """
 
     def _check_required_fields(
-        self, object_type: str, ignore_fields: List[str]
+        self, object_type: str, ignore_fields: ListTuple[str]
     ) -> None:
         """Helper method to check that metadata for HDX object is complete
 
         Args:
-            ignore_fields (List[str]): Any fields to ignore in the check
+            ignore_fields (ListTuple[str]): Any fields to ignore in the check
 
         Returns:
             None
@@ -536,7 +539,7 @@ class HDXObject(UserDict, ABC):
 
     def _addupdate_hdxobject(
         self,
-        hdxobjects: List["HDXObject"],
+        hdxobjects: ListTuple["HDXObject"],
         id_field: str,
         new_hdxobject: "HDXObject",
     ) -> "HDXObject":
@@ -544,7 +547,7 @@ class HDXObject(UserDict, ABC):
         already exists in the list
 
         Args:
-            hdxobjects (List[HDXObject]): list of HDX objects to which to add new objects or update existing ones
+            hdxobjects (ListTuple[HDXObject]): list of HDX objects to which to add new objects or update existing ones
             id_field (str): Field on which to match to determine if object already exists in list
             new_hdxobject (HDXObject): The HDX object to be added/updated
 
@@ -560,7 +563,7 @@ class HDXObject(UserDict, ABC):
 
     def _remove_hdxobject(
         self,
-        objlist: List[Union["HDXObject", Dict]],
+        objlist: ListTuple[Union["HDXObject", Dict]],
         obj: Union["HDXObject", Dict, str],
         matchon: str = "id",
         delete: bool = False,
@@ -568,7 +571,7 @@ class HDXObject(UserDict, ABC):
         """Remove an HDX object from a list within the parent HDX object
 
         Args:
-            objlist (List[Union[HDXObject,Dict]]): list of HDX objects
+            objlist (ListTuple[Union[HDXObject,Dict]]): list of HDX objects
             obj (Union[HDXObject,Dict,str]): Either an id or hdx object metadata either from an HDX object or a dictionary
             matchon (str): Field to match on. Defaults to id.
             delete (bool): Whether to delete HDX object. Defaults to False.
@@ -595,11 +598,13 @@ class HDXObject(UserDict, ABC):
                 return True
         return False
 
-    def _convert_hdxobjects(self, hdxobjects: List["HDXObject"]) -> List[Dict]:
+    def _convert_hdxobjects(
+        self, hdxobjects: ListTuple["HDXObject"]
+    ) -> List[Dict]:
         """Helper function to convert supplied list of HDX objects to a list of dict
 
         Args:
-            hdxobjects (List[HDXObject]): List of HDX objects to convert
+            hdxobjects (ListTuple[HDXObject]): List of HDX objects to convert
 
         Returns:
             List[Dict]: List of HDX objects converted to simple dictionaries
@@ -611,14 +616,14 @@ class HDXObject(UserDict, ABC):
 
     def _copy_hdxobjects(
         self,
-        hdxobjects: List["HDXObject"],
+        hdxobjects: ListTuple["HDXObject"],
         hdxobjectclass: type,
         attribute_to_copy: Optional[str] = None,
     ) -> List["HDXObject"]:
         """Helper function to make a deep copy of a supplied list of HDX objects
 
         Args:
-            hdxobjects (List[HDXObject]): list of HDX objects to copy
+            hdxobjects (ListTuple[HDXObject]): list of HDX objects to copy
             hdxobjectclass (type): Type of the HDX Objects to be copied
             attribute_to_copy (Optional[str]): An attribute to copy over from the HDX object. Defaults to None.
 
@@ -639,7 +644,7 @@ class HDXObject(UserDict, ABC):
 
     def _separate_hdxobjects(
         self,
-        hdxobjects: List["HDXObject"],
+        hdxobjects: ListTuple["HDXObject"],
         hdxobjects_name: str,
         id_field: str,
         hdxobjectclass: type,
@@ -649,7 +654,7 @@ class HDXObject(UserDict, ABC):
         the internal dictionary is then deleted.
 
         Args:
-            hdxobjects (List[HDXObject]): list of HDX objects to which to add new objects or update existing ones
+            hdxobjects (ListTuple[HDXObject]): list of HDX objects to which to add new objects or update existing ones
             hdxobjects_name (str): Name of key in internal dictionary from which to obtain list of HDX objects
             id_field (str): Field on which to match to determine if object already exists in list
             hdxobjectclass (type): Type of the HDX Object to be added/updated
@@ -713,12 +718,12 @@ class HDXObject(UserDict, ABC):
         return True
 
     def _add_tags(
-        self, tags: List[str], vocabulary_id: Optional[str] = None
+        self, tags: ListTuple[str], vocabulary_id: Optional[str] = None
     ) -> List[str]:
         """Add a list of tag
 
         Args:
-            tags (List[str]): list of tags to add
+            tags (ListTuple[str]): list of tags to add
             vocabulary_id (Optional[str]): Vocabulary tag is in. Defaults to None.
 
         Returns:
@@ -764,13 +769,13 @@ class HDXObject(UserDict, ABC):
         return True
 
     def _add_strings_to_commastring(
-        self, field: str, strings: List[str]
+        self, field: str, strings: ListTuple[str]
     ) -> bool:
         """Add a list of strings to a comma separated list of strings
 
         Args:
             field (str): Field containing comma separated list
-            strings (List[str]): list of strings to add
+            strings (ListTuple[str]): list of strings to add
 
         Returns:
             bool: True if all strings added or False if any already present.

@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 from hdx.utilities.dateparse import now_utc
 from hdx.utilities.downloader import Download
+from hdx.utilities.typehint import ListTuple
 from hdx.utilities.uuid import is_valid_uuid
 
 import hdx.data.dataset
@@ -326,13 +327,15 @@ class Resource(HDXObject):
                 del self.data["tracking_summary"]
         self.clean_file_type()
 
-    def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
+    def check_required_fields(
+        self, ignore_fields: ListTuple[str] = tuple()
+    ) -> None:
         """Check that metadata for resource is complete. The parameter ignore_fields
         should be set if required to any fields that should be ignored for the
         particular operation.
 
         Args:
-            ignore_fields (List[str]): Fields to ignore. Default is [].
+            ignore_fields (ListTuple[str]): Fields to ignore. Default is tuple().
 
         Returns:
             None
@@ -581,12 +584,12 @@ class Resource(HDXObject):
         resource_view.create_in_hdx()
 
     def add_update_resource_views(
-        self, resource_views: List[Union[ResourceView, Dict]]
+        self, resource_views: ListTuple[Union[ResourceView, Dict]]
     ) -> None:
         """Add new or update existing resource views in resource with new metadata.
 
         Args:
-            resource_views (List[Union[ResourceView,Dict]]): A list of resource views metadata from ResourceView objects or dictionaries
+            resource_views (ListTuple[Union[ResourceView,Dict]]): A list of resource views metadata from ResourceView objects or dictionaries
 
         Returns:
             None
@@ -597,12 +600,12 @@ class Resource(HDXObject):
             self.add_update_resource_view(resource_view)
 
     def reorder_resource_views(
-        self, resource_views: List[Union[ResourceView, Dict, str]]
+        self, resource_views: ListTuple[Union[ResourceView, Dict, str]]
     ) -> None:
         """Order resource views in resource.
 
         Args:
-            resource_views (List[Union[ResourceView,Dict,str]]): A list of either resource view ids or resource views metadata from ResourceView objects or dictionaries
+            resource_views (ListTuple[Union[ResourceView,Dict,str]]): A list of either resource view ids or resource views metadata from ResourceView objects or dictionaries
 
         Returns:
             None

@@ -1,6 +1,8 @@
 """Locations in HDX"""
 from typing import Dict, List, Optional, Tuple
 
+from hdx.utilities.typehint import ListTuple
+
 from hdx.api.configuration import Configuration
 
 
@@ -29,12 +31,12 @@ class Locations:
         return cls._validlocations
 
     @classmethod
-    def set_validlocations(cls, locations: List[Dict]) -> None:
+    def set_validlocations(cls, locations: ListTuple[Dict]) -> None:
         """
         Set valid locations using list of dictionaries of form {'name': 'zmb', 'title', 'Zambia'}
 
         Args:
-            locations (List[Dict]): List of dictionaries of form {'name': 'zmb', 'title', 'Zambia'}
+            locations (ListTuple[Dict]): List of dictionaries of form {'name': 'zmb', 'title', 'Zambia'}
 
         Returns:
             None
@@ -45,23 +47,24 @@ class Locations:
     def get_location_from_HDX_code(
         cls,
         code: str,
-        locations: Optional[List[Dict]] = None,
+        locations: Optional[ListTuple[Dict]] = None,
         configuration: Optional[Configuration] = None,
     ) -> Optional[str]:
         """Get location from HDX location code
 
         Args:
             code (str): code for which to get location name
-            locations (Optional[List[Dict]]): Valid locations list. Defaults to list downloaded from HDX.
+            locations (Optional[ListTuple[Dict]]): Valid locations list. Defaults to list downloaded from HDX.
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
-            Optional[str]: location name
+            Optional[str]: location name or None
         """
         if locations is None:
             locations = cls.validlocations(configuration)
+        code = code.upper()
         for locdict in locations:
-            if code.upper() == locdict["name"].upper():
+            if code == locdict["name"].upper():
                 return locdict["title"]
         return None
 
@@ -69,14 +72,14 @@ class Locations:
     def get_HDX_code_from_location(
         cls,
         location: str,
-        locations: Optional[List[Dict]] = None,
+        locations: Optional[ListTuple[Dict]] = None,
         configuration: Optional[Configuration] = None,
     ) -> Optional[str]:
         """Get HDX code for location
 
         Args:
             location (str): Location for which to get HDX code
-            locations (Optional[List[Dict]]): Valid locations list. Defaults to list downloaded from HDX.
+            locations (Optional[ListTuple[Dict]]): Valid locations list. Defaults to list downloaded from HDX.
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
@@ -99,14 +102,14 @@ class Locations:
     def get_HDX_code_from_location_partial(
         cls,
         location: str,
-        locations: Optional[List[Dict]] = None,
+        locations: Optional[ListTuple[Dict]] = None,
         configuration: Optional[Configuration] = None,
     ) -> Tuple[Optional[str], bool]:
         """Get HDX code for location
 
         Args:
             location (str): Location for which to get HDX code
-            locations (Optional[List[Dict]]): Valid locations list. Defaults to list downloaded from HDX.
+            locations (Optional[ListTuple[Dict]]): Valid locations list. Defaults to list downloaded from HDX.
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:

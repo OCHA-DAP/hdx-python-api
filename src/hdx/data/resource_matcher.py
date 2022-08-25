@@ -3,6 +3,8 @@
 import collections
 from typing import TYPE_CHECKING, List, Optional, Tuple
 
+from hdx.utilities.typehint import ListTuple
+
 if TYPE_CHECKING:
     from hdx.data.resource import Resource
 
@@ -10,13 +12,13 @@ if TYPE_CHECKING:
 class ResourceMatcher:
     @staticmethod
     def match_resource_list(
-        resources1: List["Resource"],
+        resources1: ListTuple["Resource"],
         resource2: "Resource",
     ) -> Optional[int]:
         """Helper method to find the index of a resource that matches a given resource
 
         Args:
-            resources1 (List[Resource]): List of resources
+            resources1 (ListTuple[Resource]): List of resources
             resource2 (Resource): Resource to match with list
 
         Returns:
@@ -55,15 +57,15 @@ class ResourceMatcher:
 
     @staticmethod
     def match_resource_lists(
-        resources1: List["Resource"],
-        resources2: List["Resource"],
+        resources1: ListTuple["Resource"],
+        resources2: ListTuple["Resource"],
     ) -> Tuple[List, List, List, List]:
         """Helper method to match two lists of resources returning the indices that match in two lists and
         that don't match in two more lists
 
         Args:
-            resources1 (List[Resource]): List of resources
-            resources2 (List[Resource]): List of resources to match with first list
+            resources1 (ListTuple[Resource]): List of resources
+            resources2 (ListTuple[Resource]): List of resources to match with first list
 
         Returns:
             Tuple[List, List, List, List]: Returns indices that match (2 lists) and that don't match (2 lists)

@@ -424,8 +424,14 @@ class Configuration(UserDict):
 
         """
         if not session:
-            whitelist = frozenset(
-                ["HEAD", "TRACE", "GET", "POST", "PUT", "OPTIONS", "DELETE"]
+            whitelist = (
+                "HEAD",
+                "TRACE",
+                "GET",
+                "POST",
+                "PUT",
+                "OPTIONS",
+                "DELETE",
             )
             session = get_session(
                 user_agent,

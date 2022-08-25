@@ -962,8 +962,6 @@ class TestDatasetCore:
         with pytest.raises(HDXError):
             dataset.add_update_resources(resourcesdata)
         with pytest.raises(HDXError):
-            dataset.add_update_resources(123)
-        with pytest.raises(HDXError):
             dataset.delete_resource("NOTEXIST")
         datasetdata["resources"] = resourcesdata
         dataset = Dataset(datasetdata)

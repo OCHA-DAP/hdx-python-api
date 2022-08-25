@@ -5,6 +5,7 @@ from os.path import join
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.typehint import ListTuple
 from hdx.utilities.uuid import is_valid_uuid
 
 import hdx.data.dataset
@@ -95,12 +96,14 @@ class Showcase(HDXObject):
         """
         return cls._read_from_hdx_class("showcase", identifier, configuration)
 
-    def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
+    def check_required_fields(
+        self, ignore_fields: ListTuple[str] = tuple()
+    ) -> None:
         """Check that metadata for showcase is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
         Args:
-            ignore_fields (List[str]): Fields to ignore. Default is [].
+            ignore_fields (ListTuple[str]): Fields to ignore. Default is tuple().
 
         Returns:
             None
@@ -178,12 +181,12 @@ class Showcase(HDXObject):
         )
 
     def add_tags(
-        self, tags: List[str], log_deleted: bool = True
+        self, tags: ListTuple[str], log_deleted: bool = True
     ) -> Tuple[List[str], List[str]]:
         """Add a list of tags
 
         Args:
-            tags (List[str]): List of tags to add
+            tags (ListTuple[str]): List of tags to add
             log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
 
         Returns:
@@ -274,13 +277,13 @@ class Showcase(HDXObject):
     def add_dataset(
         self,
         dataset: Union["Dataset", Dict, str],  # noqa: F821
-        datasets_to_check: List["Dataset"] = None,  # noqa: F821
+        datasets_to_check: ListTuple["Dataset"] = None,  # noqa: F821
     ) -> bool:
         """Add a dataset
 
         Args:
             dataset (Union[Dataset,Dict,str]): Either a dataset id or dataset metadata either from a Dataset object or a dictionary
-            datasets_to_check (List[Dataset]): List of datasets against which to check existence of dataset. Defaults to datasets in showcase.
+            datasets_to_check (ListTuple[Dataset]): List of datasets against which to check existence of dataset. Defaults to datasets in showcase.
 
         Returns:
             bool: True if the dataset was added, False if already present
@@ -296,14 +299,14 @@ class Showcase(HDXObject):
 
     def add_datasets(
         self,
-        datasets: List[Union["Dataset", Dict, str]],  # noqa: F821
-        datasets_to_check: List["Dataset"] = None,  # noqa: F821
+        datasets: ListTuple[Union["Dataset", Dict, str]],  # noqa: F821
+        datasets_to_check: ListTuple["Dataset"] = None,  # noqa: F821
     ) -> bool:
         """Add multiple datasets
 
         Args:
-            datasets (List[Union[Dataset,Dict,str]]): A list of either dataset ids or dataset metadata from Dataset objects or dictionaries
-            datasets_to_check (List[Dataset]): List of datasets against which to check existence of dataset. Defaults to datasets in showcase.
+            datasets (ListTuple[Union[Dataset,Dict,str]]): A list of either dataset ids or dataset metadata from Dataset objects or dictionaries
+            datasets_to_check (ListTuple[Dataset]): List of datasets against which to check existence of dataset. Defaults to datasets in showcase.
 
         Returns:
             bool: True if all datasets added or False if any already present

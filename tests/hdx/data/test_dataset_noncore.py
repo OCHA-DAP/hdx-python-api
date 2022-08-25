@@ -303,8 +303,8 @@ class TestDatasetNoncore:
         assert len(dataset["groups"]) == 60
         assert len(dataset.get_location_names()) == 60
         del dataset["groups"]
-        assert dataset.get_location_names() == []
-        assert dataset.get_location_iso3s() == []
+        assert dataset.get_location_names() == list()
+        assert dataset.get_location_iso3s() == list()
         with pytest.raises(HDXError):
             dataset.add_country_location("abc")
         with pytest.raises(HDXError):

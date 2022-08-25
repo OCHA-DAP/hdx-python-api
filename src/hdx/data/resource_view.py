@@ -3,6 +3,7 @@ import logging
 from os.path import join
 from typing import Any, Dict, List, Optional, Union
 
+from hdx.utilities.typehint import ListTuple
 from hdx.utilities.uuid import is_valid_uuid
 
 from hdx.api.configuration import Configuration
@@ -114,12 +115,14 @@ class ResourceView(HDXObject):
                 resourceviews.append(resourceview)
         return resourceviews
 
-    def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
+    def check_required_fields(
+        self, ignore_fields: ListTuple[str] = tuple()
+    ) -> None:
         """Check that metadata for resource view is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
         Args:
-            ignore_fields (List[str]): Fields to ignore. Default is [].
+            ignore_fields (ListTuple[str]): Fields to ignore. Default is tuple().
 
         Returns:
             None

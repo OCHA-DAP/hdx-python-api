@@ -440,8 +440,6 @@ class TestOrganization:
         users = organization.get_users("member")
         assert len(users) == 2
         with pytest.raises(HDXError):
-            organization.add_update_users(123)
-        with pytest.raises(HDXError):
             organization.add_update_user(123)
         with pytest.raises(HDXError):
             organization.remove_user(123)

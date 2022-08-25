@@ -14,7 +14,6 @@ from typing import (
     Iterable,
     Iterator,
     List,
-    MutableMapping,
     Optional,
     Tuple,
     Union,
@@ -32,6 +31,7 @@ from hdx.utilities.dictandlist import merge_two_dictionaries, write_list_to_csv
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.saver import save_json
+from hdx.utilities.typehint import ListTuple, ListTupleDict
 from hdx.utilities.uuid import is_valid_uuid
 from hxl.input import InputOptions, munge_url
 
@@ -292,36 +292,37 @@ class Dataset(HDXObject):
 
     def add_update_resources(
         self,
-        resources: List[Union["Resource", Dict, str]],
+        resources: ListTuple[Union["Resource", Dict, str]],
         ignore_datasetid: bool = False,
     ) -> None:
         """Add new to the dataset or update existing resources with new metadata
 
         Args:
-            resources (List[Union[Resource,Dict,str]]): A list of either resource ids or resources metadata from either Resource objects or dictionaries
+            resources (ListTuple[Union[Resource,Dict,str]]): A list of either resource ids or resources metadata from either Resource objects or dictionaries
             ignore_datasetid (bool): Whether to ignore dataset id in the resource. Defaults to False.
 
         Returns:
             None
         """
-        if not isinstance(resources, list):
-            raise HDXError("Resources should be a list!")
-        for i, resource in enumerate(resources):
+        resource_objects = list()
+        for resource in resources:
             resource = self._get_resource_from_obj(resource)
             if "package_id" in resource:
                 if not ignore_datasetid:
                     raise HDXError(
                         f"Resource {resource['name']} being added already has a dataset id!"
                     )
-            resources[i] = resource
+            resource_objects.append(resource)
         (
             resource_matches,
             updated_resource_matches,
             _,
             updated_resource_no_matches,
-        ) = ResourceMatcher.match_resource_lists(self.resources, resources)
+        ) = ResourceMatcher.match_resource_lists(
+            self.resources, resource_objects
+        )
         for i, resource_index in enumerate(resource_matches):
-            resource = resources[updated_resource_matches[i]]
+            resource = resource_objects[updated_resource_matches[i]]
             resource.check_url_filetoupload()
             updated_resource = merge_two_dictionaries(
                 self.resources[resource_index], resource
@@ -331,7 +332,7 @@ class Dataset(HDXObject):
                     resource.get_file_to_upload()
                 )
         for resource_index in updated_resource_no_matches:
-            resource = resources[resource_index]
+            resource = resource_objects[resource_index]
             resource.check_url_filetoupload()
             self.resources.append(resource)
 
@@ -382,7 +383,7 @@ class Dataset(HDXObject):
         return len(self.resources)
 
     def reorder_resources(
-        self, resource_ids: List[str], hxl_update: bool = True
+        self, resource_ids: ListTuple[str], hxl_update: bool = True
     ) -> None:
         """Reorder resources in dataset according to provided list. Resources are
         updated in the dataset object to match new order. However, the dataset is not
@@ -391,7 +392,7 @@ class Dataset(HDXObject):
         original order.
 
         Args:
-            resource_ids (List[str]): List of resource ids
+            resource_ids (ListTuple[str]): List of resource ids
             hxl_update (bool): Whether to call package_hxl_update. Defaults to True.
 
         Returns:
@@ -490,7 +491,7 @@ class Dataset(HDXObject):
 
     def check_required_fields(
         self,
-        ignore_fields: List[str] = list(),
+        ignore_fields: ListTuple[str] = tuple(),
         allow_no_resources: bool = False,
         **kwargs: Any,
     ) -> None:
@@ -499,7 +500,7 @@ class Dataset(HDXObject):
         Prepend "resource:" for resource fields.
 
         Args:
-            ignore_fields (List[str]): Fields to ignore. Default is [].
+            ignore_fields (ListTuple[str]): Fields to ignore. Default is tuple().
             allow_no_resources (bool): Whether to allow no resources. Defaults to False.
 
         Returns:
@@ -527,7 +528,7 @@ class Dataset(HDXObject):
     @staticmethod
     def revise(
         match: Dict[str, Any],
-        filter: List[str] = list(),
+        filter: ListTuple[str] = tuple(),
         update: Dict[str, Any] = dict(),
         files_to_upload: Dict[str, str] = dict(),
         configuration: Optional[Configuration] = None,
@@ -537,9 +538,9 @@ class Dataset(HDXObject):
 
         Args:
             match (Dict[str,Any]): Metadata on which to match dataset
-            filter (List[str]): Filters to apply
-            update (Dict[str,Any]): Metadata updates to apply
-            files_to_upload (Dict[str,str]): Files to upload to HDX
+            filter (ListTuple[str]): Filters to apply. Defaults to tuple().
+            update (Dict[str,Any]): Metadata updates to apply. Defaults to dict().
+            files_to_upload (Dict[str,str]): Files to upload to HDX. Defaults to dict().
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
             **kwargs: Additional arguments to pass to package_revise
 
@@ -570,9 +571,9 @@ class Dataset(HDXObject):
         self,
         default_operation: str,
         id_field_name: str,
-        keys_to_delete: List[str],
-        resources_to_delete: List[int],
-        new_resource_order: Optional[List[str]],
+        keys_to_delete: ListTuple[str],
+        resources_to_delete: ListTuple[int],
+        new_resource_order: Optional[ListTuple[str]],
         filestore_resources: Dict[int, str],
         hxl_update: bool,
         create_default_views: bool = False,
@@ -583,9 +584,9 @@ class Dataset(HDXObject):
         Args:
             default_operation (str): Operation to perform eg. patch. Defaults to update.
             id_field_name (str): Name of field containing HDX object identifier
-            keys_to_delete (List[str]): List of top level metadata keys to delete
-            resources_to_delete (List[int]): List of indexes of resources to delete
-            new_resource_order (Optional[List[str]]): New resource order to use or None
+            keys_to_delete (ListTuple[str]): List of top level metadata keys to delete
+            resources_to_delete (ListTuple[int]): List of indexes of resources to delete
+            new_resource_order (Optional[ListTuple[str]]): New resource order to use or None
             filestore_resources (Dict[int, str]): List of (index of resources, file to upload)
             hxl_update (bool): Whether to call package_hxl_update.
             create_default_views (bool): Whether to create default views. Defaults to False.
@@ -705,7 +706,7 @@ class Dataset(HDXObject):
         self,
         update_resources: bool,
         match_resources_by_metadata: bool,
-        keys_to_delete: List[str],
+        keys_to_delete: ListTuple[str],
         remove_additional_resources: bool,
         match_resource_order: bool,
         create_default_views: bool,
@@ -717,7 +718,7 @@ class Dataset(HDXObject):
         Args:
             update_resources (bool): Whether to update resources
             match_resources_by_metadata (bool): Compare resource metadata rather than position in list
-            keys_to_delete (List[str]): List of top level metadata keys to delete
+            keys_to_delete (ListTuple[str]): List of top level metadata keys to delete
             remove_additional_resources (bool): Remove additional resources found in dataset (if updating)
             match_resource_order (bool): Match order of given resources by name
             create_default_views (bool): Whether to call package_create_default_resource_views.
@@ -834,7 +835,7 @@ class Dataset(HDXObject):
         self,
         update_resources: bool = True,
         match_resources_by_metadata: bool = True,
-        keys_to_delete: List[str] = list(),
+        keys_to_delete: ListTuple[str] = tuple(),
         remove_additional_resources: bool = False,
         match_resource_order: bool = False,
         create_default_views: bool = True,
@@ -847,7 +848,7 @@ class Dataset(HDXObject):
         Args:
             update_resources (bool): Whether to update resources. Defaults to True.
             match_resources_by_metadata (bool): Compare resource metadata rather than position in list. Defaults to True.
-            keys_to_delete (List[str]): List of top level metadata keys to delete. Defaults to empty list.
+            keys_to_delete (ListTuple[str]): List of top level metadata keys to delete. Defaults to tuple().
             remove_additional_resources (bool): Remove additional resources found in dataset. Defaults to False.
             match_resource_order (bool): Match order of given resources by name. Defaults to False.
             create_default_views (bool): Whether to call package_create_default_resource_views. Defaults to True.
@@ -889,7 +890,7 @@ class Dataset(HDXObject):
         allow_no_resources: bool = False,
         update_resources: bool = True,
         match_resources_by_metadata: bool = True,
-        keys_to_delete: List[str] = list(),
+        keys_to_delete: ListTuple[str] = tuple(),
         remove_additional_resources: bool = False,
         match_resource_order: bool = False,
         create_default_views: bool = True,
@@ -903,7 +904,7 @@ class Dataset(HDXObject):
             allow_no_resources (bool): Whether to allow no resources. Defaults to False.
             update_resources (bool): Whether to update resources (if updating). Defaults to True.
             match_resources_by_metadata (bool): Compare resource metadata rather than position in list. Defaults to True.
-            keys_to_delete (List[str]): List of top level metadata keys to delete. Defaults to empty list.
+            keys_to_delete (ListTuple[str]): List of top level metadata keys to delete. Defaults to tuple().
             remove_additional_resources (bool): Remove additional resources found in dataset (if updating). Defaults to False.
             match_resource_order (bool): Match order of given resources by name. Defaults to False.
             create_default_views (bool): Whether to call package_create_default_resource_views (if updating). Defaults to True.
@@ -1156,12 +1157,12 @@ class Dataset(HDXObject):
 
     @staticmethod
     def get_all_resources(
-        datasets: List["Dataset"],
+        datasets: ListTuple["Dataset"],
     ) -> List["Resource"]:
         """Get all resources from a list of datasets (such as returned by search)
 
         Args:
-            datasets (List[Dataset]): list of datasets
+            datasets (ListTuple[Dataset]): list of datasets
 
         Returns:
             List[Resource]: list of resources within those datasets
@@ -1344,12 +1345,12 @@ class Dataset(HDXObject):
         )
 
     def add_tags(
-        self, tags: List[str], log_deleted: bool = True
+        self, tags: ListTuple[str], log_deleted: bool = True
     ) -> Tuple[List[str], List[str]]:
         """Add a list of tags
 
         Args:
-            tags (List[str]): List of tags to add
+            tags (ListTuple[str]): List of tags to add
             log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
 
         Returns:
@@ -1408,49 +1409,60 @@ class Dataset(HDXObject):
             self.data["subnational"] = "0"
 
     def get_location_iso3s(
-        self, locations: Optional[List[str]] = None
+        self, locations: Optional[ListTuple[str]] = None
     ) -> List[str]:
         """Return the dataset's location
 
         Args:
-            locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
+            locations (Optional[ListTuple[str]]): Valid locations list. Defaults to list downloaded from HDX.
 
         Returns:
             List[str]: list of location iso3s
         """
-        countries = self.data.get("groups", None)
+        countries = self.data.get("groups")
+        countryisos = list()
         if not countries:
-            return list()
-        return [x["name"] for x in countries]
+            return countryisos
+        for country in countries:
+            countryiso = Locations.get_HDX_code_from_location(
+                country["name"],
+                locations=locations,
+                configuration=self.configuration,
+            )
+            if countryiso:
+                countryisos.append(countryiso.lower())
+        return countryisos
 
     def get_location_names(
-        self, locations: Optional[List[str]] = None
+        self, locations: Optional[ListTuple[str]] = None
     ) -> List[str]:
         """Return the dataset's location
 
         Args:
-            locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
+            locations (Optional[ListTuple[str]]): Valid locations list. Defaults to list downloaded from HDX.
 
         Returns:
             List[str]: list of location names
         """
-        countries = self.data.get("groups", None)
+        countries = self.data.get("groups")
+        countrynames = list()
         if not countries:
-            return list()
-        return [
-            Locations.get_location_from_HDX_code(
-                x["name"],
+            return countrynames
+        for country in countries:
+            countryname = Locations.get_location_from_HDX_code(
+                country["name"],
                 locations=locations,
                 configuration=self.configuration,
             )
-            for x in countries
-        ]
+            if countryname:
+                countrynames.append(countryname)
+        return countrynames
 
     def add_country_location(
         self,
         country: str,
         exact: bool = True,
-        locations: Optional[List[str]] = None,
+        locations: Optional[ListTuple[str]] = None,
         use_live: bool = True,
     ) -> bool:
         """Add a country. If an iso 3 code is not provided, value is parsed and if it is a valid country name,
@@ -1459,7 +1471,7 @@ class Dataset(HDXObject):
         Args:
             country (str): Country to add
             exact (bool): True for exact matching or False to allow fuzzy matching. Defaults to True.
-            locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
+            locations (Optional[ListTuple[str]]): Valid locations list. Defaults to list downloaded from HDX.
             use_live (bool): Try to get use latest country data from web rather than file in package. Defaults to True.
 
         Returns:
@@ -1480,16 +1492,16 @@ class Dataset(HDXObject):
 
     def add_country_locations(
         self,
-        countries: List[str],
-        locations: Optional[List[str]] = None,
+        countries: ListTuple[str],
+        locations: Optional[ListTuple[str]] = None,
         use_live: bool = True,
     ) -> bool:
         """Add a list of countries. If iso 3 codes are not provided, values are parsed and where they are valid country
         names, converted to iso 3 codes. If any country is already added, it is ignored.
 
         Args:
-            countries (List[str]): List of countries to add
-            locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
+            countries (ListTuple[str]): List of countries to add
+            locations (Optional[ListTuple[str]]): Valid locations list. Defaults to list downloaded from HDX.
             use_live (bool): Try to get use latest country data from web rather than file in package. Defaults to True.
 
         Returns:
@@ -1506,7 +1518,7 @@ class Dataset(HDXObject):
     def add_region_location(
         self,
         region: str,
-        locations: Optional[List[str]] = None,
+        locations: Optional[ListTuple[str]] = None,
         use_live: bool = True,
     ) -> bool:
         """Add all countries in a region. If a 3 digit UNStats M49 region code is not provided, value is parsed as a
@@ -1514,7 +1526,7 @@ class Dataset(HDXObject):
 
         Args:
             region (str): M49 region, intermediate region or subregion to add
-            locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
+            locations (Optional[ListTuple[str]]): Valid locations list. Defaults to list downloaded from HDX.
             use_live (bool): Try to get use latest country data from web rather than file in package. Defaults to True.
 
         Returns:
@@ -1532,7 +1544,7 @@ class Dataset(HDXObject):
         location: str,
         exact: bool = True,
         alterror: Optional[str] = None,
-        locations: Optional[List[str]] = None,
+        locations: Optional[ListTuple[str]] = None,
     ) -> bool:
         """Add a location which is not a country or region. Value is parsed and compared to existing locations in
         HDX. If the location is already added, it is ignored.
@@ -1541,7 +1553,7 @@ class Dataset(HDXObject):
             location (str): Location to add
             exact (bool): True for exact matching or False to allow fuzzy matching. Defaults to True.
             alterror (Optional[str]): Alternative error message to builtin if location not found. Defaults to None.
-            locations (Optional[List[str]]): Valid locations list. Defaults to list downloaded from HDX.
+            locations (Optional[ListTuple[str]]): Valid locations list. Defaults to list downloaded from HDX.
 
         Returns:
             bool: True if location added or False if location already present
@@ -1707,13 +1719,13 @@ class Dataset(HDXObject):
     def add_showcase(
         self,
         showcase: Union["Showcase", Dict, str],
-        showcases_to_check: List["Showcase"] = None,
+        showcases_to_check: ListTuple["Showcase"] = None,
     ) -> bool:
         """Add dataset to showcase
 
         Args:
             showcase (Union[Showcase,Dict,str]): Either a showcase id or showcase metadata from a Showcase object or dictionary
-            showcases_to_check (List[Showcase]): List of showcases against which to check existence of showcase. Defaults to showcases containing dataset.
+            showcases_to_check (ListTuple[Showcase]): List of showcases against which to check existence of showcase. Defaults to showcases containing dataset.
 
         Returns:
             bool: True if the showcase was added, False if already present
@@ -1733,14 +1745,14 @@ class Dataset(HDXObject):
 
     def add_showcases(
         self,
-        showcases: List[Union["Showcase", Dict, str]],
-        showcases_to_check: List["Showcase"] = None,
+        showcases: ListTuple[Union["Showcase", Dict, str]],
+        showcases_to_check: ListTuple["Showcase"] = None,
     ) -> bool:
         """Add dataset to multiple showcases
 
         Args:
-            showcases (List[Union[Showcase,Dict,str]]): A list of either showcase ids or showcase metadata from Showcase objects or dictionaries
-            showcases_to_check (List[Showcase]): list of showcases against which to check existence of showcase. Defaults to showcases containing dataset.
+            showcases (ListTuple[Union[Showcase,Dict,str]]): A list of either showcase ids or showcase metadata from Showcase objects or dictionaries
+            showcases_to_check (ListTuple[Showcase]): list of showcases against which to check existence of showcase. Defaults to showcases containing dataset.
 
         Returns:
             bool: True if all showcases added or False if any already present
@@ -1819,11 +1831,11 @@ class Dataset(HDXObject):
             )
         return self._add_string_to_commastring("field_names", fieldname)
 
-    def add_fieldnames(self, fieldnames: List[str]) -> bool:
+    def add_fieldnames(self, fieldnames: ListTuple[str]) -> bool:
         """Add a list of fieldnames to list of fieldnames in your data. Only applicable to requestable datasets.
 
         Args:
-            fieldnames (List[str]): List of fieldnames to add
+            fieldnames (ListTuple[str]): List of fieldnames to add
 
         Returns:
             bool: True if all fieldnames added or False if any already present
@@ -1874,11 +1886,11 @@ class Dataset(HDXObject):
             )
         return self._add_string_to_commastring("file_types", filetype)
 
-    def add_filetypes(self, filetypes: List[str]) -> bool:
+    def add_filetypes(self, filetypes: ListTuple[str]) -> bool:
         """Add a list of filetypes to list of filetypes in your data. Only applicable to requestable datasets.
 
         Args:
-            filetypes (List[str]): list of filetypes to add
+            filetypes (ListTuple[str]): list of filetypes to add
 
         Returns:
             bool: True if all filetypes added or False if any already present
@@ -2015,8 +2027,8 @@ class Dataset(HDXObject):
         self,
         resource: Union["Resource", Dict, str, int] = 0,
         path: Optional[str] = None,
-        bites_disabled: Optional[List[bool]] = None,
-        indicators: Optional[List[Dict]] = None,
+        bites_disabled: Optional[ListTuple[bool]] = None,
+        indicators: Optional[ListTuple[Dict]] = None,
         findreplace: Optional[Dict] = None,
     ) -> resource_view.ResourceView:
         """Create QuickCharts for dataset from configuration saved in resource view. You can disable specific bites
@@ -2030,8 +2042,8 @@ class Dataset(HDXObject):
         Args:
             resource (Union[Resource,Dict,str,int]): Either resource id or name, resource metadata from a Resource object or a dictionary or position. Defaults to 0.
             path (Optional[str]): Path to YAML resource view metadata. Defaults to None (config/hdx_resource_view_static.yml or internal template).
-            bites_disabled (Optional[List[bool]]): Which QC bites should be disabled. Defaults to None (all bites enabled).
-            indicators (Optional[List[Dict]]): Indicator codes, QC titles and units for resource view template. Defaults to None (don't use template).
+            bites_disabled (Optional[ListTuple[bool]]): Which QC bites should be disabled. Defaults to None (all bites enabled).
+            indicators (Optional[ListTuple[Dict]]): Indicator codes, QC titles and units for resource view template. Defaults to None (don't use template).
             findreplace (Optional[Dict]): Replacements for anything else in resource view. Defaults to None.
 
         Returns:
@@ -2214,8 +2226,8 @@ class Dataset(HDXObject):
         self,
         resource: Union["Resource", Dict, str, int] = 0,
         path: Optional[str] = None,
-        bites_disabled: Optional[List[bool]] = None,
-        indicators: Optional[List[Dict]] = None,
+        bites_disabled: Optional[ListTuple[bool]] = None,
+        indicators: Optional[ListTuple[Dict]] = None,
         findreplace: Optional[Dict] = None,
     ) -> resource_view.ResourceView:
         """Create QuickCharts for dataset from configuration saved in resource view. You can disable specific bites
@@ -2229,8 +2241,8 @@ class Dataset(HDXObject):
         Args:
             resource (Union[Resource,Dict,str,int]): Either resource id or name, resource metadata from a Resource object or a dictionary or position. Defaults to 0.
             path (Optional[str]): Path to YAML resource view metadata. Defaults to None (config/hdx_resource_view_static.yml or internal template).
-            bites_disabled (Optional[List[bool]]): Which QC bites should be disabled. Defaults to None (all bites enabled).
-            indicators (Optional[List[Dict]]): Indicator codes, QC titles and units for resource view template. Defaults to None (don't use template).
+            bites_disabled (Optional[ListTuple[bool]]): Which QC bites should be disabled. Defaults to None (all bites enabled).
+            indicators (Optional[ListTuple[Dict]]): Indicator codes, QC titles and units for resource view template. Defaults to None (don't use template).
             findreplace (Optional[Dict]): Replacements for anything else in resource view. Defaults to None.
 
         Returns:
@@ -2285,9 +2297,9 @@ class Dataset(HDXObject):
         self,
         folder: str,
         filename: str,
-        rows: List[Union[MutableMapping, List]],
+        rows: List[ListTupleDict],
         resourcedata: Dict,
-        headers: Optional[List[str]] = None,
+        headers: Optional[ListTuple[str]] = None,
         encoding: Optional[str] = None,
     ) -> "Resource":
         """Write rows to csv and create resource, adding to it the dataset
@@ -2295,9 +2307,9 @@ class Dataset(HDXObject):
         Args:
             folder (str): Folder to which to write file containing rows
             filename (str): Filename of file to write rows
-            rows (List[Union[MutableMapping, List]]): List of rows
+            rows (List[ListTupleDict]): List of rows in dict or list form
             resourcedata (Dict): Resource data
-            headers (Optional[List[str]]): List of headers. Defaults to None.
+            headers (Optional[ListTuple[str]]): List of headers. Defaults to None.
             encoding (Optional[str]): Encoding to use. Defaults to None (infer encoding).
 
         Returns:
@@ -2315,12 +2327,12 @@ class Dataset(HDXObject):
         self,
         folder: str,
         filename: str,
-        rows: List[MutableMapping],
+        rows: List[Dict],
         resourcedata: Dict,
         columnname: str,
         hxltags: Dict[str, str],
-        qc_indicator_codes: List[str],
-        headers: Optional[List[str]] = None,
+        qc_indicator_codes: ListTuple[str],
+        headers: Optional[ListTuple[str]] = None,
         encoding: Optional[str] = None,
     ) -> Optional["Resource"]:
         """Generate QuickCharts rows by cutting down input rows by indicator code and
@@ -2330,12 +2342,12 @@ class Dataset(HDXObject):
         Args:
             folder (str): Folder to which to write file containing rows
             filename (str): Filename of file to write rows
-            rows (List[MutableMapping]): List of rows in dict form
+            rows (List[Dict]): List of rows in dict form
             resourcedata (Dict): Resource data
             columnname (str): Name of column containing indicator code
             hxltags (Dict[str,str]): Header to HXL hashtag mapping
-            qc_indicator_codes (List[str]): List of indicator codes to match
-            headers (Optional[List[str]]): List of headers to output. Defaults to None (all headers).
+            qc_indicator_codes (ListTuple[str]): List of indicator codes to match
+            headers (Optional[ListTuple[str]]): List of headers to output. Defaults to None (all headers).
             encoding (Optional[str]): Encoding to use. Defaults to None (infer encoding).
 
         Returns:
@@ -2363,8 +2375,8 @@ class Dataset(HDXObject):
 
     def generate_resource_from_iterator(
         self,
-        headers: List[str],
-        iterator: Iterator[Union[List, Dict]],
+        headers: ListTuple[str],
+        iterator: Iterator[Union[ListTuple, Dict]],
         hxltags: Dict[str, str],
         folder: str,
         filename: str,
@@ -2407,8 +2419,8 @@ class Dataset(HDXObject):
         cutting down otherwise the full list of hxl tags is used.
 
         Args:
-            headers (List[str]): Headers
-            iterator (Iterator[Union[List,Dict]]): Iterator returning rows
+            headers (ListTuple[str]): Headers
+            iterator (Iterator[Union[ListTuple,Dict]]): Iterator returning rows
             hxltags (Dict[str,str]): Header to HXL hashtag mapping
             folder (str): Folder to which to write file containing rows
             filename (str): Filename of file to write rows
@@ -2577,7 +2589,7 @@ class Dataset(HDXObject):
         folder: str,
         filename: str,
         resourcedata: Dict,
-        header_insertions: Optional[List[Tuple[int, str]]] = None,
+        header_insertions: Optional[ListTuple[Tuple[int, str]]] = None,
         row_function: Optional[Callable[[List[str], Dict], Dict]] = None,
         datecol: Optional[str] = None,
         yearcol: Optional[str] = None,
@@ -2630,7 +2642,7 @@ class Dataset(HDXObject):
             folder (str): Folder to which to write file containing rows
             filename (str): Filename of file to write rows
             resourcedata (Dict): Resource data
-            header_insertions (Optional[List[Tuple[int,str]]]): List of (position, header) to insert. Defaults to None.
+            header_insertions (Optional[ListTuple[Tuple[int,str]]]): List of (position, header) to insert. Defaults to None.
             row_function (Optional[Callable[[List[str],Dict],Dict]]): Function to call for each row. Defaults to None.
             datecol (Optional[str]): Date column for setting dataset date. Defaults to None (don't set).
             yearcol (Optional[str]): Year column for setting dataset year range. Defaults to None (don't set).

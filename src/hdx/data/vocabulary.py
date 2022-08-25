@@ -5,6 +5,7 @@ from os.path import join
 from typing import Any, Dict, List, Optional, Tuple
 
 from hdx.utilities.downloader import Download
+from hdx.utilities.typehint import ListTuple
 
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXObject
@@ -128,12 +129,14 @@ class Vocabulary(HDXObject):
             )
         return vocabularies
 
-    def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
+    def check_required_fields(
+        self, ignore_fields: ListTuple[str] = tuple()
+    ) -> None:
         """Check that metadata for vocabulary is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
         Args:
-            ignore_fields (List[str]): Fields to ignore. Default is [].
+            ignore_fields (ListTuple[str]): Fields to ignore. Default is tuple().
 
         Returns:
             None
@@ -193,11 +196,11 @@ class Vocabulary(HDXObject):
         """
         return self._add_tag(tag)
 
-    def add_tags(self, tags: List[str]) -> List[str]:
+    def add_tags(self, tags: ListTuple[str]) -> List[str]:
         """Add a list of tags
 
         Args:
-            tags (List[str]): list of tags to add
+            tags (ListTuple[str]): list of tags to add
 
         Returns:
             List[str]: Tags that were successfully added
@@ -461,7 +464,7 @@ class Vocabulary(HDXObject):
         """Given a tag, return a list of tag(s) to which it maps and any deleted tags
 
         Args:
-            tags (str): Tag to map
+            tag (str): Tag to map
             log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
@@ -504,14 +507,14 @@ class Vocabulary(HDXObject):
     @classmethod
     def get_mapped_tags(
         cls,
-        tags: List[str],
+        tags: ListTuple[str],
         log_deleted: bool = True,
         configuration: Optional[Configuration] = None,
     ) -> Tuple[List[str], List[str]]:
         """Given a list of tags, return a list of tags to which they map and any deleted tags
 
         Args:
-            tags (List[str]): List of tags to map
+            tags (ListTuple[str]): List of tags to map
             log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
@@ -550,14 +553,14 @@ class Vocabulary(HDXObject):
     def add_mapped_tags(
         cls,
         hdxobject: HDXObject,
-        tags: List[str],
+        tags: ListTuple[str],
         log_deleted: bool = True,
     ) -> Tuple[List[str], List[str]]:
         """Add a list of tag to an HDX object that has tags
 
         Args:
             hdxobject (HDXObject): HDX object such as dataset
-            tags (List[str]): List of tags to add
+            tags (ListTuple[str]): List of tags to add
             log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
 
         Returns:

@@ -3,6 +3,8 @@ import logging
 from os.path import join
 from typing import Any, Dict, List, Optional
 
+from hdx.utilities.typehint import ListTuple
+
 import hdx.data.organization
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXObject
@@ -85,12 +87,14 @@ class User(HDXObject):
         """
         return cls._read_from_hdx_class("user", identifier, configuration)
 
-    def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
+    def check_required_fields(
+        self, ignore_fields: ListTuple[str] = tuple()
+    ) -> None:
         """Check that metadata for user is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
         Args:
-            ignore_fields (List[str]): Fields to ignore. Default is [].
+            ignore_fields (ListTuple[str]): Fields to ignore. Default is tuple().
 
         Returns:
             None
@@ -192,26 +196,26 @@ class User(HDXObject):
 
     @staticmethod
     def email_users(
-        users: List["User"],
+        users: ListTuple["User"],
         subject: str,
         text_body: str,
         html_body: Optional[str] = None,
         sender: Optional[str] = None,
-        cc: Optional[List["User"]] = None,
-        bcc: Optional[List["User"]] = None,
+        cc: Optional[ListTuple["User"]] = None,
+        bcc: Optional[ListTuple["User"]] = None,
         configuration: Optional[Configuration] = None,
         **kwargs: Any,
     ) -> None:
         """Email a list of users
 
         Args:
-            users (List[User]): List of users in To address
+            users (ListTuple[User]): List of users in To address
             subject (str): Email subject
             text_body (str): Plain text email body
             html_body (str): HTML email body
             sender (Optional[str]): Email sender. Defaults to SMTP username.
-            cc (Optional[List[User]]: List of users to cc. Defaults to None.
-            bcc (Optional[List[User]]: List of users to bcc. Defaults to None.
+            cc (Optional[ListTuple[User]]: List of users to cc. Defaults to None.
+            bcc (Optional[ListTuple[User]]: List of users to bcc. Defaults to None.
             configuration (Optional[Configuration]): HDX configuration. Defaults to configuration of first user in list.
             **kwargs: See below
             mail_options (List): Mail options (see smtplib documentation)

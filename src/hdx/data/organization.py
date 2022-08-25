@@ -3,6 +3,8 @@ import logging
 from os.path import join
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
+from hdx.utilities.typehint import ListTuple
+
 import hdx.data.dataset
 import hdx.data.user as user_module
 from hdx.api.configuration import Configuration
@@ -90,12 +92,14 @@ class Organization(HDXObject):
             "organization", identifier, configuration
         )
 
-    def check_required_fields(self, ignore_fields: List[str] = list()) -> None:
+    def check_required_fields(
+        self, ignore_fields: ListTuple[str] = tuple()
+    ) -> None:
         """Check that metadata for organization is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
         Args:
-            ignore_fields (List[str]): Fields to ignore. Default is [].
+            ignore_fields (ListTuple[str]): Fields to ignore. Default is tuple().
 
         Returns:
             None
@@ -188,7 +192,7 @@ class Organization(HDXObject):
 
     def add_update_users(
         self,
-        users: List[Union["User", Dict, str]],
+        users: ListTuple[Union["User", Dict, str]],
         capacity: Optional[str] = None,
     ) -> None:
         """Add new or update existing users in organization with new metadata. Capacity eg. member, admin
@@ -196,14 +200,12 @@ class Organization(HDXObject):
         precedence).
 
         Args:
-            users (List[Union[User,Dict,str]]): A list of either user ids or users metadata from User objects or dictionaries
+            users (ListTuple[Union[User,Dict,str]]): A list of either user ids or users metadata from User objects or dictionaries
             capacity (Optional[str]): Capacity of users eg. member, admin. Defaults to None.
 
         Returns:
             None
         """
-        if not isinstance(users, list):
-            raise HDXError("Users should be a list!")
         for user in users:
             self.add_update_user(user, capacity)
 
