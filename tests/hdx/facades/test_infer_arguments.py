@@ -116,7 +116,6 @@ class TestInferArguments:
         )
         with pytest.raises(SystemExit):
             facade(my_testfnia)
-        UserAgent.clear_global()
 
         UserAgent.clear_global()
         monkeypatch.setattr(

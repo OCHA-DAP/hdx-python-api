@@ -1,7 +1,6 @@
 """Facade to simplify project setup that calls project main function with kwargs"""
 import logging
 import sys
-import types
 from inspect import getdoc, signature
 from typing import Any, Callable, Optional
 
