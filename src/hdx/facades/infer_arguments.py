@@ -1,10 +1,14 @@
 """Facade to simplify project setup that calls project main function with kwargs"""
 import logging
+import sys
+import types
+from inspect import getdoc, signature
 from typing import Any, Callable, Optional
 
 import defopt
 from hdx.utilities.easy_logging import setup_logging
 from hdx.utilities.useragent import UserAgent
+from makefun import with_signature
 
 from hdx.api import __version__
 from hdx.api.configuration import Configuration
@@ -72,12 +76,41 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
     #
     # Setting up configuration
     #
-    func, argv = defopt.bind_known(projectmainfn, cli_options="all")
+
+    create_config_sig = signature(_create_configuration)
+    create_config_params = list(create_config_sig.parameters.values())
+    main_sig = signature(projectmainfn)
+    main_params = list(main_sig.parameters.values())
+    main_params.extend(create_config_params)
+    main_sig = main_sig.replace(parameters=main_params)
+
+    create_config_doc = getdoc(_create_configuration)
+    parsed_main_doc = defopt._parse_docstring(getdoc(projectmainfn))
+    main_doc = [f"{parsed_main_doc.first_line}\n\nArgs:"]
+    for param_name, param_info in parsed_main_doc.params.items():
+        main_doc.append(
+            f"\n    {param_name} ({param_info.type}): {param_info.text}"
+        )
+    args_index = create_config_doc.index("Args:")
+    args_doc = create_config_doc[args_index + 5 :]
+    main_doc.append(args_doc)
+    main_doc = "".join(main_doc)
+
+    @with_signature(main_sig, func_name=projectmainfn.__name__)
+    def gen_func(*args, **kwargs):
+        """docstring"""
+        return args, kwargs
+
+    gen_func.__doc__ = main_doc
+
+    argv = sys.argv[1:]
     for key in kwargs:
         name = f"--{key.replace('_', '-')}"
         if name not in argv:
             argv.append(name)
             argv.append(kwargs[key])
+    defopt.bind(gen_func, argv=argv, cli_options="all")
+    func, argv = defopt.bind_known(projectmainfn, argv=argv, cli_options="all")
     site_url = defopt.run(_create_configuration, argv=argv, cli_options="all")
 
     logger.info("--------------------------------------------------")

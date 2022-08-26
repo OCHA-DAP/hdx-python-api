@@ -41,5 +41,15 @@ def my_testfnkw(**kwargs):
 
 
 def my_testfnia(mydata: Optional[str] = None) -> str:
+    """My test function. It takes in mydata an optional string which defaults to None.
+    It assigns that to testresult which is an object of type TestResult. It returns
+    mydata.
+
+    Args:
+        mydata (Optional[str]): Data. Defaults to None.
+
+    Returns:
+        str: String
+    """
     testresult.actual_result = mydata
     return mydata
