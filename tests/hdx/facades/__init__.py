@@ -40,6 +40,17 @@ def my_testfnkw(**kwargs):
         raise ValueError("Some failure!")
 
 
-def my_testfnia(mydata: Optional[str] = None) -> str:
+def my_testfnia(mydata: Optional[str] = None, myflag: bool = False) -> str:
+    """My test function. It takes in mydata an optional string which defaults to None.
+    It assigns that to testresult which is an object of type TestResult. It returns
+    mydata.
+
+    Args:
+        mydata (Optional[str]): Data. Defaults to None.
+        myflag (bool): My flag. Defaults to False.
+
+    Returns:
+        str: String
+    """
     testresult.actual_result = mydata
     return mydata
