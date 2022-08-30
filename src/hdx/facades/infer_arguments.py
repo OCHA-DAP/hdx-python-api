@@ -108,6 +108,7 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
         if name not in argv:
             argv.append(name)
             argv.append(kwargs[key])
+
     defopt.bind(gen_func, argv=argv, cli_options="all")
     func, argv = defopt.bind_known(projectmainfn, argv=argv, cli_options="all")
     site_url = defopt.run(_create_configuration, argv=argv, cli_options="all")
