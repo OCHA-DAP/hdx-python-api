@@ -100,7 +100,7 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
     gen_func.__doc__ = main_doc
 
     configuration_create = defopt.bind(gen_func, argv=argv, cli_options="all")
-    main_func, argv = defopt.bind_known(
+    main_func, _ = defopt.bind_known(
         projectmainfn, argv=argv, cli_options="all"
     )
 
