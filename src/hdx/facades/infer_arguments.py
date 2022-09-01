@@ -89,10 +89,6 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
             argv.append(name)
             argv.append(kwargs[key])
 
-    main_func, argv = defopt.bind_known(
-        projectmainfn, argv=argv, cli_options="all"
-    )
-
     @with_signature(main_sig)
     def gen_func(*args, **kwargs):
         """docstring"""
@@ -101,9 +97,13 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
         logger.info(f"> Using HDX Python API Library {__version__}")
         logger.info(f"> HDX Site: {site_url}")
 
-        UserAgent.user_agent = Configuration.read().user_agent
-        main_func()
-
     gen_func.__doc__ = main_doc
 
-    defopt.run(gen_func, argv=argv, cli_options="all")
+    configuration_create = defopt.bind(gen_func, argv=argv, cli_options="all")
+    main_func, argv = defopt.bind_known(
+        projectmainfn, argv=argv, cli_options="all"
+    )
+
+    configuration_create()
+    UserAgent.user_agent = Configuration.read().user_agent
+    main_func()
