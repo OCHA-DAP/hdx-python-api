@@ -1,8 +1,8 @@
 """Facade to simplify project setup that calls project main function with kwargs"""
 import logging
 import sys
-from inspect import getdoc, signature
-from typing import Any, Callable, Optional
+from inspect import getdoc
+from typing import Any, Callable, Optional  # noqa: F401
 
 import defopt
 from hdx.utilities.easy_logging import setup_logging
@@ -14,47 +14,6 @@ from hdx.api.configuration import Configuration
 
 logger = logging.getLogger(__name__)
 setup_logging(log_file="errors.log")
-
-
-def _create_configuration(
-    user_agent: Optional[str] = None,
-    user_agent_config_yaml: Optional[str] = None,
-    user_agent_lookup: Optional[str] = None,
-    hdx_url: Optional[str] = None,
-    hdx_site: Optional[str] = None,
-    hdx_read_only: bool = False,
-    hdx_key: Optional[str] = None,
-    hdx_config_json: Optional[str] = None,
-    hdx_config_yaml: Optional[str] = None,
-    project_config_json: Optional[str] = None,
-    project_config_yaml: Optional[str] = None,
-    hdx_base_config_json: Optional[str] = None,
-    hdx_base_config_yaml: Optional[str] = None,
-) -> str:
-    """
-    Create HDX configuration
-
-    Args:
-        user_agent (Optional[str]): User agent string. HDXPythonLibrary/X.X.X- is prefixed. Must be supplied if remoteckan is not.
-        user_agent_config_yaml (Optional[str]): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yml.
-        user_agent_lookup (Optional[str]): Lookup key for YAML. Ignored if user_agent supplied.
-        hdx_url (Optional[str]): HDX url to use. Overrides hdx_site.
-        hdx_site (Optional[str]): HDX site to use eg. prod, test.
-        hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
-        hdx_key (Optional[str]): Your HDX key. Ignored if hdx_read_only = True.
-        hdx_config_json (Optional[str]): Path to JSON HDX configuration OR
-        hdx_config_yaml (Optional[str]): Path to YAML HDX configuration
-        project_config_json (Optional[str]): Path to JSON Project configuration OR
-        project_config_yaml (Optional[str]): Path to YAML Project configuration
-        hdx_base_config_json (Optional[str]): Path to JSON HDX base configuration OR
-        hdx_base_config_yaml (Optional[str]): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yml.
-
-    Returns:
-        str: HDX site url
-
-    """
-    arguments = locals()
-    return Configuration._create(**arguments)
 
 
 def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
@@ -76,31 +35,52 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
     # Setting up configuration
     #
 
-    create_config_sig = signature(_create_configuration)
-    create_config_params = list(create_config_sig.parameters.values())
-    main_sig = signature(projectmainfn)
-    main_params = list(main_sig.parameters.values())
-    main_params.extend(create_config_params)
-    main_sig = main_sig.replace(parameters=main_params)
-
-    create_config_doc = getdoc(_create_configuration)
     parsed_main_doc = defopt._parse_docstring(getdoc(projectmainfn))
     main_doc = [f"{parsed_main_doc.first_line}\n\nArgs:"]
+    no_main_params = len(parsed_main_doc.params)
     for param_name, param_info in parsed_main_doc.params.items():
         main_doc.append(
             f"\n    {param_name} ({param_info.type}): {param_info.text}"
         )
-    args_index = create_config_doc.index("Args:")
-    args_doc = create_config_doc[args_index + 5 :]
+    create_config_doc = getdoc(Configuration.create)
+    kwargs_index = create_config_doc.index("**kwargs")
+    kwargs_index = create_config_doc.index("\n", kwargs_index)
+    args_doc = create_config_doc[kwargs_index:]
     main_doc.append(args_doc)
     main_doc = "".join(main_doc)
 
-    @with_signature(main_sig, func_name=projectmainfn.__name__)
-    def gen_func(*args, **kwargs):
-        """docstring"""
-        return args, kwargs
+    main_sig = defopt.signature(projectmainfn)
+    param_names = list()
+    for param in main_sig.parameters.values():
+        param_names.append(str(param))
 
-    gen_func.__doc__ = main_doc
+    parsed_main_doc = defopt._parse_docstring(main_doc)
+    main_doc = [f"{parsed_main_doc.first_line}\n\nArgs:"]
+    count = 0
+    for param_name, param_info in parsed_main_doc.params.items():
+        param_type = param_info.type
+        if param_type == "dict":
+            continue
+        if count < no_main_params:
+            count += 1
+        else:
+            if param_type == "str":
+                param_type = "Optional[str]"
+                default = None
+            elif param_type == "bool":
+                default = False
+            else:
+                raise ValueError(
+                    "Configuration.create has new parameter with unknown type!"
+                )
+            param_names.append(f"{param_name}: {param_type} = {default}")
+        main_doc.append(
+            f"\n    {param_name} ({param_type}): {param_info.text}"
+        )
+    main_doc = "".join(main_doc)
+
+    projectmainname = projectmainfn.__name__
+    main_sig = f"{projectmainname}({','.join(param_names)})"
 
     argv = sys.argv[1:]
     for key in kwargs:
@@ -109,13 +89,21 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
             argv.append(name)
             argv.append(kwargs[key])
 
-    defopt.bind(gen_func, argv=argv, cli_options="all")
-    func, argv = defopt.bind_known(projectmainfn, argv=argv, cli_options="all")
-    site_url = defopt.run(_create_configuration, argv=argv, cli_options="all")
+    main_func, argv = defopt.bind_known(
+        projectmainfn, argv=argv, cli_options="all"
+    )
 
-    logger.info("--------------------------------------------------")
-    logger.info(f"> Using HDX Python API Library {__version__}")
-    logger.info(f"> HDX Site: {site_url}")
+    @with_signature(main_sig)
+    def gen_func(*args, **kwargs):
+        """docstring"""
+        site_url = Configuration._create(*args, **kwargs)
+        logger.info("--------------------------------------------------")
+        logger.info(f"> Using HDX Python API Library {__version__}")
+        logger.info(f"> HDX Site: {site_url}")
 
-    UserAgent.user_agent = Configuration.read().user_agent
-    func()
+        UserAgent.user_agent = Configuration.read().user_agent
+        main_func()
+
+    gen_func.__doc__ = main_doc
+
+    defopt.run(gen_func, argv=argv, cli_options="all")
