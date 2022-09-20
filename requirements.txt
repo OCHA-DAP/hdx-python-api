@@ -1,7 +1,7 @@
 ckanapi==4.7
 defopt==6.4.0
 email_validator==1.2.1
-hdx-python-country==3.3.9
+hdx-python-country==3.4.0
 makefun==1.15.0
 ndg-httpsclient==0.5.1
 pyasn1==0.4.8
