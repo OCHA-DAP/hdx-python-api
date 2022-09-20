@@ -21,7 +21,7 @@ resultdict = {
     "name": "MyUser1",
     "created": "2017-03-22T09:55:55.871573",
     "email_hash": "9e2fc15d8cc65f43136f9dcef05fa184",
-    "email": "xxx@yyy.com",
+    "email": "xxx@gmail.com",
     "sysadmin": False,
     "activity_streams_email_notifications": False,
     "state": "active",
@@ -38,7 +38,7 @@ del orgdict2["extras"]
 orglist = [orgdict2]
 
 result2dict = copy.deepcopy(resultdict)
-result2dict["email"] = "aaa@bbb.com"
+result2dict["email"] = "aaa@gmail.com"
 user_list = [resultdict, result2dict]
 
 user_autocomplete = [
@@ -103,7 +103,7 @@ class TestUser:
         "timeout": 3,
         "source_address": ("machine", 456),
     }
-    username = "user"
+    username = "user@user.com"
     password = "pass"
     email_config_dict = {
         "connection_type": "ssl",
@@ -342,14 +342,14 @@ class TestUser:
         assert email.server.username == TestUser.username
         assert email.server.password == TestUser.password
         assert email.server.sender == TestUser.sender
-        assert email.server.recipients == ["xxx@yyy.com"]
+        assert email.server.recipients == ["xxx@gmail.com"]
         assert "Content-Type: multipart/alternative;" in email.server.msg
         assert (
             """\
 MIME-Version: 1.0
 Subject: hello
 From: me@gmail.com
-To: xxx@yyy.com"""
+To: xxx@gmail.com"""
             in email.server.msg
         )
         assert (
@@ -495,12 +495,12 @@ Content-Transfer-Encoding: 7bit
         assert email.server.password == TestUser.password
         assert email.server.sender == TestUser.sender
         assert email.server.recipients == [
-            "xxx@yyy.com",
-            "aaa@bbb.com",
-            "xxx@yyy.com",
-            "aaa@bbb.com",
-            "xxx@yyy.com",
-            "aaa@bbb.com",
+            "xxx@gmail.com",
+            "aaa@gmail.com",
+            "xxx@gmail.com",
+            "aaa@gmail.com",
+            "xxx@gmail.com",
+            "aaa@gmail.com",
         ]
         assert "Content-Type: multipart/alternative;" in email.server.msg
         assert (
@@ -508,8 +508,8 @@ Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
 Subject: hello
 From: me@gmail.com
-To: xxx@yyy.com, aaa@bbb.com
-Cc: xxx@yyy.com, aaa@bbb.com"""
+To: xxx@gmail.com, aaa@gmail.com
+Cc: xxx@gmail.com, aaa@gmail.com"""
             in email.server.msg
         )
         assert (
