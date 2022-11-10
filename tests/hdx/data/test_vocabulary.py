@@ -2382,17 +2382,17 @@ class TestVocabulary:
                         404,
                         '{"success": false, "error": {"message": "TEST ERROR: Not update", "__type": "TEST ERROR: Not Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_update"}',
                     )
-                resultdictcopy = copy.deepcopy(resultdict)
-                merge_two_dictionaries(resultdictcopy, datadict)
-
-                result = json.dumps(resultdictcopy)
                 if datadict["id"] == "4381925f-0ae9-44a3-b30d-cae35598757b":
-                    result = json.dumps(vocabulary_list[2])
+                    result = json.dumps(datadict)
                     return MockResponse(
                         200,
                         '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_show"}'
                         % result,
                     )
+                resultdictcopy = copy.deepcopy(resultdict)
+                merge_two_dictionaries(resultdictcopy, datadict)
+
+                result = json.dumps(resultdictcopy)
                 if datadict["tags"] in [
                     [{"name": "peter"}],
                     [{"name": "john"}],
@@ -2634,6 +2634,17 @@ class TestVocabulary:
         vocabulary = Vocabulary.update_approved_vocabulary()
         assert vocabulary["name"] == "Topics"
         assert vocabulary["tags"][0]["name"] == "3-word addresses"
+        vocabulary["tags"] = [
+            {
+                "vocabulary_id": "4381925f-0ae9-44a3-b30d-cae35598757b",
+                "display_name": "blah",
+                "id": "d611b4c4-6964-45e4-a682-e6b53cc71f18",
+                "name": "blah",
+            }
+        ]
+        vocabulary = Vocabulary.update_approved_vocabulary(replace=False)
+        assert vocabulary["tags"][0]["name"] == "blah"
+        assert vocabulary["tags"][1]["name"] == "3-word addresses"
 
     def test_tag_mappings(self, configuration, read):
         tags_dict = Vocabulary.read_tags_mappings()

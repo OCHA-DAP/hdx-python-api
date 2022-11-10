@@ -298,6 +298,7 @@ class Vocabulary(HDXObject):
         cls,
         url: Optional[str] = None,
         configuration: Optional[Configuration] = None,
+        replace: bool = True,
     ) -> "Vocabulary":
         """
         Update the HDX approved vocabulary
@@ -305,6 +306,7 @@ class Vocabulary(HDXObject):
         Args:
             url (Optional[str]): Tag to check. Defaults to None (url in internal configuration).
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            replace (bool): True to replace existing tags, False to append. Defaults to True.
 
         Returns:
             Vocabulary: HDX Vocabulary object
@@ -312,7 +314,8 @@ class Vocabulary(HDXObject):
         if configuration is None:
             configuration = Configuration.read()
         vocabulary = cls.get_approved_vocabulary(configuration=configuration)
-        vocabulary["tags"] = list()
+        if replace:
+            vocabulary["tags"] = list()
         vocabulary.add_tags(
             cls._read_approved_tags(url=url, configuration=configuration)
         )
