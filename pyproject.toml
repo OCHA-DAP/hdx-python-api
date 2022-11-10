@@ -134,11 +134,11 @@ output_directory = "docs"
 legacy_tox_ini = """
 [tox]
 isolated_build = true
-envlist = py310, lint
+envlist = py311, lint
 
 [gh-actions]
 python =
-    3: py310, lint
+    3: py311, lint
 
 [testenv]
 recreate = true
@@ -150,7 +150,7 @@ commands =
     pytest --cov=hdx --no-cov-on-fail --junitxml=.tox/test-results.xml --cov-report=xml --cov-report=term-missing
 
 [testenv:lint]
-wheel_build_env = py310
+wheel_build_env = py311
 deps =
     flakeheaven
     flake8
@@ -160,14 +160,14 @@ commands =
     flakeheaven lint src tests
 
 [testenv:docs]
-wheel_build_env = py310
+wheel_build_env = py311
 deps =
     pydoc-markdown
 commands =
     pydoc-markdown
 
 [testenv:publish]
-wheel_build_env = py310
+wheel_build_env = py311
 passenv = SSH_AUTH_SOCK TWINE_USERNAME TWINE_PASSWORD
 deps =
     twine
