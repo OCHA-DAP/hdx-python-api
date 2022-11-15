@@ -75,9 +75,7 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
                     "Configuration.create has new parameter with unknown type!"
                 )
             param_names.append(f"{param_name}: {param_type} = {default}")
-        main_doc.append(
-            f"\n    {param_name} ({param_type}): {param_info.doc}"
-        )
+        main_doc.append(f"\n    {param_name} ({param_type}): {param_info.doc}")
     main_doc = "".join(main_doc)
 
     projectmainname = projectmainfn.__name__
