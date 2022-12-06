@@ -493,8 +493,8 @@ hello there"""
                 ]
             },
             "approved_tags_vocabulary": "Topics",
-            "tags_list_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=1739051517&single=true&output=csv",
-            "tags_mapping_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=334970416&single=true&output=csv",
+            "tags_list_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQD3ba751XbWS5GVwdJmzOF9mc7dnm56hE2U8di12JnpYkdseILmjfGSn1W7UVQzmHKSd6p8FWaXdFL/pub?gid=1768359211&single=true&output=csv",
+            "tags_mapping_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQD3ba751XbWS5GVwdJmzOF9mc7dnm56hE2U8di12JnpYkdseILmjfGSn1W7UVQzmHKSd6p8FWaXdFL/pub?gid=0&single=true&output=csv",
             "formats_mapping_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-ckan/master/ckanext-hdx_package/ckanext/hdx_package/config/resource_formats.json",
         }
         assert Configuration.read() == expected_configuration
@@ -619,8 +619,8 @@ hello there"""
                 ]
             },
             "approved_tags_vocabulary": "Topics",
-            "tags_list_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=1739051517&single=true&output=csv",
-            "tags_mapping_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=334970416&single=true&output=csv",
+            "tags_list_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQD3ba751XbWS5GVwdJmzOF9mc7dnm56hE2U8di12JnpYkdseILmjfGSn1W7UVQzmHKSd6p8FWaXdFL/pub?gid=1768359211&single=true&output=csv",
+            "tags_mapping_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQD3ba751XbWS5GVwdJmzOF9mc7dnm56hE2U8di12JnpYkdseILmjfGSn1W7UVQzmHKSd6p8FWaXdFL/pub?gid=0&single=true&output=csv",
             "formats_mapping_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-ckan/master/ckanext-hdx_package/ckanext/hdx_package/config/resource_formats.json",
         }
         assert Configuration.read() == expected_configuration
