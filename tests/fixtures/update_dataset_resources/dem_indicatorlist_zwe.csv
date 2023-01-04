@@ -1,0 +1,37 @@
+indicator_id,indicator_label_en
+#indicator+code,#indicator+name
+200101,Total population (thousands)
+200144,Population aged 15-24 years (thousands)
+200151,Population aged 65 years or older (thousands)
+200343,Population aged 14 years or younger (thousands)
+200345,Population aged 25-64 years (thousands) 
+DT.TDS.DECT.GN.ZS,Total debt service (% of GNI)
+NY.GDP.DEFL.ZS,GDP deflator (base year varies by country)
+NY.GDP.MKTP.CD,GDP (current US$)
+NY.GDP.MKTP.CN,GDP (current LCU)
+NY.GDP.MKTP.KD  ,GDP at market prices (constant 2010 US$)
+NY.GDP.MKTP.KD.ZG,GDP growth (annual %)
+NY.GDP.MKTP.KN,GDP (constant LCU)
+NY.GDP.MKTP.PP.CD,"GDP, PPP (current international $)"
+NY.GDP.MKTP.PP.KD,"GDP, PPP (constant 2011 international $)"
+NY.GDP.PCAP.CD,GDP per capita (current US$)
+NY.GDP.PCAP.CN,GDP per capita (current LCU)
+NY.GDP.PCAP.PP.CD,"GDP per capita, PPP (current international $)"
+NY.GDP.PCAP.PP.KD,"GDP per capita, PPP (constant 2011 international $)"
+NY.GNP.MKTP.CN,GNI (current LCU)
+NY.GNP.PCAP.CD,"GNI per capita, Atlas method (current US$)"
+NY.GNP.PCAP.CN,GNI per capita (current LCU)
+NY.GNP.PCAP.PP.CD,"GNI per capita, PPP (current international $)"
+PA.NUS.ATLS ,DEC alternative conversion factor (LCU per US$)
+PA.NUS.FCRF,"Official exchange rate (LCU per US$, period average)"
+PA.NUS.PPP,"PPP conversion factor, GDP (LCU per international $)"
+PA.NUS.PPPC.RF,Price level ratio of PPP conversion factor (GDP) to market exchange rate
+PA.NUS.PRVT.PP,"PPP conversion factor, private consumption (LCU per international $)"
+SH.DYN.AIDS.ZS,"Prevalence of HIV, total (% of population ages 15-49)"
+SI.POV.LMIC,Poverty headcount ratio at $3.20 a day (PPP) (% of population)
+SP.DYN.IMRT.IN,"Mortality rate, infant (per 1,000 live births)"
+SP.DYN.LE00.IN,"Life expectancy at birth, total (years)"
+SP.DYN.TFRT.IN,"Fertility rate, total (births per woman)"
+SP.POP.GROW,Population growth (annual %)
+SP.RUR.TOTL.ZS,Rural population (% of total population)
+XTGOV.IMF,General government total expenditure (current LCU)

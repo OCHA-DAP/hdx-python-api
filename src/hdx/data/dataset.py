@@ -702,36 +702,32 @@ class Dataset(HDXObject):
             self.hxl_update()
         return results
 
-    def _dataset_merge_hdx_update(
+    def _dataset_merge_update_resources(
         self,
         update_resources: bool,
         match_resources_by_metadata: bool,
-        keys_to_delete: ListTuple[str],
         remove_additional_resources: bool,
         match_resource_order: bool,
-        create_default_views: bool,
-        hxl_update: bool,
         **kwargs: Any,
-    ) -> Dict:
-        """Helper method to check if dataset or its resources exist and update them
+    ) -> Tuple[List, List, Dict]:
+        """Helper method to merge new and existing dataset data, update
+        resources including those with files in the filestore and delete extra
+        resources if needed.
 
         Args:
             update_resources (bool): Whether to update resources
             match_resources_by_metadata (bool): Compare resource metadata rather than position in list
-            keys_to_delete (ListTuple[str]): List of top level metadata keys to delete
             remove_additional_resources (bool): Remove additional resources found in dataset (if updating)
             match_resource_order (bool): Match order of given resources by name
-            create_default_views (bool): Whether to call package_create_default_resource_views.
-            hxl_update (bool): Whether to call package_hxl_update.
 
         Returns:
-            Dict: Dictionary of what gets passed to the revise call (for testing)
+            Tuple[List, List, Dict]: (resources_to_delete, new_resource_order, filestore_resources)
         """
-        # When the user sets up a dataset, "data" contains the metadata. The HDX dataset
-        # update process involves copying "data" to "old_data" and then reading the
-        # existing dataset on HDX into "data". Hence, "old_data" below contains the
-        # user-supplied data we want to use for updating while "data" contains the data
-        # read from HDX
+        # When the user sets up a dataset, "data" contains the metadata. The
+        # HDX dataset update process involves copying "data" to "old_data" and
+        # then reading the existing dataset on HDX into "data". Hence,
+        # "old_data" below contains the user-supplied data we want to use for
+        # updating while "data" contains the data read from HDX
         merge_two_dictionaries(self.data, self.old_data)
         if "resources" in self.data:
             del self.data["resources"]
@@ -763,8 +759,11 @@ class Dataset(HDXObject):
                         resource_index,
                         **kwargs,
                     )
-                for resource_index in updated_resource_no_matches:
-                    updated_resource = updated_resources[resource_index]
+                for updated_resource_index in updated_resource_no_matches:
+                    updated_resource = updated_resources[
+                        updated_resource_index
+                    ]
+                    resource_index = len(self.resources)
                     filestore_helper.FilestoreHelper.check_filestore_resource(
                         updated_resource,
                         filestore_resources,
@@ -819,6 +818,47 @@ class Dataset(HDXObject):
             ]
         else:
             new_resource_order = None
+        return resources_to_delete, new_resource_order, filestore_resources
+
+    def _dataset_merge_hdx_update(
+        self,
+        update_resources: bool,
+        match_resources_by_metadata: bool,
+        keys_to_delete: ListTuple[str],
+        remove_additional_resources: bool,
+        match_resource_order: bool,
+        create_default_views: bool,
+        hxl_update: bool,
+        **kwargs: Any,
+    ) -> Dict:
+        """Helper method to merge new and existing dataset data, update
+        resources including those with files in the filestore, delete extra
+        resources if needed and update dataset data and save the dataset and
+        resources to HDX.
+
+        Args:
+            update_resources (bool): Whether to update resources
+            match_resources_by_metadata (bool): Compare resource metadata rather than position in list
+            keys_to_delete (ListTuple[str]): List of top level metadata keys to delete
+            remove_additional_resources (bool): Remove additional resources found in dataset (if updating)
+            match_resource_order (bool): Match order of given resources by name
+            create_default_views (bool): Whether to call package_create_default_resource_views.
+            hxl_update (bool): Whether to call package_hxl_update.
+
+        Returns:
+            Dict: Dictionary of what gets passed to the revise call (for testing)
+        """
+        (
+            resources_to_delete,
+            new_resource_order,
+            filestore_resources,
+        ) = self._dataset_merge_update_resources(
+            update_resources,
+            match_resources_by_metadata,
+            remove_additional_resources,
+            match_resource_order,
+            **kwargs,
+        )
         return self._save_dataset_add_filestore_resources(
             "update",
             "id",

@@ -15,22 +15,12 @@ profile = "black"
 line_length = 79
 multi_line_output = 3
 
-[tool.flakeheaven]
-# make output nice
-format = "grouped"
-max_line_length = 79
-# show line of source code in output
-show_source = true
+[tool.flake8]
 exclude = ["_version.py"]
-
-    # list of plugins and rules for them
-    [tool.flakeheaven.plugins]
-    mccabe = ["+*"]
-    pycodestyle = ["+*", "-E203", "-E501", "-W503"]
-    pyflakes = ["+*"]
-    pylint = ["+*"]
-    flake8-isort = ["+*"]
-    flake8-black = ["+*"]
+ignore = ["E203", "E501", "W503"]
+max-line-length = 79
+count = true
+show_source = true
 
 [tool.pytest.ini_options]
 pythonpath = "src"
@@ -152,12 +142,12 @@ commands =
 [testenv:lint]
 wheel_build_env = py311
 deps =
-    flakeheaven
     flake8
     flake8-isort
     flake8-black
+    flake8-pyproject
 commands =
-    flakeheaven lint src tests
+    flake8 src tests
 
 [testenv:docs]
 wheel_build_env = py311
