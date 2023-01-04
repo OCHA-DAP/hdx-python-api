@@ -123,7 +123,7 @@ output_directory = "docs"
 [tool.tox]
 legacy_tox_ini = """
 [tox]
-envlist = py310, lint
+envlist = py311, lint
 
 [gh-actions]
 python =
