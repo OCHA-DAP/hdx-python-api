@@ -127,7 +127,7 @@ envlist = py310, lint
 
 [gh-actions]
 python =
-    3: py310, lint
+    3: py311, lint
 
 [testenv]
 recreate = true
