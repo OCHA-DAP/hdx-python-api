@@ -159,5 +159,5 @@ deps =
     twine
 
 commands =
-    twine upload {distdir}/*
+    twine upload {TOX_PACKAGE}/*
 """
