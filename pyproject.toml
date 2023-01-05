@@ -159,5 +159,5 @@ deps =
     twine
 
 commands =
-    twine upload {env_dir}/dist/*
+    twine upload {work_dir}/{package_env}/dist/*
 """
