@@ -6,4 +6,4 @@ makefun==1.15.0
 ndg-httpsclient==0.5.1
 pyasn1==0.4.8
 pyOpenSSL==23.0.0
-quantulum3==0.7.11
+quantulum3==0.8.0
