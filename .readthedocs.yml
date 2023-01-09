@@ -7,11 +7,11 @@ mkdocs:
 build:
   os: ubuntu-22.04
   tools:
-    python: "3.10"
+    python: "3.11"
   jobs:
     pre_build:
-      - pip install --upgrade pydoc-markdown>=4.6.4
-      - pip install --upgrade mkdocs>=1.4.2
+      - pip install --upgrade mkdocs
+      - pip install --upgrade pydoc-markdown
       - pydoc-markdown
       - mv docs/content/* docs
       - rmdir docs/content
