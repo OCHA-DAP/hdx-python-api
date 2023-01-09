@@ -10,8 +10,8 @@ build:
     python: "3.10"
   jobs:
     pre_build:
-      - pip install pydoc-markdown>=4.6.4
-      - pip install mkdocs>=1.4.2
+      - pip install --upgrade pydoc-markdown>=4.6.4
+      - pip install --upgrade mkdocs>=1.4.2
       - pydoc-markdown
       - mv docs/content/* docs
       - rmdir docs/content
