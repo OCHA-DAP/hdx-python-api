@@ -145,7 +145,7 @@ deps =
     flake8-black
     flake8-pyproject
 commands =
-    flake8 src tests
+    flake8 --color=always src tests
 
 [testenv:docs]
 deps =
