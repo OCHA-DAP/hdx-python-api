@@ -48,6 +48,8 @@ The library has detailed API documentation which can be found in the menu at the
 
 
 ## Breaking Changes
+From 5.9.7, Python 3.7 no longer supported
+
 From 5.8.2, date handling uses timezone aware dates instead of naive dates and defaults
 to UTC
 
