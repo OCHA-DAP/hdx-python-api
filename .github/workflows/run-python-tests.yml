@@ -16,9 +16,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.x'
     - name: Install dependencies
@@ -29,11 +29,11 @@ jobs:
       run: |
         tox
     - name: Publish Unit Test Results
-      uses: EnricoMi/publish-unit-test-result-action@v1
+      uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        files: .tox/*.xml
+        junit_files: .tox/*.xml
     - name: Upload Coverage Results
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
       if: success()

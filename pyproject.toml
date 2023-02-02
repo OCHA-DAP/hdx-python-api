@@ -130,7 +130,6 @@ python =
     3: py311, lint
 
 [testenv]
-recreate = true
 package = wheel
 wheel_build_env = .pkg
 deps =
@@ -154,6 +153,7 @@ commands =
     pydoc-markdown
 
 [testenv:publish]
+package = sdist
 pass_env = SSH_AUTH_SOCK, TWINE_USERNAME, TWINE_PASSWORD
 deps =
     twine
