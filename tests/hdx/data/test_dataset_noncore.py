@@ -879,8 +879,10 @@ class TestDatasetNoncore:
         assert dataset.remove_dates_from_title() == list()
         assert dataset["title"] == title
         assert "dataset_date" not in dataset
-        assert dataset.remove_dates_from_title(
-            set_reference_period=True) == list()
+        assert (
+            dataset.remove_dates_from_title(set_reference_period=True)
+            == list()
+        )
         title = "ICA Armenia, 2017 - Drought Risk, 1981-2015"
         dataset["title"] = title
         expected = [
@@ -902,8 +904,8 @@ class TestDatasetNoncore:
         assert "dataset_date" not in dataset
         dataset["title"] = title
         assert (
-                dataset.remove_dates_from_title(
-                    set_reference_period=True) == expected
+            dataset.remove_dates_from_title(set_reference_period=True)
+            == expected
         )
         assert dataset["title"] == newtitle
         assert (
@@ -919,8 +921,8 @@ class TestDatasetNoncore:
             )
         ]
         assert (
-                dataset.remove_dates_from_title(
-                    set_reference_period=True) == expected
+            dataset.remove_dates_from_title(set_reference_period=True)
+            == expected
         )
         assert dataset["title"] == "Mon_State_Village_Tract_Boundaries 9999"
         assert (
@@ -929,8 +931,8 @@ class TestDatasetNoncore:
         )
         dataset["title"] = "Mon_State_Village_Tract_Boundaries 2001 99"
         assert (
-                dataset.remove_dates_from_title(
-                    set_reference_period=True) == expected
+            dataset.remove_dates_from_title(set_reference_period=True)
+            == expected
         )
         assert dataset["title"] == "Mon_State_Village_Tract_Boundaries 99"
         assert (
@@ -939,8 +941,8 @@ class TestDatasetNoncore:
         )
         dataset["title"] = "Mon_State_Village_Tract_Boundaries 9999 2001 99"
         assert (
-                dataset.remove_dates_from_title(
-                    set_reference_period=True) == expected
+            dataset.remove_dates_from_title(set_reference_period=True)
+            == expected
         )
         assert dataset["title"] == "Mon_State_Village_Tract_Boundaries 9999 99"
         assert (
