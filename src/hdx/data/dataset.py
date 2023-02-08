@@ -1232,7 +1232,7 @@ class Dataset(HDXObject):
         """
         return cls._autocomplete(name, limit, configuration)
 
-    def get_date_of_dataset(
+    def get_reference_period(
         self,
         date_format: Optional[str] = None,
         today: datetime = now_utc(),
@@ -1253,14 +1253,14 @@ class Dataset(HDXObject):
             self.data.get("dataset_date"), date_format, today
         )
 
-    def set_date_of_dataset(
+    def set_reference_period(
         self,
         startdate: Union[datetime, str],
         enddate: Union[datetime, str, None] = None,
         ongoing: bool = False,
         ignore_timeinfo: bool = True,
     ) -> None:
-        """Set dataset date from either datetime objects or strings. Any time and time
+        """Set reference period from either datetime objects or strings. Any time and time
         zone information will be ignored by default (meaning that the time of the start
         date is set to 00:00:00, the time of any end date is set to 23:59:59 and the
         time zone is set to UTC). To have the time and time zone accounted for, set
@@ -1279,12 +1279,12 @@ class Dataset(HDXObject):
             startdate, enddate, ongoing, ignore_timeinfo
         )
 
-    def set_dataset_year_range(
+    def set_reference_period_year_range(
         self,
         dataset_year: Union[str, int, Iterable],
         dataset_end_year: Optional[Union[str, int]] = None,
     ) -> List[int]:
-        """Set dataset date as a range from year or start and end year.
+        """Set reference period as a range from year or start and end year.
 
         Args:
             dataset_year (Union[str, int, Iterable]): Dataset year given as string or int or range in an iterable
@@ -2307,17 +2307,17 @@ class Dataset(HDXObject):
         return f"{self.configuration.get_hdx_site_url()}/dataset/{name}"
 
     def remove_dates_from_title(
-        self, change_title: bool = True, set_dataset_date: bool = False
+        self, change_title: bool = True, set_reference_period: bool = False
     ) -> List[Tuple[datetime, datetime]]:
         """Remove dates from dataset title returning sorted the dates that were found in
         title. The title in the dataset metadata will be changed by default. The
-        dataset's metadata field dataset date will not be changed by default, but if
-        set_dataset_date is True, then the range with the lowest start date will be used
-        to set the dataset date field.
+        dataset's metadata field reference period will not be changed by default, but if
+        set_reference_period is True, then the range with the lowest start date will be used
+        to set the reference period field.
 
         Args:
             change_title (bool): Whether to change the dataset title. Defaults to True.
-            set_dataset_date (bool): Whether to set dataset date from date or range in title. Defaults to False.
+            set_reference_period (bool): Whether to set reference period from date or range in title. Defaults to False.
 
         Returns:
             List[Tuple[datetime,datetime]]: Date ranges found in title
@@ -2328,9 +2328,9 @@ class Dataset(HDXObject):
         newtitle, ranges = DatasetTitleHelper.get_dates_from_title(title)
         if change_title:
             self.data["title"] = newtitle
-        if set_dataset_date and len(ranges) != 0:
+        if set_reference_period and len(ranges) != 0:
             startdate, enddate = ranges[0]
-            self.set_date_of_dataset(startdate, enddate)
+            self.set_reference_period(startdate, enddate)
         return ranges
 
     def generate_resource_from_rows(
@@ -2431,7 +2431,7 @@ class Dataset(HDXObject):
         to it the dataset. The returned dictionary will contain the resource in the key
         resource, headers in the key headers and list of rows in the key rows.
 
-        The date of dataset can optionally be set by supplying a column in which the
+        The reference period can optionally be set by supplying a column in which the
         date or year is to be looked up. Note that any timezone information is ignored
         and UTC assumed. Alternatively, a function can be supplied to handle any dates
         in a row. It should accept a row and should return None to ignore the row or a
@@ -2465,7 +2465,7 @@ class Dataset(HDXObject):
             folder (str): Folder to which to write file containing rows
             filename (str): Filename of file to write rows
             resourcedata (Dict): Resource data
-            datecol (Optional[Union[int,str]]): Date column for setting dataset date. Defaults to None (don't set).
+            datecol (Optional[Union[int,str]]): Date column for setting reference period. Defaults to None (don't set).
             yearcol (Optional[Union[int,str]]): Year column for setting dataset year range. Defaults to None (don't set).
             date_function (Optional[Callable[[Dict],Optional[Dict]]]): Date function to call for each row. Defaults to None.
             quickcharts (Optional[Dict]): Dictionary containing optional keys: hashtag, values, cutdown and/or cutdownhashtags
@@ -2588,7 +2588,7 @@ class Dataset(HDXObject):
             else:
                 retdict["startdate"] = dates[0]
                 retdict["enddate"] = dates[1]
-                self.set_date_of_dataset(dates[0], dates[1])
+                self.set_reference_period(dates[0], dates[1])
         resource = self.generate_resource_from_rows(
             folder,
             filename,
@@ -2648,7 +2648,7 @@ class Dataset(HDXObject):
         (which will be in dict or list form depending upon the dict_rows argument) and
         outputs a modified row.
 
-        The date of dataset can optionally be set by supplying a column in which the
+        The reference period can optionally be set by supplying a column in which the
         date or year is to be looked up. Note that any timezone information is ignored
         and UTC assumed. Alternatively, a function can be supplied to handle any dates
         in a row. It should accept a row and should return None to ignore the row or a
@@ -2684,7 +2684,7 @@ class Dataset(HDXObject):
             resourcedata (Dict): Resource data
             header_insertions (Optional[ListTuple[Tuple[int,str]]]): List of (position, header) to insert. Defaults to None.
             row_function (Optional[Callable[[List[str],Dict],Dict]]): Function to call for each row. Defaults to None.
-            datecol (Optional[str]): Date column for setting dataset date. Defaults to None (don't set).
+            datecol (Optional[str]): Date column for setting reference period. Defaults to None (don't set).
             yearcol (Optional[str]): Year column for setting dataset year range. Defaults to None (don't set).
             date_function (Optional[Callable[[Dict],Optional[Dict]]]): Date function to call for each row. Defaults to None.
             quickcharts (Optional[Dict]): Dictionary containing optional keys: hashtag, values, cutdown and/or cutdownhashtags
