@@ -21,7 +21,7 @@ upload your datasets to HDX.
     -   [Configuring Logging](#configuring-logging)
     -   [Operations on HDX Objects](#operations-on-hdx-objects)
     -   [Dataset Specific Operations](#dataset-specific-operations)
-        -   [Dataset Date](#dataset-date)
+        -   [Reference Period](#reference-period)
         -   [Expected Update Frequency](#expected-update-frequency)
         -   [Location](#location)
         -   [Tags](#tags)
@@ -48,6 +48,10 @@ The library has detailed API documentation which can be found in the menu at the
 
 
 ## Breaking Changes
+From 5.9.8, get_date_of_dataset has become get_reference_period, 
+set_date_of_dataset has become set_reference_period and set_dataset_year_range 
+has become set_reference_period_year_range
+
 From 5.9.7, Python 3.7 no longer supported
 
 From 5.8.2, date handling uses timezone aware dates instead of naive dates and defaults
@@ -208,7 +212,7 @@ virtualenv if not installed:
      from HDX and view the date of the dataset:
 
          dataset = Dataset.read_from_hdx("novel-coronavirus-2019-ncov-cases")
-         print(dataset.get_date_of_dataset())
+         print(dataset.get_reference_period())
 
 11. You can search for datasets on HDX and get their resources:
 
@@ -226,14 +230,14 @@ virtualenv if not installed:
     server. With a dataset to which you have permissions, change the dataset date:
 
          dataset = Dataset.read_from_hdx("ID OR NAME OF DATASET")
-         print(dataset.get_date_of_dataset())  # record this
-         dataset.set_date_of_dataset("2015-07-26")
-         print(dataset.get_date_of_dataset())
+         print(dataset.get_reference_period())  # record this
+         dataset.set_reference_period("2015-07-26")
+         print(dataset.get_reference_period())
          dataset.update_in_hdx()
 
 14. You can view it on HDX before changing it back (if you have an API key):
 
-         dataset.set_date_of_dataset("PREVIOUS DATE")
+         dataset.set_reference_period("PREVIOUS DATE")
          dataset.update_in_hdx()
 
 15. Exit and remove virtualenv:
@@ -561,13 +565,15 @@ example:
 
     dataset.remove_showcase(showcase)
 
-### Dataset Date
+### Reference Period
 
-Dataset date is a mandatory field in HDX. This date is the date of the data in the 
-dataset, not to be confused with when data was last added/changed in the dataset. It can 
-be a single date or a range.
+Reference Period is a mandatory field in HDX. It is the time period for which 
+data are collected or calculated and to which, as a result, they refer. The 
+reference period may be of any length: a year, a month, or even a day. It 
+should not to be confused with when data was last added/changed in the dataset. 
+It can be a single date or a range. 
 
-To get the dataset date, you can do as shown below. It returns a dictionary containing 
+To get the reference period, you can do as shown below. It returns a dictionary containing 
 keys "startdate" (start date as datetime), "enddate" (end date as datetime), 
 "startdate_str" (start date as string), "enddate_str" (end date as string) and ongoing 
 (whether the end date is a rolls forward every day). You can supply a 
@@ -575,21 +581,21 @@ keys "startdate" (start date as datetime), "enddate" (end date as datetime),
 If you do not, the output format will be an 
 [ISO 8601 date](https://en.wikipedia.org/wiki/ISO_8601) eg. 2007-01-25.
 
-    dataset_date = dataset.get_date_of_dataset("OPTIONAL FORMAT")
+    reference_period = dataset.get_reference_period("OPTIONAL FORMAT")
 
-To set the dataset date, you must pass either datetime.datetime objects or strings to 
+To set the reference period, you must pass either datetime.datetime objects or strings to 
 the function below. It accepts a start date and an optional end date which if not 
 supplied is assumed to be the same as the start date. Instead of the end date, the flag 
 "ongoing" which by default is False can be set to True which indicates that the end date 
 rolls forward every day. 
 
-    dataset.set_date_of_dataset("START DATE", "END DATE")
+    dataset.set_reference_period("START DATE", "END DATE")
 
-The method below allows you to set the dataset's date using a year range. The start and 
+The method below allows you to set the reference period using a year range. The start and 
 end year can be supplied as integers or strings. If no end year is supplied then the 
 range will be from the beginning of the start year to the end of that year.
 
-    dataset.set_dataset_year_range(START YEAR, END YEAR)
+    dataset.set_reference_period_year_range(START YEAR, END YEAR)
 
 ### Expected Update Frequency
 

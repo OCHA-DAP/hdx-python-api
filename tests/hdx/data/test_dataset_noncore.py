@@ -194,7 +194,7 @@ class TestDatasetNoncore:
 
     def test_get_set_date_of_dataset(self):
         dataset = Dataset({"dataset_date": "[2020-01-07T00:00:00 TO *]"})
-        result = dataset.get_date_of_dataset(today=datetime(2020, 11, 17))
+        result = dataset.get_reference_period(today=datetime(2020, 11, 17))
         assert result == {
             "startdate": datetime(2020, 1, 7, 0, 0, tzinfo=timezone.utc),
             "enddate": datetime(2020, 11, 17, 23, 59, 59, tzinfo=timezone.utc),
@@ -202,8 +202,8 @@ class TestDatasetNoncore:
             "enddate_str": "2020-11-17T23:59:59+00:00",
             "ongoing": True,
         }
-        dataset.set_date_of_dataset("2020-02-09")
-        result = dataset.get_date_of_dataset("%d/%m/%Y")
+        dataset.set_reference_period("2020-02-09")
+        result = dataset.get_reference_period("%d/%m/%Y")
         assert result == {
             "startdate": datetime(2020, 2, 9, 0, 0, tzinfo=timezone.utc),
             "enddate": datetime(2020, 2, 9, 23, 59, 59, tzinfo=timezone.utc),
@@ -211,8 +211,8 @@ class TestDatasetNoncore:
             "enddate_str": "09/02/2020",
             "ongoing": False,
         }
-        dataset.set_date_of_dataset("2020-02-09", "2020-10-20")
-        result = dataset.get_date_of_dataset("%d/%m/%Y")
+        dataset.set_reference_period("2020-02-09", "2020-10-20")
+        result = dataset.get_reference_period("%d/%m/%Y")
         assert result == {
             "startdate": datetime(2020, 2, 9, 0, 0, tzinfo=timezone.utc),
             "enddate": datetime(2020, 10, 20, 23, 59, 59, tzinfo=timezone.utc),
@@ -220,8 +220,8 @@ class TestDatasetNoncore:
             "enddate_str": "20/10/2020",
             "ongoing": False,
         }
-        dataset.set_date_of_dataset("2020-02-09", ongoing=True)
-        result = dataset.get_date_of_dataset(
+        dataset.set_reference_period("2020-02-09", ongoing=True)
+        result = dataset.get_reference_period(
             "%d/%m/%Y", today=datetime(2020, 3, 9, 0, 0)
         )
         assert result == {
@@ -234,17 +234,17 @@ class TestDatasetNoncore:
 
     def test_set_dataset_year_range(self, configuration):
         dataset = Dataset()
-        retval = dataset.set_dataset_year_range(2001, 2015)
+        retval = dataset.set_reference_period_year_range(2001, 2015)
         assert retval == [2001, 2015]
-        retval = dataset.set_dataset_year_range("2010", "2017")
+        retval = dataset.set_reference_period_year_range("2010", "2017")
         assert retval == [2010, 2017]
-        retval = dataset.set_dataset_year_range("2013")
+        retval = dataset.set_reference_period_year_range("2013")
         assert retval == [2013]
-        retval = dataset.set_dataset_year_range({2005, 2002, 2003})
+        retval = dataset.set_reference_period_year_range({2005, 2002, 2003})
         assert retval == [2002, 2003, 2005]
-        retval = dataset.set_dataset_year_range([2005, 2002, 2003])
+        retval = dataset.set_reference_period_year_range([2005, 2002, 2003])
         assert retval == [2002, 2003, 2005]
-        retval = dataset.set_dataset_year_range((2005, 2002, 2003))
+        retval = dataset.set_reference_period_year_range((2005, 2002, 2003))
         assert retval == [2002, 2003, 2005]
 
     def test_is_set_subnational(self):
@@ -879,7 +879,10 @@ class TestDatasetNoncore:
         assert dataset.remove_dates_from_title() == list()
         assert dataset["title"] == title
         assert "dataset_date" not in dataset
-        assert dataset.remove_dates_from_title(set_dataset_date=True) == list()
+        assert (
+            dataset.remove_dates_from_title(set_reference_period=True)
+            == list()
+        )
         title = "ICA Armenia, 2017 - Drought Risk, 1981-2015"
         dataset["title"] = title
         expected = [
@@ -901,7 +904,8 @@ class TestDatasetNoncore:
         assert "dataset_date" not in dataset
         dataset["title"] = title
         assert (
-            dataset.remove_dates_from_title(set_dataset_date=True) == expected
+            dataset.remove_dates_from_title(set_reference_period=True)
+            == expected
         )
         assert dataset["title"] == newtitle
         assert (
@@ -917,7 +921,8 @@ class TestDatasetNoncore:
             )
         ]
         assert (
-            dataset.remove_dates_from_title(set_dataset_date=True) == expected
+            dataset.remove_dates_from_title(set_reference_period=True)
+            == expected
         )
         assert dataset["title"] == "Mon_State_Village_Tract_Boundaries 9999"
         assert (
@@ -926,7 +931,8 @@ class TestDatasetNoncore:
         )
         dataset["title"] = "Mon_State_Village_Tract_Boundaries 2001 99"
         assert (
-            dataset.remove_dates_from_title(set_dataset_date=True) == expected
+            dataset.remove_dates_from_title(set_reference_period=True)
+            == expected
         )
         assert dataset["title"] == "Mon_State_Village_Tract_Boundaries 99"
         assert (
@@ -935,7 +941,8 @@ class TestDatasetNoncore:
         )
         dataset["title"] = "Mon_State_Village_Tract_Boundaries 9999 2001 99"
         assert (
-            dataset.remove_dates_from_title(set_dataset_date=True) == expected
+            dataset.remove_dates_from_title(set_reference_period=True)
+            == expected
         )
         assert dataset["title"] == "Mon_State_Village_Tract_Boundaries 9999 99"
         assert (
@@ -1702,7 +1709,7 @@ class TestDatasetNoncore:
             dataset.set_organization("fb7c2910-6080-4b66-8b4f-0be9b6dc4d8e")
             start_date = "2020-02-09"
             end_date = "2020-10-20"
-            dataset.set_date_of_dataset(start_date, end_date)
+            dataset.set_reference_period(start_date, end_date)
             expected_update_frequency = "Every day"
             dataset.set_expected_update_frequency(expected_update_frequency)
             dataset.set_subnational(False)
@@ -1721,7 +1728,7 @@ class TestDatasetNoncore:
             dataset = Dataset.load_from_json(path)
             assert dataset["name"] == name
             assert dataset["maintainer"] == maintainer
-            dateinfo = dataset.get_date_of_dataset()
+            dateinfo = dataset.get_reference_period()
             assert dateinfo["startdate_str"][:10] == start_date
             assert dateinfo["enddate_str"][:10] == end_date
             assert (
