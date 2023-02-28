@@ -284,11 +284,11 @@ class TestDatasetNoncore:
             "Mozambique",
         ]
         assert dataset.get_location_iso3s() == [
-            "dza",
-            "zwe",
-            "sdn",
-            "ken",
-            "moz",
+            "DZA",
+            "ZWE",
+            "SDN",
+            "KEN",
+            "MOZ",
         ]
         dataset.remove_location("sdn")
         assert dataset.get_location_names() == [

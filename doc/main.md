@@ -48,6 +48,8 @@ The library has detailed API documentation which can be found in the menu at the
 
 
 ## Breaking Changes
+From 5.9.9, get_location_iso3s returns uppercase codes instead of lowercase
+
 From 5.9.8, get_date_of_dataset has become get_reference_period, 
 set_date_of_dataset has become set_reference_period and set_dataset_year_range 
 has become set_reference_period_year_range

@@ -1470,7 +1470,7 @@ class Dataset(HDXObject):
                 configuration=self.configuration,
             )
             if countryiso:
-                countryisos.append(countryiso.lower())
+                countryisos.append(countryiso)
         return countryisos
 
     def get_location_names(
