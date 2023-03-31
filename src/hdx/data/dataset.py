@@ -2117,6 +2117,7 @@ class Dataset(HDXObject):
             "code_col": "#indicator+code",
             "value_col": "#indicator+value+num",
             "date_col": "#date+year",
+            "date_format": "%Y",
             "aggregate_col": "null",
         }
 
@@ -2166,6 +2167,12 @@ class Dataset(HDXObject):
                 )
                 hxl_preview_config = replace_col(
                     hxl_preview_config,
+                    "DATE_FORMAT_1",
+                    indicator,
+                    "date_format",
+                )
+                hxl_preview_config = replace_col(
+                    hxl_preview_config,
                     "AGGREGATE_COL_1",
                     indicator,
                     "aggregate_col",
@@ -2199,6 +2206,12 @@ class Dataset(HDXObject):
                 )
                 hxl_preview_config = replace_col(
                     hxl_preview_config,
+                    "DATE_FORMAT_2",
+                    indicator,
+                    "date_format",
+                )
+                hxl_preview_config = replace_col(
+                    hxl_preview_config,
                     "AGGREGATE_COL_2",
                     indicator,
                     "aggregate_col",
@@ -2229,6 +2242,12 @@ class Dataset(HDXObject):
                 )
                 hxl_preview_config = replace_col(
                     hxl_preview_config, "DATE_COL_3", indicator, "date_col"
+                )
+                hxl_preview_config = replace_col(
+                    hxl_preview_config,
+                    "DATE_FORMAT_3",
+                    indicator,
+                    "date_format",
                 )
                 hxl_preview_config = replace_col(
                     hxl_preview_config,

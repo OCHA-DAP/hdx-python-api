@@ -773,6 +773,7 @@ class TestDatasetNoncore:
                 "title": "My3",
                 "description": "This is my three!",
                 "date_col": "dt3",
+                "date_format": "%b %Y",
             },
         ]
         resourceview = dataset.generate_resource_view(indicators=indicators)
@@ -828,6 +829,10 @@ class TestDatasetNoncore:
         assert (
             hxl_preview_config["bites"][2]["computedProperties"]["dataTitle"]
             == ""
+        )
+        assert (
+            hxl_preview_config["bites"][2]["uiProperties"]["dateFormat"]
+            == "%b %Y"
         )
         resourceview = dataset.generate_resource_view(
             indicators=indicators,
