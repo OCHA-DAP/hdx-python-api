@@ -2071,13 +2071,20 @@ class Dataset(HDXObject):
         indicators: Optional[ListTuple[Dict]] = None,
         findreplace: Optional[Dict] = None,
     ) -> resource_view.ResourceView:
-        """Create QuickCharts for dataset from configuration saved in resource view. You can disable specific bites
-        by providing bites_disabled, a list of 3 bools where True indicates a specific bite is disabled and False
-        indicates leave enabled. If you supply indicators, then the internal indicators resource view template will be
-        used. The parameter indicators is a list with 3 dictionaries of form:
-        {'code': 'MY_INDICATOR_CODE', 'title': 'MY_INDICATOR_TITLE', 'unit': 'MY_INDICATOR_UNIT'}.
-        Creation of the resource view will be delayed until after the next dataset create
-        or update if a resource id is not yet available.
+        """Create QuickCharts for dataset from configuration saved in resource
+        view. You can disable specific bites by providing bites_disabled, a
+        list of 3 bools where True indicates a specific bite is disabled and
+        False indicates leave enabled. If you supply indicators, then the
+        internal indicators resource view template will be used. The parameter
+        indicators is a list with 3 dictionaries of form:
+        {"code": "MY_INDICATOR_CODE", "title": "MY_INDICATOR_TITLE",
+        "unit": "MY_INDICATOR_UNIT"}. Optionally, the following defaults can be
+        overridden in the parameter indicators: {"code_col": "#indicator+code",
+        "value_col": "#indicator+value+num", "date_col": "#date+year",
+        "date_format": "%Y", "aggregate_col": "null"}.
+
+        Creation of the resource view will be delayed until after the next
+        dataset create or update if a resource id is not yet available.
 
         Args:
             resource (Union[Resource,Dict,str,int]): Either resource id or name, resource metadata from a Resource object or a dictionary or position. Defaults to 0.
@@ -2289,13 +2296,21 @@ class Dataset(HDXObject):
         indicators: Optional[ListTuple[Dict]] = None,
         findreplace: Optional[Dict] = None,
     ) -> resource_view.ResourceView:
-        """Create QuickCharts for dataset from configuration saved in resource view. You can disable specific bites
-        by providing bites_disabled, a list of 3 bools where True indicates a specific bite is disabled and False
-        indicates leave enabled. If you supply indicators, then the internal indicators resource view template will be
-        used. The parameter indicators is a list with 3 dictionaries of form:
-        {'code': 'MY_INDICATOR_CODE', 'title': 'MY_INDICATOR_TITLE', 'unit': 'MY_INDICATOR_UNIT'}.
-        Creation of the resource view will be delayed until after the next dataset create
-        or update if a resource id is not yet available.
+        """Create QuickCharts for dataset from configuration saved in resource
+        view. You can disable specific bites by providing bites_disabled, a
+        list of 3 bools where True indicates a specific bite is disabled and
+        False indicates leave enabled. If you supply indicators, then the
+        internal indicators resource view template will be used. The parameter
+        indicators is a list with 3 dictionaries of form:
+        {"code": "MY_INDICATOR_CODE", "title": "MY_INDICATOR_TITLE",
+        "unit": "MY_INDICATOR_UNIT"}. Optionally, the following defaults can be
+        overridden in the parameter indicators: {"code_col": "#indicator+code",
+        "value_col": "#indicator+value+num", "date_col": "#date+year",
+        "date_format": "%Y", "aggregate_col": "null"}.
+
+        Creation of the resource view will be delayed until after the next
+        dataset create or update if a resource id is not yet available and will
+        be disabled if there are no valid charts to display.
 
         Args:
             resource (Union[Resource,Dict,str,int]): Either resource id or name, resource metadata from a Resource object or a dictionary or position. Defaults to 0.
