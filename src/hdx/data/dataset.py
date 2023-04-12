@@ -20,6 +20,7 @@ from typing import (
 )
 
 from hdx.location.country import Country
+from hdx.utilities.base_downloader import BaseDownload
 from hdx.utilities.dateparse import (
     default_date,
     default_enddate,
@@ -2071,12 +2072,12 @@ class Dataset(HDXObject):
         indicators: Optional[ListTuple[Dict]] = None,
         findreplace: Optional[Dict] = None,
     ) -> resource_view.ResourceView:
-        """Create QuickCharts for dataset from configuration saved in resource
-        view. You can disable specific bites by providing bites_disabled, a
-        list of 3 bools where True indicates a specific bite is disabled and
-        False indicates leave enabled. If you supply indicators, then the
-        internal indicators resource view template will be used. The parameter
-        indicators is a list with 3 dictionaries of form:
+        """Create QuickCharts for the given resource in a dataset. If you do
+        not supply a path, then the internal indicators resource view template
+        will be used. You can disable specific bites by providing
+        bites_disabled, a list of 3 bools where True indicates a specific bite
+        is disabled and False indicates leave enabled. The parameter indicators
+        is a list with 3 dictionaries of form:
         {"code": "MY_INDICATOR_CODE", "title": "MY_INDICATOR_TITLE",
         "unit": "MY_INDICATOR_UNIT"}. Optionally, the following defaults can be
         overridden in the parameter indicators: {"code_col": "#indicator+code",
@@ -2288,7 +2289,7 @@ class Dataset(HDXObject):
             self.preview_resourceview = resourceview
         return resourceview
 
-    def generate_resource_view(
+    def generate_quickcharts(
         self,
         resource: Union["Resource", Dict, str, int] = 0,
         path: Optional[str] = None,
@@ -2296,12 +2297,12 @@ class Dataset(HDXObject):
         indicators: Optional[ListTuple[Dict]] = None,
         findreplace: Optional[Dict] = None,
     ) -> resource_view.ResourceView:
-        """Create QuickCharts for dataset from configuration saved in resource
-        view. You can disable specific bites by providing bites_disabled, a
-        list of 3 bools where True indicates a specific bite is disabled and
-        False indicates leave enabled. If you supply indicators, then the
-        internal indicators resource view template will be used. The parameter
-        indicators is a list with 3 dictionaries of form:
+        """Create QuickCharts for the given resource in a dataset. If you do
+        not supply a path, then the internal indicators resource view template
+        will be used. You can disable specific bites by providing
+        bites_disabled, a list of 3 bools where True indicates a specific bite
+        is disabled and False indicates leave enabled. The parameter indicators
+        is a list with 3 dictionaries of form:
         {"code": "MY_INDICATOR_CODE", "title": "MY_INDICATOR_TITLE",
         "unit": "MY_INDICATOR_UNIT"}. Optionally, the following defaults can be
         overridden in the parameter indicators: {"code_col": "#indicator+code",
@@ -2376,7 +2377,10 @@ class Dataset(HDXObject):
         headers: Optional[ListTuple[str]] = None,
         encoding: Optional[str] = None,
     ) -> "Resource":
-        """Write rows to csv and create resource, adding to it the dataset
+        """Write rows to csv and create resource, adding it to the dataset.
+        The headers argument is either a row number (rows start counting at
+        1), or the actual headers defined as a list of strings. If not set, all
+        rows will be treated as containing values.
 
         Args:
             folder (str): Folder to which to write file containing rows
@@ -2403,24 +2407,24 @@ class Dataset(HDXObject):
         filename: str,
         rows: List[Dict],
         resourcedata: Dict,
-        columnname: str,
         hxltags: Dict[str, str],
-        qc_indicator_codes: ListTuple[str],
+        columnname: str,
+        qc_identifiers: ListTuple[str],
         headers: Optional[ListTuple[str]] = None,
         encoding: Optional[str] = None,
     ) -> Optional["Resource"]:
-        """Generate QuickCharts rows by cutting down input rows by indicator code and
-        optionally restricting to certain columns. Output to csv and create resource,
-        adding to it the dataset.
+        """Generate QuickCharts rows by cutting down input rows by relevant
+        identifiers and optionally restricting to certain columns. Output to
+        csv and create resource, adding it to the dataset.
 
         Args:
             folder (str): Folder to which to write file containing rows
             filename (str): Filename of file to write rows
             rows (List[Dict]): List of rows in dict form
             resourcedata (Dict): Resource data
-            columnname (str): Name of column containing indicator code
             hxltags (Dict[str,str]): Header to HXL hashtag mapping
-            qc_indicator_codes (ListTuple[str]): List of indicator codes to match
+            columnname (str): Name of column containing identifier
+            qc_identifiers (ListTuple[str]): List of ids to match
             headers (Optional[ListTuple[str]]): List of headers to output. Defaults to None (all headers).
             encoding (Optional[str]): Encoding to use. Defaults to None (infer encoding).
 
@@ -2429,7 +2433,7 @@ class Dataset(HDXObject):
         """
         qc_rows = list()
         for row in rows:
-            if row[columnname] in qc_indicator_codes:
+            if row[columnname] in qc_identifiers:
                 if headers:
                     qcrow = {x: row[x] for x in headers}
                 else:
@@ -2461,36 +2465,40 @@ class Dataset(HDXObject):
         quickcharts: Optional[Dict] = None,
         encoding: Optional[str] = None,
     ) -> Tuple[bool, Dict]:
-        """Given headers and an iterator, write rows to csv and create resource, adding
-        to it the dataset. The returned dictionary will contain the resource in the key
-        resource, headers in the key headers and list of rows in the key rows.
+        """Given headers and an iterator, write rows to csv and create
+        resource, adding to it the dataset. The returned dictionary will
+        contain the resource in the key resource, headers in the key headers
+        and list of rows in the key rows.
 
-        The reference period can optionally be set by supplying a column in which the
-        date or year is to be looked up. Note that any timezone information is ignored
-        and UTC assumed. Alternatively, a function can be supplied to handle any dates
-        in a row. It should accept a row and should return None to ignore the row or a
-        dictionary which can either be empty if there are no dates in the row or can be
-        populated with keys startdate and/or enddate which are of type timezone-aware
-        datetime. The lowest start date and highest end date are used to set the date of
-        dataset and are returned in the results dictionary in keys startdate and
-        enddate.
+        The reference period can optionally be set by supplying a column in
+        which the date or year is to be looked up. Note that any timezone
+        information is ignored and UTC assumed. Alternatively, a function can
+        be supplied to handle any dates in a row. It should accept a row and
+        should return None to ignore the row or a dictionary which can either
+        be empty if there are no dates in the row or can be populated with
+        keys startdate and/or enddate which are of type timezone-aware
+        datetime. The lowest start date and highest end date are used to set
+        the reference period and are returned in the results dictionary in keys
+        startdate and enddate.
 
-        If the parameter quickcharts is supplied then various QuickCharts related
-        actions will occur depending upon the keys given in the dictionary and the
-        returned dictionary will contain the QuickCharts resource in the key
-        qc_resource. If the keys: hashtag - the HXL hashtag to examine - and values -
-        the 3 values to look for in that column - are supplied, then a list of booleans
-        indicating which QuickCharts bites should be enabled will be returned in the key
-        bites_disabled in the returned dictionary. For the 3 values, if the key:
-        numeric_hashtag is supplied then if that column for a given value contains no
-        numbers, then the corresponding bite will be disabled. If the key: cutdown is
-        given, if it is 1, then a separate cut down list is created containing only
-        columns with HXL hashtags and rows with desired values (if hashtag and values
-        are supplied) for the purpose of driving QuickCharts. It is returned in the key
-        qcrows in the returned dictionary with the matching headers in qcheaders. If
-        cutdown is 2, then a resource is created using the cut down list. If the key
-        cutdownhashtags is supplied, then only the provided hashtags are used for
-        cutting down otherwise the full list of hxl tags is used.
+        If the parameter quickcharts is supplied then various QuickCharts
+        related actions will occur depending upon the keys given in the
+        dictionary and the returned dictionary will contain the QuickCharts
+        resource in the key qc_resource. If the keys: hashtag - the HXL hashtag
+        to examine - and values - the 3 values to look for in that column - are
+        supplied, then a list of booleans indicating which QuickCharts bites
+        should be enabled will be returned in the key bites_disabled in the
+        returned dictionary. For the 3 values, if the key: numeric_hashtag is
+        supplied then if that column for a given value contains no numbers,
+        then the corresponding bite will be disabled. If the key: cutdown is
+        given, if it is 1, then a separate cut down list is created containing
+        only columns with HXL hashtags and rows with desired values (if hashtag
+        and values are supplied) for the purpose of driving QuickCharts. It is
+        returned in the key qcrows in the returned dictionary with the matching
+        headers in qcheaders. If cutdown is 2, then a resource is created using
+        the cut down list. If the key cutdownhashtags is supplied, then only
+        the provided hashtags are used for cutting down otherwise the full list
+        of HXL tags is used.
 
         Args:
             headers (ListTuple[str]): Headers
@@ -2657,7 +2665,7 @@ class Dataset(HDXObject):
 
     def download_and_generate_resource(
         self,
-        downloader: Download,
+        downloader: BaseDownload,
         url: str,
         hxltags: Dict[str, str],
         folder: str,
@@ -2671,46 +2679,51 @@ class Dataset(HDXObject):
         quickcharts: Optional[Dict] = None,
         **kwargs: Any,
     ) -> Tuple[bool, Dict]:
-        """Download url, write rows to csv and create resource, adding to it the
-        dataset. The returned dictionary will contain the resource in the key resource,
-        headers in the key headers and list of rows in the key rows.
+        """Download url, write rows to csv and create resource, adding to it
+        the dataset. The returned dictionary will contain the resource in the
+        key resource, headers in the key headers and list of rows in the key
+        rows.
 
-        Optionally, headers can be inserted at specific positions. This is achieved
-        using the header_insertions argument. If supplied, it is a list of tuples of the
-        form (position, header) to be inserted. A function is called for each row. If
-        supplied, it takes as arguments: headers (prior to any insertions) and row
-        (which will be in dict or list form depending upon the dict_rows argument) and
-        outputs a modified row.
+        Optionally, headers can be inserted at specific positions. This is
+        achieved using the header_insertions argument. If supplied, it is a
+        list of tuples of the form (position, header) to be inserted. A
+        function is called for each row. If supplied, it takes as arguments:
+        headers (prior to any insertions) and row (which will be in dict or
+        list form depending upon the dict_rows argument) and outputs a modified
+        row.
 
-        The reference period can optionally be set by supplying a column in which the
-        date or year is to be looked up. Note that any timezone information is ignored
-        and UTC assumed. Alternatively, a function can be supplied to handle any dates
-        in a row. It should accept a row and should return None to ignore the row or a
-        dictionary which can either be empty if there are no dates in the row or can be
-        populated with keys startdate and/or enddate which are of type timezone-aware
-        datetime. The lowest start date and highest end date are used to set the date of
-        dataset and are returned in the results dictionary in keys startdate and
-        enddate.
+        The reference period can optionally be set by supplying a column in
+        which the date or year is to be looked up. Note that any timezone
+        information is ignored and UTC assumed. Alternatively, a function can
+        be supplied to handle any dates in a row. It should accept a row and
+        should return None to ignore the row or a dictionary which can either
+        be empty if there are no dates in the row or can be populated with
+        keys startdate and/or enddate which are of type timezone-aware
+        datetime. The lowest start date and highest end date are used to set
+        the reference period and are returned in the results dictionary in keys
+        startdate and enddate.
 
-        If the parameter quickcharts is supplied then various QuickCharts related
-        actions will occur depending upon the keys given in the dictionary and the
-        returned dictionary will contain the QuickCharts resource in the key
-        qc_resource. If the keys: hashtag - the HXL hashtag to examine - and values -
-        the 3 values to look for in that column - are supplied, then a list of booleans
-        indicating which QuickCharts bites should be enabled will be returned in the key
-        bites_disabled in the returned dictionary. For the 3 values, if the key:
-        numeric_hashtag is supplied then if that column for a given value contains no
-        numbers, then the corresponding bite will be disabled. If the key: cutdown is
-        given, if it is 1, then a separate cut down list is created containing only
-        columns with HXL hashtags and rows with desired values (if hashtag and values
-        are supplied) for the purpose of driving QuickCharts. It is returned in the key
-        qcrows in the returned dictionary with the matching headers in qcheaders. If
-        cutdown is 2, then a resource is created using the cut down list. If the key
-        cutdownhashtags is supplied, then only the provided hashtags are used for
-        cutting down otherwise the full list of hxl tags is used.
+        If the parameter quickcharts is supplied then various QuickCharts
+        related actions will occur depending upon the keys given in the
+        dictionary and the returned dictionary will contain the QuickCharts
+        resource in the key qc_resource. If the keys: hashtag - the HXL hashtag
+        to examine - and values - the 3 values to look for in that column - are
+        supplied, then a list of booleans indicating which QuickCharts bites
+        should be enabled will be returned in the key bites_disabled in the
+        returned dictionary. For the 3 values, if the key: numeric_hashtag is
+        supplied then if that column for a given value contains no numbers,
+        then the corresponding bite will be disabled. If the key: cutdown is
+        given, if it is 1, then a separate cut down list is created containing
+        only columns with HXL hashtags and rows with desired values (if hashtag
+        and values are supplied) for the purpose of driving QuickCharts. It is
+        returned in the key qcrows in the returned dictionary with the matching
+        headers in qcheaders. If cutdown is 2, then a resource is created using
+        the cut down list. If the key cutdownhashtags is supplied, then only
+        the provided hashtags are used for cutting down otherwise the full list
+        of HXL tags is used.
 
         Args:
-            downloader (Download): Download object
+            downloader (BaseDownload): A Download or Retrieve object
             url (str): URL to download
             hxltags (Dict[str,str]): Header to HXL hashtag mapping
             folder (str): Folder to which to write file containing rows

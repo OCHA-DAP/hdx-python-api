@@ -727,7 +727,7 @@ class TestDatasetNoncore:
         datasetdata["resources"] = resourcesdata
         dataset = Dataset(datasetdata)
         assert "dataset_preview" not in dataset
-        resourceview = dataset.generate_resource_view(
+        resourceview = dataset.generate_quickcharts(
             path=static_resource_view_yaml
         )
         hxl_preview_config = json.loads(resourceview["hxl_preview_config"])
@@ -741,7 +741,7 @@ class TestDatasetNoncore:
             hxl_preview_config["bites"][2]["title"]
             == "Sum of fatalities grouped by admin2"
         )
-        resourceview = dataset.generate_resource_view(
+        resourceview = dataset.generate_quickcharts(
             path=static_resource_view_yaml, bites_disabled=[False, True, False]
         )
         hxl_preview_config = json.loads(resourceview["hxl_preview_config"])
@@ -751,7 +751,7 @@ class TestDatasetNoncore:
             hxl_preview_config["bites"][1]["title"]
             == "Sum of fatalities grouped by admin2"
         )
-        resourceview = dataset.generate_resource_view(
+        resourceview = dataset.generate_quickcharts(
             path=static_resource_view_yaml, bites_disabled=[True, True, True]
         )
         assert resourceview is None
@@ -776,7 +776,7 @@ class TestDatasetNoncore:
                 "date_format": "%b %Y",
             },
         ]
-        resourceview = dataset.generate_resource_view(indicators=indicators)
+        resourceview = dataset.generate_quickcharts(indicators=indicators)
         hxl_preview_config = json.loads(resourceview["hxl_preview_config"])
         assert resourceview["id"] == "c06b5a0d-1d41-4a74-a196-41c251c76023"
         assert (
@@ -834,7 +834,7 @@ class TestDatasetNoncore:
             hxl_preview_config["bites"][2]["uiProperties"]["dateFormat"]
             == "%b %Y"
         )
-        resourceview = dataset.generate_resource_view(
+        resourceview = dataset.generate_quickcharts(
             indicators=indicators,
             findreplace={
                 "#indicator+code": "#item+code",
@@ -853,26 +853,25 @@ class TestDatasetNoncore:
             hxl_preview_config["bites"][0]["ingredient"]["valueColumn"]
             == "#value"
         )
-        assert dataset.generate_resource_view(indicators=[]) is None
+        assert dataset.generate_quickcharts(indicators=[]) is None
         assert (
-            dataset.generate_resource_view(indicators=[None, None, None])
-            is None
+            dataset.generate_quickcharts(indicators=[None, None, None]) is None
         )
         assert (
-            dataset.generate_resource_view(
+            dataset.generate_quickcharts(
                 resource="123", path=static_resource_view_yaml
             )
             is None
         )
         del dataset.get_resources()[0]["id"]
-        resourceview = dataset.generate_resource_view(
+        resourceview = dataset.generate_quickcharts(
             path=static_resource_view_yaml
         )
         assert "id" not in resourceview
         assert "resource_id" not in resourceview
         assert resourceview["resource_name"] == "Resource1"
         with pytest.raises(IOError):
-            dataset.generate_resource_view()
+            dataset.generate_quickcharts()
 
     def test_remove_dates_from_title(self):
         dataset = Dataset()
@@ -975,8 +974,8 @@ class TestDatasetNoncore:
                     qc_filename,
                     rows,
                     resourcedata,
-                    columnname,
                     TestDatasetNoncore.hxltags,
+                    columnname,
                     qc_indicator_codes,
                 )
                 assert resource == {
@@ -996,8 +995,8 @@ class TestDatasetNoncore:
                     qc_filename,
                     rows,
                     resourcedata,
-                    columnname,
                     TestDatasetNoncore.hxltags,
+                    columnname,
                     qc_indicator_codes,
                     headers=[columnname],
                 )
@@ -1011,8 +1010,8 @@ class TestDatasetNoncore:
                     qc_filename,
                     rows,
                     resourcedata,
-                    columnname,
                     TestDatasetNoncore.hxltags,
+                    columnname,
                     qc_indicator_codes,
                 )
                 assert resource is None
