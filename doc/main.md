@@ -218,47 +218,47 @@ virtualenv if not installed:
 [Novel Coronavirus (COVID-19) Cases Data](https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases)
      from HDX and view the date of the dataset:
 
-         dataset = Dataset.read_from_hdx("novel-coronavirus-2019-ncov-cases")
-         print(dataset.get_reference_period())
+        dataset = Dataset.read_from_hdx("novel-coronavirus-2019-ncov-cases")
+        print(dataset.get_reference_period())
 
 11. You can search for datasets on HDX and get their resources:
 
-         datasets = Dataset.search_in_hdx("thailand subnational boundaries", rows=10)
-         print(datasets)
-         resources = Dataset.get_all_resources(datasets)
-         print(resources)
+        datasets = Dataset.search_in_hdx("thailand subnational boundaries", rows=10)
+        print(datasets)
+        resources = Dataset.get_all_resources(datasets)
+        print(resources)
 
 12. You can download a resource in the dataset:
 
-         url, path = resources[0].download()
-         print("Resource URL %s downloaded to %s" % (url, path))
+        url, path = resources[0].download()
+        print("Resource URL %s downloaded to %s" % (url, path))
 
 13. If you have an API key, you can write to HDX. You can try it out on a test 
     server. With a dataset to which you have permissions, change the dataset date:
 
-         dataset = Dataset.read_from_hdx("ID OR NAME OF DATASET")
-         print(dataset.get_reference_period())  # record this
-         dataset.set_reference_period("2015-07-26")
-         print(dataset.get_reference_period())
-         dataset.update_in_hdx()
+        dataset = Dataset.read_from_hdx("ID OR NAME OF DATASET")
+        print(dataset.get_reference_period())  # record this
+        dataset.set_reference_period("2015-07-26")
+        print(dataset.get_reference_period())
+        dataset.update_in_hdx()
 
 14. You can view it on HDX before changing it back (if you have an API key):
 
-         dataset.set_reference_period("PREVIOUS DATE")
-         dataset.update_in_hdx()
+        dataset.set_reference_period("PREVIOUS DATE")
+        dataset.update_in_hdx()
 
 15. Exit and remove virtualenv:
 
-         exit()
-         deactivate
+        exit()
+        deactivate
 
      On Windows:
 
-         rd /s /q test
+        rd /s /q test
 
      On other OSs:
 
-         rm -rf test
+        rm -rf test
 
 # Building a Project
 
@@ -692,7 +692,7 @@ you do as shown below.
 
 HDX datasets can have tags which help people to find them eg. "common operational 
 dataset - cod", "refugees". These tags come from a predefined set of 
-[approved tags](https://docs.google.com/spreadsheets/d/e/2PACX-1vRjeajloIuQl8mfTSHU71ZgbHSgYYUgHrLqyjHSuQJ-zMqS3SVM9hJqMs72L-84LQ/pub?gid=1739051517&single=true&output=csv).
+[approved tags](https://docs.google.com/spreadsheets/d/e/2PACX-1vQD3ba751XbWS5GVwdJmzOF9mc7dnm56hE2U8di12JnpYkdseILmjfGSn1W7UVQzmHKSd6p8FWaXdFL/pub?gid=1768359211&single=true&output=csv).
 If you add tags that are not in the approved list, the library attempts to map them to
 approved tags based on a spreadsheet of tag mappings.
 
