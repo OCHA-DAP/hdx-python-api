@@ -484,7 +484,7 @@ class Vocabulary(HDXObject):
             tags.append(tag)
         elif tag not in tags_dict.keys():
             logger.error(
-                f"Unapproved tag {tag} not in tag mapping! For a list of approved tags see: {configuration['tags_list_url']}"
+                f"Unapproved tag {tag} not in tags mappings! For a list of approved tags see: {configuration['tags_list_url']}"
             )
             deleted_tags.append(tag)
         else:
