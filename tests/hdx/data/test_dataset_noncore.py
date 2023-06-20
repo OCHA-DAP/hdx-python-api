@@ -451,11 +451,27 @@ class TestDatasetNoncore:
             "violence and conflict",
             "fatalities - deaths",
             "cholera",
+            "disease",
         ]
         dataset.remove_tag("violence and conflict")
-        assert dataset.get_tags() == ["fatalities - deaths", "cholera"]
+        assert dataset.get_tags() == [
+            "fatalities - deaths",
+            "cholera",
+            "disease",
+        ]
         dataset.add_tag("cholera")
-        assert dataset.get_tags() == ["fatalities - deaths", "cholera"]
+        assert dataset.get_tags() == [
+            "fatalities - deaths",
+            "cholera",
+            "disease",
+        ]
+        dataset.add_tag("cbi")
+        assert dataset.get_tags() == [
+            "fatalities - deaths",
+            "cholera",
+            "disease",
+            "cash assistance",
+        ]
 
     def test_add_clean_tags(self, configuration, vocabulary_read):
         Vocabulary.set_tagsdict(None)

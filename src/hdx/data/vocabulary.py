@@ -480,20 +480,24 @@ class Vocabulary(HDXObject):
         tags_dict = cls.read_tags_mappings(configuration=configuration)
         tags = list()
         deleted_tags = list()
-        if cls.is_approved(tag):
-            tags.append(tag)
-        elif tag not in tags_dict.keys():
-            logger.error(
-                f"Unapproved tag {tag} not in tags mappings! For a list of approved tags see: {configuration['tags_list_url']}"
-            )
-            deleted_tags.append(tag)
+        whattodo = tags_dict.get(tag)
+        if whattodo is None:
+            if cls.is_approved(tag):
+                tags.append(tag)
+            else:
+                logger.error(
+                    f"Unapproved tag {tag} not in tags mappings! For a list of approved tags see: {configuration['tags_list_url']}"
+                )
+                deleted_tags.append(tag)
         else:
-            whattodo = tags_dict[tag]
             action = whattodo["Action to Take"]
             if action == "ok":
-                logger.error(
-                    f"Tag {tag} is not in CKAN approved tags but is in tags mappings! For a list of approved tags see: {configuration['tags_list_url']}"
-                )
+                if cls.is_approved(tag):
+                    tags.append(tag)
+                else:
+                    logger.error(
+                        f"Tag {tag} is not in CKAN approved tags but is in tags mappings! For a list of approved tags see: {configuration['tags_list_url']}"
+                    )
             elif action == "delete":
                 if log_deleted:
                     logger.info(
