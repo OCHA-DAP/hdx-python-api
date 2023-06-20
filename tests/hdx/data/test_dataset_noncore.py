@@ -43,7 +43,7 @@ from .test_vocabulary import vocabulary_mockshow
 
 class TestDatasetNoncore:
     association = None
-    url = "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv"
+    url = "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/test_data.csv"
     hxltags = {
         "EVENT_ID_CNTY": "#event+code",
         "EVENT_DATE": "#date+occurred",
@@ -466,6 +466,13 @@ class TestDatasetNoncore:
             "disease",
         ]
         dataset.add_tag("cbi")
+        assert dataset.get_tags() == [
+            "fatalities - deaths",
+            "cholera",
+            "disease",
+            "cash assistance",
+        ]
+        dataset.add_tag("lala")
         assert dataset.get_tags() == [
             "fatalities - deaths",
             "cholera",
@@ -1674,7 +1681,7 @@ class TestDatasetNoncore:
                     row_function=process_row,
                 )
                 assert success is True
-                url = "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/empty.csv"
+                url = "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/empty.csv"
                 success, results = dataset.download_and_generate_resource(
                     downloader,
                     url,
@@ -1687,7 +1694,7 @@ class TestDatasetNoncore:
                     yearcol="YEAR",
                 )
                 assert success is False
-                url = "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/gen_resource/test_data_no_data.csv"
+                url = "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/gen_resource/test_data_no_data.csv"
                 success, results = dataset.download_and_generate_resource(
                     downloader,
                     url,
@@ -1700,7 +1707,7 @@ class TestDatasetNoncore:
                     quickcharts=quickcharts,
                 )
                 assert success is False
-                url = "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/gen_resource/test_data_no_years.csv"
+                url = "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/gen_resource/test_data_no_years.csv"
                 success, results = dataset.download_and_generate_resource(
                     downloader,
                     url,

@@ -33,7 +33,7 @@ resultdict = {
     "cache_url": None,
     "name": "MyResource1",
     "created": "2016-06-07T08:57:27.367939",
-    "url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv",
+    "url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/test_data.csv",
     "webstore_url": None,
     "mimetype_inner": None,
     "position": 0,
@@ -747,7 +747,7 @@ class TestResource:
         assert resource["resource_type"] == "api"
         assert (
             resource["url"]
-            == "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv"
+            == "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/test_data.csv"
         )
 
         resource_data = copy.deepcopy(TestResource.resource_data)
@@ -808,7 +808,7 @@ class TestResource:
         assert resource["resource_type"] == "api"
         assert (
             resource["url"]
-            == "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv"
+            == "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/test_data.csv"
         )
         assert resource["state"] == "active"
 
@@ -916,7 +916,7 @@ class TestResource:
         remove(path)
         assert (
             url
-            == "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/test_data.csv"
+            == "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/test_data.csv"
         )
         assert basename(path) == "MyResource1.csv"
         resource["url"] = ""

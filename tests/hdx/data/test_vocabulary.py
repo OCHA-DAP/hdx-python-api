@@ -2684,7 +2684,7 @@ class TestVocabulary:
     def test_chainrule_error(self, configuration, read):
         with pytest.raises(ChainRuleError):
             Vocabulary.set_tagsdict(None)
-            url = "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/master/tests/fixtures/Tag_Mapping_ChainRuleError.csv"
+            url = "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/Tag_Mapping_ChainRuleError.csv"
             Vocabulary.read_tags_mappings(url=url, failchained=True)
 
     def test_autocomplete(self, configuration, post_autocomplete):

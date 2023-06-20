@@ -506,7 +506,13 @@ class Vocabulary(HDXObject):
                 deleted_tags.append(tag)
             elif action == "merge":
                 final_tags = whattodo["New Tag(s)"].split(";")
-                tags.extend(final_tags)
+                for final_tag in final_tags:
+                    if cls.is_approved(final_tag):
+                        tags.append(final_tag)
+                    else:
+                        logger.error(
+                            f"Mapped tag {final_tag} is not in CKAN approved tags but is in tags mappings! For a list of approved tags see: {configuration['tags_list_url']}"
+                        )
             else:
                 logger.error(f"Invalid action {action}!")
         return tags, deleted_tags
