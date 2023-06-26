@@ -5,17 +5,16 @@ from os.path import join
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from hdx.utilities.dateparse import now_utc
-from hdx.utilities.downloader import Download
-from hdx.utilities.typehint import ListTuple
-from hdx.utilities.uuid import is_valid_uuid
-
 import hdx.data.dataset
 import hdx.data.filestore_helper as filestore_helper
 from hdx.api.configuration import Configuration
 from hdx.data.date_helper import DateHelper
 from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.data.resource_view import ResourceView
+from hdx.utilities.dateparse import now_utc
+from hdx.utilities.downloader import Download
+from hdx.utilities.typehint import ListTuple
+from hdx.utilities.uuid import is_valid_uuid
 
 logger = logging.getLogger(__name__)
 
@@ -61,12 +60,12 @@ class Resource(HDXObject):
         }
 
     def update_from_yaml(
-        self, path: str = join("config", "hdx_resource_static.yml")
+        self, path: str = join("config", "hdx_resource_static.yaml")
     ) -> None:
         """Update resource metadata with static metadata from YAML file
 
         Args:
-            path (Optional[str]): Path to YAML dataset metadata. Defaults to config/hdx_resource_static.yml.
+            path (Optional[str]): Path to YAML dataset metadata. Defaults to config/hdx_resource_static.yaml.
 
         Returns:
             None

@@ -4,14 +4,13 @@ import sys
 from os.path import join
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.typehint import ListTuple
-from hdx.utilities.uuid import is_valid_uuid
-
 import hdx.data.dataset
 import hdx.data.vocabulary
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXObject
+from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.typehint import ListTuple
+from hdx.utilities.uuid import is_valid_uuid
 
 logger = logging.getLogger(__name__)
 
@@ -56,12 +55,12 @@ class Showcase(HDXObject):
         }
 
     def update_from_yaml(
-        self, path: str = join("config", "hdx_showcase_static.yml")
+        self, path: str = join("config", "hdx_showcase_static.yaml")
     ) -> None:
         """Update showcase metadata with static metadata from YAML file
 
         Args:
-            path (Optional[str]): Path to YAML dataset metadata. Defaults to config/hdx_showcase_static.yml.
+            path (Optional[str]): Path to YAML dataset metadata. Defaults to config/hdx_showcase_static.yaml.
 
         Returns:
             None

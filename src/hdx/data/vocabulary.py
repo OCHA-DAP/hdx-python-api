@@ -4,11 +4,10 @@ from collections import OrderedDict
 from os.path import join
 from typing import Any, Dict, List, Optional, Tuple
 
-from hdx.utilities.downloader import Download
-from hdx.utilities.typehint import ListTuple
-
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXObject
+from hdx.utilities.downloader import Download
+from hdx.utilities.typehint import ListTuple
 
 logger = logging.getLogger(__name__)
 
@@ -62,12 +61,12 @@ class Vocabulary(HDXObject):
         }
 
     def update_from_yaml(
-        self, path: str = join("config", "hdx_vocabulary_static.yml")
+        self, path: str = join("config", "hdx_vocabulary_static.yaml")
     ) -> None:
         """Update vocabulary metadata with static metadata from YAML file
 
         Args:
-            path (Optional[str]): Path to YAML dataset metadata. Defaults to config/hdx_vocabulary_static.yml.
+            path (Optional[str]): Path to YAML dataset metadata. Defaults to config/hdx_vocabulary_static.yaml.
 
         Returns:
             None

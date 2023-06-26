@@ -4,14 +4,13 @@ import json
 from os.path import join
 
 import pytest
-from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.loader import load_yaml
 
+from . import MockResponse, user_data
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.user import User
-
-from . import MockResponse, user_data
+from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.loader import load_yaml
 
 resultdict = {
     "openid": None,
@@ -30,7 +29,9 @@ resultdict = {
     "id": "9f3e9973-7dbe-4c65-8820-f48578e3ffea",
     "number_created_packages": 0,
 }
-orgdict = load_yaml(join("tests", "fixtures", "organization_show_results.yml"))
+orgdict = load_yaml(
+    join("tests", "fixtures", "organization_show_results.yaml")
+)
 orgdict2 = copy.deepcopy(orgdict)
 del orgdict2["users"]
 del orgdict2["packages"]
@@ -128,7 +129,7 @@ class TestUser:
 
     @pytest.fixture(scope="class")
     def static_yaml(self):
-        return join("tests", "fixtures", "config", "hdx_user_static.yml")
+        return join("tests", "fixtures", "config", "hdx_user_static.yaml")
 
     @pytest.fixture(scope="class")
     def static_json(self):

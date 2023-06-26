@@ -2,13 +2,13 @@ import json
 from os.path import join
 
 import pytest
-from hdx.location.country import Country
 
 from hdx.api.configuration import Configuration
 from hdx.api.locations import Locations
 from hdx.data.dataset import Dataset
 from hdx.data.resource import Resource
 from hdx.data.vocabulary import Vocabulary
+from hdx.location.country import Country
 
 
 class TestUpdateDatasetResourcesLogic:
@@ -30,7 +30,7 @@ class TestUpdateDatasetResourcesLogic:
             hdx_read_only=True,
             user_agent="test",
             project_config_yaml=join(
-                "tests", "fixtures", "config", "project_configuration.yml"
+                "tests", "fixtures", "config", "project_configuration.yaml"
             ),
         )
         Locations.set_validlocations([{"name": "zmb", "title": "Zambia"}])

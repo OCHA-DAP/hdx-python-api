@@ -8,14 +8,14 @@ from typing import Any, Dict, Optional, Tuple
 
 import ckanapi
 import requests
+
+from . import __version__
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.email import Email
 from hdx.utilities.loader import load_json, load_yaml
 from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.session import get_session
 from hdx.utilities.useragent import UserAgent, UserAgentError
-
-from . import __version__
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ class Configuration(UserDict):
     Args:
         **kwargs: See below
         user_agent (str): User agent string. HDXPythonLibrary/X.X.X- is prefixed. Must be supplied if remoteckan is not.
-        user_agent_config_yaml (str): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yml.
+        user_agent_config_yaml (str): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yaml.
         user_agent_lookup (str): Lookup key for YAML. Ignored if user_agent supplied.
         hdx_url (str): HDX url to use. Overrides hdx_site.
         hdx_site (str): HDX site to use eg. prod, test.
@@ -44,15 +44,15 @@ class Configuration(UserDict):
         project_config_yaml (str): Path to YAML Project configuration
         hdx_base_config_dict (dict): HDX base configuration dictionary OR
         hdx_base_config_json (str): Path to JSON HDX base configuration OR
-        hdx_base_config_yaml (str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yml.
+        hdx_base_config_yaml (str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yaml.
     """
 
     _configuration = None
     home_folder = expanduser("~")
     default_hdx_base_config_yaml = script_dir_plus_file(
-        "hdx_base_configuration.yml", ConfigurationError
+        "hdx_base_configuration.yaml", ConfigurationError
     )
-    default_hdx_config_yaml = join(home_folder, ".hdx_configuration.yml")
+    default_hdx_config_yaml = join(home_folder, ".hdx_configuration.yaml")
 
     prefix = f"HDXPythonLibrary/{__version__}"
 
@@ -125,13 +125,15 @@ class Configuration(UserDict):
         else:
             if not hdx_config_yaml:
                 hdx_config_yaml = Configuration.default_hdx_config_yaml
+                if not isfile(hdx_config_yaml):
+                    hdx_config_yaml = hdx_config_yaml.replace(".yaml", ".yml")
                 if isfile(hdx_config_yaml):
                     logger.info(
                         f"No HDX configuration parameter. Using default configuration file: {hdx_config_yaml}."
                     )
                 else:
                     logger.info(
-                        f"No HDX configuration parameter and no configuration file at default path: {hdx_config_yaml}."
+                        f"No HDX configuration parameter and no configuration file at default path: {Configuration.default_hdx_config_yaml}."
                     )
                     hdx_config_yaml = None
                     hdx_config_dict = dict()
@@ -415,7 +417,7 @@ class Configuration(UserDict):
         Args:
             session (requests.Session): requests Session object to use. Defaults to calling hdx.utilities.session.get_session()
             user_agent (Optional[str]): User agent string. HDXPythonLibrary/X.X.X- is prefixed.
-            user_agent_config_yaml (Optional[str]): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yml.
+            user_agent_config_yaml (Optional[str]): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yaml.
             user_agent_lookup (Optional[str]): Lookup key for YAML. Ignored if user_agent supplied.
             use_env (bool): Whether to read environment variables. Defaults to False.
 
@@ -509,7 +511,7 @@ class Configuration(UserDict):
             **kwargs: See below
             email_config_dict (dict): HDX configuration dictionary OR
             email_config_json (str): Path to JSON HDX configuration OR
-            email_config_yaml (str): Path to YAML HDX configuration. Defaults to ~/hdx_email_configuration.yml.
+            email_config_yaml (str): Path to YAML HDX configuration. Defaults to ~/hdx_email_configuration.yaml.
 
         Returns:
             None
@@ -542,7 +544,7 @@ class Configuration(UserDict):
             configuration (Optional[Configuration]): Configuration instance. Defaults to setting one up from passed arguments.
             **kwargs: See below
             user_agent (str): User agent string. HDXPythonLibrary/X.X.X- is prefixed. Must be supplied if remoteckan is not.
-            user_agent_config_yaml (str): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yml.
+            user_agent_config_yaml (str): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yaml.
             user_agent_lookup (str): Lookup key for YAML. Ignored if user_agent supplied.
             hdx_url (str): HDX url to use. Overrides hdx_site.
             hdx_site (str): HDX site to use eg. prod, test.
@@ -556,7 +558,7 @@ class Configuration(UserDict):
             project_config_yaml (str): Path to YAML Project configuration
             hdx_base_config_dict (dict): HDX base configuration dictionary OR
             hdx_base_config_json (str): Path to JSON HDX base configuration OR
-            hdx_base_config_yaml (str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yml.
+            hdx_base_config_yaml (str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yaml.
 
         Returns:
             None
@@ -582,7 +584,7 @@ class Configuration(UserDict):
             remoteckan (Optional[ckanapi.RemoteCKAN]): CKAN instance. Defaults to setting one up from configuration.
             **kwargs: See below
             user_agent (str): User agent string. HDXPythonLibrary/X.X.X- is prefixed. Must be supplied if remoteckan is not.
-            user_agent_config_yaml (str): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yml.
+            user_agent_config_yaml (str): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yaml.
             user_agent_lookup (str): Lookup key for YAML. Ignored if user_agent supplied.
             hdx_url (str): HDX url to use. Overrides hdx_site.
             hdx_site (str): HDX site to use eg. prod, test.
@@ -596,7 +598,7 @@ class Configuration(UserDict):
             project_config_yaml (str): Path to YAML Project configuration
             hdx_base_config_dict (dict): HDX base configuration dictionary OR
             hdx_base_config_json (str): Path to JSON HDX base configuration OR
-            hdx_base_config_yaml (str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yml.
+            hdx_base_config_yaml (str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yaml.
 
         Returns:
             str: HDX site url
@@ -622,7 +624,7 @@ class Configuration(UserDict):
             remoteckan (Optional[ckanapi.RemoteCKAN]): CKAN instance. Defaults to setting one up from configuration.
             **kwargs: See below
             user_agent (str): User agent string. HDXPythonLibrary/X.X.X- is prefixed. Must be supplied if remoteckan is not.
-            user_agent_config_yaml (str): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yml.
+            user_agent_config_yaml (str): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yaml.
             user_agent_lookup (str): Lookup key for YAML. Ignored if user_agent supplied.
             hdx_url (str): HDX url to use. Overrides hdx_site.
             hdx_site (str): HDX site to use eg. prod, test.
@@ -636,7 +638,7 @@ class Configuration(UserDict):
             project_config_yaml (str): Path to YAML Project configuration
             hdx_base_config_dict (dict): HDX base configuration dictionary OR
             hdx_base_config_json (str): Path to JSON HDX base configuration OR
-            hdx_base_config_yaml (str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yml.
+            hdx_base_config_yaml (str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yaml.
 
         Returns:
             str: HDX site url

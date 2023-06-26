@@ -1,0 +1,58 @@
+loaders:
+  - type: python
+    search_path:
+      - ../src
+    packages:
+      - hdx.api
+      - hdx.data
+      - hdx.facades
+renderer:
+  type: mkdocs
+  output_directory: docs
+  mkdocs_config:
+    site_name: HDX Python API
+    theme: readthedocs
+    repo_url: "https://github.com/OCHA-DAP/hdx-python-api"
+  markdown:
+    source_linker:
+      type: github
+      repo: OCHA-DAP/hdx-python-api
+  pages:
+    - title: Home
+      name: index
+      source: main.md
+    - title: API Documentation
+      children:
+        - title: Configuration
+          contents:
+            - hdx.api.configuration.*
+        - title: Locations
+          contents:
+            - hdx.api.locations.*
+        - title: Dataset
+          contents:
+            - hdx.data.dataset.*
+        - title: Resource
+          contents:
+            - hdx.data.resource.*
+        - title: Resource View
+          contents:
+            - hdx.data.resource_view.*
+        - title: Showcase
+          contents:
+            - hdx.data.showcase.*
+        - title: User
+          contents:
+            - hdx.data.user.*
+        - title: Organization
+          contents:
+            - hdx.data.organization.*
+        - title: Vocabulary
+          contents:
+            - hdx.data.vocabulary.*
+        - title: Simple Facade
+          contents:
+            - hdx.facades.simple.*
+        - title: Keyword Arguments Facade
+          contents:
+            - hdx.facades.keyword_arguments.*

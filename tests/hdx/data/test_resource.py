@@ -7,15 +7,14 @@ from os import remove
 from os.path import basename, join
 
 import pytest
-from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.downloader import DownloadError
-
-from hdx.api.configuration import Configuration
-from hdx.data.hdxobject import HDXError
-from hdx.data.resource import Resource
 
 from . import MockResponse, dataset_resultdict
 from .test_resource_view import resource_view_list, resource_view_mocklist
+from hdx.api.configuration import Configuration
+from hdx.data.hdxobject import HDXError
+from hdx.data.resource import Resource
+from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.downloader import DownloadError
 
 resultdict = {
     "cache_last_updated": None,
@@ -331,7 +330,7 @@ class TestResource:
 
     @pytest.fixture(scope="class")
     def static_yaml(self):
-        return join("tests", "fixtures", "config", "hdx_resource_static.yml")
+        return join("tests", "fixtures", "config", "hdx_resource_static.yaml")
 
     @pytest.fixture(scope="class")
     def static_json(self):
@@ -340,7 +339,7 @@ class TestResource:
     @pytest.fixture(scope="class")
     def topline_yaml(self):
         return join(
-            "tests", "fixtures", "config", "hdx_datasource_topline.yml"
+            "tests", "fixtures", "config", "hdx_datasource_topline.yaml"
         )
 
     @pytest.fixture(scope="class")

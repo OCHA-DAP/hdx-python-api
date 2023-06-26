@@ -1,9 +1,6 @@
 from os.path import join
 
 import pytest
-from hdx.location.country import Country
-from hdx.utilities.loader import load_yaml
-from hdx.utilities.text import multiple_replace
 from slugify import slugify
 
 from hdx.api.configuration import Configuration
@@ -11,6 +8,9 @@ from hdx.api.locations import Locations
 from hdx.data.dataset import Dataset
 from hdx.data.resource import Resource
 from hdx.data.vocabulary import Vocabulary
+from hdx.location.country import Country
+from hdx.utilities.loader import load_yaml
+from hdx.utilities.text import multiple_replace
 
 
 class TestUpdateLogic:
@@ -20,7 +20,7 @@ class TestUpdateLogic:
             hdx_read_only=True,
             user_agent="test",
             project_config_yaml=join(
-                "tests", "fixtures", "config", "project_configuration.yml"
+                "tests", "fixtures", "config", "project_configuration.yaml"
             ),
         )
         Locations.set_validlocations([{"name": "zmb", "title": "Zambia"}])
@@ -44,11 +44,11 @@ class TestUpdateLogic:
 
     @pytest.fixture(scope="class")
     def new_resources_yaml(self, fixture_path):
-        return join(fixture_path, "update_logic_resources_new.yml")
+        return join(fixture_path, "update_logic_resources_new.yaml")
 
     @pytest.fixture(scope="class")
     def resources_yaml(self, fixture_path):
-        return join(fixture_path, "update_logic_resources.yml")
+        return join(fixture_path, "update_logic_resources.yaml")
 
     @pytest.fixture(scope="class")
     def dataset_data(self):

@@ -3,17 +3,17 @@ from os.path import join
 
 import ckanapi
 import pytest
-from hdx.utilities.loader import LoadError
-from hdx.utilities.useragent import UserAgentError
 
 from hdx.api import __version__
 from hdx.api.configuration import Configuration, ConfigurationError
+from hdx.utilities.loader import LoadError
+from hdx.utilities.useragent import UserAgentError
 
 
 class TestConfiguration:
     @pytest.fixture(scope="class")
     def hdx_base_config_yaml(self, configfolder):
-        return join(configfolder, "hdx_base_config.yml")
+        return join(configfolder, "hdx_base_config.yaml")
 
     @pytest.fixture(scope="class")
     def hdx_base_config_json(self, configfolder):
@@ -29,23 +29,23 @@ class TestConfiguration:
 
     @pytest.fixture(scope="class")
     def user_agent_config_yaml(self, configfolder):
-        return join(configfolder, "user_agent_config.yml")
+        return join(configfolder, "user_agent_config.yaml")
 
     @pytest.fixture(scope="class")
     def user_agent_config2_yaml(self, configfolder):
-        return join(configfolder, "user_agent_config2.yml")
+        return join(configfolder, "user_agent_config2.yaml")
 
     @pytest.fixture(scope="class")
     def user_agent_config3_yaml(self, configfolder):
-        return join(configfolder, "user_agent_config3.yml")
+        return join(configfolder, "user_agent_config3.yaml")
 
     @pytest.fixture(scope="class")
     def empty_yaml(self, configfolder):
-        return join(configfolder, "empty.yml")
+        return join(configfolder, "empty.yaml")
 
     @pytest.fixture(scope="class")
     def user_agent_config_wrong_yaml(self, configfolder):
-        return join(configfolder, "user_agent_config_wrong.yml")
+        return join(configfolder, "user_agent_config_wrong.yaml")
 
     def test_init(
         self,

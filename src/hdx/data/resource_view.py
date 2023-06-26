@@ -3,11 +3,10 @@ import logging
 from os.path import join
 from typing import Any, Dict, List, Optional, Union
 
-from hdx.utilities.typehint import ListTuple
-from hdx.utilities.uuid import is_valid_uuid
-
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError, HDXObject
+from hdx.utilities.typehint import ListTuple
+from hdx.utilities.uuid import is_valid_uuid
 
 logger = logging.getLogger(__name__)
 
@@ -46,12 +45,12 @@ class ResourceView(HDXObject):
         }
 
     def update_from_yaml(
-        self, path: str = join("config", "hdx_resource_view_static.yml")
+        self, path: str = join("config", "hdx_resource_view_static.yaml")
     ) -> None:
         """Update resource view metadata with static metadata from YAML file
 
         Args:
-            path (Optional[str]): Path to YAML resource view metadata. Defaults to config/hdx_resource_view_static.yml.
+            path (Optional[str]): Path to YAML resource view metadata. Defaults to config/hdx_resource_view_static.yaml.
 
         Returns:
             None
