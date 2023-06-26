@@ -4,13 +4,12 @@ import json
 from os.path import join
 
 import pytest
-from hdx.utilities.dictandlist import merge_two_dictionaries
 
+from . import MockResponse
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource_view import ResourceView
-
-from . import MockResponse
+from hdx.utilities.dictandlist import merge_two_dictionaries
 
 hxl_preview_config = '{"configVersion":2,"bites":[{"init":true,"type":"key figure","filteredValues":[],"errorMsg":null,"ingredient":{"aggregateColumn":null,"valueColumn":"#affected+killed","aggregateFunction":"sum"},"dataTitle":"#affected+killed","displayCategory":"Key Figures","unit":null,"hashCode":-1955043658,"title":"Sum of fatalities","value":null},{"init":true,"type":"chart","filteredValues":[],"errorMsg":null,"swapAxis":true,"showGrid":true,"pieChart":false,"ingredient":{"aggregateColumn":"#adm1+name","valueColumn":"#affected+killed","aggregateFunction":"sum"},"dataTitle":"#affected+killed","displayCategory":"Charts","hashCode":738289179,"title":"Sum of fatalities grouped by admin1","values":null,"categories":null},{"init":true,"type":"chart","filteredValues":[],"errorMsg":null,"swapAxis":true,"showGrid":true,"pieChart":false,"ingredient":{"aggregateColumn":"#adm2+name","valueColumn":"#affected+killed","aggregateFunction":"sum"},"dataTitle":"#affected+killed","displayCategory":"Charts","hashCode":766918330,"title":"Sum of fatalities grouped by admin2","values":null,"categories":null}]}'
 
@@ -135,7 +134,7 @@ class TestResourceView:
     @pytest.fixture(scope="class")
     def static_yaml(self):
         return join(
-            "tests", "fixtures", "config", "hdx_resource_view_static.yml"
+            "tests", "fixtures", "config", "hdx_resource_view_static.yaml"
         )
 
     @pytest.fixture(scope="class")

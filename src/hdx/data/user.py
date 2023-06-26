@@ -3,11 +3,10 @@ import logging
 from os.path import join
 from typing import Any, Dict, List, Optional
 
-from hdx.utilities.typehint import ListTuple
-
 import hdx.data.organization
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXObject
+from hdx.utilities.typehint import ListTuple
 
 logger = logging.getLogger(__name__)
 
@@ -47,12 +46,12 @@ class User(HDXObject):
         }
 
     def update_from_yaml(
-        self, path: str = join("config", "hdx_user_static.yml")
+        self, path: str = join("config", "hdx_user_static.yaml")
     ) -> None:
         """Update user metadata with static metadata from YAML file
 
         Args:
-            path (Optional[str]): Path to YAML dataset metadata. Defaults to config/hdx_user_static.yml.
+            path (Optional[str]): Path to YAML dataset metadata. Defaults to config/hdx_user_static.yaml.
 
         Returns:
             None

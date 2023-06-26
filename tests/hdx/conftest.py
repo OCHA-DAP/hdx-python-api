@@ -20,7 +20,7 @@ def configfolder(fixturesfolder):
 
 @pytest.fixture(scope="session")
 def hdx_config_yaml(configfolder):
-    return join(configfolder, "hdx_config.yml")
+    return join(configfolder, "hdx_config.yaml")
 
 
 @pytest.fixture(scope="session")
@@ -30,7 +30,7 @@ def hdx_config_json(configfolder):
 
 @pytest.fixture(scope="session")
 def project_config_yaml():
-    return join("tests", "fixtures", "config", "project_configuration.yml")
+    return join("tests", "fixtures", "config", "project_configuration.yaml")
 
 
 @pytest.fixture(scope="session")

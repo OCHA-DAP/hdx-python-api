@@ -111,7 +111,7 @@ the drop down menu
     a.  Pass this key as a parameter or within a dictionary
     
     b.  Create a JSON or YAML file. The default path is
-            **.hdx\_configuration.yml** in the current user's home
+            **.hdx\_configuration.yaml** in the current user's home
             directory. Then put in the YAML file:
 
             hdx_key: "HDX API KEY"
@@ -156,7 +156,7 @@ API key. Please see above about where to find it on the website. Once you have i
 put it into a file in your home directory:
 
         cd ~
-        echo "hdx_key: \"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\"" > .hdx_configuration.yml
+        echo "hdx_key: \"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\"" > .hdx_configuration.yaml
 
 2. If you are using the Docker image, you can jump to step 6, otherwise install 
 virtualenv if not installed:
@@ -270,7 +270,7 @@ facades set up both logging and HDX configuration.
 The default configuration loads an internal HDX configuration located within the 
 library, and assumes that there is an API key file called **.hdxkey** in the current 
 user's home directory **\~** and a YAML project configuration located relative to your 
-working directory at **config/project\_configuration.yml** which you must create. The 
+working directory at **config/project\_configuration.yaml** which you must create. The 
 project configuration is used for any configuration specific to your project.
 
 The default logging configuration reads a configuration file internal to the library 
@@ -464,7 +464,7 @@ and recommended, while JSON is also accepted eg.
 
     dataset.update_from_json([path])
 
-The default path if unspecified is **config/hdx\_TYPE\_static.yml** for YAML and
+The default path if unspecified is **config/hdx\_TYPE\_static.yaml** for YAML and
 **config/hdx\_TYPE\_static.json** for JSON where TYPE is an HDX object's type like 
 dataset or resource eg. **config/hdx\_showcase\_static.json**. The YAML file takes the 
 following form:
@@ -1061,7 +1061,7 @@ folder. If you run it unchanged, it will overwrite the existing datasets in the 
 organisation! Therefore, you should run it against a test server. If you use it as a 
 basis for your code, you will need to modify the dataset **name**  in **idmc.py** and 
 change the organisation information to your organisation. Also update metadata in 
-**config/hdx\_dataset\_static.yml** appropriately.
+**config/hdx\_dataset\_static.yaml** appropriately.
 
 The IDMC scraper creates a dataset per country in HDX, populating all the required 
 metadata. It then creates resources with files held on the HDX filestore.

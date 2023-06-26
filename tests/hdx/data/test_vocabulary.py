@@ -4,14 +4,13 @@ import json
 from os.path import join
 
 import pytest
-from hdx.utilities.dictandlist import merge_two_dictionaries
 from requests.exceptions import RetryError
 
+from . import MockResponse
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.vocabulary import ChainRuleError, Vocabulary
-
-from . import MockResponse
+from hdx.utilities.dictandlist import merge_two_dictionaries
 
 vocabulary_list = [
     {
@@ -2301,7 +2300,9 @@ class TestVocabulary:
 
     @pytest.fixture(scope="class")
     def static_yaml(self):
-        return join("tests", "fixtures", "config", "hdx_vocabulary_static.yml")
+        return join(
+            "tests", "fixtures", "config", "hdx_vocabulary_static.yaml"
+        )
 
     @pytest.fixture(scope="class")
     def static_json(self):

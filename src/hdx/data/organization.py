@@ -3,12 +3,11 @@ import logging
 from os.path import join
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
-from hdx.utilities.typehint import ListTuple
-
 import hdx.data.dataset
 import hdx.data.user as user_module
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError, HDXObject
+from hdx.utilities.typehint import ListTuple
 
 if TYPE_CHECKING:
     from hdx.data.user import User
@@ -50,12 +49,12 @@ class Organization(HDXObject):
         }
 
     def update_from_yaml(
-        self, path: str = join("config", "hdx_organization_static.yml")
+        self, path: str = join("config", "hdx_organization_static.yaml")
     ) -> None:
         """Update organization metadata with static metadata from YAML file
 
         Args:
-            path (str): Path to YAML dataset metadata. Defaults to config/hdx_organization_static.yml.
+            path (str): Path to YAML dataset metadata. Defaults to config/hdx_organization_static.yaml.
 
         Returns:
             None

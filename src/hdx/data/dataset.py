@@ -19,21 +19,6 @@ from typing import (
     Union,
 )
 
-from hdx.location.country import Country
-from hdx.utilities.base_downloader import BaseDownload
-from hdx.utilities.dateparse import (
-    default_date,
-    default_enddate,
-    now_utc,
-    parse_date,
-    parse_date_range,
-)
-from hdx.utilities.dictandlist import merge_two_dictionaries, write_list_to_csv
-from hdx.utilities.downloader import Download
-from hdx.utilities.path import script_dir_plus_file
-from hdx.utilities.saver import save_json
-from hdx.utilities.typehint import ListTuple, ListTupleDict
-from hdx.utilities.uuid import is_valid_uuid
 from hxl.input import InputOptions, munge_url
 
 import hdx.data.filestore_helper as filestore_helper
@@ -49,6 +34,21 @@ from hdx.data.dataset_title_helper import DatasetTitleHelper
 from hdx.data.date_helper import DateHelper
 from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.data.resource_matcher import ResourceMatcher
+from hdx.location.country import Country
+from hdx.utilities.base_downloader import BaseDownload
+from hdx.utilities.dateparse import (
+    default_date,
+    default_enddate,
+    now_utc,
+    parse_date,
+    parse_date_range,
+)
+from hdx.utilities.dictandlist import merge_two_dictionaries, write_list_to_csv
+from hdx.utilities.downloader import Download
+from hdx.utilities.path import script_dir_plus_file
+from hdx.utilities.saver import save_json
+from hdx.utilities.typehint import ListTuple, ListTupleDict
+from hdx.utilities.uuid import is_valid_uuid
 
 if TYPE_CHECKING:
     from hdx.data.organization import Organization
@@ -418,12 +418,12 @@ class Dataset(HDXObject):
             self.hxl_update()
 
     def update_from_yaml(
-        self, path: str = join("config", "hdx_dataset_static.yml")
+        self, path: str = join("config", "hdx_dataset_static.yaml")
     ) -> None:
         """Update dataset metadata with static metadata from YAML file
 
         Args:
-            path (str): Path to YAML dataset metadata. Defaults to config/hdx_dataset_static.yml.
+            path (str): Path to YAML dataset metadata. Defaults to config/hdx_dataset_static.yaml.
 
         Returns:
             None
@@ -2089,7 +2089,7 @@ class Dataset(HDXObject):
 
         Args:
             resource (Union[Resource,Dict,str,int]): Either resource id or name, resource metadata from a Resource object or a dictionary or position. Defaults to 0.
-            path (Optional[str]): Path to YAML resource view metadata. Defaults to None (config/hdx_resource_view_static.yml or internal template).
+            path (Optional[str]): Path to YAML resource view metadata. Defaults to None (config/hdx_resource_view_static.yaml or internal template).
             bites_disabled (Optional[ListTuple[bool]]): Which QC bites should be disabled. Defaults to None (all bites enabled).
             indicators (Optional[ListTuple[Dict]]): Indicator codes, QC titles and units for resource view template. Defaults to None (don't use template).
             findreplace (Optional[Dict]): Replacements for anything else in resource view. Defaults to None.
@@ -2111,10 +2111,11 @@ class Dataset(HDXObject):
         resourceview = resource_view.ResourceView(resourceview_data)
         if path is None:
             if indicators is None:
-                path = join("config", "hdx_resource_view_static.yml")
+                path = join("config", "hdx_resource_view_static.yaml")
             else:
                 path = script_dir_plus_file(
-                    "indicator_resource_view_template.yml", NotRequestableError
+                    "indicator_resource_view_template.yaml",
+                    NotRequestableError,
                 )
         resourceview.update_from_yaml(path=path)
 
@@ -2315,7 +2316,7 @@ class Dataset(HDXObject):
 
         Args:
             resource (Union[Resource,Dict,str,int]): Either resource id or name, resource metadata from a Resource object or a dictionary or position. Defaults to 0.
-            path (Optional[str]): Path to YAML resource view metadata. Defaults to None (config/hdx_resource_view_static.yml or internal template).
+            path (Optional[str]): Path to YAML resource view metadata. Defaults to None (config/hdx_resource_view_static.yaml or internal template).
             bites_disabled (Optional[ListTuple[bool]]): Which QC bites should be disabled. Defaults to None (all bites enabled).
             indicators (Optional[ListTuple[Dict]]): Indicator codes, QC titles and units for resource view template. Defaults to None (don't use template).
             findreplace (Optional[Dict]): Replacements for anything else in resource view. Defaults to None.

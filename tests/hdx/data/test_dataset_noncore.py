@@ -5,19 +5,6 @@ from datetime import datetime, timezone
 from os.path import join
 
 import pytest
-from hdx.location.country import Country
-from hdx.utilities.compare import assert_files_same
-from hdx.utilities.dateparse import parse_date_range
-from hdx.utilities.downloader import Download
-from hdx.utilities.path import temp_dir
-from hdx.utilities.saver import save_text
-
-from hdx.api.configuration import Configuration
-from hdx.data.dataset import Dataset
-from hdx.data.hdxobject import HDXError
-from hdx.data.organization import Organization
-from hdx.data.user import User
-from hdx.data.vocabulary import Vocabulary
 
 from . import (
     MockResponse,
@@ -39,6 +26,18 @@ from .test_resource_view import (
 from .test_showcase import showcase_resultdict
 from .test_user import user_mockshow
 from .test_vocabulary import vocabulary_mockshow
+from hdx.api.configuration import Configuration
+from hdx.data.dataset import Dataset
+from hdx.data.hdxobject import HDXError
+from hdx.data.organization import Organization
+from hdx.data.user import User
+from hdx.data.vocabulary import Vocabulary
+from hdx.location.country import Country
+from hdx.utilities.compare import assert_files_same
+from hdx.utilities.dateparse import parse_date_range
+from hdx.utilities.downloader import Download
+from hdx.utilities.path import temp_dir
+from hdx.utilities.saver import save_text
 
 
 class TestDatasetNoncore:
@@ -70,7 +69,7 @@ class TestDatasetNoncore:
     @pytest.fixture(scope="class")
     def static_resource_view_yaml(self):
         return join(
-            "tests", "fixtures", "config", "hdx_resource_view_static.yml"
+            "tests", "fixtures", "config", "hdx_resource_view_static.yaml"
         )
 
     @pytest.fixture(scope="function")

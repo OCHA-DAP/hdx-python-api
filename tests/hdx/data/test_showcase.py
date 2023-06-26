@@ -4,15 +4,14 @@ import json
 from os.path import join
 
 import pytest
-from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.loader import load_yaml
-
-from hdx.api.configuration import Configuration
-from hdx.data.hdxobject import HDXError
-from hdx.data.showcase import Showcase
 
 from . import MockResponse
 from .test_vocabulary import vocabulary_mockshow
+from hdx.api.configuration import Configuration
+from hdx.data.hdxobject import HDXError
+from hdx.data.showcase import Showcase
+from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.loader import load_yaml
 
 showcase_resultdict = {
     "relationships_as_object": [],
@@ -57,10 +56,10 @@ showcase_resultdict = {
 }
 
 datasetsdict = load_yaml(
-    join("tests", "fixtures", "dataset_search_results.yml")
+    join("tests", "fixtures", "dataset_search_results.yaml")
 )
 allsearchdict = load_yaml(
-    join("tests", "fixtures", "showcase_all_search_results.yml")
+    join("tests", "fixtures", "showcase_all_search_results.yaml")
 )
 
 
@@ -183,7 +182,7 @@ class TestShowcase:
 
     @pytest.fixture(scope="class")
     def static_yaml(self):
-        return join("tests", "fixtures", "config", "hdx_showcase_static.yml")
+        return join("tests", "fixtures", "config", "hdx_showcase_static.yaml")
 
     @pytest.fixture(scope="class")
     def static_json(self):

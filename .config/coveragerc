@@ -1,0 +1,17 @@
+[run]
+source = src
+
+omit = */_version.py
+
+[report]
+exclude_also =
+    from ._version
+    def __repr__
+    if self.debug:
+    if settings.DEBUG
+    raise AssertionError
+    raise NotImplementedError
+    if 0:
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    @(abc\.)?abstractmethod

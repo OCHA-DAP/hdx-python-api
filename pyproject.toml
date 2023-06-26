@@ -1,163 +1,113 @@
-[build-system]
-requires = [ "setuptools>=65", "setuptools_scm[toml]>=7.1", "wheel"]
-build-backend = "setuptools.build_meta"
+#########################
+# Project Configuration #
+#########################
 
-[tool.setuptools_scm]
-write_to = "src/hdx/api/_version.py"
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hdx-python-api"
+description = "HDX Python API for interacting with the Humanitarian Data Exchange"
+authors = [{name = "Michael Rans", email = "rans@email.com"}]
+license = {text = "MIT"}
+keywords = ["HDX", "API", "CKAN", "humanitarian data exchange"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+]
+requires-python = ">=3.8"
+
+dependencies = [
+    "ckanapi >= 4.7",
+    "defopt >= 6.4.0",
+    "email_validator",
+    "hdx-python-country>= 3.5.1",
+    "makefun",
+    "ndg-httpsclient",
+    "pyasn1",
+    "pyOpenSSL",
+    "quantulum3",
+]
+dynamic = ["version"]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.urls]
+Homepage = "https://github.com/OCHA-DAP/hdx-python-api"
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-cov"]
+dev = ["pre-commit"]
+
+
+#########
+# Hatch #
+#########
+
+# Build
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hdx"]
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/hdx/api/_version.py"
+
+# Versioning
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
 local_scheme = "no-local-version"
 version_scheme = "python-simplified-semver"
 
-[tool.black]
-line-length = 79
+# Tests
 
-[tool.isort]
-profile = "black"
-line_length = 79
-multi_line_output = 3
+[tool.hatch.envs.test]
+features = ["test"]
 
-[tool.flake8]
-exclude = ["_version.py"]
-ignore = ["E203", "E501", "W503"]
-max-line-length = 79
-count = true
-show_source = true
+[tool.hatch.envs.test.scripts]
+test = """
+       pytest -c .config/pytest.ini --rootdir=. --junitxml=test-results.xml \
+       --cov --cov-config=.config/coveragerc --no-cov-on-fail \
+       --cov-report=lcov --cov-report=term-missing
+       """
 
-[tool.pytest.ini_options]
-pythonpath = "src"
-addopts = "--color=yes"
-log_cli = 1
+[[tool.hatch.envs.test.matrix]]
+python = ["3.11"]
 
-[tool.coverage.paths]
-source = ["src/hdx", "*/site-packages/hdx"]
-
-[tool.coverage.report]
-omit = [
-    "*/setup.py",
-    "*/python?.?/*",
-    "*/venv/*",
-    "*/site-packages/*",
-    "*/tests/*",
-    "*__init__*"
+[tool.hatch.envs.lint]
+detached = true
+dependencies = [
+  "black",
+  "ruff",
 ]
 
-exclude_lines = [
-    "pragma: no cover",  # Have to re-enable the standard pragma
-    "def __repr__",  # Don't complain about missing
-    "if self.debug",  # debug-only code
-    "raise AssertionError",  # Don't complain if tests don't hit
-    "raise NotImplementedError",  # defensive assertion code
-    "if 0:",  # Don't complain if non-runnable code
-    "if __name__ == .__main__.:"  # isn't run
+[tool.hatch.envs.lint.scripts]
+style = [
+  "ruff --config .config/ruff.toml {args:.}",
+  "black --config .config/black.toml --check --diff {args:.}",
 ]
-
-[[tool.pydoc-markdown.loaders]]
-type = "python"
-search_path = ["src"]
-packages = ["hdx.api", "hdx.data", "hdx.facades"]
-
-[tool.pydoc-markdown.renderer]
-type = "mkdocs"
-output_directory = "docs"
-
-    [tool.pydoc-markdown.renderer.mkdocs_config]
-    site_name = "HDX Python API"
-    theme = "readthedocs"
-    repo_url = "https://github.com/OCHA-DAP/hdx-python-api"
-
-    [tool.pydoc-markdown.renderer.markdown.source_linker]
-    type = "github"
-    repo = "OCHA-DAP/hdx-python-api"
-
-    [[tool.pydoc-markdown.renderer.pages]]
-    title = "Home"
-    name = "index"
-    source ="doc/main.md"
-
-    [[tool.pydoc-markdown.renderer.pages]]
-    title = "API Documentation"
-
-        [[tool.pydoc-markdown.renderer.pages.children]]
-        title = "Configuration"
-        contents = ["hdx.api.configuration.*"]
-
-        [[tool.pydoc-markdown.renderer.pages.children]]
-        title = "Locations"
-        contents = ["hdx.api.locations.*"]
-
-        [[tool.pydoc-markdown.renderer.pages.children]]
-        title = "Dataset"
-        contents = ["hdx.data.dataset.*"]
-
-        [[tool.pydoc-markdown.renderer.pages.children]]
-        title = "Resource"
-        contents = ["hdx.data.resource.*"]
-
-        [[tool.pydoc-markdown.renderer.pages.children]]
-        title = "Resource View"
-        contents = ["hdx.data.resource_view.*"]
-
-        [[tool.pydoc-markdown.renderer.pages.children]]
-        title = "Showcase"
-        contents = ["hdx.data.showcase.*"]
-
-        [[tool.pydoc-markdown.renderer.pages.children]]
-        title = "User"
-        contents = ["hdx.data.user.*"]
-
-        [[tool.pydoc-markdown.renderer.pages.children]]
-        title = "Organization"
-        contents = ["hdx.data.organization.*"]
-
-        [[tool.pydoc-markdown.renderer.pages.children]]
-        title = "Vocabulary"
-        contents = ["hdx.data.vocabulary.*"]
-
-        [[tool.pydoc-markdown.renderer.pages.children]]
-        title = "Simple Facade"
-        contents = ["hdx.facades.simple.*"]
-
-        [[tool.pydoc-markdown.renderer.pages.children]]
-        title = "Keyword Arguments Facade"
-        contents = ["hdx.facades.keyword_arguments.*"]
-
-[tool.tox]
-legacy_tox_ini = """
-[tox]
-envlist = py311, lint
-
-[gh-actions]
-python =
-    3: py311, lint
-
-[testenv]
-package = wheel
-wheel_build_env = .pkg
-deps =
-    -r test-requirements.txt
-commands =
-    pytest --cov=hdx --no-cov-on-fail --junitxml=.tox/test-results.xml --cov-report=xml --cov-report=term-missing
-
-[testenv:lint]
-deps =
-    flake8
-    flake8-isort
-    flake8-black
-    flake8-pyproject
-commands =
-    flake8 --color=always src tests
-
-[testenv:docs]
-deps =
-    pydoc-markdown
-commands =
-    pydoc-markdown
-
-[testenv:publish]
-package = sdist
-pass_env = SSH_AUTH_SOCK, TWINE_USERNAME, TWINE_PASSWORD
-deps =
-    twine
-
-commands =
-    twine upload {work_dir}/{package_env}/dist/*
-"""
+# Not used for anything at the moment
+fmt = [
+  "black --config .config/black.toml {args:.}",
+  "ruff --config .config/ruff.toml --fix {args:.}",
+]
