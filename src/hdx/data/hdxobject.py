@@ -5,17 +5,18 @@ import copy
 import logging
 from abc import ABC, abstractmethod
 from collections import UserDict
+from os.path import isfile
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 from ckanapi.errors import NotFound
+
+from hdx.api.configuration import Configuration
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import (
     load_json_into_existing_dict,
     load_yaml_into_existing_dict,
 )
 from hdx.utilities.typehint import ListTuple
-
-from hdx.api.configuration import Configuration
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +70,8 @@ class HDXObject(UserDict, ABC):
         Returns:
             None
         """
+        if not isfile(path):
+            path = path.replace(".yaml", ".yml")
         self.data = load_yaml_into_existing_dict(self.data, path)
 
     def update_from_json(self, path: str) -> None:

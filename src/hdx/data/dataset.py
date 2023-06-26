@@ -5,7 +5,7 @@ import logging
 import sys
 from copy import deepcopy
 from datetime import datetime
-from os.path import join
+from os.path import isfile, join
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -2112,6 +2112,8 @@ class Dataset(HDXObject):
         if path is None:
             if indicators is None:
                 path = join("config", "hdx_resource_view_static.yaml")
+                if not isfile(path):
+                    path = path.replace(".yaml", ".yml")
             else:
                 path = script_dir_plus_file(
                     "indicator_resource_view_template.yaml",
