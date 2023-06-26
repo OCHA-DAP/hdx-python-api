@@ -1,9 +1,8 @@
 """Locations in HDX"""
 from typing import Dict, List, Optional, Tuple
 
-from hdx.utilities.typehint import ListTuple
-
 from hdx.api.configuration import Configuration
+from hdx.utilities.typehint import ListTuple
 
 
 class Locations:

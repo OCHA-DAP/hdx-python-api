@@ -4,9 +4,8 @@ Calls a function that generates a dataset and creates it in HDX.
 """
 import logging
 
-from hdx.facades.simple import facade
-
 from .my_code import generate_dataset
+from hdx.facades.simple import facade
 
 logger = logging.getLogger(__name__)
 

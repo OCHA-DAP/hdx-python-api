@@ -5,12 +5,12 @@ from inspect import getdoc
 from typing import Any, Callable, Optional  # noqa: F401
 
 import defopt
-from hdx.utilities.easy_logging import setup_logging
-from hdx.utilities.useragent import UserAgent
 from makefun import with_signature
 
 from hdx.api import __version__
 from hdx.api.configuration import Configuration
+from hdx.utilities.easy_logging import setup_logging
+from hdx.utilities.useragent import UserAgent
 
 logger = logging.getLogger(__name__)
 setup_logging(log_file="errors.log")

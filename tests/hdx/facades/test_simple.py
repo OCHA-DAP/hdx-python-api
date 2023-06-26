@@ -1,11 +1,10 @@
 """Simple Facade Tests"""
 import pytest
-from hdx.utilities.useragent import UserAgent, UserAgentError
-
-from hdx.api import __version__
-from hdx.facades.simple import facade
 
 from . import my_excfn, my_testfn, my_testkeyfn, my_testuafn, testresult
+from hdx.api import __version__
+from hdx.facades.simple import facade
+from hdx.utilities.useragent import UserAgent, UserAgentError
 
 
 class TestSimple:
