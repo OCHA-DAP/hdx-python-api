@@ -291,13 +291,13 @@ class HDXObject(UserDict, ABC):
             force_active (bool): Make object state active. Defaults to False.
             **kwargs: See below
             operation (str): Operation to perform eg. patch. Defaults to update.
-            ignore_field (str): Any field to ignore when checking dataset metadata. Defaults to None.
+            ignore_field (str): Any field to ignore when checking metadata. Defaults to None.
 
         Returns:
             None
         """
         self._check_kwargs_fields(object_type, **kwargs)
-        operation = kwargs.get("operation", "update")
+        operation = kwargs.pop("operation", "update")
         self._save_to_hdx(
             operation, id_field_name, files_to_upload, force_active
         )
@@ -319,7 +319,7 @@ class HDXObject(UserDict, ABC):
             force_active (bool): Make object state active. Defaults to False.
             **kwargs: See below
             operation (str): Operation to perform eg. patch. Defaults to update.
-            ignore_field (str): Any field to ignore when checking dataset metadata. Defaults to None.
+            ignore_field (str): Any field to ignore when checking metadata. Defaults to None.
 
         Returns:
             None

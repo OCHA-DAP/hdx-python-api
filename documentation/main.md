@@ -111,7 +111,7 @@ the drop down menu
     a.  Pass this key as a parameter or within a dictionary
     
     b.  Create a JSON or YAML file. The default path is
-            **.hdx\_configuration.yaml** in the current user's home
+            **.hdx_configuration.yaml** in the current user's home
             directory. Then put in the YAML file:
 
             hdx_key: "HDX API KEY"
@@ -203,16 +203,17 @@ virtualenv if not installed:
 9. Use configuration defaults.
 
     If you only want to read data, then connect to the production HDX
-    server, replacing A_Quick_Example with something short that describes your project:
+    server, making sure that you replace MyOrg_MyProject with something that 
+    describes your organisation and project:
 
-        Configuration.create(hdx_site="prod", user_agent="A_Quick_Example", hdx_read_only=True)
+        Configuration.create(hdx_site="prod", user_agent="MyOrg_MyProject", hdx_read_only=True)
 
     If you want to write data, then for experimentation, do not use the
     production HDX server. Instead you can use one of the test servers.
     Assuming you have an API key stored in a file **.hdxkey** in the
     current user's home directory:
 
-        Configuration.create(hdx_site="stage", user_agent="A_Quick_Example")
+        Configuration.create(hdx_site="stage", user_agent="MyOrg_MyProject")
 
 10. Read this dataset 
 [Novel Coronavirus (COVID-19) Cases Data](https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases)
@@ -247,7 +248,22 @@ virtualenv if not installed:
         dataset.set_reference_period("PREVIOUS DATE")
         dataset.update_in_hdx()
 
-15. Exit and remove virtualenv:
+15. If you are storing your data on HDX, you can upload a new file to a 
+    resource:
+
+        resource = dataset.get_resource(0)
+        resource.set_file_to_upload("PATH TO FILE")
+        resource.update_in_hdx()
+
+16. Alternatively, if you are using a URL to point to data held externally from
+    HDX, you can mark that the data has been updated before updating the
+    resource or parent dataset:
+
+        resource = dataset.get_resource(2)
+        resource.mark_data_updated()
+        dataset.update_in_hdx()
+
+17. Exit and remove virtualenv:
 
         exit()
         deactivate
@@ -270,7 +286,7 @@ facades set up both logging and HDX configuration.
 The default configuration loads an internal HDX configuration located within the 
 library, and assumes that there is an API key file called **.hdxkey** in the current 
 user's home directory **\~** and a YAML project configuration located relative to your 
-working directory at **config/project\_configuration.yaml** which you must create. The 
+working directory at **config/project_configuration.yaml** which you must create. The 
 project configuration is used for any configuration specific to your project.
 
 The default logging configuration reads a configuration file internal to the library 
@@ -335,34 +351,35 @@ appropriate keyword arguments ie.
 
 You must supply a user agent using one of the following approaches:
 
-1. Populate parameter **user\_agent** (which can simply be the name of your project)
-2. Supply **user\_agent\_config\_yaml** which should point to a YAML file which 
-contains a parameter **user\_agent**
-3. Supply **user\_agent\_config\_yaml** which should point to a YAML file and populate 
-**user\_agent\_lookup** which is a key to look up in the YAML file which should be of 
-form:
+1. Populate parameter **user_agent** (which should be the name of your 
+organisation and project)
+2. Supply **user_agent_config_yaml** which should point to a YAML file which 
+contains a parameter **user_agent**
+3. Supply **user_agent_config_yaml** which should point to a YAML file and populate
+**user_agent_lookup** which is a key to look up in the YAML file which should 
+be of form:
 
         myproject:
             user_agent: test
         myproject2:
             user_agent: test2
 
-4. Include **user\_agent** in one of the configuration dictionaries or files outlined in 
+4. Include **user_agent** in one of the configuration dictionaries or files outlined in 
 the table below eg. 
-    **hdx\_config\_json** or **project\_config\_dict**.
+    **hdx_config_json** or **project_config_dict**.
 
 **KEYWORD ARGUMENTS** can be:
 
 |Choose|Argument|Type|Value|Default|
 |---|---|---|---|---|
-| |hdx\_site|Optional\[str\]|HDX site to use eg. prod, feature|test|
-| |hdx\_read\_only|bool|Read only or read/write access to HDX|False|
-| |hdx\_key|Optional\[str\]|HDX key (not needed for read only)||
-|Above or one of:|hdx\_config\_dict|dict|Dictionary with hdx\_site, hdx\_read\_only, hdx\_key||
-|or|hdx\_config\_json|str|Path to JSON configuration with values as above||
-|or|hdx\_config\_yaml|str|Path to YAML configuration with values as above||
-|Zero or one of:|project\_config\_dict|dict|Project specific configuration dictionary||
-|or|project\_config\_json|str|Path to JSON Project||
+| |hdx_site|Optional\[str\]|HDX site to use eg. prod, feature|test|
+| |hdx_read_only|bool|Read only or read/write access to HDX|False|
+| |hdx_key|Optional\[str\]|HDX key (not needed for read only)||
+|Above or one of:|hdx_config_dict|dict|Dictionary with hdx_site, hdx_read_only, hdx_key||
+|or|hdx_config_json|str|Path to JSON configuration with values as above||
+|or|hdx_config_yaml|str|Path to YAML configuration with values as above||
+|Zero or one of:|project_config_dict|dict|Project specific configuration dictionary||
+|or|project_config_json|str|Path to JSON Project||
 
 To access the configuration, you use the **read** method of the **Configuration** class as follows:
 
@@ -383,7 +400,7 @@ Configuration instances passed to the constructors of HDX objects like Dataset e
 ## Configuring Logging
 
 If you use a facade from **hdx.facades**, then logging will go to console and errors to 
-file. If you are not using a facade, you can call **setup\_logging**  which takes 
+file. If you are not using a facade, you can call **setup_logging**  which takes 
 an argument error_file which is False by default. If set to True, errors will be written
 to a file.
 
@@ -409,13 +426,13 @@ Then use the logger like this:
 
 ## Operations on HDX Objects
 
-You can read an existing HDX object with the static **read\_from\_hdx** method 
+You can read an existing HDX object with the static **read_from_hdx** method 
 which takes an identifier parameter and returns the an object of the appropriate HDX 
 object type eg. **Dataset** or **None** depending upon whether the object was read eg.
 
     dataset = Dataset.read_from_hdx("DATASET_ID_OR_NAME")
 
-You can search for datasets and resources in HDX using the **search\_in\_hdx** method 
+You can search for datasets and resources in HDX using the **search_in_hdx** method 
 which takes a query parameter and returns the a list of objects of the appropriate HDX 
 object type eg. **list[Dataset]**. Here is an example:
 
@@ -464,9 +481,9 @@ and recommended, while JSON is also accepted eg.
 
     dataset.update_from_json([path])
 
-The default path if unspecified is **config/hdx\_TYPE\_static.yaml** for YAML and
-**config/hdx\_TYPE\_static.json** for JSON where TYPE is an HDX object's type like 
-dataset or resource eg. **config/hdx\_showcase\_static.json**. The YAML file takes the 
+The default path if unspecified is **config/hdx_TYPE_static.yaml** for YAML and
+**config/hdx_TYPE_static.json** for JSON where TYPE is an HDX object's type like 
+dataset or resource eg. **config/hdx_showcase_static.json**. The YAML file takes the 
 following form:
 
     owner_org: "acled"
@@ -485,35 +502,37 @@ Notice how you can define resources (each resource starts with a dash "-") withi
 file as shown above.
 
 You can check if all the fields required by HDX are populated by 
-calling **check\_required\_fields**. This will throw an exception if any fields are 
+calling **check_required_fields**. This will throw an exception if any fields are 
 missing. Before the library posts data to HDX, it will call this method automatically. 
 You can provide a list of fields to ignore in the check. An example usage:
 
     resource.check_required_fields([ignore_fields])
 
 Once the HDX object is ready ie. it has all the required metadata, you simply 
-call **create\_in\_hdx** eg.
+call **create_in_hdx** eg.
 
     dataset.create_in_hdx(allow_no_resources, update_resources,
                           update_resources_by_name,
                           remove_additional_resources)
 
-Existing HDX objects can be updated by calling **update\_in\_hdx** eg.
+If the object already exists, it will be updated. You can also update
+explicitly by calling **update_in_hdx** eg.
 
     dataset.update_in_hdx(update_resources, update_resources_by_name,
                           remove_additional_resources)
 
-You can delete HDX objects using **delete\_from\_hdx** and update an object that 
-already exists in HDX with the method **update\_in\_hdx**. These take various boolean 
-parameters that all have defaults and are documented in the API docs. They do not return 
-anything and they throw exceptions for failures like the object to update not existing.
+You can delete HDX objects using **delete_from_hdx** and update an object that 
+already exists in HDX with the method **update_in_hdx**. These take various 
+boolean parameters that all have defaults and are documented in the API docs. 
+They do not return anything and they throw exceptions for failures like the 
+object to update not existing.
 
 ## Dataset Specific Operations
 
 A dataset can have resources and can be in a showcase.
 
 If you wish to add resources, you can supply a list and call 
-the **add\_update\_resources** function, for example:
+the **add_update_resources** function, for example:
 
     resources = [{
         "name": xlsx_resourcename,
@@ -528,19 +547,19 @@ the **add\_update\_resources** function, for example:
          resource["description"] = resource["url"].rsplit("/", 1)[-1]
      dataset.add_update_resources(resources)
 
-Calling **add\_update\_resources** creates a list of HDX Resource objects in 
+Calling **add_update_resources** creates a list of HDX Resource objects in 
 dataset and operations can be performed on those objects.
 
-To see the list of resources, you use the **get\_resources** function eg.
+To see the list of resources, you use the **get_resources** function eg.
 
     resources = dataset.get_resources()
 
 If you wish to add one resource, you can supply an id string, dictionary or Resource 
-object and call the **add\_update\_resource**\* function, for example:
+object and call the **add_update_resource** function, for example:
 
     dataset.add_update_resource(resource)
 
-You can delete a Resource object from the dataset using the **delete\_resource** function, for example:
+You can delete a Resource object from the dataset using the **delete_resource** function, for example:
 
     dataset.delete_resource(resource)
 
@@ -548,7 +567,7 @@ You can get all the resources from a list of datasets as follows:
 
     resources = Dataset.get_all_resources(datasets)
 
-To see the list of showcases a dataset is in, you use the **get\_showcases** function eg.
+To see the list of showcases a dataset is in, you use the **get_showcases** function eg.
 
     showcases = dataset.get_showcases()
 
@@ -562,12 +581,12 @@ If you wish to add the dataset to a showcase, you must first create the showcase
                          "url": "http://visualisation/url/"})
     showcase.create_in_hdx()
 
-Then you can supply an id, dictionary or Showcase object and call the **add\_showcase** 
+Then you can supply an id, dictionary or Showcase object and call the **add_showcase** 
 function, for example:
 
     dataset.add_showcase(showcase)
 
-You can remove the dataset from a showcase using the **remove\_showcase** function, for 
+You can remove the dataset from a showcase using the **remove_showcase** function, for 
 example:
 
     dataset.remove_showcase(showcase)
@@ -678,7 +697,7 @@ occur if a valid region name is supplied.
 
     dataset.add_region_location("M49 REGION CODE")
 
-**add\_region\_location** accepts regions, intermediate regions or subregions as 
+**add_region_location** accepts regions, intermediate regions or subregions as 
 specified on the 
 [UNStats M49](https://unstats.un.org/unsd/methodology/m49/overview/) website.
 
@@ -875,7 +894,7 @@ You can download a resource using the **download** function eg.
 
     url, path = resource.download("FOLDER_TO_DOWNLOAD_TO")
 
-If you do not supply **FOLDER\_TO\_DOWNLOAD\_TO**, then a temporary folder is used.
+If you do not supply **FOLDER_TO_DOWNLOAD_TO**, then a temporary folder is used.
 
 Before creating or updating a resource, it is possible to specify the path to a local 
 file to upload to the HDX filestore if that is preferred over hosting the file 
@@ -889,16 +908,29 @@ There is a getter to read the value back:
 
     file_to_upload = resource.get_file_to_upload()
 
+To indicate that the data in an external resource (given by a URL) has been 
+updated, call **mark_data_updated** on the resource, before calling 
+**create_in_hdx** or **update_in_hdx** on the dataset which will result in the 
+resource `last_modified` field being set to now. Alternatively, when calling
+**create_in_hdx** or **update_in_hdx** on the resource, it is possible to 
+supply the parameter `data_updated` eg.
+
+    resource.update_in_hdx(data_updated=True)
+
+If the method **set_file_to_upload** is used to supply a file, the resource 
+`last_modified` field is set to now automatically regardless of the value of 
+`data_updated`.
+
 ## Showcase Management
 
 The **Showcase** class enables you to manage showcases, creating, deleting and updating 
 (as for other HDX objects) according to your permissions.
 
-To see the list of datasets a showcase is in, you use the **get\_datasets** function eg.
+To see the list of datasets a showcase is in, you use the **get_datasets** function eg.
 
     datasets = showcase.get_datasets()
 
-If you wish to add a dataset to a showcase, you call the **add\_dataset** function, for 
+If you wish to add a dataset to a showcase, you call the **add_dataset** function, for 
 example:
 
     showcase.add_dataset(dataset)
@@ -1028,10 +1060,10 @@ Next create a file called **run.py** and copy into it the code below.
         facade(main, hdx_site="test")
 
 The above file will create in HDX a dataset generated by a function called 
-**generate\_dataset** that can be found in the file **my\_code.py** which we will now 
+**generate_dataset** that can be found in the file **my_code.py** which we will now 
 write.
 
-Create a file **my\_code.py** and copy into it the code below:
+Create a file **my_code.py** and copy into it the code below:
 
     #!/usr/bin/python
     # -*- coding: utf-8 -*-
@@ -1050,7 +1082,7 @@ Create a file **my\_code.py** and copy into it the code below:
         """
         logger.debug("Generating dataset!")
 
-You can then fill out the function **generate\_dataset** as required.
+You can then fill out the function **generate_dataset** as required.
 
 # IDMC Example
 
@@ -1061,7 +1093,7 @@ folder. If you run it unchanged, it will overwrite the existing datasets in the 
 organisation! Therefore, you should run it against a test server. If you use it as a 
 basis for your code, you will need to modify the dataset **name**  in **idmc.py** and 
 change the organisation information to your organisation. Also update metadata in 
-**config/hdx\_dataset\_static.yaml** appropriately.
+**config/hdx_dataset_static.yaml** appropriately.
 
 The IDMC scraper creates a dataset per country in HDX, populating all the required 
 metadata. It then creates resources with files held on the HDX filestore.

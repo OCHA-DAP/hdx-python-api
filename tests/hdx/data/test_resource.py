@@ -2,6 +2,7 @@
 import copy
 import json
 import os
+import re
 from datetime import datetime, timezone
 from os import remove
 from os.path import basename, join
@@ -327,6 +328,10 @@ class TestResource:
     }
 
     datastore = None
+
+    @pytest.fixture(scope="class")
+    def date_pattern(self):
+        return re.compile(r"[12]\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d")
 
     @pytest.fixture(scope="class")
     def static_yaml(self):
@@ -729,7 +734,7 @@ class TestResource:
         resource.check_url_filetoupload()
         resource.check_required_fields()
 
-    def test_create_in_hdx(self, configuration, post_create):
+    def test_create_in_hdx(self, configuration, date_pattern, post_create):
         resource = Resource()
         with pytest.raises(HDXError):
             resource.create_in_hdx()
@@ -778,7 +783,7 @@ class TestResource:
         with pytest.raises(HDXError):
             resource.create_in_hdx()
 
-    def test_update_in_hdx(self, configuration, post_update):
+    def test_update_in_hdx(self, configuration, date_pattern, post_update):
         resource = Resource()
         resource["id"] = "NOTEXIST"
         with pytest.raises(HDXError):
@@ -796,7 +801,7 @@ class TestResource:
         resource.set_file_type("XLSX")
         resource["id"] = "74b74ae1-df0c-4716-829f-4f939a046811"
         resource["name"] = "MyResource1"
-        resource.update_in_hdx()
+        resource.update_in_hdx(data_updated=True)
         assert resource["id"] == "74b74ae1-df0c-4716-829f-4f939a046811"
         assert resource["format"] == "xlsx"
         resource.set_file_type(".xsl")
@@ -810,6 +815,8 @@ class TestResource:
             == "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/test_data.csv"
         )
         assert resource["state"] == "active"
+        match = date_pattern.search(resource["last_modified"])
+        assert match
 
         filetoupload = join("tests", "fixtures", "test_data.csv")
         resource.set_file_to_upload(
@@ -841,10 +848,16 @@ class TestResource:
         resource_data["name"] = "MyResource1"
         resource_data["id"] = "74b74ae1-df0c-4716-829f-4f939a046811"
         resource = Resource(resource_data)
+        resource.mark_data_updated()
+        assert resource.data_updated is True
+        assert resource.is_data_updated() is True
         resource.create_in_hdx()
+        assert resource.is_data_updated() is False
         assert resource["id"] == "74b74ae1-df0c-4716-829f-4f939a046811"
         assert resource.get_file_type() == "xlsx"
         assert resource["state"] == "active"
+        match = date_pattern.search(resource["last_modified"])
+        assert match
         resource["format"] = "Geoservice"
         resource.update_in_hdx()
         assert resource.get_file_type() == "geoservice"

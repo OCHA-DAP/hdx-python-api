@@ -39,6 +39,7 @@ class Resource(HDXObject):
             initial_data = dict()
         super().__init__(initial_data, configuration=configuration)
         self.file_to_upload = None
+        self.data_updated = False
 
     @staticmethod
     def actions() -> Dict[str, str]:
@@ -352,12 +353,42 @@ class Resource(HDXObject):
             return dict()
         return {"upload": self.file_to_upload}
 
+    def _resource_merge_hdx_update(
+        self,
+        **kwargs: Any,
+    ) -> None:
+        """Helper method to update last_modified for external resources if
+        data_updated is True, then check if HDX object exists and update it.
+
+        Args:
+            **kwargs: See below
+            operation (str): Operation to perform eg. patch. Defaults to update.
+            data_updated (bool): If True, set last_modified to now. Defaults to False.
+
+        Returns:
+            None
+        """
+        data_updated = kwargs.pop("data_updated", self.data_updated)
+        if data_updated and not self.file_to_upload:
+            self.old_data["last_modified"] = datetime.utcnow().isoformat()
+            self.data_updated = False
+            # old_data will be merged into data in the next step
+        self._merge_hdx_update(
+            "resource", "id", self._get_files(), True, **kwargs
+        )
+
     def update_in_hdx(self, **kwargs: Any) -> None:
-        """Check if resource exists in HDX and if so, update it
+        """Check if resource exists in HDX and if so, update it. To indicate
+        that the data in an external resource (given by a URL) has been
+        updated, set data_updated to True, which will result in the resource
+        last_modified field being set to now. If the method set_file_to_upload
+        is used to supply a file, the resource last_modified field is set to
+        now automatically regardless of the value of data_updated.
 
         Args:
             **kwargs: See below
             operation (string): Operation to perform eg. patch. Defaults to update.
+            data_updated (bool): If True, set last_modified to now. Defaults to False.
 
         Returns:
             None
@@ -365,12 +396,20 @@ class Resource(HDXObject):
         self._check_load_existing_object("resource", "id")
         if self.file_to_upload and "url" in self.data:
             del self.data["url"]
-        self._merge_hdx_update(
-            "resource", "id", self._get_files(), True, **kwargs
-        )
+        self._resource_merge_hdx_update(**kwargs)
 
     def create_in_hdx(self, **kwargs: Any) -> None:
-        """Check if resource exists in HDX and if so, update it, otherwise create it
+        """Check if resource exists in HDX and if so, update it, otherwise
+        create it. To indicate that the data in an external resource (given by
+        a URL) has been updated, set data_updated to True, which will result in
+        the resource last_modified field being set to now. If the method
+        set_file_to_upload is used to supply a file, the resource last_modified
+        field is set to now automatically regardless of the value of
+        data_updated.
+
+        Args:
+            **kwargs: See below
+            data_updated (bool): If True, set last_modified to now. Defaults to False.
 
         Returns:
             None
@@ -378,14 +417,13 @@ class Resource(HDXObject):
         if "ignore_check" not in kwargs:  # allow ignoring of field checks
             self.check_required_fields()
         id = self.data.get("id")
-        files = self._get_files()
         if id and self._load_from_hdx("resource", id):
             logger.warning(f"{'resource'} exists. Updating {id}")
             if self.file_to_upload and "url" in self.data:
                 del self.data["url"]
-            self._merge_hdx_update("resource", "id", files, True, **kwargs)
+            self._resource_merge_hdx_update(**kwargs)
         else:
-            self._save_to_hdx("create", "name", files, True)
+            self._save_to_hdx("create", "name", self._get_files(), True)
 
     def delete_from_hdx(self) -> None:
         """Deletes a resource from HDX
@@ -706,3 +744,19 @@ class Resource(HDXObject):
             self.data = result
         else:
             logger.debug(result)
+
+    def is_data_updated(self) -> bool:
+        """Return if the resource's data is updated
+
+        Returns:
+            bool: Whether resource's data is updated
+        """
+        return self.data_updated
+
+    def mark_data_updated(self) -> None:
+        """Mark resource data as updated
+
+        Returns:
+            None
+        """
+        self.data_updated = True
