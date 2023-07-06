@@ -896,11 +896,12 @@ You can download a resource using the **download** function eg.
 
 If you do not supply **FOLDER_TO_DOWNLOAD_TO**, then a temporary folder is used.
 
-Before creating or updating a resource, it is possible to specify the path to a local 
-file to upload to the HDX filestore if that is preferred over hosting the file 
-externally to HDX. Rather than the url of the resource pointing to your server or api, 
-in this case the url will point to a location in the HDX filestore containing a copy of 
-your file.
+Before creating or updating a resource by calling **create_in_hdx** or 
+**update_in_hdx** on the resource or its parent dataset, it is possible to 
+specify the path to a local file to upload to the HDX filestore if that is 
+preferred over hosting the file externally to HDX. Rather than the url of the 
+resource pointing to your server or api, in this case the url will point to a 
+location in the HDX filestore containing a copy of your file.
 
     resource.set_file_to_upload(file_to_upload="PATH_TO_FILE")
 
@@ -908,18 +909,18 @@ There is a getter to read the value back:
 
     file_to_upload = resource.get_file_to_upload()
 
-To indicate that the data in an external resource (given by a URL) has been 
-updated, call **mark_data_updated** on the resource, before calling 
-**create_in_hdx** or **update_in_hdx** on the dataset which will result in the 
-resource `last_modified` field being set to now. Alternatively, when calling
-**create_in_hdx** or **update_in_hdx** on the resource, it is possible to 
-supply the parameter `data_updated` eg.
+To indicate that the data in an externally hosted resource (given by a URL) has 
+been updated, call **mark_data_updated** on the resource, before calling 
+**create_in_hdx** or **update_in_hdx** on the resource or parent dataset which 
+will result in the resource `last_modified` field being set to now. 
+Alternatively, when calling **create_in_hdx** or **update_in_hdx** on the 
+resource, it is possible to supply the parameter `data_updated` eg.
 
     resource.update_in_hdx(data_updated=True)
 
 If the method **set_file_to_upload** is used to supply a file, the resource 
 `last_modified` field is set to now automatically regardless of the value of 
-`data_updated`.
+`data_updated` or whether **mark_data_updated** has been called.
 
 ## Showcase Management
 
