@@ -912,7 +912,11 @@ There is a getter to read the value back:
 To indicate that the data in an externally hosted resource (given by a URL) has 
 been updated, call **mark_data_updated** on the resource, before calling 
 **create_in_hdx** or **update_in_hdx** on the resource or parent dataset which 
-will result in the resource `last_modified` field being set to now. 
+will result in the resource `last_modified` field being set to now.
+
+    resource.mark_data_updated()
+    dataset.update_in_hdx()
+
 Alternatively, when calling **create_in_hdx** or **update_in_hdx** on the 
 resource, it is possible to supply the parameter `data_updated` eg.
 
