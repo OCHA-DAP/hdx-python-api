@@ -85,7 +85,7 @@ class TestUpdateDatasetResourcesLogic:
     ):
         dataset.old_data = new_dataset.data
         dataset.old_data["resources"] = new_dataset._copy_hdxobjects(
-            new_dataset.resources, Resource, "file_to_upload"
+            new_dataset.resources, Resource, ("file_to_upload", "data_updated")
         )
         (
             resources_to_delete,

@@ -290,6 +290,8 @@ class Dataset(HDXObject):
                 updated_resource.set_file_to_upload(
                     resource.get_file_to_upload()
                 )
+            if resource.is_data_updated():
+                updated_resource.mark_data_updated()
 
     def add_update_resources(
         self,
@@ -332,6 +334,8 @@ class Dataset(HDXObject):
                 updated_resource.set_file_to_upload(
                     resource.get_file_to_upload()
                 )
+            if resource.is_data_updated():
+                updated_resource.mark_data_updated()
         for resource_index in updated_resource_no_matches:
             resource = resource_objects[resource_index]
             resource.check_url_filetoupload()
@@ -470,7 +474,9 @@ class Dataset(HDXObject):
 
         if "resources" in self.data:
             self.old_data["resources"] = self._copy_hdxobjects(
-                self.resources, res_module.Resource, "file_to_upload"
+                self.resources,
+                res_module.Resource,
+                ("file_to_upload", "data_updated"),
             )
             self.init_resources()
             self.separate_resources()

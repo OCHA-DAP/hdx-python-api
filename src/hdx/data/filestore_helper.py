@@ -1,5 +1,6 @@
 """Helper to the Dataset class for handling resources with filestores.
 """
+from datetime import datetime
 from typing import TYPE_CHECKING, Any, Dict
 
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -91,9 +92,13 @@ class FilestoreHelper:
         if file_to_upload:
             resource.set_file_to_upload(file_to_upload)
             filestore_resources[resource_index] = file_to_upload
+        data_updated = updated_resource.is_data_updated()
         merge_two_dictionaries(resource, updated_resource)
         cls.resource_check_required_fields(
             resource, check_upload=True, **kwargs
         )
         if resource.get_file_to_upload():
             resource["url"] = cls.temporary_url
+        if data_updated:
+            resource["last_modified"] = datetime.utcnow().isoformat()
+            resource.data_updated = False

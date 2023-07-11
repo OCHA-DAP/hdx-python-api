@@ -621,14 +621,14 @@ class HDXObject(UserDict, ABC):
         self,
         hdxobjects: ListTuple["HDXObject"],
         hdxobjectclass: type,
-        attribute_to_copy: Optional[str] = None,
+        attributes_to_copy: ListTuple[str] = (),
     ) -> List["HDXObject"]:
         """Helper function to make a deep copy of a supplied list of HDX objects
 
         Args:
             hdxobjects (ListTuple[HDXObject]): list of HDX objects to copy
             hdxobjectclass (type): Type of the HDX Objects to be copied
-            attribute_to_copy (Optional[str]): An attribute to copy over from the HDX object. Defaults to None.
+            attributes_to_copy (ListTuple[str]): Attributes to copy over from the HDX object. Defaults to ().
 
         Returns:
             List[HDXObject]: Deep copy of list of HDX objects
@@ -639,9 +639,9 @@ class HDXObject(UserDict, ABC):
             newhdxobject = hdxobjectclass(
                 newhdxobjectdata, configuration=self.configuration
             )
-            if attribute_to_copy:
-                value = getattr(hdxobject, attribute_to_copy)
-                setattr(newhdxobject, attribute_to_copy, value)
+            for attribute in attributes_to_copy:
+                value = getattr(hdxobject, attribute)
+                setattr(newhdxobject, attribute, value)
             newhdxobjects.append(newhdxobject)
         return newhdxobjects
 

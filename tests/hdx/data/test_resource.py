@@ -2,7 +2,6 @@
 import copy
 import json
 import os
-import re
 from datetime import datetime, timezone
 from os import remove
 from os.path import basename, join
@@ -328,10 +327,6 @@ class TestResource:
     }
 
     datastore = None
-
-    @pytest.fixture(scope="class")
-    def date_pattern(self):
-        return re.compile(r"[12]\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d")
 
     @pytest.fixture(scope="class")
     def static_yaml(self):

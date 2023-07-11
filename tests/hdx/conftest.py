@@ -1,4 +1,5 @@
 """Global fixtures"""
+import re
 import smtplib
 from os.path import join
 
@@ -1548,3 +1549,8 @@ def mocksmtp(monkeypatch):
     monkeypatch.setattr(smtplib, "SMTP_SSL", MockSMTPSSL)
     monkeypatch.setattr(smtplib, "LMTP", MockLMTP)
     monkeypatch.setattr(smtplib, "SMTP", MockSMTP)
+
+
+@pytest.fixture(scope="session")
+def date_pattern():
+    return re.compile(r"[12]\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d")

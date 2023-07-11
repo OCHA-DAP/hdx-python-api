@@ -632,7 +632,7 @@ class TestDatasetCore:
         assert len(dataset.resources) == 3
         # Dataset creates that end up updating are in the test below
 
-    def test_update_in_hdx(self, configuration, post_update):
+    def test_update_in_hdx(self, configuration, post_update, date_pattern):
         dataset = Dataset()
         dataset["id"] = "NOTEXIST"
         with pytest.raises(HDXError):
@@ -707,10 +707,15 @@ class TestDatasetCore:
         dataset = Dataset(datasetdata)
         resourcesdata = copy.deepcopy(resources_data)
         resource = Resource(resourcesdata[0])
+        resource.mark_data_updated()
         dataset.add_update_resources([resource, resource])
         dataset.create_in_hdx()
         assert dataset["state"] == "active"
         assert len(dataset.resources) == 3
+        resource = dataset.get_resource()
+        assert resource.is_data_updated() is False
+        match = date_pattern.search(resource["last_modified"])
+        assert match
 
         dataset = Dataset(datasetdata)
         resourcesdata = copy.deepcopy(resources_data)
