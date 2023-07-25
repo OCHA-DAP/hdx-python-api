@@ -922,6 +922,16 @@ resource, it is possible to supply the parameter `data_updated` eg.
 
     resource.update_in_hdx(data_updated=True)
 
+If you need to set a specific date for date of update (`last_modified`), you
+can call the following:
+
+    resource.set_date_data_updated(date)
+
+`date` can be a datetime object or string. You can retrieve the date of update
+(`last_modified`) using the getter:
+
+    date = resource.get_date_data_updated()
+
 If the method **set_file_to_upload** is used to supply a file, the resource 
 `last_modified` field is set to now automatically regardless of the value of 
 `data_updated` or whether **mark_data_updated** has been called.

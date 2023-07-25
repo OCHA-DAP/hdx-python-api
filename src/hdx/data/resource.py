@@ -11,7 +11,7 @@ from hdx.api.configuration import Configuration
 from hdx.data.date_helper import DateHelper
 from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.data.resource_view import ResourceView
-from hdx.utilities.dateparse import now_utc
+from hdx.utilities.dateparse import now_utc, parse_date
 from hdx.utilities.downloader import Download
 from hdx.utilities.typehint import ListTuple
 from hdx.utilities.uuid import is_valid_uuid
@@ -122,7 +122,7 @@ class Resource(HDXObject):
         Returns:
             Dict: Dictionary of date information
         """
-        return DateHelper.get_date_info(
+        return DateHelper.get_reference_period_info(
             self.data.get("daterange_for_data"), date_format, today
         )
 
@@ -146,7 +146,7 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        self.data["daterange_for_data"] = DateHelper.get_hdx_date(
+        self.data["daterange_for_data"] = DateHelper.get_hdx_reference_period(
             startdate, enddate, ignore_timeinfo=ignore_timeinfo
         )
 
@@ -389,6 +389,7 @@ class Resource(HDXObject):
             **kwargs: See below
             operation (string): Operation to perform eg. patch. Defaults to update.
             data_updated (bool): If True, set last_modified to now. Defaults to False.
+            date_data_updated (datetime): Date to use for last_modified. Default to None.
 
         Returns:
             None
@@ -410,6 +411,7 @@ class Resource(HDXObject):
         Args:
             **kwargs: See below
             data_updated (bool): If True, set last_modified to now. Defaults to False.
+            date_data_updated (datetime): Date to use for last_modified. Default to None.
 
         Returns:
             None
@@ -745,11 +747,11 @@ class Resource(HDXObject):
         else:
             logger.debug(result)
 
-    def is_data_updated(self) -> bool:
-        """Return if the resource's data is updated
+    def is_marked_data_updated(self) -> bool:
+        """Return if the resource's data is marked to be updated
 
         Returns:
-            bool: Whether resource's data is updated
+            bool: Whether resource's data is marked to be updated
         """
         return self.data_updated
 
@@ -760,3 +762,27 @@ class Resource(HDXObject):
             None
         """
         self.data_updated = True
+
+    def get_date_data_updated(self) -> datetime:
+        """Get date resource data was updated
+
+        Returns:
+            datetime: Date resource data was updated
+        """
+        return parse_date(self.data["last_modified"])
+
+    def set_date_data_updated(
+        self, date: Union[datetime, str], ignore_timeinfo: bool = True
+    ) -> None:
+        """Set date resource data was updated
+
+        Args:
+            date (Union[datetime, str]): Date resource data was updated
+            ignore_timeinfo (bool): Ignore time and time zone of date. Defaults to True.
+
+        Returns:
+            None
+        """
+        self.data["last_modified"] = DateHelper.get_hdx_date(
+            date, ignore_timeinfo
+        )

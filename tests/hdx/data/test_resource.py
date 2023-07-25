@@ -13,6 +13,7 @@ from .test_resource_view import resource_view_list, resource_view_mocklist
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
+from hdx.utilities.dateparse import parse_date
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.downloader import DownloadError
 
@@ -845,9 +846,9 @@ class TestResource:
         resource = Resource(resource_data)
         resource.mark_data_updated()
         assert resource.data_updated is True
-        assert resource.is_data_updated() is True
+        assert resource.is_marked_data_updated() is True
         resource.create_in_hdx()
-        assert resource.is_data_updated() is False
+        assert resource.is_marked_data_updated() is False
         assert resource["id"] == "74b74ae1-df0c-4716-829f-4f939a046811"
         assert resource.get_file_type() == "xlsx"
         assert resource["state"] == "active"
@@ -1010,3 +1011,16 @@ class TestResource:
         assert resource["package_id"] == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
         resource.mark_broken()
         assert resource.is_broken() is True
+
+    def test_date_data_updated(self, configuration, read):
+        resource = Resource.read_from_hdx(
+            "74b74ae1-df0c-4716-829f-4f939a046811"
+        )
+        assert resource["id"] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
+        assert resource["name"] == "MyResource1"
+        assert resource["package_id"] == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
+        resource.set_date_data_updated("2020-03-02")
+        expected = "2020-03-02T00:00:00+00:00"
+        assert resource.get_date_data_updated().isoformat() == expected
+        resource.set_date_data_updated(parse_date("2020-03-02"))
+        assert resource.get_date_data_updated().isoformat() == expected

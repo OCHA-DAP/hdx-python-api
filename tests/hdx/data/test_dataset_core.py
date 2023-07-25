@@ -713,7 +713,7 @@ class TestDatasetCore:
         assert dataset["state"] == "active"
         assert len(dataset.resources) == 3
         resource = dataset.get_resource()
-        assert resource.is_data_updated() is False
+        assert resource.is_marked_data_updated() is False
         match = date_pattern.search(resource["last_modified"])
         assert match
 

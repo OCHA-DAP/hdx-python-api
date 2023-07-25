@@ -9,19 +9,60 @@ from hdx.utilities.dateparse import now_utc, parse_date
 
 class DateHelper:
     @staticmethod
-    def get_date_info(
-        hdx_date: Dict,
+    def get_hdx_date(
+        date: Union[datetime, str], ignore_timeinfo: bool, max=False
+    ):
+        """Get an HDX date as a string from a datetime.datetime object.
+
+        Args:
+            date (Union[datetime, str]): Date as datetime or string
+            ignore_timeinfo (bool): Ignore time and time zone of date. Defaults to True.
+
+        Returns:
+            str: HDX date as a string
+        """
+        if ignore_timeinfo:
+            timezone_handling = 0
+        else:
+            timezone_handling = 3
+
+        if isinstance(date, str):
+            date = parse_date(date, timezone_handling=timezone_handling)
+
+        if ignore_timeinfo:
+            if max:
+                date = date.replace(
+                    hour=23,
+                    minute=59,
+                    second=59,
+                    microsecond=0,
+                    tzinfo=None,
+                )
+            else:
+                date = date.replace(
+                    hour=0, minute=0, second=0, microsecond=0, tzinfo=None
+                )
+        else:
+            date = date.astimezone(timezone.utc).replace(
+                microsecond=0, tzinfo=None
+            )
+        return date.isoformat()
+
+    @staticmethod
+    def get_reference_period_info(
+        hdx_reference_period: Dict,
         date_format: Optional[str] = None,
         today: datetime = now_utc(),
     ) -> Dict:
-        """Get date as datetimes and strings in specified format. If no format is
-        supplied, the ISO 8601 format is used. Returns a dictionary containing keys
-        startdate (start date as datetime), enddate (end date as datetime),
-        startdate_str (start date as string), enddate_str (end date as string) and
-        ongoing (whether the end date is a rolls forward every day).
+        """Get reference period as datetimes and strings in specified format.
+        If no format is supplied, the ISO 8601 format is used. Returns a
+        dictionary containing keys startdate (start date as datetime), enddate
+        (end date as datetime), startdate_str (start date as string),
+        enddate_str (enddate as string) and ongoing (whether the end date rolls
+        forward every day).
 
         Args:
-            hdx_date (str): Input date
+            hdx_reference_period (str): Input reference period
             date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
             today (datetime): Date to use for today. Defaults to now_utc().
 
@@ -29,10 +70,13 @@ class DateHelper:
             Dict: Dictionary of date information
         """
         result = dict()
-        if hdx_date:
-            if hdx_date[0] == "[" and hdx_date[-1] == "]":
-                hdx_date = hdx_date[1:-1]
-            dataset_dates = hdx_date.split(" TO ")
+        if hdx_reference_period:
+            if (
+                hdx_reference_period[0] == "["
+                and hdx_reference_period[-1] == "]"
+            ):
+                hdx_reference_period = hdx_reference_period[1:-1]
+            dataset_dates = hdx_reference_period.split(" TO ")
             startdate = parse_date(dataset_dates[0])
             enddate = dataset_dates[1]
             if enddate == "*":
@@ -59,15 +103,16 @@ class DateHelper:
             result["ongoing"] = ongoing
         return result
 
-    @staticmethod
-    def get_hdx_date(
+    @classmethod
+    def get_hdx_reference_period(
+        cls,
         startdate: Union[datetime, str],
         enddate: Union[datetime, str, None] = None,
         ongoing: bool = False,
         ignore_timeinfo: bool = True,
     ) -> str:
-        """Get an HDX date from either datetime.datetime objects or strings with option
-        to set ongoing.
+        """Get an HDX reference period from either datetime.datetime objects or
+        strings with option to set ongoing.
 
         Args:
             startdate (Union[datetime, str]): Dataset start date
@@ -76,65 +121,33 @@ class DateHelper:
             ignore_timeinfo (bool): Ignore time and time zone of date. Defaults to True.
 
         Returns:
-            str: HDX date
+            str: HDX reference period
         """
-        if ignore_timeinfo:
-            timezone_handling = 0
-        else:
-            timezone_handling = 3
-
-        def get_date_str(dt, max=False):
-            if ignore_timeinfo:
-                if max:
-                    dt = dt.replace(
-                        hour=23,
-                        minute=59,
-                        second=59,
-                        microsecond=0,
-                        tzinfo=None,
-                    )
-                else:
-                    dt = dt.replace(
-                        hour=0, minute=0, second=0, microsecond=0, tzinfo=None
-                    )
-            else:
-                dt = dt.astimezone(timezone.utc).replace(
-                    microsecond=0, tzinfo=None
-                )
-            return dt.isoformat()
-
-        if isinstance(startdate, str):
-            startdate = parse_date(
-                startdate, timezone_handling=timezone_handling
-            )
-        startdate = get_date_str(startdate)
+        startdate = cls.get_hdx_date(startdate, ignore_timeinfo)
         if ongoing:
             enddate = "*"
         else:
             if not enddate:
                 enddate = startdate
             else:
-                if isinstance(enddate, str):
-                    enddate = parse_date(
-                        enddate, timezone_handling=timezone_handling
-                    )
-                enddate = get_date_str(enddate, max=True)
+                enddate = cls.get_hdx_date(enddate, ignore_timeinfo, max=True)
         return f"[{startdate} TO {enddate}]"
 
     @classmethod
-    def get_hdx_date_from_years(
+    def get_hdx_reference_period_from_years(
         cls,
         startyear: Union[str, int, Iterable],
         endyear: Union[str, int, None] = None,
     ) -> Tuple[str, List[int]]:
-        """Get an HDX date from an iterable of years or a start and end year.
+        """Get an HDX reference period from an iterable of years or a start and
+        end year.
 
         Args:
             startyear (Union[str, int, Iterable]): Start year given as string or int or range in an iterable
             endyear (Union[str, int, None]): End year given as string or int
 
         Returns:
-            Tuple[str,List[int]]: (HDX date, the start and end year if supplied or sorted list of years)
+            Tuple[str,List[int]]: (HDX reference period, the start and end year if supplied or sorted list of years)
         """
         retval = list()
         if isinstance(startyear, str):
@@ -152,6 +165,8 @@ class DateHelper:
         startdate = datetime(startyear, 1, 1, tzinfo=timezone.utc)
         enddate = datetime(endyear, 12, 31, 23, 59, 59, tzinfo=timezone.utc)
         return (
-            cls.get_hdx_date(startdate, enddate, ignore_timeinfo=False),
+            cls.get_hdx_reference_period(
+                startdate, enddate, ignore_timeinfo=False
+            ),
             retval,
         )

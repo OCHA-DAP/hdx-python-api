@@ -92,7 +92,7 @@ class FilestoreHelper:
         if file_to_upload:
             resource.set_file_to_upload(file_to_upload)
             filestore_resources[resource_index] = file_to_upload
-        data_updated = updated_resource.is_data_updated()
+        data_updated = updated_resource.is_marked_data_updated()
         merge_two_dictionaries(resource, updated_resource)
         cls.resource_check_required_fields(
             resource, check_upload=True, **kwargs

@@ -290,7 +290,7 @@ class Dataset(HDXObject):
                 updated_resource.set_file_to_upload(
                     resource.get_file_to_upload()
                 )
-            if resource.is_data_updated():
+            if resource.is_marked_data_updated():
                 updated_resource.mark_data_updated()
 
     def add_update_resources(
@@ -334,7 +334,7 @@ class Dataset(HDXObject):
                 updated_resource.set_file_to_upload(
                     resource.get_file_to_upload()
                 )
-            if resource.is_data_updated():
+            if resource.is_marked_data_updated():
                 updated_resource.mark_data_updated()
         for resource_index in updated_resource_no_matches:
             resource = resource_objects[resource_index]
@@ -1256,7 +1256,7 @@ class Dataset(HDXObject):
         Returns:
             Dict: Dictionary of date information
         """
-        return DateHelper.get_date_info(
+        return DateHelper.get_reference_period_info(
             self.data.get("dataset_date"), date_format, today
         )
 
@@ -1282,7 +1282,7 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        self.data["dataset_date"] = DateHelper.get_hdx_date(
+        self.data["dataset_date"] = DateHelper.get_hdx_reference_period(
             startdate, enddate, ongoing, ignore_timeinfo
         )
 
@@ -1300,7 +1300,10 @@ class Dataset(HDXObject):
         Returns:
             List[int]: The start and end year if supplied or sorted list of years
         """
-        self.data["dataset_date"], retval = DateHelper.get_hdx_date_from_years(
+        (
+            self.data["dataset_date"],
+            retval,
+        ) = DateHelper.get_hdx_reference_period_from_years(
             dataset_year, dataset_end_year
         )
         return retval
