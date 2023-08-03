@@ -10,13 +10,17 @@ from hdx.utilities.dateparse import now_utc, parse_date
 class DateHelper:
     @staticmethod
     def get_hdx_date(
-        date: Union[datetime, str], ignore_timeinfo: bool, max=False
+        date: Union[datetime, str],
+        ignore_timeinfo: bool,
+        include_microseconds=False,
+        max=False,
     ):
         """Get an HDX date as a string from a datetime.datetime object.
 
         Args:
             date (Union[datetime, str]): Date as datetime or string
             ignore_timeinfo (bool): Ignore time and time zone of date. Defaults to True.
+            include_microseconds (bool): Include microsconds. Defaults to False.
 
         Returns:
             str: HDX date as a string
@@ -27,7 +31,11 @@ class DateHelper:
             timezone_handling = 3
 
         if isinstance(date, str):
-            date = parse_date(date, timezone_handling=timezone_handling)
+            date = parse_date(
+                date,
+                timezone_handling=timezone_handling,
+                include_microseconds=include_microseconds,
+            )
 
         if ignore_timeinfo:
             if max:
@@ -35,18 +43,22 @@ class DateHelper:
                     hour=23,
                     minute=59,
                     second=59,
-                    microsecond=0,
-                    tzinfo=None,
+                    microsecond=999999,
                 )
             else:
                 date = date.replace(
-                    hour=0, minute=0, second=0, microsecond=0, tzinfo=None
+                    hour=0,
+                    minute=0,
+                    second=0,
+                    microsecond=0,
                 )
         else:
-            date = date.astimezone(timezone.utc).replace(
-                microsecond=0, tzinfo=None
-            )
-        return date.isoformat()
+            date = date.astimezone(timezone.utc)
+        if include_microseconds:
+            timespec = "microseconds"
+        else:
+            timespec = "seconds"
+        return date.replace(tzinfo=None).isoformat(timespec=timespec)
 
     @staticmethod
     def get_reference_period_info(
@@ -93,8 +105,8 @@ class DateHelper:
             result["startdate"] = startdate
             result["enddate"] = enddate
             if date_format is None:
-                startdate_str = startdate.isoformat()
-                enddate_str = enddate.isoformat()
+                startdate_str = startdate.isoformat(timespec="seconds")
+                enddate_str = enddate.isoformat(timespec="seconds")
             else:
                 startdate_str = startdate.strftime(date_format)
                 enddate_str = enddate.strftime(date_format)
@@ -123,14 +135,23 @@ class DateHelper:
         Returns:
             str: HDX reference period
         """
-        startdate = cls.get_hdx_date(startdate, ignore_timeinfo)
+        startdate = cls.get_hdx_date(
+            startdate,
+            ignore_timeinfo=ignore_timeinfo,
+            include_microseconds=False,
+        )
         if ongoing:
             enddate = "*"
         else:
             if not enddate:
                 enddate = startdate
             else:
-                enddate = cls.get_hdx_date(enddate, ignore_timeinfo, max=True)
+                enddate = cls.get_hdx_date(
+                    enddate,
+                    ignore_timeinfo=ignore_timeinfo,
+                    include_microseconds=False,
+                    max=True,
+                )
         return f"[{startdate} TO {enddate}]"
 
     @classmethod

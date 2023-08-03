@@ -370,7 +370,9 @@ class Resource(HDXObject):
         """
         data_updated = kwargs.pop("data_updated", self.data_updated)
         if data_updated and not self.file_to_upload:
-            self.old_data["last_modified"] = datetime.utcnow().isoformat()
+            self.old_data["last_modified"] = datetime.utcnow().isoformat(
+                timespec="microseconds"
+            )
             self.data_updated = False
             # old_data will be merged into data in the next step
         self._merge_hdx_update(
@@ -769,20 +771,22 @@ class Resource(HDXObject):
         Returns:
             datetime: Date resource data was updated
         """
-        return parse_date(self.data["last_modified"])
+        return parse_date(
+            self.data["last_modified"], include_microseconds=True
+        )
 
     def set_date_data_updated(
-        self, date: Union[datetime, str], ignore_timeinfo: bool = True
+        self, date: Union[datetime, str], ignore_timeinfo: bool = False
     ) -> None:
         """Set date resource data was updated
 
         Args:
             date (Union[datetime, str]): Date resource data was updated
-            ignore_timeinfo (bool): Ignore time and time zone of date. Defaults to True.
+            ignore_timeinfo (bool): Ignore time and time zone of date. Defaults to False.
 
         Returns:
             None
         """
         self.data["last_modified"] = DateHelper.get_hdx_date(
-            date, ignore_timeinfo
+            date, ignore_timeinfo=ignore_timeinfo, include_microseconds=True
         )

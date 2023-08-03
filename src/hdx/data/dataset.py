@@ -613,7 +613,7 @@ class Dataset(HDXObject):
         # No need to output timezone info here so no need to use now_utc()
         self.data[
             "updated_by_script"
-        ] = f"{scriptinfo} ({datetime.utcnow().isoformat()})"
+        ] = f"{scriptinfo} ({datetime.utcnow().isoformat(timespec='microseconds')})"
         batch = kwargs.get("batch")
         if batch:
             if not is_valid_uuid(batch):

@@ -1019,8 +1019,17 @@ class TestResource:
         assert resource["id"] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
         assert resource["name"] == "MyResource1"
         assert resource["package_id"] == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
-        resource.set_date_data_updated("2020-03-02")
-        expected = "2020-03-02T00:00:00+00:00"
-        assert resource.get_date_data_updated().isoformat() == expected
-        resource.set_date_data_updated(parse_date("2020-03-02"))
-        assert resource.get_date_data_updated().isoformat() == expected
+        date = "2020-03-02 10:34:43.123456"
+        resource.set_date_data_updated(date)
+        expected = "2020-03-02T10:34:43.123456+00:00"
+        assert (
+            resource.get_date_data_updated().isoformat(timespec="microseconds")
+            == expected
+        )
+        resource.set_date_data_updated(
+            parse_date(date, include_microseconds=True)
+        )
+        assert (
+            resource.get_date_data_updated().isoformat(timespec="microseconds")
+            == expected
+        )

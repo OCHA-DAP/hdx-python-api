@@ -100,5 +100,7 @@ class FilestoreHelper:
         if resource.get_file_to_upload():
             resource["url"] = cls.temporary_url
         if data_updated:
-            resource["last_modified"] = datetime.utcnow().isoformat()
+            resource["last_modified"] = datetime.utcnow().isoformat(
+                timespec="microseconds"
+            )
             resource.data_updated = False
