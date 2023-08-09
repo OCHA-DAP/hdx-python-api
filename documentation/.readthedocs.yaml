@@ -1,7 +1,7 @@
 version: 2
 
 mkdocs:
-  configuration: mkdocs.yml
+  configuration: docs/mkdocs.yml
   fail_on_warning: false
 
 build:
@@ -13,5 +13,3 @@ build:
       - pip install --upgrade mkdocs
       - pip install pydoc-markdown
       - pydoc-markdown documentation/pydoc-markdown.yaml
-      - mv docs/content/* docs
-      - rmdir docs/content
