@@ -10,6 +10,7 @@ from . import (
     MockResponse,
     dataset_data,
     dataset_mockshow,
+    dataset_resultdict,
     organization_data,
     resources_data,
     resultgroups,
@@ -167,6 +168,32 @@ class TestDatasetNoncore:
 
         Configuration.read().remoteckan().session = MockSession()
 
+    def test_get_name_or_id(
+        self, configuration, hdx_config_yaml, project_config_yaml
+    ):
+        dataset = Dataset()
+        assert dataset.get_name_or_id() is None
+        datasetdata = copy.deepcopy(dataset_resultdict)
+        dataset = Dataset(datasetdata)
+        assert dataset.get_name_or_id() == "MyDataset1"
+        assert (
+            dataset.get_name_or_id(prefer_name=False)
+            == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
+        )
+        del dataset["name"]
+        assert (
+            dataset.get_name_or_id() == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
+        )
+        assert (
+            dataset.get_name_or_id(prefer_name=False)
+            == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
+        )
+        datasetdata = copy.deepcopy(dataset_resultdict)
+        dataset = Dataset(datasetdata)
+        del dataset["id"]
+        assert dataset.get_name_or_id() == "MyDataset1"
+        assert dataset.get_name_or_id(prefer_name=False) == "MyDataset1"
+
     def test_get_hdx_url(
         self, configuration, hdx_config_yaml, project_config_yaml
     ):
@@ -189,6 +216,30 @@ class TestDatasetNoncore:
         assert (
             dataset.get_hdx_url()
             == "https://feature.data-humdata-org.ahconu.org/dataset/MyDataset1"
+        )
+
+    def test_get_api_url(
+        self, configuration, hdx_config_yaml, project_config_yaml
+    ):
+        dataset = Dataset()
+        assert dataset.get_api_url() is None
+        datasetdata = copy.deepcopy(dataset_data)
+        dataset = Dataset(datasetdata)
+        assert (
+            dataset.get_api_url()
+            == "https://data.humdata.org/api/3/action/package_show?id=MyDataset1"
+        )
+        Configuration.delete()
+        Configuration._create(
+            hdx_site="feature",
+            user_agent="test",
+            hdx_config_yaml=hdx_config_yaml,
+            project_config_yaml=project_config_yaml,
+        )
+        dataset = Dataset(datasetdata)
+        assert (
+            dataset.get_api_url()
+            == "https://feature.data-humdata-org.ahconu.org/api/3/action/package_show?id=MyDataset1"
         )
 
     def test_get_set_date_of_dataset(self):
