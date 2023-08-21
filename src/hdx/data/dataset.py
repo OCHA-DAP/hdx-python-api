@@ -2342,16 +2342,57 @@ class Dataset(HDXObject):
             self.preview_off()
         return resourceview
 
-    def get_hdx_url(self) -> Optional[str]:
-        """Get the url of the dataset on HDX
+    def get_name_or_id(self, prefer_name: bool = True) -> Optional[str]:
+        """Get dataset name or id eg. for use in urls. If prefer_name is True,
+        name is preferred over id if available, otherwise id is preferred over
+        name if available.
+
+        Args:
+            prefer_name (bool): Whether name is preferred over id. Default to True.
 
         Returns:
-            Optional[str]: Url of the dataset on HDX or None if the dataset is missing the name field
+            Optional[str]: HDX dataset id or name or None if not available
         """
+        id = self.data.get("id")
         name = self.data.get("name")
-        if not name:
+        if prefer_name:
+            if name:
+                return name
+            return id
+        else:
+            if id:
+                return id
+            return name
+
+    def get_hdx_url(self, prefer_name: bool = True) -> Optional[str]:
+        """Get the url of the dataset on HDX or None if the dataset name and
+        id fields are missing. If prefer_name is True, name is preferred over
+        id if available, otherwise id is preferred over name if available.
+
+        Args:
+            prefer_name (bool): Whether name is preferred over id in url. Default to True.
+
+        Returns:
+            Optional[str]: Url of the dataset on HDX or None if the dataset is missing fields
+        """
+        name_or_id = self.get_name_or_id(prefer_name)
+        if not name_or_id:
             return None
-        return f"{self.configuration.get_hdx_site_url()}/dataset/{name}"
+        return f"{self.configuration.get_hdx_site_url()}/dataset/{name_or_id}"
+
+    def get_api_url(self, prefer_name: bool = True) -> Optional[str]:
+        """Get the API url of the dataset on HDX
+
+        Args:
+            prefer_name (bool): Whether name is preferred over id in url. Default to True.
+
+        Returns:
+            Optional[str]: API url of the dataset on HDX or None if the dataset is missing fields
+        """
+        name_or_id = self.get_name_or_id(prefer_name)
+        if not name_or_id:
+            return None
+        return f"{self.configuration.get_hdx_site_url()}/api/3/action/package_show?id={name_or_id}"
 
     def remove_dates_from_title(
         self, change_title: bool = True, set_reference_period: bool = False

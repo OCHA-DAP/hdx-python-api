@@ -790,3 +790,28 @@ class Resource(HDXObject):
         self.data["last_modified"] = DateHelper.get_hdx_date(
             date, ignore_timeinfo=ignore_timeinfo, include_microseconds=True
         )
+
+    def get_hdx_url(self) -> Optional[str]:
+        """Get the url of the resource on HDX
+
+        Returns:
+            Optional[str]: Url of the resource on HDX or None if the resource is missing the id field
+        """
+        id = self.data.get("id")
+        if not id:
+            return None
+        dataset_id = self.data.get("package_id")
+        if not dataset_id:
+            return None
+        return f"{self.configuration.get_hdx_site_url()}/dataset/{dataset_id}/resource/{id}"
+
+    def get_api_url(self) -> Optional[str]:
+        """Get the API url of the resource on HDX
+
+        Returns:
+            Optional[str]: API url of the resource on HDX or None if the resource is missing the id field
+        """
+        id = self.data.get("id")
+        if not id:
+            return None
+        return f"{self.configuration.get_hdx_site_url()}/api/3/action/resource_show?id={id}"

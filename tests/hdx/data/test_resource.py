@@ -1033,3 +1033,30 @@ class TestResource:
             resource.get_date_data_updated().isoformat(timespec="microseconds")
             == expected
         )
+
+    def test_get_hdx_url(self, configuration, read):
+        resource = Resource.read_from_hdx(
+            "74b74ae1-df0c-4716-829f-4f939a046811"
+        )
+        assert (
+            resource.get_hdx_url()
+            == "https://data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
+        )
+        del resource["id"]
+        assert resource.get_hdx_url() is None
+        resource = Resource.read_from_hdx(
+            "74b74ae1-df0c-4716-829f-4f939a046811"
+        )
+        del resource["package_id"]
+        assert resource.get_hdx_url() is None
+
+    def test_get_api_url(self, configuration, read):
+        resource = Resource.read_from_hdx(
+            "74b74ae1-df0c-4716-829f-4f939a046811"
+        )
+        assert (
+            resource.get_api_url()
+            == "https://data.humdata.org/api/3/action/resource_show?id=de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
+        )
+        del resource["id"]
+        assert resource.get_api_url() is None
