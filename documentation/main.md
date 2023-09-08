@@ -34,7 +34,8 @@ upload your datasets to HDX.
     -   [User Management](#user-management)
     -   [Organization Management](#organization-management)
     -   [Vocabulary Management](#vocabulary-management)
--   [Working Example](#working-example)
+-   [Working Examples](#working-examples)
+-   [Project Framework](#project-framework)
 -   [IDMC Example](#idmc-example)
 
 # Information
@@ -1042,13 +1043,22 @@ If you want to add a list of tags, you do it as follows:
 
     vocabulary.add_tags(["TAG","TAG","TAG"...])
 
+# Working Examples
 
-# Working Example
+For a working example of downloading data in a dataset on HDX, see 
+[this answer](https://stackoverflow.com/a/76965288/464618) on StackOverflow.
+ 
+If you want to know how to create a dataset on HDX with a file resource see
+[this answer](https://stackoverflow.com/a/77056860/464618) on StackOverflow.
 
-Here we will create a working example from scratch.
+# Project Framework
 
-First, pip install the library or alternatively add it to a requirements.txt file if you 
-are comfortable with doing so as described above.
+Once you understand how to create a dataset on HDX, it is important to think 
+about a good structure. Below is framework for starting a project to interact 
+with HDX that should work well.
+
+First, pip install the library or alternatively add it to a requirements.txt 
+file if you are comfortable with doing so as described above.
 
 Next create a file called **run.py** and copy into it the code below.
 
@@ -1103,15 +1113,17 @@ You can then fill out the function **generate_dataset** as required.
 
 A complete example can be found here: <https://github.com/OCHA-DAP/hdx-scraper-idmc>
 
-In particular, take a look at the files **run.py**, **idmc.py** and the **config** 
-folder. If you run it unchanged, it will overwrite the existing datasets in the IDMC 
-organisation! Therefore, you should run it against a test server. If you use it as a 
-basis for your code, you will need to modify the dataset **name**  in **idmc.py** and 
-change the organisation information to your organisation. Also update metadata in 
-**config/hdx_dataset_static.yaml** appropriately.
+The IDMC scraper creates a dataset per country in HDX, populating all the 
+required metadata. It then creates resources with files held on the HDX 
+filestore.
 
-The IDMC scraper creates a dataset per country in HDX, populating all the required 
-metadata. It then creates resources with files held on the HDX filestore.
+In particular, take a look at the files **run.py**, **idmc.py** and the 
+**config** folder. Do not run it unchanged as it may overwrite the existing 
+datasets in the IDMC organisation (although it will most probably fail as you 
+will not have permissions to modify anything in that organisation). You can use 
+it as a basis for your code renaming and modifying **idmc.py** as needed and 
+updating metadata in **config/hdx_dataset_static.yaml** appropriately.
+
 
 # Brief History
 
