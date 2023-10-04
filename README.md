@@ -4,14 +4,14 @@
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 [![Downloads](https://img.shields.io/pypi/dm/hdx-python-api.svg)](https://pypistats.org/packages/hdx-python-api)
 
-The HDX Python API Library is designed to enable you to easily develop code that 
-interacts with the [Humanitarian Data Exchange](https://data.humdata.org/) (HDX) 
-platform. The major goal of the library is to make pushing and pulling data from HDX as 
+The HDX Python API Library is designed to enable you to easily develop code that
+interacts with the [Humanitarian Data Exchange](https://data.humdata.org/) (HDX)
+platform. The major goal of the library is to make pushing and pulling data from HDX as
 simple as possible for the end user.
 
-For more information, please read the 
-[documentation](https://hdx-python-api.readthedocs.io/en/latest/). 
+For more information, please read the
+[documentation](https://hdx-python-api.readthedocs.io/en/latest/).
 
-This library is part of the [Humanitarian Data Exchange](https://data.humdata.org/) 
-(HDX) project. If you have humanitarian related data, please upload your datasets to 
+This library is part of the [Humanitarian Data Exchange](https://data.humdata.org/)
+(HDX) project. If you have humanitarian related data, please upload your datasets to
 HDX.

@@ -13,13 +13,13 @@ attrs==23.1.0
     #   jsonschema
 certifi==2023.7.22
     # via requests
-cffi==1.15.1
+cffi==1.16.0
     # via cryptography
 cfgv==3.4.0
     # via pre-commit
 chardet==5.2.0
     # via frictionless
-charset-normalizer==3.2.0
+charset-normalizer==3.3.0
     # via requests
 ckanapi==4.7
     # via hdx-python-api (pyproject.toml)
@@ -27,7 +27,7 @@ click==8.1.7
     # via typer
 colorama==0.4.6
     # via typer
-coverage[toml]==7.3.1
+coverage[toml]==7.3.2
     # via pytest-cov
 cryptography==41.0.4
     # via pyopenssl
@@ -49,15 +49,15 @@ et-xmlfile==1.1.0
     # via openpyxl
 filelock==3.12.4
     # via virtualenv
-frictionless==5.15.10
+frictionless==5.16.0
     # via hdx-python-utilities
-hdx-python-country==3.5.6
+hdx-python-country==3.5.7
     # via hdx-python-api (pyproject.toml)
 hdx-python-utilities==3.6.2
     # via hdx-python-country
 humanize==4.8.0
     # via frictionless
-identify==2.5.29
+identify==2.5.30
     # via pre-commit
 idna==3.4
     # via
@@ -81,7 +81,7 @@ jsonschema==4.17.3
     # via
     #   frictionless
     #   tableschema-to-template
-libhxl==5.0.3
+libhxl==5.1
     # via hdx-python-country
 loguru==0.7.2
     # via hdx-python-utilities
@@ -103,11 +103,11 @@ num2words==0.5.12
     # via quantulum3
 openpyxl==3.1.2
     # via hdx-python-utilities
-packaging==23.1
+packaging==23.2
     # via pytest
 petl==1.7.14
     # via frictionless
-platformdirs==3.10.0
+platformdirs==3.11.0
     # via virtualenv
 pluggy==1.3.0
     # via pytest
@@ -125,11 +125,11 @@ pyasn1==0.5.0
     #   ndg-httpsclient
 pycparser==2.21
     # via cffi
-pydantic==2.3.0
+pydantic==2.4.2
     # via
     #   frictionless
     #   inflect
-pydantic-core==2.6.3
+pydantic-core==2.10.1
     # via pydantic
 pygments==2.16.1
     # via rich
@@ -177,11 +177,11 @@ requests-file==1.5.1
     # via hdx-python-utilities
 rfc3986==2.0.0
     # via frictionless
-rich==13.5.3
+rich==13.6.0
     # via typer
-ruamel-yaml==0.17.32
+ruamel-yaml==0.17.34
     # via hdx-python-utilities
-ruamel-yaml-clib==0.2.7
+ruamel-yaml-clib==0.2.8
     # via ruamel-yaml
 shellingham==1.5.3
     # via typer
@@ -216,11 +216,11 @@ typing-extensions==4.8.0
     #   pydantic
     #   pydantic-core
     #   typer
-unidecode==1.3.6
+unidecode==1.3.7
     # via
     #   libhxl
     #   pyphonetics
-urllib3==2.0.5
+urllib3==2.0.6
     # via
     #   libhxl
     #   requests
@@ -234,7 +234,7 @@ xlrd==2.0.1
     # via hdx-python-utilities
 xlrd3==1.1.0
     # via libhxl
-xlsxwriter==3.1.4
+xlsxwriter==3.1.6
     # via tableschema-to-template
 xlwt==1.3.0
     # via hdx-python-utilities

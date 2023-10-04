@@ -1,9 +1,9 @@
 # Summary
 
-The HDX Python API Library is designed to enable you to easily develop code that 
-interacts with the [Humanitarian Data Exchange](https://data.humdata.org/) (HDX) 
-platform. The major goal of the library is to make pushing and pulling data from HDX as 
-simple as possible for the end user. If you have humanitarian-related data, please 
+The HDX Python API Library is designed to enable you to easily develop code that
+interacts with the [Humanitarian Data Exchange](https://data.humdata.org/) (HDX)
+platform. The major goal of the library is to make pushing and pulling data from HDX as
+simple as possible for the end user. If you have humanitarian-related data, please
 upload your datasets to HDX.
 
 # Contents
@@ -40,15 +40,15 @@ upload your datasets to HDX.
 
 # Information
 
-For more about the purpose and design philosophy, please visit 
+For more about the purpose and design philosophy, please visit
 [HDX Python Library](https://humanitarian.atlassian.net/wiki/display/HDX/HDX+Python+Library).
 
-This library is part of the [Humanitarian Data Exchange](https://data.humdata.org/) 
-(HDX) project. If you have humanitarian related data, please upload your datasets to 
+This library is part of the [Humanitarian Data Exchange](https://data.humdata.org/)
+(HDX) project. If you have humanitarian related data, please upload your datasets to
 HDX.
 
 The code for the library is [here](https://github.com/OCHA-DAP/hdx-python-api).
-The library has detailed API documentation which can be found in the menu at the top. 
+The library has detailed API documentation which can be found in the menu at the top.
 
 
 ## Breaking Changes
@@ -56,8 +56,8 @@ From 6.0.0, generate_resource_view is renamed to generate_quickcharts
 
 From 5.9.9, get_location_iso3s returns uppercase codes instead of lowercase
 
-From 5.9.8, get_date_of_dataset has become get_reference_period, 
-set_date_of_dataset has become set_reference_period and set_dataset_year_range 
+From 5.9.8, get_date_of_dataset has become get_reference_period,
+set_date_of_dataset has become set_reference_period and set_dataset_year_range
 has become set_reference_period_year_range
 
 From 5.9.7, Python 3.7 no longer supported
@@ -67,26 +67,26 @@ to UTC
 
 From 5.6.0, creating and updating datastores removed
 
-From 5.4.0, Configuration class moved to hdx.api.configuration and Locations class moved 
+From 5.4.0, Configuration class moved to hdx.api.configuration and Locations class moved
 to hdx.api.locations
 
 From 5.3.0, only supports Python 3.6 and above
 
-From 5.0.1, Dataset functions get_location_iso3s and get_location_names replace 
-get_location 
+From 5.0.1, Dataset functions get_location_iso3s and get_location_names replace
+get_location
 
-From 4.8.3, some date functions in Dataset have been deprecated: get_dataset_date_type, 
-get_dataset_date_as_datetime, get_dataset_end_date_as_datetime, get_dataset_date, 
+From 4.8.3, some date functions in Dataset have been deprecated: get_dataset_date_type,
+get_dataset_date_as_datetime, get_dataset_end_date_as_datetime, get_dataset_date,
 get_dataset_end_date, set_dataset_date_from_datetime and set_dataset_date.
 
-From 3.9.2, the default sort order for returned results from search and getting all 
+From 3.9.2, the default sort order for returned results from search and getting all
 datasets has changed.
 
-From 3.7.3, the return type for add_tag, add_tags and clean_tags is now Tuple[List[str], 
-List[str]] (Tuple containing list of added tags and list of deleted tags and tags not 
+From 3.7.3, the return type for add_tag, add_tags and clean_tags is now Tuple[List[str],
+List[str]] (Tuple containing list of added tags and list of deleted tags and tags not
 added).
 
-From 3.7.1, the list of tags must be from a set of approved tags (see under **Tags** 
+From 3.7.1, the list of tags must be from a set of approved tags (see under **Tags**
 below).
 
 
@@ -94,23 +94,23 @@ below).
 
 ## Obtaining your API Key
 
-If you just want to read data from HDX, then an API key is not necessary and you can 
-ignore the 6 steps below. However, if you want to write data to HDX, then you need to 
-register on the website to obtain an API key. You can supply this key as an argument or 
-create an API key file. If you create an API key file, by default this is assumed to be 
-called **.hdxkey** and is located in the current user's home directory **\~**. Assuming 
+If you just want to read data from HDX, then an API key is not necessary and you can
+ignore the 6 steps below. However, if you want to write data to HDX, then you need to
+register on the website to obtain an API key. You can supply this key as an argument or
+create an API key file. If you create an API key file, by default this is assumed to be
+called **.hdxkey** and is located in the current user's home directory **\~**. Assuming
 you are using a desktop browser, the API key is obtained by:
 
 1. Browse to the [HDX website](https://data.humdata.org/)
 2. Left click on LOG IN in the top right of the web page if not logged in and log in
-3. Left click on your username in the top right of the web page and select PROFILE from 
+3. Left click on your username in the top right of the web page and select PROFILE from
 the drop down menu
 4. Scroll down to the bottom of the profile page
 5. Copy the API key which will be of the form: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 6. You can either:
 
     a.  Pass this key as a parameter or within a dictionary
-    
+
     b.  Create a JSON or YAML file. The default path is
             **.hdx_configuration.yaml** in the current user's home
             directory. Then put in the YAML file:
@@ -119,21 +119,21 @@ the drop down menu
 
 ## Installing the Library
 
-To include the HDX Python library in your project, you must **pip install** or add to 
+To include the HDX Python library in your project, you must **pip install** or add to
 your **requirements.txt** file the following line:
 
     hdx-python-api==VERSION
 
-Replace **VERSION** with the latest tag available from 
+Replace **VERSION** with the latest tag available from
 <https://github.com/OCHA-DAP/hdx-python-api/tags>.
 
-If you get dependency errors, it is probably the dependencies of the cryptography 
-package that are missing eg. for Ubuntu: python-dev, libffi-dev and libssl-dev. See 
+If you get dependency errors, it is probably the dependencies of the cryptography
+package that are missing eg. for Ubuntu: python-dev, libffi-dev and libssl-dev. See
 [cryptography dependencies](https://cryptography.io/en/latest/installation/#building-cryptography-on-linux).
 
-If you get import or other errors, then please either recreate your virtualenv if you 
-are using one or uninstall hdx-python-api, hdx-python-country and hdx-python-utilities 
-using **pip uninstall**, then install hdx-python-api (which will pull in the other 
+If you get import or other errors, then please either recreate your virtualenv if you
+are using one or uninstall hdx-python-api, hdx-python-country and hdx-python-utilities
+using **pip uninstall**, then install hdx-python-api (which will pull in the other
 dependencies).
 
 ## Docker
@@ -147,24 +147,24 @@ The library is also available set up and ready to go in a Docker image:
 
 ![A Quick Example](https://humanitarian.atlassian.net/wiki/download/attachments/6356996/HDXPythonLibrary.gif?version=1&modificationDate=1469520811486&api=v2)
 
-Let's start with a simple example that also ensures that the library is working 
-properly. In this tutorial, we use virtualenv, a sandbox, so that your Python install is 
+Let's start with a simple example that also ensures that the library is working
+properly. In this tutorial, we use virtualenv, a sandbox, so that your Python install is
 not modified.
 
-1. If you just want to read data from HDX, then an API key is not necessary. However, 
-if you want to write data to HDX, then you need to register on the website to obtain an 
-API key. Please see above about where to find it on the website. Once you have it, then 
+1. If you just want to read data from HDX, then an API key is not necessary. However,
+if you want to write data to HDX, then you need to register on the website to obtain an
+API key. Please see above about where to find it on the website. Once you have it, then
 put it into a file in your home directory:
 
         cd ~
         echo "hdx_key: \"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\"" > .hdx_configuration.yaml
 
-2. If you are using the Docker image, you can jump to step 6, otherwise install 
+2. If you are using the Docker image, you can jump to step 6, otherwise install
 virtualenv if not installed:
 
         pip install virtualenv
 
-    On some Linux distributions, you can do the following instead to install from the 
+    On some Linux distributions, you can do the following instead to install from the
     distribution's official repository:
 
         sudo apt-get install virtualenv
@@ -172,12 +172,12 @@ virtualenv if not installed:
 3. Create a Python 3 virtualenv and activate it:
 
     On Windows (assuming the Python 3 executable is in your path):
-    
+
         virtualenv test
         test\Scripts\activate
 
     On other OSs:
-    
+
         virtualenv -p python3 test
         source test/bin/activate
 
@@ -185,7 +185,7 @@ virtualenv if not installed:
 
         pip install hdx-python-api
 
-5. If you get errors, it is probably the 
+5. If you get errors, it is probably the
 [dependencies of the cryptography package](#installing-the-library)
 6. Launch python:
 
@@ -204,7 +204,7 @@ virtualenv if not installed:
 9. Use configuration defaults.
 
     If you only want to read data, then connect to the production HDX
-    server, making sure that you replace MyOrg_MyProject with something that 
+    server, making sure that you replace MyOrg_MyProject with something that
     describes your organisation and project:
 
         Configuration.create(hdx_site="prod", user_agent="MyOrg_MyProject", hdx_read_only=True)
@@ -216,7 +216,7 @@ virtualenv if not installed:
 
         Configuration.create(hdx_site="stage", user_agent="MyOrg_MyProject")
 
-10. Read this dataset 
+10. Read this dataset
 [Novel Coronavirus (COVID-19) Cases Data](https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases)
      from HDX and view the date of the dataset:
 
@@ -235,7 +235,7 @@ virtualenv if not installed:
         url, path = resources[0].download()
         print("Resource URL %s downloaded to %s" % (url, path))
 
-13. If you have an API key, you can write to HDX. You can try it out on a test 
+13. If you have an API key, you can write to HDX. You can try it out on a test
     server. With a dataset to which you have permissions, change the dataset date:
 
         dataset = Dataset.read_from_hdx("ID OR NAME OF DATASET")
@@ -249,7 +249,7 @@ virtualenv if not installed:
         dataset.set_reference_period("PREVIOUS DATE")
         dataset.update_in_hdx()
 
-15. If you are storing your data on HDX, you can upload a new file to a 
+15. If you are storing your data on HDX, you can upload a new file to a
     resource:
 
         resource = dataset.get_resource(0)
@@ -281,17 +281,17 @@ virtualenv if not installed:
 
 ## Default Configuration for Facades
 
-The easiest way to get started is to use the facades and configuration defaults. The 
+The easiest way to get started is to use the facades and configuration defaults. The
 facades set up both logging and HDX configuration.
 
-The default configuration loads an internal HDX configuration located within the 
-library, and assumes that there is an API key file called **.hdxkey** in the current 
-user's home directory **\~** and a YAML project configuration located relative to your 
-working directory at **config/project_configuration.yaml** which you must create. The 
+The default configuration loads an internal HDX configuration located within the
+library, and assumes that there is an API key file called **.hdxkey** in the current
+user's home directory **\~** and a YAML project configuration located relative to your
+working directory at **config/project_configuration.yaml** which you must create. The
 project configuration is used for any configuration specific to your project.
 
-The default logging configuration reads a configuration file internal to the library 
-that sets up an coloured console handler outputting at INFO level and a file handler 
+The default logging configuration reads a configuration file internal to the library
+that sets up an coloured console handler outputting at INFO level and a file handler
 writing to errors.log at ERROR level.
 
 ## Facades
@@ -316,7 +316,7 @@ The keyword arguments facade is similar but passes through keyword arguments:
     if __name__ == "__main__":
         facade(main, CONFIGURATION_AND_OTHER_KWARGS)
 
-The infer arguments facade infers the possible command line from the type hints and 
+The infer arguments facade infers the possible command line from the type hints and
 docstring describing the parameters of the function you give (such as main). It is
 possible to pass additional parameters to the facade which will be overridden by any
 parameters provided on the command line with the same name.
@@ -328,10 +328,10 @@ parameters provided on the command line with the same name.
         Args:
             kwparam1 (bool): Help text for this command line argument
             kwparam2 (str): Help text for this command line argument
-            
+
         Returns:
             None
-        """ 
+        """
         ***YOUR CODE HERE***
 
     if __name__ == "__main__":
@@ -343,7 +343,7 @@ It is necessary to pass configuration parameters in the facade call eg.
 
     facade(main, user_agent=USER_AGENT, hdx_site = HDX_SITE_TO_USE, hdx_read_only = ONLY_READ_NOT_WRITE, hdx_key_file = LOCATION_OF_HDX_KEY_FILE, hdx_config_yaml=PATH_TO_HDX_YAML_CONFIGURATION, project_config_dict = {"MY_PARAMETER", "MY_VALUE"})
 
-If you do not use the facade, you can use the **create** method of the **Configuration** class directly, passing in 
+If you do not use the facade, you can use the **create** method of the **Configuration** class directly, passing in
 appropriate keyword arguments ie.
 
     from hdx.api.configuration import Configuration
@@ -352,12 +352,12 @@ appropriate keyword arguments ie.
 
 You must supply a user agent using one of the following approaches:
 
-1. Populate parameter **user_agent** (which should be the name of your 
+1. Populate parameter **user_agent** (which should be the name of your
 organisation and project)
-2. Supply **user_agent_config_yaml** which should point to a YAML file which 
+2. Supply **user_agent_config_yaml** which should point to a YAML file which
 contains a parameter **user_agent**
 3. Supply **user_agent_config_yaml** which should point to a YAML file and populate
-**user_agent_lookup** which is a key to look up in the YAML file which should 
+**user_agent_lookup** which is a key to look up in the YAML file which should
 be of form:
 
         myproject:
@@ -365,8 +365,8 @@ be of form:
         myproject2:
             user_agent: test2
 
-4. Include **user_agent** in one of the configuration dictionaries or files outlined in 
-the table below eg. 
+4. Include **user_agent** in one of the configuration dictionaries or files outlined in
+the table below eg.
     **hdx_config_json** or **project_config_dict**.
 
 **KEYWORD ARGUMENTS** can be:
@@ -386,11 +386,11 @@ To access the configuration, you use the **read** method of the **Configuration*
 
     Configuration.read()
 
-For more advanced users, there are methods to allow you to pass in your own 
-configuration object, remote CKAN object and list of valid locations. See the API 
+For more advanced users, there are methods to allow you to pass in your own
+configuration object, remote CKAN object and list of valid locations. See the API
 documentation for more information.
 
-This global configuration is used by default by the library but can be replaced by 
+This global configuration is used by default by the library but can be replaced by
 Configuration instances passed to the constructors of HDX objects like Dataset eg.
 
     configuration = Configuration(KEYWORD ARGUMENTS)
@@ -400,8 +400,8 @@ Configuration instances passed to the constructors of HDX objects like Dataset e
 
 ## Configuring Logging
 
-If you use a facade from **hdx.facades**, then logging will go to console and errors to 
-file. If you are not using a facade, you can call **setup_logging**  which takes 
+If you use a facade from **hdx.facades**, then logging will go to console and errors to
+file. If you are not using a facade, you can call **setup_logging**  which takes
 an argument error_file which is False by default. If set to True, errors will be written
 to a file.
 
@@ -410,7 +410,7 @@ If not using facade:
     from hdx.utilities.easy_logging import setup_logging
     ...
     logger = logging.getLogger(__name__)
-    setup_logging(console_log_level="DEBUG", log_file="output.log", 
+    setup_logging(console_log_level="DEBUG", log_file="output.log",
     file_log_level="INFO")
 
 To use logging in your files, simply add the line below to the top of each Python file:
@@ -427,14 +427,14 @@ Then use the logger like this:
 
 ## Operations on HDX Objects
 
-You can read an existing HDX object with the static **read_from_hdx** method 
-which takes an identifier parameter and returns the an object of the appropriate HDX 
+You can read an existing HDX object with the static **read_from_hdx** method
+which takes an identifier parameter and returns the an object of the appropriate HDX
 object type eg. **Dataset** or **None** depending upon whether the object was read eg.
 
     dataset = Dataset.read_from_hdx("DATASET_ID_OR_NAME")
 
-You can search for datasets and resources in HDX using the **search_in_hdx** method 
-which takes a query parameter and returns the a list of objects of the appropriate HDX 
+You can search for datasets and resources in HDX using the **search_in_hdx** method
+which takes a query parameter and returns the a list of objects of the appropriate HDX
 object type eg. **list[Dataset]**. Here is an example:
 
     datasets = Dataset.search_in_hdx("QUERY", **kwargs)
@@ -443,15 +443,15 @@ The query parameter takes a different format depending upon whether it is for a
 [dataset](https://docs.ckan.org/en/latest/api/index.html#ckan.logic.action.get.package_search)
 or a
 [resource](https://docs.ckan.org/en/latest/api/index.html#ckan.logic.action.get.resource_search).
-The resource level search is limited to fields in the resource, so in most cases, it is 
+The resource level search is limited to fields in the resource, so in most cases, it is
 preferable to search for datasets and then get their resources.
 
-Various additional arguments (`**kwargs`) can be supplied. These are detailed in the API 
-documentation. The rows parameter for datasets (limit for resources) is the maximum 
+Various additional arguments (`**kwargs`) can be supplied. These are detailed in the API
+documentation. The rows parameter for datasets (limit for resources) is the maximum
 number of matches returned and is by default everything.
 
-You can create an HDX Object, such as a dataset, resource, showcase, organization or 
-user by calling the constructor with an optional dictionary containing metadata. For 
+You can create an HDX Object, such as a dataset, resource, showcase, organization or
+user by calling the constructor with an optional dictionary containing metadata. For
 example:
 
     from hdx.data.dataset import Dataset
@@ -461,21 +461,21 @@ example:
         "title": title
     })
 
-The dataset name should not contain special characters and hence if there is any chance 
-of that, then it needs to be slugified. Slugifying is way of making a string valid 
-within a URL (eg. **ae** replaces **ä**). There are various packages that can do this 
+The dataset name should not contain special characters and hence if there is any chance
+of that, then it needs to be slugified. Slugifying is way of making a string valid
+within a URL (eg. **ae** replaces **ä**). There are various packages that can do this
 eg. [python-slugify](https://pypi.python.org/pypi/python-slugify).
 
 You can add metadata using the standard Python dictionary square brackets eg.
 
     dataset["name"] = "My Dataset"
 
-You can also do so by the standard dictionary **update** method, which takes a 
+You can also do so by the standard dictionary **update** method, which takes a
 dictionary eg.
 
     dataset.update({"name": "My Dataset"})
 
-Larger amounts of static metadata are best added from files. YAML is very human readable 
+Larger amounts of static metadata are best added from files. YAML is very human readable
 and recommended, while JSON is also accepted eg.
 
     dataset.update_from_yaml([path])
@@ -483,8 +483,8 @@ and recommended, while JSON is also accepted eg.
     dataset.update_from_json([path])
 
 The default path if unspecified is **config/hdx_TYPE_static.yaml** for YAML and
-**config/hdx_TYPE_static.json** for JSON where TYPE is an HDX object's type like 
-dataset or resource eg. **config/hdx_showcase_static.json**. The YAML file takes the 
+**config/hdx_TYPE_static.json** for JSON where TYPE is an HDX object's type like
+dataset or resource eg. **config/hdx_showcase_static.json**. The YAML file takes the
 following form:
 
     owner_org: "acled"
@@ -499,17 +499,17 @@ following form:
           format: "xlsx"
     ...
 
-Notice how you can define resources (each resource starts with a dash "-") within the 
+Notice how you can define resources (each resource starts with a dash "-") within the
 file as shown above.
 
-You can check if all the fields required by HDX are populated by 
-calling **check_required_fields**. This will throw an exception if any fields are 
-missing. Before the library posts data to HDX, it will call this method automatically. 
+You can check if all the fields required by HDX are populated by
+calling **check_required_fields**. This will throw an exception if any fields are
+missing. Before the library posts data to HDX, it will call this method automatically.
 You can provide a list of fields to ignore in the check. An example usage:
 
     resource.check_required_fields([ignore_fields])
 
-Once the HDX object is ready ie. it has all the required metadata, you simply 
+Once the HDX object is ready ie. it has all the required metadata, you simply
 call **create_in_hdx** eg.
 
     dataset.create_in_hdx(allow_no_resources, update_resources,
@@ -522,17 +522,17 @@ explicitly by calling **update_in_hdx** eg.
     dataset.update_in_hdx(update_resources, update_resources_by_name,
                           remove_additional_resources)
 
-You can delete HDX objects using **delete_from_hdx** and update an object that 
-already exists in HDX with the method **update_in_hdx**. These take various 
-boolean parameters that all have defaults and are documented in the API docs. 
-They do not return anything and they throw exceptions for failures like the 
+You can delete HDX objects using **delete_from_hdx** and update an object that
+already exists in HDX with the method **update_in_hdx**. These take various
+boolean parameters that all have defaults and are documented in the API docs.
+They do not return anything and they throw exceptions for failures like the
 object to update not existing.
 
 ## Dataset Specific Operations
 
 A dataset can have resources and can be in a showcase.
 
-If you wish to add resources, you can supply a list and call 
+If you wish to add resources, you can supply a list and call
 the **add_update_resources** function, for example:
 
     resources = [{
@@ -548,14 +548,14 @@ the **add_update_resources** function, for example:
          resource["description"] = resource["url"].rsplit("/", 1)[-1]
      dataset.add_update_resources(resources)
 
-Calling **add_update_resources** creates a list of HDX Resource objects in 
+Calling **add_update_resources** creates a list of HDX Resource objects in
 dataset and operations can be performed on those objects.
 
 To see the list of resources, you use the **get_resources** function eg.
 
     resources = dataset.get_resources()
 
-If you wish to add one resource, you can supply an id string, dictionary or Resource 
+If you wish to add one resource, you can supply an id string, dictionary or Resource
 object and call the **add_update_resource** function, for example:
 
     dataset.add_update_resource(resource)
@@ -582,51 +582,51 @@ If you wish to add the dataset to a showcase, you must first create the showcase
                          "url": "http://visualisation/url/"})
     showcase.create_in_hdx()
 
-Then you can supply an id, dictionary or Showcase object and call the **add_showcase** 
+Then you can supply an id, dictionary or Showcase object and call the **add_showcase**
 function, for example:
 
     dataset.add_showcase(showcase)
 
-You can remove the dataset from a showcase using the **remove_showcase** function, for 
+You can remove the dataset from a showcase using the **remove_showcase** function, for
 example:
 
     dataset.remove_showcase(showcase)
 
 ### Reference Period
 
-Reference Period is a mandatory field in HDX. It is the time period for which 
-data are collected or calculated and to which, as a result, they refer. The 
-reference period may be of any length: a year, a month, or even a day. It 
-should not to be confused with when data was last added/changed in the dataset. 
-It can be a single date or a range. 
+Reference Period is a mandatory field in HDX. It is the time period for which
+data are collected or calculated and to which, as a result, they refer. The
+reference period may be of any length: a year, a month, or even a day. It
+should not to be confused with when data was last added/changed in the dataset.
+It can be a single date or a range.
 
-To get the reference period, you can do as shown below. It returns a dictionary containing 
-keys "startdate" (start date as datetime), "enddate" (end date as datetime), 
-"startdate_str" (start date as string), "enddate_str" (end date as string) and ongoing 
-(whether the end date is a rolls forward every day). You can supply a 
-[date format](https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior). 
-If you do not, the output format will be an 
+To get the reference period, you can do as shown below. It returns a dictionary containing
+keys "startdate" (start date as datetime), "enddate" (end date as datetime),
+"startdate_str" (start date as string), "enddate_str" (end date as string) and ongoing
+(whether the end date is a rolls forward every day). You can supply a
+[date format](https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior).
+If you do not, the output format will be an
 [ISO 8601 date](https://en.wikipedia.org/wiki/ISO_8601) eg. 2007-01-25.
 
     reference_period = dataset.get_reference_period("OPTIONAL FORMAT")
 
-To set the reference period, you must pass either datetime.datetime objects or strings to 
-the function below. It accepts a start date and an optional end date which if not 
-supplied is assumed to be the same as the start date. Instead of the end date, the flag 
-"ongoing" which by default is False can be set to True which indicates that the end date 
-rolls forward every day. 
+To set the reference period, you must pass either datetime.datetime objects or strings to
+the function below. It accepts a start date and an optional end date which if not
+supplied is assumed to be the same as the start date. Instead of the end date, the flag
+"ongoing" which by default is False can be set to True which indicates that the end date
+rolls forward every day.
 
     dataset.set_reference_period("START DATE", "END DATE")
 
-The method below allows you to set the reference period using a year range. The start and 
-end year can be supplied as integers or strings. If no end year is supplied then the 
+The method below allows you to set the reference period using a year range. The start and
+end year can be supplied as integers or strings. If no end year is supplied then the
 range will be from the beginning of the start year to the end of that year.
 
     dataset.set_reference_period_year_range(START YEAR, END YEAR)
 
 ### Expected Update Frequency
 
-HDX datasets have a mandatory field, the expected update frequency. This is your best 
+HDX datasets have a mandatory field, the expected update frequency. This is your best
 guess of how often the dataset will be updated.
 
 The HDX web interface uses set frequencies:
@@ -641,18 +641,18 @@ The HDX web interface uses set frequencies:
     As needed
     Never
 
-Although the API allows much greater granularity (a number of days), you are encouraged 
-to use the options above (avoiding using **Never** and **As needed** if possible as 
-this field helps determine how up to date datasets are). To assist with this, you can 
+Although the API allows much greater granularity (a number of days), you are encouraged
+to use the options above (avoiding using **Never** and **As needed** if possible as
+this field helps determine how up to date datasets are). To assist with this, you can
 use certain Dataset methods outlined below.
 
-The following method will return a textual expected update frequency corresponding to 
+The following method will return a textual expected update frequency corresponding to
 what would be shown in the HDX web interface.
 
     update_frequency = dataset.get_expected_update_frequency()
 
-The method below allows you to set the dataset's expected update frequency using one of 
-the set frequencies above. (It also allows you to pass a number of days as a string or 
+The method below allows you to set the dataset's expected update frequency using one of
+the set frequencies above. (It also allows you to pass a number of days as a string or
 integer, but this is discouraged.)
 
     dataset.set_expected_update_frequency("UPDATE_FREQUENCY")
@@ -661,7 +661,7 @@ A list of valid update frequencies can be found using:
 
     Dataset.list_valid_update_frequencies()
 
-Transforming backwards and forwards between representations can be achieved with this 
+Transforming backwards and forwards between representations can be achieved with this
 function:
 
     update_frequency = Dataset.transform_update_frequency("UPDATE_FREQUENCY")
@@ -670,7 +670,7 @@ function:
 
 Each HDX dataset must have at least one location associated with it.
 
-If you wish to get the current location(s) as ISO 3 country codes, you can call the 
+If you wish to get the current location(s) as ISO 3 country codes, you can call the
 method below:
 
     locations = dataset.get_location_iso3s()
@@ -679,39 +679,39 @@ If you wish to get the current location name(s), you can call the method below:
 
     locations = dataset.get_location_names()
 
-If you want to add a country, you do as shown below. If you don't provide an ISO 3 
-country code, the text you give will 
+If you want to add a country, you do as shown below. If you don't provide an ISO 3
+country code, the text you give will
 be parsed and converted to an ISO 3 code if it is a valid country name.
 
     dataset.add_country_location("ISO 3 COUNTRY CODE")
 
-If you want to add a list of countries, the following method enables you to do it. If 
-you don"t provide ISO 3 country codes, conversion will take place where valid country 
+If you want to add a list of countries, the following method enables you to do it. If
+you don"t provide ISO 3 country codes, conversion will take place where valid country
 names are found.
 
     dataset.add_country_locations(["ISO 3","ISO 3","ISO 3"...])
 
-If you want to add a region, you do it as follows. If you don't provide a three digit 
-[UNStats M49](https://unstats.un.org/unsd/methodology/m49/overview/) region code, then 
-parsing and conversion will 
+If you want to add a region, you do it as follows. If you don't provide a three digit
+[UNStats M49](https://unstats.un.org/unsd/methodology/m49/overview/) region code, then
+parsing and conversion will
 occur if a valid region name is supplied.
 
     dataset.add_region_location("M49 REGION CODE")
 
-**add_region_location** accepts regions, intermediate regions or subregions as 
-specified on the 
+**add_region_location** accepts regions, intermediate regions or subregions as
+specified on the
 [UNStats M49](https://unstats.un.org/unsd/methodology/m49/overview/) website.
 
 If you want to add any other kind of location (which must be in this
-[list of valid locations](https://data.humdata.org/api/action/group_list?all_fields=true)), 
+[list of valid locations](https://data.humdata.org/api/action/group_list?all_fields=true)),
 you do as shown below.
 
     dataset.add_other_location("LOCATION")
 
 ### Tags
 
-HDX datasets can have tags which help people to find them eg. "common operational 
-dataset - cod", "refugees". These tags come from a predefined set of 
+HDX datasets can have tags which help people to find them eg. "common operational
+dataset - cod", "refugees". These tags come from a predefined set of
 [approved tags](https://docs.google.com/spreadsheets/d/e/2PACX-1vQD3ba751XbWS5GVwdJmzOF9mc7dnm56hE2U8di12JnpYkdseILmjfGSn1W7UVQzmHKSd6p8FWaXdFL/pub?gid=1768359211&single=true&output=csv).
 If you add tags that are not in the approved list, the library attempts to map them to
 approved tags based on a spreadsheet of tag mappings.
@@ -728,7 +728,7 @@ If you want to add a tag, you do it like this:
 If you want to add a list of tags, you do it as follows:
 
     dataset.add_tags(["TAG","TAG","TAG"...])
-    
+
 To obtain the predefined set of approved tags:
 
     approved_tags = Vocabulary.approved_tags()
@@ -766,60 +766,60 @@ object.
 ### Resource generation
 
 There are a range of helpful functions to generate resources. In the following
-examples, RESOURCE DATA takes the form {"name": NAME, "description": 
-DESCRIPTION} and ENCODING is a file encoding like "utf-8".  
+examples, RESOURCE DATA takes the form {"name": NAME, "description":
+DESCRIPTION} and ENCODING is a file encoding like "utf-8".
 
-A resource can be generated from ROWS which is a list of list, tuple or 
-dictionary. HEADERS is either a row number (rows start counting at 1), or the 
-actual headers defined as a list of strings. If not set, all rows will be 
+A resource can be generated from ROWS which is a list of list, tuple or
+dictionary. HEADERS is either a row number (rows start counting at 1), or the
+actual headers defined as a list of strings. If not set, all rows will be
 treated as containing values:
 
-    dataset.generate_resource_from_rows("FOLDER", "FILENAME", ROWS, 
+    dataset.generate_resource_from_rows("FOLDER", "FILENAME", ROWS,
                                         RESOURCE DATA, HEADERS, "ENCODING")
 
-A resource for the purpose of driving QuickCharts can be generated by taking 
-ROWS, a list of dictionaries, and producing a cut down subset from it. HXLTAGS 
-are added as the second row after the header. The reduction in rows is 
-performed by only outputting the rows where COLUMN_NAME has a value in 
-QC_IDENTIFIERS. Optionally the columns that are output can be limited by 
-specifying them in HEADERS. 
+A resource for the purpose of driving QuickCharts can be generated by taking
+ROWS, a list of dictionaries, and producing a cut down subset from it. HXLTAGS
+are added as the second row after the header. The reduction in rows is
+performed by only outputting the rows where COLUMN_NAME has a value in
+QC_IDENTIFIERS. Optionally the columns that are output can be limited by
+specifying them in HEADERS.
 
     dataset.generate_qc_resource_from_rows("FOLDER", "FILENAME", ROWS,
     RESOURCE DATA, HXLTAGS, "COLUMN_NAME", QC_IDENTIFIERS, HEADERS, "ENCODING")
 
-Building on these basic resource generation methods, there are more powerful 
-ones `generate_resource_from_iterator` and `download_and_generate_resource`. 
+Building on these basic resource generation methods, there are more powerful
+ones `generate_resource_from_iterator` and `download_and_generate_resource`.
 
-A resource can be generated from a given list or tuple: HEADERS and an ITERATOR 
-which can return rows in list, tuple or dictionary form. A mapping from headers 
-to HXL hashtags, HXLTAGS, must be provided along with the FOLDER and FILENAME 
-where the file will be generated for upload to the filestore. The dataset 
-reference period can optionally be set by supplying DATECOL for looking up 
+A resource can be generated from a given list or tuple: HEADERS and an ITERATOR
+which can return rows in list, tuple or dictionary form. A mapping from headers
+to HXL hashtags, HXLTAGS, must be provided along with the FOLDER and FILENAME
+where the file will be generated for upload to the filestore. The dataset
+reference period can optionally be set by supplying DATECOL for looking up
 dates or YEARCOL for looking up years. DATECOl and YEARCOL can be a column name
-or the index of a column. Note that any timezone information is ignored and UTC 
-is assumed. 
+or the index of a column. Note that any timezone information is ignored and UTC
+is assumed.
 
 Alternatively, DATE_FUNCTION can be supplied to handle any dates
 in a row. It should accept a row and should return None to ignore the row or a
 dictionary which can either be empty if there are no dates in the row or can be
 populated with keys startdate and/or enddate which are of type timezone-aware
-datetime. The lowest start date and highest end date are used to set the 
-reference period and are returned in the results dictionary in keys startdate 
+datetime. The lowest start date and highest end date are used to set the
+reference period and are returned in the results dictionary in keys startdate
 and enddate.
 
-    dataset.generate_resource_from_iterator(HEADERS, ITERATOR, HXLTAGS, 
+    dataset.generate_resource_from_iterator(HEADERS, ITERATOR, HXLTAGS,
     "FOLDER", "FILENAME", RESOURCE_DATA, DATECOL or YEARCOL or DATE_FUNCTION,
     QUICKCHARTS, "ENCODING")
 
-If desired, `generate_resource_from_iterator` can generate a separate 
-QuickCharts resource designed to be used in a time series QuickCharts bite 
-provided that the input has #indicator+code, #date and #indicator+value+num. 
-This is achieved by supplying the parameter QUICKCHARTS which activates various 
-QuickCharts related actions depending upon the keys given in the dictionary. 
-The returned dictionary will contain the QuickCharts resource in the key 
+If desired, `generate_resource_from_iterator` can generate a separate
+QuickCharts resource designed to be used in a time series QuickCharts bite
+provided that the input has #indicator+code, #date and #indicator+value+num.
+This is achieved by supplying the parameter QUICKCHARTS which activates various
+QuickCharts related actions depending upon the keys given in the dictionary.
+The returned dictionary will contain the QuickCharts resource in the key
 qc_resource. If the keys: hashtag - the HXL hashtag to examine - and values -
 the 3 values to look for in that column - are supplied, then a list of booleans
-indicating which QuickCharts bites should be enabled will be returned in the 
+indicating which QuickCharts bites should be enabled will be returned in the
 key bites_disabled in the returned dictionary. For the 3 values, if the key:
 numeric_hashtag is supplied then if that column for a given value contains no
 numbers, then the corresponding bite will be disabled. If the key: cutdown is
@@ -839,33 +839,33 @@ The QuickCharts resource will be of form similar to below:
     MDG_0000000001,2015,123.4
 
 `download_and_generate_resource` builds on `generate_resource_from_iterator`.
-It uses an DOWNLOADER, an object of class `Download`, `Retrieve` or other class 
-that implements `BaseDownload` to download from URL. Additional arguments in 
+It uses an DOWNLOADER, an object of class `Download`, `Retrieve` or other class
+that implements `BaseDownload` to download from URL. Additional arguments in
 **KWARGS are passed to the `get_tabular_rows` method of the DOWNLOADER.
 
-Optionally, headers can be inserted at specific positions. This is achieved 
-using HEADER_INSERTIONS. If supplied, it is a list of tuples of the form 
-(position, header) to be inserted. A function, ROW_FUNCTION, is called for each 
-row. If supplied, it takes as arguments: headers (prior to any insertions) and 
-row (which will be in dict or list form depending upon the dict_rows argument) 
-and outputs a modified row. 
+Optionally, headers can be inserted at specific positions. This is achieved
+using HEADER_INSERTIONS. If supplied, it is a list of tuples of the form
+(position, header) to be inserted. A function, ROW_FUNCTION, is called for each
+row. If supplied, it takes as arguments: headers (prior to any insertions) and
+row (which will be in dict or list form depending upon the dict_rows argument)
+and outputs a modified row.
 
-The rest of the arguments are the same as for 
+The rest of the arguments are the same as for
 `generate_resource_from_iterator`.
 
-    dataset.download_and_generate_resource(DOWNLOADER, "URL", HXLTAGS, 
+    dataset.download_and_generate_resource(DOWNLOADER, "URL", HXLTAGS,
     "FOLDER", "FILENAME", RESOURCE_DATA, HEADER_INSERTIONS, ROW_FUNCTION,
     DATECOL or YEARCOL or DATE_FUNCTION, QUICKCHARTS, **KWARGS)
 
 ### QuickCharts Generation
 
 QuickCharts can be generated for datasets using the call below. RESOURCE is a
-a resource id or name, or resource metadata from a Resource object or a 
+a resource id or name, or resource metadata from a Resource object or a
 dictionary, or the position of the resource in the dataset. It defaults to the
-position 0. PATH points to configuration which if not supplied, defaults to the 
-internal indicators resource view template. You can disable specific bites by 
-providing BITES_DISABLED, a list of 3 bools where True indicates a specific bite 
-is disabled and False indicates leave enabled. 
+position 0. PATH points to configuration which if not supplied, defaults to the
+internal indicators resource view template. You can disable specific bites by
+providing BITES_DISABLED, a list of 3 bools where True indicates a specific bite
+is disabled and False indicates leave enabled.
 
     datasets.generate_quickcharts(RESOURCE, "PATH", BITES_DISABLED, INDICATORS,
                                   FIND_REPLACE)
@@ -874,11 +874,11 @@ The parameter INDICATORS is only for use with the built-in configuration and is
 a list with 3 dictionaries of form:
 
         {"code": "MY_INDICATOR_CODE", "title": "MY_INDICATOR_TITLE",
-        "unit": "MY_INDICATOR_UNIT"}. 
+        "unit": "MY_INDICATOR_UNIT"}.
 
-Optionally, the following defaults can be overridden in INDICATORS: 
-    
-    {"code_col": "#indicator+code", "value_col": "#indicator+value+num", 
+Optionally, the following defaults can be overridden in INDICATORS:
+
+    {"code_col": "#indicator+code", "value_col": "#indicator+value+num",
      "date_col": "#date+year", "date_format": "%Y", "aggregate_col": "null"}.
 
 The built-in configuration assumes data will be of form similar to below:
@@ -897,11 +897,11 @@ You can download a resource using the **download** function eg.
 
 If you do not supply **FOLDER_TO_DOWNLOAD_TO**, then a temporary folder is used.
 
-Before creating or updating a resource by calling **create_in_hdx** or 
-**update_in_hdx** on the resource or its parent dataset, it is possible to 
-specify the path to a local file to upload to the HDX filestore if that is 
-preferred over hosting the file externally to HDX. Rather than the url of the 
-resource pointing to your server or api, in this case the url will point to a 
+Before creating or updating a resource by calling **create_in_hdx** or
+**update_in_hdx** on the resource or its parent dataset, it is possible to
+specify the path to a local file to upload to the HDX filestore if that is
+preferred over hosting the file externally to HDX. Rather than the url of the
+resource pointing to your server or api, in this case the url will point to a
 location in the HDX filestore containing a copy of your file.
 
     resource.set_file_to_upload(file_to_upload="PATH_TO_FILE")
@@ -910,15 +910,15 @@ There is a getter to read the value back:
 
     file_to_upload = resource.get_file_to_upload()
 
-To indicate that the data in an externally hosted resource (given by a URL) has 
-been updated, call **mark_data_updated** on the resource, before calling 
-**create_in_hdx** or **update_in_hdx** on the resource or parent dataset which 
+To indicate that the data in an externally hosted resource (given by a URL) has
+been updated, call **mark_data_updated** on the resource, before calling
+**create_in_hdx** or **update_in_hdx** on the resource or parent dataset which
 will result in the resource `last_modified` field being set to now.
 
     resource.mark_data_updated()
     dataset.update_in_hdx()
 
-Alternatively, when calling **create_in_hdx** or **update_in_hdx** on the 
+Alternatively, when calling **create_in_hdx** or **update_in_hdx** on the
 resource, it is possible to supply the parameter `data_updated` eg.
 
     resource.update_in_hdx(data_updated=True)
@@ -933,25 +933,25 @@ can call the following:
 
     date = resource.get_date_data_updated()
 
-If the method **set_file_to_upload** is used to supply a file, the resource 
-`last_modified` field is set to now automatically regardless of the value of 
+If the method **set_file_to_upload** is used to supply a file, the resource
+`last_modified` field is set to now automatically regardless of the value of
 `data_updated` or whether **mark_data_updated** has been called.
 
 ## Showcase Management
 
-The **Showcase** class enables you to manage showcases, creating, deleting and updating 
+The **Showcase** class enables you to manage showcases, creating, deleting and updating
 (as for other HDX objects) according to your permissions.
 
 To see the list of datasets a showcase is in, you use the **get_datasets** function eg.
 
     datasets = showcase.get_datasets()
 
-If you wish to add a dataset to a showcase, you call the **add_dataset** function, for 
+If you wish to add a dataset to a showcase, you call the **add_dataset** function, for
 example:
 
     showcase.add_dataset(dataset)
 
-You can remove the dataset from a showcase using the **remove\dataset** function, for 
+You can remove the dataset from a showcase using the **remove\dataset** function, for
 example:
 
     showcase.remove_dataset(dataset)
@@ -967,13 +967,13 @@ If you want to add a tag, you do it like this:
 If you want to add a list of tags, you do it as follows:
 
     showcase.add_tags(["TAG","TAG","TAG"...])
-    
+
 ## User Management
 
-The **User** class enables you to manage users, creating, deleting and updating (as for 
+The **User** class enables you to manage users, creating, deleting and updating (as for
 other HDX objects) according to your permissions.
 
-You can email a user. First you need to set up an email server using a dictionary or 
+You can email a user. First you need to set up an email server using a dictionary or
 file:
 
     email_config_dict = {"connection_type": "TYPE", "host": "HOST",
@@ -991,14 +991,14 @@ You can email multiple users like this:
 
 ## Organization Management
 
-The **Organization** class enables you to manage organizations, creating, deleting and 
+The **Organization** class enables you to manage organizations, creating, deleting and
 updating (as for other HDX objects) according to your permissions.
 
 You can get the datasets in an organization as follows:
 
     datasets = organization.get_datasets(**kwargs)
 
-Various additional arguments (`**kwargs`) can be supplied. These are detailed in the API 
+Various additional arguments (`**kwargs`) can be supplied. These are detailed in the API
 documentation.
 
 You can get the users in an organization like this:
@@ -1023,7 +1023,7 @@ You can delete a user from an organization:
 
 ## Vocabulary Management
 
-The **Vocabulary** class enables you to manage CKAN vocabularies, creating, deleting and 
+The **Vocabulary** class enables you to manage CKAN vocabularies, creating, deleting and
 updating (as for other HDX objects) according to your permissions.
 
 You can optionally initialise a Vocabulary with dictionary, name and tags:
@@ -1045,19 +1045,19 @@ If you want to add a list of tags, you do it as follows:
 
 # Working Examples
 
-For a working example of downloading data in a dataset on HDX, see 
+For a working example of downloading data in a dataset on HDX, see
 [this answer](https://stackoverflow.com/a/76965288/464618) on StackOverflow.
- 
+
 If you want to know how to create a dataset on HDX with a file resource see
 [this answer](https://stackoverflow.com/a/77056860/464618) on StackOverflow.
 
 # Project Framework
 
-Once you understand how to create a dataset on HDX, it is important to think 
-about a good structure. Below is framework for starting a project to interact 
+Once you understand how to create a dataset on HDX, it is important to think
+about a good structure. Below is framework for starting a project to interact
 with HDX that should work well.
 
-First, pip install the library or alternatively add it to a requirements.txt 
+First, pip install the library or alternatively add it to a requirements.txt
 file if you are comfortable with doing so as described above.
 
 Next create a file called **run.py** and copy into it the code below.
@@ -1084,8 +1084,8 @@ Next create a file called **run.py** and copy into it the code below.
     if __name__ == "__main__":
         facade(main, hdx_site="test")
 
-The above file will create in HDX a dataset generated by a function called 
-**generate_dataset** that can be found in the file **my_code.py** which we will now 
+The above file will create in HDX a dataset generated by a function called
+**generate_dataset** that can be found in the file **my_code.py** which we will now
 write.
 
 Create a file **my_code.py** and copy into it the code below:
@@ -1113,33 +1113,33 @@ You can then fill out the function **generate_dataset** as required.
 
 A complete example can be found here: <https://github.com/OCHA-DAP/hdx-scraper-idmc>
 
-The IDMC scraper creates a dataset per country in HDX, populating all the 
-required metadata. It then creates resources with files held on the HDX 
+The IDMC scraper creates a dataset per country in HDX, populating all the
+required metadata. It then creates resources with files held on the HDX
 filestore.
 
-In particular, take a look at the files **run.py**, **idmc.py** and the 
-**config** folder. Do not run it unchanged as it may overwrite the existing 
-datasets in the IDMC organisation (although it will most probably fail as you 
-will not have permissions to modify anything in that organisation). You can use 
-it as a basis for your code renaming and modifying **idmc.py** as needed and 
+In particular, take a look at the files **run.py**, **idmc.py** and the
+**config** folder. Do not run it unchanged as it may overwrite the existing
+datasets in the IDMC organisation (although it will most probably fail as you
+will not have permissions to modify anything in that organisation). You can use
+it as a basis for your code renaming and modifying **idmc.py** as needed and
 updating metadata in **config/hdx_dataset_static.yaml** appropriately.
 
 
 # Brief History
 
-The first iteration of a scraper for ACLED was written without the HDX Python library 
-and it became clear looking at this and previous work by others that there are operations 
-that are frequently required and which add unnecessary complexity to the task of coding 
-against HDX. Simplifying the interface to HDX drove the development of the Python 
-library and the second iteration of the scraper was built using it. ACLED went from 
-producing files to creating an API, so a third iteration was developed. 
+The first iteration of a scraper for ACLED was written without the HDX Python library
+and it became clear looking at this and previous work by others that there are operations
+that are frequently required and which add unnecessary complexity to the task of coding
+against HDX. Simplifying the interface to HDX drove the development of the Python
+library and the second iteration of the scraper was built using it. ACLED went from
+producing files to creating an API, so a third iteration was developed.
 
-With the interface using HDX terminology and mapping directly on to datasets, resources 
-and showcases, the ACLED scraper was faster to develop and was much easier to understand 
-for someone inexperienced in how it works and what it is doing. The extensive logging 
-and transparent communication of errors is invaluable and enables action to be taken to 
-resolve issues as quickly as possible. Static metadata can be held in human readable 
-files so if it needs to be modified, it is straightforward. 
+With the interface using HDX terminology and mapping directly on to datasets, resources
+and showcases, the ACLED scraper was faster to develop and was much easier to understand
+for someone inexperienced in how it works and what it is doing. The extensive logging
+and transparent communication of errors is invaluable and enables action to be taken to
+resolve issues as quickly as possible. Static metadata can be held in human readable
+files so if it needs to be modified, it is straightforward.
 
-The HDX Python library has expanded over time as needs have arisen and is used for a 
+The HDX Python library has expanded over time as needs have arisen and is used for a
 range of tasks involving interaction with the HDX platform.
