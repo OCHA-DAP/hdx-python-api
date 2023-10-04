@@ -34,15 +34,18 @@ classifiers = [
 requires-python = ">=3.8"
 
 dependencies = [
-    "ckanapi >= 4.7",
-    "defopt >= 6.4.0",
+    "ckanapi>=4.7",
+    "defopt>=6.4.0",
     "email_validator",
-    "hdx-python-country>= 3.5.7",
+    "hdx-python-country>=3.5.7",
+    "hdx-python-utilities>=3.6.2",
+    "libhxl>=5.1",
     "makefun",
     "ndg-httpsclient",
     "pyasn1",
     "pyOpenSSL",
     "quantulum3",
+    "requests",
 ]
 dynamic = ["version"]
 

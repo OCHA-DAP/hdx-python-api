@@ -54,7 +54,9 @@ frictionless==5.16.0
 hdx-python-country==3.5.7
     # via hdx-python-api (pyproject.toml)
 hdx-python-utilities==3.6.2
-    # via hdx-python-country
+    # via
+    #   hdx-python-api (pyproject.toml)
+    #   hdx-python-country
 humanize==4.8.0
     # via frictionless
 identify==2.5.30
@@ -82,7 +84,9 @@ jsonschema==4.17.3
     #   frictionless
     #   tableschema-to-template
 libhxl==5.1
-    # via hdx-python-country
+    # via
+    #   hdx-python-api (pyproject.toml)
+    #   hdx-python-country
 loguru==0.7.2
     # via hdx-python-utilities
 makefun==1.15.1
@@ -171,6 +175,7 @@ requests==2.31.0
     # via
     #   ckanapi
     #   frictionless
+    #   hdx-python-api (pyproject.toml)
     #   libhxl
     #   requests-file
 requests-file==1.5.1
