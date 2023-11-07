@@ -2080,7 +2080,7 @@ class Dataset(HDXObject):
         bites_disabled: Optional[ListTuple[bool]] = None,
         indicators: Optional[ListTuple[Dict]] = None,
         findreplace: Optional[Dict] = None,
-    ) -> resource_view.ResourceView:
+    ) -> Optional[resource_view.ResourceView]:
         """Create QuickCharts for the given resource in a dataset. If you do
         not supply a path, then the internal indicators resource view template
         will be used. You can disable specific bites by providing
@@ -2104,12 +2104,12 @@ class Dataset(HDXObject):
             findreplace (Optional[Dict]): Replacements for anything else in resource view. Defaults to None.
 
         Returns:
-            resource_view.ResourceView: The resource view if QuickCharts created, None is not
+            Optional[resource_view.ResourceView]: The resource view if QuickCharts created, None is not
         """
-        if bites_disabled == [True, True, True]:
-            return None
-        elif not bites_disabled:
+        if not bites_disabled:
             bites_disabled = [False, False, False]
+        elif all(i for i in bites_disabled):
+            return None
         res = self.set_quickchart_resource(resource)
         if res is None:
             return None

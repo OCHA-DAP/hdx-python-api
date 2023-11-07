@@ -20,7 +20,7 @@ you make a git commit:
 
     pre-commit install
 
-The configuration file for this project is in a 
+The configuration file for this project is in a
 non-start location. Thus, you will need to edit your
 `.git/hooks/pre-commit` file to reflect this. Change
 the line that begins with `ARGS` to:
@@ -29,7 +29,7 @@ the line that begins with `ARGS` to:
 
 With pre-commit, all code is formatted according to
 [black]("https://github.com/psf/black") and
-[ruff]("https://github.com/charliermarsh/ruff") guidelines. 
+[ruff]("https://github.com/charliermarsh/ruff") guidelines.
 
 To check if your changes pass pre-commit without committing, run:
 
@@ -46,8 +46,8 @@ Follow the example set out already in ``api.rst`` as you write the documentation
 ## Packages
 
 [pip-tools](https://github.com/jazzband/pip-tools) is used for
-package management.  If you’ve introduced a new package to the 
-source code (i.e.anywhere in `src/`), please add it to the 
+package management.  If you’ve introduced a new package to the
+source code (i.e.anywhere in `src/`), please add it to the
 `project.dependencies` section of
 `pyproject.toml` with any known version constraints.
 

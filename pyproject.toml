@@ -37,7 +37,7 @@ dependencies = [
     "ckanapi>=4.7",
     "defopt>=6.4.0",
     "email_validator",
-    "hdx-python-country>=3.5.7",
+    "hdx-python-country>=3.5.9",
     "hdx-python-utilities>=3.6.2",
     "libhxl>=5.1",
     "makefun",
@@ -95,7 +95,7 @@ test = """
        """
 
 [[tool.hatch.envs.test.matrix]]
-python = ["3.11"]
+python = ["3.12"]
 
 [tool.hatch.envs.lint]
 detached = true
