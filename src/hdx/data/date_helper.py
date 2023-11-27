@@ -61,12 +61,12 @@ class DateHelper:
         return date.replace(tzinfo=None).isoformat(timespec=timespec)
 
     @staticmethod
-    def get_reference_period_info(
-        hdx_reference_period: Dict,
+    def get_time_period_info(
+        hdx_time_period: Dict,
         date_format: Optional[str] = None,
         today: datetime = now_utc(),
     ) -> Dict:
-        """Get reference period as datetimes and strings in specified format.
+        """Get time period as datetimes and strings in specified format.
         If no format is supplied, the ISO 8601 format is used. Returns a
         dictionary containing keys startdate (start date as datetime), enddate
         (end date as datetime), startdate_str (start date as string),
@@ -74,7 +74,7 @@ class DateHelper:
         forward every day).
 
         Args:
-            hdx_reference_period (str): Input reference period
+            hdx_time_period (str): Input time period
             date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
             today (datetime): Date to use for today. Defaults to now_utc().
 
@@ -82,13 +82,10 @@ class DateHelper:
             Dict: Dictionary of date information
         """
         result = dict()
-        if hdx_reference_period:
-            if (
-                hdx_reference_period[0] == "["
-                and hdx_reference_period[-1] == "]"
-            ):
-                hdx_reference_period = hdx_reference_period[1:-1]
-            dataset_dates = hdx_reference_period.split(" TO ")
+        if hdx_time_period:
+            if hdx_time_period[0] == "[" and hdx_time_period[-1] == "]":
+                hdx_time_period = hdx_time_period[1:-1]
+            dataset_dates = hdx_time_period.split(" TO ")
             startdate = parse_date(dataset_dates[0])
             enddate = dataset_dates[1]
             if enddate == "*":
@@ -116,14 +113,14 @@ class DateHelper:
         return result
 
     @classmethod
-    def get_hdx_reference_period(
+    def get_hdx_time_period(
         cls,
         startdate: Union[datetime, str],
         enddate: Union[datetime, str, None] = None,
         ongoing: bool = False,
         ignore_timeinfo: bool = True,
     ) -> str:
-        """Get an HDX reference period from either datetime.datetime objects or
+        """Get an HDX time period from either datetime.datetime objects or
         strings with option to set ongoing.
 
         Args:
@@ -133,7 +130,7 @@ class DateHelper:
             ignore_timeinfo (bool): Ignore time and time zone of date. Defaults to True.
 
         Returns:
-            str: HDX reference period
+            str: HDX time period
         """
         startdate = cls.get_hdx_date(
             startdate,
@@ -155,12 +152,12 @@ class DateHelper:
         return f"[{startdate} TO {enddate}]"
 
     @classmethod
-    def get_hdx_reference_period_from_years(
+    def get_hdx_time_period_from_years(
         cls,
         startyear: Union[str, int, Iterable],
         endyear: Union[str, int, None] = None,
     ) -> Tuple[str, List[int]]:
-        """Get an HDX reference period from an iterable of years or a start and
+        """Get an HDX time period from an iterable of years or a start and
         end year.
 
         Args:
@@ -168,7 +165,7 @@ class DateHelper:
             endyear (Union[str, int, None]): End year given as string or int
 
         Returns:
-            Tuple[str,List[int]]: (HDX reference period, the start and end year if supplied or sorted list of years)
+            Tuple[str,List[int]]: (HDX time period, the start and end year if supplied or sorted list of years)
         """
         retval = list()
         if isinstance(startyear, str):
@@ -186,8 +183,6 @@ class DateHelper:
         startdate = datetime(startyear, 1, 1, tzinfo=timezone.utc)
         enddate = datetime(endyear, 12, 31, 23, 59, 59, tzinfo=timezone.utc)
         return (
-            cls.get_hdx_reference_period(
-                startdate, enddate, ignore_timeinfo=False
-            ),
+            cls.get_hdx_time_period(startdate, enddate, ignore_timeinfo=False),
             retval,
         )

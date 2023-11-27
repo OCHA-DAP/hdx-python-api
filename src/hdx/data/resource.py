@@ -122,7 +122,7 @@ class Resource(HDXObject):
         Returns:
             Dict: Dictionary of date information
         """
-        return DateHelper.get_reference_period_info(
+        return DateHelper.get_time_period_info(
             self.data.get("daterange_for_data"), date_format, today
         )
 
@@ -146,7 +146,7 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        self.data["daterange_for_data"] = DateHelper.get_hdx_reference_period(
+        self.data["daterange_for_data"] = DateHelper.get_hdx_time_period(
             startdate, enddate, ignore_timeinfo=ignore_timeinfo
         )
 
