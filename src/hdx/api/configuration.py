@@ -427,7 +427,7 @@ class Configuration(UserDict):
 
         """
         if not session:
-            whitelist = (
+            allowed_methods = (
                 "HEAD",
                 "TRACE",
                 "GET",
@@ -442,7 +442,7 @@ class Configuration(UserDict):
                 user_agent_lookup,
                 use_env,
                 prefix=Configuration.prefix,
-                method_whitelist=whitelist,
+                allowed_methods=allowed_methods,
                 **kwargs,
             )
             ua = session.headers["User-Agent"]
