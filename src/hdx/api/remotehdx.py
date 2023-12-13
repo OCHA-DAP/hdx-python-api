@@ -1,4 +1,6 @@
-"""Connection to HDX with rate limiting"""
+"""Connection to HDX with rate limiting
+Currently unused awaiting HDX server to add Retry-After header
+"""
 import logging
 from time import sleep
 

@@ -10,7 +10,6 @@ import ckanapi
 import requests
 
 from . import __version__
-from .remotehdx import RemoteHDX
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.email import Email
 from hdx.utilities.loader import load_json, load_yaml
@@ -475,7 +474,7 @@ class Configuration(UserDict):
             full_agent=self.get_user_agent(), **kwargs
         )
         if remoteckan is None:
-            self._remoteckan = RemoteHDX(
+            self._remoteckan = ckanapi.RemoteCKAN(
                 self.get_hdx_site_url(),
                 user_agent=user_agent,
                 session=self._session,
