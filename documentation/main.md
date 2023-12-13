@@ -53,7 +53,8 @@ The library has detailed API documentation which can be found in the menu at the
 
 ## Breaking Changes
 From 6.1.5, any method or parameter with "reference_period" in it is renamed
-to "time_period"
+to "time_period" and  any method or parameter with "file_type" in it is renamed
+to "format"
 
 From 6.0.0, generate_resource_view is renamed to generate_quickcharts
 
