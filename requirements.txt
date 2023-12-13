@@ -53,7 +53,7 @@ frictionless==5.16.0
     # via hdx-python-utilities
 hdx-python-country==3.6.3
     # via hdx-python-api (pyproject.toml)
-hdx-python-utilities==3.6.2
+hdx-python-utilities==3.6.3
     # via
     #   hdx-python-api (pyproject.toml)
     #   hdx-python-country
