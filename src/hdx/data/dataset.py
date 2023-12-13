@@ -3,6 +3,7 @@
 import json
 import logging
 import sys
+import warnings
 from copy import deepcopy
 from datetime import datetime
 from os.path import isfile, join
@@ -1260,6 +1261,17 @@ class Dataset(HDXObject):
             self.data.get("dataset_date"), date_format, today
         )
 
+    def get_reference_period(
+        self,
+        date_format: Optional[str] = None,
+        today: datetime = now_utc(),
+    ) -> Dict:
+        warnings.warn(
+            "get_reference_period() is deprecated, use get_time_period() instead",
+            DeprecationWarning,
+        )
+        return self.get_time_period(date_format, today)
+
     def set_time_period(
         self,
         startdate: Union[datetime, str],
@@ -1286,6 +1298,19 @@ class Dataset(HDXObject):
             startdate, enddate, ongoing, ignore_timeinfo
         )
 
+    def set_reference_period(
+        self,
+        startdate: Union[datetime, str],
+        enddate: Union[datetime, str, None] = None,
+        ongoing: bool = False,
+        ignore_timeinfo: bool = True,
+    ) -> None:
+        warnings.warn(
+            "set_reference_period() is deprecated, use set_time_period() instead",
+            DeprecationWarning,
+        )
+        self.set_time_period(startdate, enddate, ongoing, ignore_timeinfo)
+
     def set_time_period_year_range(
         self,
         dataset_year: Union[str, int, Iterable],
@@ -1307,6 +1332,17 @@ class Dataset(HDXObject):
             dataset_year, dataset_end_year
         )
         return retval
+
+    def set_reference_period_year_range(
+        self,
+        dataset_year: Union[str, int, Iterable],
+        dataset_end_year: Optional[Union[str, int]] = None,
+    ) -> List[int]:
+        warnings.warn(
+            "set_reference_period_year_range() is deprecated, use set_time_period_year_range() instead",
+            DeprecationWarning,
+        )
+        return self.set_time_period_year_range(dataset_year, dataset_end_year)
 
     @classmethod
     def list_valid_update_frequencies(cls) -> List[str]:
@@ -1918,7 +1954,7 @@ class Dataset(HDXObject):
             List[str]: List of filetypes
         """
         if not self.is_requestable():
-            return [resource.get_file_type() for resource in self.resources]
+            return [resource.get_format() for resource in self.resources]
         return self._get_stringlist_from_commastring("file_types")
 
     def add_filetype(self, filetype: str) -> bool:
@@ -2160,123 +2196,55 @@ class Dataset(HDXObject):
             if len_indicators == 0:
                 return None
             indicators_notexist = [True, True, True]
+
+            def replace_indicator(qc_config, index):
+                indicator = indicators[index]
+                ind_str = str(index + 1)
+                qc_config = replace_string(
+                    qc_config, f"CODE_VALUE_{ind_str}", str(indicator["code"])
+                )
+                replace = indicator.get("description", "")
+                qc_config = replace_string(
+                    qc_config, f"DESCRIPTION_VALUE_{ind_str}", replace
+                )
+                qc_config = replace_string(
+                    qc_config, f"TITLE_VALUE_{ind_str}", indicator["title"]
+                )
+                replace = indicator.get("unit", "")
+                qc_config = replace_string(
+                    qc_config, f"UNIT_VALUE_{ind_str}", replace
+                )
+                qc_config = replace_col(
+                    qc_config, f"CODE_COL_{ind_str}", indicator, "code_col"
+                )
+                qc_config = replace_col(
+                    qc_config, f"VALUE_COL_{ind_str}", indicator, "value_col"
+                )
+                qc_config = replace_col(
+                    qc_config, f"DATE_COL_{ind_str}", indicator, "date_col"
+                )
+                qc_config = replace_col(
+                    qc_config,
+                    f"DATE_FORMAT_{ind_str}",
+                    indicator,
+                    "date_format",
+                )
+                qc_config = replace_col(
+                    qc_config,
+                    f"AGGREGATE_COL_{ind_str}",
+                    indicator,
+                    "aggregate_col",
+                    True,
+                )
+                indicators_notexist[index] = False
+                return qc_config
+
             if indicators[0]:
-                indicator = indicators[0]
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "CODE_VALUE_1", str(indicator["code"])
-                )
-                replace = indicator.get("description", "")
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "DESCRIPTION_VALUE_1", replace
-                )
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "TITLE_VALUE_1", indicator["title"]
-                )
-                replace = indicator.get("unit", "")
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "UNIT_VALUE_1", replace
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config, "CODE_COL_1", indicator, "code_col"
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config, "VALUE_COL_1", indicator, "value_col"
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config, "DATE_COL_1", indicator, "date_col"
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config,
-                    "DATE_FORMAT_1",
-                    indicator,
-                    "date_format",
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config,
-                    "AGGREGATE_COL_1",
-                    indicator,
-                    "aggregate_col",
-                    True,
-                )
-                indicators_notexist[0] = False
+                hxl_preview_config = replace_indicator(hxl_preview_config, 0)
             if len_indicators > 1 and indicators[1]:
-                indicator = indicators[1]
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "CODE_VALUE_2", str(indicator["code"])
-                )
-                replace = indicator.get("description", "")
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "DESCRIPTION_VALUE_2", replace
-                )
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "TITLE_VALUE_2", indicator["title"]
-                )
-                replace = indicator.get("unit", "")
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "UNIT_VALUE_2", replace
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config, "CODE_COL_2", indicator, "code_col"
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config, "VALUE_COL_2", indicator, "value_col"
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config, "DATE_COL_2", indicator, "date_col"
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config,
-                    "DATE_FORMAT_2",
-                    indicator,
-                    "date_format",
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config,
-                    "AGGREGATE_COL_2",
-                    indicator,
-                    "aggregate_col",
-                    True,
-                )
-                indicators_notexist[1] = False
+                hxl_preview_config = replace_indicator(hxl_preview_config, 1)
             if len_indicators > 2 and indicators[2]:
-                indicator = indicators[2]
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "CODE_VALUE_3", str(indicator["code"])
-                )
-                replace = indicator.get("description", "")
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "DESCRIPTION_VALUE_3", replace
-                )
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "TITLE_VALUE_3", indicator["title"]
-                )
-                replace = indicator.get("unit", "")
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "UNIT_VALUE_3", replace
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config, "CODE_COL_3", indicator, "code_col"
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config, "VALUE_COL_3", indicator, "value_col"
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config, "DATE_COL_3", indicator, "date_col"
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config,
-                    "DATE_FORMAT_3",
-                    indicator,
-                    "date_format",
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config,
-                    "AGGREGATE_COL_3",
-                    indicator,
-                    "aggregate_col",
-                    True,
-                )
-                indicators_notexist[2] = False
+                hxl_preview_config = replace_indicator(hxl_preview_config, 2)
             if indicators_notexist == [True, True, True]:
                 return None
         hxl_preview_config = json.loads(hxl_preview_config)
@@ -2449,7 +2417,7 @@ class Dataset(HDXObject):
         filepath = join(folder, filename)
         write_list_to_csv(filepath, rows, columns=headers, encoding=encoding)
         resource = res_module.Resource(resourcedata)
-        resource.set_file_type("csv")
+        resource.set_format("csv")
         resource.set_file_to_upload(filepath)
         self.add_update_resource(resource)
         return resource

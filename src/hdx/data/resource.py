@@ -1,5 +1,6 @@
 """Resource class containing all logic for creating, checking, and updating resources."""
 import logging
+import warnings
 from datetime import datetime
 from os.path import join
 from pathlib import Path
@@ -177,12 +178,12 @@ class Resource(HDXObject):
                 downloader.download(url)
                 cls._formats_dict = dict()
                 for format_data in downloader.get_json():
-                    format = format_data[0].lower()
-                    if format == "_comment":
+                    hdx_format = format_data[0].lower()
+                    if hdx_format == "_comment":
                         continue
-                    cls._formats_dict[format] = format
-                    for file_type in format_data[3]:
-                        cls._formats_dict[file_type.lower()] = format
+                    cls._formats_dict[hdx_format] = hdx_format
+                    for file_format in format_data[3]:
+                        cls._formats_dict[file_format.lower()] = hdx_format
         return cls._formats_dict
 
     @classmethod
@@ -200,70 +201,91 @@ class Resource(HDXObject):
 
     @classmethod
     def get_mapped_format(
-        cls, file_type: str, configuration: Optional[Configuration] = None
+        cls, format: str, configuration: Optional[Configuration] = None
     ) -> Optional[str]:
-        """Given a format, return a format to which it maps
+        """Given a file format, return an HDX format to which it maps
 
         Args:
-            file_type (str): File type to map
+            format (str): File type to map
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
             Optional[str]: Mapped format or None if no mapping found
         """
-        if not file_type:
+        if not format:
             return None
         if configuration is None:
             configuration = Configuration.read()
-        file_type = file_type.lower()
+        file_format = format.lower()
         mappings = cls.read_formats_mappings(configuration=configuration)
-        format = mappings.get(file_type)
-        if format is None:
-            if file_type[0] == ".":
-                file_type = file_type[1:]
+        hdx_format = mappings.get(file_format)
+        if hdx_format is None:
+            if file_format[0] == ".":
+                file_format = file_format[1:]
             else:
-                file_type = f".{file_type}"
-            format = mappings.get(file_type)
-        return format
+                file_format = f".{file_format}"
+            hdx_format = mappings.get(file_format)
+        return hdx_format
 
-    def get_file_type(self) -> Optional[str]:
-        """Get the resource's file type
+    def get_format(self) -> Optional[str]:
+        """Get the resource's format
 
         Returns:
-            Optional[str]: Resource's file type or None if it has not been set
+            Optional[str]: Resource's format or None if it has not been set
         """
-        format = self.data.get("format")
-        if format:
-            format = format.lower()
-        return format
+        file_format = self.data.get("format")
+        if file_format:
+            file_format = file_format.lower()
+        return file_format
 
-    def set_file_type(self, file_type: str) -> str:
+    def get_file_type(self) -> Optional[str]:
+        warnings.warn(
+            "get_file_type() is deprecated, use get_format() instead",
+            DeprecationWarning,
+        )
+        return self.get_format()
+
+    def set_format(self, format: str) -> str:
         """Set the resource's file type
 
         Args:
-            file_type (str): File type to set on resource
+            format (str): Format to set on resource
 
         Returns:
             str: Format that was set
         """
-        format = self.get_mapped_format(
-            file_type, configuration=self.configuration
+        file_format = self.get_mapped_format(
+            format, configuration=self.configuration
         )
-        if not format:
+        if not file_format:
             raise HDXError(
-                f"Supplied file type {file_type} is invalid and could not be mapped to a known type!"
+                f"Supplied file type {file_format} is invalid and could not be mapped to a known type!"
             )
-        self.data["format"] = format
-        return format
+        self.data["format"] = file_format
+        return file_format
 
-    def clean_file_type(self) -> str:
-        """Clean the resource's file type, setting it to None if it is invalid and
+    def set_file_type(self, file_type: str) -> str:
+        warnings.warn(
+            "set_file_type() is deprecated, use set_format() instead",
+            DeprecationWarning,
+        )
+        return self.set_format(file_type)
+
+    def clean_format(self) -> str:
+        """Clean the resource's format, setting it to None if it is invalid and
         cannot be mapped
 
         Returns:
             str: Format that was set
         """
-        return self.set_file_type(self.data.get("format"))
+        return self.set_format(self.data.get("format"))
+
+    def clean_file_type(self) -> str:
+        warnings.warn(
+            "clean_file_type() is deprecated, use clean_format() instead",
+            DeprecationWarning,
+        )
+        return self.set_format(self.data.get("format"))
 
     def get_file_to_upload(self) -> Optional[str]:
         """Get the file uploaded
@@ -288,10 +310,10 @@ class Resource(HDXObject):
         if "url" in self.data:
             del self.data["url"]
         self.file_to_upload = file_to_upload
-        format = None
+        file_format = None
         if guess_format_from_suffix:
-            format = self.set_file_type(Path(file_to_upload).suffix)
-        return format
+            file_format = self.set_format(Path(file_to_upload).suffix)
+        return file_format
 
     def check_url_filetoupload(self) -> None:
         """Check if url or file to upload provided for resource and add resource_type
@@ -325,7 +347,7 @@ class Resource(HDXObject):
                 self.data["url_type"] = "upload"
             if "tracking_summary" in self.data:
                 del self.data["tracking_summary"]
-        self.clean_file_type()
+        self.clean_format()
 
     def check_required_fields(
         self, ignore_fields: ListTuple[str] = tuple()
@@ -501,9 +523,9 @@ class Resource(HDXObject):
             raise HDXError("No URL to download!")
         logger.debug(f"Downloading {url}")
         filename = self.data["name"]
-        file_type = f".{self.get_file_type()}"
-        if not filename.endswith(file_type):
-            filename = f"{filename}{file_type}"
+        file_format = f".{self.get_format()}"
+        if not filename.endswith(file_format):
+            filename = f"{filename}{file_format}"
         apikey = self.configuration.get_api_key()
         if apikey:
             headers = {"Authorization": self.configuration.get_api_key()}
