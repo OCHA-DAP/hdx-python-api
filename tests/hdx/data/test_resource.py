@@ -697,7 +697,7 @@ class TestResource:
         with pytest.raises(HDXError):
             resource.check_url_filetoupload()
         with pytest.raises(HDXError):
-            resource.set_file_type("NOTEXIST")
+            resource.set_format("NOTEXIST")
         del resource["format"]
         with pytest.raises(HDXError):
             resource.check_url_filetoupload()
@@ -792,18 +792,18 @@ class TestResource:
             "74b74ae1-df0c-4716-829f-4f939a046811"
         )
         assert resource["id"] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
-        assert resource.get_file_type() == "csv"
+        assert resource.get_format() == "csv"
 
-        resource.set_file_type("XLSX")
+        resource.set_format("XLSX")
         resource["id"] = "74b74ae1-df0c-4716-829f-4f939a046811"
         resource["name"] = "MyResource1"
         resource.update_in_hdx(data_updated=True)
         assert resource["id"] == "74b74ae1-df0c-4716-829f-4f939a046811"
         assert resource["format"] == "xlsx"
-        resource.set_file_type(".xsl")
-        assert resource.get_file_type() == "xls"
-        resource.set_file_type("XLSX")
-        assert resource.get_file_type() == "xlsx"
+        resource.set_format(".xsl")
+        assert resource.get_format() == "xls"
+        resource.set_format("XLSX")
+        assert resource.get_format() == "xlsx"
         assert resource["url_type"] == "api"
         assert resource["resource_type"] == "api"
         assert (
@@ -850,13 +850,13 @@ class TestResource:
         resource.create_in_hdx()
         assert resource.is_marked_data_updated() is False
         assert resource["id"] == "74b74ae1-df0c-4716-829f-4f939a046811"
-        assert resource.get_file_type() == "xlsx"
+        assert resource.get_format() == "xlsx"
         assert resource["state"] == "active"
         match = date_pattern.search(resource["last_modified"])
         assert match
         resource["format"] = "Geoservice"
         resource.update_in_hdx()
-        assert resource.get_file_type() == "geoservice"
+        assert resource.get_format() == "geoservice"
         resource["format"] = "NOTEXIST"
         with pytest.raises(HDXError):
             resource.update_in_hdx()
@@ -874,19 +874,19 @@ class TestResource:
         resource_data = copy.deepcopy(TestResource.resource_data)
         resource = Resource(resource_data)
         assert resource["name"] == "MyResource1"
-        assert resource.get_file_type() == "xlsx"
+        assert resource.get_format() == "xlsx"
         resource.update_from_yaml(static_yaml)
         assert resource["name"] == "MyResource1"
-        assert resource.get_file_type() == "csv"
+        assert resource.get_format() == "csv"
 
     def test_update_json(self, configuration, static_json):
         resource_data = copy.deepcopy(TestResource.resource_data)
         resource = Resource(resource_data)
         assert resource["name"] == "MyResource1"
-        assert resource.get_file_type() == "xlsx"
+        assert resource.get_format() == "xlsx"
         resource.update_from_json(static_json)
         assert resource["name"] == "MyResource1"
-        assert resource.get_file_type() == "zipped csv"
+        assert resource.get_format() == "zipped csv"
 
     def test_patch(self, configuration, post_patch):
         resource = Resource()

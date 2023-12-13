@@ -21,7 +21,7 @@ upload your datasets to HDX.
     -   [Configuring Logging](#configuring-logging)
     -   [Operations on HDX Objects](#operations-on-hdx-objects)
     -   [Dataset Specific Operations](#dataset-specific-operations)
-        -   [Reference Period](#reference-period)
+        -   [Time Period](#time-period)
         -   [Expected Update Frequency](#expected-update-frequency)
         -   [Location](#location)
         -   [Tags](#tags)
@@ -52,6 +52,10 @@ The library has detailed API documentation which can be found in the menu at the
 
 
 ## Breaking Changes
+From 6.1.5, any method or parameter with "reference_period" in it is renamed
+to "time_period" and  any method or parameter with "file_type" in it is renamed
+to "format"
+
 From 6.0.0, generate_resource_view is renamed to generate_quickcharts
 
 From 5.9.9, get_location_iso3s returns uppercase codes instead of lowercase
@@ -221,7 +225,7 @@ virtualenv if not installed:
      from HDX and view the date of the dataset:
 
         dataset = Dataset.read_from_hdx("novel-coronavirus-2019-ncov-cases")
-        print(dataset.get_reference_period())
+        print(dataset.get_time_period())
 
 11. You can search for datasets on HDX and get their resources:
 
@@ -239,14 +243,14 @@ virtualenv if not installed:
     server. With a dataset to which you have permissions, change the dataset date:
 
         dataset = Dataset.read_from_hdx("ID OR NAME OF DATASET")
-        print(dataset.get_reference_period())  # record this
-        dataset.set_reference_period("2015-07-26")
-        print(dataset.get_reference_period())
+        print(dataset.get_time_period())  # record this
+        dataset.set_time_period("2015-07-26")
+        print(dataset.get_time_period())
         dataset.update_in_hdx()
 
 14. You can view it on HDX before changing it back (if you have an API key):
 
-        dataset.set_reference_period("PREVIOUS DATE")
+        dataset.set_time_period("PREVIOUS DATE")
         dataset.update_in_hdx()
 
 15. If you are storing your data on HDX, you can upload a new file to a
@@ -532,47 +536,54 @@ object to update not existing.
 
 A dataset can have resources and can be in a showcase.
 
-If you wish to add resources, you can supply a list and call
-the **add_update_resources** function, for example:
+If you wish to add a resource, you can create a resource dictionary and set the
+format then call the **add_update_resource** function, for example:
 
-    resources = [{
-        "name": xlsx_resourcename,
-        "format": "xlsx",
-        "url": xlsx_url
-     }, {
-        "name": csv_resourcename,
-        "format": "zipped csv",
-        "url": csv_url
-     }]
-     for resource in resources:
-         resource["description"] = resource["url"].rsplit("/", 1)[-1]
-     dataset.add_update_resources(resources)
+    resource = Resource({
+        "name": "myfile.xlsx",
+        "description": "description",
+    })
+    resource.set_format("xlsx")
+    resource.set_file_to_upload(PATH_TO_FILE)
+    dataset.add_update_resource(resource)
 
-Calling **add_update_resources** creates a list of HDX Resource objects in
-dataset and operations can be performed on those objects.
+It is also possible to supply a resource id string or dictionary to the
+**add_update_resource** function. A url can be given instead of uploading a
+file to the HDX filestore (although using the filestore is preferred):
+
+    resource = Resource({
+        "name": "myfile.xlsx",
+        "description": "description",
+        "url": "https://www.blah.com/myfile.xlsx"
+    })
+    resource.set_format("xlsx")
+    dataset.add_update_resource(resource)
+
+You can delete a Resource object from the dataset using the **delete_resource**
+function, for example:
+
+    dataset.delete_resource(resource)
+
+**add_update_resources** creates a list of HDX Resource objects
+in a dataset:
+
+    dataset.add_update_resources(resources)
 
 To see the list of resources, you use the **get_resources** function eg.
 
     resources = dataset.get_resources()
 
-If you wish to add one resource, you can supply an id string, dictionary or Resource
-object and call the **add_update_resource** function, for example:
-
-    dataset.add_update_resource(resource)
-
-You can delete a Resource object from the dataset using the **delete_resource** function, for example:
-
-    dataset.delete_resource(resource)
-
 You can get all the resources from a list of datasets as follows:
 
     resources = Dataset.get_all_resources(datasets)
 
-To see the list of showcases a dataset is in, you use the **get_showcases** function eg.
+To see the list of showcases a dataset is in, you use the **get_showcases**
+function eg.
 
     showcases = dataset.get_showcases()
 
-If you wish to add the dataset to a showcase, you must first create the showcase in HDX if it does not already exist:
+If you wish to add the dataset to a showcase, you must first create the
+showcase in HDX if it does not already exist:
 
     showcase = Showcase({"name": "new-showcase-1",
                          "title": "MyShowcase1",
@@ -582,47 +593,47 @@ If you wish to add the dataset to a showcase, you must first create the showcase
                          "url": "http://visualisation/url/"})
     showcase.create_in_hdx()
 
-Then you can supply an id, dictionary or Showcase object and call the **add_showcase**
-function, for example:
+Then you can supply an id, dictionary or Showcase object and call the
+**add_showcase** function, for example:
 
     dataset.add_showcase(showcase)
 
-You can remove the dataset from a showcase using the **remove_showcase** function, for
-example:
+You can remove the dataset from a showcase using the **remove_showcase**
+function, for example:
 
     dataset.remove_showcase(showcase)
 
-### Reference Period
+### Time Period
 
-Reference Period is a mandatory field in HDX. It is the time period for which
-data are collected or calculated and to which, as a result, they refer. The
-reference period may be of any length: a year, a month, or even a day. It
-should not to be confused with when data was last added/changed in the dataset.
-It can be a single date or a range.
+Time Period is a mandatory field in HDX. It is the earliest start date and
+latest end date across all the resources included in the dataset. The time
+period may be of any length: a year, a month, or even a day. It should not to
+be confused with when data was last added/changed in the dataset. It can be a
+single date or a range.
 
-To get the reference period, you can do as shown below. It returns a dictionary containing
-keys "startdate" (start date as datetime), "enddate" (end date as datetime),
-"startdate_str" (start date as string), "enddate_str" (end date as string) and ongoing
-(whether the end date is a rolls forward every day). You can supply a
-[date format](https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior).
+To get the time period, you can do as shown below. It returns a dictionary
+containing keys "startdate" (start date as datetime), "enddate" (end date as
+datetime), "startdate_str" (start date as string), "enddate_str" (end date as
+string) and ongoing (whether the end date is a rolls forward every day). You
+can supply a [date format](https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior).
 If you do not, the output format will be an
 [ISO 8601 date](https://en.wikipedia.org/wiki/ISO_8601) eg. 2007-01-25.
 
-    reference_period = dataset.get_reference_period("OPTIONAL FORMAT")
+    time_period = dataset.get_time_period("OPTIONAL FORMAT")
 
-To set the reference period, you must pass either datetime.datetime objects or strings to
+To set the time period, you must pass either datetime.datetime objects or strings to
 the function below. It accepts a start date and an optional end date which if not
 supplied is assumed to be the same as the start date. Instead of the end date, the flag
 "ongoing" which by default is False can be set to True which indicates that the end date
 rolls forward every day.
 
-    dataset.set_reference_period("START DATE", "END DATE")
+    dataset.set_time_period("START DATE", "END DATE")
 
-The method below allows you to set the reference period using a year range. The start and
+The method below allows you to set the time period using a year range. The start and
 end year can be supplied as integers or strings. If no end year is supplied then the
 range will be from the beginning of the start year to the end of that year.
 
-    dataset.set_reference_period_year_range(START YEAR, END YEAR)
+    dataset.set_time_period_year_range(START YEAR, END YEAR)
 
 ### Expected Update Frequency
 
@@ -794,7 +805,7 @@ A resource can be generated from a given list or tuple: HEADERS and an ITERATOR
 which can return rows in list, tuple or dictionary form. A mapping from headers
 to HXL hashtags, HXLTAGS, must be provided along with the FOLDER and FILENAME
 where the file will be generated for upload to the filestore. The dataset
-reference period can optionally be set by supplying DATECOL for looking up
+time period can optionally be set by supplying DATECOL for looking up
 dates or YEARCOL for looking up years. DATECOl and YEARCOL can be a column name
 or the index of a column. Note that any timezone information is ignored and UTC
 is assumed.
@@ -804,7 +815,7 @@ in a row. It should accept a row and should return None to ignore the row or a
 dictionary which can either be empty if there are no dates in the row or can be
 populated with keys startdate and/or enddate which are of type timezone-aware
 datetime. The lowest start date and highest end date are used to set the
-reference period and are returned in the results dictionary in keys startdate
+time period and are returned in the results dictionary in keys startdate
 and enddate.
 
     dataset.generate_resource_from_iterator(HEADERS, ITERATOR, HXLTAGS,

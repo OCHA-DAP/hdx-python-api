@@ -11,7 +11,7 @@ attrs==23.1.0
     #   frictionless
     #   jsonlines
     #   jsonschema
-certifi==2023.7.22
+certifi==2023.11.17
     # via requests
 cffi==1.16.0
     # via cryptography
@@ -29,11 +29,11 @@ colorama==0.4.6
     # via typer
 coverage[toml]==7.3.2
     # via pytest-cov
-cryptography==41.0.5
+cryptography==41.0.7
     # via pyopenssl
 defopt==6.4.0
     # via hdx-python-api (pyproject.toml)
-distlib==0.3.7
+distlib==0.3.8
     # via virtualenv
 dnspython==2.4.2
     # via email-validator
@@ -51,17 +51,17 @@ filelock==3.13.1
     # via virtualenv
 frictionless==5.16.0
     # via hdx-python-utilities
-hdx-python-country==3.5.9
+hdx-python-country==3.6.3
     # via hdx-python-api (pyproject.toml)
-hdx-python-utilities==3.6.2
+hdx-python-utilities==3.6.3
     # via
     #   hdx-python-api (pyproject.toml)
     #   hdx-python-country
-humanize==4.8.0
+humanize==4.9.0
     # via frictionless
-identify==2.5.31
+identify==2.5.33
     # via pre-commit
-idna==3.4
+idna==3.6
     # via
     #   email-validator
     #   requests
@@ -89,11 +89,11 @@ libhxl==5.1
     #   hdx-python-country
 loguru==0.7.2
     # via hdx-python-utilities
-makefun==1.15.1
+makefun==1.15.2
     # via hdx-python-api (pyproject.toml)
 markdown-it-py==3.0.0
     # via rich
-marko==2.0.1
+marko==2.0.2
     # via frictionless
 markupsafe==2.1.3
     # via jinja2
@@ -111,7 +111,7 @@ packaging==23.2
     # via pytest
 petl==1.7.14
     # via frictionless
-platformdirs==3.11.0
+platformdirs==4.1.0
     # via virtualenv
 pluggy==1.3.0
     # via pytest
@@ -121,21 +121,21 @@ ply==3.11
     #   libhxl
 pockets==0.9.1
     # via sphinxcontrib-napoleon
-pre-commit==3.5.0
+pre-commit==3.6.0
     # via hdx-python-api (pyproject.toml)
-pyasn1==0.5.0
+pyasn1==0.5.1
     # via
     #   hdx-python-api (pyproject.toml)
     #   ndg-httpsclient
 pycparser==2.21
     # via cffi
-pydantic==2.4.2
+pydantic==2.5.2
     # via
     #   frictionless
     #   inflect
-pydantic-core==2.10.1
+pydantic-core==2.14.5
     # via pydantic
-pygments==2.16.1
+pygments==2.17.2
     # via rich
 pyopenssl==23.3.0
     # via
@@ -182,7 +182,7 @@ requests-file==1.5.1
     # via hdx-python-utilities
 rfc3986==2.0.0
     # via frictionless
-rich==13.6.0
+rich==13.7.0
     # via typer
 ruamel-yaml==0.18.5
     # via hdx-python-utilities
@@ -214,7 +214,7 @@ text-unidecode==1.3
     # via python-slugify
 typer[all]==0.9.0
     # via frictionless
-typing-extensions==4.8.0
+typing-extensions==4.9.0
     # via
     #   frictionless
     #   inflect
@@ -225,15 +225,15 @@ unidecode==1.3.7
     # via
     #   libhxl
     #   pyphonetics
-urllib3==2.0.7
+urllib3==2.1.0
     # via
     #   libhxl
     #   requests
 validators==0.22.0
     # via frictionless
-virtualenv==20.24.6
+virtualenv==20.25.0
     # via pre-commit
-wheel==0.41.3
+wheel==0.42.0
     # via libhxl
 xlrd==2.0.1
     # via hdx-python-utilities

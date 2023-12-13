@@ -3,6 +3,7 @@
 import json
 import logging
 import sys
+import warnings
 from copy import deepcopy
 from datetime import datetime
 from os.path import isfile, join
@@ -1239,7 +1240,7 @@ class Dataset(HDXObject):
         """
         return cls._autocomplete(name, limit, configuration)
 
-    def get_reference_period(
+    def get_time_period(
         self,
         date_format: Optional[str] = None,
         today: datetime = now_utc(),
@@ -1256,18 +1257,29 @@ class Dataset(HDXObject):
         Returns:
             Dict: Dictionary of date information
         """
-        return DateHelper.get_reference_period_info(
+        return DateHelper.get_time_period_info(
             self.data.get("dataset_date"), date_format, today
         )
 
-    def set_reference_period(
+    def get_reference_period(
+        self,
+        date_format: Optional[str] = None,
+        today: datetime = now_utc(),
+    ) -> Dict:
+        warnings.warn(
+            "get_reference_period() is deprecated, use get_time_period() instead",
+            DeprecationWarning,
+        )
+        return self.get_time_period(date_format, today)
+
+    def set_time_period(
         self,
         startdate: Union[datetime, str],
         enddate: Union[datetime, str, None] = None,
         ongoing: bool = False,
         ignore_timeinfo: bool = True,
     ) -> None:
-        """Set reference period from either datetime objects or strings. Any time and time
+        """Set time period from either datetime objects or strings. Any time and time
         zone information will be ignored by default (meaning that the time of the start
         date is set to 00:00:00, the time of any end date is set to 23:59:59 and the
         time zone is set to UTC). To have the time and time zone accounted for, set
@@ -1282,16 +1294,29 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        self.data["dataset_date"] = DateHelper.get_hdx_reference_period(
+        self.data["dataset_date"] = DateHelper.get_hdx_time_period(
             startdate, enddate, ongoing, ignore_timeinfo
         )
 
-    def set_reference_period_year_range(
+    def set_reference_period(
+        self,
+        startdate: Union[datetime, str],
+        enddate: Union[datetime, str, None] = None,
+        ongoing: bool = False,
+        ignore_timeinfo: bool = True,
+    ) -> None:
+        warnings.warn(
+            "set_reference_period() is deprecated, use set_time_period() instead",
+            DeprecationWarning,
+        )
+        self.set_time_period(startdate, enddate, ongoing, ignore_timeinfo)
+
+    def set_time_period_year_range(
         self,
         dataset_year: Union[str, int, Iterable],
         dataset_end_year: Optional[Union[str, int]] = None,
     ) -> List[int]:
-        """Set reference period as a range from year or start and end year.
+        """Set time period as a range from year or start and end year.
 
         Args:
             dataset_year (Union[str, int, Iterable]): Dataset year given as string or int or range in an iterable
@@ -1303,10 +1328,21 @@ class Dataset(HDXObject):
         (
             self.data["dataset_date"],
             retval,
-        ) = DateHelper.get_hdx_reference_period_from_years(
+        ) = DateHelper.get_hdx_time_period_from_years(
             dataset_year, dataset_end_year
         )
         return retval
+
+    def set_reference_period_year_range(
+        self,
+        dataset_year: Union[str, int, Iterable],
+        dataset_end_year: Optional[Union[str, int]] = None,
+    ) -> List[int]:
+        warnings.warn(
+            "set_reference_period_year_range() is deprecated, use set_time_period_year_range() instead",
+            DeprecationWarning,
+        )
+        return self.set_time_period_year_range(dataset_year, dataset_end_year)
 
     @classmethod
     def list_valid_update_frequencies(cls) -> List[str]:
@@ -1918,7 +1954,7 @@ class Dataset(HDXObject):
             List[str]: List of filetypes
         """
         if not self.is_requestable():
-            return [resource.get_file_type() for resource in self.resources]
+            return [resource.get_format() for resource in self.resources]
         return self._get_stringlist_from_commastring("file_types")
 
     def add_filetype(self, filetype: str) -> bool:
@@ -2160,123 +2196,55 @@ class Dataset(HDXObject):
             if len_indicators == 0:
                 return None
             indicators_notexist = [True, True, True]
+
+            def replace_indicator(qc_config, index):
+                indicator = indicators[index]
+                ind_str = str(index + 1)
+                qc_config = replace_string(
+                    qc_config, f"CODE_VALUE_{ind_str}", str(indicator["code"])
+                )
+                replace = indicator.get("description", "")
+                qc_config = replace_string(
+                    qc_config, f"DESCRIPTION_VALUE_{ind_str}", replace
+                )
+                qc_config = replace_string(
+                    qc_config, f"TITLE_VALUE_{ind_str}", indicator["title"]
+                )
+                replace = indicator.get("unit", "")
+                qc_config = replace_string(
+                    qc_config, f"UNIT_VALUE_{ind_str}", replace
+                )
+                qc_config = replace_col(
+                    qc_config, f"CODE_COL_{ind_str}", indicator, "code_col"
+                )
+                qc_config = replace_col(
+                    qc_config, f"VALUE_COL_{ind_str}", indicator, "value_col"
+                )
+                qc_config = replace_col(
+                    qc_config, f"DATE_COL_{ind_str}", indicator, "date_col"
+                )
+                qc_config = replace_col(
+                    qc_config,
+                    f"DATE_FORMAT_{ind_str}",
+                    indicator,
+                    "date_format",
+                )
+                qc_config = replace_col(
+                    qc_config,
+                    f"AGGREGATE_COL_{ind_str}",
+                    indicator,
+                    "aggregate_col",
+                    True,
+                )
+                indicators_notexist[index] = False
+                return qc_config
+
             if indicators[0]:
-                indicator = indicators[0]
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "CODE_VALUE_1", str(indicator["code"])
-                )
-                replace = indicator.get("description", "")
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "DESCRIPTION_VALUE_1", replace
-                )
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "TITLE_VALUE_1", indicator["title"]
-                )
-                replace = indicator.get("unit", "")
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "UNIT_VALUE_1", replace
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config, "CODE_COL_1", indicator, "code_col"
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config, "VALUE_COL_1", indicator, "value_col"
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config, "DATE_COL_1", indicator, "date_col"
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config,
-                    "DATE_FORMAT_1",
-                    indicator,
-                    "date_format",
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config,
-                    "AGGREGATE_COL_1",
-                    indicator,
-                    "aggregate_col",
-                    True,
-                )
-                indicators_notexist[0] = False
+                hxl_preview_config = replace_indicator(hxl_preview_config, 0)
             if len_indicators > 1 and indicators[1]:
-                indicator = indicators[1]
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "CODE_VALUE_2", str(indicator["code"])
-                )
-                replace = indicator.get("description", "")
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "DESCRIPTION_VALUE_2", replace
-                )
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "TITLE_VALUE_2", indicator["title"]
-                )
-                replace = indicator.get("unit", "")
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "UNIT_VALUE_2", replace
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config, "CODE_COL_2", indicator, "code_col"
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config, "VALUE_COL_2", indicator, "value_col"
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config, "DATE_COL_2", indicator, "date_col"
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config,
-                    "DATE_FORMAT_2",
-                    indicator,
-                    "date_format",
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config,
-                    "AGGREGATE_COL_2",
-                    indicator,
-                    "aggregate_col",
-                    True,
-                )
-                indicators_notexist[1] = False
+                hxl_preview_config = replace_indicator(hxl_preview_config, 1)
             if len_indicators > 2 and indicators[2]:
-                indicator = indicators[2]
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "CODE_VALUE_3", str(indicator["code"])
-                )
-                replace = indicator.get("description", "")
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "DESCRIPTION_VALUE_3", replace
-                )
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "TITLE_VALUE_3", indicator["title"]
-                )
-                replace = indicator.get("unit", "")
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, "UNIT_VALUE_3", replace
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config, "CODE_COL_3", indicator, "code_col"
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config, "VALUE_COL_3", indicator, "value_col"
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config, "DATE_COL_3", indicator, "date_col"
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config,
-                    "DATE_FORMAT_3",
-                    indicator,
-                    "date_format",
-                )
-                hxl_preview_config = replace_col(
-                    hxl_preview_config,
-                    "AGGREGATE_COL_3",
-                    indicator,
-                    "aggregate_col",
-                    True,
-                )
-                indicators_notexist[2] = False
+                hxl_preview_config = replace_indicator(hxl_preview_config, 2)
             if indicators_notexist == [True, True, True]:
                 return None
         hxl_preview_config = json.loads(hxl_preview_config)
@@ -2395,17 +2363,17 @@ class Dataset(HDXObject):
         return f"{self.configuration.get_hdx_site_url()}/api/3/action/package_show?id={name_or_id}"
 
     def remove_dates_from_title(
-        self, change_title: bool = True, set_reference_period: bool = False
+        self, change_title: bool = True, set_time_period: bool = False
     ) -> List[Tuple[datetime, datetime]]:
         """Remove dates from dataset title returning sorted the dates that were found in
         title. The title in the dataset metadata will be changed by default. The
-        dataset's metadata field reference period will not be changed by default, but if
-        set_reference_period is True, then the range with the lowest start date will be used
-        to set the reference period field.
+        dataset's metadata field time period will not be changed by default, but if
+        set_time_period is True, then the range with the lowest start date will be used
+        to set the time period field.
 
         Args:
             change_title (bool): Whether to change the dataset title. Defaults to True.
-            set_reference_period (bool): Whether to set reference period from date or range in title. Defaults to False.
+            set_time_period (bool): Whether to set time period from date or range in title. Defaults to False.
 
         Returns:
             List[Tuple[datetime,datetime]]: Date ranges found in title
@@ -2416,9 +2384,9 @@ class Dataset(HDXObject):
         newtitle, ranges = DatasetTitleHelper.get_dates_from_title(title)
         if change_title:
             self.data["title"] = newtitle
-        if set_reference_period and len(ranges) != 0:
+        if set_time_period and len(ranges) != 0:
             startdate, enddate = ranges[0]
-            self.set_reference_period(startdate, enddate)
+            self.set_time_period(startdate, enddate)
         return ranges
 
     def generate_resource_from_rows(
@@ -2449,7 +2417,7 @@ class Dataset(HDXObject):
         filepath = join(folder, filename)
         write_list_to_csv(filepath, rows, columns=headers, encoding=encoding)
         resource = res_module.Resource(resourcedata)
-        resource.set_file_type("csv")
+        resource.set_format("csv")
         resource.set_file_to_upload(filepath)
         self.add_update_resource(resource)
         return resource
@@ -2523,7 +2491,7 @@ class Dataset(HDXObject):
         contain the resource in the key resource, headers in the key headers
         and list of rows in the key rows.
 
-        The reference period can optionally be set by supplying a column in
+        The time period can optionally be set by supplying a column in
         which the date or year is to be looked up. Note that any timezone
         information is ignored and UTC assumed. Alternatively, a function can
         be supplied to handle any dates in a row. It should accept a row and
@@ -2531,7 +2499,7 @@ class Dataset(HDXObject):
         be empty if there are no dates in the row or can be populated with
         keys startdate and/or enddate which are of type timezone-aware
         datetime. The lowest start date and highest end date are used to set
-        the reference period and are returned in the results dictionary in keys
+        the time period and are returned in the results dictionary in keys
         startdate and enddate.
 
         If the parameter quickcharts is supplied then various QuickCharts
@@ -2560,7 +2528,7 @@ class Dataset(HDXObject):
             folder (str): Folder to which to write file containing rows
             filename (str): Filename of file to write rows
             resourcedata (Dict): Resource data
-            datecol (Optional[Union[int,str]]): Date column for setting reference period. Defaults to None (don't set).
+            datecol (Optional[Union[int,str]]): Date column for setting time period. Defaults to None (don't set).
             yearcol (Optional[Union[int,str]]): Year column for setting dataset year range. Defaults to None (don't set).
             date_function (Optional[Callable[[Dict],Optional[Dict]]]): Date function to call for each row. Defaults to None.
             quickcharts (Optional[Dict]): Dictionary containing optional keys: hashtag, values, cutdown and/or cutdownhashtags
@@ -2683,7 +2651,7 @@ class Dataset(HDXObject):
             else:
                 retdict["startdate"] = dates[0]
                 retdict["enddate"] = dates[1]
-                self.set_reference_period(dates[0], dates[1])
+                self.set_time_period(dates[0], dates[1])
         resource = self.generate_resource_from_rows(
             folder,
             filename,
@@ -2745,7 +2713,7 @@ class Dataset(HDXObject):
         list form depending upon the dict_rows argument) and outputs a modified
         row.
 
-        The reference period can optionally be set by supplying a column in
+        The time period can optionally be set by supplying a column in
         which the date or year is to be looked up. Note that any timezone
         information is ignored and UTC assumed. Alternatively, a function can
         be supplied to handle any dates in a row. It should accept a row and
@@ -2753,7 +2721,7 @@ class Dataset(HDXObject):
         be empty if there are no dates in the row or can be populated with
         keys startdate and/or enddate which are of type timezone-aware
         datetime. The lowest start date and highest end date are used to set
-        the reference period and are returned in the results dictionary in keys
+        the time period and are returned in the results dictionary in keys
         startdate and enddate.
 
         If the parameter quickcharts is supplied then various QuickCharts
@@ -2784,7 +2752,7 @@ class Dataset(HDXObject):
             resourcedata (Dict): Resource data
             header_insertions (Optional[ListTuple[Tuple[int,str]]]): List of (position, header) to insert. Defaults to None.
             row_function (Optional[Callable[[List[str],Dict],Dict]]): Function to call for each row. Defaults to None.
-            datecol (Optional[str]): Date column for setting reference period. Defaults to None (don't set).
+            datecol (Optional[str]): Date column for setting time period. Defaults to None (don't set).
             yearcol (Optional[str]): Year column for setting dataset year range. Defaults to None (don't set).
             date_function (Optional[Callable[[Dict],Optional[Dict]]]): Date function to call for each row. Defaults to None.
             quickcharts (Optional[Dict]): Dictionary containing optional keys: hashtag, values, cutdown and/or cutdownhashtags

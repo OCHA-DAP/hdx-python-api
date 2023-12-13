@@ -70,7 +70,7 @@ class TestUpdateLogic:
         new_dataset.set_organization("c021f6be-3598-418e-8f7f-c7a799194dba")
         new_dataset.set_expected_update_frequency("Every month")
         new_dataset.set_subnational(False)
-        new_dataset.set_reference_period_year_range(1961, 2019)
+        new_dataset.set_time_period_year_range(1961, 2019)
         new_dataset.add_country_location("zmb")
         new_dataset.add_tag("hxl")
         return new_dataset
@@ -82,7 +82,7 @@ class TestUpdateLogic:
         dataset.set_organization("c021f6be-3598-418e-8f7f-c7a799194dba")
         dataset.set_expected_update_frequency("Every month")
         dataset.set_subnational(False)
-        dataset.set_reference_period_year_range(1961, 2019)
+        dataset.set_time_period_year_range(1961, 2019)
         dataset.add_country_location("zmb")
         dataset.add_tag("hxl")
         dataset["id"] = "3adc4bb0-faef-42ae-bd67-0ea08918a629"

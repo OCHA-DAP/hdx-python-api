@@ -1,11 +1,11 @@
 """Configuration Tests"""
 from os.path import join
 
-import ckanapi
 import pytest
 
 from hdx.api import __version__
 from hdx.api.configuration import Configuration, ConfigurationError
+from hdx.api.remotehdx import RemoteHDX
 from hdx.utilities.loader import LoadError
 from hdx.utilities.useragent import UserAgentError
 
@@ -838,12 +838,12 @@ hello there"""
             hdx_base_config_dict={},
             project_config_yaml=project_config_yaml,
         )
-        remoteckan = ckanapi.RemoteCKAN(
+        remoteckan = RemoteHDX(
             "http://lalala", apikey="12345", user_agent="HDXPythonLibrary/1.0"
         )
         Configuration.read().setup_session_remoteckan(remoteckan=remoteckan)
         assert Configuration.read().remoteckan() == remoteckan
-        remoteckan = ckanapi.RemoteCKAN(
+        remoteckan = RemoteHDX(
             "http://hahaha", apikey="54321", user_agent="HDXPythonLibrary/0.5"
         )
         Configuration._create(
