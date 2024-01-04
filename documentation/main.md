@@ -934,6 +934,12 @@ resource, it is possible to supply the parameter `data_updated` eg.
 
     resource.update_in_hdx(data_updated=True)
 
+Using **mark_data_updated** on multiple resources in a dataset has the
+advantage of only requiring a single call to HDX (by way of the dataset's
+**create_in_hdx** or **update_in_hdx** method). Setting `data_updated` to
+`True` when using each resource's **create_in_hdx** or **update_in_hdx** method
+requires a call to HDX per resource.
+
 If you need to set a specific date for date of update (`last_modified`), you
 can call the following:
 
