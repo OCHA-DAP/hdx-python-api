@@ -46,6 +46,7 @@ from hdx.utilities.dateparse import (
 )
 from hdx.utilities.dictandlist import merge_two_dictionaries, write_list_to_csv
 from hdx.utilities.downloader import Download
+from hdx.utilities.loader import load_json
 from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.saver import save_json
 from hdx.utilities.typehint import ListTuple, ListTupleDict
@@ -214,13 +215,12 @@ class Dataset(HDXObject):
         Returns:
             Optional[Dataset]: Dataset created from JSON or None
         """
-        with open(path) as f:
-            jsonobj = json.loads(f.read())
-            if jsonobj is None:
-                return None
-            dataset = Dataset(jsonobj)
-            dataset.separate_resources()
-            return dataset
+        jsonobj = load_json(path, loaderror_if_empty=False)
+        if jsonobj is None:
+            return None
+        dataset = Dataset(jsonobj)
+        dataset.separate_resources()
+        return dataset
 
     def init_resources(self) -> None:
         """Initialise self.resources list
