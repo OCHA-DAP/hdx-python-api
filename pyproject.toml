@@ -39,7 +39,7 @@ dependencies = [
     "email_validator",
     "hdx-python-country>=3.6.4",
     "hdx-python-utilities>=3.6.4",
-    "libhxl>=5.1",
+    "libhxl>=5.2",
     "makefun",
     "ndg-httpsclient",
     "pyasn1",
