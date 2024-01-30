@@ -2,23 +2,23 @@ default_language_version:
     python: python3.11
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
+        exclude: test_scraper_.*\.json
       - id: check-ast
-  - repo: https://github.com/psf/black
-    rev: 23.3.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.14
     hooks:
-      - id: black
-        args: [--config, .config/black.toml]
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.267
-    hooks:
+      # Run the linter.
       - id: ruff
-        args: [--config, .config/ruff.toml, --fix, --exit-non-zero-on-fix]
+        args: [--config, .config/ruff.toml, --fix]
+      # Run the formatter.
+      - id: ruff-format
+        args: [--config, .config/ruff.toml]
   - repo: https://github.com/jazzband/pip-tools
-    rev: 6.13.0
+    rev: 7.3.0
     hooks:
       - id: pip-compile
         name: pip-compile requirements.txt

@@ -3,7 +3,7 @@ exclude = ["_version.py"]
 ignore = [
     "E501" # Line too long
 ]
-# List of rules: https://beta.ruff.rs/docs/rules/
+# List of rules: https://docs.astral.sh/ruff/rules/
 select = [
   "E",   # pycodestyle - default
   "F",   # pyflakes - default

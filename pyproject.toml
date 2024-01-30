@@ -104,13 +104,12 @@ dependencies = [
   "ruff",
 ]
 
+[tool.hatch.envs.lint]
+detached = true
+dependencies = ["ruff"]
+
 [tool.hatch.envs.lint.scripts]
 style = [
-  "ruff --config .config/ruff.toml {args:.}",
-  "black --config .config/black.toml --check --diff {args:.}",
-]
-# Not used for anything at the moment
-fmt = [
-  "black --config .config/black.toml {args:.}",
-  "ruff --config .config/ruff.toml --fix {args:.}",
+  "ruff check --config .config/ruff.toml --diff {args:.}",
+  "ruff format --config .config/ruff.toml --diff {args:.}",
 ]
