@@ -62,7 +62,7 @@ class DateHelper:
 
     @staticmethod
     def get_time_period_info(
-        hdx_time_period: Dict,
+        hdx_time_period: str,
         date_format: Optional[str] = None,
         today: datetime = now_utc(),
     ) -> Dict:
