@@ -99,13 +99,6 @@ python = ["3.12"]
 
 [tool.hatch.envs.lint]
 detached = true
-dependencies = [
-  "black",
-  "ruff",
-]
-
-[tool.hatch.envs.lint]
-detached = true
 dependencies = ["ruff"]
 
 [tool.hatch.envs.lint.scripts]
