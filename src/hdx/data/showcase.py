@@ -245,7 +245,8 @@ class Showcase(HDXObject):
         return datasets
 
     def _get_showcase_dataset_dict(
-        self, dataset: Union["Dataset", Dict, str]  # noqa: F821
+        self,
+        dataset: Union["Dataset", Dict, str],  # noqa: F821
     ) -> Dict:
         """Get showcase dataset dict
 
@@ -321,7 +322,8 @@ class Showcase(HDXObject):
         return alldatasetsadded
 
     def remove_dataset(
-        self, dataset: Union["Dataset", Dict, str]  # noqa: F821
+        self,
+        dataset: Union["Dataset", Dict, str],  # noqa: F821
     ) -> None:
         """Remove a dataset
 
