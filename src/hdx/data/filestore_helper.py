@@ -1,6 +1,6 @@
 """Helper to the Dataset class for handling resources with filestores.
 """
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Dict
 
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -100,7 +100,7 @@ class FilestoreHelper:
         if resource.get_file_to_upload():
             resource["url"] = cls.temporary_url
         if data_updated:
-            resource["last_modified"] = datetime.utcnow().isoformat(
+            resource["last_modified"] = datetime.now(timezone.utc).isoformat(
                 timespec="microseconds"
             )
             resource.data_updated = False

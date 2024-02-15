@@ -5,7 +5,7 @@ import logging
 import sys
 import warnings
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timezone
 from os.path import isfile, join
 from typing import (
     TYPE_CHECKING,
@@ -614,7 +614,7 @@ class Dataset(HDXObject):
         # No need to output timezone info here so no need to use now_utc()
         self.data[
             "updated_by_script"
-        ] = f"{scriptinfo} ({datetime.utcnow().isoformat(timespec='microseconds')})"
+        ] = f"{scriptinfo} ({datetime.now(timezone.utc).isoformat(timespec='microseconds')})"
         batch = kwargs.get("batch")
         if batch:
             if not is_valid_uuid(batch):

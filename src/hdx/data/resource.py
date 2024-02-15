@@ -1,7 +1,7 @@
 """Resource class containing all logic for creating, checking, and updating resources."""
 import logging
 import warnings
-from datetime import datetime
+from datetime import datetime, timezone
 from os.path import join
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -392,9 +392,9 @@ class Resource(HDXObject):
         """
         data_updated = kwargs.pop("data_updated", self.data_updated)
         if data_updated and not self.file_to_upload:
-            self.old_data["last_modified"] = datetime.utcnow().isoformat(
-                timespec="microseconds"
-            )
+            self.old_data["last_modified"] = datetime.now(
+                timezone.utc
+            ).isoformat(timespec="microseconds")
             self.data_updated = False
             # old_data will be merged into data in the next step
         self._merge_hdx_update(
