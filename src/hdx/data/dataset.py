@@ -575,6 +575,37 @@ class Dataset(HDXObject):
         dataset.separate_resources()
         return dataset
 
+    def _prepare_hdx_call(self, default_operation, kwargs):
+        self.unseparate_resources()
+        self.clean_tags()
+        scriptinfo = kwargs.get("updated_by_script")
+        if scriptinfo:
+            del kwargs["updated_by_script"]
+        else:
+            scriptinfo = self.configuration.get_user_agent()
+        # No need to output timezone info here
+        self.data[
+            "updated_by_script"
+        ] = f"{scriptinfo} ({datetime.now(timezone.utc).replace(tzinfo=None).isoformat(timespec='microseconds')})"
+        batch = kwargs.get("batch")
+        if batch:
+            if not is_valid_uuid(batch):
+                raise HDXError(f"{batch} is not a valid UUID!")
+            self.data["batch"] = batch
+            del kwargs["batch"]
+            if "batch_mode" not in kwargs:
+                kwargs["batch_mode"] = "DONT_GROUP"
+        operation = kwargs.get("operation")
+        if not operation:
+            operation = default_operation
+        kwargs["operation"] = operation
+        if "test" in kwargs:
+            test = True
+            del kwargs["test"]
+        else:
+            test = False
+        return operation, test
+
     def _save_dataset_add_filestore_resources(
         self,
         default_operation: str,
@@ -604,38 +635,10 @@ class Dataset(HDXObject):
         Returns:
             Dict: Dictionary of what gets passed to the revise call (for testing)
         """
-        self.unseparate_resources()
-        self.clean_tags()
-        scriptinfo = kwargs.get("updated_by_script")
-        if scriptinfo:
-            del kwargs["updated_by_script"]
-        else:
-            scriptinfo = self.configuration.get_user_agent()
-        # No need to output timezone info here
-        self.data[
-            "updated_by_script"
-        ] = f"{scriptinfo} ({datetime.now(timezone.utc).replace(tzinfo=None).isoformat(timespec='microseconds')})"
-        batch = kwargs.get("batch")
-        if batch:
-            if not is_valid_uuid(batch):
-                raise HDXError(f"{batch} is not a valid UUID!")
-            self.data["batch"] = batch
-            del kwargs["batch"]
-            if "batch_mode" not in kwargs:
-                kwargs["batch_mode"] = "DONT_GROUP"
-        operation = kwargs.get("operation")
-        if not operation:
-            operation = default_operation
-        kwargs["operation"] = operation
-        existing_ignore_check = kwargs.get("ignore_check")
+        operation, test = self._prepare_hdx_call(default_operation, kwargs)
         revise = True
-        if "test" in kwargs:
-            test = True
-            del kwargs["test"]
-        else:
-            test = False
         if operation == "create":
-            if not existing_ignore_check:
+            if not kwargs.get("ignore_check"):
                 kwargs["ignore_check"] = True
             self._hdx_update(
                 "dataset", id_field_name, force_active=True, **kwargs
