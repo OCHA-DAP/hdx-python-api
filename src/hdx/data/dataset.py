@@ -641,9 +641,7 @@ class Dataset(HDXObject):
                 new_fsresources = dict()
                 for index in filestore_resources:
                     if index > resource_index:
-                        new_fsresources[index - 1] = filestore_resources[
-                            index
-                        ]
+                        new_fsresources[index - 1] = filestore_resources[index]
                     else:
                         new_fsresources[index] = filestore_resources[index]
                 filestore_resources = new_fsresources
@@ -983,9 +981,7 @@ class Dataset(HDXObject):
         kwargs["operation"] = operation
         if not kwargs.get("ignore_check"):
             kwargs["ignore_check"] = True
-        self._hdx_update(
-            "dataset", "name", force_active=True, **kwargs
-        )
+        self._hdx_update("dataset", "name", force_active=True, **kwargs)
         if not filestore_resources and not keys_to_delete:
             self.init_resources()
             self.separate_resources()
