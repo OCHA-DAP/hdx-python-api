@@ -115,9 +115,8 @@ class TestUpdateDatasetResourcesLogic:
             11: "tests/fixtures/update_dataset_resources/opri_metadata_zwe.csv",
             12: "tests/fixtures/update_dataset_resources/qc_sdg_data_zwe.csv",
         }
-        results = dataset._save_dataset_add_filestore_resources(
-            "update",
-            "id",
+        dataset._prepare_hdx_call({})
+        results = dataset._revise_dataset(
             tuple(),
             resources_to_delete,
             new_resource_order,

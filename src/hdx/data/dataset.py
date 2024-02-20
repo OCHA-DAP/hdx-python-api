@@ -575,7 +575,7 @@ class Dataset(HDXObject):
         dataset.separate_resources()
         return dataset
 
-    def _prepare_hdx_call(self, default_operation, kwargs):
+    def _prepare_hdx_call(self, kwargs):
         self.unseparate_resources()
         self.clean_tags()
         scriptinfo = kwargs.get("updated_by_script")
@@ -595,103 +595,78 @@ class Dataset(HDXObject):
             del kwargs["batch"]
             if "batch_mode" not in kwargs:
                 kwargs["batch_mode"] = "DONT_GROUP"
-        operation = kwargs.get("operation")
-        if not operation:
-            operation = default_operation
-        kwargs["operation"] = operation
-        if "test" in kwargs:
-            test = True
-            del kwargs["test"]
-        else:
-            test = False
-        return operation, test
 
-    def _save_dataset_add_filestore_resources(
+    def _revise_dataset(
         self,
-        default_operation: str,
-        id_field_name: str,
         keys_to_delete: ListTuple[str],
         resources_to_delete: ListTuple[int],
         new_resource_order: Optional[ListTuple[str]],
         filestore_resources: Dict[int, str],
         hxl_update: bool,
         create_default_views: bool = False,
+        test: bool = False,
         **kwargs: Any,
     ) -> Dict:
         """Helper method to save the modified dataset and add any filestore resources
 
         Args:
-            default_operation (str): Operation to perform eg. patch. Defaults to update.
-            id_field_name (str): Name of field containing HDX object identifier
             keys_to_delete (ListTuple[str]): List of top level metadata keys to delete
             resources_to_delete (ListTuple[int]): List of indexes of resources to delete
             new_resource_order (Optional[ListTuple[str]]): New resource order to use or None
             filestore_resources (Dict[int, str]): List of (index of resources, file to upload)
             hxl_update (bool): Whether to call package_hxl_update.
             create_default_views (bool): Whether to create default views. Defaults to False.
+            test (bool): Whether running in a test. Defaults to False.
             **kwargs: See below
             ignore_field (str): Any field to ignore when checking dataset metadata. Defaults to None.
 
         Returns:
             Dict: Dictionary of what gets passed to the revise call (for testing)
         """
-        operation, test = self._prepare_hdx_call(default_operation, kwargs)
-        revise = True
-        if operation == "create":
-            if not kwargs.get("ignore_check"):
-                kwargs["ignore_check"] = True
-            self._hdx_update(
-                "dataset", id_field_name, force_active=True, **kwargs
-            )
-            if not filestore_resources and not keys_to_delete:
-                revise = False
-                self.init_resources()
-                self.separate_resources()
         results = dict()
-        if revise:
-            self.old_data = self.data
-            self._check_kwargs_fields("dataset", **kwargs)
-            self.data["state"] = "active"
-            filter = list()
-            for key in keys_to_delete:
-                filter.append(f"-{key}")
-                self.data.pop(key, None)
-            files_to_upload = dict()
-            if not self.is_requestable():
-                resources = self.data["resources"]
-                for resource_index in resources_to_delete:
-                    del resources[resource_index]
-                    if resource_index == len(resources):
-                        filter.append(f"-resources__{resource_index}")
-                    new_fsresources = dict()
-                    for index in filestore_resources:
-                        if index > resource_index:
-                            new_fsresources[index - 1] = filestore_resources[
-                                index
-                            ]
-                        else:
-                            new_fsresources[index] = filestore_resources[index]
-                    filestore_resources = new_fsresources
-                for (
-                    resource_index,
-                    file_to_upload,
-                ) in filestore_resources.items():
-                    files_to_upload[
-                        f"update__resources__{resource_index}__upload"
-                    ] = file_to_upload
-            results["filter"] = filter
-            results["update"] = self.data
-            results["files_to_upload"] = files_to_upload
-            if test:
-                return results
-            new_dataset = self.revise(
-                {"id": self.data["id"]},
-                filter=filter,
-                update=self.data,
-                files_to_upload=files_to_upload,
-            )
-            self.data = new_dataset.data
-            self.resources = new_dataset.resources
+        self.old_data = self.data
+        self._check_kwargs_fields("dataset", **kwargs)
+        self.data["state"] = "active"
+        filter = list()
+        for key in keys_to_delete:
+            filter.append(f"-{key}")
+            self.data.pop(key, None)
+        files_to_upload = dict()
+        if not self.is_requestable():
+            resources = self.data["resources"]
+            for resource_index in resources_to_delete:
+                del resources[resource_index]
+                if resource_index == len(resources):
+                    filter.append(f"-resources__{resource_index}")
+                new_fsresources = dict()
+                for index in filestore_resources:
+                    if index > resource_index:
+                        new_fsresources[index - 1] = filestore_resources[
+                            index
+                        ]
+                    else:
+                        new_fsresources[index] = filestore_resources[index]
+                filestore_resources = new_fsresources
+            for (
+                resource_index,
+                file_to_upload,
+            ) in filestore_resources.items():
+                files_to_upload[
+                    f"update__resources__{resource_index}__upload"
+                ] = file_to_upload
+        results["filter"] = filter
+        results["update"] = self.data
+        results["files_to_upload"] = files_to_upload
+        if test:
+            return results
+        new_dataset = self.revise(
+            {"id": self.data["id"]},
+            filter=filter,
+            update=self.data,
+            files_to_upload=files_to_upload,
+        )
+        self.data = new_dataset.data
+        self.resources = new_dataset.resources
         if new_resource_order:
             existing_order = [
                 (x["name"], x["format"].lower()) for x in self.resources
@@ -870,9 +845,8 @@ class Dataset(HDXObject):
             match_resource_order,
             **kwargs,
         )
-        return self._save_dataset_add_filestore_resources(
-            "update",
-            "id",
+        self._prepare_hdx_call(kwargs)
+        return self._revise_dataset(
             keys_to_delete,
             resources_to_delete,
             new_resource_order,
@@ -1002,16 +976,28 @@ class Dataset(HDXObject):
                 filestore_helper.FilestoreHelper.check_filestore_resource(
                     resource, filestore_resources, i, **kwargs
                 )
-        self._save_dataset_add_filestore_resources(
-            "create",
-            "name",
-            keys_to_delete,
-            list(),
-            None,
-            filestore_resources,
-            hxl_update,
-            **kwargs,
+        self._prepare_hdx_call(kwargs)
+        operation = kwargs.get("operation")
+        if not operation:
+            operation = "create"
+        kwargs["operation"] = operation
+        if not kwargs.get("ignore_check"):
+            kwargs["ignore_check"] = True
+        self._hdx_update(
+            "dataset", "name", force_active=True, **kwargs
         )
+        if not filestore_resources and not keys_to_delete:
+            self.init_resources()
+            self.separate_resources()
+        else:
+            self._revise_dataset(
+                keys_to_delete,
+                list(),
+                None,
+                filestore_resources,
+                hxl_update,
+                **kwargs,
+            )
         logger.info(f"Created {self.get_hdx_url()}")
 
     def delete_from_hdx(self) -> None:
