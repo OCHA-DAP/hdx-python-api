@@ -975,10 +975,7 @@ class Dataset(HDXObject):
                     resource, filestore_resources, i, **kwargs
                 )
         self._prepare_hdx_call(kwargs)
-        operation = kwargs.get("operation")
-        if not operation:
-            operation = "create"
-        kwargs["operation"] = operation
+        kwargs["operation"] = "create"
         if not kwargs.get("ignore_check"):
             kwargs["ignore_check"] = True
         self._hdx_update("dataset", "name", force_active=True, **kwargs)
