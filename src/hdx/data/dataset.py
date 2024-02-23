@@ -575,7 +575,23 @@ class Dataset(HDXObject):
         dataset.separate_resources()
         return dataset
 
-    def _prepare_hdx_call(self, data, kwargs):
+    def _prepare_hdx_call(self, data: Dict, kwargs: Any) -> None:
+        """Common method used in create and update calls. Cleans tags and
+        processes keyword arguments populating updated_by_script (details
+        about what script is doing the update and when), batch
+        and setting batch_mode in kwargs if needed (whether datasets on the
+        CKAN /datasets page are grouped).
+
+        Args:
+            data (Dict): Dataset data to update if needed
+            **kwargs: See below
+            updated_by_script (str): Script info. Defaults to user agent.
+            batch: Batch UUID for where multiple datasets are grouped into one batch
+            batch_mode: Whether to group by batch. Defaults to not grouping.
+
+        Returns:
+            None
+        """
         self.clean_tags()
         scriptinfo = kwargs.get("updated_by_script")
         if scriptinfo:
@@ -594,6 +610,106 @@ class Dataset(HDXObject):
             del kwargs["batch"]
             if "batch_mode" not in kwargs:
                 kwargs["batch_mode"] = "DONT_GROUP"
+
+    def _revise_filter(
+        self, dataset_data_to_update: Dict, keys_to_delete: ListTuple[str]
+    ):
+        """Returns the revise filter parameter adding to it any keys in the
+        dataset metadata that are specified to be deleted. Also compare lists
+        in original and updated metadata to see if any have had elements
+        removed in which case these should be added to the filter
+
+        Args:
+            dataset_data_to_update (Dict): Dataset data to be updated
+            keys_to_delete (ListTuple[str]): List of top level metadata keys to delete
+        """
+        revise_filter = []
+        for key in keys_to_delete:
+            revise_filter.append(f"-{key}")
+        for key, value in dataset_data_to_update.items():
+            if not isinstance(value, list):
+                continue
+            if key not in self.old_data:
+                continue
+            orig_list = self.old_data[key]
+            elements_to_remove = []
+            for i, orig_value in enumerate(orig_list):
+                if isinstance(orig_value, dict) and any(
+                    x in orig_value for x in ("id", "name")
+                ):
+                    # Where lists have an id or name, we use one of those to
+                    # match elements and work out what needs to be deleted
+                    # ie. any elements in the original list that don't exist
+                    # in the updated list
+                    el_id = orig_value.get("id")
+                    el_name = orig_value.get("name")
+                    present = False
+                    for value_dict in value:
+                        if (
+                            el_id
+                            and "id" in value_dict
+                            and value_dict["id"] == el_id
+                        ):
+                            present = True
+                            break
+                        if (
+                            el_name
+                            and "name" in value_dict
+                            and value_dict["name"] == el_name
+                        ):
+                            present = True
+                            break
+                    if not present:
+                        elements_to_remove.append(i)
+                elif orig_value not in value:
+                    # Otherwise we do a simple exact match of list elements
+                    # and delete any elements that are in the original list but
+                    # not in the updated list
+                    elements_to_remove.append(i)
+            for element_index in reversed(elements_to_remove):
+                del orig_list[element_index]
+                if element_index == len(orig_list):
+                    revise_filter.append(f"-{key}__{element_index}")
+        return revise_filter
+
+    def _revise_files_to_upload_resource_deletions(
+        self,
+        revise_filter: List[str],
+        resources_to_update: ListTuple["Resource"],
+        resources_to_delete: ListTuple[int],
+        filestore_resources: Dict[int, str],
+    ):
+        """Returns the files to be uploaded and updates the revise filter with
+        any resources to be deleted also updating filestore_resources to
+        reflect any deletions.
+
+        Args:
+            revise_filter (List[str]): Keys and list elements to delete
+            resources_to_update (ListTuple[Resource]): Resources to update
+            resources_to_delete (ListTuple[int]): List of indexes of resources to delete
+            filestore_resources (Dict[int, str]): List of (index of resources, file to upload)
+        """
+        files_to_upload = {}
+        if not self.is_requestable():
+            for resource_index in resources_to_delete:
+                del resources_to_update[resource_index]
+                if resource_index == len(resources_to_update):
+                    revise_filter.append(f"-resources__{resource_index}")
+                new_fsresources = {}
+                for index in filestore_resources:
+                    if index > resource_index:
+                        new_fsresources[index - 1] = filestore_resources[index]
+                    else:
+                        new_fsresources[index] = filestore_resources[index]
+                filestore_resources = new_fsresources
+            for (
+                resource_index,
+                file_to_upload,
+            ) in filestore_resources.items():
+                files_to_upload[
+                    f"update__resources__{resource_index}__upload"
+                ] = file_to_upload
+        return files_to_upload
 
     def _revise_dataset(
         self,
@@ -638,77 +754,26 @@ class Dataset(HDXObject):
                 "skip_validation"
             ]
         dataset_data_to_update["state"] = "active"
-        filter = []
-        for key in keys_to_delete:
-            filter.append(f"-{key}")
-        for key, value in dataset_data_to_update.items():
-            if not isinstance(value, list):
-                continue
-            if key not in self.old_data:
-                continue
-            orig_list = self.old_data[key]
-            elements_to_remove = []
-            for i, orig_value in enumerate(orig_list):
-                if isinstance(orig_value, dict) and any(
-                    x in orig_value for x in ("id", "name")
-                ):
-                    el_id = orig_value.get("id")
-                    el_name = orig_value.get("name")
-                    present = False
-                    for value_dict in value:
-                        if (
-                            el_id
-                            and "id" in value_dict
-                            and value_dict["id"] == el_id
-                        ):
-                            present = True
-                            break
-                        if (
-                            el_name
-                            and "name" in value_dict
-                            and value_dict["name"] == el_name
-                        ):
-                            present = True
-                            break
-                    if not present:
-                        elements_to_remove.append(i)
-                elif orig_value not in value:
-                    elements_to_remove.append(i)
-            for element_index in reversed(elements_to_remove):
-                del orig_list[element_index]
-                if element_index == len(orig_list):
-                    filter.append(f"-{key}__{element_index}")
-        files_to_upload = {}
-        if not self.is_requestable():
-            for resource_index in resources_to_delete:
-                del resources_to_update[resource_index]
-                if resource_index == len(resources_to_update):
-                    filter.append(f"-resources__{resource_index}")
-                new_fsresources = {}
-                for index in filestore_resources:
-                    if index > resource_index:
-                        new_fsresources[index - 1] = filestore_resources[index]
-                    else:
-                        new_fsresources[index] = filestore_resources[index]
-                filestore_resources = new_fsresources
-            for (
-                resource_index,
-                file_to_upload,
-            ) in filestore_resources.items():
-                files_to_upload[
-                    f"update__resources__{resource_index}__upload"
-                ] = file_to_upload
+        revise_filter = self._revise_filter(
+            dataset_data_to_update, keys_to_delete
+        )
+        files_to_upload = self._revise_files_to_upload_resource_deletions(
+            revise_filter,
+            resources_to_update,
+            resources_to_delete,
+            filestore_resources,
+        )
         dataset_data_to_update["resources"] = self._convert_hdxobjects(
             resources_to_update
         )
-        results["filter"] = filter
+        results["filter"] = revise_filter
         results["update"] = dataset_data_to_update
         results["files_to_upload"] = files_to_upload
         if test:
             return results
         new_dataset = self.revise(
             {"id": self.data["id"]},
-            filter=filter,
+            filter=revise_filter,
             update=dataset_data_to_update,
             files_to_upload=files_to_upload,
         )

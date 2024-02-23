@@ -27,7 +27,7 @@ click==8.1.7
     # via typer
 colorama==0.4.6
     # via typer
-coverage[toml]==7.4.2
+coverage[toml]==7.4.3
     # via
     #   coverage
     #   pytest-cov
@@ -131,11 +131,11 @@ pyasn1==0.5.1
     #   ndg-httpsclient
 pycparser==2.21
     # via cffi
-pydantic==2.6.1
+pydantic==2.6.2
     # via
     #   frictionless
     #   inflect
-pydantic-core==2.16.2
+pydantic-core==2.16.3
     # via pydantic
 pygments==2.17.2
     # via rich

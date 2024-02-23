@@ -53,11 +53,11 @@ class HDXObject(UserDict, ABC):
             self.configuration: Configuration = configuration
         super().__init__(initial_data)
 
-    def get_old_data_dict(self) -> None:
+    def get_old_data_dict(self) -> Dict:
         """Get previous internal dictionary
 
         Returns:
-            dict: Previous internal dictionary
+            Dict: Previous internal dictionary
         """
         return self.old_data
 
