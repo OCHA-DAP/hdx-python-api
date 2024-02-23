@@ -37,7 +37,7 @@ class Vocabulary(HDXObject):
         configuration: Optional[Configuration] = None,
     ) -> None:
         if not initial_data:
-            initial_data = dict()
+            initial_data = {}
         if name:
             initial_data["name"] = name
         super().__init__(initial_data, configuration=configuration)
@@ -121,7 +121,7 @@ class Vocabulary(HDXObject):
         vocabulary[
             "id"
         ] = "all vocabulary names"  # only for error message if produced
-        vocabularies = list()
+        vocabularies = []
         for vocabularydict in vocabulary._write_to_hdx("list", {}):
             vocabularies.append(
                 Vocabulary(vocabularydict, configuration=configuration)
@@ -170,7 +170,7 @@ class Vocabulary(HDXObject):
             None
         """
         if empty and len(self.data["tags"]) != 0:
-            self.data["tags"] = list()
+            self.data["tags"] = []
             self._update_in_hdx(
                 "vocabulary", "id", force_active=False, ignore_field="tags"
             )
@@ -314,7 +314,7 @@ class Vocabulary(HDXObject):
             configuration = Configuration.read()
         vocabulary = cls.get_approved_vocabulary(configuration=configuration)
         if replace:
-            vocabulary["tags"] = list()
+            vocabulary["tags"] = []
         vocabulary.add_tags(
             cls._read_approved_tags(url=url, configuration=configuration)
         )
@@ -477,8 +477,8 @@ class Vocabulary(HDXObject):
             configuration = Configuration.read()
         tag = tag.lower()
         tags_dict = cls.read_tags_mappings(configuration=configuration)
-        tags = list()
-        deleted_tags = list()
+        tags = []
+        deleted_tags = []
         whattodo = tags_dict.get(tag)
         if whattodo is None:
             if cls.is_approved(tag):
@@ -533,8 +533,8 @@ class Vocabulary(HDXObject):
         Returns:
             Tuple[List[str], List[str]]: Tuple containing list of mapped tags and list of deleted tags
         """
-        new_tags = list()
-        deleted_tags = list()
+        new_tags = []
+        deleted_tags = []
         for tag in tags:
             mapped_tags, del_tags = cls.get_mapped_tag(
                 tag, log_deleted=log_deleted, configuration=configuration
@@ -607,7 +607,7 @@ class Vocabulary(HDXObject):
             Tuple[List[str], List[str]]: Tuple containing list of mapped tags and list of deleted tags and tags not added
         """
         tags = hdxobject._get_tags()
-        hdxobject["tags"] = list()
+        hdxobject["tags"] = []
         return cls.add_mapped_tags(hdxobject, tags, log_deleted=log_deleted)
 
     @classmethod

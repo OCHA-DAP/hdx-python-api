@@ -3,8 +3,6 @@
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Dict
 
-from hdx.utilities.dictandlist import merge_two_dictionaries
-
 if TYPE_CHECKING:
     from hdx.data.resource import Resource
 
@@ -35,7 +33,7 @@ class FilestoreHelper:
         ):
             del resource.data["url"]
         ignore_fields = kwargs.get("ignore_fields", list())
-        resource_ignore_fields = list()
+        resource_ignore_fields = []
         for ignore_field in ignore_fields:
             if ignore_field.startswith("resource:"):
                 resource_ignore_field = ignore_field[9:].strip()
@@ -47,7 +45,7 @@ class FilestoreHelper:
     @classmethod
     def check_filestore_resource(
         cls,
-        resource: "Resource",
+        resource_data_to_update: "Resource",
         filestore_resources: Dict[int, str],
         resource_index: int,
         **kwargs: Any,
@@ -55,52 +53,44 @@ class FilestoreHelper:
         """Helper method to add new resource from dataset including filestore.
 
         Args:
-            resource (Resource): Resource to check
+            resource_data_to_update (Resource): Updated resource from dataset
             filestore_resources (Dict[int, str]): List of (index of resource, file to upload)
             resource_index (int): Index of resource
 
         Returns:
             None
         """
-        cls.resource_check_required_fields(resource, **kwargs)
-        file_to_upload = resource.get_file_to_upload()
+        cls.resource_check_required_fields(resource_data_to_update, **kwargs)
+        file_to_upload = resource_data_to_update.get_file_to_upload()
         if file_to_upload:
             filestore_resources[resource_index] = file_to_upload
-            resource["url"] = cls.temporary_url
+            resource_data_to_update["url"] = cls.temporary_url
 
     @classmethod
-    def dataset_merge_filestore_resource(
+    def dataset_update_filestore_resource(
         cls,
-        resource: "Resource",
-        updated_resource: "Resource",
+        resource_data_to_update: "Resource",
         filestore_resources: Dict[int, str],
         resource_index: int,
-        **kwargs: Any,
     ) -> None:
         """Helper method to merge updated resource from dataset into HDX resource read from HDX including filestore.
 
         Args:
-            resource (Resource): Resource read from HDX
-            updated_resource (Resource): Updated resource from dataset
+            resource_data_to_update (Resource): Updated resource from dataset
             filestore_resources (Dict[int, str]): List of (index of resources, file to upload)
             resource_index (int): Index of resource
 
         Returns:
             None
         """
-        file_to_upload = updated_resource.get_file_to_upload()
+        file_to_upload = resource_data_to_update.get_file_to_upload()
         if file_to_upload:
-            resource.set_file_to_upload(file_to_upload)
             filestore_resources[resource_index] = file_to_upload
-        data_updated = updated_resource.is_marked_data_updated()
-        merge_two_dictionaries(resource, updated_resource)
-        cls.resource_check_required_fields(
-            resource, check_upload=True, **kwargs
-        )
-        if resource.get_file_to_upload():
-            resource["url"] = cls.temporary_url
+            resource_data_to_update["url"] = cls.temporary_url
+
+        data_updated = resource_data_to_update.is_marked_data_updated()
         if data_updated:
-            resource["last_modified"] = datetime.now(timezone.utc).isoformat(
-                timespec="microseconds"
-            )
-            resource.data_updated = False
+            resource_data_to_update["last_modified"] = datetime.now(
+                timezone.utc
+            ).isoformat(timespec="microseconds")
+            resource_data_to_update.data_updated = False

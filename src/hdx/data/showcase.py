@@ -32,7 +32,7 @@ class Showcase(HDXObject):
         configuration: Optional[Configuration] = None,
     ) -> None:
         if not initial_data:
-            initial_data = dict()
+            initial_data = {}
         super().__init__(initial_data, configuration=configuration)
 
     @staticmethod
@@ -235,7 +235,7 @@ class Showcase(HDXObject):
             fieldname="showcase_id",
             action=self.actions()["list_datasets"],
         )
-        datasets = list()
+        datasets = []
         if assoc_result:
             for dataset_dict in datasets_dicts:
                 dataset = hdx.data.dataset.Dataset(
@@ -377,7 +377,7 @@ class Showcase(HDXObject):
             page_size=page_size,
             **kwargs,
         )
-        showcases = list()
+        showcases = []
         for dataset in datasets:
             showcase = Showcase(configuration=configuration)
             showcase.data = dataset.data

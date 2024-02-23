@@ -136,7 +136,7 @@ class Configuration(UserDict):
                         f"No HDX configuration parameter and no configuration file at default path: {Configuration.default_hdx_config_yaml}."
                     )
                     hdx_config_yaml = None
-                    hdx_config_dict = dict()
+                    hdx_config_dict = {}
             if hdx_config_yaml:
                 logger.info(
                     f"Loading HDX configuration from: {hdx_config_yaml}"
@@ -178,7 +178,7 @@ class Configuration(UserDict):
                 )
                 project_config_dict = load_yaml(project_config_yaml)
             else:
-                project_config_dict = dict()
+                project_config_dict = {}
 
         self.data = merge_two_dictionaries(
             hdx_base_config_dict, project_config_dict

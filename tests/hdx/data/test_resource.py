@@ -836,7 +836,7 @@ class TestResource:
         with pytest.raises(HDXError):
             resource.update_in_hdx()
 
-        resource.data = dict()
+        resource.data = {}
         with pytest.raises(HDXError):
             resource.update_in_hdx()
 

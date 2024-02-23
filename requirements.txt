@@ -31,7 +31,7 @@ coverage[toml]==7.4.2
     # via
     #   coverage
     #   pytest-cov
-cryptography==42.0.3
+cryptography==42.0.4
     # via pyopenssl
 defopt==6.4.0
     # via hdx-python-api (pyproject.toml)
@@ -95,7 +95,7 @@ makefun==1.15.2
     # via hdx-python-api (pyproject.toml)
 markdown-it-py==3.0.0
     # via rich
-marko==2.0.2
+marko==2.0.3
     # via frictionless
 markupsafe==2.1.5
     # via jinja2
@@ -234,7 +234,7 @@ urllib3==2.2.1
     #   requests
 validators==0.22.0
     # via frictionless
-virtualenv==20.25.0
+virtualenv==20.25.1
     # via pre-commit
 wheel==0.42.0
     # via libhxl

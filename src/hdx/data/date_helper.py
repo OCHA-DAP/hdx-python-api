@@ -81,7 +81,7 @@ class DateHelper:
         Returns:
             Dict: Dictionary of date information
         """
-        result = dict()
+        result = {}
         if hdx_time_period:
             if hdx_time_period[0] == "[" and hdx_time_period[-1] == "]":
                 hdx_time_period = hdx_time_period[1:-1]
@@ -167,7 +167,7 @@ class DateHelper:
         Returns:
             Tuple[str,List[int]]: (HDX time period, the start and end year if supplied or sorted list of years)
         """
-        retval = list()
+        retval = []
         if isinstance(startyear, str):
             startyear = int(startyear)
         if not isinstance(startyear, Iterable):

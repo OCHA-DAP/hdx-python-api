@@ -17,8 +17,8 @@ class TestDatasetTitleHelper:
         ]
 
     def test_fuzzy_match_dates_in_title(self, expected_ranges_2019):
-        ignore_wrong_years = list()
-        ranges = list()
+        ignore_wrong_years = []
+        ranges = []
         assert (
             DatasetTitleHelper.fuzzy_match_dates_in_title(
                 "Myanmar Town July 2019", ranges, ignore_wrong_years
@@ -26,7 +26,7 @@ class TestDatasetTitleHelper:
             == "Myanmar Town"
         )
         assert ranges == expected_ranges_2019
-        ranges = list()
+        ranges = []
         assert (
             DatasetTitleHelper.fuzzy_match_dates_in_title(
                 "Myanmar Town 2019 July", ranges, ignore_wrong_years
@@ -40,7 +40,7 @@ class TestDatasetTitleHelper:
             "Myanmar Self Administered Regions Boundaries MIMU v9.2.1"
         ) == (
             "Myanmar Self Administered Regions Boundaries MIMU v9.2.1",
-            list(),
+            [],
         )
         assert DatasetTitleHelper.get_dates_from_title(
             "Myanmar Town 2019 July"
@@ -178,7 +178,7 @@ class TestDatasetTitleHelper:
             "ALCS 2014/13"
         ) == (  # not a month and range going down
             "ALCS 2014/13",
-            list(),
+            [],
         )
         assert DatasetTitleHelper.get_dates_from_title(
             "Mon_State_Village_Tract_Boundaries 9999"

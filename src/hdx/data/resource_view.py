@@ -25,7 +25,7 @@ class ResourceView(HDXObject):
         configuration: Optional[Configuration] = None,
     ) -> None:
         if not initial_data:
-            initial_data = dict()
+            initial_data = {}
         super().__init__(initial_data, configuration=configuration)
 
     @staticmethod
@@ -105,7 +105,7 @@ class ResourceView(HDXObject):
         success, result = resourceview._read_from_hdx(
             "resource view", identifier, "id", ResourceView.actions()["list"]
         )
-        resourceviews = list()
+        resourceviews = []
         if success:
             for resourceviewdict in result:
                 resourceview = ResourceView(

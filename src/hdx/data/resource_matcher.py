@@ -78,8 +78,8 @@ class ResourceMatcher:
         groups2 = [x.get("grouping") for x in resources2]
         names2 = [x["name"] for x in resources2]
         formats2 = [x["format"].lower() for x in resources2]
-        index1_matches = list()
-        index2_matches = list()
+        index1_matches = []
+        index2_matches = []
         for i, id1 in enumerate(ids1):
             if id1 is None:
                 continue

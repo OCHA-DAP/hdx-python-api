@@ -62,7 +62,7 @@ class DatasetTitleHelper:
             start = match.start()
             end = match.end()
             stringlr = title[max(start - 13, 0) : end]
-            fuzzylr = dict()
+            fuzzylr = {}
             startdatelr = None
             enddatelr = None
             deltalr = timedelta(days=1000)
@@ -77,7 +77,7 @@ class DatasetTitleHelper:
                     deltalr = enddatelr - startdatelr
             except ParserError:
                 pass
-            fuzzyrl = dict()
+            fuzzyrl = {}
             stringrl = title[start : min(end + 13, len(title))]
             startdaterl = None
             enddaterl = None
@@ -112,7 +112,7 @@ class DatasetTitleHelper:
             logger.info(f"Removing date from title: {title} -> {newtitle}")
             title = newtitle
         try:
-            fuzzy = dict()
+            fuzzy = {}
             startdate, enddate = parse_date_range(
                 title,
                 fuzzy=fuzzy,
@@ -187,8 +187,8 @@ class DatasetTitleHelper:
             Tuple[str,List[Tuple[datetime,datetime]]]: Cleaned title, list of start and end dates
 
         """
-        ranges = list()
-        ignore_wrong_years = list()
+        ranges = []
+        ignore_wrong_years = []
         for match in cls.YEAR_RANGE_PATTERN.finditer(title):
             (
                 first_year,

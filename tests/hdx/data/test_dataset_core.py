@@ -88,7 +88,7 @@ def mocksearch(url, datadict):
                 newsearchdict["results"] = newsearchdict["results"][:5]
             else:
                 newsearchdict["count"] = 0
-                newsearchdict["results"] = list()
+                newsearchdict["results"] = []
         result = json.dumps(newsearchdict)
         return MockResponse(
             200,
@@ -367,17 +367,16 @@ class TestDatasetCore:
                     datadict = json.loads(datadict["update"])
                     if datadict["name"] in ["MyDataset1", "DatasetExist"]:
                         resultdictcopy = copy.deepcopy(dataset_resultdict)
+                        for i, resource in enumerate(datadict["resources"]):
+                            if not resource:
+                                datadict["resources"][i] = resultdictcopy[
+                                    "resources"
+                                ][i]
+
                         merge_two_dictionaries(resultdictcopy, datadict)
                         for i, resource in enumerate(
                             resultdictcopy["resources"]
                         ):
-                            for j, resource2 in enumerate(
-                                resultdictcopy["resources"]
-                            ):
-                                if i != j:
-                                    if resource == resource2:
-                                        del resultdictcopy["resources"][j]
-                                        break
                             resource["package_id"] = resultdictcopy["id"]
                         resultdictcopy = {"package": resultdictcopy}
                         result = json.dumps(resultdictcopy)
@@ -541,7 +540,7 @@ class TestDatasetCore:
         with pytest.raises(HDXError):
             dataset._write_to_hdx(
                 "revise",
-                dict(),
+                {},
                 id_field_name="",
                 files_to_upload={"update__resources__0__upload": "NOTEXIST"},
             )
@@ -690,7 +689,7 @@ class TestDatasetCore:
             dataset.update_in_hdx()
 
         dataset["id"] = "TEST1"
-        dataset["groups"] = list()
+        dataset["groups"] = []
         with pytest.raises(HDXError):
             dataset.update_in_hdx()
         dataset.update_in_hdx(ignore_check=True)
@@ -1087,7 +1086,7 @@ class TestDatasetCore:
         assert dataset["private"] is True
         dataset.set_requestable()
         assert dataset.get("field_name") is None
-        assert dataset.get_fieldnames() == list()
+        assert dataset.get_fieldnames() == []
         assert dataset.add_fieldname("myfield1") is True
         assert dataset.add_fieldnames(["myfield1", "myfield2"]) is False
         assert dataset.remove_fieldname("myfield1") is True
@@ -1095,7 +1094,7 @@ class TestDatasetCore:
         assert dataset.add_fieldnames(["myfield3", "myfield4"]) is True
         assert dataset.get_fieldnames() == ["myfield2", "myfield3", "myfield4"]
         assert dataset.get("fiele_types") is None
-        assert dataset.get_filetypes() == list()
+        assert dataset.get_filetypes() == []
         assert dataset.add_filetype("mytype1") is True
         assert dataset.add_filetypes(["mytype1", "mytype2"]) is False
         assert dataset.remove_filetype("mytype1") is True
