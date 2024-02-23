@@ -645,11 +645,13 @@ class TestDatasetCore:
         assert dataset["dataset_date"] == "06/04/2016"
 
         dataset["dataset_date"] = "02/26/2016"
+        dataset.remove_tag("conflict")
         dataset["id"] = "TEST1"
         dataset["name"] = "MyDataset1"
         dataset.update_in_hdx()
         assert dataset["id"] == "TEST1"
         assert dataset["dataset_date"] == "02/26/2016"
+        assert dataset.get_tags() == ["political violence"]
         assert dataset["state"] == "active"
         pattern = (
             r"HDXPythonLibrary/%s-test \([12]\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d\)"
