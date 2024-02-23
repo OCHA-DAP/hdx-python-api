@@ -649,9 +649,11 @@ class Dataset(HDXObject):
             orig_list = self.old_data[key]
             elements_to_remove = []
             for i, orig_value in enumerate(orig_list):
-                if isinstance(orig_value, dict):
+                if isinstance(orig_value, dict) and any(
+                    x in orig_value for x in ("id", "name")
+                ):
                     el_id = orig_value.get("id")
-                    el_name = orig_value["name"]
+                    el_name = orig_value.get("name")
                     present = False
                     for value_dict in value:
                         if (
@@ -662,7 +664,8 @@ class Dataset(HDXObject):
                             present = True
                             break
                         if (
-                            "name" in value_dict
+                            el_name
+                            and "name" in value_dict
                             and value_dict["name"] == el_name
                         ):
                             present = True
