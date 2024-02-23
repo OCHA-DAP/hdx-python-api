@@ -97,21 +97,11 @@ class TestUpdateDatasetResourcesLogic:
         (
             resources_to_update,
             resources_to_delete,
-            new_resource_order,
             filestore_resources,
+            new_resource_order,
         ) = dataset._dataset_update_resources(True, True, True, True)
-        assert new_resource_order == [
-            ("SDG 4 Global and Thematic data", "csv"),
-            ("SDG 4 Global and Thematic indicator list", "csv"),
-            ("SDG 4 Global and Thematic metadata", "csv"),
-            ("Other Policy Relevant Indicators data", "csv"),
-            ("Other Policy Relevant Indicators indicator list", "csv"),
-            ("Other Policy Relevant Indicators metadata", "csv"),
-            ("Demographic and Socio-economic data", "csv"),
-            ("Demographic and Socio-economic indicator list", "csv"),
-            ("QuickCharts-SDG 4 Global and Thematic data", "csv"),
-        ]
         assert resources_to_update == expected_resources_to_update
+        assert resources_to_delete == [8, 2, 1, 0]
         assert filestore_resources == {
             3: "tests/fixtures/update_dataset_resources/sdg_data_zwe.csv",
             4: "tests/fixtures/update_dataset_resources/sdg_indicatorlist_zwe.csv",
@@ -123,13 +113,24 @@ class TestUpdateDatasetResourcesLogic:
             11: "tests/fixtures/update_dataset_resources/opri_metadata_zwe.csv",
             12: "tests/fixtures/update_dataset_resources/qc_sdg_data_zwe.csv",
         }
+        assert new_resource_order == [
+            ("SDG 4 Global and Thematic data", "csv"),
+            ("SDG 4 Global and Thematic indicator list", "csv"),
+            ("SDG 4 Global and Thematic metadata", "csv"),
+            ("Other Policy Relevant Indicators data", "csv"),
+            ("Other Policy Relevant Indicators indicator list", "csv"),
+            ("Other Policy Relevant Indicators metadata", "csv"),
+            ("Demographic and Socio-economic data", "csv"),
+            ("Demographic and Socio-economic indicator list", "csv"),
+            ("QuickCharts-SDG 4 Global and Thematic data", "csv"),
+        ]
         dataset._prepare_hdx_call(dataset.old_data, {})
         results = dataset._revise_dataset(
             tuple(),
             resources_to_update,
             resources_to_delete,
-            new_resource_order,
             filestore_resources,
+            new_resource_order,
             hxl_update=False,
             create_default_views=False,
             test=True,

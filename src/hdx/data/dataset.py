@@ -716,8 +716,8 @@ class Dataset(HDXObject):
         keys_to_delete: ListTuple[str],
         resources_to_update: ListTuple["Resource"],
         resources_to_delete: ListTuple[int],
-        new_resource_order: Optional[ListTuple[str]],
         filestore_resources: Dict[int, str],
+        new_resource_order: Optional[ListTuple[str]],
         hxl_update: bool,
         create_default_views: bool = False,
         test: bool = False,
@@ -729,8 +729,8 @@ class Dataset(HDXObject):
             keys_to_delete (ListTuple[str]): List of top level metadata keys to delete
             resources_to_update (ListTuple[Resource]): Resources to update
             resources_to_delete (ListTuple[int]): List of indexes of resources to delete
-            new_resource_order (Optional[ListTuple[str]]): New resource order to use or None
             filestore_resources (Dict[int, str]): List of (index of resources, file to upload)
+            new_resource_order (Optional[ListTuple[str]]): New resource order to use or None
             hxl_update (bool): Whether to call package_hxl_update.
             create_default_views (bool): Whether to create default views. Defaults to False.
             test (bool): Whether running in a test. Defaults to False.
@@ -822,10 +822,11 @@ class Dataset(HDXObject):
         remove_additional_resources: bool,
         match_resource_order: bool,
         **kwargs: Any,
-    ) -> Tuple[List, List, List, Dict]:
-        """Helper method to merge new and existing dataset data, update
-        resources including those with files in the filestore and delete extra
-        resources if needed.
+    ) -> Tuple[List, List, Dict, List]:
+        """Helper method to compare new and existing dataset data returning
+        resources to be updated, resources to be deleted, resources where files
+        need to be uploaded to the filestore and if match_resource_order is
+        True, then the new resource order.
 
         Args:
             update_resources (bool): Whether to update resources
@@ -834,7 +835,7 @@ class Dataset(HDXObject):
             match_resource_order (bool): Match order of given resources by name
 
         Returns:
-            Tuple[List, List, List, Dict]: (resources_to_update, resources_to_delete, new_resource_order, filestore_resources)
+            Tuple[List, List, Dict, List]: (resources_to_update, resources_to_delete, filestore_resources, new_resource_order)
         """
         # When the user sets up a dataset, "data" contains the metadata. The
         # HDX dataset update process involves copying "data" to "old_data" and
@@ -940,8 +941,8 @@ class Dataset(HDXObject):
         return (
             resources_to_update,
             resources_to_delete,
-            new_resource_order,
             filestore_resources,
+            new_resource_order,
         )
 
     def _dataset_hdx_update(
@@ -955,7 +956,7 @@ class Dataset(HDXObject):
         hxl_update: bool,
         **kwargs: Any,
     ) -> Dict:
-        """Helper method to merge new and existing dataset data, update
+        """Helper method to compare new and existing dataset data, update
         resources including those with files in the filestore, delete extra
         resources if needed and update dataset data and save the dataset and
         resources to HDX.
@@ -975,8 +976,8 @@ class Dataset(HDXObject):
         (
             resources_to_update,
             resources_to_delete,
-            new_resource_order,
             filestore_resources,
+            new_resource_order,
         ) = self._dataset_update_resources(
             update_resources,
             match_resources_by_metadata,
@@ -989,8 +990,8 @@ class Dataset(HDXObject):
             keys_to_delete,
             resources_to_update,
             resources_to_delete,
-            new_resource_order,
             filestore_resources,
+            new_resource_order,
             hxl_update,
             create_default_views=create_default_views,
             **kwargs,
@@ -1132,8 +1133,8 @@ class Dataset(HDXObject):
                 keys_to_delete,
                 self.resources,
                 [],
-                None,
                 filestore_resources,
+                None,
                 hxl_update,
                 **kwargs,
             )
