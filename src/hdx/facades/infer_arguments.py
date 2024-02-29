@@ -50,7 +50,7 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
     main_doc = "".join(main_doc)
 
     main_sig = defopt.signature(projectmainfn)
-    param_names = list()
+    param_names = []
     for param in main_sig.parameters.values():
         param_names.append(str(param))
 

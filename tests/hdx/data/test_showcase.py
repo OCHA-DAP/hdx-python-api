@@ -132,7 +132,7 @@ def mockallsearch(url, datadict):
                 newsearchdict["results"] = newsearchdict["results"][:5]
             else:
                 newsearchdict["count"] = 0
-                newsearchdict["results"] = list()
+                newsearchdict["results"] = []
         result = json.dumps(newsearchdict)
         return MockResponse(
             200,

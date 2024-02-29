@@ -543,7 +543,7 @@ Content-Transfer-Encoding: 7bit
         }
         with pytest.raises(ValueError):
             User.email_users(
-                list(),
+                [],
                 TestUser.subject,
                 TestUser.text_body,
                 sender=TestUser.sender,

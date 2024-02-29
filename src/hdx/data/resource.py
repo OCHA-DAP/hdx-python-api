@@ -37,7 +37,7 @@ class Resource(HDXObject):
         configuration: Optional[Configuration] = None,
     ) -> None:
         if not initial_data:
-            initial_data = dict()
+            initial_data = {}
         super().__init__(initial_data, configuration=configuration)
         self.file_to_upload = None
         self.data_updated = False
@@ -176,7 +176,7 @@ class Resource(HDXObject):
                 if url is None:
                     url = configuration["formats_mapping_url"]
                 downloader.download(url)
-                cls._formats_dict = dict()
+                cls._formats_dict = {}
                 for format_data in downloader.get_json():
                     hdx_format = format_data[0].lower()
                     if hdx_format == "_comment":
@@ -372,7 +372,7 @@ class Resource(HDXObject):
             Dict: files parameter for CKANAPI
         """
         if self.file_to_upload is None:
-            return dict()
+            return {}
         return {"upload": self.file_to_upload}
 
     def _resource_merge_hdx_update(
@@ -559,7 +559,7 @@ class Resource(HDXObject):
             Resource.actions()["datastore_search"],
             limit=10000,
         )
-        resource_ids = list()
+        resource_ids = []
         if not success:
             logger.debug(result)
         else:
@@ -675,7 +675,7 @@ class Resource(HDXObject):
         """
         if not isinstance(resource_views, list):
             raise HDXError("ResourceViews should be a list!")
-        ids = list()
+        ids = []
         for resource_view in resource_views:
             if isinstance(resource_view, str):
                 resource_view_id = resource_view

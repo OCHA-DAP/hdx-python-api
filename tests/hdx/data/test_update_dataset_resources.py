@@ -1,4 +1,3 @@
-import json
 from os.path import join
 
 import pytest
@@ -9,6 +8,7 @@ from hdx.data.dataset import Dataset
 from hdx.data.resource import Resource
 from hdx.data.vocabulary import Vocabulary
 from hdx.location.country import Country
+from hdx.utilities.loader import load_json
 
 
 class TestUpdateDatasetResourcesLogic:
@@ -35,7 +35,7 @@ class TestUpdateDatasetResourcesLogic:
         )
         Locations.set_validlocations([{"name": "zmb", "title": "Zambia"}])
         Country.countriesdata(use_live=False)
-        Vocabulary._tags_dict = dict()
+        Vocabulary._tags_dict = {}
         Vocabulary._approved_vocabulary = {
             "tags": [
                 {"name": "hxl"},
@@ -62,48 +62,46 @@ class TestUpdateDatasetResourcesLogic:
     def dataset_json(self, fixture_path):
         return join(fixture_path, "unesco_dataset.json")
 
+    @pytest.fixture(scope="class")
+    def expected_resources_to_update_json(self, fixture_path):
+        return join(fixture_path, "expected_resources_to_update.json")
+
     @pytest.fixture(scope="function")
     def dataset(self, dataset_json):
         return Dataset.load_from_json(dataset_json)
 
     @pytest.fixture(scope="function")
     def new_dataset(self, fixture_path, new_dataset_json):
-        with open(new_dataset_json) as f:
-            jsonobj = json.loads(f.read())
-            resourceobjs = jsonobj["resources"]
-            del jsonobj["resources"]
-            dataset = Dataset(jsonobj)
-            for resourceobj in resourceobjs:
-                resource = Resource(resourceobj)
-                filename = self.file_mapping[resourceobj["name"]]
-                resource.set_file_to_upload(join(fixture_path, filename))
-                dataset.add_update_resource(resource)
-            return dataset
+        jsonobj = load_json(new_dataset_json)
+        resourceobjs = jsonobj["resources"]
+        del jsonobj["resources"]
+        dataset = Dataset(jsonobj)
+        for resourceobj in resourceobjs:
+            resource = Resource(resourceobj)
+            filename = self.file_mapping[resourceobj["name"]]
+            resource.set_file_to_upload(join(fixture_path, filename))
+            dataset.add_update_resource(resource)
+        return dataset
+
+    @pytest.fixture(scope="class")
+    def expected_resources_to_update(self, expected_resources_to_update_json):
+        return load_json(expected_resources_to_update_json)
 
     def test_dataset_update_resources(
-        self, configuration, dataset, new_dataset
+        self, configuration, dataset, new_dataset, expected_resources_to_update
     ):
         dataset.old_data = new_dataset.data
         dataset.old_data["resources"] = new_dataset._copy_hdxobjects(
             new_dataset.resources, Resource, ("file_to_upload", "data_updated")
         )
         (
+            resources_to_update,
             resources_to_delete,
-            new_resource_order,
             filestore_resources,
-        ) = dataset._dataset_merge_update_resources(True, True, True, True)
+            new_resource_order,
+        ) = dataset._dataset_update_resources(True, True, True, True)
+        assert resources_to_update == expected_resources_to_update
         assert resources_to_delete == [8, 2, 1, 0]
-        assert new_resource_order == [
-            ("SDG 4 Global and Thematic data", "csv"),
-            ("SDG 4 Global and Thematic indicator list", "csv"),
-            ("SDG 4 Global and Thematic metadata", "csv"),
-            ("Other Policy Relevant Indicators data", "csv"),
-            ("Other Policy Relevant Indicators indicator list", "csv"),
-            ("Other Policy Relevant Indicators metadata", "csv"),
-            ("Demographic and Socio-economic data", "csv"),
-            ("Demographic and Socio-economic indicator list", "csv"),
-            ("QuickCharts-SDG 4 Global and Thematic data", "csv"),
-        ]
         assert filestore_resources == {
             3: "tests/fixtures/update_dataset_resources/sdg_data_zwe.csv",
             4: "tests/fixtures/update_dataset_resources/sdg_indicatorlist_zwe.csv",
@@ -115,13 +113,24 @@ class TestUpdateDatasetResourcesLogic:
             11: "tests/fixtures/update_dataset_resources/opri_metadata_zwe.csv",
             12: "tests/fixtures/update_dataset_resources/qc_sdg_data_zwe.csv",
         }
-        results = dataset._save_dataset_add_filestore_resources(
-            "update",
-            "id",
+        assert new_resource_order == [
+            ("SDG 4 Global and Thematic data", "csv"),
+            ("SDG 4 Global and Thematic indicator list", "csv"),
+            ("SDG 4 Global and Thematic metadata", "csv"),
+            ("Other Policy Relevant Indicators data", "csv"),
+            ("Other Policy Relevant Indicators indicator list", "csv"),
+            ("Other Policy Relevant Indicators metadata", "csv"),
+            ("Demographic and Socio-economic data", "csv"),
+            ("Demographic and Socio-economic indicator list", "csv"),
+            ("QuickCharts-SDG 4 Global and Thematic data", "csv"),
+        ]
+        dataset._prepare_hdx_call(dataset.old_data, {})
+        results = dataset._revise_dataset(
             tuple(),
+            resources_to_update,
             resources_to_delete,
-            new_resource_order,
             filestore_resources,
+            new_resource_order,
             hxl_update=False,
             create_default_views=False,
             test=True,
@@ -138,15 +147,14 @@ class TestUpdateDatasetResourcesLogic:
             "update__resources__8__upload": "tests/fixtures/update_dataset_resources/qc_sdg_data_zwe.csv",
         }
         resources = results["update"]["resources"]
-        cutdown_resources = list()
+        cutdown_resources = []
         for resource in resources:
-            cutdown_resource = dict()
+            cutdown_resource = {}
             for key, value in resource.items():
                 if key in (
                     "dataset_preview_enabled",
                     "format",
                     "name",
-                    "position",
                     "resource_type",
                     "url",
                     "url_type",
@@ -158,7 +166,6 @@ class TestUpdateDatasetResourcesLogic:
                 "dataset_preview_enabled": "False",
                 "format": "csv",
                 "name": "SDG 4 Global and Thematic data",
-                "position": 3,
                 "resource_type": "file.upload",
                 "url": "updated_by_file_upload_step",
                 "url_type": "upload",
@@ -167,7 +174,6 @@ class TestUpdateDatasetResourcesLogic:
                 "dataset_preview_enabled": "False",
                 "format": "csv",
                 "name": "SDG 4 Global and Thematic indicator list",
-                "position": 4,
                 "resource_type": "file.upload",
                 "url": "updated_by_file_upload_step",
                 "url_type": "upload",
@@ -176,7 +182,6 @@ class TestUpdateDatasetResourcesLogic:
                 "dataset_preview_enabled": "False",
                 "format": "csv",
                 "name": "SDG 4 Global and Thematic metadata",
-                "position": 5,
                 "resource_type": "file.upload",
                 "url": "updated_by_file_upload_step",
                 "url_type": "upload",
@@ -185,7 +190,6 @@ class TestUpdateDatasetResourcesLogic:
                 "dataset_preview_enabled": "False",
                 "format": "csv",
                 "name": "Demographic and Socio-economic data",
-                "position": 6,
                 "resource_type": "file.upload",
                 "url": "updated_by_file_upload_step",
                 "url_type": "upload",
@@ -194,7 +198,6 @@ class TestUpdateDatasetResourcesLogic:
                 "dataset_preview_enabled": "False",
                 "format": "csv",
                 "name": "Demographic and Socio-economic indicator list",
-                "position": 7,
                 "resource_type": "file.upload",
                 "url": "updated_by_file_upload_step",
                 "url_type": "upload",

@@ -1,0 +1,9 @@
+license_id: "cc-by-sa"
+notes: "Some notes."
+caveats: "None"
+methodology: "Registry"
+dataset_source: "Someone"
+package_creator: "mcarans"
+private: False  # has to be True or False
+url: ~
+state: "active"  # always "active".

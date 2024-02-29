@@ -353,8 +353,8 @@ class TestDatasetNoncore:
         assert len(dataset["groups"]) == 60
         assert len(dataset.get_location_names()) == 60
         del dataset["groups"]
-        assert dataset.get_location_names() == list()
-        assert dataset.get_location_iso3s() == list()
+        assert dataset.get_location_names() == []
+        assert dataset.get_location_iso3s() == []
         with pytest.raises(HDXError):
             dataset.add_country_location("abc")
         with pytest.raises(HDXError):
@@ -953,10 +953,10 @@ class TestDatasetNoncore:
         assert "title" not in dataset
         title = "Title with no dates"
         dataset["title"] = title
-        assert dataset.remove_dates_from_title() == list()
+        assert dataset.remove_dates_from_title() == []
         assert dataset["title"] == title
         assert "dataset_date" not in dataset
-        assert dataset.remove_dates_from_title(set_time_period=True) == list()
+        assert dataset.remove_dates_from_title(set_time_period=True) == []
         title = "ICA Armenia, 2017 - Drought Risk, 1981-2015"
         dataset["title"] = title
         expected = [
@@ -985,7 +985,7 @@ class TestDatasetNoncore:
             dataset["dataset_date"]
             == "[1981-01-01T00:00:00 TO 2015-12-31T23:59:59]"
         )
-        assert dataset.remove_dates_from_title() == list()
+        assert dataset.remove_dates_from_title() == []
         dataset["title"] = "Mon_State_Village_Tract_Boundaries 9999 2001"
         expected = [
             (
@@ -1070,7 +1070,7 @@ class TestDatasetNoncore:
                     join("tests", "fixtures", "qc_from_rows", qc_filename),
                     join(folder, qc_filename),
                 )
-                rows = list()
+                rows = []
                 resource = dataset.generate_qc_resource_from_rows(
                     folder,
                     qc_filename,

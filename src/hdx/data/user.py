@@ -25,7 +25,7 @@ class User(HDXObject):
         configuration: Optional[Configuration] = None,
     ) -> None:
         if not initial_data:
-            initial_data = dict()
+            initial_data = {}
         super().__init__(initial_data, configuration=configuration)
 
     @staticmethod
@@ -184,7 +184,7 @@ class User(HDXObject):
         """
         user = User(configuration=configuration)
         result = user._write_to_hdx("list", kwargs)
-        users = list()
+        users = []
         if result:
             for userdict in result:
                 user = User(userdict, configuration=configuration)
@@ -225,13 +225,13 @@ class User(HDXObject):
         """
         if not users:
             raise ValueError("No users supplied")
-        recipients = list()
+        recipients = []
         for user in users:
             recipients.append(user.data["email"])
-        ccemails = list()
+        ccemails = []
         for user in cc:
             ccemails.append(user.data["email"])
-        bccemails = list()
+        bccemails = []
         for user in bcc:
             bccemails.append(user.data["email"])
         if configuration is None:
@@ -265,7 +265,7 @@ class User(HDXObject):
             self.actions()["listorgs"],
             permission=permission,
         )
-        organizations = list()
+        organizations = []
         if success:
             for organizationdict in result:
                 org = hdx.data.organization.Organization.read_from_hdx(

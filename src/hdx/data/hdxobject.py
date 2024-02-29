@@ -53,11 +53,11 @@ class HDXObject(UserDict, ABC):
             self.configuration: Configuration = configuration
         super().__init__(initial_data)
 
-    def get_old_data_dict(self) -> None:
+    def get_old_data_dict(self) -> Dict:
         """Get previous internal dictionary
 
         Returns:
-            dict: Previous internal dictionary
+            Dict: Previous internal dictionary
         """
         return self.old_data
 
@@ -206,7 +206,7 @@ class HDXObject(UserDict, ABC):
 
     @abstractmethod
     def check_required_fields(
-        self, ignore_fields: ListTuple[str] = list()
+        self, ignore_fields: ListTuple[str] = []
     ) -> None:
         """Abstract method to check that metadata for HDX object is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
@@ -278,7 +278,7 @@ class HDXObject(UserDict, ABC):
         self,
         object_type: str,
         id_field_name: str,
-        files_to_upload: Dict = dict(),
+        files_to_upload: Dict = {},
         force_active: bool = False,
         **kwargs: Any,
     ) -> None:
@@ -306,7 +306,7 @@ class HDXObject(UserDict, ABC):
         self,
         object_type: str,
         id_field_name: str,
-        files_to_upload: Dict = dict(),
+        files_to_upload: Dict = {},
         force_active: bool = False,
         **kwargs: Any,
     ) -> None:
@@ -345,7 +345,7 @@ class HDXObject(UserDict, ABC):
         self,
         object_type: str,
         id_field_name: str,
-        files_to_upload: Dict = dict(),
+        files_to_upload: Dict = {},
         force_active: bool = True,
         **kwargs: Any,
     ) -> None:
@@ -381,7 +381,7 @@ class HDXObject(UserDict, ABC):
         action: str,
         data: Dict,
         id_field_name: str = None,
-        files_to_upload: Dict = dict(),
+        files_to_upload: Dict = {},
     ) -> Union[Dict, List]:
         """Creates or updates an HDX object in HDX and return HDX object metadata dict
 
@@ -418,7 +418,7 @@ class HDXObject(UserDict, ABC):
         self,
         action: str,
         id_field_name: str,
-        files_to_upload: Dict = dict(),
+        files_to_upload: Dict = {},
         force_active: bool = False,
     ) -> None:
         """Creates or updates an HDX object in HDX, saving current data and replacing with returned HDX object data
@@ -454,7 +454,7 @@ class HDXObject(UserDict, ABC):
         object_type: str,
         id_field_name: str,
         name_field_name: str,
-        files_to_upload: Dict = dict(),
+        files_to_upload: Dict = {},
         force_active: bool = True,
         **kwargs: Any,
     ) -> None:
@@ -612,7 +612,7 @@ class HDXObject(UserDict, ABC):
         Returns:
             List[Dict]: List of HDX objects converted to simple dictionaries
         """
-        newhdxobjects = list()
+        newhdxobjects = []
         for hdxobject in hdxobjects:
             newhdxobjects.append(hdxobject.data)
         return newhdxobjects
@@ -633,7 +633,7 @@ class HDXObject(UserDict, ABC):
         Returns:
             List[HDXObject]: Deep copy of list of HDX objects
         """
-        newhdxobjects = list()
+        newhdxobjects = []
         for hdxobject in hdxobjects:
             newhdxobjectdata = copy.deepcopy(hdxobject.data)
             newhdxobject = hdxobjectclass(
@@ -693,7 +693,7 @@ class HDXObject(UserDict, ABC):
         """
         tags = self.data.get("tags", None)
         if not tags:
-            return list()
+            return []
         return [x["name"] for x in tags]
 
     def _add_tag(self, tag: str, vocabulary_id: Optional[str] = None) -> bool:
@@ -712,7 +712,7 @@ class HDXObject(UserDict, ABC):
             if tag in [x["name"] for x in tags]:
                 return False
         else:
-            tags = list()
+            tags = []
         tagdict = {"name": tag}
         if vocabulary_id is not None:
             tagdict["vocabulary_id"] = vocabulary_id
@@ -732,7 +732,7 @@ class HDXObject(UserDict, ABC):
         Returns:
             List[str]: Tags that were successfully added
         """
-        added_tags = list()
+        added_tags = []
         for tag in tags:
             if self._add_tag(tag, vocabulary_id=vocabulary_id):
                 added_tags.append(tag)
@@ -751,7 +751,7 @@ class HDXObject(UserDict, ABC):
         if strings:
             return strings.split(",")
         else:
-            return list()
+            return []
 
     def _add_string_to_commastring(self, field: str, string: str) -> bool:
         """Add a string to a comma separated list of strings

@@ -29,7 +29,7 @@ class Organization(HDXObject):
         configuration: Optional[Configuration] = None,
     ) -> None:
         if not initial_data:
-            initial_data = dict()
+            initial_data = {}
         super().__init__(initial_data, configuration=configuration)
 
     @staticmethod
@@ -137,7 +137,7 @@ class Organization(HDXObject):
         Returns:
             List[User]: Organization's users.
         """
-        users = list()
+        users = []
         usersdicts = self.data.get("users")
         if usersdicts is not None:
             for userdata in usersdicts:
@@ -179,7 +179,7 @@ class Organization(HDXObject):
         if isinstance(user, user_module.User):
             users = self.data.get("users")
             if users is None:
-                users = list()
+                users = []
                 self.data["users"] = users
             if capacity is not None:
                 user["capacity"] = capacity
