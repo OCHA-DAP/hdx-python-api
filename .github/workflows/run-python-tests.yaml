@@ -29,7 +29,7 @@ jobs:
         pip install --upgrade hatch
     - name: Test with hatch/pytest
       env:
-        HDX_KEY: ${{ secrets.HDX_BOT_SCRAPERS_API_TOKEN }}
+        HDX_KEY_TEST: ${{ secrets.HDX_BOT_SCRAPERS_API_TOKEN }}
         GSHEET_AUTH: ${{ secrets.GSHEET_AUTH }}
       run: |
         hatch run test:test

@@ -15,6 +15,8 @@ from gspread.urls import DRIVE_FILES_API_V3_URL
 from hdx.api.configuration import Configuration
 from hdx.data.dataset import Dataset
 from hdx.data.resource import Resource
+from hdx.data.vocabulary import Vocabulary
+from hdx.location.country import Country
 from hdx.utilities.dateparse import now_utc
 
 logger = logging.getLogger(__name__)
@@ -23,12 +25,13 @@ logger = logging.getLogger(__name__)
 class TestCKAN:
     @pytest.fixture(scope="class")
     def configuration(self):
-        hdx_key = getenv("HDX_KEY")
+        hdx_key = getenv("HDX_KEY_TEST")
         Configuration._create(
             hdx_site="demo",
             user_agent="test",
             hdx_key=hdx_key,
         )
+        Country.countriesdata(use_live=False)
 
     @pytest.fixture(scope="function")
     def datasetmetadata(self):
@@ -61,7 +64,7 @@ class TestCKAN:
         return gclient
 
     @pytest.fixture(scope="function")
-    def setup_teardown_folder(self, gclient, params):
+    def setup_teardown_folder(self, configuration, gclient, params):
         payload = {
             "name": "hdx_python_api_test_tmp",
             "mimeType": "application/vnd.google-apps.folder",
@@ -76,10 +79,12 @@ class TestCKAN:
         payload = {"trashed": True}
         url = f"{DRIVE_FILES_API_V3_URL}/{folderid}"
         gclient.http_client.request("patch", url, json=payload, params=params)
+        Vocabulary._approved_vocabulary = None
+        Vocabulary._tags_dict = None
+        Configuration.delete()
 
     def test_create_dataset(
         self,
-        configuration,
         datasetmetadata,
         testdata,
         setup_teardown_folder,
