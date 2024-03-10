@@ -1,4 +1,5 @@
 """Configuration Tests"""
+
 from os.path import join
 
 import pytest
@@ -792,6 +793,31 @@ hello there"""
         configuration.set_api_key("NEW API KEY")
         configuration.set_read_only(False)
         assert configuration.get_api_key() == "NEW API KEY"
+
+    def test_env_vars(self, monkeypatch):
+        hdx_url = "https://testurl"
+        hdx_key = "TEST_HDX_KEY"
+        monkeypatch.setenv("HDX_URL", hdx_url)
+        monkeypatch.setenv("HDX_KEY", hdx_key)
+        Configuration._create(
+            user_agent="test",
+            hdx_base_config_dict={},
+        )
+        configuration = Configuration.read()
+        assert configuration.get_hdx_site_url() == hdx_url
+        assert configuration.get_api_key() == hdx_key
+        monkeypatch.delenv("HDX_URL")
+        monkeypatch.delenv("HDX_KEY")
+
+        hdx_key = "TEST_HDX_KEY_STAGE"
+        monkeypatch.setenv("HDX_KEY_STAGE", hdx_key)
+        Configuration._create(
+            user_agent="test",
+            hdx_site="stage",
+            hdx_base_config_dict={},
+        )
+        configuration = Configuration.read()
+        assert configuration.get_api_key() == hdx_key
 
     def test_create_set_configuration(self, project_config_yaml):
         Configuration._create(

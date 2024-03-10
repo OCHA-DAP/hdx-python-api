@@ -2,6 +2,7 @@
 Unit tests for the freshness class.
 
 """
+
 import json
 import logging
 import random

@@ -1,5 +1,5 @@
-"""Helper to the Dataset and Resource classes for handling HDX dates.
-"""
+"""Helper to the Dataset and Resource classes for handling HDX dates."""
+
 from collections.abc import Iterable
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple, Union

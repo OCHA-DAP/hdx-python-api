@@ -1,4 +1,5 @@
 """Configuration for HDX"""
+
 import logging
 import os
 from base64 import b64decode
@@ -389,9 +390,6 @@ class Configuration(UserDict):
 
         """
 
-        hdx_key = os.getenv("HDX_KEY")
-        if hdx_key is not None:
-            kwargs["hdx_key"] = hdx_key
         hdx_url = os.getenv("HDX_URL")
         if hdx_url is not None:
             kwargs["hdx_url"] = hdx_url
@@ -399,6 +397,16 @@ class Configuration(UserDict):
             hdx_site = os.getenv("HDX_SITE")
             if hdx_site is not None:
                 kwargs["hdx_site"] = hdx_site
+        hdx_key = os.getenv("HDX_KEY")
+        if hdx_key is None:
+            hdx_site = kwargs.get("hdx_site")
+            if hdx_site is not None:
+                hdx_key_site = f"HDX_KEY_{hdx_site.upper()}"
+                hdx_key = os.getenv(hdx_key_site)
+                if hdx_key:
+                    kwargs["hdx_key"] = hdx_key
+        else:
+            kwargs["hdx_key"] = hdx_key
         return kwargs
 
     @classmethod

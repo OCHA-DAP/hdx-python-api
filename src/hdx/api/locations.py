@@ -1,4 +1,5 @@
 """Locations in HDX"""
+
 from typing import Dict, List, Optional, Tuple
 
 from hdx.api.configuration import Configuration

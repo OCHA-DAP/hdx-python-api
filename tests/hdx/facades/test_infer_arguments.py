@@ -1,4 +1,5 @@
 """Simple Facade Tests"""
+
 import sys
 
 import pytest

@@ -1,4 +1,5 @@
 """Facade to simplify project setup that calls project main function"""
+
 import logging
 from typing import Any, Callable
 

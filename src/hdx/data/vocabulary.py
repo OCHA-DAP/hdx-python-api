@@ -1,4 +1,5 @@
 """Vocabulary class containing all logic for creating, checking, and updating vocabularies."""
+
 import logging
 from collections import OrderedDict
 from os.path import join
@@ -118,9 +119,9 @@ class Vocabulary(HDXObject):
         """
 
         vocabulary = Vocabulary(configuration=configuration)
-        vocabulary[
-            "id"
-        ] = "all vocabulary names"  # only for error message if produced
+        vocabulary["id"] = (
+            "all vocabulary names"  # only for error message if produced
+        )
         vocabularies = []
         for vocabularydict in vocabulary._write_to_hdx("list", {}):
             vocabularies.append(

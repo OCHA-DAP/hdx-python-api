@@ -1,5 +1,5 @@
-"""Dataset class containing all logic for creating, checking, and updating datasets and associated resources.
-"""
+"""Dataset class containing all logic for creating, checking, and updating datasets and associated resources."""
+
 import json
 import logging
 import sys
@@ -599,9 +599,9 @@ class Dataset(HDXObject):
         else:
             scriptinfo = self.configuration.get_user_agent()
         # No need to output timezone info here
-        data[
-            "updated_by_script"
-        ] = f"{scriptinfo} ({datetime.now(timezone.utc).replace(tzinfo=None).isoformat(timespec='microseconds')})"
+        data["updated_by_script"] = (
+            f"{scriptinfo} ({datetime.now(timezone.utc).replace(tzinfo=None).isoformat(timespec='microseconds')})"
+        )
         batch = kwargs.get("batch")
         if batch:
             if not is_valid_uuid(batch):

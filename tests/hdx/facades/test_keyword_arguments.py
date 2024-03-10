@@ -1,4 +1,5 @@
 """Simple Facade Tests"""
+
 import pytest
 
 from . import my_testfnkw, testresult

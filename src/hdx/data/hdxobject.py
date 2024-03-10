@@ -1,6 +1,7 @@
 """HDXObject abstract class containing helper functions for creating, checking, and updating HDX objects.
 New HDX objects should extend this in similar fashion to Resource for example.
 """
+
 import copy
 import logging
 from abc import ABC, abstractmethod

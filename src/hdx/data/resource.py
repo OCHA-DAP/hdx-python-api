@@ -1,4 +1,5 @@
 """Resource class containing all logic for creating, checking, and updating resources."""
+
 import logging
 import warnings
 from datetime import datetime, timezone
