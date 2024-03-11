@@ -4,7 +4,6 @@ import copy
 import json
 import re
 import tempfile
-from os import remove
 from os.path import join
 
 import pytest
@@ -623,11 +622,11 @@ class TestDatasetCore:
         datasetdata = copy.deepcopy(dataset_data)
         dataset = Dataset(datasetdata)
         resource = Resource(resourcesdata[0])
-        file = tempfile.NamedTemporaryFile(delete=False)
+        file = tempfile.NamedTemporaryFile()
         resource.set_file_to_upload(file.name)
         dataset.add_update_resource(resource)
         dataset.create_in_hdx()
-        remove(file.name)
+        file.close()
         assert dataset["state"] == "active"
         assert len(dataset.resources) == 3
         # Dataset creates that end up updating are in the test below
@@ -737,7 +736,7 @@ class TestDatasetCore:
         dataset.update_in_hdx()
         assert len(dataset.resources) == 3
         dataset = Dataset.read_from_hdx("TEST4")
-        file = tempfile.NamedTemporaryFile(delete=False)
+        file = tempfile.NamedTemporaryFile()
         resource.set_file_to_upload(file.name)
         dataset.add_update_resource(resource)
         dataset.update_in_hdx(batch="6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d")
@@ -793,7 +792,7 @@ class TestDatasetCore:
         dataset.update_in_hdx(match_resources_by_metadata=False)
         assert dataset["state"] == "active"
         assert len(dataset.resources) == 3
-        remove(file.name)
+        file.close()
         dataset = Dataset(datasetdata)
         resourcesdata = copy.deepcopy(resources_data)
         resource = Resource(resourcesdata[0])

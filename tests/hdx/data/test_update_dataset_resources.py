@@ -88,7 +88,12 @@ class TestUpdateDatasetResourcesLogic:
         return load_json(expected_resources_to_update_json)
 
     def test_dataset_update_resources(
-        self, configuration, dataset, new_dataset, expected_resources_to_update
+        self,
+        fixture_path,
+        configuration,
+        dataset,
+        new_dataset,
+        expected_resources_to_update,
     ):
         dataset.old_data = new_dataset.data
         dataset.old_data["resources"] = new_dataset._copy_hdxobjects(
@@ -103,15 +108,15 @@ class TestUpdateDatasetResourcesLogic:
         assert resources_to_update == expected_resources_to_update
         assert resources_to_delete == [8, 2, 1, 0]
         assert filestore_resources == {
-            3: "tests/fixtures/update_dataset_resources/sdg_data_zwe.csv",
-            4: "tests/fixtures/update_dataset_resources/sdg_indicatorlist_zwe.csv",
-            5: "tests/fixtures/update_dataset_resources/sdg_metadata_zwe.csv",
-            6: "tests/fixtures/update_dataset_resources/dem_data_zwe.csv",
-            7: "tests/fixtures/update_dataset_resources/dem_indicatorlist_zwe.csv",
-            9: "tests/fixtures/update_dataset_resources/opri_data_zwe.csv",
-            10: "tests/fixtures/update_dataset_resources/opri_indicatorlist_zwe.csv",
-            11: "tests/fixtures/update_dataset_resources/opri_metadata_zwe.csv",
-            12: "tests/fixtures/update_dataset_resources/qc_sdg_data_zwe.csv",
+            3: join(fixture_path, "sdg_data_zwe.csv"),
+            4: join(fixture_path, "sdg_indicatorlist_zwe.csv"),
+            5: join(fixture_path, "sdg_metadata_zwe.csv"),
+            6: join(fixture_path, "dem_data_zwe.csv"),
+            7: join(fixture_path, "dem_indicatorlist_zwe.csv"),
+            9: join(fixture_path, "opri_data_zwe.csv"),
+            10: join(fixture_path, "opri_indicatorlist_zwe.csv"),
+            11: join(fixture_path, "opri_metadata_zwe.csv"),
+            12: join(fixture_path, "qc_sdg_data_zwe.csv"),
         }
         assert new_resource_order == [
             ("SDG 4 Global and Thematic data", "csv"),
@@ -136,15 +141,33 @@ class TestUpdateDatasetResourcesLogic:
             test=True,
         )
         assert results["files_to_upload"] == {
-            "update__resources__0__upload": "tests/fixtures/update_dataset_resources/sdg_data_zwe.csv",
-            "update__resources__1__upload": "tests/fixtures/update_dataset_resources/sdg_indicatorlist_zwe.csv",
-            "update__resources__2__upload": "tests/fixtures/update_dataset_resources/sdg_metadata_zwe.csv",
-            "update__resources__3__upload": "tests/fixtures/update_dataset_resources/dem_data_zwe.csv",
-            "update__resources__4__upload": "tests/fixtures/update_dataset_resources/dem_indicatorlist_zwe.csv",
-            "update__resources__5__upload": "tests/fixtures/update_dataset_resources/opri_data_zwe.csv",
-            "update__resources__6__upload": "tests/fixtures/update_dataset_resources/opri_indicatorlist_zwe.csv",
-            "update__resources__7__upload": "tests/fixtures/update_dataset_resources/opri_metadata_zwe.csv",
-            "update__resources__8__upload": "tests/fixtures/update_dataset_resources/qc_sdg_data_zwe.csv",
+            "update__resources__0__upload": join(
+                fixture_path, "sdg_data_zwe.csv"
+            ),
+            "update__resources__1__upload": join(
+                fixture_path, "sdg_indicatorlist_zwe.csv"
+            ),
+            "update__resources__2__upload": join(
+                fixture_path, "sdg_metadata_zwe.csv"
+            ),
+            "update__resources__3__upload": join(
+                fixture_path, "dem_data_zwe.csv"
+            ),
+            "update__resources__4__upload": join(
+                fixture_path, "dem_indicatorlist_zwe.csv"
+            ),
+            "update__resources__5__upload": join(
+                fixture_path, "opri_data_zwe.csv"
+            ),
+            "update__resources__6__upload": join(
+                fixture_path, "opri_indicatorlist_zwe.csv"
+            ),
+            "update__resources__7__upload": join(
+                fixture_path, "opri_metadata_zwe.csv"
+            ),
+            "update__resources__8__upload": join(
+                fixture_path, "qc_sdg_data_zwe.csv"
+            ),
         }
         resources = results["update"]["resources"]
         cutdown_resources = []

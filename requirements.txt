@@ -255,7 +255,7 @@ validators==0.22.0
     # via frictionless
 virtualenv==20.25.1
     # via pre-commit
-wheel==0.42.0
+wheel==0.43.0
     # via libhxl
 xlrd==2.0.1
     # via hdx-python-utilities

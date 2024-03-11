@@ -197,20 +197,21 @@ class Configuration(UserDict):
                 self.user_agent = UserAgent.get(
                     prefix=Configuration.prefix, **self.data
                 )
-        hdx_url = kwargs.get("hdx_url")
-        if not hdx_url:
-            hdx_url = self.data.get("hdx_url")
+
+        hdx_url = os.getenv(
+            "HDX_URL", kwargs.get("hdx_url", self.data.get("hdx_url"))
+        )
         if hdx_url:
             hdx_site = "custom"
             self.hdx_site = "hdx_custom_site"
             hdx_url = hdx_url.rstrip("/")
             self.data[self.hdx_site] = {"url": hdx_url}
         else:
-            hdx_site = kwargs.get("hdx_site")
+            hdx_site = os.getenv(
+                "HDX_SITE", kwargs.get("hdx_site", self.data.get("hdx_site"))
+            )
             if not hdx_site:
-                hdx_site = self.data.get("hdx_site")
-                if not hdx_site:
-                    hdx_site = "stage"
+                hdx_site = "stage"
             self.hdx_site = f"hdx_{hdx_site}_site"
             if self.hdx_site not in self.data:
                 raise ConfigurationError(
@@ -223,14 +224,18 @@ class Configuration(UserDict):
                 hdx_read_only = False
         self.hdx_read_only = hdx_read_only
         logger.info(f"Read only access to HDX: {str(self.hdx_read_only)}")
-        hdx_key_site = f"hdx_key_{hdx_site}"
-        hdx_key = kwargs.get(hdx_key_site)
-        if not hdx_key:
-            hdx_key = self.data.get(hdx_key_site)
+
+        if self.hdx_site == "hdx_custom_site":
+            hdx_key = None
+        else:
+            hdx_key = os.getenv(f"HDX_KEY_{hdx_site.upper()}")
             if not hdx_key:
-                hdx_key = kwargs.get("hdx_key")
-                if not hdx_key:
-                    hdx_key = self.data.get("hdx_key")
+                hdx_key_site = f"hdx_key_{hdx_site}"
+                hdx_key = kwargs.get(hdx_key_site, self.data.get(hdx_key_site))
+        if not hdx_key:
+            hdx_key = os.getenv(
+                "HDX_KEY", kwargs.get("hdx_key", self.data.get("hdx_key"))
+            )
         if hdx_key:
             self.hdx_key = hdx_key
             return
@@ -373,41 +378,6 @@ class Configuration(UserDict):
         apikey = kwargs.get("apikey", self.get_api_key())
         kwargs["apikey"] = apikey
         return self.remoteckan().call_action(*args, **kwargs)
-
-    @staticmethod
-    def _environment_variables(**kwargs: Any) -> Any:
-        """
-        Overwrite keyword arguments with environment variables
-
-        Args:
-            **kwargs: See below
-            hdx_url (str): HDX url to use. Overrides hdx_site.
-            hdx_site (str): HDX site to use eg. prod, test. Defaults to test.
-            hdx_key (str): Your HDX key. Ignored if hdx_read_only = True.
-
-        Returns:
-            kwargs: Changed keyword arguments
-
-        """
-
-        hdx_url = os.getenv("HDX_URL")
-        if hdx_url is not None:
-            kwargs["hdx_url"] = hdx_url
-        else:
-            hdx_site = os.getenv("HDX_SITE")
-            if hdx_site is not None:
-                kwargs["hdx_site"] = hdx_site
-        hdx_key = os.getenv("HDX_KEY")
-        if hdx_key is None:
-            hdx_site = kwargs.get("hdx_site")
-            if hdx_site is not None:
-                hdx_key_site = f"HDX_KEY_{hdx_site.upper()}"
-                hdx_key = os.getenv(hdx_key_site)
-                if hdx_key:
-                    kwargs["hdx_key"] = hdx_key
-        else:
-            kwargs["hdx_key"] = hdx_key
-        return kwargs
 
     @classmethod
     def create_session_user_agent(
@@ -612,7 +582,6 @@ class Configuration(UserDict):
             str: HDX site url
 
         """
-        kwargs = cls._environment_variables(**kwargs)
         cls.setup(configuration, **kwargs)
         cls._configuration.setup_session_remoteckan(remoteckan, **kwargs)
         return cls._configuration.get_hdx_site_url()
