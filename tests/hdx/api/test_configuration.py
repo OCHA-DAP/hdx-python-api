@@ -807,7 +807,6 @@ hello there"""
         assert configuration.get_hdx_site_url() == hdx_url
         assert configuration.get_api_key() == hdx_key
         monkeypatch.delenv("HDX_URL")
-        monkeypatch.delenv("HDX_KEY")
 
         hdx_key = "TEST_HDX_KEY_STAGE"
         monkeypatch.setenv("HDX_KEY_STAGE", hdx_key)
