@@ -28,7 +28,12 @@ ckanapi==4.7
 click==8.1.7
     # via typer
 colorama==0.4.6
-    # via typer
+    # via
+    #   click
+    #   defopt
+    #   loguru
+    #   pytest
+    #   typer
 coverage[toml]==7.4.3
     # via pytest-cov
 cryptography==42.0.5
@@ -257,6 +262,8 @@ virtualenv==20.25.1
     # via pre-commit
 wheel==0.43.0
     # via libhxl
+win32-setctime==1.1.0
+    # via loguru
 xlrd==2.0.1
     # via hdx-python-utilities
 xlrd3==1.1.0

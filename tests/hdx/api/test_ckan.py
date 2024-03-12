@@ -5,6 +5,7 @@ Unit tests for the freshness class.
 
 import json
 import logging
+import os
 import random
 from os import getenv
 from os.path import join
@@ -55,7 +56,14 @@ class TestCKAN:
     def gclient(self):
         gsheet_auth = getenv("GSHEET_AUTH")
         if not gsheet_auth:
-            raise ValueError("No gsheet authorisation supplied!")
+            auth_file_path = os.path.join(
+                os.path.dirname(__file__), "gsheet_auth.json"
+            )
+            if os.path.exists(auth_file_path):
+                with open(auth_file_path, encoding="utf-8") as auth_file:
+                    gsheet_auth = auth_file.read()
+            else:
+                raise ValueError("No gsheet authorisation supplied!")
         info = json.loads(gsheet_auth)
         scopes = [
             "https://www.googleapis.com/auth/drive",
