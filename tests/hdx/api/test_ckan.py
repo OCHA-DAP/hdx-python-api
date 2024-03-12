@@ -232,19 +232,18 @@ class TestCKAN:
         for i, updated_resource in enumerate(updated_resources):
             resource = resources[i]
             print(updated_resource["name"], resource["name"], flush=True)
-            # assert updated_resource["name"] == resource["name"]
-            # assert updated_resource.get_format() == resource.get_format()
-            # assert updated_resource["url_type"].lower() == resource["url_type"]
-            # url = resource.get("url")
-            # if url:
-            #     if "humdata" in url:
-            #         assert "humdata" in updated_resource["url"]
-            #     else:
-            #         assert "humdata" not in updated_resource["url"]
-            # else:
-            #     assert "humdata" in updated_resource["url"]
+            assert updated_resource["name"] == resource["name"]
+            assert updated_resource.get_format() == resource.get_format()
+            assert updated_resource["url_type"].lower() == resource["url_type"]
+            url = resource.get("url")
+            if url:
+                if "humdata" in url:
+                    assert "humdata" in updated_resource["url"]
+                else:
+                    assert "humdata" not in updated_resource["url"]
+            else:
+                assert "humdata" in updated_resource["url"]
 
-        assert False
         # modify dataset again starting with existing dataset
         title = "HDX Python API test changed again"
         dataset["title"] = title
