@@ -180,17 +180,16 @@ class TestCKAN:
         resources = dataset.get_resources()
         for i, resource in enumerate(resources):
             print(resource["name"], flush=True)
-            # assert resource["name"] == f"test_resource_{i}"
-            # if i % 2 == 0:
-            #     assert resource.get_format() == "csv"
-            #     assert resource["url_type"] == "upload"
-            #     assert "humdata" in resource["url"]
-            # else:
-            #     assert resource.get_format() == "xlsx"
-            #     assert resource["url_type"] == "api"
-            #     assert "humdata" not in resource["url"]
+            assert resource["name"] == f"test_resource_{i}"
+            if i % 2 == 0:
+                assert resource.get_format() == "csv"
+                assert resource["url_type"] == "upload"
+                assert "humdata" in resource["url"]
+            else:
+                assert resource.get_format() == "xlsx"
+                assert resource["url_type"] == "api"
+                assert "humdata" not in resource["url"]
 
-        assert False
         # modify dataset
         dataset_id = dataset["id"]
         title = "HDX Python API test changed"
