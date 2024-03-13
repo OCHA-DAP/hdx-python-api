@@ -2,6 +2,7 @@
 
 import copy
 import json
+import os
 import re
 import tempfile
 from os.path import join
@@ -622,13 +623,16 @@ class TestDatasetCore:
         datasetdata = copy.deepcopy(dataset_data)
         dataset = Dataset(datasetdata)
         resource = Resource(resourcesdata[0])
-        file = tempfile.NamedTemporaryFile(delete=False)
-        resource.set_file_to_upload(file.name)
-        dataset.add_update_resource(resource)
-        dataset.create_in_hdx()
-        file.close()
-        assert dataset["state"] == "active"
-        assert len(dataset.resources) == 3
+        try:
+            file = tempfile.NamedTemporaryFile(delete=False)
+            resource.set_file_to_upload(file.name)
+            dataset.add_update_resource(resource)
+            dataset.create_in_hdx()
+            file.close()
+            assert dataset["state"] == "active"
+            assert len(dataset.resources) == 3
+        finally:
+            os.remove(file.name)
         # Dataset creates that end up updating are in the test below
 
     def test_update_in_hdx(self, configuration, post_update, date_pattern):
@@ -736,105 +740,109 @@ class TestDatasetCore:
         dataset.update_in_hdx()
         assert len(dataset.resources) == 3
         dataset = Dataset.read_from_hdx("TEST4")
-        file = tempfile.NamedTemporaryFile(delete=False)
-        resource.set_file_to_upload(file.name)
-        dataset.add_update_resource(resource)
-        dataset.update_in_hdx(batch="6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d")
-        assert len(dataset.resources) == 3
-        resource["name"] = "123"
-        resource.set_file_to_upload(None)
-        resource["url"] = "http://lala"
-        dataset.add_update_resource(resource)
-        dataset.update_in_hdx()
-        assert dataset["state"] == "active"
-        assert len(dataset.resources) == 3
-        del resource["id"]
-        resource["name"] = "Resource1"
-        dataset.add_update_resource(resource)
-        dataset.update_in_hdx()
-        assert dataset["state"] == "active"
-        assert len(dataset.resources) == 4
+        try:
+            file = tempfile.NamedTemporaryFile(delete=False)
+            resource.set_file_to_upload(file.name)
+            dataset.add_update_resource(resource)
+            dataset.update_in_hdx(batch="6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d")
+            assert len(dataset.resources) == 3
+            resource["name"] = "123"
+            resource.set_file_to_upload(None)
+            resource["url"] = "http://lala"
+            dataset.add_update_resource(resource)
+            dataset.update_in_hdx()
+            assert dataset["state"] == "active"
+            assert len(dataset.resources) == 3
+            del resource["id"]
+            resource["name"] = "Resource1"
+            dataset.add_update_resource(resource)
+            dataset.update_in_hdx()
+            assert dataset["state"] == "active"
+            assert len(dataset.resources) == 4
 
-        dataset = Dataset(datasetdata)
-        resourcesdata = copy.deepcopy(resources_data)
-        resource = Resource(resourcesdata[0])
-        dataset.add_update_resource(resource)
-        resource = Resource(resourcesdata[1])
-        dataset.add_update_resource(resource)
-        resource = Resource(resourcesdata[0])
-        resource["name"] = "ResourcePosition"
-        resource["id"] = "123"
-        resource.set_file_to_upload(file.name)
-        dataset.add_update_resource(resource)
-        resource = Resource(resourcesdata[0])
-        resource["name"] = "changed name"
-        resource["id"] = "456"
-        resource.set_file_to_upload(file.name)
-        dataset.update_in_hdx(match_resources_by_metadata=True)
-        assert dataset["state"] == "active"
-        assert len(dataset.resources) == 4
+            dataset = Dataset(datasetdata)
+            resourcesdata = copy.deepcopy(resources_data)
+            resource = Resource(resourcesdata[0])
+            dataset.add_update_resource(resource)
+            resource = Resource(resourcesdata[1])
+            dataset.add_update_resource(resource)
+            resource = Resource(resourcesdata[0])
+            resource["name"] = "ResourcePosition"
+            resource["id"] = "123"
+            resource.set_file_to_upload(file.name)
+            dataset.add_update_resource(resource)
+            resource = Resource(resourcesdata[0])
+            resource["name"] = "changed name"
+            resource["id"] = "456"
+            resource.set_file_to_upload(file.name)
+            dataset.update_in_hdx(match_resources_by_metadata=True)
+            assert dataset["state"] == "active"
+            assert len(dataset.resources) == 4
 
-        dataset = Dataset(datasetdata)
-        resourcesdata = copy.deepcopy(resources_data)
-        resource = Resource(resourcesdata[0])
-        dataset.add_update_resource(resource)
-        resource = Resource(resourcesdata[1])
-        dataset.add_update_resource(resource)
-        resource = Resource(resourcesdata[0])
-        resource["name"] = "ResourcePosition"
-        resource["id"] = "123"
-        resource.set_file_to_upload(file.name)
-        dataset.add_update_resource(resource)
-        resource = dataset.get_resources()[0]
-        resource["name"] = "changed name"
-        resource["id"] = "456"
-        resource.set_file_to_upload(file.name)
-        dataset.update_in_hdx(match_resources_by_metadata=False)
-        assert dataset["state"] == "active"
-        assert len(dataset.resources) == 3
-        file.close()
-        dataset = Dataset(datasetdata)
-        resourcesdata = copy.deepcopy(resources_data)
-        resource = Resource(resourcesdata[0])
-        dataset.add_update_resource(resource)
-        dataset.update_in_hdx(remove_additional_resources=False)
-        assert dataset["state"] == "active"
-        assert len(dataset.resources) == 3
-        dataset = Dataset(datasetdata)
-        resourcesdata = copy.deepcopy(resources_data)
-        resource = Resource(resourcesdata[0])
-        dataset.add_update_resource(resource)
-        dataset.update_in_hdx(remove_additional_resources=True)
-        assert dataset["state"] == "active"
-        assert len(dataset.resources) == 1
-        dataset = Dataset(datasetdata)
-        resourcesdata = copy.deepcopy(resources_data)
-        resource = Resource(resourcesdata[0])
-        dataset.add_update_resource(resource)
-        dataset.update_in_hdx(
-            match_resources_by_metadata=False, remove_additional_resources=True
-        )
-        assert dataset["state"] == "active"
-        assert len(dataset.resources) == 1
+            dataset = Dataset(datasetdata)
+            resourcesdata = copy.deepcopy(resources_data)
+            resource = Resource(resourcesdata[0])
+            dataset.add_update_resource(resource)
+            resource = Resource(resourcesdata[1])
+            dataset.add_update_resource(resource)
+            resource = Resource(resourcesdata[0])
+            resource["name"] = "ResourcePosition"
+            resource["id"] = "123"
+            resource.set_file_to_upload(file.name)
+            dataset.add_update_resource(resource)
+            resource = dataset.get_resources()[0]
+            resource["name"] = "changed name"
+            resource["id"] = "456"
+            resource.set_file_to_upload(file.name)
+            dataset.update_in_hdx(match_resources_by_metadata=False)
+            assert dataset["state"] == "active"
+            assert len(dataset.resources) == 3
+            file.close()
+            dataset = Dataset(datasetdata)
+            resourcesdata = copy.deepcopy(resources_data)
+            resource = Resource(resourcesdata[0])
+            dataset.add_update_resource(resource)
+            dataset.update_in_hdx(remove_additional_resources=False)
+            assert dataset["state"] == "active"
+            assert len(dataset.resources) == 3
+            dataset = Dataset(datasetdata)
+            resourcesdata = copy.deepcopy(resources_data)
+            resource = Resource(resourcesdata[0])
+            dataset.add_update_resource(resource)
+            dataset.update_in_hdx(remove_additional_resources=True)
+            assert dataset["state"] == "active"
+            assert len(dataset.resources) == 1
+            dataset = Dataset(datasetdata)
+            resourcesdata = copy.deepcopy(resources_data)
+            resource = Resource(resourcesdata[0])
+            dataset.add_update_resource(resource)
+            dataset.update_in_hdx(
+                match_resources_by_metadata=False,
+                remove_additional_resources=True,
+            )
+            assert dataset["state"] == "active"
+            assert len(dataset.resources) == 1
 
-        dataset = Dataset.read_from_hdx("TEST1")
-        resources = dataset.get_resources()
-        resource_ids = [x["id"] for x in resources]
-        assert resource_ids == [
-            "de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
-            "3d777226-96aa-4239-860a-703389d16d1f",
-            "3d777226-96aa-4239-860a-703389d16d1g",
-        ]
-        dataset["id"] = "TEST1"
-        dataset["name"] = "MyDataset1"
-        dataset.resources = [resources[2], resources[0], resources[1]]
-        dataset.update_in_hdx(match_resource_order=True)
-        resource_ids = [x["id"] for x in dataset.get_resources()]
-        assert resource_ids == [
-            "3d777226-96aa-4239-860a-703389d16d1g",
-            "de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
-            "3d777226-96aa-4239-860a-703389d16d1f",
-        ]
+            dataset = Dataset.read_from_hdx("TEST1")
+            resources = dataset.get_resources()
+            resource_ids = [x["id"] for x in resources]
+            assert resource_ids == [
+                "de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
+                "3d777226-96aa-4239-860a-703389d16d1f",
+                "3d777226-96aa-4239-860a-703389d16d1g",
+            ]
+            dataset["id"] = "TEST1"
+            dataset["name"] = "MyDataset1"
+            dataset.resources = [resources[2], resources[0], resources[1]]
+            dataset.update_in_hdx(match_resource_order=True)
+            resource_ids = [x["id"] for x in dataset.get_resources()]
+            assert resource_ids == [
+                "3d777226-96aa-4239-860a-703389d16d1g",
+                "de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
+                "3d777226-96aa-4239-860a-703389d16d1f",
+            ]
+        finally:
+            os.remove(file.name)
 
     def test_delete_from_hdx(self, configuration, post_delete):
         dataset = Dataset.read_from_hdx("TEST1")

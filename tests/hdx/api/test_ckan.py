@@ -57,7 +57,7 @@ class TestCKAN:
         gsheet_auth = getenv("GSHEET_AUTH")
         if not gsheet_auth:
             auth_file_path = os.path.join(
-                os.path.dirname(__file__), "gsheet_auth.json"
+                os.path.expanduser("~"), ".gsheet_auth.json"
             )
             if os.path.exists(auth_file_path):
                 with open(auth_file_path, encoding="utf-8") as auth_file:
@@ -231,7 +231,6 @@ class TestCKAN:
         updated_resources = dataset.get_resources()
         for i, updated_resource in enumerate(updated_resources):
             resource = resources[i]
-            print(updated_resource["name"], resource["name"], flush=True)
             assert updated_resource["name"] == resource["name"]
             assert updated_resource.get_format() == resource.get_format()
             assert updated_resource["url_type"].lower() == resource["url_type"]

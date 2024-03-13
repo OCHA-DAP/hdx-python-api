@@ -126,7 +126,7 @@ openpyxl==3.1.2
     # via hdx-python-utilities
 packaging==24.0
     # via pytest
-petl==1.7.14
+petl==1.7.15
     # via frictionless
 platformdirs==4.2.0
     # via virtualenv
@@ -150,7 +150,7 @@ pyasn1-modules==0.3.0
     # via google-auth
 pycparser==2.21
     # via cffi
-pydantic==2.6.3
+pydantic==2.6.4
     # via
     #   frictionless
     #   inflect
