@@ -1,4 +1,5 @@
 """User class containing all logic for creating, checking, and updating users."""
+
 import logging
 from os.path import join
 from typing import Any, Dict, List, Optional

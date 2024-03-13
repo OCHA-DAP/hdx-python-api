@@ -1,5 +1,5 @@
-"""Helper to the Dataset class for handling processing dataset titles.
-"""
+"""Helper to the Dataset class for handling processing dataset titles."""
+
 import logging
 import re
 from datetime import datetime, timedelta

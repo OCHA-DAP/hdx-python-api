@@ -34,6 +34,14 @@ To check if your changes pass pre-commit without committing, run:
 
     pre-commit run --all-files --config=.config/pre-commit-config.yaml
 
+## Environment Variables
+
+For the `test_ckan.py` tests to run successfully some configuration is required:
+
+1. The environment variable `HDX_KEY_TEST` needs to contain a valid key from the HDX demo server at
+https://demo.data-humdata-org.ahconu.org/
+2. Authentication details for Google Sheets need to be obtained from Mike Rans and either saved in a file named `.gsheet_auth.json` in the home directory (~) or placed in an environment variable `GSHEET_AUTH`. The file is preferred for Windows systems since adding such a long text string to an environment variable in Windows is challenging.
+
 ## Testing
 
 To run the tests and view coverage, execute:

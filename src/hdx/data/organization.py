@@ -1,4 +1,5 @@
 """Organization class containing all logic for creating, checking, and updating organizations."""
+
 import logging
 from os.path import join
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union

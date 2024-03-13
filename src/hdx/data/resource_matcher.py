@@ -1,5 +1,5 @@
-"""Helper to the Dataset class for handling matching resources.
-"""
+"""Helper to the Dataset class for handling matching resources."""
+
 import collections
 from typing import TYPE_CHECKING, List, Optional, Tuple
 

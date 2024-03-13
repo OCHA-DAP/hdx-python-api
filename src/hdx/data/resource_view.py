@@ -1,4 +1,5 @@
 """Resource view class containing all logic for creating, checking, and updating resource views."""
+
 import logging
 from os.path import join
 from typing import Any, Dict, List, Optional, Union

@@ -1,5 +1,5 @@
-"""Helper to the Dataset class for handling resources with filestores.
-"""
+"""Helper to the Dataset class for handling resources with filestores."""
+
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Dict
 

@@ -96,3 +96,7 @@ ENV/
 
 # setuptools_scm
 _version.py
+
+tests/hdx/api/gsheet_auth.json
+
+.vscode/settings.json

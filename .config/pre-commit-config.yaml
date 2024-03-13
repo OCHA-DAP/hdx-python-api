@@ -9,7 +9,7 @@ repos:
         exclude: test_scraper_.*\.json
       - id: check-ast
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.14
+    rev: v0.3.2
     hooks:
       # Run the linter.
       - id: ruff
@@ -18,7 +18,7 @@ repos:
       - id: ruff-format
         args: [--config, .config/ruff.toml]
   - repo: https://github.com/jazzband/pip-tools
-    rev: 7.3.0
+    rev: 7.4.1
     hooks:
       - id: pip-compile
         name: pip-compile requirements.txt

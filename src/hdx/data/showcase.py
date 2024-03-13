@@ -1,4 +1,5 @@
 """Showcase class containing all logic for creating, checking, and updating showcases."""
+
 import logging
 import sys
 from os.path import join

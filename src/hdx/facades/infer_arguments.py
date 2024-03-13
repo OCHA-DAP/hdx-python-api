@@ -1,4 +1,5 @@
 """Facade to simplify project setup that calls project main function with kwargs"""
+
 import logging
 import sys
 from inspect import getdoc
