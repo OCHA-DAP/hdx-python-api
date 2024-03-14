@@ -28,12 +28,7 @@ ckanapi==4.7
 click==8.1.7
     # via typer
 colorama==0.4.6
-    # via
-    #   click
-    #   defopt
-    #   loguru
-    #   pytest
-    #   typer
+    # via typer
 coverage[toml]==7.4.3
     # via pytest-cov
 cryptography==42.0.5
@@ -66,9 +61,9 @@ google-auth-oauthlib==1.2.0
     # via gspread
 gspread==6.0.2
     # via hdx-python-api (pyproject.toml)
-hdx-python-country==3.6.8
+hdx-python-country==3.6.9
     # via hdx-python-api (pyproject.toml)
-hdx-python-utilities==3.6.5
+hdx-python-utilities==3.6.6
     # via
     #   hdx-python-api (pyproject.toml)
     #   hdx-python-country
@@ -262,8 +257,6 @@ virtualenv==20.25.1
     # via pre-commit
 wheel==0.43.0
     # via libhxl
-win32-setctime==1.1.0
-    # via loguru
 xlrd==2.0.1
     # via hdx-python-utilities
 xlrd3==1.1.0
