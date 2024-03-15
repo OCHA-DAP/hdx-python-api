@@ -231,11 +231,15 @@ class Configuration(UserDict):
             hdx_key = os.getenv(f"HDX_KEY_{hdx_site.upper()}")
             if not hdx_key:
                 hdx_key_site = f"hdx_key_{hdx_site}"
-                hdx_key = kwargs.get(hdx_key_site, self.data.get(hdx_key_site))
+                hdx_key = kwargs.get(hdx_key_site)
+                if not hdx_key:
+                    hdx_key = self.data.get(hdx_key_site)
         if not hdx_key:
-            hdx_key = os.getenv(
-                "HDX_KEY", kwargs.get("hdx_key", self.data.get("hdx_key"))
-            )
+            hdx_key = os.getenv("HDX_KEY")
+            if not hdx_key:
+                hdx_key = kwargs.get("hdx_key")
+                if not hdx_key:
+                    hdx_key = self.data.get("hdx_key")
         if hdx_key:
             self.hdx_key = hdx_key
             return
