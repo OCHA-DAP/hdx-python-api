@@ -28,7 +28,7 @@ the line that begins with `ARGS` to:
     ARGS=(hook-impl --config=.config/pre-commit-config.yaml --hook-type=pre-commit)
 
 With pre-commit, all code is formatted according to
-[ruff]("https://github.com/charliermarsh/ruff") guidelines.
+[ruff](https://github.com/astral-sh/ruff) guidelines.
 
 To check if your changes pass pre-commit without committing, run:
 
