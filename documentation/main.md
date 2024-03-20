@@ -52,6 +52,12 @@ The library has detailed API documentation which can be found in the menu at the
 
 
 ## Breaking Changes
+From 6.2.6, kwargs take preference over environment variables which take
+preference over configuration files
+
+From 6.2.5, environment variables take preference over kwargs which take
+preference over configuration files
+
 From 6.1.5, any method or parameter with "reference_period" in it is renamed
 to "time_period" and  any method or parameter with "file_type" in it is renamed
 to "format"

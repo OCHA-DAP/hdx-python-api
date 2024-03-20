@@ -84,10 +84,10 @@ class TestSimple:
         assert testresult.actual_result == my_test_key
         UserAgent.clear_global()
         testresult.actual_result = None
-        monkeypatch.setenv("HDX_KEY", my_test_key)
+        monkeypatch.setenv("HDX_KEY", "aaaa")
         facade(
             my_testkeyfn,
-            hdx_key="aaaa",
+            hdx_key=my_test_key,
             user_agent=my_user_agent,
             hdx_config_yaml=hdx_config_yaml,
             project_config_yaml=project_config_yaml,
@@ -109,10 +109,10 @@ class TestSimple:
         )
         UserAgent.clear_global()
         testresult.actual_result = None
-        monkeypatch.setenv("HDX_SITE", my_test_hdxsite)
+        monkeypatch.setenv("HDX_SITE", "feature")
         facade(
             my_testfn,
-            hdx_site="feature",
+            hdx_site=my_test_hdxsite,
             user_agent=my_user_agent,
             hdx_config_yaml=hdx_config_yaml,
             project_config_yaml=project_config_yaml,
@@ -133,11 +133,11 @@ class TestSimple:
         )
         assert testresult.actual_result == my_test_hdxurl
         UserAgent.clear_global()
-        my_test_hdxurl2 = "http://other-data.humdata.org/"
+        my_test_hdxurl2 = "http://other2-data.humdata.org/"
         monkeypatch.setenv("HDX_URL", my_test_hdxurl2)
         facade(
             my_testfn,
-            hdx_site="feature",
+            hdx_url=my_test_hdxurl,
             user_agent=my_user_agent,
             hdx_config_yaml=hdx_config_yaml,
             project_config_yaml=project_config_yaml,

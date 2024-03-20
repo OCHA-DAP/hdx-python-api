@@ -62,10 +62,26 @@ class TestConfiguration:
         Configuration.default_hdx_config_yaml = "NOT EXIST"
         with pytest.raises(UserAgentError):
             Configuration()
+        with pytest.raises(ConfigurationError):
+            Configuration(user_agent="test")
+        configuration = Configuration(user_agent="test", hdx_key="test")
+        assert configuration.hdx_read_only is False
+        assert (
+            configuration.get_hdx_site_url()
+            == "https://stage.data-humdata-org.ahconu.org"
+        )
+        assert (
+            configuration.get_user_agent()
+            == f"HDXPythonLibrary/{__version__}-test"
+        )
+        configuration = Configuration(full_agent="test", hdx_key="test")
+        assert configuration.get_user_agent() == "test"
         Configuration.default_hdx_config_yaml = default_config_file
 
         Configuration.default_hdx_config_yaml = hdx_config_yaml
-        assert Configuration(user_agent="test").get_api_key() == "12345"
+        configuration = Configuration(user_agent="test")
+        assert configuration.get_api_key() == "12345"
+
         Configuration.default_hdx_config_yaml = default_config_file
 
         with pytest.raises(IOError):
