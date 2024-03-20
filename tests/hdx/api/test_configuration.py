@@ -74,10 +74,10 @@ class TestConfiguration:
             configuration.get_user_agent()
             == f"HDXPythonLibrary/{__version__}-test"
         )
+        configuration = Configuration(full_agent="test", hdx_key="test")
+        assert configuration.get_user_agent() == "test"
         Configuration.default_hdx_config_yaml = default_config_file
 
-        configuration = Configuration(full_agent="test")
-        assert configuration.get_user_agent() == "test"
         Configuration.default_hdx_config_yaml = hdx_config_yaml
         configuration = Configuration(user_agent="test")
         assert configuration.get_api_key() == "12345"
