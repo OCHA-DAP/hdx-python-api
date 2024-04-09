@@ -23,11 +23,9 @@ chardet==5.2.0
     # via frictionless
 charset-normalizer==3.3.2
     # via requests
-ckanapi==4.7
+ckanapi==4.8
     # via hdx-python-api (pyproject.toml)
 click==8.1.7
-    # via typer
-colorama==0.4.6
     # via typer
 coverage[toml]==7.4.4
     # via pytest-cov
@@ -43,25 +41,25 @@ docopt==0.6.2
     # via
     #   ckanapi
     #   num2words
-docutils==0.20.1
+docutils==0.21
     # via defopt
 email-validator==2.1.1
     # via hdx-python-api (pyproject.toml)
 et-xmlfile==1.1.0
     # via openpyxl
-filelock==3.13.1
+filelock==3.13.4
     # via virtualenv
 frictionless==5.16.1
     # via hdx-python-utilities
-google-auth==2.28.2
+google-auth==2.29.0
     # via
     #   google-auth-oauthlib
     #   gspread
 google-auth-oauthlib==1.2.0
     # via gspread
-gspread==6.0.2
+gspread==6.1.0
     # via hdx-python-api (pyproject.toml)
-hdx-python-country==3.6.9
+hdx-python-country==3.7.0
     # via hdx-python-api (pyproject.toml)
 hdx-python-utilities==3.6.7
     # via
@@ -77,7 +75,7 @@ idna==3.6
     #   requests
 ijson==3.2.3
     # via hdx-python-utilities
-inflect==7.0.0
+inflect==7.2.0
     # via quantulum3
 iniconfig==2.0.0
     # via pytest
@@ -109,6 +107,8 @@ markupsafe==2.1.5
     # via jinja2
 mdurl==0.1.2
     # via markdown-it-py
+more-itertools==10.2.0
+    # via inflect
 ndg-httpsclient==0.5.1
     # via hdx-python-api (pyproject.toml)
 nodeenv==1.8.0
@@ -133,22 +133,20 @@ ply==3.11
     #   libhxl
 pockets==0.9.1
     # via sphinxcontrib-napoleon
-pre-commit==3.6.2
+pre-commit==3.7.0
     # via hdx-python-api (pyproject.toml)
-pyasn1==0.5.1
+pyasn1==0.6.0
     # via
     #   hdx-python-api (pyproject.toml)
     #   ndg-httpsclient
     #   pyasn1-modules
     #   rsa
-pyasn1-modules==0.3.0
+pyasn1-modules==0.4.0
     # via google-auth
-pycparser==2.21
+pycparser==2.22
     # via cffi
 pydantic==2.6.4
-    # via
-    #   frictionless
-    #   inflect
+    # via frictionless
 pydantic-core==2.16.3
     # via pydantic
 pygments==2.17.2
@@ -165,7 +163,7 @@ pytest==8.1.1
     # via
     #   hdx-python-api (pyproject.toml)
     #   pytest-cov
-pytest-cov==4.1.0
+pytest-cov==5.0.0
     # via hdx-python-api (pyproject.toml)
 python-dateutil==2.8.2
     # via
@@ -197,7 +195,7 @@ requests==2.31.0
     #   requests-oauthlib
 requests-file==2.0.0
     # via hdx-python-utilities
-requests-oauthlib==1.4.0
+requests-oauthlib==2.0.0
     # via google-auth-oauthlib
 rfc3986==2.0.0
     # via frictionless
@@ -213,6 +211,8 @@ shellingham==1.5.4
     # via typer
 simpleeval==0.9.13
     # via frictionless
+simplejson==3.19.2
+    # via ckanapi
 six==1.16.0
     # via
     #   ckanapi
@@ -234,14 +234,17 @@ tabulate==0.9.0
     # via frictionless
 text-unidecode==1.3
     # via python-slugify
-typer[all]==0.9.0
+typeguard==4.2.1
+    # via inflect
+typer[all]==0.12.3
     # via frictionless
-typing-extensions==4.10.0
+typing-extensions==4.11.0
     # via
     #   frictionless
     #   inflect
     #   pydantic
     #   pydantic-core
+    #   typeguard
     #   typer
 unidecode==1.3.8
     # via
@@ -251,7 +254,7 @@ urllib3==2.2.1
     # via
     #   libhxl
     #   requests
-validators==0.23.1
+validators==0.28.0
     # via frictionless
 virtualenv==20.25.1
     # via pre-commit

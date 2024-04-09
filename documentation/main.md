@@ -52,7 +52,7 @@ The library has detailed API documentation which can be found in the menu at the
 
 
 ## Breaking Changes
-From 6.2.7, generate_resource_from_iterator renamed to 
+From 6.2.7, generate_resource_from_iterator renamed to
 generate_resource_from_iterable with requirement of iterable rather iterator
 
 From 6.2.6, kwargs take preference over environment variables which take

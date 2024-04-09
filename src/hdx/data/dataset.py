@@ -2831,7 +2831,19 @@ class Dataset(HDXObject):
             "generate_resource_from_iterator() is deprecated, use generate_resource_from_iterable() instead",
             DeprecationWarning,
         )
-        return self.generate_resource_from_iterable(headers, iterator, hxltags, folder, filename, resourcedata, datecol, yearcol, date_function, quickcharts, encoding)
+        return self.generate_resource_from_iterable(
+            headers,
+            iterator,
+            hxltags,
+            folder,
+            filename,
+            resourcedata,
+            datecol,
+            yearcol,
+            date_function,
+            quickcharts,
+            encoding,
+        )
 
     def download_and_generate_resource(
         self,

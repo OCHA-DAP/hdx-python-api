@@ -11,5 +11,6 @@ build:
   jobs:
     pre_build:
       - pip install --upgrade mkdocs
+      - pip install mkdocs-material
       - pip install pydoc-markdown
       - pydoc-markdown documentation/pydoc-markdown.yaml
