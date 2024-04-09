@@ -2601,10 +2601,10 @@ class Dataset(HDXObject):
             encoding=encoding,
         )
 
-    def generate_resource_from_iterator(
+    def generate_resource_from_iterable(
         self,
         headers: ListTuple[str],
-        iterator: Iterator[Union[ListTuple, Dict]],
+        iterable: Iterable[Union[ListTuple, Dict]],
         hxltags: Dict[str, str],
         folder: str,
         filename: str,
@@ -2615,7 +2615,7 @@ class Dataset(HDXObject):
         quickcharts: Optional[Dict] = None,
         encoding: Optional[str] = None,
     ) -> Tuple[bool, Dict]:
-        """Given headers and an iterator, write rows to csv and create
+        """Given headers and an iterable, write rows to csv and create
         resource, adding to it the dataset. The returned dictionary will
         contain the resource in the key resource, headers in the key headers
         and list of rows in the key rows.
@@ -2652,7 +2652,7 @@ class Dataset(HDXObject):
 
         Args:
             headers (ListTuple[str]): Headers
-            iterator (Iterator[Union[ListTuple,Dict]]): Iterator returning rows
+            iterable (Iterable[Union[ListTuple,Dict]]): Iterable returning rows
             hxltags (Dict[str,str]): Header to HXL hashtag mapping
             folder (str): Folder to which to write file containing rows
             filename (str): Filename of file to write rows
@@ -2738,7 +2738,7 @@ class Dataset(HDXObject):
 
             date_function = datecol_function
 
-        for row in iterator:
+        for row in iterable:
             if date_function is not None:
                 result = date_function(row)
                 if result is None:
@@ -2812,6 +2812,26 @@ class Dataset(HDXObject):
                     )
                     retdict["qc_resource"] = resource
         return True, retdict
+
+    def generate_resource_from_iterator(
+        self,
+        headers: ListTuple[str],
+        iterator: Iterator[Union[ListTuple, Dict]],
+        hxltags: Dict[str, str],
+        folder: str,
+        filename: str,
+        resourcedata: Dict,
+        datecol: Optional[Union[int, str]] = None,
+        yearcol: Optional[Union[int, str]] = None,
+        date_function: Optional[Callable[[Dict], Optional[Dict]]] = None,
+        quickcharts: Optional[Dict] = None,
+        encoding: Optional[str] = None,
+    ) -> Tuple[bool, Dict]:
+        warnings.warn(
+            "generate_resource_from_iterator() is deprecated, use generate_resource_from_iterable() instead",
+            DeprecationWarning,
+        )
+        return self.generate_resource_from_iterable(headers, iterator, hxltags, folder, filename, resourcedata, datecol, yearcol, date_function, quickcharts, encoding)
 
     def download_and_generate_resource(
         self,
@@ -2898,7 +2918,7 @@ class Dataset(HDXObject):
             format="csv",
             **kwargs,
         )
-        return self.generate_resource_from_iterator(
+        return self.generate_resource_from_iterable(
             headers,
             iterator,
             hxltags,
