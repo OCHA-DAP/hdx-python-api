@@ -176,7 +176,7 @@ class TestCKAN:
         assert dataset["title"] == title
         assert dataset.get_tags() == tags
         assert dataset.get_maintainer()["id"] == maintainer_id
-        assert dataset.get_organization()["display_name"] == "INNAGO"
+        assert dataset.get_organization()["display_name"] == "INNAGO (inactive)"
         resources = dataset.get_resources()
         for i, resource in enumerate(resources):
             assert resource["name"] == f"test_resource_{i}"
@@ -227,7 +227,7 @@ class TestCKAN:
         assert dataset["caveats"] == caveats
         assert dataset.get_tags() == tags
         assert dataset.get_maintainer()["id"] == maintainer_id
-        assert dataset.get_organization()["display_name"] == "INNAGO"
+        assert dataset.get_organization()["display_name"] == "INNAGO (inactive)"
         updated_resources = dataset.get_resources()
         for i, updated_resource in enumerate(updated_resources):
             resource = resources[i]
@@ -269,7 +269,7 @@ class TestCKAN:
         assert "caveats" not in dataset
         assert dataset.get_tags() == tags
         assert dataset.get_maintainer()["id"] == maintainer_id
-        assert dataset.get_organization()["display_name"] == "INNAGO"
+        assert dataset.get_organization()["display_name"] == "INNAGO (inactive)"
         updated_resources = dataset.get_resources()
         for i, updated_resource in enumerate(updated_resources):
             resource = resources[i]
