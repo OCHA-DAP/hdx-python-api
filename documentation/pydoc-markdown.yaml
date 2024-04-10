@@ -11,7 +11,7 @@ renderer:
   output_directory: docs
   mkdocs_config:
     site_name: HDX Python API
-    theme: mkdocs
+    theme: material
     repo_url: "https://github.com/OCHA-DAP/hdx-python-api"
   markdown:
     source_linker:

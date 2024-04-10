@@ -9,7 +9,7 @@ build-backend = "hatchling.build"
 [project]
 name = "hdx-python-api"
 description = "HDX Python API for interacting with the Humanitarian Data Exchange"
-authors = [{name = "Michael Rans", email = "rans@email.com"}]
+authors = [{name = "Michael Rans"}]
 license = {text = "MIT"}
 keywords = ["HDX", "API", "CKAN", "humanitarian data exchange"]
 classifiers = [
@@ -34,10 +34,10 @@ classifiers = [
 requires-python = ">=3.8"
 
 dependencies = [
-    "ckanapi>=4.7",
+    "ckanapi>=4.8",
     "defopt>=6.4.0",
     "email_validator",
-    "hdx-python-country>=3.6.9",
+    "hdx-python-country>=3.7.0",
     "hdx-python-utilities>=3.6.7",
     "libhxl>=5.2.1",
     "makefun",
