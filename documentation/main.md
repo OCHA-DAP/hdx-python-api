@@ -52,8 +52,9 @@ The library has detailed API documentation which can be found in the menu at the
 
 
 ## Breaking Changes
-From 6.2.8, fix mark_data_updated which was broken due to adding timezone 
-information to iso formatted string
+From 6.2.8, fix mark_data_updated which was broken due to an error in 
+dataset_update_filestore_resource in which timezone information was 
+incorrectly added to the iso formatted string
 
 From 6.2.7, generate_resource_from_iterator renamed to
 generate_resource_from_iterable with requirement of iterable rather iterator
