@@ -1,7 +1,8 @@
 """Helper to the Dataset class for handling resources with filestores."""
 
-from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Dict
+
+from hdx.utilities.dateparse import now_utc_notz
 
 if TYPE_CHECKING:
     from hdx.data.resource import Resource
@@ -90,7 +91,8 @@ class FilestoreHelper:
 
         data_updated = resource_data_to_update.is_marked_data_updated()
         if data_updated:
-            resource_data_to_update["last_modified"] = datetime.now(
-                timezone.utc
-            ).isoformat(timespec="microseconds")
+            # Should not output timezone info here
+            resource_data_to_update["last_modified"] = (
+                now_utc_notz().isoformat(timespec="microseconds")
+            )
             resource_data_to_update.data_updated = False

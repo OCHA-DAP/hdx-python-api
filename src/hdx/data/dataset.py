@@ -5,7 +5,7 @@ import logging
 import sys
 import warnings
 from copy import deepcopy
-from datetime import datetime, timezone
+from datetime import datetime
 from os.path import isfile, join
 from typing import (
     TYPE_CHECKING,
@@ -41,6 +41,7 @@ from hdx.utilities.dateparse import (
     default_date,
     default_enddate,
     now_utc,
+    now_utc_notz,
     parse_date,
     parse_date_range,
 )
@@ -598,9 +599,9 @@ class Dataset(HDXObject):
             del kwargs["updated_by_script"]
         else:
             scriptinfo = self.configuration.get_user_agent()
-        # No need to output timezone info here
+        # Should not output timezone info here
         data["updated_by_script"] = (
-            f"{scriptinfo} ({datetime.now(timezone.utc).replace(tzinfo=None).isoformat(timespec='microseconds')})"
+            f"{scriptinfo} ({now_utc_notz().isoformat(timespec='microseconds')})"
         )
         batch = kwargs.get("batch")
         if batch:

@@ -2,7 +2,7 @@
 
 import logging
 import warnings
-from datetime import datetime, timezone
+from datetime import datetime
 from os.path import join
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -13,7 +13,7 @@ from hdx.api.configuration import Configuration
 from hdx.data.date_helper import DateHelper
 from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.data.resource_view import ResourceView
-from hdx.utilities.dateparse import now_utc, parse_date
+from hdx.utilities.dateparse import now_utc, now_utc_notz, parse_date
 from hdx.utilities.downloader import Download
 from hdx.utilities.typehint import ListTuple
 from hdx.utilities.uuid import is_valid_uuid
@@ -393,9 +393,10 @@ class Resource(HDXObject):
         """
         data_updated = kwargs.pop("data_updated", self.data_updated)
         if data_updated and not self.file_to_upload:
-            self.old_data["last_modified"] = datetime.now(
-                timezone.utc
-            ).isoformat(timespec="microseconds")
+            # Should not output timezone info here
+            self.old_data["last_modified"] = now_utc_notz().isoformat(
+                timespec="microseconds"
+            )
             self.data_updated = False
             # old_data will be merged into data in the next step
         self._merge_hdx_update(

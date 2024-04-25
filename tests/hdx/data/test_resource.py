@@ -9,7 +9,7 @@ from os.path import basename, join
 
 import pytest
 
-from . import MockResponse, dataset_resultdict
+from . import MockResponse, dataset_resultdict, resource_data
 from .test_resource_view import resource_view_list, resource_view_mocklist
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
@@ -318,16 +318,6 @@ def mockresourceview(url, decodedata):
 
 
 class TestResource:
-    resource_data = {
-        "name": "MyResource1",
-        "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d",
-        "format": "xlsx",
-        "url": "http://test/spreadsheet.xlsx",
-        "description": "My Resource",
-        "api_type": "api",
-        "resource_type": "api",
-    }
-
     datastore = None
 
     @pytest.fixture(scope="class")
@@ -685,15 +675,15 @@ class TestResource:
             Resource.read_from_hdx("ABC")
 
     def test_check_url_filetoupload(self, configuration):
-        resource_data = copy.deepcopy(TestResource.resource_data)
-        resource = Resource(resource_data)
+        resource_data_copy = copy.deepcopy(resource_data)
+        resource = Resource(resource_data_copy)
         resource.check_url_filetoupload()
         resource.set_file_to_upload("abc")
         resource.check_url_filetoupload()
         resource["url"] = "lala"
         with pytest.raises(HDXError):
             resource.check_url_filetoupload()
-        resource = Resource(resource_data)
+        resource = Resource(resource_data_copy)
         resource["format"] = "NOTEXIST"
         with pytest.raises(HDXError):
             resource.check_url_filetoupload()
@@ -726,8 +716,8 @@ class TestResource:
         }
 
     def test_check_required_fields(self, configuration):
-        resource_data = copy.deepcopy(TestResource.resource_data)
-        resource = Resource(resource_data)
+        resource_data_copy = copy.deepcopy(resource_data)
+        resource = Resource(resource_data_copy)
         resource.check_url_filetoupload()
         resource.check_required_fields()
 
@@ -740,8 +730,8 @@ class TestResource:
         with pytest.raises(HDXError):
             resource.create_in_hdx()
 
-        resource_data = copy.deepcopy(TestResource.resource_data)
-        resource = Resource(resource_data)
+        resource_data_copy = copy.deepcopy(resource_data)
+        resource = Resource(resource_data_copy)
         resource.create_in_hdx()
         assert resource["id"] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
         assert resource["url_type"] == "api"
@@ -751,8 +741,8 @@ class TestResource:
             == "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/test_data.csv"
         )
 
-        resource_data = copy.deepcopy(TestResource.resource_data)
-        resource = Resource(resource_data)
+        resource_data_copy = copy.deepcopy(resource_data)
+        resource = Resource(resource_data_copy)
         filetoupload = join("tests", "fixtures", "test_data.csv")
         resource.set_file_to_upload(filetoupload)
         assert resource.get_file_to_upload() == filetoupload
@@ -770,13 +760,13 @@ class TestResource:
             resource["url"]
             == "http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv"
         )
-        resource_data["name"] = "MyResource2"
-        resource = Resource(resource_data)
+        resource_data_copy["name"] = "MyResource2"
+        resource = Resource(resource_data_copy)
         with pytest.raises(HDXError):
             resource.create_in_hdx()
 
-        resource_data["name"] = "MyResource3"
-        resource = Resource(resource_data)
+        resource_data_copy["name"] = "MyResource3"
+        resource = Resource(resource_data_copy)
         with pytest.raises(HDXError):
             resource.create_in_hdx()
 
@@ -841,10 +831,10 @@ class TestResource:
         with pytest.raises(HDXError):
             resource.update_in_hdx()
 
-        resource_data = copy.deepcopy(TestResource.resource_data)
-        resource_data["name"] = "MyResource1"
-        resource_data["id"] = "74b74ae1-df0c-4716-829f-4f939a046811"
-        resource = Resource(resource_data)
+        resource_data_copy = copy.deepcopy(resource_data)
+        resource_data_copy["name"] = "MyResource1"
+        resource_data_copy["id"] = "74b74ae1-df0c-4716-829f-4f939a046811"
+        resource = Resource(resource_data_copy)
         resource.mark_data_updated()
         assert resource.data_updated is True
         assert resource.is_marked_data_updated() is True
@@ -872,8 +862,8 @@ class TestResource:
             resource.delete_from_hdx()
 
     def test_update_yaml(self, configuration, static_yaml):
-        resource_data = copy.deepcopy(TestResource.resource_data)
-        resource = Resource(resource_data)
+        resource_data_copy = copy.deepcopy(resource_data)
+        resource = Resource(resource_data_copy)
         assert resource["name"] == "MyResource1"
         assert resource.get_format() == "xlsx"
         resource.update_from_yaml(static_yaml)
@@ -881,8 +871,8 @@ class TestResource:
         assert resource.get_format() == "csv"
 
     def test_update_json(self, configuration, static_json):
-        resource_data = copy.deepcopy(TestResource.resource_data)
-        resource = Resource(resource_data)
+        resource_data_copy = copy.deepcopy(resource_data)
+        resource = Resource(resource_data_copy)
         assert resource["name"] == "MyResource1"
         assert resource.get_format() == "xlsx"
         resource.update_from_json(static_json)
@@ -898,8 +888,8 @@ class TestResource:
         assert resource["id"] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
 
     def test_get_dataset(self, configuration, post_dataset):
-        resource_data = copy.deepcopy(TestResource.resource_data)
-        resource = Resource(resource_data)
+        resource_data_copy = copy.deepcopy(resource_data)
+        resource = Resource(resource_data_copy)
         dataset = resource.get_dataset()
         assert dataset["id"] == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
         del resource["package_id"]
