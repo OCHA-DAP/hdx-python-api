@@ -130,6 +130,10 @@ class TestUpdateDatasetResourcesLogic:
             ("QuickCharts-SDG 4 Global and Thematic data", "csv"),
         ]
         dataset._prepare_hdx_call(dataset.old_data, {})
+        assert (
+            dataset["updated_by_script"]
+            == "HDX Scraper: UNESCO (2022-12-19T12:51:30.579185)"
+        )
         results = dataset._revise_dataset(
             tuple(),
             resources_to_update,
