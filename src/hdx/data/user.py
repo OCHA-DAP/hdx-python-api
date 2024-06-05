@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional
 
 import hdx.data.organization
 from hdx.api.configuration import Configuration
-from hdx.data.hdxobject import HDXObject
+from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.utilities.typehint import ListTuple
 
 logger = logging.getLogger(__name__)
@@ -43,6 +43,7 @@ class User(HDXObject):
             "delete": "user_delete",
             "list": "user_list",
             "listorgs": "organization_list_for_user",
+            "token_list": "api_token_list",
             "autocomplete": "user_autocomplete",
         }
 
@@ -248,6 +249,28 @@ class User(HDXObject):
             **kwargs,
         )
 
+    def get_organization_dicts(
+        self, permission: str = "read"
+    ) -> List[Dict]:  # noqa: F821
+        """Get organization dictionaries (not organization objects)  in HDX that this user is a member of.
+
+        Args:
+            permission (str): Permission to check for. Defaults to 'read'.
+
+        Returns:
+            List[Dict]: List of organization dicts in HDX that this user is a member of
+        """
+        success, result = self._read_from_hdx(
+            "user",
+            self.data["name"],
+            "id",
+            self.actions()["listorgs"],
+            permission=permission,
+        )
+        if success:
+            return result
+        return []
+
     def get_organizations(
         self, permission: str = "read"
     ) -> List["Organization"]:  # noqa: F821
@@ -259,22 +282,72 @@ class User(HDXObject):
         Returns:
             List[Organization]: List of organizations in HDX that this user is a member of
         """
+        result = self.get_organization_dicts(permission)
+        organizations = []
+        for organizationdict in result:
+            org = hdx.data.organization.Organization.read_from_hdx(
+                organizationdict["id"]
+            )
+            organizations.append(org)
+        return organizations
+
+    @classmethod
+    def get_current_user_organization_dicts(
+        cls, permission: str = "read", configuration: Optional[Configuration] = None
+    ) -> List["Organization"]:  # noqa: F821
+        """Get organization dictionaries (not Organization objects) in HDX that the logged in user is a member of.
+
+        Args:
+            permission (str): Permission to check for. Defaults to 'read'.
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+
+        Returns:
+            List[Dict]: List of organization dicts in HDX that logged in user is a member of
+        """
+        user = User(configuration=configuration)
+        try:
+            return user.configuration.call_remoteckan(cls.actions()["listorgs"])
+        except Exception as e:
+            raise HDXError(
+                "Failed when trying to list orgs for logged in user! (POST)"
+            ) from e
+
+    @classmethod
+    def get_current_user_organizations(
+        cls, permission: str = "read", configuration: Optional[Configuration] = None
+    ) -> List["Organization"]:  # noqa: F821
+        """Get organizations in HDX that the logged in user is a member of.
+
+        Args:
+            permission (str): Permission to check for. Defaults to 'read'.
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+
+        Returns:
+            List[Organization]: List of organizations in HDX that logged in user is a member of
+        """
+        result = cls.get_current_user_organization_dicts(permission, configuration)
+        organizations = []
+        for organizationdict in result:
+            org = hdx.data.organization.Organization.read_from_hdx(
+                organizationdict["id"]
+            )
+            organizations.append(org)
+        return organizations
+
+    def get_token_list(self):
+        """Get API tokens for user.
+
+        Returns:
+            List[Dict]: List of API token details
+        """
         success, result = self._read_from_hdx(
             "user",
             self.data["name"],
-            "id",
-            self.actions()["listorgs"],
-            permission=permission,
+            "user_id",
+            self.actions()["token_list"],
         )
-        organizations = []
-        if success:
-            for organizationdict in result:
-                org = hdx.data.organization.Organization.read_from_hdx(
-                    organizationdict["id"]
-                )
-                organizations.append(org)
-        return organizations
-
+        return result
+        
     @classmethod
     def autocomplete(
         cls,
