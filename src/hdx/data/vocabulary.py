@@ -258,7 +258,9 @@ class Vocabulary(HDXObject):
         Returns:
             List[str]: List of approved tags
         """
-        with Download(full_agent=configuration.get_user_agent()) as downloader:
+        with Download(
+            full_agent=configuration.get_user_agent(), use_env=False
+        ) as downloader:
             if url is None:
                 url = configuration["tags_list_url"]
             return list(
@@ -402,7 +404,8 @@ class Vocabulary(HDXObject):
             if configuration is None:
                 configuration = Configuration.read()
             with Download(
-                full_agent=configuration.get_user_agent()
+                full_agent=configuration.get_user_agent(),
+                use_env=False,
             ) as downloader:
                 if url is None:
                     url = configuration["tags_mapping_url"]
