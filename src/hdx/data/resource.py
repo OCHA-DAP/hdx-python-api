@@ -172,7 +172,8 @@ class Resource(HDXObject):
             if configuration is None:
                 configuration = Configuration.read()
             with Download(
-                full_agent=configuration.get_user_agent()
+                full_agent=configuration.get_user_agent(),
+                use_env=False,
             ) as downloader:
                 if url is None:
                     url = configuration["formats_mapping_url"]
@@ -534,7 +535,9 @@ class Resource(HDXObject):
         else:
             headers = None
         with Download(
-            full_agent=self.configuration.get_user_agent(), headers=headers
+            full_agent=self.configuration.get_user_agent(),
+            use_env=False,
+            headers=headers,
         ) as downloader:
             path = downloader.download_file(
                 url, folder=folder, filename=filename
