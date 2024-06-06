@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional
 
 import hdx.data.organization
 from hdx.api.configuration import Configuration
-from hdx.data.hdxobject import HDXError, HDXObject
+from hdx.data.hdxobject import HDXObject
 from hdx.utilities.typehint import ListTuple
 
 logger = logging.getLogger(__name__)
@@ -325,10 +325,8 @@ class User(HDXObject):
             return user.configuration.call_remoteckan(
                 cls.actions()["listorgs"]
             )
-        except Exception as e:
-            raise HDXError(
-                "Failed when trying to list orgs for logged in user! (POST)"
-            ) from e
+        except Exception:
+            return []
 
     @classmethod
     def get_current_user_organizations(

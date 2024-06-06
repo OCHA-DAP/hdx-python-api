@@ -308,6 +308,24 @@ class TestUser:
         Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope="function")
+    def post_listorgs_invalid(self):
+        class MockSession:
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth=None):
+                decodedata = data.decode("utf-8")
+                datadict = json.loads(decodedata)
+                if "user" in url:
+                    if "show" in url:
+                        return user_mockshow(url, datadict)
+                    elif "list" in url:
+                        return MockResponse(
+                            404,
+                            '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_list"}',
+                        )
+
+        Configuration.read().remoteckan().session = MockSession()
+
+    @pytest.fixture(scope="function")
     def post_tokenlist(self):
         class MockSession:
             @staticmethod
@@ -317,12 +335,17 @@ class TestUser:
                 if "user" in url:
                     return user_mockshow(url, datadict)
                 elif "token" in url:
-                    result = json.dumps(user_tokenlist)
-                    return MockResponse(
-                        200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_tokenlist"}'
-                        % result,
-                    )
+                    if datadict["user_id"] == "MyUser1":
+                        result = json.dumps(user_tokenlist)
+                        return MockResponse(
+                            200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_tokenlist"}'
+                            % result,
+                        )
+                return MockResponse(
+                    404,
+                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_tokenlist"}',
+                )
 
         Configuration.read().remoteckan().session = MockSession()
 
@@ -596,6 +619,7 @@ Content-Transfer-Encoding: 7bit
         assert result is True
         result = user.check_organization_access("lala")
         assert result is False
+
         organizations = User.get_current_user_organization_dicts()
         assert organizations[0]["id"] == "b67e6c74-c185-4f43-b561-0e114a736f19"
         assert len(organizations) == 1
@@ -611,6 +635,14 @@ Content-Transfer-Encoding: 7bit
         result = User.check_current_user_organization_access("lala")
         assert result is False
 
+    def test_get_organizations_invalid_user(
+        self, configuration, post_listorgs_invalid
+    ):
+        user = User.read_from_hdx("9f3e9973-7dbe-4c65-8820-f48578e3ffea")
+        user["name"] = "lala"
+        assert user.get_organization_dicts() == []
+        assert User.get_current_user_organization_dicts() == []
+
     def test_get_token_list(self, configuration, post_tokenlist):
         user = User.read_from_hdx("9f3e9973-7dbe-4c65-8820-f48578e3ffea")
         tokens = user.get_token_list()
@@ -621,6 +653,8 @@ Content-Transfer-Encoding: 7bit
                 "user_id": "9f3e9973-7dbe-4c65-8820-f48578e3ffea",
             }
         ]
+        user["name"] = "lala"
+        assert user.get_token_list() == []
 
     def test_autocomplete(self, configuration, post_autocomplete):
         assert User.autocomplete("fake%20test") == user_autocomplete
