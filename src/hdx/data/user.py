@@ -249,9 +249,7 @@ class User(HDXObject):
             **kwargs,
         )
 
-    def get_organization_dicts(
-        self, permission: str = "read"
-    ) -> List[Dict]:  # noqa: F821
+    def get_organization_dicts(self, permission: str = "read") -> List[Dict]:  # noqa: F821
         """Get organization dictionaries (not organization objects)  in HDX that this user is a member of.
 
         Args:
@@ -291,9 +289,27 @@ class User(HDXObject):
             organizations.append(org)
         return organizations
 
+    def check_organization_access(self, organization: str) -> bool:
+        """Check user is a member of a given organization.
+
+        Args:
+            organization (str): Organization id or name.
+
+        Returns:
+            bool: True if the logged in user is a member of the organization.
+        """
+        for organization_dict in self.get_organization_dicts():
+            if organization_dict["id"] == organization:
+                return True
+            if organization_dict["name"] == organization:
+                return True
+        return False
+
     @classmethod
     def get_current_user_organization_dicts(
-        cls, permission: str = "read", configuration: Optional[Configuration] = None
+        cls,
+        permission: str = "read",
+        configuration: Optional[Configuration] = None,
     ) -> List["Organization"]:  # noqa: F821
         """Get organization dictionaries (not Organization objects) in HDX that the logged in user is a member of.
 
@@ -306,7 +322,9 @@ class User(HDXObject):
         """
         user = User(configuration=configuration)
         try:
-            return user.configuration.call_remoteckan(cls.actions()["listorgs"])
+            return user.configuration.call_remoteckan(
+                cls.actions()["listorgs"]
+            )
         except Exception as e:
             raise HDXError(
                 "Failed when trying to list orgs for logged in user! (POST)"
@@ -314,7 +332,9 @@ class User(HDXObject):
 
     @classmethod
     def get_current_user_organizations(
-        cls, permission: str = "read", configuration: Optional[Configuration] = None
+        cls,
+        permission: str = "read",
+        configuration: Optional[Configuration] = None,
     ) -> List["Organization"]:  # noqa: F821
         """Get organizations in HDX that the logged in user is a member of.
 
@@ -325,7 +345,9 @@ class User(HDXObject):
         Returns:
             List[Organization]: List of organizations in HDX that logged in user is a member of
         """
-        result = cls.get_current_user_organization_dicts(permission, configuration)
+        result = cls.get_current_user_organization_dicts(
+            permission, configuration
+        )
         organizations = []
         for organizationdict in result:
             org = hdx.data.organization.Organization.read_from_hdx(
@@ -333,6 +355,23 @@ class User(HDXObject):
             )
             organizations.append(org)
         return organizations
+
+    @classmethod
+    def check_current_user_organization_access(cls, organization: str) -> bool:
+        """Check logged in user is a member of a given organization.
+
+        Args:
+            organization (str): Organization id or name.
+
+        Returns:
+            bool: True if the logged in user is a member of the organization.
+        """
+        for organization_dict in cls.get_current_user_organization_dicts():
+            if organization_dict["id"] == organization:
+                return True
+            if organization_dict["name"] == organization:
+                return True
+        return False
 
     def get_token_list(self):
         """Get API tokens for user.
@@ -346,8 +385,10 @@ class User(HDXObject):
             "user_id",
             self.actions()["token_list"],
         )
-        return result
-        
+        if success:
+            return result
+        return []
+
     @classmethod
     def autocomplete(
         cls,

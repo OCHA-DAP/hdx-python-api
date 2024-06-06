@@ -52,6 +52,15 @@ user_autocomplete = [
 ]
 
 
+user_tokenlist = [
+    {
+        "id": "123",
+        "name": "my_token",
+        "user_id": "9f3e9973-7dbe-4c65-8820-f48578e3ffea",
+    }
+]
+
+
 def user_mockshow(url, datadict):
     if "show" not in url:
         return MockResponse(
@@ -295,6 +304,25 @@ class TestUser:
                                 '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}'
                                 % result,
                             )
+
+        Configuration.read().remoteckan().session = MockSession()
+
+    @pytest.fixture(scope="function")
+    def post_tokenlist(self):
+        class MockSession:
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth=None):
+                decodedata = data.decode("utf-8")
+                datadict = json.loads(decodedata)
+                if "user" in url:
+                    return user_mockshow(url, datadict)
+                elif "token" in url:
+                    result = json.dumps(user_tokenlist)
+                    return MockResponse(
+                        200,
+                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_tokenlist"}'
+                        % result,
+                    )
 
         Configuration.read().remoteckan().session = MockSession()
 
@@ -554,8 +582,45 @@ Content-Transfer-Encoding: 7bit
 
     def test_get_organizations(self, configuration, post_listorgs):
         user = User.read_from_hdx("9f3e9973-7dbe-4c65-8820-f48578e3ffea")
+        organizations = user.get_organization_dicts()
+        assert organizations[0]["id"] == "b67e6c74-c185-4f43-b561-0e114a736f19"
+        assert len(organizations) == 1
         organizations = user.get_organizations()
         assert organizations[0]["id"] == "b67e6c74-c185-4f43-b561-0e114a736f19"
+        assert len(organizations) == 1
+        result = user.check_organization_access(
+            "b67e6c74-c185-4f43-b561-0e114a736f19"
+        )
+        assert result is True
+        result = user.check_organization_access("acled")
+        assert result is True
+        result = user.check_organization_access("lala")
+        assert result is False
+        organizations = User.get_current_user_organization_dicts()
+        assert organizations[0]["id"] == "b67e6c74-c185-4f43-b561-0e114a736f19"
+        assert len(organizations) == 1
+        organizations = User.get_current_user_organizations()
+        assert organizations[0]["id"] == "b67e6c74-c185-4f43-b561-0e114a736f19"
+        assert len(organizations) == 1
+        result = User.check_current_user_organization_access(
+            "b67e6c74-c185-4f43-b561-0e114a736f19"
+        )
+        assert result is True
+        result = User.check_current_user_organization_access("acled")
+        assert result is True
+        result = User.check_current_user_organization_access("lala")
+        assert result is False
+
+    def test_get_token_list(self, configuration, post_tokenlist):
+        user = User.read_from_hdx("9f3e9973-7dbe-4c65-8820-f48578e3ffea")
+        tokens = user.get_token_list()
+        assert tokens == [
+            {
+                "id": "123",
+                "name": "my_token",
+                "user_id": "9f3e9973-7dbe-4c65-8820-f48578e3ffea",
+            }
+        ]
 
     def test_autocomplete(self, configuration, post_autocomplete):
         assert User.autocomplete("fake%20test") == user_autocomplete
