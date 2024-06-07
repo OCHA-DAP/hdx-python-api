@@ -1,5 +1,5 @@
 default_language_version:
-    python: python3.11
+    python: python3.12
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
@@ -9,7 +9,7 @@ repos:
         exclude: test_scraper_.*\.json
       - id: check-ast
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.2
+    rev: v0.4.8
     hooks:
       # Run the linter.
       - id: ruff
@@ -18,7 +18,7 @@ repos:
       - id: ruff-format
         args: [--config, .config/ruff.toml]
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.1.38
+    rev: 0.2.9
     hooks:
       # Run the pip compile
       - id: pip-compile

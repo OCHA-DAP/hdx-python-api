@@ -289,16 +289,21 @@ class User(HDXObject):
             organizations.append(org)
         return organizations
 
-    def check_organization_access(self, organization: str) -> bool:
+    def check_organization_access(
+        self, organization: str, permission: str = "read"
+    ) -> bool:
         """Check user is a member of a given organization.
 
         Args:
             organization (str): Organization id or name.
+            permission (str): Permission to check for. Defaults to 'read'.
 
         Returns:
             bool: True if the logged in user is a member of the organization.
         """
-        for organization_dict in self.get_organization_dicts():
+        for organization_dict in self.get_organization_dicts(
+            permission=permission
+        ):
             if organization_dict["id"] == organization:
                 return True
             if organization_dict["name"] == organization:
@@ -323,7 +328,7 @@ class User(HDXObject):
         user = User(configuration=configuration)
         try:
             return user.configuration.call_remoteckan(
-                cls.actions()["listorgs"]
+                cls.actions()["listorgs"], {"permission": permission}
             )
         except Exception:
             return []
@@ -355,16 +360,21 @@ class User(HDXObject):
         return organizations
 
     @classmethod
-    def check_current_user_organization_access(cls, organization: str) -> bool:
+    def check_current_user_organization_access(
+        cls, organization: str, permission: str = "read"
+    ) -> bool:
         """Check logged in user is a member of a given organization.
 
         Args:
             organization (str): Organization id or name.
+            permission (str): Permission to check for. Defaults to 'read'.
 
         Returns:
             bool: True if the logged in user is a member of the organization.
         """
-        for organization_dict in cls.get_current_user_organization_dicts():
+        for organization_dict in cls.get_current_user_organization_dicts(
+            permission=permission
+        ):
             if organization_dict["id"] == organization:
                 return True
             if organization_dict["name"] == organization:
