@@ -37,8 +37,8 @@ dependencies = [
     "ckanapi>=4.8",
     "defopt>=6.4.0",
     "email_validator",
-    "hdx-python-country>=3.7.2",
-    "hdx-python-utilities>=3.6.9",
+    "hdx-python-country>=3.7.6",
+    "hdx-python-utilities>=3.7.2",
     "libhxl>=5.2.1",
     "makefun",
     "ndg-httpsclient",
@@ -84,25 +84,21 @@ version_scheme = "python-simplified-semver"
 
 # Tests
 
-[tool.hatch.envs.test]
+[tool.hatch.envs.hatch-test]
 features = ["test"]
 
-[tool.hatch.envs.test.scripts]
-test = """
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["3.12"]
+
+[tool.hatch.envs.hatch-test.scripts]
+run = """
        pytest -c .config/pytest.ini --rootdir=. --junitxml=test-results.xml \
        --cov --cov-config=.config/coveragerc --no-cov-on-fail \
        --cov-report=lcov --cov-report=term-missing
        """
 
-[[tool.hatch.envs.test.matrix]]
-python = ["3.12"]
-
-[tool.hatch.envs.lint]
-detached = true
-dependencies = ["ruff"]
-
-[tool.hatch.envs.lint.scripts]
-style = [
-  "ruff check --config .config/ruff.toml --diff {args:.}",
-  "ruff format --config .config/ruff.toml --diff {args:.}",
-]
+[tool.hatch.envs.hatch-static-analysis.scripts]
+format-check = ["ruff format --config .config/ruff.toml --check --diff {args:.}",]
+format-fix = ["ruff format --config .config/ruff.toml {args:.}",]
+lint-check = ["ruff check --config .config/ruff.toml {args:.}",]
+lint-fix = ["ruff check --config .config/ruff.toml --fix {args:.}",]
