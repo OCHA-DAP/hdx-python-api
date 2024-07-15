@@ -28,14 +28,14 @@ showcase_resultdict = {
     "resources": [],
     "tags": [
         {
-            "vocabulary_id": "4381925f-0ae9-44a3-b30d-cae35598757b",
+            "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
             "state": "active",
             "display_name": "economics",
             "id": "e1ff4b78-efcf-40e7-888b-7342169068e1",
             "name": "economics",
         },
         {
-            "vocabulary_id": "4381925f-0ae9-44a3-b30d-cae35598757b",
+            "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
             "state": "active",
             "display_name": "health",
             "id": "8a43b269-78cb-4a85-a4ce-7e3e928bc487",
@@ -400,11 +400,11 @@ class TestShowcase:
         expected["tags"] = [
             {
                 "name": "economics",
-                "vocabulary_id": "4381925f-0ae9-44a3-b30d-cae35598757b",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
             },
             {
                 "name": "health",
-                "vocabulary_id": "4381925f-0ae9-44a3-b30d-cae35598757b",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
             },
         ]
         assert showcase.get_old_data_dict() == expected
@@ -461,15 +461,15 @@ class TestShowcase:
         assert showcase.get_tags() == [
             "economy",
             "health",
-            "water sanitation and hygiene - wash",
+            "water sanitation and hygiene-wash",
         ]
         showcase.add_tags(["sanitation"])
         assert showcase.get_tags() == [
             "economy",
             "health",
-            "water sanitation and hygiene - wash",
+            "water sanitation and hygiene-wash",
         ]
-        result = showcase.remove_tag("water sanitation and hygiene - wash")
+        result = showcase.remove_tag("water sanitation and hygiene-wash")
         assert result is True
         assert showcase.get_tags() == ["economy", "health"]
         showcase["tags"] = None
