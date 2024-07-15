@@ -443,15 +443,15 @@ class TestDatasetNoncore:
         expected = copy.deepcopy(resulttags)
         expected.append(
             {
-                "name": "violence and conflict",
-                "vocabulary_id": "4381925f-0ae9-44a3-b30d-cae35598757b",
+                "name": "conflict-violence",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
             }
         )
         assert dataset["tags"] == expected
         assert dataset.get_tags() == [
             "conflict",
             "political violence",
-            "violence and conflict",
+            "conflict-violence",
         ]
         dataset.add_tags(
             [
@@ -464,71 +464,66 @@ class TestDatasetNoncore:
         assert dataset.get_tags() == [
             "conflict",
             "political violence",
-            "violence and conflict",
-            "unemployment",
-            "fatalities - deaths",
+            "conflict-violence",
+            "employment",
+            "fatalities",
         ]
-        dataset.remove_tag("violence and conflict")
+        dataset.remove_tag("conflict-violence")
         assert dataset.get_tags() == [
             "conflict",
             "political violence",
-            "unemployment",
-            "fatalities - deaths",
+            "employment",
+            "fatalities",
         ]
         del dataset["tags"]
         assert dataset.get_tags() == []
         dataset.add_tag("conflict-related deaths")
         assert dataset["tags"] == [
             {
-                "name": "violence and conflict",
-                "vocabulary_id": "4381925f-0ae9-44a3-b30d-cae35598757b",
+                "name": "conflict-violence",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
             },
             {
-                "name": "fatalities - deaths",
-                "vocabulary_id": "4381925f-0ae9-44a3-b30d-cae35598757b",
+                "name": "fatalities",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
             },
         ]
         assert dataset.get_tags() == [
-            "violence and conflict",
-            "fatalities - deaths",
+            "conflict-violence",
+            "fatalities",
         ]
         dataset.add_tag("conflict-related deaths")
         assert dataset.get_tags() == [
-            "violence and conflict",
-            "fatalities - deaths",
+            "conflict-violence",
+            "fatalities",
         ]
         dataset.add_tag("cholera")
         assert dataset.get_tags() == [
-            "violence and conflict",
-            "fatalities - deaths",
-            "cholera",
+            "conflict-violence",
+            "fatalities",
             "disease",
         ]
-        dataset.remove_tag("violence and conflict")
+        dataset.remove_tag("conflict-violence")
         assert dataset.get_tags() == [
-            "fatalities - deaths",
-            "cholera",
+            "fatalities",
             "disease",
         ]
         dataset.add_tag("cholera")
         assert dataset.get_tags() == [
-            "fatalities - deaths",
-            "cholera",
+            "fatalities",
             "disease",
         ]
         dataset.add_tag("cbi")
         assert dataset.get_tags() == [
-            "fatalities - deaths",
-            "cholera",
+            "fatalities",
             "disease",
-            "cash assistance",
+            "cash based interventions-cbi",
         ]
         dataset.add_tag("lala")
         assert dataset.get_tags() == [
-            "fatalities - deaths",
-            "cholera",
+            "fatalities",
             "disease",
-            "cash assistance",
+            "cash based interventions-cbi",
         ]
 
     def test_add_clean_tags(self, configuration, vocabulary_read):
@@ -538,123 +533,112 @@ class TestDatasetNoncore:
         dataset = Dataset(datasetdata)
         assert dataset.get_tags() == ["conflict", "political violence"]
         assert dataset.clean_tags() == (
-            ["violence and conflict"],
+            ["conflict-violence"],
             ["political violence"],
         )
         dataset.add_tags(["nodeid123", "transportation"])
         assert dataset.get_tags() == [
-            "violence and conflict",
+            "conflict-violence",
             "transportation",
         ]
         dataset["tags"].append(
             {
                 "name": "nodeid123",
-                "vocabulary_id": "4381925f-0ae9-44a3-b30d-cae35598757b",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
             }
         )
         assert dataset.clean_tags() == (
-            ["violence and conflict", "transportation"],
+            ["conflict-violence", "transportation"],
             ["nodeid123"],
         )
         assert dataset.get_tags() == [
-            "violence and conflict",
+            "conflict-violence",
             "transportation",
         ]
         dataset.add_tags(["geodata", "points"])
         assert dataset.clean_tags() == (
-            ["violence and conflict", "transportation", "geodata"],
+            ["conflict-violence", "transportation", "geodata"],
             [],
         )
         dataset.add_tag("financial")
         assert dataset.get_tags() == [
-            "violence and conflict",
+            "conflict-violence",
             "transportation",
             "geodata",
         ]
         dataset["tags"].append(
             {
                 "name": "financial",
-                "vocabulary_id": "4381925f-0ae9-44a3-b30d-cae35598757b",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
             }
         )
         assert dataset.clean_tags() == (
-            ["violence and conflict", "transportation", "geodata"],
+            ["conflict-violence", "transportation", "geodata"],
             ["financial"],
         )
         dataset.add_tag("addresses")
         assert dataset.clean_tags() == (
             [
-                "violence and conflict",
+                "conflict-violence",
                 "transportation",
                 "geodata",
-                "3-word addresses",
             ],
             [],
         )
-        dataset.remove_tag("3-word addresses")
+        dataset.remove_tag("geodata")
         assert dataset.get_tags() == [
-            "violence and conflict",
+            "conflict-violence",
             "transportation",
-            "geodata",
         ]
         dataset.add_tag("cultivos coca")
         assert dataset.clean_tags() == (
             [
-                "violence and conflict",
+                "conflict-violence",
                 "transportation",
-                "geodata",
-                "food production",
+                "livelihoods",
             ],
             [],
         )
-        dataset.remove_tag("food production")
+        dataset.remove_tag("livelihoods")
         dataset.add_tag("atentados")
         assert dataset.get_tags() == [
-            "violence and conflict",
+            "conflict-violence",
             "transportation",
-            "geodata",
-            "security incidents",
         ]
         dataset["tags"].append(
             {
                 "name": "atentados",
-                "vocabulary_id": "4381925f-0ae9-44a3-b30d-cae35598757b",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
             }
         )
         assert dataset.clean_tags() == (
             [
-                "violence and conflict",
+                "conflict-violence",
                 "transportation",
-                "geodata",
-                "security incidents",
             ],
             [],
         )
-        dataset.remove_tag("security incidents")
         dataset.add_tag("windspeeds")
         assert dataset.clean_tags() == (
             [
-                "violence and conflict",
+                "conflict-violence",
                 "transportation",
-                "geodata",
-                "wind speed",
+                "cyclones-hurricanes-typhoons",
             ],
             [],
         )
         dataset.add_tag("conservancies")
         assert dataset.get_tags() == [
-            "violence and conflict",
+            "conflict-violence",
             "transportation",
-            "geodata",
-            "wind speed",
-            "protected areas",
+            "cyclones-hurricanes-typhoons",
+            "affected area",
         ]
         dataset.remove_tag("transportation")
-        dataset.remove_tag("protected areas")
+        dataset.remove_tag("affected area")
         assert dataset.get_tags() == [
-            "violence and conflict",
-            "geodata",
-            "wind speed",
+            "conflict-violence",
+            "cyclones-hurricanes-typhoons",
         ]
 
     def test_maintainer(self, configuration, user_read):
@@ -1784,7 +1768,7 @@ class TestDatasetNoncore:
             expected_update_frequency = "Every day"
             dataset.set_expected_update_frequency(expected_update_frequency)
             dataset.set_subnational(False)
-            tags = ["hxl", "aid funding"]
+            tags = ["hxl", "funding"]
             dataset.add_tags(tags)
             resource_name = "filename.csv"
             resourcedata = {
