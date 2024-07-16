@@ -627,7 +627,9 @@ class TestDatasetNoncore:
             ],
             [],
         )
+        print(dataset.get_tags())
         dataset.add_tag("conservancies")
+        print(dataset.get_tags())
         assert dataset.get_tags() == [
             "conflict-violence",
             "transportation",

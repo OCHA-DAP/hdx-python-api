@@ -8,7 +8,7 @@ attrs==23.2.0
     #   jsonlines
     #   jsonschema
     #   referencing
-cachetools==5.3.3
+cachetools==5.4.0
     # via google-auth
 certifi==2024.7.4
     # via requests

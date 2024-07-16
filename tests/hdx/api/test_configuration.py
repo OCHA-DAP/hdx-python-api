@@ -229,9 +229,9 @@ class TestConfiguration:
             },
             "XYZ": {"567": 987},
             "approved_tags_vocabulary": "Topics",
-            "tags_list_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/Accepted_Tags.csv",
-            "tags_mapping_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/Tag_Mapping.csv",
-            "formats_mapping_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/resource_formats.json",
+            "tags_list_url": "tests/fixtures/Accepted_Tags.csv",
+            "tags_mapping_url": "tests/fixtures/Tag_Mapping.csv",
+            "formats_mapping_url": "tests/fixtures/resource_formats.json",
         }
 
         configuration = Configuration.read()
@@ -351,9 +351,9 @@ hello there"""
             "resource": {"required_fields": ["name", "description"]},
             "showcase": {"required_fields": ["name"]},
             "approved_tags_vocabulary": "Topics",
-            "tags_list_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/Accepted_Tags.csv",
-            "tags_mapping_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/Tag_Mapping.csv",
-            "formats_mapping_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/resource_formats.json",
+            "tags_list_url": "tests/fixtures/Accepted_Tags.csv",
+            "tags_mapping_url": "tests/fixtures/Tag_Mapping.csv",
+            "formats_mapping_url": "tests/fixtures/resource_formats.json",
         }
         configuration = Configuration.read()
         assert configuration == expected_configuration
@@ -393,9 +393,9 @@ hello there"""
             },
             "showcase": {"required_fields": ["name", "title"]},
             "approved_tags_vocabulary": "Topics",
-            "tags_list_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/Accepted_Tags.csv",
-            "tags_mapping_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/Tag_Mapping.csv",
-            "formats_mapping_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/resource_formats.json",
+            "tags_list_url": "tests/fixtures/Accepted_Tags.csv",
+            "tags_mapping_url": "tests/fixtures/Tag_Mapping.csv",
+            "formats_mapping_url": "tests/fixtures/resource_formats.json",
         }
         configuration = Configuration.read()
         assert configuration == expected_configuration
@@ -754,9 +754,9 @@ hello there"""
                 ]
             },
             "approved_tags_vocabulary": "Topics",
-            "tags_list_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/Accepted_Tags.csv",
-            "tags_mapping_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/Tag_Mapping.csv",
-            "formats_mapping_url": "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/resource_formats.json",
+            "tags_list_url": "tests/fixtures/Accepted_Tags.csv",
+            "tags_mapping_url": "tests/fixtures/Tag_Mapping.csv",
+            "formats_mapping_url": "tests/fixtures/resource_formats.json",
         }
         assert Configuration.read() == expected_configuration
 

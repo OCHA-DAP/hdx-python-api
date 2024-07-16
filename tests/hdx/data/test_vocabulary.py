@@ -40,6 +40,12 @@ vocabulary_list = [
     {
         "tags": [
             {
+                "id": "6e0600e9-167a-482f-9259-4a17455607c6",
+                "name": "administrative boundaries-divisions",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "administrative boundaries-divisions",
+            },
+            {
                 "id": "25d0e6cc-a02c-4c91-b358-7d4bb1a42af0",
                 "name": "affected area",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
@@ -58,16 +64,34 @@ vocabulary_list = [
                 "display_name": "africa",
             },
             {
+                "id": "e6b84407-4b14-4b0a-95c5-314da049f64c",
+                "name": "agriculture-livestock",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "agriculture-livestock",
+            },
+            {
                 "id": "4c273295-9f2f-4543-b0bf-2f8429302285",
                 "name": "aid effectiveness",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                 "display_name": "aid effectiveness",
             },
             {
+                "id": "c7b393d2-6eeb-4bb5-9522-f6e4548192c0",
+                "name": "aid worker security",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "aid worker security",
+            },
+            {
                 "id": "cffb9ffc-4efe-48c6-a7f0-7f91e99b717f",
                 "name": "aid workers",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                 "display_name": "aid workers",
+            },
+            {
+                "id": "793640f4-6914-4228-ab4c-911a3b88a123",
+                "name": "airports",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "airports",
             },
             {
                 "id": "9dfcb72e-d8b5-49c3-98dc-fcabda2be413",
@@ -112,10 +136,46 @@ vocabulary_list = [
                 "display_name": "boys",
             },
             {
+                "id": "845b021e-ea80-40f3-ab0e-7c87edee378d",
+                "name": "buildings",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "buildings",
+            },
+            {
+                "id": "079f6ecd-1738-4f34-bf38-0f3b585ed58d",
+                "name": "camp coordination and camp management-cccm",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "camp coordination and camp management-cccm",
+            },
+            {
+                "id": "cf39d778-096e-4dba-a73d-f2db87f177e4",
+                "name": "camp facilities",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "camp facilities",
+            },
+            {
+                "id": "3fdf3530-7f85-47c3-877b-5b87390d6e5c",
+                "name": "cash based interventions-cbi",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "cash based interventions-cbi",
+            },
+            {
+                "id": "4ca815e8-4949-4ee5-abc9-0b10beffcbf9",
+                "name": "cash voucher assistance-cva",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "cash voucher assistance-cva",
+            },
+            {
                 "id": "55dd6b71-e858-40de-ac52-91cd63e94cfa",
                 "name": "casualties",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                 "display_name": "casualties",
+            },
+            {
+                "id": "37ac0e80-d7cc-4f91-aead-7395c87115a4",
+                "name": "cbi",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "cbi",
             },
             {
                 "id": "233b3649-7ea7-479e-a4a3-568eabe12f08",
@@ -136,10 +196,52 @@ vocabulary_list = [
                 "display_name": "children",
             },
             {
+                "id": "ba8322b6-72e7-4475-b015-72d200bf5957",
+                "name": "climate hazards",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "climate hazards",
+            },
+            {
+                "id": "6f0a101d-5c57-408b-aa2a-61c078d32713",
+                "name": "climate-weather",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "climate-weather",
+            },
+            {
                 "id": "07bed635-2678-44bc-b132-210bb3cee1d3",
                 "name": "cluster system",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                 "display_name": "cluster system",
+            },
+            {
+                "id": "4699f937-abf9-4f44-bb69-93967b994208",
+                "name": "community engagement",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "community engagement",
+            },
+            {
+                "id": "964a4ed8-0527-4b90-b929-ccea14fc2851",
+                "name": "complex emergency-conflict-security",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "complex emergency-conflict-security",
+            },
+            {
+                "id": "d727b3fb-9976-4101-8a77-0fcbee34a954",
+                "name": "conflict-violence",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "conflict-violence",
+            },
+            {
+                "id": "4c4c6a4e-00b0-49b0-a1a5-e5082f91f6e6",
+                "name": "covid-19",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "covid-19",
+            },
+            {
+                "id": "326e097b-96f2-46e4-8ef4-0a8d4401a646",
+                "name": "cyclones-hurricanes-typhoons",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "cyclones-hurricanes-typhoons",
             },
             {
                 "id": "3c5bab40-4c0f-40bc-a2dd-12cd7f945037",
@@ -160,6 +262,18 @@ vocabulary_list = [
                 "display_name": "development",
             },
             {
+                "id": "5b87b92d-3905-4b56-8c52-9bc77ffd28a3",
+                "name": "disability",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "disability",
+            },
+            {
+                "id": "4f186471-d358-4f37-b9ab-2743abd61fbd",
+                "name": "disaster risk reduction-drr",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "disaster risk reduction-drr",
+            },
+            {
                 "id": "2a4e3877-8487-4a62-b010-8dafdc1ba6d8",
                 "name": "disease",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
@@ -170,6 +284,24 @@ vocabulary_list = [
                 "name": "displacement",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                 "display_name": "displacement",
+            },
+            {
+                "id": "34a5c9d1-5554-4f9e-91fa-5983f0c9a721",
+                "name": "drought",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "drought",
+            },
+            {
+                "id": "ec3e650b-06d4-410d-915f-213d6156b1b6",
+                "name": "earthquake-tsunami",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "earthquake-tsunami",
+            },
+            {
+                "id": "13faf62d-d5bc-46f0-93b6-c8434a99e1a2",
+                "name": "earthquakes-tsunami",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "earthquakes-tsunami",
             },
             {
                 "id": "7056940c-d78a-45a2-8042-a26adf97d2be",
@@ -188,6 +320,24 @@ vocabulary_list = [
                 "name": "education",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                 "display_name": "education",
+            },
+            {
+                "id": "b11af0a4-1bf4-45f8-987a-3094d111d439",
+                "name": "education facilities - schools",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "education facilities - schools",
+            },
+            {
+                "id": "c29686c1-68c3-4417-a50d-b07de0c47770",
+                "name": "education facilities-schools",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "education facilities-schools",
+            },
+            {
+                "id": "5da3914b-3c97-4093-abf9-bfaad4ff4c1c",
+                "name": "el nino-el nina",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "el nino-el nina",
             },
             {
                 "id": "60c168ce-65d0-4c44-beef-108b65b9b817",
@@ -214,16 +364,82 @@ vocabulary_list = [
                 "display_name": "environment",
             },
             {
+                "id": "2c7a64e9-6c0f-4879-b259-0680987ec1c7",
+                "name": "epidemics-outbreaks",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "epidemics-outbreaks",
+            },
+            {
+                "id": "97079843-5cad-4786-867e-7a64e51851b8",
+                "name": "facilities and infrastructure",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "facilities and infrastructure",
+            },
+            {
+                "id": "e45272d8-6b73-4b8d-bb08-e880f8900df5",
+                "name": "facilities-infrastructure",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "facilities-infrastructure",
+            },
+            {
+                "id": "33b00b7e-db0e-498c-a12b-d5e64605f9f6",
+                "name": "fatalities",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "fatalities",
+            },
+            {
                 "id": "3b2f49dc-8f88-46fc-81bb-dead4b8158b8",
                 "name": "female",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                 "display_name": "female",
             },
             {
+                "id": "5f257cb4-e088-4290-9e14-7ec25611062b",
+                "name": "financial institutions",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "financial institutions",
+            },
+            {
+                "id": "ce4e7a88-b5e8-4aa5-b953-4077d15decc0",
+                "name": "financial services",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "financial services",
+            },
+            {
+                "id": "113b89a7-f22a-41d3-8374-5326e545e198",
+                "name": "flooding-storm surge",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "flooding-storm surge",
+            },
+            {
                 "id": "b084d063-149c-4b7d-811b-18e320ca0b8c",
                 "name": "food security",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                 "display_name": "food security",
+            },
+            {
+                "id": "1f80da28-f2fe-44a9-91ae-3358321d1bf4",
+                "name": "forced displacement",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "forced displacement",
+            },
+            {
+                "id": "b4a1a447-c72e-4d84-8b01-1cec4be159f6",
+                "name": "forecasting",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "forecasting",
+            },
+            {
+                "id": "f713040c-296d-4cdc-885e-fce07f284466",
+                "name": "fuel",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "fuel",
+            },
+            {
+                "id": "2bfc754f-deee-4e10-a85c-61ad8b8983f3",
+                "name": "funding",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "funding",
             },
             {
                 "id": "853d6f46-3b86-4f54-897f-65ed42a30675",
@@ -238,6 +454,12 @@ vocabulary_list = [
                 "display_name": "gender",
             },
             {
+                "id": "3ec941c4-5f8d-45a5-bbaa-0911f49c11f9",
+                "name": "gender-based violence-gbv",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "gender-based violence-gbv",
+            },
+            {
                 "id": "2d27d72f-af37-4b38-b05e-dddc6929bd13",
                 "name": "geodata",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
@@ -250,10 +472,22 @@ vocabulary_list = [
                 "display_name": "girls",
             },
             {
+                "id": "cc6c6b0f-7c21-476c-8aaa-336c4ae19dda",
+                "name": "global acute malnutrition-gam",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "global acute malnutrition-gam",
+            },
+            {
                 "id": "08029963-c501-4107-83b6-7011b9f74287",
                 "name": "governance and civil society",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                 "display_name": "governance and civil society",
+            },
+            {
+                "id": "25039df2-f646-488d-b514-ad658dfa6165",
+                "name": "gross domestic product-gdp",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "gross domestic product-gdp",
             },
             {
                 "id": "7173a61f-84fd-45ca-856a-3aa2b0372869",
@@ -274,6 +508,12 @@ vocabulary_list = [
                 "display_name": "health facilities",
             },
             {
+                "id": "48399747-7922-4a87-b16b-f579908160f0",
+                "name": "helicopter landing zone - hlz",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "helicopter landing zone - hlz",
+            },
+            {
                 "id": "fff0918b-4e50-49c6-8a91-a8e59b3e037a",
                 "name": "horn of africa",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
@@ -292,10 +532,64 @@ vocabulary_list = [
                 "display_name": "humanitarian access",
             },
             {
+                "id": "4d810352-78d9-453c-a48f-6a17b8e6761a",
+                "name": "humanitarian needs overview-hno",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "humanitarian needs overview-hno",
+            },
+            {
+                "id": "8236f9fe-cdca-43dc-adbf-51c99c4d44aa",
+                "name": "humanitarian response plan-hrp",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "humanitarian response plan-hrp",
+            },
+            {
                 "id": "a0fbb23a-6aad-4ccc-8062-e9ef9f20e5d2",
                 "name": "hxl",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                 "display_name": "hxl",
+            },
+            {
+                "id": "4fc0b5ba-330e-41d4-846a-13415a517f03",
+                "name": "hydrology",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "hydrology",
+            },
+            {
+                "id": "08dade96-0bf4-4248-9d9f-421f7b844e53",
+                "name": "indicators",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "indicators",
+            },
+            {
+                "id": "73445768-49eb-4d68-b97b-ce7a2a3a4762",
+                "name": "integrated food security phase classification-ipc",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "integrated food security phase classification-ipc",
+            },
+            {
+                "id": "4a0f429f-679c-4492-8386-d5cdf2d82ecd",
+                "name": "internally displaced persons-idp",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "internally displaced persons-idp",
+            },
+            {
+                "id": "023000bb-5e89-44b8-a7ea-e8008f0492e9",
+                "name": "international aid transparency initiative-iati",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "international aid transparency initiative-iati",
+            },
+            {
+                "id": "e268c07d-b583-480d-8f89-f98906c290d1",
+                "name": "languages",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "languages",
+            },
+            {
+                "id": "edbbf6c3-ab69-45a5-b428-46eb2cfdbe5e",
+                "name": "libya-floods",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "libya-floods",
             },
             {
                 "id": "cf89f978-a673-4348-9a0f-2631b7338dbb",
@@ -346,10 +640,28 @@ vocabulary_list = [
                 "display_name": "men",
             },
             {
+                "id": "6a646884-b858-4b84-86d1-c0b2f3fd8b89",
+                "name": "mental health",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "mental health",
+            },
+            {
                 "id": "69f1ff2e-a2ab-4199-9805-ecdd0dde19bd",
                 "name": "migration",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                 "display_name": "migration",
+            },
+            {
+                "id": "051f22d0-f563-44fc-b7d3-3af64d4ce9fc",
+                "name": "mobile money",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "mobile money",
+            },
+            {
+                "id": "ebeb5404-125a-47c4-a6b1-dddaac3d772b",
+                "name": "morocco-earthquake",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "morocco-earthquake",
             },
             {
                 "id": "87a19f57-52b9-4f70-b23e-138e44bf3a81",
@@ -358,10 +670,22 @@ vocabulary_list = [
                 "display_name": "mortality",
             },
             {
+                "id": "48520851-7df8-418b-aa00-7fa276d7fd88",
+                "name": "natural disasters",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "natural disasters",
+            },
+            {
                 "id": "9b4c3273-e3c3-4727-9adf-6760644993d0",
                 "name": "needs assessment",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                 "display_name": "needs assessment",
+            },
+            {
+                "id": "11e0b9ae-856e-45c4-80a9-27e3f00e61b2",
+                "name": "non-food items-nfi",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "non-food items-nfi",
             },
             {
                 "id": "5cd44eef-f868-47d8-afb4-7d7d63154533",
@@ -370,10 +694,28 @@ vocabulary_list = [
                 "display_name": "nutrition",
             },
             {
+                "id": "10aaf0ac-bf2e-4600-9c74-21012436f336",
+                "name": "offices",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "offices",
+            },
+            {
+                "id": "9e07a23b-e8ec-42f6-afa6-0a77405a343a",
+                "name": "openstreetmap",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "openstreetmap",
+            },
+            {
                 "id": "d8a59526-9f9a-4c71-b38f-5d9f2eb1615a",
                 "name": "operational capacity",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                 "display_name": "operational capacity",
+            },
+            {
+                "id": "697e5eb8-5a2e-46b9-a777-b4f1e00a8b6a",
+                "name": "operational partners",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "operational partners",
             },
             {
                 "id": "a25059f9-7e1f-49be-b629-ccccd97a95f8",
@@ -382,10 +724,58 @@ vocabulary_list = [
                 "display_name": "operational presence",
             },
             {
+                "id": "84a04ea0-89fc-436d-a2b6-c3cdfa82d756",
+                "name": "opt-israel-hostilities",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "opt-israel-hostilities",
+            },
+            {
                 "id": "afaf9905-3564-4e92-889d-9fb9c9fbd08b",
                 "name": "peacekeeping",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                 "display_name": "peacekeeping",
+            },
+            {
+                "id": "3e0df740-714b-476a-ad14-4fc6fc4fc0ba",
+                "name": "people in need-pin",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "people in need-pin",
+            },
+            {
+                "id": "7418bcd5-a59a-43c4-972c-29d43d209b1c",
+                "name": "places of worship",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "places of worship",
+            },
+            {
+                "id": "68e23b91-dd23-48e1-93c4-0feb5ddb8eed",
+                "name": "points of interest - poi",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "points of interest - poi",
+            },
+            {
+                "id": "55dd76c8-6de4-4d7f-bbd4-c7c9240a2c60",
+                "name": "points of interest-poi",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "points of interest-poi",
+            },
+            {
+                "id": "7bae4f4f-5832-4d7f-9d8a-441461cdb433",
+                "name": "populated places - settlements",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "populated places - settlements",
+            },
+            {
+                "id": "c7d3120a-ca01-4bba-b773-53cd7dc608bc",
+                "name": "populated places-settlements",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "populated places-settlements",
+            },
+            {
+                "id": "02e85359-ad5c-4d45-a779-2e7bff747686",
+                "name": "population",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "population",
             },
             {
                 "id": "482c0e7f-d611-474b-9fe0-bc61f7a44078",
@@ -400,10 +790,28 @@ vocabulary_list = [
                 "display_name": "poverty",
             },
             {
+                "id": "5c655601-e2ef-4b12-933c-3b6abc319b0f",
+                "name": "protection",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "protection",
+            },
+            {
                 "id": "5ccaff54-1a2d-45d1-b2db-4282813d5166",
                 "name": "railways",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                 "display_name": "railways",
+            },
+            {
+                "id": "f32dcfe2-27c4-4fdd-8230-b762c971fa9c",
+                "name": "refugee camps",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "refugee camps",
+            },
+            {
+                "id": "8d1398ae-56af-4396-aa94-bef7d99da754",
+                "name": "refugee crisis",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "refugee crisis",
             },
             {
                 "id": "8af07ef8-0180-4966-9e15-d184b9a2fef1",
@@ -442,10 +850,22 @@ vocabulary_list = [
                 "display_name": "sahel",
             },
             {
+                "id": "4d90e810-32ce-4c5f-bc10-91d7f204e3c8",
+                "name": "sanitation",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "sanitation",
+            },
+            {
                 "id": "9f54b0e4-78df-4939-a2a1-892aaf4396ce",
                 "name": "services",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                 "display_name": "services",
+            },
+            {
+                "id": "4d9682e4-5043-48af-834b-fb628886aabe",
+                "name": "severe acute malnutrition-sam",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "severe acute malnutrition-sam",
             },
             {
                 "id": "2fdb7b0b-b795-410a-ba03-6055e26aa97c",
@@ -454,10 +874,22 @@ vocabulary_list = [
                 "display_name": "severity",
             },
             {
+                "id": "38902364-3f95-4a69-b465-30a9c49bd28c",
+                "name": "sex and age disaggregated data-sadd",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "sex and age disaggregated data-sadd",
+            },
+            {
                 "id": "6c8eda16-cb14-4a65-a5de-4a5808da0b12",
                 "name": "shelter",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                 "display_name": "shelter",
+            },
+            {
+                "id": "7e54319d-dd8d-4cee-b308-5994905c6d9c",
+                "name": "shops",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "shops",
             },
             {
                 "id": "eb898c38-3c1a-485e-a7de-2176e56f802d",
@@ -490,306 +922,6 @@ vocabulary_list = [
                 "display_name": "sustainable development",
             },
             {
-                "id": "ee1a5568-91f1-4274-b10a-846a81335975",
-                "name": "transportation",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "transportation",
-            },
-            {
-                "id": "a859a0b3-7b16-4ee6-8994-d9b1ac38bea8",
-                "name": "urban",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "urban",
-            },
-            {
-                "id": "d52b96b0-0246-4c14-9544-f7f8fc4d94d0",
-                "name": "west africa",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "west africa",
-            },
-            {
-                "id": "fe10e36f-97a0-4383-ae31-29a8e8265669",
-                "name": "women",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "women",
-            },
-            {
-                "id": "74f2383e-bb0c-44a3-b5cf-491a309a6f38",
-                "name": "youth",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "youth",
-            },
-            {
-                "id": "08dade96-0bf4-4248-9d9f-421f7b844e53",
-                "name": "indicators",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "indicators",
-            },
-            {
-                "id": "e268c07d-b583-480d-8f89-f98906c290d1",
-                "name": "languages",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "languages",
-            },
-            {
-                "id": "4c4c6a4e-00b0-49b0-a1a5-e5082f91f6e6",
-                "name": "covid-19",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "covid-19",
-            },
-            {
-                "id": "6e0600e9-167a-482f-9259-4a17455607c6",
-                "name": "administrative boundaries-divisions",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "administrative boundaries-divisions",
-            },
-            {
-                "id": "e6b84407-4b14-4b0a-95c5-314da049f64c",
-                "name": "agriculture-livestock",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "agriculture-livestock",
-            },
-            {
-                "id": "c7b393d2-6eeb-4bb5-9522-f6e4548192c0",
-                "name": "aid worker security",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "aid worker security",
-            },
-            {
-                "id": "079f6ecd-1738-4f34-bf38-0f3b585ed58d",
-                "name": "camp coordination and camp management-cccm",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "camp coordination and camp management-cccm",
-            },
-            {
-                "id": "4ca815e8-4949-4ee5-abc9-0b10beffcbf9",
-                "name": "cash voucher assistance-cva",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "cash voucher assistance-cva",
-            },
-            {
-                "id": "ba8322b6-72e7-4475-b015-72d200bf5957",
-                "name": "climate hazards",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "climate hazards",
-            },
-            {
-                "id": "4699f937-abf9-4f44-bb69-93967b994208",
-                "name": "community engagement",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "community engagement",
-            },
-            {
-                "id": "964a4ed8-0527-4b90-b929-ccea14fc2851",
-                "name": "complex emergency-conflict-security",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "complex emergency-conflict-security",
-            },
-            {
-                "id": "d727b3fb-9976-4101-8a77-0fcbee34a954",
-                "name": "conflict-violence",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "conflict-violence",
-            },
-            {
-                "id": "326e097b-96f2-46e4-8ef4-0a8d4401a646",
-                "name": "cyclones-hurricanes-typhoons",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "cyclones-hurricanes-typhoons",
-            },
-            {
-                "id": "5b87b92d-3905-4b56-8c52-9bc77ffd28a3",
-                "name": "disability",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "disability",
-            },
-            {
-                "id": "4f186471-d358-4f37-b9ab-2743abd61fbd",
-                "name": "disaster risk reduction-drr",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "disaster risk reduction-drr",
-            },
-            {
-                "id": "34a5c9d1-5554-4f9e-91fa-5983f0c9a721",
-                "name": "drought",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "drought",
-            },
-            {
-                "id": "ec3e650b-06d4-410d-915f-213d6156b1b6",
-                "name": "earthquake-tsunami",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "earthquake-tsunami",
-            },
-            {
-                "id": "c29686c1-68c3-4417-a50d-b07de0c47770",
-                "name": "education facilities-schools",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "education facilities-schools",
-            },
-            {
-                "id": "5da3914b-3c97-4093-abf9-bfaad4ff4c1c",
-                "name": "el nino-el nina",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "el nino-el nina",
-            },
-            {
-                "id": "2c7a64e9-6c0f-4879-b259-0680987ec1c7",
-                "name": "epidemics-outbreaks",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "epidemics-outbreaks",
-            },
-            {
-                "id": "e45272d8-6b73-4b8d-bb08-e880f8900df5",
-                "name": "facilities-infrastructure",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "facilities-infrastructure",
-            },
-            {
-                "id": "33b00b7e-db0e-498c-a12b-d5e64605f9f6",
-                "name": "fatalities",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "fatalities",
-            },
-            {
-                "id": "113b89a7-f22a-41d3-8374-5326e545e198",
-                "name": "flooding-storm surge",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "flooding-storm surge",
-            },
-            {
-                "id": "b4a1a447-c72e-4d84-8b01-1cec4be159f6",
-                "name": "forecasting",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "forecasting",
-            },
-            {
-                "id": "2bfc754f-deee-4e10-a85c-61ad8b8983f3",
-                "name": "funding",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "funding",
-            },
-            {
-                "id": "3ec941c4-5f8d-45a5-bbaa-0911f49c11f9",
-                "name": "gender-based violence-gbv",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "gender-based violence-gbv",
-            },
-            {
-                "id": "cc6c6b0f-7c21-476c-8aaa-336c4ae19dda",
-                "name": "global acute malnutrition-gam",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "global acute malnutrition-gam",
-            },
-            {
-                "id": "25039df2-f646-488d-b514-ad658dfa6165",
-                "name": "gross domestic product-gdp",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "gross domestic product-gdp",
-            },
-            {
-                "id": "4d810352-78d9-453c-a48f-6a17b8e6761a",
-                "name": "humanitarian needs overview-hno",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "humanitarian needs overview-hno",
-            },
-            {
-                "id": "8236f9fe-cdca-43dc-adbf-51c99c4d44aa",
-                "name": "humanitarian response plan-hrp",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "humanitarian response plan-hrp",
-            },
-            {
-                "id": "4fc0b5ba-330e-41d4-846a-13415a517f03",
-                "name": "hydrology",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "hydrology",
-            },
-            {
-                "id": "73445768-49eb-4d68-b97b-ce7a2a3a4762",
-                "name": "integrated food security phase classification-ipc",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "integrated food security phase classification-ipc",
-            },
-            {
-                "id": "4a0f429f-679c-4492-8386-d5cdf2d82ecd",
-                "name": "internally displaced persons-idp",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "internally displaced persons-idp",
-            },
-            {
-                "id": "023000bb-5e89-44b8-a7ea-e8008f0492e9",
-                "name": "international aid transparency initiative-iati",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "international aid transparency initiative-iati",
-            },
-            {
-                "id": "48520851-7df8-418b-aa00-7fa276d7fd88",
-                "name": "natural disasters",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "natural disasters",
-            },
-            {
-                "id": "11e0b9ae-856e-45c4-80a9-27e3f00e61b2",
-                "name": "non-food items-nfi",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "non-food items-nfi",
-            },
-            {
-                "id": "9e07a23b-e8ec-42f6-afa6-0a77405a343a",
-                "name": "openstreetmap",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "openstreetmap",
-            },
-            {
-                "id": "697e5eb8-5a2e-46b9-a777-b4f1e00a8b6a",
-                "name": "operational partners",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "operational partners",
-            },
-            {
-                "id": "3e0df740-714b-476a-ad14-4fc6fc4fc0ba",
-                "name": "people in need-pin",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "people in need-pin",
-            },
-            {
-                "id": "55dd76c8-6de4-4d7f-bbd4-c7c9240a2c60",
-                "name": "points of interest-poi",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "points of interest-poi",
-            },
-            {
-                "id": "02e85359-ad5c-4d45-a779-2e7bff747686",
-                "name": "population",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "population",
-            },
-            {
-                "id": "5c655601-e2ef-4b12-933c-3b6abc319b0f",
-                "name": "protection",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "protection",
-            },
-            {
-                "id": "8d1398ae-56af-4396-aa94-bef7d99da754",
-                "name": "refugee crisis",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "refugee crisis",
-            },
-            {
-                "id": "4d9682e4-5043-48af-834b-fb628886aabe",
-                "name": "severe acute malnutrition-sam",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "severe acute malnutrition-sam",
-            },
-            {
-                "id": "38902364-3f95-4a69-b465-30a9c49bd28c",
-                "name": "sex and age disaggregated data-sadd",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "sex and age disaggregated data-sadd",
-            },
-            {
                 "id": "570d5718-b98f-46af-ac89-2b6f49fa9ed1",
                 "name": "sustainable development goals-sdg",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
@@ -808,6 +940,24 @@ vocabulary_list = [
                 "display_name": "trade",
             },
             {
+                "id": "ee1a5568-91f1-4274-b10a-846a81335975",
+                "name": "transportation",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "transportation",
+            },
+            {
+                "id": "213c7bf3-46b3-4436-9471-71348012940b",
+                "name": "uganda refugee response",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "uganda refugee response",
+            },
+            {
+                "id": "a859a0b3-7b16-4ee6-8994-d9b1ac38bea8",
+                "name": "urban",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "display_name": "urban",
+            },
+            {
                 "id": "f6b3cf0c-6704-480d-a2ed-b363281def0c",
                 "name": "urban search and rescue-usar",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
@@ -820,52 +970,10 @@ vocabulary_list = [
                 "display_name": "vaccination-immunization",
             },
             {
-                "id": "5a4f7135-daaf-4c82-985f-e0bb443fdb94",
-                "name": "water sanitation and hygiene-wash",
+                "id": "68e37905-de5a-4c5a-8e1e-6aedd9ea9208",
+                "name": "villages",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "water sanitation and hygiene-wash",
-            },
-            {
-                "id": "ec53893c-6dba-4656-978b-4a32289ea2eb",
-                "name": "who is doing what and where-3w-4w-5w",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "who is doing what and where-3w-4w-5w",
-            },
-            {
-                "id": "3fdf3530-7f85-47c3-877b-5b87390d6e5c",
-                "name": "cash based interventions-cbi",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "cash based interventions-cbi",
-            },
-            {
-                "id": "1f80da28-f2fe-44a9-91ae-3358321d1bf4",
-                "name": "forced displacement",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "forced displacement",
-            },
-            {
-                "id": "c7d3120a-ca01-4bba-b773-53cd7dc608bc",
-                "name": "populated places-settlements",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "populated places-settlements",
-            },
-            {
-                "id": "6f0a101d-5c57-408b-aa2a-61c078d32713",
-                "name": "climate-weather",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "climate-weather",
-            },
-            {
-                "id": "845b021e-ea80-40f3-ab0e-7c87edee378d",
-                "name": "buildings",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "buildings",
-            },
-            {
-                "id": "13faf62d-d5bc-46f0-93b6-c8434a99e1a2",
-                "name": "earthquakes-tsunami",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "earthquakes-tsunami",
+                "display_name": "villages",
             },
             {
                 "id": "71476b2a-3d08-4462-8f15-3d19e22eb28a",
@@ -874,46 +982,16 @@ vocabulary_list = [
                 "display_name": "water bodies - hydrography",
             },
             {
-                "id": "97079843-5cad-4786-867e-7a64e51851b8",
-                "name": "facilities and infrastructure",
+                "id": "f60fd659-e930-4272-8b3c-84781e874999",
+                "name": "water points",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "facilities and infrastructure",
+                "display_name": "water points",
             },
             {
-                "id": "68e23b91-dd23-48e1-93c4-0feb5ddb8eed",
-                "name": "points of interest - poi",
+                "id": "5a4f7135-daaf-4c82-985f-e0bb443fdb94",
+                "name": "water sanitation and hygiene-wash",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "points of interest - poi",
-            },
-            {
-                "id": "793640f4-6914-4228-ab4c-911a3b88a123",
-                "name": "airports",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "airports",
-            },
-            {
-                "id": "48399747-7922-4a87-b16b-f579908160f0",
-                "name": "helicopter landing zone - hlz",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "helicopter landing zone - hlz",
-            },
-            {
-                "id": "b11af0a4-1bf4-45f8-987a-3094d111d439",
-                "name": "education facilities - schools",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "education facilities - schools",
-            },
-            {
-                "id": "7bae4f4f-5832-4d7f-9d8a-441461cdb433",
-                "name": "populated places - settlements",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "populated places - settlements",
-            },
-            {
-                "id": "5f257cb4-e088-4290-9e14-7ec25611062b",
-                "name": "financial institutions",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "financial institutions",
+                "display_name": "water sanitation and hygiene-wash",
             },
             {
                 "id": "922005f4-faf1-4e35-ba7f-14c39ab92c2b",
@@ -922,106 +1000,28 @@ vocabulary_list = [
                 "display_name": "waterbodies",
             },
             {
-                "id": "213c7bf3-46b3-4436-9471-71348012940b",
-                "name": "uganda refugee response",
+                "id": "d52b96b0-0246-4c14-9544-f7f8fc4d94d0",
+                "name": "west africa",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "uganda refugee response",
+                "display_name": "west africa",
             },
             {
-                "id": "f32dcfe2-27c4-4fdd-8230-b762c971fa9c",
-                "name": "refugee camps",
+                "id": "ec53893c-6dba-4656-978b-4a32289ea2eb",
+                "name": "who is doing what and where-3w-4w-5w",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "refugee camps",
+                "display_name": "who is doing what and where-3w-4w-5w",
             },
             {
-                "id": "37ac0e80-d7cc-4f91-aead-7395c87115a4",
-                "name": "cbi",
+                "id": "fe10e36f-97a0-4383-ae31-29a8e8265669",
+                "name": "women",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "cbi",
+                "display_name": "women",
             },
             {
-                "id": "051f22d0-f563-44fc-b7d3-3af64d4ce9fc",
-                "name": "mobile money",
+                "id": "74f2383e-bb0c-44a3-b5cf-491a309a6f38",
+                "name": "youth",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "mobile money",
-            },
-            {
-                "id": "ce4e7a88-b5e8-4aa5-b953-4077d15decc0",
-                "name": "financial services",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "financial services",
-            },
-            {
-                "id": "7e54319d-dd8d-4cee-b308-5994905c6d9c",
-                "name": "shops",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "shops",
-            },
-            {
-                "id": "cf39d778-096e-4dba-a73d-f2db87f177e4",
-                "name": "camp facilities",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "camp facilities",
-            },
-            {
-                "id": "10aaf0ac-bf2e-4600-9c74-21012436f336",
-                "name": "offices",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "offices",
-            },
-            {
-                "id": "f713040c-296d-4cdc-885e-fce07f284466",
-                "name": "fuel",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "fuel",
-            },
-            {
-                "id": "7418bcd5-a59a-43c4-972c-29d43d209b1c",
-                "name": "places of worship",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "places of worship",
-            },
-            {
-                "id": "68e37905-de5a-4c5a-8e1e-6aedd9ea9208",
-                "name": "villages",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "villages",
-            },
-            {
-                "id": "f60fd659-e930-4272-8b3c-84781e874999",
-                "name": "water points",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "water points",
-            },
-            {
-                "id": "4d90e810-32ce-4c5f-bc10-91d7f204e3c8",
-                "name": "sanitation",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "sanitation",
-            },
-            {
-                "id": "6a646884-b858-4b84-86d1-c0b2f3fd8b89",
-                "name": "mental health",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "mental health",
-            },
-            {
-                "id": "ebeb5404-125a-47c4-a6b1-dddaac3d772b",
-                "name": "morocco-earthquake",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "morocco-earthquake",
-            },
-            {
-                "id": "edbbf6c3-ab69-45a5-b428-46eb2cfdbe5e",
-                "name": "libya-floods",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "libya-floods",
-            },
-            {
-                "id": "84a04ea0-89fc-436d-a2b6-c3cdfa82d756",
-                "name": "opt-israel-hostilities",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "opt-israel-hostilities",
+                "display_name": "youth",
             },
         ],
         "id": "b891512e-9516-4bf5-962a-7a289772a2a1",
@@ -1453,13 +1453,19 @@ class TestVocabulary:
         Vocabulary._approved_vocabulary = None
         vocabulary = Vocabulary.get_approved_vocabulary()
         assert vocabulary["name"] == "Topics"
-        assert vocabulary["tags"][0]["name"] == "affected area"
+        assert (
+            vocabulary["tags"][0]["name"]
+            == "administrative boundaries-divisions"
+        )
 
     def test_create_approved_vocabulary(self, configuration, post_create):
         Vocabulary._approved_vocabulary = None
         vocabulary = Vocabulary.create_approved_vocabulary()
         assert vocabulary["name"] == "Topics"
-        assert vocabulary["tags"][0]["name"] == "affected area"
+        assert (
+            vocabulary["tags"][0]["name"]
+            == "administrative boundaries-divisions"
+        )
 
     def test_update_approved_vocabulary(self, configuration, post_update):
         Vocabulary._approved_vocabulary = None
