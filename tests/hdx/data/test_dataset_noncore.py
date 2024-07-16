@@ -76,6 +76,9 @@ class TestDatasetNoncore:
 
     @pytest.fixture(scope="function")
     def vocabulary_read(self):
+        Vocabulary._approved_vocabulary = None
+        Vocabulary._tags_dict = None
+
         class MockSession:
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth=None):

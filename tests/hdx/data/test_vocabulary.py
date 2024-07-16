@@ -1447,7 +1447,6 @@ class TestVocabulary:
         Vocabulary.get_approved_vocabulary()
         Vocabulary.delete_approved_vocabulary()
         assert Vocabulary._approved_vocabulary.data is None
-        Vocabulary._approved_vocabulary = None
 
     def test_get_approved_vocabulary(self, configuration, read):
         Vocabulary._approved_vocabulary = None
@@ -1459,7 +1458,6 @@ class TestVocabulary:
         )
 
     def test_create_approved_vocabulary(self, configuration, post_create):
-        Vocabulary._approved_vocabulary = None
         vocabulary = Vocabulary.create_approved_vocabulary()
         assert vocabulary["name"] == "Topics"
         assert (
@@ -1491,6 +1489,8 @@ class TestVocabulary:
         )
 
     def test_tag_mappings(self, configuration, read):
+        Vocabulary._approved_vocabulary = None
+        Vocabulary._tags_dict = None
         tags_dict = Vocabulary.read_tags_mappings()
         assert tags_dict["refugee"] == {
             "Action to Take": "merge",
@@ -1516,13 +1516,14 @@ class TestVocabulary:
             [],
         )  # tag is not in CKAN approved list but is in tag cleanup spreadsheet
         Vocabulary._approved_vocabulary = None
-        Vocabulary.get_approved_vocabulary()
+        Vocabulary._tags_dict = None
 
     def test_chainrule_error(self, configuration, read):
         with pytest.raises(ChainRuleError):
             Vocabulary.set_tagsdict(None)
             url = "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/Tag_Mapping_ChainRuleError.csv"
             Vocabulary.read_tags_mappings(url=url, failchained=True)
+        Vocabulary._tags_dict = None
 
     def test_autocomplete(self, configuration, post_autocomplete):
         assert Vocabulary.autocomplete("health") == tag_autocomplete

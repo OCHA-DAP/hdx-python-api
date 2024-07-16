@@ -11,6 +11,7 @@ from .test_vocabulary import vocabulary_mockshow
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.showcase import Showcase
+from hdx.data.vocabulary import Vocabulary
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
 
@@ -258,6 +259,9 @@ class TestShowcase:
 
     @pytest.fixture(scope="function")
     def post_update(self):
+        Vocabulary._approved_vocabulary = None
+        Vocabulary._tags_dict = None
+
         class MockSession:
             @staticmethod
             def post(url, data, headers, files, allow_redirects, auth=None):
@@ -453,7 +457,8 @@ class TestShowcase:
         assert showcase["title"] == "MyShowcase1"
         assert showcase["name"] == "new-showcase-1"
 
-    def test_tags(self, configuration):
+    def test_tags(self, configuration, post_update):
+        Vocabulary.get_approved_vocabulary()
         showcase_data = copy.deepcopy(TestShowcase.showcase_data)
         showcase = Showcase(showcase_data)
         assert showcase.get_tags() == ["economy", "health"]
