@@ -156,7 +156,7 @@ pyopenssl==24.2.1
     #   ndg-httpsclient
 pyphonetics==0.5.3
     # via hdx-python-country
-pytest==8.3.1
+pytest==8.3.2
     # via
     #   hdx-python-api (pyproject.toml)
     #   pytest-cov

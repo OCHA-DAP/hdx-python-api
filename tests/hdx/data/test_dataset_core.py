@@ -649,13 +649,17 @@ class TestDatasetCore:
         assert dataset["dataset_date"] == "06/04/2016"
 
         dataset["dataset_date"] = "02/26/2016"
-        dataset.remove_tag("conflict")
+        dataset.remove_tag("crisis-somewhere")
         dataset["id"] = "TEST1"
         dataset["name"] = "MyDataset1"
         dataset.update_in_hdx()
         assert dataset["id"] == "TEST1"
         assert dataset["dataset_date"] == "02/26/2016"
-        assert dataset.get_tags() == ["political violence", "crisis-somewhere"]
+        assert dataset.get_tags() == [
+            "conflict",
+            "political violence",
+            "crisis-somewhere",
+        ]
         assert dataset["state"] == "active"
         pattern = (
             r"HDXPythonLibrary/%s-test \([12]\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d\)"
@@ -668,6 +672,9 @@ class TestDatasetCore:
             "resource_name": "Resource1",
             "view_type": "hdx_hxl_preview",
         }
+        dataset.remove_tag("crisis-somewhere")
+        dataset.update_in_hdx(keep_crisis_tags=False)
+        assert dataset.get_tags() == ["conflict", "political violence"]
         dataset.preview_resourceview = ResourceView(resourceviewdata)
         dataset.update_in_hdx()
         assert dataset.preview_resourceview is None

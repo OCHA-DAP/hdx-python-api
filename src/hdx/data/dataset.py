@@ -986,17 +986,19 @@ class Dataset(HDXObject):
             match_resource_order,
             **kwargs,
         )
-        for tag in self.data["tags"]:
-            tag_name = tag["name"]
-            if tag_name[:7] != "crisis-":
-                continue
-            found = False
-            for old_tag in self.old_data["tags"]:
-                if old_tag["name"] == tag_name:
-                    found = True
-                    break
-            if not found:
-                self.old_data["tags"].append(tag)
+        keep_crisis_tags = kwargs.get("keep_crisis_tags", True)
+        if keep_crisis_tags:
+            for tag in self.data["tags"]:
+                tag_name = tag["name"]
+                if tag_name[:7] != "crisis-":
+                    continue
+                found = False
+                for old_tag in self.old_data["tags"]:
+                    if old_tag["name"] == tag_name:
+                        found = True
+                        break
+                if not found:
+                    self.old_data["tags"].append(tag)
         self._prepare_hdx_call(self.old_data, kwargs)
         return self._revise_dataset(
             keys_to_delete,
@@ -1032,6 +1034,7 @@ class Dataset(HDXObject):
             create_default_views (bool): Whether to call package_create_default_resource_views. Defaults to True.
             hxl_update (bool): Whether to call package_hxl_update. Defaults to True.
             **kwargs: See below
+            keep_crisis_tags (bool): Whether to keep existing crisis tags. Defaults to True.
             updated_by_script (str): String to identify your script. Defaults to your user agent.
             batch (str): A string you can specify to show which datasets are part of a single batch update
 
@@ -1088,6 +1091,7 @@ class Dataset(HDXObject):
             create_default_views (bool): Whether to call package_create_default_resource_views (if updating). Defaults to True.
             hxl_update (bool): Whether to call package_hxl_update. Defaults to True.
             **kwargs: See below
+            keep_crisis_tags (bool): Whether to keep existing crisis tags. Defaults to True.
             updated_by_script (str): String to identify your script. Defaults to your user agent.
             batch (str): A string you can specify to show which datasets are part of a single batch update
 
