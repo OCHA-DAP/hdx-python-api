@@ -45,6 +45,13 @@ resulttags = [
         "id": "aaafc63b-2234-48e3-8ccc-198d7cf0f3f3",
         "name": "political violence",
     },
+    {
+        "state": "active",
+        "display_name": "crisis-somewhere",
+        "vocabulary_id": "4381925f-0ae9-44a3-b30d-cae35598757b",
+        "id": "9dae41e5-eacd-4fa5-91df-8d80cf579e52",
+        "name": "crisis-somewhere",
+    },
 ]
 
 dataset_data = {

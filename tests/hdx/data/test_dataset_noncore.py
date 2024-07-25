@@ -438,10 +438,18 @@ class TestDatasetNoncore:
         datasetdata = copy.deepcopy(dataset_data)
         dataset = Dataset(datasetdata)
         assert dataset["tags"] == resulttags
-        assert dataset.get_tags() == ["conflict", "political violence"]
+        assert dataset.get_tags() == [
+            "conflict",
+            "political violence",
+            "crisis-somewhere",
+        ]
         dataset.add_tag("LALA")
         assert dataset["tags"] == resulttags
-        assert dataset.get_tags() == ["conflict", "political violence"]
+        assert dataset.get_tags() == [
+            "conflict",
+            "political violence",
+            "crisis-somewhere",
+        ]
         dataset.add_tag("conflict")
         expected = copy.deepcopy(resulttags)
         expected.append(
@@ -454,6 +462,7 @@ class TestDatasetNoncore:
         assert dataset.get_tags() == [
             "conflict",
             "political violence",
+            "crisis-somewhere",
             "conflict-violence",
         ]
         dataset.add_tags(
@@ -467,6 +476,7 @@ class TestDatasetNoncore:
         assert dataset.get_tags() == [
             "conflict",
             "political violence",
+            "crisis-somewhere",
             "conflict-violence",
             "employment",
             "fatalities",
@@ -475,6 +485,7 @@ class TestDatasetNoncore:
         assert dataset.get_tags() == [
             "conflict",
             "political violence",
+            "crisis-somewhere",
             "employment",
             "fatalities",
         ]
@@ -534,14 +545,19 @@ class TestDatasetNoncore:
         Vocabulary.read_tags_mappings(failchained=False)
         datasetdata = copy.deepcopy(dataset_data)
         dataset = Dataset(datasetdata)
-        assert dataset.get_tags() == ["conflict", "political violence"]
+        assert dataset.get_tags() == [
+            "conflict",
+            "political violence",
+            "crisis-somewhere",
+        ]
         assert dataset.clean_tags() == (
-            ["conflict-violence"],
+            ["conflict-violence", "crisis-somewhere"],
             ["political violence"],
         )
         dataset.add_tags(["nodeid123", "transportation"])
         assert dataset.get_tags() == [
             "conflict-violence",
+            "crisis-somewhere",
             "transportation",
         ]
         dataset["tags"].append(
@@ -551,21 +567,28 @@ class TestDatasetNoncore:
             }
         )
         assert dataset.clean_tags() == (
-            ["conflict-violence", "transportation"],
+            ["conflict-violence", "crisis-somewhere", "transportation"],
             ["nodeid123"],
         )
         assert dataset.get_tags() == [
             "conflict-violence",
+            "crisis-somewhere",
             "transportation",
         ]
         dataset.add_tags(["geodata", "points"])
         assert dataset.clean_tags() == (
-            ["conflict-violence", "transportation", "geodata"],
+            [
+                "conflict-violence",
+                "crisis-somewhere",
+                "transportation",
+                "geodata",
+            ],
             [],
         )
         dataset.add_tag("financial")
         assert dataset.get_tags() == [
             "conflict-violence",
+            "crisis-somewhere",
             "transportation",
             "geodata",
         ]
@@ -576,13 +599,19 @@ class TestDatasetNoncore:
             }
         )
         assert dataset.clean_tags() == (
-            ["conflict-violence", "transportation", "geodata"],
+            [
+                "conflict-violence",
+                "crisis-somewhere",
+                "transportation",
+                "geodata",
+            ],
             ["financial"],
         )
         dataset.add_tag("addresses")
         assert dataset.clean_tags() == (
             [
                 "conflict-violence",
+                "crisis-somewhere",
                 "transportation",
                 "geodata",
             ],
@@ -591,12 +620,14 @@ class TestDatasetNoncore:
         dataset.remove_tag("geodata")
         assert dataset.get_tags() == [
             "conflict-violence",
+            "crisis-somewhere",
             "transportation",
         ]
         dataset.add_tag("cultivos coca")
         assert dataset.clean_tags() == (
             [
                 "conflict-violence",
+                "crisis-somewhere",
                 "transportation",
                 "livelihoods",
             ],
@@ -606,6 +637,7 @@ class TestDatasetNoncore:
         dataset.add_tag("atentados")
         assert dataset.get_tags() == [
             "conflict-violence",
+            "crisis-somewhere",
             "transportation",
         ]
         dataset["tags"].append(
@@ -617,6 +649,7 @@ class TestDatasetNoncore:
         assert dataset.clean_tags() == (
             [
                 "conflict-violence",
+                "crisis-somewhere",
                 "transportation",
             ],
             [],
@@ -625,6 +658,7 @@ class TestDatasetNoncore:
         assert dataset.clean_tags() == (
             [
                 "conflict-violence",
+                "crisis-somewhere",
                 "transportation",
                 "cyclones-hurricanes-typhoons",
             ],
@@ -635,6 +669,7 @@ class TestDatasetNoncore:
         print(dataset.get_tags())
         assert dataset.get_tags() == [
             "conflict-violence",
+            "crisis-somewhere",
             "transportation",
             "cyclones-hurricanes-typhoons",
             "affected area",
@@ -643,6 +678,7 @@ class TestDatasetNoncore:
         dataset.remove_tag("affected area")
         assert dataset.get_tags() == [
             "conflict-violence",
+            "crisis-somewhere",
             "cyclones-hurricanes-typhoons",
         ]
 

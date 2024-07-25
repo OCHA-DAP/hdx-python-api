@@ -987,9 +987,16 @@ class Dataset(HDXObject):
             **kwargs,
         )
         for tag in self.data["tags"]:
-            if tag["name"][:7] != "crisis-":
+            tag_name = tag["name"]
+            if tag_name[:7] != "crisis-":
                 continue
-            self.old_data["tags"].append(tag)
+            found = False
+            for old_tag in self.old_data["tags"]:
+                if old_tag["name"] == tag_name:
+                    found = True
+                    break
+            if not found:
+                self.old_data["tags"].append(tag)
         self._prepare_hdx_call(self.old_data, kwargs)
         return self._revise_dataset(
             keys_to_delete,
