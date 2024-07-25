@@ -986,6 +986,10 @@ class Dataset(HDXObject):
             match_resource_order,
             **kwargs,
         )
+        for tag in self.data["tags"]:
+            if tag["name"][:7] != "crisis-":
+                continue
+            self.old_data["tags"].append(tag)
         self._prepare_hdx_call(self.old_data, kwargs)
         return self._revise_dataset(
             keys_to_delete,
