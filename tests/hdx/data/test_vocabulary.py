@@ -238,6 +238,13 @@ vocabulary_list = [
                 "display_name": "covid-19",
             },
             {
+                "id": "9dae41e5-eacd-4fa5-91df-8d80cf579e52",
+                "state": "active",
+                "display_name": "crisis-somewhere",
+                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                "name": "crisis-somewhere",
+            },
+            {
                 "id": "326e097b-96f2-46e4-8ef4-0a8d4401a646",
                 "name": "cyclones-hurricanes-typhoons",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
