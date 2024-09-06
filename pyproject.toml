@@ -37,7 +37,7 @@ dependencies = [
     "ckanapi>=4.8",
     "defopt>=6.4.0",
     "email_validator",
-    "hdx-python-country>=3.7.7",
+    "hdx-python-country>=3.7.8",
     "hdx-python-utilities>=3.7.3",
     "libhxl>=5.2.1",
     "makefun",
