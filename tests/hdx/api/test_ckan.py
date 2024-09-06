@@ -15,6 +15,7 @@ import pytest
 from gspread.urls import DRIVE_FILES_API_V3_URL
 
 from hdx.api.configuration import Configuration
+from hdx.api.locations import Locations
 from hdx.data.dataset import Dataset
 from hdx.data.resource import Resource
 from hdx.data.vocabulary import Vocabulary
@@ -33,6 +34,7 @@ class TestCKAN:
             user_agent="test",
             hdx_key=hdx_key,
         )
+        Locations._validlocations = None
         Country.countriesdata(use_live=False)
 
     @pytest.fixture(scope="function")
