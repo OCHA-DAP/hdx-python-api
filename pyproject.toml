@@ -38,7 +38,7 @@ dependencies = [
     "defopt>=6.4.0",
     "email_validator",
     "hdx-python-country>=3.7.7",
-    "hdx-python-utilities>=3.7.2",
+    "hdx-python-utilities>=3.7.3",
     "libhxl>=5.2.1",
     "makefun",
     "ndg-httpsclient",
