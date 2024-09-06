@@ -81,7 +81,7 @@ class TestHDXLocations:
             == "St. Helena"
         )
         Configuration.setup(MyConfiguration())
-        Locations.set_validlocations(None)
+        Locations._validlocations = None
         assert Locations.get_HDX_code_from_location("zaf") == "ZAF"
         assert Locations.get_HDX_code_from_location_partial("zaf") == (
             "ZAF",

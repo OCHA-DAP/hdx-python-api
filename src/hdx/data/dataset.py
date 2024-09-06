@@ -935,7 +935,8 @@ class Dataset(HDXObject):
         resources_to_delete = list(reversed(resources_to_delete))
         if match_resource_order:
             new_resource_order = [
-                (x["name"], x["format"]) for x in resources_metadata_to_update
+                (x["name"], x["format"].lower())
+                for x in resources_metadata_to_update
             ]
         else:
             new_resource_order = None

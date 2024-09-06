@@ -15,6 +15,7 @@ import pytest
 from gspread.urls import DRIVE_FILES_API_V3_URL
 
 from hdx.api.configuration import Configuration
+from hdx.api.locations import Locations
 from hdx.data.dataset import Dataset
 from hdx.data.resource import Resource
 from hdx.data.vocabulary import Vocabulary
@@ -33,6 +34,7 @@ class TestCKAN:
             user_agent="test",
             hdx_key=hdx_key,
         )
+        Locations._validlocations = None
         Country.countriesdata(use_live=False)
 
     @pytest.fixture(scope="function")
@@ -74,23 +76,26 @@ class TestCKAN:
 
     @pytest.fixture(scope="function")
     def setup_teardown_folder(self, configuration, gclient, params):
-        payload = {
-            "name": "hdx_python_api_test_tmp",
-            "mimeType": "application/vnd.google-apps.folder",
-            "parents": ["1dvx0H0RG5ZfM9QL148uymWpbuxAqmOzD"],
-        }
-        r = gclient.http_client.request(
-            "post", DRIVE_FILES_API_V3_URL, json=payload, params=params
-        )
-        folderid = r.json()["id"]
-        yield gclient, folderid
-
-        payload = {"trashed": True}
-        url = f"{DRIVE_FILES_API_V3_URL}/{folderid}"
-        gclient.http_client.request("patch", url, json=payload, params=params)
-        Vocabulary._approved_vocabulary = None
-        Vocabulary._tags_dict = None
-        Configuration.delete()
+        try:
+            payload = {
+                "name": "hdx_python_api_test_tmp",
+                "mimeType": "application/vnd.google-apps.folder",
+                "parents": ["1dvx0H0RG5ZfM9QL148uymWpbuxAqmOzD"],
+            }
+            r = gclient.http_client.request(
+                "post", DRIVE_FILES_API_V3_URL, json=payload, params=params
+            )
+            folderid = r.json()["id"]
+            yield gclient, folderid
+        finally:
+            payload = {"trashed": True}
+            url = f"{DRIVE_FILES_API_V3_URL}/{folderid}"
+            gclient.http_client.request(
+                "patch", url, json=payload, params=params
+            )
+            Vocabulary._approved_vocabulary = None
+            Vocabulary._tags_dict = None
+            Configuration.delete()
 
     def test_create_dataset(
         self,
