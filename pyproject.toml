@@ -41,9 +41,6 @@ dependencies = [
     "hdx-python-utilities>=3.7.3",
     "libhxl>=5.2.1",
     "makefun",
-    "ndg-httpsclient",
-    "pyasn1",
-    "pyOpenSSL",
     "quantulum3",
     "requests",
 ]

@@ -17,7 +17,7 @@ repos:
       - id: ruff-format
         args: [--config, .config/ruff.toml]
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.4.5
+    rev: 0.4.7
     hooks:
       # Run the pip compile
       - id: pip-compile
