@@ -1842,3 +1842,24 @@ class TestDatasetNoncore:
             save_text("null", path)
             dataset = Dataset.load_from_json(path)
             assert dataset is None
+
+    def test_add_hapi_error(self, configuration, resource_update):
+        datasetdata = copy.deepcopy(dataset_data)
+        resourcesdata = copy.deepcopy(resources_data)
+        datasetdata["resources"] = resourcesdata
+        dataset = Dataset(datasetdata)
+        success = dataset.add_hapi_error(
+            error_message="test message",
+            resource_name="Resource1",
+        )
+        assert success is True
+        success = dataset.add_hapi_error(
+            error_message="test message",
+            resource_id="de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
+        )
+        assert success is False
+        success = dataset.add_hapi_error(
+            error_message="test message 1",
+            resource_name="Resource1",
+        )
+        assert success is True

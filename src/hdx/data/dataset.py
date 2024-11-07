@@ -2960,3 +2960,38 @@ class Dataset(HDXObject):
             quickcharts=quickcharts,
             encoding=kwargs.get("encoding", None),
         )
+
+    def add_hapi_error(
+        self,
+        error_message: str,
+        resource_name: Optional[str] = None,
+        resource_id: Optional[str] = None,
+    ) -> bool:
+        """Writes error messages that were uncovered while processing data for
+        the HAPI database to a resource's metadata on HDX. If the resource
+        already has an error message, it is only overwritten if the two
+        messages are different.
+
+        Args:
+            error_message (str): Error(s) uncovered
+            resource_name (Optional[str]): Resource name. Defaults to None
+            resource_id (Optional[str]): Resource id. Defaults to None
+
+        Returns:
+            bool: True if a message was added, False if not
+        """
+        if resource_name is None and resource_id is None:
+            return False
+        resource = None
+        for res in self.get_resources():
+            if res["name"] == resource_name or res["id"] == resource_id:
+                resource = res
+                break
+        if not resource:
+            return False
+        resource_error = resource.get("qa_hapi_report")
+        if resource_error and resource_error == error_message:
+            return False
+        resource["qa_hapi_report"] = error_message
+        resource.update_in_hdx(operation="patch")
+        return True
