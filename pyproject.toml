@@ -37,9 +37,9 @@ dependencies = [
     "ckanapi>=4.8",
     "defopt>=6.4.0",
     "email_validator",
-    "hdx-python-country>=3.7.8",
-    "hdx-python-utilities>=3.7.3",
-    "libhxl>=5.2.1",
+    "hdx-python-country>=3.8.3",
+    "hdx-python-utilities>=3.7.4",
+    "libhxl>=5.2.2",
     "makefun",
     "quantulum3",
     "requests",
@@ -93,6 +93,9 @@ run = """
        --cov --cov-config=.config/coveragerc --no-cov-on-fail \
        --cov-report=lcov --cov-report=term-missing
        """
+
+[tool.hatch.envs.hatch-static-analysis]
+dependencies = ["ruff==0.7.0"]
 
 [tool.hatch.envs.hatch-static-analysis.scripts]
 format-check = ["ruff format --config .config/ruff.toml --check --diff {args:.}",]
