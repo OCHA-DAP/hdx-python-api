@@ -38,7 +38,7 @@ dependencies = [
     "defopt>=6.4.0",
     "email_validator",
     "hdx-python-country>=3.8.3",
-    "hdx-python-utilities@git+ssh://git@github.com/OCHA-DAP/hdx-python-utilities@error_handler#egg=hdx-python-utilities",
+    "hdx-python-utilities@git+https://git@github.com/OCHA-DAP/hdx-python-utilities@error_handler#egg=hdx-python-utilities",
     "libhxl>=5.2.2",
     "makefun",
     "quantulum3",

@@ -54,7 +54,7 @@ gspread==6.1.4
     # via hdx-python-api (pyproject.toml)
 hdx-python-country==3.8.5
     # via hdx-python-api (pyproject.toml)
-hdx-python-utilities @ git+ssh://git@github.com/OCHA-DAP/hdx-python-utilities@212e95dc21a48e5985237fc66af8ef3bb0ddbf5e#egg=hdx-python-utilities
+hdx-python-utilities @ git+https://git@github.com/OCHA-DAP/hdx-python-utilities@212e95dc21a48e5985237fc66af8ef3bb0ddbf5e#egg=hdx-python-utilities
     # via
     #   hdx-python-api (pyproject.toml)
     #   hdx-python-country
