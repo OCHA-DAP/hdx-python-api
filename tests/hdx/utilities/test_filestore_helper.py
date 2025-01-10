@@ -1,8 +1,9 @@
 import copy
 import re
 
-from . import resource_data
-from hdx.data.filestore_helper import FilestoreHelper
+from tests.hdx.data import resource_data
+
+from hdx.api.utilities.filestore_helper import FilestoreHelper
 from hdx.data.resource import Resource
 
 

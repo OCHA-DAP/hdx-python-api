@@ -8,9 +8,9 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import hdx.data.dataset
-import hdx.data.filestore_helper as filestore_helper
 from hdx.api.configuration import Configuration
-from hdx.data.date_helper import DateHelper
+from hdx.api.utilities.date_helper import DateHelper
+from hdx.api.utilities.filestore_helper import FilestoreHelper
 from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.data.resource_view import ResourceView
 from hdx.utilities.dateparse import now_utc, now_utc_notz, parse_date
@@ -336,10 +336,7 @@ class Resource(HDXObject):
                 )
         else:
             if "url" in self.data:
-                if (
-                    self.data["url"]
-                    != filestore_helper.FilestoreHelper.temporary_url
-                ):
+                if self.data["url"] != FilestoreHelper.temporary_url:
                     raise HDXError(
                         "Either a url or a file to upload must be supplied not both!"
                     )

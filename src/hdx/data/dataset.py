@@ -22,7 +22,6 @@ from typing import (
 
 from hxl.input import InputOptions, munge_url
 
-import hdx.data.filestore_helper as filestore_helper
 import hdx.data.organization as org_module
 import hdx.data.resource as res_module
 import hdx.data.resource_view as resource_view
@@ -31,8 +30,9 @@ import hdx.data.user as user
 import hdx.data.vocabulary as vocabulary
 from hdx.api.configuration import Configuration
 from hdx.api.locations import Locations
-from hdx.data.dataset_title_helper import DatasetTitleHelper
-from hdx.data.date_helper import DateHelper
+from hdx.api.utilities.dataset_title_helper import DatasetTitleHelper
+from hdx.api.utilities.date_helper import DateHelper
+from hdx.api.utilities.filestore_helper import FilestoreHelper
 from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.data.resource_matcher import ResourceMatcher
 from hdx.location.country import Country
@@ -530,7 +530,7 @@ class Dataset(HDXObject):
                     "There are no resources! Please add at least one resource!"
                 )
             for resource in self.resources:
-                filestore_helper.FilestoreHelper.resource_check_required_fields(
+                FilestoreHelper.resource_check_required_fields(
                     resource, ignore_fields=ignore_fields
                 )
 
@@ -869,7 +869,7 @@ class Dataset(HDXObject):
                     logger.warning(
                         f"Resource exists. Updating {resource['name']}"
                     )
-                    filestore_helper.FilestoreHelper.dataset_update_filestore_resource(
+                    FilestoreHelper.dataset_update_filestore_resource(
                         resource_data_to_update,
                         filestore_resources,
                         i,
@@ -881,7 +881,7 @@ class Dataset(HDXObject):
                     resource_data_to_update = resources_metadata_to_update[
                         updated_resource_index
                     ]
-                    filestore_helper.FilestoreHelper.check_filestore_resource(
+                    FilestoreHelper.check_filestore_resource(
                         resource_data_to_update,
                         filestore_resources,
                         resource_index,
@@ -910,13 +910,13 @@ class Dataset(HDXObject):
                             logger.warning(
                                 f"Changing resource name to: {updated_resource_name}"
                             )
-                        filestore_helper.FilestoreHelper.dataset_update_filestore_resource(
+                        FilestoreHelper.dataset_update_filestore_resource(
                             resource_data_to_update,
                             filestore_resources,
                             i,
                         )
                     else:
-                        filestore_helper.FilestoreHelper.check_filestore_resource(
+                        FilestoreHelper.check_filestore_resource(
                             resource_data_to_update,
                             filestore_resources,
                             i,
@@ -1133,7 +1133,7 @@ class Dataset(HDXObject):
         filestore_resources = {}
         if self.resources:
             for i, resource in enumerate(self.resources):
-                filestore_helper.FilestoreHelper.check_filestore_resource(
+                FilestoreHelper.check_filestore_resource(
                     resource, filestore_resources, i, **kwargs
                 )
         self.unseparate_resources()

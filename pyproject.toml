@@ -38,7 +38,7 @@ dependencies = [
     "defopt>=6.4.0",
     "email_validator",
     "hdx-python-country>=3.8.3",
-    "hdx-python-utilities>=3.7.4",
+    "hdx-python-utilities@git+ssh://git@github.com/OCHA-DAP/hdx-python-utilities@error_handler#egg=hdx-python-utilities",
     "libhxl>=5.2.2",
     "makefun",
     "quantulum3",
@@ -95,7 +95,7 @@ run = """
        """
 
 [tool.hatch.envs.hatch-static-analysis]
-dependencies = ["ruff==0.7.0"]
+dependencies = ["ruff==0.8.6"]
 
 [tool.hatch.envs.hatch-static-analysis.scripts]
 format-check = ["ruff format --config .config/ruff.toml --check --diff {args:.}",]

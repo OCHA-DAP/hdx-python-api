@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 import pytest
 
-from hdx.data.dataset_title_helper import DatasetTitleHelper
+from hdx.api.utilities.dataset_title_helper import DatasetTitleHelper
 
 
 class TestDatasetTitleHelper:
