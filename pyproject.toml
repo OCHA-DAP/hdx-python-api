@@ -37,8 +37,8 @@ dependencies = [
     "ckanapi>=4.8",
     "defopt>=6.4.0",
     "email_validator",
-    "hdx-python-country>=3.8.3",
-    "hdx-python-utilities>=3.7.4",
+    "hdx-python-country>=3.8.6",
+    "hdx-python-utilities>=3.8.0",
     "libhxl>=5.2.2",
     "makefun",
     "quantulum3",
@@ -70,6 +70,9 @@ packages = ["src/hdx"]
 [tool.hatch.build.hooks.vcs]
 version-file = "src/hdx/api/_version.py"
 
+[tool.hatch.metadata]
+allow-direct-references = true
+
 # Versioning
 
 [tool.hatch.version]
@@ -95,7 +98,7 @@ run = """
        """
 
 [tool.hatch.envs.hatch-static-analysis]
-dependencies = ["ruff==0.7.0"]
+dependencies = ["ruff==0.8.6"]
 
 [tool.hatch.envs.hatch-static-analysis.scripts]
 format-check = ["ruff format --config .config/ruff.toml --check --diff {args:.}",]

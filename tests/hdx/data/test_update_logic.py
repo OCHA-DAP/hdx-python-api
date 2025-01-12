@@ -10,7 +10,7 @@ from hdx.data.resource import Resource
 from hdx.data.vocabulary import Vocabulary
 from hdx.location.country import Country
 from hdx.utilities.loader import load_yaml
-from hdx.utilities.text import multiple_replace
+from hdx.utilities.matching import multiple_replace
 
 
 class TestUpdateLogic:

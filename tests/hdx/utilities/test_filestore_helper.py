@@ -1,9 +1,18 @@
 import copy
 import re
 
-from . import resource_data
-from hdx.data.filestore_helper import FilestoreHelper
+from hdx.api.utilities.filestore_helper import FilestoreHelper
 from hdx.data.resource import Resource
+
+resource_data = {
+    "name": "MyResource1",
+    "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d",
+    "format": "xlsx",
+    "url": "http://test/spreadsheet.xlsx",
+    "description": "My Resource",
+    "api_type": "api",
+    "resource_type": "api",
+}
 
 
 class TestFilestoreHelper:
