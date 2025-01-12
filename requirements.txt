@@ -52,9 +52,9 @@ google-auth-oauthlib==1.2.1
     # via gspread
 gspread==6.1.4
     # via hdx-python-api (pyproject.toml)
-hdx-python-country==3.8.5
+hdx-python-country==3.8.6
     # via hdx-python-api (pyproject.toml)
-hdx-python-utilities @ git+https://git@github.com/OCHA-DAP/hdx-python-utilities@212e95dc21a48e5985237fc66af8ef3bb0ddbf5e#egg=hdx-python-utilities
+hdx-python-utilities==3.8.0
     # via
     #   hdx-python-api (pyproject.toml)
     #   hdx-python-country
@@ -141,9 +141,7 @@ pydantic-core==2.27.2
 pygments==2.19.1
     # via rich
 pyphonetics==0.5.3
-    # via
-    #   hdx-python-country
-    #   hdx-python-utilities
+    # via hdx-python-utilities
 pytest==8.3.4
     # via
     #   hdx-python-api (pyproject.toml)
