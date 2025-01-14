@@ -204,9 +204,9 @@ class HDXErrorHandler(ErrorHandler):
             self.write_errors_to_hdx()
 
     def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
-        super().__exit__(exc_type, exc_value, traceback)
         if self._write_to_hdx:
             self.write_errors_to_hdx()
+        super().__exit__(exc_type, exc_value, traceback)
 
 
 def write_errors_to_resource(
