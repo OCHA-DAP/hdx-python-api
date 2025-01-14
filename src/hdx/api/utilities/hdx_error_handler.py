@@ -18,15 +18,18 @@ class HDXErrorHandler(ErrorHandler):
     sorted.
 
     Args:
-        should_exit_on_error (bool): Whether to exit with a 1 code if there are errors. Default is True.
+        should_exit_on_error (bool): Whether to exit with a 1 code if there are errors. Default is False.
+        write_to_hdx (bool): Whether to write errors to HDX resources. Default is False.
 
     """
 
     def __init__(
         self,
-        should_exit_on_error: bool = True,
+        should_exit_on_error: bool = False,
+        write_to_hdx: bool = False,
     ):
         super().__init__(should_exit_on_error)
+        self._write_to_hdx = write_to_hdx
         self.shared_errors["hdx_error"] = {}
 
     @staticmethod
@@ -81,6 +84,7 @@ class HDXErrorHandler(ErrorHandler):
         fixed format:
             pipeline - identifier - {text}
         identifier is usually a dataset name.
+
         Args:
             pipeline (str): Name of the pipeline originating the error
             identifier (str): Identifier e.g. dataset name
@@ -111,6 +115,7 @@ class HDXErrorHandler(ErrorHandler):
         to a dictionary of messages in a fixed format:
             pipeline - identifier - {text}
         identifier is usually a dataset name.
+
         Args:
             pipeline (str): Name of the scaper originating the error
             identifier (str): Identifier e.g. dataset name
@@ -148,6 +153,7 @@ class HDXErrorHandler(ErrorHandler):
             pipeline - identifier - n {text}. First 10 values: n1,n2,n3...
         If less than 10 values, ". First 10 values" is omitted. identifier is usually
         a dataset name.
+
         Args:
             pipeline (str): Name of the scaper originating the error
             identifier (str): Identifier e.g. dataset name
@@ -172,22 +178,46 @@ class HDXErrorHandler(ErrorHandler):
         )
         return True
 
-    def output_errors(self, err_to_hdx: bool) -> None:
+    def write_errors_to_hdx(self) -> None:
+        """
+        Write to HDX resources corresponding errors that have been flagged by
+        setting err_to_hdx True when adding messages
+
+        Returns:
+            None
+        """
+        logger.info("Writing errors to HDX")
+        for identifier, errors in self.shared_errors["hdx_error"].items():
+            write_errors_to_resource(identifier, errors)
+
+    def output_errors(self) -> None:
+        """
+        Log errors and warnings by category and sorted. Also write to HDX
+        resources corresponding errors that have been flagged by setting
+        err_to_hdx True when adding messages.
+
+        Returns:
+            None
+        """
         self.log()
-        if err_to_hdx:
-            logger.info("Writing errors to HDX")
-            for identifier, errors in self.shared_errors["hdx_error"].items():
-                write_error_to_resource(identifier, errors)
+        if self._write_to_hdx:
+            self.write_errors_to_hdx()
+
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
+        super().__exit__(exc_type, exc_value, traceback)
+        if self._write_to_hdx:
+            self.write_errors_to_hdx()
 
 
-def write_error_to_resource(
+def write_errors_to_resource(
     identifier: Tuple[str, str, str], errors: set[str]
 ) -> bool:
     """
     Writes error messages to a resource on HDX. If the resource already has an
     error message, it is only overwritten if the two messages are different.
+
     Args:
-        identifier (Tuple[str, str, str]): The scraper, dataset, and resource names that the message applies to
+        identifier (Tuple[str, str, str]): Scraper, dataset, and resource names that the message applies to
         errors (set[str]): Set of errors to use e.g. "negative values removed"
     Returns:
         bool: True if a message was added, False if not
