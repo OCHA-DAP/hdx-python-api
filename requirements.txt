@@ -54,7 +54,7 @@ gspread==6.1.4
     # via hdx-python-api (pyproject.toml)
 hdx-python-country==3.8.6
     # via hdx-python-api (pyproject.toml)
-hdx-python-utilities==3.8.0
+hdx-python-utilities==3.8.2
     # via
     #   hdx-python-api (pyproject.toml)
     #   hdx-python-country

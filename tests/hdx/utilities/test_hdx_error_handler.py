@@ -14,7 +14,7 @@ class TestHDXErrorHandler:
     def test_hdx_error_handler(self, caplog):
         with pytest.raises(SystemExit):
             with caplog.at_level(logging.ERROR):
-                with HDXErrorHandler() as errors:
+                with HDXErrorHandler(should_exit_on_error=True) as errors:
                     errors.add_message(
                         "pipeline1",
                         "dataset1",
@@ -54,5 +54,5 @@ class TestHDXErrorHandler:
                         )
                         == 3
                     )
-                    errors.output_errors(False)
+                    errors.output_errors()
                 assert "following values changed" in caplog.text
