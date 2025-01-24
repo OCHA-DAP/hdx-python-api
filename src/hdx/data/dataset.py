@@ -1188,7 +1188,7 @@ class Dataset(HDXObject):
         Args:
             query (Optional[str]): Query (in Solr format). Defaults to '*:*'.
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
-            page_size (int): Size of page to return. Defaults to 1000.
+            page_size (int): Size of page to use internally to query HDX. Defaults to 1000.
             **kwargs: See below
             fq (string): Any filter queries to apply
             rows (int): Number of matching rows to return. Defaults to all datasets (sys.maxsize).
@@ -1325,7 +1325,7 @@ class Dataset(HDXObject):
 
         Args:
             configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
-            page_size (int): Size of page to return. Defaults to 1000.
+            page_size (int): Size of page to use internally to query HDX. Defaults to 1000.
             **kwargs: See below
             fq (string): Any filter queries to apply
             rows (int): Number of matching rows to return. Defaults to all datasets (sys.maxsize).
