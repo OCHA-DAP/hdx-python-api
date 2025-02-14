@@ -142,9 +142,9 @@ class TestUpdateLogic:
             )
             name = f"/tmp/WHO/{name}"
             fu = files_to_upload[key]
-            assert (
-                name == fu
-            ), f'Mismatch at index {index}: "{rn}", file to upload is "{fu}"'
+            assert name == fu, (
+                f'Mismatch at index {index}: "{rn}", file to upload is "{fu}"'
+            )
 
     def test_update_logic_1(
         self,

@@ -423,6 +423,39 @@ class Dataset(HDXObject):
         if hxl_update:
             self.hxl_update()
 
+    def move_resource(
+        self,
+        resource_name: str,
+        insert_before: str,
+    ) -> "Resource":
+        """Move resource in dataset to be before the resource whose name starts
+        with the value of insert_before.
+
+        Args:
+            resource_name (str): Name of resource to move
+            insert_before (str): Resource to insert before
+
+        Returns:
+            Resource: The resource that was moved
+        """
+        from_index = None
+        to_index = None
+        for i, resource in enumerate(self.resources):
+            res_name = resource["name"]
+            if res_name == resource_name:
+                from_index = i
+            elif res_name.startswith(insert_before):
+                to_index = i
+        if to_index is None:
+            # insert at the start if resource cannot be found
+            to_index = 0
+        resource = self.resources.pop(from_index)
+        if from_index < to_index:
+            # to index was calculated while element was in front
+            to_index -= 1
+        self.resources.insert(to_index, resource)
+        return resource
+
     def update_from_yaml(
         self, path: str = join("config", "hdx_dataset_static.yaml")
     ) -> None:

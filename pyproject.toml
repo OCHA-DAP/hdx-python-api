@@ -37,8 +37,8 @@ dependencies = [
     "ckanapi>=4.8",
     "defopt>=6.4.0",
     "email_validator",
-    "hdx-python-country>=3.8.6",
-    "hdx-python-utilities>=3.8.2",
+    "hdx-python-country>=3.8.8",
+    "hdx-python-utilities>=3.8.3",
     "libhxl>=5.2.2",
     "makefun",
     "quantulum3",
@@ -54,7 +54,7 @@ content-type = "text/markdown"
 Homepage = "https://github.com/OCHA-DAP/hdx-python-api"
 
 [project.optional-dependencies]
-test = ["pytest", "pytest-cov", "gspread"]
+test = ["pytest", "pytest-check", "pytest-cov", "gspread"]
 dev = ["pre-commit"]
 
 
@@ -98,7 +98,7 @@ run = """
        """
 
 [tool.hatch.envs.hatch-static-analysis]
-dependencies = ["ruff==0.8.6"]
+dependencies = ["ruff==0.9.6"]
 
 [tool.hatch.envs.hatch-static-analysis.scripts]
 format-check = ["ruff format --config .config/ruff.toml --check --diff {args:.}",]
