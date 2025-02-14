@@ -447,7 +447,7 @@ class Dataset(HDXObject):
             elif res_name.startswith(insert_before):
                 to_index = i
         if to_index is None:
-            # insert at the start if a manual resource for year cannot be found
+            # insert at the start if resource cannot be found
             to_index = 0
         resource = self.resources.pop(from_index)
         if from_index < to_index:
