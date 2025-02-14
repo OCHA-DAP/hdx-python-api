@@ -8,6 +8,7 @@ import tempfile
 from os.path import join
 
 import pytest
+from pytest_check import check
 
 from . import (
     MockResponse,
@@ -1042,6 +1043,166 @@ class TestDatasetCore:
                     "3d777226-96aa-4239-860a-703389d16d1g",
                 ]
             )
+
+    def test_move_resources(self, configuration):
+        datasetdata = copy.deepcopy(dataset_data)
+        resourcesdata = copy.deepcopy(resources_data)
+        dataset = Dataset(datasetdata)
+        dataset.add_update_resources(resourcesdata)
+        resource_ids = [x["id"] for x in dataset.get_resources()]
+        check.equal(
+            resource_ids,
+            [
+                "de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
+                "3d777226-96aa-4239-860a-703389d16d1f",
+                "3d777226-96aa-4239-860a-703389d16d1g",
+            ],
+        )
+        resources = dataset.get_resources()
+        resource_name = "Resource1"
+        insert_before = "resource2xls"
+        resources[2]["name"] = insert_before
+        resource = dataset.move_resource(resource_name, insert_before)
+        check.equal(resource["name"], resource_name)
+        resources = dataset.get_resources()
+        resource_ids = [x["id"] for x in resources]
+        check.equal(
+            resource_ids,
+            [
+                "3d777226-96aa-4239-860a-703389d16d1f",
+                "de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
+                "3d777226-96aa-4239-860a-703389d16d1g",
+            ],
+        )
+
+        input_resource_names = [
+            "afg_hpc_needs_2024.xlsx",
+            "afg_hpc_needs_2023.xlsx",
+            "afg_hpc_needs_2022.xlsx",
+            "afg_hpc_needs_2021.xlsx",
+            "afg_hpc_needs_api_2024.csv",
+        ]
+        resources = [Resource({"name": x}) for x in input_resource_names]
+        dataset.resources = resources
+        resource_name = "afg_hpc_needs_api_2024.csv"
+        insert_before = "afg_hpc_needs_2024"
+        resource = dataset.move_resource(resource_name, insert_before)
+        check.equal(resource["name"], "afg_hpc_needs_api_2024.csv")
+        resource_names = [x["name"] for x in resources]
+        check.equal(
+            resource_names,
+            [
+                "afg_hpc_needs_api_2024.csv",
+                "afg_hpc_needs_2024.xlsx",
+                "afg_hpc_needs_2023.xlsx",
+                "afg_hpc_needs_2022.xlsx",
+                "afg_hpc_needs_2021.xlsx",
+            ],
+        )
+        resource = dataset.move_resource(resource_name, insert_before)
+        check.equal(resource["name"], "afg_hpc_needs_api_2024.csv")
+        resource_names = [x["name"] for x in resources]
+        check.equal(
+            resource_names,
+            [
+                "afg_hpc_needs_api_2024.csv",
+                "afg_hpc_needs_2024.xlsx",
+                "afg_hpc_needs_2023.xlsx",
+                "afg_hpc_needs_2022.xlsx",
+                "afg_hpc_needs_2021.xlsx",
+            ],
+        )
+
+        input_resource_names = [
+            "afg_hpc_needs_2024.xlsx",
+            "afg_hpc_needs_2023.xlsx",
+            "afg_hpc_needs_2022.xlsx",
+            "afg_hpc_needs_2021.xlsx",
+            "afg_hpc_needs_api_2021.csv",
+        ]
+        resources = [Resource({"name": x}) for x in input_resource_names]
+        dataset.resources = resources
+        resource_name = "afg_hpc_needs_api_2021.csv"
+        insert_before = "afg_hpc_needs_2021"
+        _ = dataset.move_resource(resource_name, insert_before)
+        resource_names = [x["name"] for x in resources]
+        check.equal(
+            resource_names,
+            [
+                "afg_hpc_needs_2024.xlsx",
+                "afg_hpc_needs_2023.xlsx",
+                "afg_hpc_needs_2022.xlsx",
+                "afg_hpc_needs_api_2021.csv",
+                "afg_hpc_needs_2021.xlsx",
+            ],
+        )
+        _ = dataset.move_resource(resource_name, insert_before)
+        resource_names = [x["name"] for x in resources]
+        check.equal(
+            resource_names,
+            [
+                "afg_hpc_needs_2024.xlsx",
+                "afg_hpc_needs_2023.xlsx",
+                "afg_hpc_needs_2022.xlsx",
+                "afg_hpc_needs_api_2021.csv",
+                "afg_hpc_needs_2021.xlsx",
+            ],
+        )
+
+        input_resource_names = [
+            "afg_hpc_needs_2023.xlsx",
+            "afg_hpc_needs_2022.xlsx",
+            "afg_hpc_needs_2021.xlsx",
+            "afg_hpc_needs_api_2024.csv",
+        ]
+        resources = [Resource({"name": x}) for x in input_resource_names]
+        dataset.resources = resources
+        resource_name = "afg_hpc_needs_api_2024.csv"
+        insert_before = "afg_hpc_needs_2024"
+        _ = dataset.move_resource(resource_name, insert_before)
+        resource_names = [x["name"] for x in resources]
+        check.equal(
+            resource_names,
+            [
+                "afg_hpc_needs_api_2024.csv",
+                "afg_hpc_needs_2023.xlsx",
+                "afg_hpc_needs_2022.xlsx",
+                "afg_hpc_needs_2021.xlsx",
+            ],
+        )
+        _ = dataset.move_resource(resource_name, insert_before)
+        resource_names = [x["name"] for x in resources]
+        check.equal(
+            resource_names,
+            [
+                "afg_hpc_needs_api_2024.csv",
+                "afg_hpc_needs_2023.xlsx",
+                "afg_hpc_needs_2022.xlsx",
+                "afg_hpc_needs_2021.xlsx",
+            ],
+        )
+        input_resource_names = [
+            "afg_hpc_needs_2024.xlsx",
+            "afg_hpc_needs_2023.xlsx",
+            "afg_hpc_needs_api_2024.csv",
+            "afg_hpc_needs_2022.xlsx",
+            "afg_hpc_needs_2021.xlsx",
+        ]
+        resources = [Resource({"name": x}) for x in input_resource_names]
+        dataset.resources = resources
+        _ = dataset.move_resource(resource_name, insert_before)
+        check.equal(resource["name"], "afg_hpc_needs_api_2024.csv")
+        resource_names = [x["name"] for x in resources]
+        check.equal(
+            resource_names,
+            [
+                "afg_hpc_needs_api_2024.csv",
+                "afg_hpc_needs_2024.xlsx",
+                "afg_hpc_needs_2023.xlsx",
+                "afg_hpc_needs_2022.xlsx",
+                "afg_hpc_needs_2021.xlsx",
+            ],
+        )
 
     def test_search_in_hdx(self, configuration, search):
         datasets = Dataset.search_in_hdx("ACLED")
