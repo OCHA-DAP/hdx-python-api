@@ -30,7 +30,7 @@ class TestCKAN:
     def configuration(self):
         hdx_key = getenv("HDX_KEY_TEST")
         Configuration._create(
-            hdx_site="demo",
+            hdx_site="dev",
             user_agent="test",
             hdx_key=hdx_key,
         )
