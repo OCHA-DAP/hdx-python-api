@@ -9,6 +9,7 @@ import os
 import random
 from os import getenv
 from os.path import join
+from time import sleep
 
 import gspread
 import pytest
@@ -222,9 +223,12 @@ class TestCKAN:
         for resource in resources:
             del resource["package_id"]
         dataset.add_update_resources(resources)
+
+        sleep(2)
         dataset.update_in_hdx(
             hxl_update=False, remove_additional_resources=True
         )
+        sleep(2)
 
         # check updated dataset
         dataset = Dataset.read_from_hdx(name)
@@ -265,11 +269,14 @@ class TestCKAN:
         updated_resources[0].set_file_to_upload(testdata)
         create_resource()
         resources = dataset.get_resources()
+
+        sleep(2)
         dataset.create_in_hdx(
             hxl_update=False,
             remove_additional_resources=True,
             keys_to_delete=("caveats",),
         )
+        sleep(2)
 
         # check dataset updated for second time
         dataset = Dataset.read_from_hdx(name)
