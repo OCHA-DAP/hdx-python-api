@@ -1454,6 +1454,7 @@ class TestVocabulary:
         Vocabulary.get_approved_vocabulary()
         Vocabulary.delete_approved_vocabulary()
         assert Vocabulary._approved_vocabulary.data is None
+        Vocabulary._approved_vocabulary = None
 
     def test_get_approved_vocabulary(self, configuration, read):
         Vocabulary._approved_vocabulary = None
@@ -1463,6 +1464,7 @@ class TestVocabulary:
             vocabulary["tags"][0]["name"]
             == "administrative boundaries-divisions"
         )
+        Vocabulary._approved_vocabulary = None
 
     def test_create_approved_vocabulary(self, configuration, post_create):
         vocabulary = Vocabulary.create_approved_vocabulary()
@@ -1471,6 +1473,7 @@ class TestVocabulary:
             vocabulary["tags"][0]["name"]
             == "administrative boundaries-divisions"
         )
+        Vocabulary._approved_vocabulary = None
 
     def test_update_approved_vocabulary(self, configuration, post_update):
         Vocabulary._approved_vocabulary = None
@@ -1494,6 +1497,7 @@ class TestVocabulary:
             vocabulary["tags"][1]["name"]
             == "administrative boundaries-divisions"
         )
+        Vocabulary._approved_vocabulary = None
 
     def test_tag_mappings(self, configuration, read):
         Vocabulary._approved_vocabulary = None
