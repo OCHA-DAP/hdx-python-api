@@ -54,6 +54,6 @@ content-type = "text/markdown"
 Homepage = "https://github.com/OCHA-DAP/hdx-python-api"
 
 [project.optional-dependencies]
-test = ["pytest", "pytest-check", "pytest-cov", "gspread"]
+test = ["gspread", "pytest", "pytest-check", "pytest-cov"]
 dev = ["pre-commit"]
 docs = ["mkapi"]

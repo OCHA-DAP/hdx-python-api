@@ -2,12 +2,18 @@
 #    uv pip compile pyproject.toml --resolver=backtracking --all-extras -o requirements.txt
 annotated-types==0.7.0
     # via pydantic
+astdoc==1.2.1
+    # via mkapi
 attrs==25.3.0
     # via
     #   frictionless
     #   jsonlines
     #   jsonschema
     #   referencing
+babel==2.17.0
+    # via mkdocs-material
+backrefs==5.8
+    # via mkdocs-material
 cachetools==5.5.2
     # via google-auth
 certifi==2025.4.26
@@ -21,7 +27,11 @@ charset-normalizer==3.4.2
 ckanapi==4.8
     # via hdx-python-api (pyproject.toml)
 click==8.1.8
-    # via typer
+    # via
+    #   mkdocs
+    #   typer
+colorama==0.4.6
+    # via mkdocs-material
 coverage==7.8.0
     # via pytest-cov
 cydifflib==1.2.0
@@ -46,7 +56,9 @@ filelock==3.18.0
     # via virtualenv
 frictionless==5.18.1
     # via hdx-python-utilities
-google-auth==2.40.0
+ghp-import==2.1.0
+    # via mkdocs
+google-auth==2.40.1
     # via
     #   google-auth-oauthlib
     #   gspread
@@ -77,7 +89,11 @@ iniconfig==2.1.0
 isodate==0.7.2
     # via frictionless
 jinja2==3.1.6
-    # via frictionless
+    # via
+    #   frictionless
+    #   mkapi
+    #   mkdocs
+    #   mkdocs-material
 jsonlines==4.0.0
     # via hdx-python-utilities
 jsonpath-ng==1.7.0
@@ -96,14 +112,37 @@ loguru==0.7.3
     # via hdx-python-utilities
 makefun==1.15.6
     # via hdx-python-api (pyproject.toml)
+markdown==3.8
+    # via
+    #   mkdocs
+    #   mkdocs-material
+    #   pymdown-extensions
 markdown-it-py==3.0.0
     # via rich
 marko==2.1.3
     # via frictionless
 markupsafe==3.0.2
-    # via jinja2
+    # via
+    #   jinja2
+    #   mkdocs
 mdurl==0.1.2
     # via markdown-it-py
+mergedeep==1.3.4
+    # via
+    #   mkdocs
+    #   mkdocs-get-deps
+mkapi==4.3.2
+    # via hdx-python-api (pyproject.toml)
+mkdocs==1.6.1
+    # via
+    #   mkapi
+    #   mkdocs-material
+mkdocs-get-deps==0.2.0
+    # via mkdocs
+mkdocs-material==9.6.12
+    # via mkapi
+mkdocs-material-extensions==1.3.1
+    # via mkdocs-material
 more-itertools==10.7.0
     # via inflect
 nodeenv==1.9.1
@@ -115,11 +154,19 @@ oauthlib==3.2.2
 openpyxl==3.1.5
     # via hdx-python-utilities
 packaging==25.0
-    # via pytest
+    # via
+    #   mkdocs
+    #   pytest
+paginate==0.5.7
+    # via mkdocs-material
+pathspec==0.12.1
+    # via mkdocs
 petl==1.7.16
     # via frictionless
 platformdirs==4.3.7
-    # via virtualenv
+    # via
+    #   mkdocs-get-deps
+    #   virtualenv
 pluggy==1.5.0
     # via pytest
 ply==3.11
@@ -141,7 +188,11 @@ pydantic==2.11.4
 pydantic-core==2.33.2
     # via pydantic
 pygments==2.19.1
-    # via rich
+    # via
+    #   mkdocs-material
+    #   rich
+pymdown-extensions==10.15
+    # via mkdocs-material
 pyphonetics==0.5.3
     # via hdx-python-utilities
 pytest==8.3.5
@@ -156,6 +207,7 @@ pytest-cov==6.1.1
 python-dateutil==2.9.0.post0
     # via
     #   frictionless
+    #   ghp-import
     #   hdx-python-utilities
     #   libhxl
 python-io-wrapper==0.3.1
@@ -167,8 +219,14 @@ python-slugify==8.0.4
 pyyaml==6.0.2
     # via
     #   frictionless
+    #   mkdocs
+    #   mkdocs-get-deps
     #   pre-commit
+    #   pymdown-extensions
+    #   pyyaml-env-tag
     #   tableschema-to-template
+pyyaml-env-tag==0.1
+    # via mkdocs
 quantulum3==0.9.2
     # via hdx-python-api (pyproject.toml)
 ratelimit==2.2.1
@@ -183,6 +241,7 @@ requests==2.32.3
     #   ckanapi
     #   frictionless
     #   libhxl
+    #   mkdocs-material
     #   requests-file
     #   requests-oauthlib
 requests-file==2.1.0
@@ -256,6 +315,8 @@ validators==0.35.0
     # via frictionless
 virtualenv==20.31.1
     # via pre-commit
+watchdog==6.0.0
+    # via mkdocs
 wheel==0.45.1
     # via libhxl
 xlrd==2.0.1

@@ -675,7 +675,7 @@ class TestResource:
         with pytest.raises(HDXError):
             resource.check_url_filetoupload()
 
-    def test_get_set_date_of_resource(self):
+    def test_get_set_date_of_resource(self, configuration):
         resource = Resource({"daterange_for_data": "[2020-01-07T00:00:00 TO *]"})
         result = resource.get_date_of_resource(today=datetime(2020, 11, 17))
         assert result == {
