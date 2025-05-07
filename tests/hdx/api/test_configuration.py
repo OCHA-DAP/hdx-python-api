@@ -70,10 +70,7 @@ class TestConfiguration:
             configuration.get_hdx_site_url()
             == "https://stage.data-humdata-org.ahconu.org"
         )
-        assert (
-            configuration.get_user_agent()
-            == f"HDXPythonLibrary/{__version__}-test"
-        )
+        assert configuration.get_user_agent() == f"HDXPythonLibrary/{__version__}-test"
         configuration = Configuration(full_agent="test", hdx_key="test")
         assert configuration.get_user_agent() == "test"
         Configuration.default_hdx_config_yaml = default_config_file
@@ -236,10 +233,7 @@ class TestConfiguration:
 
         configuration = Configuration.read()
         assert configuration == expected_configuration
-        assert (
-            configuration.get_user_agent()
-            == f"HDXPythonLibrary/{__version__}-test"
-        )
+        assert configuration.get_user_agent() == f"HDXPythonLibrary/{__version__}-test"
 
         Configuration._create(
             hdx_config_dict={
@@ -259,10 +253,7 @@ class TestConfiguration:
         configuration = Configuration.read()
         expected_configuration["user_agent"] = "test"
         assert configuration == expected_configuration
-        assert (
-            configuration.get_user_agent()
-            == f"HDXPythonLibrary/{__version__}-test"
-        )
+        assert configuration.get_user_agent() == f"HDXPythonLibrary/{__version__}-test"
 
         smtp_initargs = {
             "host": "localhost",
@@ -388,9 +379,7 @@ hello there"""
                     "dataset_date",
                 ]
             },
-            "resource": {
-                "required_fields": ["package_id", "name", "description"]
-            },
+            "resource": {"required_fields": ["package_id", "name", "description"]},
             "showcase": {"required_fields": ["name", "title"]},
             "approved_tags_vocabulary": "Topics",
             "tags_list_url": "tests/fixtures/Accepted_Tags.csv",
@@ -403,9 +392,7 @@ hello there"""
         assert configuration.hdx_key == "12345"
 
     def test_project_configuration_dict(self, hdx_config_yaml):
-        Configuration._create(
-            user_agent="test", hdx_config_yaml=hdx_config_yaml
-        )
+        Configuration._create(user_agent="test", hdx_config_yaml=hdx_config_yaml)
         expected_configuration = {
             "hdx_site": "prod",
             "hdx_read_only": False,
@@ -523,9 +510,7 @@ hello there"""
         expected_configuration["abc"] = "123"
         assert Configuration.read() == expected_configuration
 
-    def test_project_configuration_json(
-        self, hdx_config_yaml, project_config_json
-    ):
+    def test_project_configuration_json(self, hdx_config_yaml, project_config_json):
         Configuration._create(
             user_agent="test",
             hdx_config_yaml=hdx_config_yaml,
@@ -642,9 +627,7 @@ hello there"""
         }
         assert Configuration.read() == expected_configuration
 
-    def test_project_configuration_yaml(
-        self, hdx_config_yaml, project_config_yaml
-    ):
+    def test_project_configuration_yaml(self, hdx_config_yaml, project_config_yaml):
         Configuration._create(
             user_agent="test",
             hdx_config_yaml=hdx_config_yaml,
@@ -769,10 +752,7 @@ hello there"""
         )
         actual_configuration = Configuration.read()
         assert actual_configuration.get_api_key() == "12345"
-        assert (
-            actual_configuration.get_hdx_site_url()
-            == "https://data.humdata.org"
-        )
+        assert actual_configuration.get_hdx_site_url() == "https://data.humdata.org"
         assert actual_configuration._get_credentials() is None
         assert (
             actual_configuration.get_dataset_url("mydataset")

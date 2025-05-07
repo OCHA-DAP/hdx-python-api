@@ -145,33 +145,21 @@ class TestUpdateDatasetResourcesLogic:
             test=True,
         )
         assert results["files_to_upload"] == {
-            "update__resources__0__upload": join(
-                fixture_path, "sdg_data_zwe.csv"
-            ),
+            "update__resources__0__upload": join(fixture_path, "sdg_data_zwe.csv"),
             "update__resources__1__upload": join(
                 fixture_path, "sdg_indicatorlist_zwe.csv"
             ),
-            "update__resources__2__upload": join(
-                fixture_path, "sdg_metadata_zwe.csv"
-            ),
-            "update__resources__3__upload": join(
-                fixture_path, "dem_data_zwe.csv"
-            ),
+            "update__resources__2__upload": join(fixture_path, "sdg_metadata_zwe.csv"),
+            "update__resources__3__upload": join(fixture_path, "dem_data_zwe.csv"),
             "update__resources__4__upload": join(
                 fixture_path, "dem_indicatorlist_zwe.csv"
             ),
-            "update__resources__5__upload": join(
-                fixture_path, "opri_data_zwe.csv"
-            ),
+            "update__resources__5__upload": join(fixture_path, "opri_data_zwe.csv"),
             "update__resources__6__upload": join(
                 fixture_path, "opri_indicatorlist_zwe.csv"
             ),
-            "update__resources__7__upload": join(
-                fixture_path, "opri_metadata_zwe.csv"
-            ),
-            "update__resources__8__upload": join(
-                fixture_path, "qc_sdg_data_zwe.csv"
-            ),
+            "update__resources__7__upload": join(fixture_path, "opri_metadata_zwe.csv"),
+            "update__resources__8__upload": join(fixture_path, "qc_sdg_data_zwe.csv"),
         }
         resources = results["update"]["resources"]
         cutdown_resources = []

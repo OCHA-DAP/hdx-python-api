@@ -1,0 +1,37 @@
+# Build
+
+[build.targets.wheel]
+packages = ["src/hdx"]
+
+[build.hooks.vcs]
+version-file = "src/hdx/api/_version.py"
+
+[metadata]
+allow-direct-references = true
+
+# Versioning
+
+[version]
+source = "vcs"
+
+[version.raw-options]
+local_scheme = "no-local-version"
+version_scheme = "python-simplified-semver"
+
+# Tests
+
+[envs.hatch-test]
+features = ["test"]
+
+[[envs.hatch-test.matrix]]
+python = ["3.12"]
+
+[envs.hatch-test.scripts]
+run = """
+       pytest --rootdir=. --junitxml=test-results.xml --cov --no-cov-on-fail \
+       --cov-report=lcov --cov-report=term-missing
+       """
+
+[envs.hatch-static-analysis]
+config-path = "none"
+dependencies = ["ruff==0.9.10"]

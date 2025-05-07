@@ -96,9 +96,7 @@ class Showcase(HDXObject):
         """
         return cls._read_from_hdx_class("showcase", identifier, configuration)
 
-    def check_required_fields(
-        self, ignore_fields: ListTuple[str] = tuple()
-    ) -> None:
+    def check_required_fields(self, ignore_fields: ListTuple[str] = tuple()) -> None:
         """Check that metadata for showcase is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
@@ -133,12 +131,8 @@ class Showcase(HDXObject):
         """
         if "ignore_check" not in kwargs:  # allow ignoring of field checks
             self.check_required_fields()
-        if "name" in self.data and self._load_from_hdx(
-            "showcase", self.data["name"]
-        ):
-            logger.warning(
-                f"{'showcase'} exists. Updating {self.data['name']}"
-            )
+        if "name" in self.data and self._load_from_hdx("showcase", self.data["name"]):
+            logger.warning(f"{'showcase'} exists. Updating {self.data['name']}")
             merge_two_dictionaries(self.data, self.old_data)
             self.clean_tags()
             self._hdx_update("showcase", "name", force_active=True, **kwargs)
@@ -196,9 +190,7 @@ class Showcase(HDXObject):
             self, tags, log_deleted=log_deleted
         )
 
-    def clean_tags(
-        self, log_deleted: bool = True
-    ) -> Tuple[List[str], List[str]]:
+    def clean_tags(self, log_deleted: bool = True) -> Tuple[List[str], List[str]]:
         """Clean tags in an HDX object according to tags cleanup spreadsheet
 
         Args:
@@ -207,9 +199,7 @@ class Showcase(HDXObject):
         Returns:
             Tuple[List[str], List[str]]: Tuple containing list of mapped tags and list of deleted tags and tags not added
         """
-        return hdx.data.vocabulary.Vocabulary.clean_tags(
-            self, log_deleted=log_deleted
-        )
+        return hdx.data.vocabulary.Vocabulary.clean_tags(self, log_deleted=log_deleted)
 
     def remove_tag(self, tag: str) -> bool:
         """Remove a tag
@@ -257,22 +247,16 @@ class Showcase(HDXObject):
         Returns:
             Dict: showcase dataset dict
         """
-        if isinstance(dataset, hdx.data.dataset.Dataset) or isinstance(
-            dataset, dict
-        ):
+        if isinstance(dataset, hdx.data.dataset.Dataset) or isinstance(dataset, dict):
             if "id" not in dataset:
-                dataset = hdx.data.dataset.Dataset.read_from_hdx(
-                    dataset["name"]
-                )
+                dataset = hdx.data.dataset.Dataset.read_from_hdx(dataset["name"])
             dataset = dataset["id"]
         elif not isinstance(dataset, str):
             raise hdx.data.hdxobject.HDXError(
                 f"Type {type(dataset).__name__} cannot be added as a dataset!"
             )
         if is_valid_uuid(dataset) is False:
-            raise hdx.data.hdxobject.HDXError(
-                f"{dataset} is not a valid dataset id!"
-            )
+            raise hdx.data.hdxobject.HDXError(f"{dataset} is not a valid dataset id!")
         return {"showcase_id": self.data["id"], "package_id": dataset}
 
     def add_dataset(
@@ -316,9 +300,7 @@ class Showcase(HDXObject):
             datasets_to_check = self.get_datasets()
         alldatasetsadded = True
         for dataset in datasets:
-            if not self.add_dataset(
-                dataset, datasets_to_check=datasets_to_check
-            ):
+            if not self.add_dataset(dataset, datasets_to_check=datasets_to_check):
                 alldatasetsadded = False
         return alldatasetsadded
 

@@ -1,0 +1,25 @@
+site_name: HDX Python API
+repo_url: https://github.com/OCHA-DAP/hdx-python-api/
+repo_name: OCHA-DAP/hdx-python-api
+docs_dir: .
+site_dir: ../site
+theme:
+  name: material
+  highlightjs: true
+plugins:
+  - search
+  - mkapi
+nav:
+  - Home: index.md
+  - API Documentation:
+    - Configuration: $src/hdx.api.configuration.*
+    - Locations: $src/hdx.api.locations.*
+    - Dataset: $src/hdx.data.dataset.*
+    - Resource: $src/hdx.data.resource.*
+    - Resource View: $src/hdx.data.resource_view.*
+    - Showcase: $src/hdx.data.showcase.*
+    - User: $src/hdx.data.user.*
+    - Organization: $src/hdx.data.organization.*
+    - Vocabulary: $src/hdx.data.vocabulary.*
+    - Simple Facade: $src/hdx.facades.simple.*
+    - Keyword Arguments Facade: $src/hdx.facades.keyword_arguments.*

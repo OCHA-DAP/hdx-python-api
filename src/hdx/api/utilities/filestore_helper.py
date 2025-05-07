@@ -27,11 +27,7 @@ class FilestoreHelper:
         """
         if "ignore_check" in kwargs:  # allow ignoring of field checks
             return
-        if (
-            check_upload
-            and resource.get_file_to_upload()
-            and "url" in resource.data
-        ):
+        if check_upload and resource.get_file_to_upload() and "url" in resource.data:
             del resource.data["url"]
         ignore_fields = kwargs.get("ignore_fields", list())
         resource_ignore_fields = []
@@ -92,7 +88,7 @@ class FilestoreHelper:
         data_updated = resource_data_to_update.is_marked_data_updated()
         if data_updated:
             # Should not output timezone info here
-            resource_data_to_update["last_modified"] = (
-                now_utc_notz().isoformat(timespec="microseconds")
+            resource_data_to_update["last_modified"] = now_utc_notz().isoformat(
+                timespec="microseconds"
             )
             resource_data_to_update.data_updated = False

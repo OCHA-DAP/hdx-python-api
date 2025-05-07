@@ -40,9 +40,7 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
     main_doc = [f"{parsed_main_doc.first_line}\n\nArgs:"]
     no_main_params = len(parsed_main_doc.params)
     for param_name, param_info in parsed_main_doc.params.items():
-        main_doc.append(
-            f"\n    {param_name} ({param_info.type}): {param_info.text}"
-        )
+        main_doc.append(f"\n    {param_name} ({param_info.type}): {param_info.text}")
     create_config_doc = getdoc(Configuration.create)
     kwargs_index = create_config_doc.index("**kwargs")
     kwargs_index = create_config_doc.index("\n", kwargs_index)
@@ -75,9 +73,7 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
                     "Configuration.create has new parameter with unknown type!"
                 )
             param_names.append(f"{param_name}: {param_type} = {default}")
-        main_doc.append(
-            f"\n    {param_name} ({param_type}): {param_info.text}"
-        )
+        main_doc.append(f"\n    {param_name} ({param_type}): {param_info.text}")
     main_doc = "".join(main_doc)
 
     projectmainname = projectmainfn.__name__
@@ -101,9 +97,7 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
     gen_func.__doc__ = main_doc
 
     configuration_create = defopt.bind(gen_func, argv=argv, cli_options="all")
-    main_func, _ = defopt.bind_known(
-        projectmainfn, argv=argv, cli_options="all"
-    )
+    main_func, _ = defopt.bind_known(projectmainfn, argv=argv, cli_options="all")
 
     configuration_create()
     UserAgent.user_agent = Configuration.read().user_agent

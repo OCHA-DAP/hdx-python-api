@@ -30,9 +30,7 @@ resultdict = {
     "id": "9f3e9973-7dbe-4c65-8820-f48578e3ffea",
     "number_created_packages": 0,
 }
-orgdict = load_yaml(
-    join("tests", "fixtures", "organization_show_results.yaml")
-)
+orgdict = load_yaml(join("tests", "fixtures", "organization_show_results.yaml"))
 orgdict2 = copy.deepcopy(orgdict)
 del orgdict2["users"]
 del orgdict2["packages"]
@@ -295,8 +293,7 @@ class TestUser:
                     if "show" in url:
                         result = json.dumps(orgdict)
                         if (
-                            datadict["id"]
-                            == "b67e6c74-c185-4f43-b561-0e114a736f19"
+                            datadict["id"] == "b67e6c74-c185-4f43-b561-0e114a736f19"
                             or datadict["id"] == "TEST1"
                         ):
                             return MockResponse(
@@ -611,9 +608,7 @@ Content-Transfer-Encoding: 7bit
         organizations = user.get_organizations()
         assert organizations[0]["id"] == "b67e6c74-c185-4f43-b561-0e114a736f19"
         assert len(organizations) == 1
-        result = user.check_organization_access(
-            "b67e6c74-c185-4f43-b561-0e114a736f19"
-        )
+        result = user.check_organization_access("b67e6c74-c185-4f43-b561-0e114a736f19")
         assert result is True
         result = user.check_organization_access("acled")
         assert result is True
@@ -635,9 +630,7 @@ Content-Transfer-Encoding: 7bit
         result = User.check_current_user_organization_access("lala")
         assert result is False
 
-    def test_get_organizations_invalid_user(
-        self, configuration, post_listorgs_invalid
-    ):
+    def test_get_organizations_invalid_user(self, configuration, post_listorgs_invalid):
         user = User.read_from_hdx("9f3e9973-7dbe-4c65-8820-f48578e3ffea")
         user["name"] = "lala"
         assert user.get_organization_dicts() == []

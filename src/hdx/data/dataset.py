@@ -249,9 +249,7 @@ class Dataset(HDXObject):
                 resource, configuration=self.configuration
             )
         elif isinstance(resource, dict):
-            resource = res_module.Resource(
-                resource, configuration=self.configuration
-            )
+            resource = res_module.Resource(resource, configuration=self.configuration)
         if not isinstance(resource, res_module.Resource):
             raise HDXError(
                 f"Type {type(resource).__name__} cannot be added as a resource!"
@@ -279,9 +277,7 @@ class Dataset(HDXObject):
                     f"Resource {resource['name']} being added already has a dataset id!"
                 )
         resource.check_url_filetoupload()
-        resource_index = ResourceMatcher.match_resource_list(
-            self.resources, resource
-        )
+        resource_index = ResourceMatcher.match_resource_list(self.resources, resource)
         if resource_index is None:
             self.resources.append(resource)
         else:
@@ -289,9 +285,7 @@ class Dataset(HDXObject):
                 self.resources[resource_index], resource
             )
             if resource.get_file_to_upload():
-                updated_resource.set_file_to_upload(
-                    resource.get_file_to_upload()
-                )
+                updated_resource.set_file_to_upload(resource.get_file_to_upload())
             if resource.is_marked_data_updated():
                 updated_resource.mark_data_updated()
 
@@ -323,9 +317,7 @@ class Dataset(HDXObject):
             updated_resource_matches,
             _,
             updated_resource_no_matches,
-        ) = ResourceMatcher.match_resource_lists(
-            self.resources, resource_objects
-        )
+        ) = ResourceMatcher.match_resource_lists(self.resources, resource_objects)
         for i, resource_index in enumerate(resource_matches):
             resource = resource_objects[updated_resource_matches[i]]
             resource.check_url_filetoupload()
@@ -333,9 +325,7 @@ class Dataset(HDXObject):
                 self.resources[resource_index], resource
             )
             if resource.get_file_to_upload():
-                updated_resource.set_file_to_upload(
-                    resource.get_file_to_upload()
-                )
+                updated_resource.set_file_to_upload(resource.get_file_to_upload())
             if resource.is_marked_data_updated():
                 updated_resource.mark_data_updated()
         for resource_index in updated_resource_no_matches:
@@ -415,9 +405,7 @@ class Dataset(HDXObject):
         ordered_ids = results["order"]
         reordered_resources = []
         for resource_id in ordered_ids:
-            resource = next(
-                x for x in self.resources if x["id"] == resource_id
-            )
+            resource = next(x for x in self.resources if x["id"] == resource_id)
             reordered_resources.append(resource)
         self.resources = reordered_resources
         if hxl_update:
@@ -553,9 +541,7 @@ class Dataset(HDXObject):
             if not ignore_field.startswith("resource:"):
                 dataset_ignore_fields.append(ignore_field)
         if self.is_requestable():
-            self._check_required_fields(
-                "dataset-requestable", dataset_ignore_fields
-            )
+            self._check_required_fields("dataset-requestable", dataset_ignore_fields)
         else:
             self._check_required_fields("dataset", dataset_ignore_fields)
             if len(self.resources) == 0 and not allow_no_resources:
@@ -679,11 +665,7 @@ class Dataset(HDXObject):
                     el_name = orig_value.get("name")
                     present = False
                     for value_dict in value:
-                        if (
-                            el_id
-                            and "id" in value_dict
-                            and value_dict["id"] == el_id
-                        ):
+                        if el_id and "id" in value_dict and value_dict["id"] == el_id:
                             present = True
                             break
                         if (
@@ -740,9 +722,9 @@ class Dataset(HDXObject):
                 resource_index,
                 file_to_upload,
             ) in filestore_resources.items():
-                files_to_upload[
-                    f"update__resources__{resource_index}__upload"
-                ] = file_to_upload
+                files_to_upload[f"update__resources__{resource_index}__upload"] = (
+                    file_to_upload
+                )
         return files_to_upload
 
     def _revise_dataset(
@@ -784,13 +766,9 @@ class Dataset(HDXObject):
         if (
             "skip_validation" in kwargs
         ):  # Whether or not CKAN should perform validation steps (checking fields present)
-            dataset_data_to_update["skip_validation"] = kwargs[
-                "skip_validation"
-            ]
+            dataset_data_to_update["skip_validation"] = kwargs["skip_validation"]
         dataset_data_to_update["state"] = "active"
-        revise_filter = self._revise_filter(
-            dataset_data_to_update, keys_to_delete
-        )
+        revise_filter = self._revise_filter(dataset_data_to_update, keys_to_delete)
         files_to_upload = self._revise_files_to_upload_resource_deletions(
             revise_filter,
             resources_to_update,
@@ -819,9 +797,7 @@ class Dataset(HDXObject):
             "ignore_check"
         ):  # allow ignoring of field checks
             ignore_fields = kwargs.get("ignore_fields", list())
-            ignore_field = self.configuration["dataset"].get(
-                "ignore_on_update"
-            )
+            ignore_field = self.configuration["dataset"].get("ignore_on_update")
             if ignore_field and ignore_field not in ignore_fields:
                 ignore_fields.append(ignore_field)
             ignore_field = kwargs.get("ignore_field")
@@ -829,9 +805,7 @@ class Dataset(HDXObject):
                 ignore_fields.append(ignore_field)
             self.check_required_fields(ignore_fields=ignore_fields)
         if new_resource_order:
-            existing_order = [
-                (x["name"], x["format"].lower()) for x in self.resources
-            ]
+            existing_order = [(x["name"], x["format"].lower()) for x in self.resources]
             if existing_order != new_resource_order:
                 sorted_resources = sorted(
                     self.resources,
@@ -899,9 +873,7 @@ class Dataset(HDXObject):
                     resource_data_to_update = resources_metadata_to_update[
                         updated_resource_matches[match_index]
                     ]
-                    logger.warning(
-                        f"Resource exists. Updating {resource['name']}"
-                    )
+                    logger.warning(f"Resource exists. Updating {resource['name']}")
                     FilestoreHelper.dataset_update_filestore_resource(
                         resource_data_to_update,
                         filestore_resources,
@@ -936,9 +908,7 @@ class Dataset(HDXObject):
                     if len(self.resources) > i:
                         updated_resource_name = resource_data_to_update["name"]
                         resource_name = self.resources[i]["name"]
-                        logger.warning(
-                            f"Resource exists. Updating {resource_name}"
-                        )
+                        logger.warning(f"Resource exists. Updating {resource_name}")
                         if resource_name != updated_resource_name:
                             logger.warning(
                                 f"Changing resource name to: {updated_resource_name}"
@@ -968,8 +938,7 @@ class Dataset(HDXObject):
         resources_to_delete = list(reversed(resources_to_delete))
         if match_resource_order:
             new_resource_order = [
-                (x["name"], x["format"].lower())
-                for x in resources_metadata_to_update
+                (x["name"], x["format"].lower()) for x in resources_metadata_to_update
             ]
         else:
             new_resource_order = None
@@ -1081,9 +1050,7 @@ class Dataset(HDXObject):
             if self._dataset_load_from_hdx(self.data["id"]):
                 loaded = True
             else:
-                logger.warning(
-                    f"Failed to load dataset with id {self.data['id']}"
-                )
+                logger.warning(f"Failed to load dataset with id {self.data['id']}")
         if not loaded:
             self._check_existing_object("dataset", "name")
             if not self._dataset_load_from_hdx(self.data["name"]):
@@ -1133,9 +1100,7 @@ class Dataset(HDXObject):
             None
         """
         if "ignore_check" not in kwargs:  # allow ignoring of field checks
-            self.check_required_fields(
-                allow_no_resources=allow_no_resources, **kwargs
-            )
+            self.check_required_fields(allow_no_resources=allow_no_resources, **kwargs)
             # No need to check again after revising dataset
             kwargs["ignore_check"] = True
         loadedid = None
@@ -1143,9 +1108,7 @@ class Dataset(HDXObject):
             if self._dataset_load_from_hdx(self.data["id"]):
                 loadedid = self.data["id"]
             else:
-                logger.warning(
-                    f"Failed to load dataset with id {self.data['id']}"
-                )
+                logger.warning(f"Failed to load dataset with id {self.data['id']}")
         if not loadedid:
             if self._dataset_load_from_hdx(self.data["name"]):
                 loadedid = self.data["name"]
@@ -1204,9 +1167,7 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        self._read_from_hdx(
-            "dataset", self.data["id"], action=self.actions()["hxl"]
-        )
+        self._read_from_hdx("dataset", self.data["id"], action=self.actions()["hxl"])
 
     @classmethod
     def search_in_hdx(
@@ -1316,9 +1277,7 @@ class Dataset(HDXObject):
                     all_datasets = None
                     attempts += 1
         if attempts == cls.max_attempts and all_datasets is None:
-            raise HDXError(
-                "Maximum attempts reached for searching for datasets!"
-            )
+            raise HDXError("Maximum attempts reached for searching for datasets!")
         return all_datasets
 
     @staticmethod
@@ -1507,9 +1466,7 @@ class Dataset(HDXObject):
         (
             self.data["dataset_date"],
             retval,
-        ) = DateHelper.get_hdx_time_period_from_years(
-            dataset_year, dataset_end_year
-        )
+        ) = DateHelper.get_hdx_time_period_from_years(dataset_year, dataset_end_year)
         return retval
 
     def set_reference_period_year_range(
@@ -1533,9 +1490,7 @@ class Dataset(HDXObject):
         return list(cls.update_frequencies.keys())
 
     @classmethod
-    def transform_update_frequency(
-        cls, frequency: Union[str, int]
-    ) -> Optional[str]:
+    def transform_update_frequency(cls, frequency: Union[str, int]) -> Optional[str]:
         """Get numeric update frequency (as string since that is required field format) from textual representation or
         vice versa (eg. 'Every month' = '30', '30' or 30 = 'Every month')
 
@@ -1561,9 +1516,7 @@ class Dataset(HDXObject):
         else:
             return None
 
-    def set_expected_update_frequency(
-        self, update_frequency: Union[str, int]
-    ) -> None:
+    def set_expected_update_frequency(self, update_frequency: Union[str, int]) -> None:
         """Set expected update frequency. You can pass frequencies like "Every week" or '7' or 7. Valid values for
         update frequency can be found from Dataset.list_valid_update_frequencies().
 
@@ -1578,9 +1531,7 @@ class Dataset(HDXObject):
         try:
             int(update_frequency)
         except ValueError:
-            update_frequency = Dataset.transform_update_frequency(
-                update_frequency
-            )
+            update_frequency = Dataset.transform_update_frequency(update_frequency)
         if update_frequency not in Dataset.update_frequencies.keys():
             raise HDXError("Invalid update frequency supplied!")
         self.data["data_update_frequency"] = update_frequency
@@ -1605,9 +1556,7 @@ class Dataset(HDXObject):
         Returns:
             Tuple[List[str], List[str]]: Tuple containing list of added tags and list of deleted tags and tags not added
         """
-        return vocabulary.Vocabulary.add_mapped_tag(
-            self, tag, log_deleted=log_deleted
-        )
+        return vocabulary.Vocabulary.add_mapped_tag(self, tag, log_deleted=log_deleted)
 
     def add_tags(
         self, tags: ListTuple[str], log_deleted: bool = True
@@ -1625,9 +1574,7 @@ class Dataset(HDXObject):
             self, tags, log_deleted=log_deleted
         )
 
-    def clean_tags(
-        self, log_deleted: bool = True
-    ) -> Tuple[List[str], List[str]]:
+    def clean_tags(self, log_deleted: bool = True) -> Tuple[List[str], List[str]]:
         """Clean tags in an HDX object according to tags cleanup spreadsheet, deleting invalid tags that cannot be mapped
 
         Args:
@@ -1742,9 +1689,7 @@ class Dataset(HDXObject):
         Returns:
             bool: True if country added or False if country already present
         """
-        iso3, match = Country.get_iso3_country_code_fuzzy(
-            country, use_live=use_live
-        )
+        iso3, match = Country.get_iso3_country_code_fuzzy(country, use_live=use_live)
         if iso3 is None:
             raise HDXError(f"Country: {country} - cannot find iso3 code!")
         return self.add_other_location(
@@ -1851,9 +1796,7 @@ class Dataset(HDXObject):
         Returns:
             bool: True if location removed or False if not
         """
-        res = self._remove_hdxobject(
-            self.data.get("groups"), location, matchon="name"
-        )
+        res = self._remove_hdxobject(self.data.get("groups"), location, matchon="name")
         if not res:
             res = self._remove_hdxobject(
                 self.data.get("groups"), location.upper(), matchon="name"
@@ -1893,9 +1836,7 @@ class Dataset(HDXObject):
                 f"Type {type(maintainer).__name__} cannot be added as a maintainer!"
             )
         if is_valid_uuid(maintainer) is False:
-            raise HDXError(
-                f"{maintainer} is not a valid user id for a maintainer!"
-            )
+            raise HDXError(f"{maintainer} is not a valid user id for a maintainer!")
         self.data["maintainer"] = maintainer
 
     def get_organization(self) -> "Organization":
@@ -1967,9 +1908,7 @@ class Dataset(HDXObject):
         Returns:
             dict: Dataset showcase dict
         """
-        if isinstance(showcase, sc_module.Showcase) or isinstance(
-            showcase, dict
-        ):
+        if isinstance(showcase, sc_module.Showcase) or isinstance(showcase, dict):
             if "id" not in showcase:
                 showcase = sc_module.Showcase.read_from_hdx(showcase["name"])
             showcase = showcase["id"]
@@ -2026,9 +1965,7 @@ class Dataset(HDXObject):
             showcases_to_check = self.get_showcases()
         allshowcasesadded = True
         for showcase in showcases:
-            if not self.add_showcase(
-                showcase, showcases_to_check=showcases_to_check
-            ):
+            if not self.add_showcase(showcase, showcases_to_check=showcases_to_check):
                 allshowcasesadded = False
         return allshowcasesadded
 
@@ -2212,9 +2149,7 @@ class Dataset(HDXObject):
         """
         if isinstance(resource, int) and not isinstance(resource, bool):
             resource = self.resources[resource]
-        if isinstance(resource, res_module.Resource) or isinstance(
-            resource, dict
-        ):
+        if isinstance(resource, res_module.Resource) or isinstance(resource, dict):
             res = resource.get("id")
             if res is None:
                 resource = resource["name"]
@@ -2230,10 +2165,7 @@ class Dataset(HDXObject):
             search = "name"
         preview_resource = None
         for dataset_resource in self.resources:
-            if (
-                preview_resource is None
-                and dataset_resource[search] == resource
-            ):
+            if preview_resource is None and dataset_resource[search] == resource:
                 dataset_resource.enable_dataset_preview()
                 self.preview_resource()
                 preview_resource = dataset_resource
@@ -2253,9 +2185,7 @@ class Dataset(HDXObject):
                 return True
         return False
 
-    def create_default_views(
-        self, create_datastore_views: bool = False
-    ) -> None:
+    def create_default_views(self, create_datastore_views: bool = False) -> None:
         """Create default resource views for all resources in dataset
 
         Args:
@@ -2278,10 +2208,7 @@ class Dataset(HDXObject):
         """
         if self.preview_resourceview:
             for resource in self.resources:
-                if (
-                    resource["name"]
-                    == self.preview_resourceview["resource_name"]
-                ):
+                if resource["name"] == self.preview_resourceview["resource_name"]:
                     del self.preview_resourceview["resource_name"]
                     self.preview_resourceview["resource_id"] = resource["id"]
                     self.preview_resourceview.create_in_hdx()
@@ -2390,9 +2317,7 @@ class Dataset(HDXObject):
                     qc_config, f"TITLE_VALUE_{ind_str}", indicator["title"]
                 )
                 replace = indicator.get("unit", "")
-                qc_config = replace_string(
-                    qc_config, f"UNIT_VALUE_{ind_str}", replace
-                )
+                qc_config = replace_string(qc_config, f"UNIT_VALUE_{ind_str}", replace)
                 qc_config = replace_col(
                     qc_config, f"CODE_COL_{ind_str}", indicator, "code_col"
                 )
@@ -2736,9 +2661,7 @@ class Dataset(HDXObject):
             numeric_hashtag = quickcharts.get("numeric_hashtag")
             if numeric_hashtag:
                 qc["numeric"] = next(
-                    key
-                    for key, value in hxltags.items()
-                    if value == numeric_hashtag
+                    key for key, value in hxltags.items() if value == numeric_hashtag
                 )  # reverse lookup
             else:
                 qc["numeric"] = None
@@ -2757,9 +2680,7 @@ class Dataset(HDXObject):
                 if numeric_hashtag and qc["numeric"] not in cutdownhashtags:
                     cutdownhashtags.append(qc["numeric"])
                 qc["headers"] = [x for x in headers if x in cutdownhashtags]
-                qc["rows"] = [
-                    Download.hxl_row(qc["headers"], hxltags, dict_form=True)
-                ]
+                qc["rows"] = [Download.hxl_row(qc["headers"], hxltags, dict_form=True)]
 
         if yearcol is not None:
 

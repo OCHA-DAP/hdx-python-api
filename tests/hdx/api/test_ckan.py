@@ -59,9 +59,7 @@ class TestCKAN:
     def gclient(self):
         gsheet_auth = getenv("GSHEET_AUTH")
         if not gsheet_auth:
-            auth_file_path = os.path.join(
-                os.path.expanduser("~"), ".gsheet_auth.json"
-            )
+            auth_file_path = os.path.join(os.path.expanduser("~"), ".gsheet_auth.json")
             if os.path.exists(auth_file_path):
                 with open(auth_file_path, encoding="utf-8") as auth_file:
                     gsheet_auth = auth_file.read()
@@ -91,9 +89,7 @@ class TestCKAN:
         finally:
             payload = {"trashed": True}
             url = f"{DRIVE_FILES_API_V3_URL}/{folderid}"
-            gclient.http_client.request(
-                "patch", url, json=payload, params=params
-            )
+            gclient.http_client.request("patch", url, json=payload, params=params)
             Vocabulary._approved_vocabulary = None
             Vocabulary._tags_dict = None
             Configuration.delete()
@@ -182,9 +178,7 @@ class TestCKAN:
         assert dataset["title"] == title
         assert dataset.get_tags() == tags
         assert dataset.get_maintainer()["id"] == maintainer_id
-        assert (
-            dataset.get_organization()["display_name"] == "INNAGO (inactive)"
-        )
+        assert dataset.get_organization()["display_name"] == "INNAGO (inactive)"
         resources = dataset.get_resources()
         for i, resource in enumerate(resources):
             assert resource["name"] == f"test_resource_{i}"
@@ -225,9 +219,7 @@ class TestCKAN:
         dataset.add_update_resources(resources)
 
         sleep(2)
-        dataset.update_in_hdx(
-            hxl_update=False, remove_additional_resources=True
-        )
+        dataset.update_in_hdx(hxl_update=False, remove_additional_resources=True)
         sleep(2)
 
         # check updated dataset
@@ -238,9 +230,7 @@ class TestCKAN:
         assert dataset["caveats"] == caveats
         assert dataset.get_tags() == tags
         assert dataset.get_maintainer()["id"] == maintainer_id
-        assert (
-            dataset.get_organization()["display_name"] == "INNAGO (inactive)"
-        )
+        assert dataset.get_organization()["display_name"] == "INNAGO (inactive)"
         updated_resources = dataset.get_resources()
         for i, updated_resource in enumerate(updated_resources):
             resource = resources[i]
@@ -285,9 +275,7 @@ class TestCKAN:
         assert "caveats" not in dataset
         assert dataset.get_tags() == tags
         assert dataset.get_maintainer()["id"] == maintainer_id
-        assert (
-            dataset.get_organization()["display_name"] == "INNAGO (inactive)"
-        )
+        assert dataset.get_organization()["display_name"] == "INNAGO (inactive)"
         updated_resources = dataset.get_resources()
         for i, updated_resource in enumerate(updated_resources):
             resource = resources[i]

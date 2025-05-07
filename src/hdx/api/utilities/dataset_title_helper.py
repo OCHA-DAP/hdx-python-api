@@ -101,9 +101,7 @@ class DatasetTitleHelper:
                 ranges.append((startdaterl, enddaterl))
             else:
                 date_components = year
-                ranges.append(
-                    parse_date_range(year, zero_time=True, max_endtime=True)
-                )
+                ranges.append(parse_date_range(year, zero_time=True, max_endtime=True))
             newtitle = title
             for date_component in date_components:
                 newtitle = remove_string(
@@ -211,9 +209,7 @@ class DatasetTitleHelper:
             )
             ranges.append((startdate, enddate))
             newtitle = remove_string(title, match.group(0))
-            logger.info(
-                f"Removing date range from title: {title} -> {newtitle}"
-            )
+            logger.info(f"Removing date range from title: {title} -> {newtitle}")
             title = newtitle
 
         for match in cls.YEAR_RANGE_PATTERN2.finditer(title):
@@ -236,14 +232,10 @@ class DatasetTitleHelper:
             )
             ranges.append((startdate, enddate))
             newtitle = remove_string(title, match.group(0))
-            logger.info(
-                f"Removing date range from title: {title} -> {newtitle}"
-            )
+            logger.info(f"Removing date range from title: {title} -> {newtitle}")
             title = newtitle
 
-        title = cls.fuzzy_match_dates_in_title(
-            title, ranges, ignore_wrong_years
-        )
+        title = cls.fuzzy_match_dates_in_title(title, ranges, ignore_wrong_years)
 
         for match in cls.WORD_RIGHT_BRACKET_PATTERN.finditer(title):
             word = match.group(2)

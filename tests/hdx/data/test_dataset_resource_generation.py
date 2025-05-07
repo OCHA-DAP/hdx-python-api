@@ -139,12 +139,8 @@ class TestDatasetResourceGeneration:
                 )
                 assert success is True
                 assert results == {
-                    "startdate": datetime(
-                        2001, 1, 1, 0, 0, tzinfo=timezone.utc
-                    ),
-                    "enddate": datetime(
-                        2002, 12, 31, 23, 59, 59, tzinfo=timezone.utc
-                    ),
+                    "startdate": datetime(2001, 1, 1, 0, 0, tzinfo=timezone.utc),
+                    "enddate": datetime(2002, 12, 31, 23, 59, 59, tzinfo=timezone.utc),
                     "bites_disabled": [False, True, False],
                     "resource": {
                         "description": "Conflict data with HXL tags",
@@ -476,12 +472,8 @@ class TestDatasetResourceGeneration:
                 )
                 assert success is True
                 assert results == {
-                    "startdate": datetime(
-                        2001, 1, 1, 0, 0, tzinfo=timezone.utc
-                    ),
-                    "enddate": datetime(
-                        2002, 12, 31, 23, 59, 59, tzinfo=timezone.utc
-                    ),
+                    "startdate": datetime(2001, 1, 1, 0, 0, tzinfo=timezone.utc),
+                    "enddate": datetime(2002, 12, 31, 23, 59, 59, tzinfo=timezone.utc),
                     "bites_disabled": [False, True, False],
                     "resource": {
                         "description": "Conflict data with HXL tags",

@@ -178,15 +178,11 @@ class HDXObject(UserDict, ABC):
             return hdxobject
         return None
 
-    def _check_existing_object(
-        self, object_type: str, id_field_name: str
-    ) -> None:
+    def _check_existing_object(self, object_type: str, id_field_name: str) -> None:
         if not self.data:
             raise HDXError(f"No data in {object_type}!")
         if id_field_name not in self.data:
-            raise HDXError(
-                f"No {id_field_name} field (mandatory) in {object_type}!"
-            )
+            raise HDXError(f"No {id_field_name} field (mandatory) in {object_type}!")
 
     def _check_load_existing_object(
         self, object_type: str, id_field_name: str, operation: str = "update"
@@ -206,9 +202,7 @@ class HDXObject(UserDict, ABC):
             raise HDXError(f"No existing {object_type} to {operation}!")
 
     @abstractmethod
-    def check_required_fields(
-        self, ignore_fields: ListTuple[str] = []
-    ) -> None:
+    def check_required_fields(self, ignore_fields: ListTuple[str] = []) -> None:
         """Abstract method to check that metadata for HDX object is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
@@ -233,12 +227,8 @@ class HDXObject(UserDict, ABC):
         for field in self.configuration[object_type]["required_fields"]:
             if field not in ignore_fields:
                 if field not in self.data:
-                    raise HDXError(
-                        f"Field {field} is missing in {object_type}!"
-                    )
-                if not self.data[field] and not isinstance(
-                    self.data[field], bool
-                ):
+                    raise HDXError(f"Field {field} is missing in {object_type}!")
+                if not self.data[field] and not isinstance(self.data[field], bool):
                     raise HDXError(f"Field {field} is empty in {object_type}!")
 
     def _check_kwargs_fields(self, object_type: str, **kwargs: Any) -> None:
@@ -265,9 +255,7 @@ class HDXObject(UserDict, ABC):
             "ignore_check"
         ):  # allow ignoring of field checks
             ignore_fields = kwargs.get("ignore_fields", list())
-            ignore_field = self.configuration[object_type].get(
-                "ignore_on_update"
-            )
+            ignore_field = self.configuration[object_type].get("ignore_on_update")
             if ignore_field and ignore_field not in ignore_fields:
                 ignore_fields.append(ignore_field)
             ignore_field = kwargs.get("ignore_field")
@@ -299,9 +287,7 @@ class HDXObject(UserDict, ABC):
         """
         self._check_kwargs_fields(object_type, **kwargs)
         operation = kwargs.pop("operation", "update")
-        self._save_to_hdx(
-            operation, id_field_name, files_to_upload, force_active
-        )
+        self._save_to_hdx(operation, id_field_name, files_to_upload, force_active)
 
     def _merge_hdx_update(
         self,
@@ -406,9 +392,7 @@ class HDXObject(UserDict, ABC):
                 idstr = f" {data[id_field_name]}"
             else:
                 idstr = ""
-            raise HDXError(
-                f"Failed when trying to {action}{idstr}! (POST)"
-            ) from e
+            raise HDXError(f"Failed when trying to {action}{idstr}! (POST)") from e
         finally:
             for file in files_to_upload.values():
                 if isinstance(file, str):
@@ -436,9 +420,7 @@ class HDXObject(UserDict, ABC):
         """
         if force_active:
             self.data["state"] = "active"
-        result = self._write_to_hdx(
-            action, self.data, id_field_name, files_to_upload
-        )
+        result = self._write_to_hdx(action, self.data, id_field_name, files_to_upload)
         self.old_data = self.data
         self.data = result
 
@@ -477,9 +459,7 @@ class HDXObject(UserDict, ABC):
         if id_field_name in self.data and self._load_from_hdx(
             object_type, self.data[id_field_name]
         ):
-            logger.warning(
-                f"{object_type} exists. Updating {self.data[id_field_name]}"
-            )
+            logger.warning(f"{object_type} exists. Updating {self.data[id_field_name]}")
             self._merge_hdx_update(
                 object_type,
                 id_field_name,
@@ -488,9 +468,7 @@ class HDXObject(UserDict, ABC):
                 **kwargs,
             )
         else:
-            self._save_to_hdx(
-                "create", name_field_name, files_to_upload, force_active
-            )
+            self._save_to_hdx("create", name_field_name, files_to_upload, force_active)
 
     @abstractmethod
     def delete_from_hdx(self) -> None:
@@ -511,9 +489,7 @@ class HDXObject(UserDict, ABC):
             None
         """
         if id_field_name not in self.data:
-            raise HDXError(
-                f"No {id_field_name} field (mandatory) in {object_type}!"
-            )
+            raise HDXError(f"No {id_field_name} field (mandatory) in {object_type}!")
         self._save_to_hdx("delete", id_field_name)
 
     @classmethod
@@ -602,9 +578,7 @@ class HDXObject(UserDict, ABC):
                 return True
         return False
 
-    def _convert_hdxobjects(
-        self, hdxobjects: ListTuple["HDXObject"]
-    ) -> List[Dict]:
+    def _convert_hdxobjects(self, hdxobjects: ListTuple["HDXObject"]) -> List[Dict]:
         """Helper function to convert supplied list of HDX objects to a list of dict
 
         Args:
@@ -680,9 +654,7 @@ class HDXObject(UserDict, ABC):
             for new_hdxobject in new_hdxobjects:
                 if new_hdxobject[id_field] not in hdxobject_names:
                     hdxobjects.append(
-                        hdxobjectclass(
-                            new_hdxobject, configuration=self.configuration
-                        )
+                        hdxobjectclass(new_hdxobject, configuration=self.configuration)
                     )
             del self.data[hdxobjects_name]
 
@@ -772,9 +744,7 @@ class HDXObject(UserDict, ABC):
         self.data[field] = strings
         return True
 
-    def _add_strings_to_commastring(
-        self, field: str, strings: ListTuple[str]
-    ) -> bool:
+    def _add_strings_to_commastring(self, field: str, strings: ListTuple[str]) -> bool:
         """Add a list of strings to a comma separated list of strings
 
         Args:

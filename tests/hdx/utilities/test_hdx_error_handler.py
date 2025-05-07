@@ -39,12 +39,7 @@ class TestHDXErrorHandler:
                         err_to_hdx=True,
                     )
                     assert (
-                        len(
-                            errors.shared_errors["error"][
-                                "pipeline1 - dataset1"
-                            ]
-                        )
-                        == 3
+                        len(errors.shared_errors["error"]["pipeline1 - dataset1"]) == 3
                     )
                     assert (
                         len(

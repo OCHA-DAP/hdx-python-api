@@ -100,9 +100,7 @@ class Vocabulary(HDXObject):
         Returns:
             Optional[Vocabulary]: Vocabulary object if successful read, None if not
         """
-        return cls._read_from_hdx_class(
-            "vocabulary", identifier, configuration
-        )
+        return cls._read_from_hdx_class("vocabulary", identifier, configuration)
 
     @staticmethod
     def get_all_vocabularies(
@@ -119,19 +117,13 @@ class Vocabulary(HDXObject):
         """
 
         vocabulary = Vocabulary(configuration=configuration)
-        vocabulary["id"] = (
-            "all vocabulary names"  # only for error message if produced
-        )
+        vocabulary["id"] = "all vocabulary names"  # only for error message if produced
         vocabularies = []
         for vocabularydict in vocabulary._write_to_hdx("list", {}):
-            vocabularies.append(
-                Vocabulary(vocabularydict, configuration=configuration)
-            )
+            vocabularies.append(Vocabulary(vocabularydict, configuration=configuration))
         return vocabularies
 
-    def check_required_fields(
-        self, ignore_fields: ListTuple[str] = tuple()
-    ) -> None:
+    def check_required_fields(self, ignore_fields: ListTuple[str] = tuple()) -> None:
         """Check that metadata for vocabulary is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
@@ -157,9 +149,7 @@ class Vocabulary(HDXObject):
         Returns:
             None
         """
-        self._create_in_hdx(
-            "vocabulary", "id", "name", force_active=False, **kwargs
-        )
+        self._create_in_hdx("vocabulary", "id", "name", force_active=False, **kwargs)
 
     def delete_from_hdx(self, empty: bool = True) -> None:
         """Deletes a vocabulary from HDX. First tags are removed then vocabulary is deleted.
@@ -343,9 +333,7 @@ class Vocabulary(HDXObject):
         vocabulary.delete_from_hdx()
 
     @classmethod
-    def approved_tags(
-        cls, configuration: Optional[Configuration] = None
-    ) -> List[str]:
+    def approved_tags(cls, configuration: Optional[Configuration] = None) -> List[str]:
         """
         Return list of approved tags
 
@@ -357,9 +345,7 @@ class Vocabulary(HDXObject):
         """
         return [
             x["name"]
-            for x in cls.get_approved_vocabulary(configuration=configuration)[
-                "tags"
-            ]
+            for x in cls.get_approved_vocabulary(configuration=configuration)["tags"]
         ]
 
     @classmethod
@@ -589,9 +575,7 @@ class Vocabulary(HDXObject):
         )
         added_tags = hdxobject._add_tags(
             new_tags,
-            cls.get_approved_vocabulary(configuration=hdxobject.configuration)[
-                "id"
-            ],
+            cls.get_approved_vocabulary(configuration=hdxobject.configuration)["id"],
         )
         unadded_tags = [x for x in new_tags if x not in added_tags]
         unadded_tags.extend(deleted_tags)

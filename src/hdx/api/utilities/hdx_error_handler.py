@@ -96,9 +96,7 @@ class HDXErrorHandler(ErrorHandler):
             None
         """
         self.add(text, self.get_category(pipeline, identifier), message_type)
-        self.errors_to_hdx(
-            pipeline, identifier, text, resource_name, err_to_hdx
-        )
+        self.errors_to_hdx(pipeline, identifier, text, resource_name, err_to_hdx)
 
     def add_missing_value_message(
         self,
@@ -227,9 +225,7 @@ def write_errors_to_resource(
     error_text = ", ".join(sorted(errors))
     dataset = Dataset.read_from_hdx(dataset_name)
     try:
-        success = dataset.add_hapi_error(
-            error_text, resource_name=resource_name
-        )
+        success = dataset.add_hapi_error(error_text, resource_name=resource_name)
     except (HDXError, AttributeError):
         logger.error(f"Could not write error to {dataset_name}")
         return False

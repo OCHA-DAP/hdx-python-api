@@ -42,9 +42,7 @@ class ResourceMatcher:
         format2 = resource2["format"].lower()
 
         dupnames = {
-            item
-            for item, count in collections.Counter(names1).items()
-            if count > 1
+            item for item, count in collections.Counter(names1).items() if count > 1
         }
         for i, name1 in enumerate(names1):
             if name1 != name2:
@@ -91,14 +89,10 @@ class ResourceMatcher:
                         index1_matches.append(i)
                         index2_matches.append(j)
         dupnames1 = {
-            item
-            for item, count in collections.Counter(names1).items()
-            if count > 1
+            item for item, count in collections.Counter(names1).items() if count > 1
         }
         dupnames2 = {
-            item
-            for item, count in collections.Counter(names2).items()
-            if count > 1
+            item for item, count in collections.Counter(names2).items() if count > 1
         }
         dupnames = dupnames1.union(dupnames2)
         for i, name1 in enumerate(names1):
@@ -115,12 +109,8 @@ class ResourceMatcher:
                 if groups1[i] == groups2[j]:
                     index1_matches.append(i)
                     index2_matches.append(j)
-        index1_nomatches = [
-            i for i, _ in enumerate(ids1) if i not in index1_matches
-        ]
-        index2_nomatches = [
-            i for i, _ in enumerate(ids2) if i not in index2_matches
-        ]
+        index1_nomatches = [i for i, _ in enumerate(ids1) if i not in index1_matches]
+        index2_nomatches = [i for i, _ in enumerate(ids2) if i not in index2_matches]
         return (
             index1_matches,
             index2_matches,

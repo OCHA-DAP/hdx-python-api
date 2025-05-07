@@ -256,9 +256,7 @@ class Resource(HDXObject):
         Returns:
             str: Format that was set
         """
-        file_format = self.get_mapped_format(
-            format, configuration=self.configuration
-        )
+        file_format = self.get_mapped_format(format, configuration=self.configuration)
         if not file_format:
             raise HDXError(
                 f"Supplied file type {file_format} is invalid and could not be mapped to a known type!"
@@ -331,9 +329,7 @@ class Resource(HDXObject):
                 if "url_type" not in self.data:
                     self.data["url_type"] = "api"
             else:
-                raise HDXError(
-                    "Either a url or a file to upload must be supplied!"
-                )
+                raise HDXError("Either a url or a file to upload must be supplied!")
         else:
             if "url" in self.data:
                 if self.data["url"] != FilestoreHelper.temporary_url:
@@ -348,9 +344,7 @@ class Resource(HDXObject):
                 del self.data["tracking_summary"]
         self.clean_format()
 
-    def check_required_fields(
-        self, ignore_fields: ListTuple[str] = tuple()
-    ) -> None:
+    def check_required_fields(self, ignore_fields: ListTuple[str] = tuple()) -> None:
         """Check that metadata for resource is complete. The parameter ignore_fields
         should be set if required to any fields that should be ignored for the
         particular operation.
@@ -397,9 +391,7 @@ class Resource(HDXObject):
             )
             self.data_updated = False
             # old_data will be merged into data in the next step
-        self._merge_hdx_update(
-            "resource", "id", self._get_files(), True, **kwargs
-        )
+        self._merge_hdx_update("resource", "id", self._get_files(), True, **kwargs)
 
     def update_in_hdx(self, **kwargs: Any) -> None:
         """Check if resource exists in HDX and if so, update it. To indicate
@@ -498,9 +490,7 @@ class Resource(HDXObject):
             count = result.get("count", None)
             if count:
                 for resourcedict in result["results"]:
-                    resource = Resource(
-                        resourcedict, configuration=configuration
-                    )
+                    resource = Resource(resourcedict, configuration=configuration)
                     resources.append(resource)
         else:
             logger.debug(result)
@@ -536,9 +526,7 @@ class Resource(HDXObject):
             use_env=False,
             headers=headers,
         ) as downloader:
-            path = downloader.download_file(
-                url, folder=folder, filename=filename
-            )
+            path = downloader.download_file(url, folder=folder, filename=filename)
             return url, path
 
     @staticmethod
@@ -684,9 +672,7 @@ class Resource(HDXObject):
             else:
                 resource_view_id = resource_view["id"]
             if is_valid_uuid(resource_view_id) is False:
-                raise HDXError(
-                    f"{resource_view} is not a valid resource view id!"
-                )
+                raise HDXError(f"{resource_view} is not a valid resource view id!")
             ids.append(resource_view_id)
         _, result = self._read_from_hdx(
             "resource view",
@@ -709,9 +695,7 @@ class Resource(HDXObject):
         """
         if isinstance(resource_view, str):
             if is_valid_uuid(resource_view) is False:
-                raise HDXError(
-                    f"{resource_view} is not a valid resource view id!"
-                )
+                raise HDXError(f"{resource_view} is not a valid resource view id!")
             resource_view = ResourceView(
                 {"id": resource_view}, configuration=self.configuration
             )
@@ -795,9 +779,7 @@ class Resource(HDXObject):
         Returns:
             datetime: Date resource data was updated
         """
-        return parse_date(
-            self.data["last_modified"], include_microseconds=True
-        )
+        return parse_date(self.data["last_modified"], include_microseconds=True)
 
     def set_date_data_updated(
         self, date: Union[datetime, str], ignore_timeinfo: bool = False
