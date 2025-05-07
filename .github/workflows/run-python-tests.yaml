@@ -13,6 +13,10 @@ on:
     branches-ignore:
       - gh-pages
 
+concurrency:
+  group: ${{ github.head_ref || github.ref_name }}
+
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,6 +37,9 @@ jobs:
     - name: Install Hatch
       uses: pypa/hatch@install
     - name: Test with hatch/pytest
+      env:
+        HDX_KEY_TEST: ${{ secrets.HDX_BOT_SCRAPERS_API_TOKEN }}
+        GSHEET_AUTH: ${{ secrets.HDX_PIPELINE_GSHEET_AUTH }}
       run: |
         hatch test
     - name: Check styling
