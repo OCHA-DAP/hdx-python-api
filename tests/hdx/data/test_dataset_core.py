@@ -33,9 +33,7 @@ from hdx.data.resource_view import ResourceView
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
 
-searchdict = load_yaml(
-    join("tests", "fixtures", "dataset_search_results.yaml")
-)
+searchdict = load_yaml(join("tests", "fixtures", "dataset_search_results.yaml"))
 dataset_list = [
     "acled-conflict-data-for-libya",
     "acled-conflict-data-for-liberia",
@@ -143,9 +141,7 @@ def mockall(url, datadict):
         if datadict["start"] == 2:
             newsearchdict["results"] = newsearchdict["results"][2:9]
         else:
-            newsearchdict["results"] = newsearchdict["results"][
-                4:5
-            ]  # repeated dataset
+            newsearchdict["results"] = newsearchdict["results"][4:5]  # repeated dataset
     elif datadict["rows"] == 5:
         newsearchdict["count"] = 6
         if datadict["sort"] == "metadata_modified desc":
@@ -218,8 +214,7 @@ class TestDatasetCore:
             def post(url, data, headers, files, allow_redirects, auth=None):
                 if isinstance(data, dict):
                     datadict = {
-                        k.decode("utf8"): v.decode("utf8")
-                        for k, v in data.items()
+                        k.decode("utf8"): v.decode("utf8") for k, v in data.items()
                     }
                 else:
                     datadict = json.loads(data.decode("utf-8"))
@@ -247,8 +242,7 @@ class TestDatasetCore:
             def post(url, data, headers, files, allow_redirects, auth=None):
                 if isinstance(data, dict):
                     datadict = {
-                        k.decode("utf8"): v.decode("utf8")
-                        for k, v in data.items()
+                        k.decode("utf8"): v.decode("utf8") for k, v in data.items()
                     }
                 else:
                     datadict = json.loads(data.decode("utf-8"))
@@ -321,8 +315,7 @@ class TestDatasetCore:
             def post(url, data, headers, files, allow_redirects, auth=None):
                 if isinstance(data, dict):
                     datadict = {
-                        k.decode("utf8"): v.decode("utf8")
-                        for k, v in data.items()
+                        k.decode("utf8"): v.decode("utf8") for k, v in data.items()
                     }
                 else:
                     datadict = json.loads(data.decode("utf-8"))
@@ -371,14 +364,12 @@ class TestDatasetCore:
                         resultdictcopy = copy.deepcopy(dataset_resultdict)
                         for i, resource in enumerate(datadict["resources"]):
                             if not resource:
-                                datadict["resources"][i] = resultdictcopy[
-                                    "resources"
-                                ][i]
+                                datadict["resources"][i] = resultdictcopy["resources"][
+                                    i
+                                ]
 
                         merge_two_dictionaries(resultdictcopy, datadict)
-                        for i, resource in enumerate(
-                            resultdictcopy["resources"]
-                        ):
+                        for i, resource in enumerate(resultdictcopy["resources"]):
                             resource["package_id"] = resultdictcopy["id"]
                         resultdictcopy = {"package": resultdictcopy}
                         result = json.dumps(resultdictcopy)

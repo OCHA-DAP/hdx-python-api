@@ -15,18 +15,13 @@ class TestHDXLocations:
         Country.countriesdata(use_live=False)
         validlocations = [{"name": "shn", "title": "St. Helena"}]
         assert (
-            Locations.get_HDX_code_from_location(
-                "sh", locations=validlocations
-            )
-            is None
+            Locations.get_HDX_code_from_location("sh", locations=validlocations) is None
         )
         assert Locations.get_HDX_code_from_location_partial(
             "sh", locations=validlocations
         ) == (None, False)
         assert (
-            Locations.get_location_from_HDX_code(
-                "shn", locations=validlocations
-            )
+            Locations.get_location_from_HDX_code("shn", locations=validlocations)
             == "St. Helena"
         )
         validlocations = [
@@ -59,25 +54,18 @@ class TestHDXLocations:
             False,
         )
         assert (
-            Locations.get_location_from_HDX_code(
-                "zmb", locations=validlocations
-            )
+            Locations.get_location_from_HDX_code("zmb", locations=validlocations)
             == "Zambia"
         )
         validlocations = [{"name": "shn", "title": "St. Helena"}]
         assert (
-            Locations.get_HDX_code_from_location(
-                "sh", locations=validlocations
-            )
-            is None
+            Locations.get_HDX_code_from_location("sh", locations=validlocations) is None
         )
         assert Locations.get_HDX_code_from_location_partial(
             "sh", locations=validlocations
         ) == (None, False)
         assert (
-            Locations.get_location_from_HDX_code(
-                "shn", locations=validlocations
-            )
+            Locations.get_location_from_HDX_code("shn", locations=validlocations)
             == "St. Helena"
         )
         Configuration.setup(MyConfiguration())

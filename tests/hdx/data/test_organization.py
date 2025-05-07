@@ -15,9 +15,7 @@ from hdx.data.user import User
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
 
-resultdict = load_yaml(
-    join("tests", "fixtures", "organization_show_results.yaml")
-)
+resultdict = load_yaml(join("tests", "fixtures", "organization_show_results.yaml"))
 
 organization_list = [
     "acaps",
@@ -31,9 +29,7 @@ organization_list = [
     "afdb",
     "afghanistan-protection-cluster",
 ]
-searchdict = load_yaml(
-    join("tests", "fixtures", "dataset_search_results.yaml")
-)
+searchdict = load_yaml(join("tests", "fixtures", "dataset_search_results.yaml"))
 
 organization_autocomplete = [
     {
@@ -106,15 +102,11 @@ def mockgetdatasets(url, datadict):
 class TestOrganization:
     @pytest.fixture(scope="class")
     def static_yaml(self):
-        return join(
-            "tests", "fixtures", "config", "hdx_organization_static.yaml"
-        )
+        return join("tests", "fixtures", "config", "hdx_organization_static.yaml")
 
     @pytest.fixture(scope="class")
     def static_json(self):
-        return join(
-            "tests", "fixtures", "config", "hdx_organization_static.json"
-        )
+        return join("tests", "fixtures", "config", "hdx_organization_static.json")
 
     @pytest.fixture(scope="function")
     def read(self):

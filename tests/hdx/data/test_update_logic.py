@@ -103,9 +103,7 @@ class TestUpdateLogic:
             dataset.add_update_resource(resource)
 
     @staticmethod
-    def add_new_dataset_resources(
-        new_dataset, yaml_path, include=None, exclude=None
-    ):
+    def add_new_dataset_resources(new_dataset, yaml_path, include=None, exclude=None):
         resources_uploads = load_yaml(yaml_path)
         if include is None:
             include = range(len(resources_uploads))
@@ -154,9 +152,7 @@ class TestUpdateLogic:
         new_resources_yaml,
         resources_yaml,
     ):
-        self.add_new_dataset_resources(
-            new_dataset, new_resources_yaml, exclude=[13]
-        )
+        self.add_new_dataset_resources(new_dataset, new_resources_yaml, exclude=[13])
         self.add_dataset_resources(dataset, resources_yaml)
         dataset.old_data = new_dataset.data
         dataset.old_data["resources"] = new_dataset.resources
@@ -632,9 +628,7 @@ class TestUpdateLogic:
         new_resources_yaml,
         resources_yaml,
     ):
-        self.add_new_dataset_resources(
-            new_dataset, new_resources_yaml, exclude=[52]
-        )
+        self.add_new_dataset_resources(new_dataset, new_resources_yaml, exclude=[52])
         self.add_dataset_resources(dataset, resources_yaml)
         dataset.old_data = new_dataset.data
         dataset.old_data["resources"] = new_dataset.resources
@@ -1110,9 +1104,7 @@ class TestUpdateLogic:
         new_resources_yaml,
         resources_yaml,
     ):
-        self.add_new_dataset_resources(
-            new_dataset, new_resources_yaml, include=[0, 3]
-        )
+        self.add_new_dataset_resources(new_dataset, new_resources_yaml, include=[0, 3])
         self.add_dataset_resources(dataset, resources_yaml, include=[0, 1, 2])
         dataset.old_data = new_dataset.data
         dataset.old_data["resources"] = new_dataset.resources

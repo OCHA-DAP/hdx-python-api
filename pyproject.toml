@@ -37,8 +37,8 @@ dependencies = [
     "ckanapi>=4.8",
     "defopt>=6.4.0",
     "email_validator",
-    "hdx-python-country>=3.8.8",
-    "hdx-python-utilities>=3.8.3",
+    "hdx-python-country>=3.9.2",
+    "hdx-python-utilities>=3.8.6",
     "libhxl>=5.2.2",
     "makefun",
     "quantulum3",
@@ -56,52 +56,4 @@ Homepage = "https://github.com/OCHA-DAP/hdx-python-api"
 [project.optional-dependencies]
 test = ["pytest", "pytest-check", "pytest-cov", "gspread"]
 dev = ["pre-commit"]
-
-
-#########
-# Hatch #
-#########
-
-# Build
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/hdx"]
-
-[tool.hatch.build.hooks.vcs]
-version-file = "src/hdx/api/_version.py"
-
-[tool.hatch.metadata]
-allow-direct-references = true
-
-# Versioning
-
-[tool.hatch.version]
-source = "vcs"
-
-[tool.hatch.version.raw-options]
-local_scheme = "no-local-version"
-version_scheme = "python-simplified-semver"
-
-# Tests
-
-[tool.hatch.envs.hatch-test]
-features = ["test"]
-
-[[tool.hatch.envs.hatch-test.matrix]]
-python = ["3.12"]
-
-[tool.hatch.envs.hatch-test.scripts]
-run = """
-       pytest -c .config/pytest.ini --rootdir=. --junitxml=test-results.xml \
-       --cov --cov-config=.config/coveragerc --no-cov-on-fail \
-       --cov-report=lcov --cov-report=term-missing
-       """
-
-[tool.hatch.envs.hatch-static-analysis]
-dependencies = ["ruff==0.9.6"]
-
-[tool.hatch.envs.hatch-static-analysis.scripts]
-format-check = ["ruff format --config .config/ruff.toml --check --diff {args:.}",]
-format-fix = ["ruff format --config .config/ruff.toml {args:.}",]
-lint-check = ["ruff check --config .config/ruff.toml {args:.}",]
-lint-fix = ["ruff check --config .config/ruff.toml --fix {args:.}",]
+docs = ["mkapi"]

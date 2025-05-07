@@ -115,9 +115,7 @@ class Locations:
         Returns:
             Tuple[Optional[str], bool]: HDX code and if the match is exact or (None, False) for no match
         """
-        hdx_code = cls.get_HDX_code_from_location(
-            location, locations, configuration
-        )
+        hdx_code = cls.get_HDX_code_from_location(location, locations, configuration)
 
         if hdx_code is not None:
             return hdx_code, True

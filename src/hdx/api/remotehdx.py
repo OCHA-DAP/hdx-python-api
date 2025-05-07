@@ -43,9 +43,7 @@ class RemoteHDX(RemoteCKAN):
         return r.status_code, r.text
 
     def _request_fn_get(self, url, data_dict, headers, requests_kwargs):
-        r = self.session.get(
-            url, params=data_dict, headers=headers, **requests_kwargs
-        )
+        r = self.session.get(url, params=data_dict, headers=headers, **requests_kwargs)
         if r.status_code == 429:
             retryafter = r.headers.get("Retry-After")
             if retryafter:

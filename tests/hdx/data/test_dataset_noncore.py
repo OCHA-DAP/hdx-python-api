@@ -44,9 +44,7 @@ class TestDatasetNoncore:
 
     @pytest.fixture(scope="class")
     def static_resource_view_yaml(self):
-        return join(
-            "tests", "fixtures", "config", "hdx_resource_view_static.yaml"
-        )
+        return join("tests", "fixtures", "config", "hdx_resource_view_static.yaml")
 
     @pytest.fixture(scope="function")
     def vocabulary_read(self):
@@ -119,8 +117,7 @@ class TestDatasetNoncore:
             def post(url, data, headers, files, allow_redirects, auth=None):
                 if isinstance(data, dict):
                     datadict = {
-                        k.decode("utf8"): v.decode("utf8")
-                        for k, v in data.items()
+                        k.decode("utf8"): v.decode("utf8") for k, v in data.items()
                     }
                 else:
                     datadict = json.loads(data.decode("utf-8"))
@@ -146,9 +143,7 @@ class TestDatasetNoncore:
 
         Configuration.read().remoteckan().session = MockSession()
 
-    def test_get_name_or_id(
-        self, configuration, hdx_config_yaml, project_config_yaml
-    ):
+    def test_get_name_or_id(self, configuration, hdx_config_yaml, project_config_yaml):
         dataset = Dataset()
         assert dataset.get_name_or_id() is None
         datasetdata = copy.deepcopy(dataset_resultdict)
@@ -159,9 +154,7 @@ class TestDatasetNoncore:
             == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
         )
         del dataset["name"]
-        assert (
-            dataset.get_name_or_id() == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
-        )
+        assert dataset.get_name_or_id() == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
         assert (
             dataset.get_name_or_id(prefer_name=False)
             == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
@@ -172,17 +165,12 @@ class TestDatasetNoncore:
         assert dataset.get_name_or_id() == "MyDataset1"
         assert dataset.get_name_or_id(prefer_name=False) == "MyDataset1"
 
-    def test_get_hdx_url(
-        self, configuration, hdx_config_yaml, project_config_yaml
-    ):
+    def test_get_hdx_url(self, configuration, hdx_config_yaml, project_config_yaml):
         dataset = Dataset()
         assert dataset.get_hdx_url() is None
         datasetdata = copy.deepcopy(dataset_data)
         dataset = Dataset(datasetdata)
-        assert (
-            dataset.get_hdx_url()
-            == "https://data.humdata.org/dataset/MyDataset1"
-        )
+        assert dataset.get_hdx_url() == "https://data.humdata.org/dataset/MyDataset1"
         Configuration.delete()
         Configuration._create(
             hdx_site="feature",
@@ -196,9 +184,7 @@ class TestDatasetNoncore:
             == "https://feature.data-humdata-org.ahconu.org/dataset/MyDataset1"
         )
 
-    def test_get_api_url(
-        self, configuration, hdx_config_yaml, project_config_yaml
-    ):
+    def test_get_api_url(self, configuration, hdx_config_yaml, project_config_yaml):
         dataset = Dataset()
         assert dataset.get_api_url() is None
         datasetdata = copy.deepcopy(dataset_data)
@@ -249,9 +235,7 @@ class TestDatasetNoncore:
             "ongoing": False,
         }
         dataset.set_time_period("2020-02-09", ongoing=True)
-        result = dataset.get_time_period(
-            "%d/%m/%Y", today=datetime(2020, 3, 9, 0, 0)
-        )
+        result = dataset.get_time_period("%d/%m/%Y", today=datetime(2020, 3, 9, 0, 0))
         assert result == {
             "startdate": datetime(2020, 2, 9, 0, 0, tzinfo=timezone.utc),
             "enddate": datetime(2020, 3, 9, 23, 59, 59, tzinfo=timezone.utc),
@@ -696,10 +680,7 @@ class TestDatasetNoncore:
         dataset.remove_showcase(showcases[0])
         assert TestDatasetNoncore.association == "delete"
         TestDatasetNoncore.association = None
-        assert (
-            dataset.add_showcase("15e392bf-04e0-4ca6-848c-4e87bba10745")
-            is True
-        )
+        assert dataset.add_showcase("15e392bf-04e0-4ca6-848c-4e87bba10745") is True
         assert TestDatasetNoncore.association == "create"
         TestDatasetNoncore.association = None
         dataset.add_showcases([{"id": "15e392bf-04e0-4ca6-848c-4e87bba10745"}])
@@ -731,9 +712,9 @@ class TestDatasetNoncore:
         dataset = Dataset(datasetdata)
         assert "dataset_preview" not in dataset
         assert (
-            dataset.set_quickchart_resource(
-                "3d777226-96aa-4239-860a-703389d16d1f"
-            )["id"]
+            dataset.set_quickchart_resource("3d777226-96aa-4239-860a-703389d16d1f")[
+                "id"
+            ]
             == "3d777226-96aa-4239-860a-703389d16d1f"
         )
         assert dataset["dataset_preview"] == "resource_id"
@@ -800,9 +781,7 @@ class TestDatasetNoncore:
         datasetdata["resources"] = resourcesdata
         dataset = Dataset(datasetdata)
         assert "dataset_preview" not in dataset
-        resourceview = dataset.generate_quickcharts(
-            path=static_resource_view_yaml
-        )
+        resourceview = dataset.generate_quickcharts(path=static_resource_view_yaml)
         hxl_preview_config = json.loads(resourceview["hxl_preview_config"])
         assert resourceview["id"] == "c06b5a0d-1d41-4a74-a196-41c251c76023"
         assert hxl_preview_config["bites"][0]["title"] == "Sum of fatalities"
@@ -853,9 +832,9 @@ class TestDatasetNoncore:
         hxl_preview_config = json.loads(resourceview["hxl_preview_config"])
         assert resourceview["id"] == "c06b5a0d-1d41-4a74-a196-41c251c76023"
         assert (
-            hxl_preview_config["bites"][0]["ingredient"]["filters"][
-                "filterWith"
-            ][0]["#indicator+code"]
+            hxl_preview_config["bites"][0]["ingredient"]["filters"]["filterWith"][0][
+                "#indicator+code"
+            ]
             == "1"
         )
         assert (
@@ -864,49 +843,34 @@ class TestDatasetNoncore:
         )
         assert hxl_preview_config["bites"][0]["uiProperties"]["title"] == "My1"
         assert (
-            hxl_preview_config["bites"][0]["computedProperties"]["dataTitle"]
-            == "ones"
+            hxl_preview_config["bites"][0]["computedProperties"]["dataTitle"] == "ones"
         )
         assert (
-            hxl_preview_config["bites"][1]["ingredient"]["filters"][
-                "filterWith"
-            ][0]["#indicator+code"]
+            hxl_preview_config["bites"][1]["ingredient"]["filters"]["filterWith"][0][
+                "#indicator+code"
+            ]
             == "2"
         )
-        assert (
-            hxl_preview_config["bites"][1]["ingredient"]["description"] == ""
-        )
+        assert hxl_preview_config["bites"][1]["ingredient"]["description"] == ""
         assert hxl_preview_config["bites"][1]["uiProperties"]["title"] == "My2"
         assert (
-            hxl_preview_config["bites"][1]["computedProperties"]["dataTitle"]
-            == "twos"
+            hxl_preview_config["bites"][1]["computedProperties"]["dataTitle"] == "twos"
         )
+        assert hxl_preview_config["bites"][1]["ingredient"]["aggregateColumn"] == "Agg2"
         assert (
-            hxl_preview_config["bites"][1]["ingredient"]["aggregateColumn"]
-            == "Agg2"
-        )
-        assert (
-            hxl_preview_config["bites"][2]["ingredient"]["filters"][
-                "filterWith"
-            ][0]["#indicator+code"]
+            hxl_preview_config["bites"][2]["ingredient"]["filters"]["filterWith"][0][
+                "#indicator+code"
+            ]
             == "3"
         )
         assert (
             hxl_preview_config["bites"][2]["ingredient"]["description"]
             == "This is my three!"
         )
-        assert (
-            hxl_preview_config["bites"][2]["ingredient"]["dateColumn"] == "dt3"
-        )
+        assert hxl_preview_config["bites"][2]["ingredient"]["dateColumn"] == "dt3"
         assert hxl_preview_config["bites"][2]["uiProperties"]["title"] == "My3"
-        assert (
-            hxl_preview_config["bites"][2]["computedProperties"]["dataTitle"]
-            == ""
-        )
-        assert (
-            hxl_preview_config["bites"][2]["uiProperties"]["dateFormat"]
-            == "%b %Y"
-        )
+        assert hxl_preview_config["bites"][2]["computedProperties"]["dataTitle"] == ""
+        assert hxl_preview_config["bites"][2]["uiProperties"]["dateFormat"] == "%b %Y"
         resourceview = dataset.generate_quickcharts(
             indicators=indicators,
             findreplace={
@@ -917,29 +881,20 @@ class TestDatasetNoncore:
         hxl_preview_config = json.loads(resourceview["hxl_preview_config"])
         assert resourceview["id"] == "c06b5a0d-1d41-4a74-a196-41c251c76023"
         assert (
-            hxl_preview_config["bites"][0]["ingredient"]["filters"][
-                "filterWith"
-            ][0]["#item+code"]
+            hxl_preview_config["bites"][0]["ingredient"]["filters"]["filterWith"][0][
+                "#item+code"
+            ]
             == "1"
         )
-        assert (
-            hxl_preview_config["bites"][0]["ingredient"]["valueColumn"]
-            == "#value"
-        )
+        assert hxl_preview_config["bites"][0]["ingredient"]["valueColumn"] == "#value"
         assert dataset.generate_quickcharts(indicators=[]) is None
+        assert dataset.generate_quickcharts(indicators=[None, None, None]) is None
         assert (
-            dataset.generate_quickcharts(indicators=[None, None, None]) is None
-        )
-        assert (
-            dataset.generate_quickcharts(
-                resource="123", path=static_resource_view_yaml
-            )
+            dataset.generate_quickcharts(resource="123", path=static_resource_view_yaml)
             is None
         )
         del dataset.get_resources()[0]["id"]
-        resourceview = dataset.generate_quickcharts(
-            path=static_resource_view_yaml
-        )
+        resourceview = dataset.generate_quickcharts(path=static_resource_view_yaml)
         assert "id" not in resourceview
         assert "resource_id" not in resourceview
         assert resourceview["resource_name"] == "Resource1"
@@ -977,14 +932,9 @@ class TestDatasetNoncore:
         assert dataset["title"] == newtitle
         assert "dataset_date" not in dataset
         dataset["title"] = title
-        assert (
-            dataset.remove_dates_from_title(set_time_period=True) == expected
-        )
+        assert dataset.remove_dates_from_title(set_time_period=True) == expected
         assert dataset["title"] == newtitle
-        assert (
-            dataset["dataset_date"]
-            == "[1981-01-01T00:00:00 TO 2015-12-31T23:59:59]"
-        )
+        assert dataset["dataset_date"] == "[1981-01-01T00:00:00 TO 2015-12-31T23:59:59]"
         assert dataset.remove_dates_from_title() == []
         dataset["title"] = "Mon_State_Village_Tract_Boundaries 9999 2001"
         expected = [
@@ -993,32 +943,17 @@ class TestDatasetNoncore:
                 datetime(2001, 12, 31, 23, 59, 59, tzinfo=timezone.utc),
             )
         ]
-        assert (
-            dataset.remove_dates_from_title(set_time_period=True) == expected
-        )
+        assert dataset.remove_dates_from_title(set_time_period=True) == expected
         assert dataset["title"] == "Mon_State_Village_Tract_Boundaries 9999"
-        assert (
-            dataset["dataset_date"]
-            == "[2001-01-01T00:00:00 TO 2001-12-31T23:59:59]"
-        )
+        assert dataset["dataset_date"] == "[2001-01-01T00:00:00 TO 2001-12-31T23:59:59]"
         dataset["title"] = "Mon_State_Village_Tract_Boundaries 2001 99"
-        assert (
-            dataset.remove_dates_from_title(set_time_period=True) == expected
-        )
+        assert dataset.remove_dates_from_title(set_time_period=True) == expected
         assert dataset["title"] == "Mon_State_Village_Tract_Boundaries 99"
-        assert (
-            dataset["dataset_date"]
-            == "[2001-01-01T00:00:00 TO 2001-12-31T23:59:59]"
-        )
+        assert dataset["dataset_date"] == "[2001-01-01T00:00:00 TO 2001-12-31T23:59:59]"
         dataset["title"] = "Mon_State_Village_Tract_Boundaries 9999 2001 99"
-        assert (
-            dataset.remove_dates_from_title(set_time_period=True) == expected
-        )
+        assert dataset.remove_dates_from_title(set_time_period=True) == expected
         assert dataset["title"] == "Mon_State_Village_Tract_Boundaries 9999 99"
-        assert (
-            dataset["dataset_date"]
-            == "[2001-01-01T00:00:00 TO 2001-12-31T23:59:59]"
-        )
+        assert dataset["dataset_date"] == "[2001-01-01T00:00:00 TO 2001-12-31T23:59:59]"
 
     def test_load_save_to_json(self, vocabulary_read):
         with temp_dir(
@@ -1027,9 +962,7 @@ class TestDatasetNoncore:
             delete_on_failure=False,
         ) as temp_folder:
             name = "mydatasetname"
-            dataset = Dataset(
-                {"name": name, "title": "title", "notes": "description"}
-            )
+            dataset = Dataset({"name": name, "title": "title", "notes": "description"})
             maintainer = "196196be-6037-4488-8b71-d786adf4c081"
             dataset.set_maintainer(maintainer)
             dataset.set_organization("fb7c2910-6080-4b66-8b4f-0be9b6dc4d8e")
@@ -1057,10 +990,7 @@ class TestDatasetNoncore:
             dateinfo = dataset.get_time_period()
             assert dateinfo["startdate_str"][:10] == start_date
             assert dateinfo["enddate_str"][:10] == end_date
-            assert (
-                dataset.get_expected_update_frequency()
-                == expected_update_frequency
-            )
+            assert dataset.get_expected_update_frequency() == expected_update_frequency
             assert dataset.get_tags() == tags
             resource = dataset.get_resource()
             assert resource["name"] == resource_name

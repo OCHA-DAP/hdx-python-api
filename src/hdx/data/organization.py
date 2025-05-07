@@ -88,13 +88,9 @@ class Organization(HDXObject):
         Returns:
             Optional[Organization]: Organization object if successful read, None if not
         """
-        return cls._read_from_hdx_class(
-            "organization", identifier, configuration
-        )
+        return cls._read_from_hdx_class("organization", identifier, configuration)
 
-    def check_required_fields(
-        self, ignore_fields: ListTuple[str] = tuple()
-    ) -> None:
+    def check_required_fields(self, ignore_fields: ListTuple[str] = tuple()) -> None:
         """Check that metadata for organization is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
@@ -186,9 +182,7 @@ class Organization(HDXObject):
                 user["capacity"] = capacity
             self._addupdate_hdxobject(users, "name", user)
             return
-        raise HDXError(
-            f"Type {type(user).__name__} cannot be added as a user!"
-        )
+        raise HDXError(f"Type {type(user).__name__} cannot be added as a user!")
 
     def add_update_users(
         self,
@@ -220,9 +214,7 @@ class Organization(HDXObject):
         """
         return self._remove_hdxobject(self.data.get("users"), user)
 
-    def get_datasets(
-        self, query: str = "*:*", **kwargs: Any
-    ) -> List["Dataset"]:  # noqa: F821
+    def get_datasets(self, query: str = "*:*", **kwargs: Any) -> List["Dataset"]:  # noqa: F821
         """Get list of datasets in organization
 
         Args:

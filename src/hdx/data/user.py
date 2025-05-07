@@ -88,9 +88,7 @@ class User(HDXObject):
         """
         return cls._read_from_hdx_class("user", identifier, configuration)
 
-    def check_required_fields(
-        self, ignore_fields: ListTuple[str] = tuple()
-    ) -> None:
+    def check_required_fields(self, ignore_fields: ListTuple[str] = tuple()) -> None:
         """Check that metadata for user is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
@@ -269,9 +267,7 @@ class User(HDXObject):
             return result
         return []
 
-    def get_organizations(
-        self, permission: str = "read"
-    ) -> List["Organization"]:  # noqa: F821
+    def get_organizations(self, permission: str = "read") -> List["Organization"]:  # noqa: F821
         """Get organizations in HDX that this user is a member of.
 
         Args:
@@ -301,9 +297,7 @@ class User(HDXObject):
         Returns:
             bool: True if the logged in user is a member of the organization.
         """
-        for organization_dict in self.get_organization_dicts(
-            permission=permission
-        ):
+        for organization_dict in self.get_organization_dicts(permission=permission):
             if organization_dict["id"] == organization:
                 return True
             if organization_dict["name"] == organization:
@@ -348,9 +342,7 @@ class User(HDXObject):
         Returns:
             List[Organization]: List of organizations in HDX that logged in user is a member of
         """
-        result = cls.get_current_user_organization_dicts(
-            permission, configuration
-        )
+        result = cls.get_current_user_organization_dicts(permission, configuration)
         organizations = []
         for organizationdict in result:
             org = hdx.data.organization.Organization.read_from_hdx(

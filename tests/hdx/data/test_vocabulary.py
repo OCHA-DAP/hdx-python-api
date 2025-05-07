@@ -1138,15 +1138,11 @@ class TestVocabulary:
 
     @pytest.fixture(scope="class")
     def static_yaml(self):
-        return join(
-            "tests", "fixtures", "config", "hdx_vocabulary_static.yaml"
-        )
+        return join("tests", "fixtures", "config", "hdx_vocabulary_static.yaml")
 
     @pytest.fixture(scope="class")
     def static_json(self):
-        return join(
-            "tests", "fixtures", "config", "hdx_vocabulary_static.json"
-        )
+        return join("tests", "fixtures", "config", "hdx_vocabulary_static.json")
 
     @pytest.fixture(scope="function")
     def read(self):
@@ -1310,9 +1306,7 @@ class TestVocabulary:
         ]
 
     def test_read_from_hdx(self, configuration, read):
-        vocabulary = Vocabulary.read_from_hdx(
-            "1731e7fc-ff62-4551-8a70-2a5878e1142b"
-        )
+        vocabulary = Vocabulary.read_from_hdx("1731e7fc-ff62-4551-8a70-2a5878e1142b")
         assert vocabulary["id"] == "1731e7fc-ff62-4551-8a70-2a5878e1142b"
         assert vocabulary["name"] == "miketest"
         vocabulary = Vocabulary.read_from_hdx("TEST2")
@@ -1355,9 +1349,7 @@ class TestVocabulary:
         with pytest.raises(HDXError):
             vocabulary.update_in_hdx()
 
-        vocabulary = Vocabulary.read_from_hdx(
-            "1731e7fc-ff62-4551-8a70-2a5878e1142b"
-        )
+        vocabulary = Vocabulary.read_from_hdx("1731e7fc-ff62-4551-8a70-2a5878e1142b")
         assert vocabulary["id"] == "1731e7fc-ff62-4551-8a70-2a5878e1142b"
         assert vocabulary["name"] == "miketest"
 
@@ -1393,15 +1385,11 @@ class TestVocabulary:
         assert "state" not in vocabulary
 
     def test_delete_from_hdx(self, configuration, post_delete):
-        vocabulary = Vocabulary.read_from_hdx(
-            "1731e7fc-ff62-4551-8a70-2a5878e1142b"
-        )
+        vocabulary = Vocabulary.read_from_hdx("1731e7fc-ff62-4551-8a70-2a5878e1142b")
         with pytest.raises(HDXError):
             vocabulary.delete_from_hdx(empty=False)
         vocabulary.delete_from_hdx()
-        vocabulary = Vocabulary.read_from_hdx(
-            "1731e7fc-ff62-4551-8a70-2a5878e1142b"
-        )
+        vocabulary = Vocabulary.read_from_hdx("1731e7fc-ff62-4551-8a70-2a5878e1142b")
         del vocabulary["id"]
         with pytest.raises(HDXError):
             vocabulary.delete_from_hdx()
@@ -1460,29 +1448,20 @@ class TestVocabulary:
         Vocabulary._approved_vocabulary = None
         vocabulary = Vocabulary.get_approved_vocabulary()
         assert vocabulary["name"] == "Topics"
-        assert (
-            vocabulary["tags"][0]["name"]
-            == "administrative boundaries-divisions"
-        )
+        assert vocabulary["tags"][0]["name"] == "administrative boundaries-divisions"
         Vocabulary._approved_vocabulary = None
 
     def test_create_approved_vocabulary(self, configuration, post_create):
         vocabulary = Vocabulary.create_approved_vocabulary()
         assert vocabulary["name"] == "Topics"
-        assert (
-            vocabulary["tags"][0]["name"]
-            == "administrative boundaries-divisions"
-        )
+        assert vocabulary["tags"][0]["name"] == "administrative boundaries-divisions"
         Vocabulary._approved_vocabulary = None
 
     def test_update_approved_vocabulary(self, configuration, post_update):
         Vocabulary._approved_vocabulary = None
         vocabulary = Vocabulary.update_approved_vocabulary()
         assert vocabulary["name"] == "Topics"
-        assert (
-            vocabulary["tags"][0]["name"]
-            == "administrative boundaries-divisions"
-        )
+        assert vocabulary["tags"][0]["name"] == "administrative boundaries-divisions"
         vocabulary["tags"] = [
             {
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
@@ -1493,10 +1472,7 @@ class TestVocabulary:
         ]
         vocabulary = Vocabulary.update_approved_vocabulary(replace=False)
         assert vocabulary["tags"][0]["name"] == "blah"
-        assert (
-            vocabulary["tags"][1]["name"]
-            == "administrative boundaries-divisions"
-        )
+        assert vocabulary["tags"][1]["name"] == "administrative boundaries-divisions"
         Vocabulary._approved_vocabulary = None
 
     def test_tag_mappings(self, configuration, read):

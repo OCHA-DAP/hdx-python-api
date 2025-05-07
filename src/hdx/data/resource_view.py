@@ -84,9 +84,7 @@ class ResourceView(HDXObject):
         Returns:
             Optional[ResourceView]: ResourceView object if successful read, None if not
         """
-        return cls._read_from_hdx_class(
-            "resource view", identifier, configuration
-        )
+        return cls._read_from_hdx_class("resource view", identifier, configuration)
 
     @staticmethod
     def get_all_for_resource(
@@ -115,9 +113,7 @@ class ResourceView(HDXObject):
                 resourceviews.append(resourceview)
         return resourceviews
 
-    def check_required_fields(
-        self, ignore_fields: ListTuple[str] = tuple()
-    ) -> None:
+    def check_required_fields(self, ignore_fields: ListTuple[str] = tuple()) -> None:
         """Check that metadata for resource view is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
@@ -136,15 +132,11 @@ class ResourceView(HDXObject):
             bool: True if updated and False if not
         """
         update = False
-        if "id" in self.data and self._load_from_hdx(
-            "resource view", self.data["id"]
-        ):
+        if "id" in self.data and self._load_from_hdx("resource view", self.data["id"]):
             update = True
         else:
             if "resource_id" in self.data:
-                resource_views = self.get_all_for_resource(
-                    self.data["resource_id"]
-                )
+                resource_views = self.get_all_for_resource(self.data["resource_id"])
                 for resource_view in resource_views:
                     if self.data["title"] == resource_view["title"]:
                         self.old_data = self.data
@@ -153,9 +145,7 @@ class ResourceView(HDXObject):
                         break
         if update:
             if log:
-                logger.warning(
-                    f"resource view exists. Updating {self.data['id']}"
-                )
+                logger.warning(f"resource view exists. Updating {self.data['id']}")
             self._merge_hdx_update("resource view", "id", **kwargs)
         return update
 
@@ -198,9 +188,7 @@ class ResourceView(HDXObject):
         """
         if isinstance(resource_view, str):
             if is_valid_uuid(resource_view) is False:
-                raise HDXError(
-                    f"{resource_view} is not a valid resource view id!"
-                )
+                raise HDXError(f"{resource_view} is not a valid resource view id!")
             resource_view = ResourceView.read_from_hdx(resource_view)
         if not isinstance(resource_view, dict) and not isinstance(
             resource_view, ResourceView
