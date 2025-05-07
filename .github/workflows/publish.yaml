@@ -10,7 +10,7 @@ jobs:
 
     environment:
       name: pypi
-      url: https://pypi.org/p/hdx-python-utilities
+      url: https://pypi.org/p/hdx-python-api
 
     permissions:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
