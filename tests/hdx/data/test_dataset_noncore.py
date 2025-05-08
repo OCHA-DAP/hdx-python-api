@@ -347,11 +347,12 @@ class TestDatasetNoncore:
         assert dataset["groups"] == [{"name": "dza"}]
 
     def test_transform_update_frequency(self):
-        assert len(Dataset.list_valid_update_frequencies()) == 32
+        assert len(Dataset.list_valid_update_frequencies()) == 49
         assert Dataset.transform_update_frequency("-2") == "As needed"
         assert Dataset.transform_update_frequency("-1") == "Never"
         assert Dataset.transform_update_frequency("0") == "Live"
         assert Dataset.transform_update_frequency("1") == "Every day"
+        assert Dataset.transform_update_frequency("2") == "Every two days"
         assert Dataset.transform_update_frequency("Adhoc") == "-2"
         assert Dataset.transform_update_frequency("As needed") == "-2"
         assert Dataset.transform_update_frequency("Never") == "-1"
@@ -366,6 +367,8 @@ class TestDatasetNoncore:
         assert Dataset.transform_update_frequency(23) is None
         assert Dataset.transform_update_frequency("15") is None
         assert Dataset.transform_update_frequency("Quarterly") == "90"
+        assert Dataset.transform_update_frequency("every 4 months") == "120"
+        assert Dataset.transform_update_frequency("every two years") == "730"
 
     def test_get_set_expected_update_frequency(self, configuration):
         datasetdata = copy.deepcopy(dataset_data)
@@ -385,6 +388,11 @@ class TestDatasetNoncore:
         dataset.set_expected_update_frequency("90")
         assert dataset["data_update_frequency"] == "90"
         assert dataset.get_expected_update_frequency() == "Every three months"
+        assert dataset["data_update_frequency"] == "90"
+        dataset.set_expected_update_frequency(60)
+        assert dataset.get_expected_update_frequency() == "Every two months"
+        dataset.set_expected_update_frequency("every 10 months")
+        assert dataset["data_update_frequency"] == "300"
         with pytest.raises(HDXError):
             dataset.set_expected_update_frequency("lalala")
         with pytest.raises(HDXError):
