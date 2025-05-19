@@ -34,8 +34,6 @@ colorama==0.4.6
     # via mkdocs-material
 coverage==7.8.0
     # via pytest-cov
-cydifflib==1.2.0
-    # via hdx-python-utilities
 defopt==6.4.0
     # via hdx-python-api (pyproject.toml)
 distlib==0.3.9
@@ -64,11 +62,11 @@ google-auth==2.40.1
     #   gspread
 google-auth-oauthlib==1.2.2
     # via gspread
-gspread==6.2.0
+gspread==6.2.1
     # via hdx-python-api (pyproject.toml)
-hdx-python-country==3.9.2
+hdx-python-country==3.9.4
     # via hdx-python-api (pyproject.toml)
-hdx-python-utilities==3.8.6
+hdx-python-utilities==3.8.7
     # via
     #   hdx-python-api (pyproject.toml)
     #   hdx-python-country
@@ -80,7 +78,7 @@ idna==3.10
     # via
     #   email-validator
     #   requests
-ijson==3.3.0
+ijson==3.4.0
     # via hdx-python-utilities
 inflect==7.5.0
     # via quantulum3
@@ -110,7 +108,7 @@ libhxl==5.2.2
     #   hdx-python-country
 loguru==0.7.3
     # via hdx-python-utilities
-makefun==1.15.6
+makefun==1.16.0
     # via hdx-python-api (pyproject.toml)
 markdown==3.8
     # via
@@ -131,7 +129,7 @@ mergedeep==1.3.4
     # via
     #   mkdocs
     #   mkdocs-get-deps
-mkapi==4.3.2
+mkapi==4.4.0
     # via hdx-python-api (pyproject.toml)
 mkdocs==1.6.1
     # via
@@ -139,7 +137,7 @@ mkdocs==1.6.1
     #   mkdocs-material
 mkdocs-get-deps==0.2.0
     # via mkdocs
-mkdocs-material==9.6.12
+mkdocs-material==9.6.14
     # via mkapi
 mkdocs-material-extensions==1.3.1
     # via mkdocs-material
@@ -163,11 +161,11 @@ pathspec==0.12.1
     # via mkdocs
 petl==1.7.16
     # via frictionless
-platformdirs==4.3.7
+platformdirs==4.3.8
     # via
     #   mkdocs-get-deps
     #   virtualenv
-pluggy==1.5.0
+pluggy==1.6.0
     # via pytest
 ply==3.11
     # via
@@ -225,7 +223,7 @@ pyyaml==6.0.2
     #   pymdown-extensions
     #   pyyaml-env-tag
     #   tableschema-to-template
-pyyaml-env-tag==0.1
+pyyaml-env-tag==1.1
     # via mkdocs
 quantulum3==0.9.2
     # via hdx-python-api (pyproject.toml)
@@ -252,7 +250,7 @@ rfc3986==2.0.0
     # via frictionless
 rich==14.0.0
     # via typer
-rpds-py==0.24.0
+rpds-py==0.25.0
     # via
     #   jsonschema
     #   referencing
@@ -260,9 +258,7 @@ rsa==4.9.1
     # via google-auth
 ruamel-yaml==0.18.10
     # via hdx-python-utilities
-ruamel-yaml-clib==0.2.12
-    # via ruamel-yaml
-setuptools==80.3.1
+setuptools==80.7.1
     # via ckanapi
 shellingham==1.5.4
     # via typer
@@ -290,14 +286,13 @@ text-unidecode==1.3
     # via python-slugify
 typeguard==4.4.2
     # via inflect
-typer==0.15.3
+typer==0.15.4
     # via frictionless
 typing-extensions==4.13.2
     # via
     #   frictionless
     #   pydantic
     #   pydantic-core
-    #   referencing
     #   typeguard
     #   typer
     #   typing-inspection
@@ -313,7 +308,7 @@ urllib3==2.4.0
     #   requests
 validators==0.35.0
     # via frictionless
-virtualenv==20.31.1
+virtualenv==20.31.2
     # via pre-commit
 watchdog==6.0.0
     # via mkdocs

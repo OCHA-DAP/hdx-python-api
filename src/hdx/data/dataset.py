@@ -20,7 +20,7 @@ from typing import (
     Union,
 )
 
-from hxl.input import InputOptions, munge_url
+from hxl.input import HXLIOException, InputOptions, munge_url
 
 import hdx.data.organization as org_module
 import hdx.data.resource as res_module
@@ -203,7 +203,10 @@ class Dataset(HDXObject):
         dataset_dict = self.get_dataset_dict()
         if follow_urls:
             for resource in dataset_dict.get("resources", tuple()):
-                resource["url"] = munge_url(resource["url"], InputOptions())
+                try:
+                    resource["url"] = munge_url(resource["url"], InputOptions())
+                except HXLIOException:
+                    pass
         save_json(dataset_dict, path)
 
     @staticmethod
