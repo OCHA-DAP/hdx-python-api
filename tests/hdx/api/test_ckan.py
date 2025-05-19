@@ -35,6 +35,8 @@ class TestCKAN:
             user_agent="test",
             hdx_key=hdx_key,
         )
+        Vocabulary._approved_vocabulary = None
+        Vocabulary._tags_dict = None
         Locations._validlocations = None
         Country.countriesdata(use_live=False)
 
