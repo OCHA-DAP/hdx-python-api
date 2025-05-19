@@ -37,6 +37,8 @@ class TestCKAN:
         )
         Locations._validlocations = None
         Country.countriesdata(use_live=False)
+        Vocabulary._approved_vocabulary = None
+        Vocabulary._tags_dict = None
 
     @pytest.fixture(scope="function")
     def datasetmetadata(self):
