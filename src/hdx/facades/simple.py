@@ -12,11 +12,11 @@ logger = logging.getLogger(__name__)
 setup_logging(log_file="errors.log")
 
 
-def facade(projectmainfn: Callable[[None], None], **kwargs: Any):
+def facade(projectmainfn: Callable[[], None], **kwargs: Any):
     """Facade to simplify project setup that calls project main function
 
     Args:
-        projectmainfn ((None) -> None): main function of project
+        projectmainfn (() -> None): main function of project
         **kwargs: configuration parameters to pass to HDX Configuration class
 
     Returns:
