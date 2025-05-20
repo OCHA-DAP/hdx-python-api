@@ -264,6 +264,25 @@ class TestUser:
         Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope="function")
+    def show_current_user(self):
+        class MockSession:
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth=None):
+                if "show" not in url:
+                    return MockResponse(
+                        404,
+                        '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}',
+                    )
+                result = json.dumps(resultdict)
+                return MockResponse(
+                    200,
+                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}'
+                    % result,
+                )
+
+        Configuration.read().remoteckan().session = MockSession()
+
+    @pytest.fixture(scope="function")
     def post_list(self):
         class MockSession:
             @staticmethod
@@ -283,6 +302,42 @@ class TestUser:
                 if "user" in url:
                     if "show" in url:
                         return user_mockshow(url, datadict)
+                    elif "list" in url:
+                        return MockResponse(
+                            200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_list"}'
+                            % json.dumps(orglist),
+                        )
+                elif "organization" in url:
+                    if "show" in url:
+                        result = json.dumps(orgdict)
+                        if (
+                            datadict["id"] == "b67e6c74-c185-4f43-b561-0e114a736f19"
+                            or datadict["id"] == "TEST1"
+                        ):
+                            return MockResponse(
+                                200,
+                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}'
+                                % result,
+                            )
+
+        Configuration.read().remoteckan().session = MockSession()
+
+    @pytest.fixture(scope="function")
+    def post_check_current_user_write_access(self):
+        class MockSession:
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth=None):
+                decodedata = data.decode("utf-8")
+                datadict = json.loads(decodedata)
+                if "user" in url:
+                    if "show" in url:
+                        result = json.dumps(resultdict)
+                        return MockResponse(
+                            200,
+                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}'
+                            % result,
+                        )
                     elif "list" in url:
                         return MockResponse(
                             200,
@@ -522,6 +577,10 @@ Content-Transfer-Encoding: 7bit
         assert user["name"] == "MyUser1"
         assert user["about"] == "other"
 
+    def test_get_current_user(self, configuration, show_current_user):
+        user = User.get_current_user()
+        assert user["name"] == "MyUser1"
+
     def test_get_all_users(self, configuration, post_list, mocksmtp):
         users = User.get_all_users()
         assert len(users) == 2
@@ -635,6 +694,18 @@ Content-Transfer-Encoding: 7bit
         user["name"] = "lala"
         assert user.get_organization_dicts() == []
         assert User.get_current_user_organization_dicts() == []
+
+    def test_check_current_user_write_access(
+        self, configuration, post_check_current_user_write_access
+    ):
+        username = User.check_current_user_write_access(
+            "b67e6c74-c185-4f43-b561-0e114a736f19"
+        )
+        assert username == "MyUser1"
+        username = User.check_current_user_write_access("acled")
+        assert username == "MyUser1"
+        with pytest.raises(PermissionError):
+            User.check_current_user_write_access("lala")
 
     def test_get_token_list(self, configuration, post_tokenlist):
         user = User.read_from_hdx("9f3e9973-7dbe-4c65-8820-f48578e3ffea")
