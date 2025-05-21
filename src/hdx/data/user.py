@@ -311,7 +311,7 @@ class User(HDXObject):
         Returns:
             bool: True if the logged in user is a member of the organization.
         """
-        for organization_dict in self.get_organization_dicts(permission=permission):
+        for organization_dict in self.get_organization_dicts(permission):
             if organization_dict["id"] == organization:
                 return True
             if organization_dict["name"] == organization:
@@ -367,19 +367,23 @@ class User(HDXObject):
 
     @classmethod
     def check_current_user_organization_access(
-        cls, organization: str, permission: str = "read"
+        cls,
+        organization: str,
+        permission: str = "read",
+        configuration: Optional[Configuration] = None,
     ) -> bool:
         """Check logged in user is a member of a given organization.
 
         Args:
             organization (str): Organization id or name.
             permission (str): Permission to check for. Defaults to 'read'.
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
             bool: True if the logged in user is a member of the organization.
         """
         for organization_dict in cls.get_current_user_organization_dicts(
-            permission=permission
+            permission, configuration
         ):
             if organization_dict["id"] == organization:
                 return True
@@ -389,32 +393,47 @@ class User(HDXObject):
 
     @classmethod
     def check_current_user_write_access(
-        cls, organization: str, permission: str = "create_dataset"
+        cls,
+        organization: str,
+        permission: str = "create_dataset",
+        configuration: Optional[Configuration] = None,
     ) -> "User":
         """Check logged in user has write access to a given organization. Raises
-        PermissionError if teh user does not have access otherwise logs and returns the
+        PermissionError if the user does not have access otherwise logs and returns the
         current username.
 
         Args:
             organization (str): Organization id or name.
             permission (str): Permission to check for. Defaults to 'create_dataset'.
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
 
         Returns:
             str: Username of current user
         """
+        if configuration is None:
+            configuration = Configuration.read()
+        hdx_key = configuration.hdx_key
+        if not hdx_key:
+            raise PermissionError(
+                "There is no logged in user. API token is missing or blank!"
+            )
+        logger.info(f"API token is {len(hdx_key)} characters long")
         try:
-            current_user = cls.get_current_user()
+            current_user = cls.get_current_user(configuration)
         except HDXError:
             raise PermissionError(
-                "There is no logged in user (missing or invalid API token)!"
+                "There appears to be no logged in user. API token may be invalid!"
             )
         username = current_user["name"]
-        if not cls.check_current_user_organization_access(organization, permission):
+        logger.info(f'Current user is "{username}"')
+        if not cls.check_current_user_organization_access(
+            organization, permission, configuration
+        ):
             raise PermissionError(
-                f'Current user "{username}" does not have "{permission}" access to "{organization}" organization!'
+                f'Current user does not have "{permission}" access to "{organization}" organization!'
             )
         logger.info(
-            f'Current user "{username}" has "{permission}" access to "{organization}" organization'
+            f'Current user has "{permission}" access to "{organization}" organization'
         )
         return username
 

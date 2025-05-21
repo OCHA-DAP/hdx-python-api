@@ -332,6 +332,13 @@ class TestUser:
                 datadict = json.loads(decodedata)
                 if "user" in url:
                     if "show" in url:
+                        configuration = Configuration.read()
+                        hdx_key = configuration.hdx_key
+                        if hdx_key == "fail":
+                            return MockResponse(
+                                404,
+                                '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}',
+                            )
                         result = json.dumps(resultdict)
                         return MockResponse(
                             200,
@@ -706,6 +713,18 @@ Content-Transfer-Encoding: 7bit
         assert username == "MyUser1"
         with pytest.raises(PermissionError):
             User.check_current_user_write_access("lala")
+        with pytest.raises(PermissionError):
+            configuration = Configuration.read()
+            hdx_key = configuration.hdx_key
+            configuration.hdx_key = "fail"
+            User.check_current_user_write_access("b67e6c74-c185-4f43-b561-0e114a736f19")
+            configuration.hdx_key = hdx_key
+        with pytest.raises(PermissionError):
+            configuration = Configuration.read()
+            hdx_key = configuration.hdx_key
+            configuration.hdx_key = None
+            User.check_current_user_write_access("acled", configuration=configuration)
+            configuration.hdx_key = hdx_key
 
     def test_get_token_list(self, configuration, post_tokenlist):
         user = User.read_from_hdx("9f3e9973-7dbe-4c65-8820-f48578e3ffea")
