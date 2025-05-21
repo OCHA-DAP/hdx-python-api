@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional
 
 import hdx.data.organization
 from hdx.api.configuration import Configuration
-from hdx.data.hdxobject import HDXObject
+from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.utilities.typehint import ListTuple
 
 logger = logging.getLogger(__name__)
@@ -166,6 +166,20 @@ class User(HDXObject):
             sender=sender,
             **kwargs,
         )
+
+    @staticmethod
+    def get_current_user(configuration: Optional[Configuration] = None) -> "User":
+        """Get current user (based on authorisation from API token)
+
+        Args:
+            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+
+        Returns:
+            User: Current user
+        """
+        user = User(configuration=configuration)
+        user._save_to_hdx("show", {})
+        return user
 
     @staticmethod
     def get_all_users(
@@ -372,6 +386,37 @@ class User(HDXObject):
             if organization_dict["name"] == organization:
                 return True
         return False
+
+    @classmethod
+    def check_current_user_write_access(
+        cls, organization: str, permission: str = "create_dataset"
+    ) -> "User":
+        """Check logged in user has write access to a given organization. Raises
+        PermissionError if teh user does not have access otherwise logs and returns the
+        current username.
+
+        Args:
+            organization (str): Organization id or name.
+            permission (str): Permission to check for. Defaults to 'create_dataset'.
+
+        Returns:
+            str: Username of current user
+        """
+        try:
+            current_user = cls.get_current_user()
+        except HDXError:
+            raise PermissionError(
+                "There is no logged in user (missing or invalid API token)!"
+            )
+        username = current_user["name"]
+        if not cls.check_current_user_organization_access(organization, permission):
+            raise PermissionError(
+                f'Current user "{username}" does not have "{permission}" access to "{organization}" organization!'
+            )
+        logger.info(
+            f'Current user "{username}" has "{permission}" access to "{organization}" organization'
+        )
+        return username
 
     def get_token_list(self):
         """Get API tokens for user.

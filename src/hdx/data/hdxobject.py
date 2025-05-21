@@ -367,7 +367,7 @@ class HDXObject(UserDict, ABC):
         self,
         action: str,
         data: Dict,
-        id_field_name: str = None,
+        id_field_name: Optional[str] = None,
         files_to_upload: Dict = {},
     ) -> Union[Dict, List]:
         """Creates or updates an HDX object in HDX and return HDX object metadata dict
