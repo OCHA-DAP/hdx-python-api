@@ -4,6 +4,8 @@ import logging
 from os.path import join
 from typing import Any, Dict, List, Optional
 
+from ckanapi import NotAuthorized
+
 import hdx.data.organization
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXObject
@@ -402,7 +404,12 @@ class User(HDXObject):
         Returns:
             str: Username of current user
         """
-        current_user = cls.get_current_user()
+        try:
+            current_user = cls.get_current_user()
+        except NotAuthorized:
+            raise PermissionError(
+                "There is no logged in user (missing or invalid API token)!"
+            )
         username = current_user["name"]
         if not cls.check_current_user_organization_access(organization, permission):
             raise PermissionError(
