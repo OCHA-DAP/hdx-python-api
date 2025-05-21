@@ -4,11 +4,9 @@ import logging
 from os.path import join
 from typing import Any, Dict, List, Optional
 
-from ckanapi import NotAuthorized
-
 import hdx.data.organization
 from hdx.api.configuration import Configuration
-from hdx.data.hdxobject import HDXObject
+from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.utilities.typehint import ListTuple
 
 logger = logging.getLogger(__name__)
@@ -406,7 +404,7 @@ class User(HDXObject):
         """
         try:
             current_user = cls.get_current_user()
-        except NotAuthorized:
+        except HDXError:
             raise PermissionError(
                 "There is no logged in user (missing or invalid API token)!"
             )
