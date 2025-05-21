@@ -19,6 +19,7 @@ from hdx.api.configuration import Configuration
 from hdx.api.locations import Locations
 from hdx.data.dataset import Dataset
 from hdx.data.resource import Resource
+from hdx.data.user import User
 from hdx.data.vocabulary import Vocabulary
 from hdx.location.country import Country
 from hdx.utilities.dateparse import now_utc
@@ -35,6 +36,7 @@ class TestCKAN:
             user_agent="test",
             hdx_key=hdx_key,
         )
+        User.check_current_user_write_access("5a63012e-6c41-420c-8c33-e84b277fdc90")
         Locations._validlocations = None
         Country.countriesdata(use_live=False)
         Vocabulary._approved_vocabulary = None
