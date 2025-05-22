@@ -32,7 +32,7 @@ click==8.1.8
     #   typer
 colorama==0.4.6
     # via mkdocs-material
-coverage==7.8.0
+coverage==7.8.1
     # via pytest-cov
 defopt==6.4.0
     # via hdx-python-api (pyproject.toml)
@@ -56,7 +56,7 @@ frictionless==5.18.1
     # via hdx-python-utilities
 ghp-import==2.1.0
     # via mkdocs
-google-auth==2.40.1
+google-auth==2.40.2
     # via
     #   google-auth-oauthlib
     #   gspread
@@ -250,7 +250,7 @@ rfc3986==2.0.0
     # via frictionless
 rich==14.0.0
     # via typer
-rpds-py==0.25.0
+rpds-py==0.25.1
     # via
     #   jsonschema
     #   referencing
@@ -296,7 +296,7 @@ typing-extensions==4.13.2
     #   typeguard
     #   typer
     #   typing-inspection
-typing-inspection==0.4.0
+typing-inspection==0.4.1
     # via pydantic
 unidecode==1.4.0
     # via
