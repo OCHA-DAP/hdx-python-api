@@ -2,8 +2,9 @@
 
 import logging
 from os.path import join
-from typing import Any, Callable
+from typing import Any, Callable, Optional
 
+from hdx.api.configuration import Configuration
 from hdx.data.dataset import Dataset
 from hdx.utilities.loader import load_text
 from hdx.utilities.saver import save_text
@@ -23,6 +24,7 @@ class HDXState(State):
         path (str): Path to temporary folder for state
         read_fn (Callable[[str], Any]): Input state transformation. Defaults to lambda x: x.
         write_fn: Callable[[Any], str]: Output state transformation. Defaults to lambda x: x.
+        configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
     """
 
     def __init__(
@@ -31,9 +33,11 @@ class HDXState(State):
         path: str,
         read_fn: Callable[[str], Any] = lambda x: x,
         write_fn: Callable[[Any], str] = lambda x: x,
+        configuration: Optional[Configuration] = None,
     ) -> None:
-        self.dataset_name_or_id = dataset_name_or_id
-        self.resource = None
+        self._dataset_name_or_id = dataset_name_or_id
+        self._resource = None
+        self._configuration = configuration
         super().__init__(path, read_fn, write_fn)
 
     def read(self) -> Any:
@@ -42,11 +46,13 @@ class HDXState(State):
         Returns:
             Any: State
         """
-        dataset = Dataset.read_from_hdx(self.dataset_name_or_id)
-        self.resource = dataset.get_resource()
-        _, path = self.resource.download()
+        dataset = Dataset.read_from_hdx(
+            self._dataset_name_or_id, configuration=self._configuration
+        )
+        self._resource = dataset.get_resource()
+        _, path = self._resource.download()
         value = self.read_fn(load_text(path))
-        logger.info(f"State read from {self.dataset_name_or_id} = {value}")
+        logger.info(f"State read from {self._dataset_name_or_id} = {value}")
         return value
 
     def write(self) -> None:
@@ -55,9 +61,9 @@ class HDXState(State):
         Returns:
             None
         """
-        logger.info(f"State written to {self.dataset_name_or_id} = {self.state}")
-        filename = self.resource["name"]
+        logger.info(f"State written to {self._dataset_name_or_id} = {self.state}")
+        filename = self._resource["name"]
         file_to_upload = join(self.path, filename)
         save_text(self.write_fn(self.state), file_to_upload)
-        self.resource.set_file_to_upload(file_to_upload)
-        self.resource.update_in_hdx()
+        self._resource.set_file_to_upload(file_to_upload)
+        self._resource.update_in_hdx()

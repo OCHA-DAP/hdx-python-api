@@ -181,7 +181,7 @@ pyasn1==0.6.1
     #   rsa
 pyasn1-modules==0.4.2
     # via google-auth
-pydantic==2.11.4
+pydantic==2.11.5
     # via frictionless
 pydantic-core==2.33.2
     # via pydantic
