@@ -3,7 +3,7 @@ import json
 
 import pytest
 
-from . import MockResponse, dataset_data, dataset_resultdict, resources_data
+from .. import MockResponse, dataset_data, dataset_resultdict, resources_data
 from hdx.api.configuration import Configuration
 from hdx.data.dataset import Dataset
 

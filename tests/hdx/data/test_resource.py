@@ -9,7 +9,7 @@ from os.path import basename, join
 
 import pytest
 
-from . import MockResponse, dataset_resultdict, resource_data
+from .. import MockResponse, dataset_resultdict, resource_data
 from .test_resource_view import resource_view_list, resource_view_mocklist
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError

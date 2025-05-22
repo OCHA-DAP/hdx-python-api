@@ -10,7 +10,7 @@ from os.path import join
 import pytest
 from pytest_check import check
 
-from . import (
+from .. import (
     MockResponse,
     dataset_data,
     dataset_mockshow,
