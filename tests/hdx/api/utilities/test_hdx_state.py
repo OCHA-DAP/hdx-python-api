@@ -10,9 +10,8 @@ from tempfile import gettempdir
 
 import pytest
 
-from tests.hdx.data import MockResponse, dataset_resultdict
-from tests.hdx.data.test_resource import resultdict
-
+from ... import MockResponse, dataset_resultdict
+from ...data.test_resource import resultdict
 from hdx.api.configuration import Configuration
 from hdx.api.utilities.hdx_state import HDXState
 from hdx.utilities.dateparse import iso_string_from_datetime, parse_date

@@ -7,7 +7,7 @@ from os.path import join
 import pytest
 from requests.exceptions import RetryError
 
-from . import MockResponse
+from .. import MockResponse
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.vocabulary import ChainRuleError, Vocabulary

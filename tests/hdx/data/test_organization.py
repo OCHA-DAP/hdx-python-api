@@ -6,7 +6,7 @@ from os.path import join
 
 import pytest
 
-from . import MockResponse, organization_data, user_data
+from .. import MockResponse, organization_data, user_data
 from .test_user import user_mockshow
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError

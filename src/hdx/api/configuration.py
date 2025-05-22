@@ -10,7 +10,7 @@ from typing import Any, Dict, Optional, Tuple
 import ckanapi
 import requests
 
-from . import __version__
+from hdx.api import __version__
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.email import Email
 from hdx.utilities.loader import load_json, load_yaml

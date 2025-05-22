@@ -6,7 +6,7 @@ from os.path import join
 
 import pytest
 
-from . import MockResponse
+from .. import MockResponse
 from .test_vocabulary import vocabulary_mockshow
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
