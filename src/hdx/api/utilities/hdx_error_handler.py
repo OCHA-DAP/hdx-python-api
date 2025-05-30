@@ -34,8 +34,10 @@ class HDXErrorHandler(ErrorHandler):
             write_to_hdx = getenv("ERR_TO_HDX", True)
         if write_to_hdx in (False, 0, "false", "False", "FALSE", "N", "n", ""):
             self._write_to_hdx = False
+            logger.info("Errors won't be written to HDX")
         else:
             self._write_to_hdx = True
+            logger.info("Errors will be written to HDX")
         self.shared_errors["hdx_error"] = {}
 
     @staticmethod
