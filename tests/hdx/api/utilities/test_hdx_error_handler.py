@@ -38,7 +38,9 @@ class TestHDXErrorHandler:
         assert error_handler._write_to_hdx is False
         with pytest.raises(SystemExit):
             with caplog.at_level(logging.ERROR):
-                with HDXErrorHandler(should_exit_on_error=True) as errors:
+                with HDXErrorHandler(
+                    should_exit_on_error=True, write_to_hdx=False
+                ) as errors:
                     errors.add_message(
                         "pipeline1",
                         "dataset1",
