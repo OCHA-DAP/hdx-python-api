@@ -12,6 +12,30 @@ setup_logging()
 
 class TestHDXErrorHandler:
     def test_hdx_error_handler(self, caplog):
+        error_handler = HDXErrorHandler()
+        assert error_handler._write_to_hdx is True
+        error_handler = HDXErrorHandler(write_to_hdx=None)
+        assert error_handler._write_to_hdx is True
+        error_handler = HDXErrorHandler(write_to_hdx="true")
+        assert error_handler._write_to_hdx is True
+        error_handler = HDXErrorHandler(write_to_hdx="Y")
+        assert error_handler._write_to_hdx is True
+        error_handler = HDXErrorHandler(write_to_hdx=True)
+        assert error_handler._write_to_hdx is True
+        error_handler = HDXErrorHandler(write_to_hdx=1)
+        assert error_handler._write_to_hdx is True
+        error_handler = HDXErrorHandler(write_to_hdx="")
+        assert error_handler._write_to_hdx is False
+        error_handler = HDXErrorHandler(write_to_hdx="false")
+        assert error_handler._write_to_hdx is False
+        error_handler = HDXErrorHandler(write_to_hdx="FALSE")
+        assert error_handler._write_to_hdx is False
+        error_handler = HDXErrorHandler(write_to_hdx="n")
+        assert error_handler._write_to_hdx is False
+        error_handler = HDXErrorHandler(write_to_hdx=False)
+        assert error_handler._write_to_hdx is False
+        error_handler = HDXErrorHandler(write_to_hdx=0)
+        assert error_handler._write_to_hdx is False
         with pytest.raises(SystemExit):
             with caplog.at_level(logging.ERROR):
                 with HDXErrorHandler(should_exit_on_error=True) as errors:

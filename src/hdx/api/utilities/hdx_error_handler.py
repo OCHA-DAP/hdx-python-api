@@ -1,4 +1,5 @@
 import logging
+from os import getenv
 from typing import Any, Tuple
 
 from hdx.data.dataset import Dataset
@@ -19,17 +20,22 @@ class HDXErrorHandler(ErrorHandler):
 
     Args:
         should_exit_on_error (bool): Whether to exit with a 1 code if there are errors. Default is False.
-        write_to_hdx (bool): Whether to write errors to HDX resources. Default is False.
+        write_to_hdx (Any): Whether to write errors to HDX resources. Default is None (write errors).
 
     """
 
     def __init__(
         self,
         should_exit_on_error: bool = False,
-        write_to_hdx: bool = False,
+        write_to_hdx: Any = None,
     ):
         super().__init__(should_exit_on_error)
-        self._write_to_hdx = write_to_hdx
+        if write_to_hdx is None:
+            write_to_hdx = getenv("ERR_TO_HDX", True)
+        if write_to_hdx in (False, 0, "false", "False", "FALSE", "N", "n", ""):
+            self._write_to_hdx = False
+        else:
+            self._write_to_hdx = True
         self.shared_errors["hdx_error"] = {}
 
     @staticmethod
