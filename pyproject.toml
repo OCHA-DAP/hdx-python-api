@@ -35,7 +35,7 @@ requires-python = ">=3.8"
 
 dependencies = [
     "ckanapi>=4.8",
-    "defopt>=6.4.0",
+    "defopt>=7.0.0",
     "email_validator",
     "hdx-python-country>=3.9.4",
     "hdx-python-utilities>=3.8.7",

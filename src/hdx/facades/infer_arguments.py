@@ -37,10 +37,12 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
     #
 
     parsed_main_doc = defopt._parse_docstring(getdoc(projectmainfn))
-    main_doc = [f"{parsed_main_doc.first_line}\n\nArgs:"]
-    no_main_params = len(parsed_main_doc.params)
-    for param_name, param_info in parsed_main_doc.params.items():
-        main_doc.append(f"\n    {param_name} ({param_info.type}): {param_info.text}")
+    main_doc = [f"{parsed_main_doc.doc}\n\nArgs:"]
+    no_main_parameters = len(parsed_main_doc.parameters)
+    for param_name, param_info in parsed_main_doc.parameters.items():
+        main_doc.append(
+            f"\n    {param_name} ({param_info.annotation}): {param_info.doc}"
+        )
     create_config_doc = getdoc(Configuration.create)
     kwargs_index = create_config_doc.index("**kwargs")
     kwargs_index = create_config_doc.index("\n", kwargs_index)
@@ -54,13 +56,13 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
         param_names.append(str(param))
 
     parsed_main_doc = defopt._parse_docstring(main_doc)
-    main_doc = [f"{parsed_main_doc.first_line}\n\nArgs:"]
+    main_doc = [f"{parsed_main_doc.doc}Args:"]
     count = 0
-    for param_name, param_info in parsed_main_doc.params.items():
-        param_type = param_info.type
+    for param_name, param_info in parsed_main_doc.parameters.items():
+        param_type = param_info.annotation
         if param_type == "dict":
             continue
-        if count < no_main_params:
+        if count < no_main_parameters:
             count += 1
         else:
             if param_type == "str":
@@ -73,7 +75,7 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
                     "Configuration.create has new parameter with unknown type!"
                 )
             param_names.append(f"{param_name}: {param_type} = {default}")
-        main_doc.append(f"\n    {param_name} ({param_type}): {param_info.text}")
+        main_doc.append(f"\n    {param_name} ({param_type}): {param_info.doc}")
     main_doc = "".join(main_doc)
 
     projectmainname = projectmainfn.__name__
