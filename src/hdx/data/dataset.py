@@ -652,7 +652,10 @@ class Dataset(HDXObject):
                 kwargs["batch_mode"] = "DONT_GROUP"
 
     def _revise_filter(
-        self, dataset_data_to_update: Dict, keys_to_delete: ListTuple[str]
+        self,
+        dataset_data_to_update: Dict,
+        keys_to_delete: ListTuple[str],
+        resources_to_delete: ListTuple[int],
     ):
         """Returns the revise filter parameter adding to it any keys in the
         dataset metadata that are specified to be deleted. Also compare lists
@@ -662,14 +665,17 @@ class Dataset(HDXObject):
         Args:
             dataset_data_to_update (Dict): Dataset data to be updated
             keys_to_delete (ListTuple[str]): List of top level metadata keys to delete
+            resources_to_delete (ListTuple[int]): List of indexes of resources to delete
         """
         revise_filter = []
         for key in keys_to_delete:
             revise_filter.append(f"-{key}")
+        for resource_no in resources_to_delete:
+            revise_filter.append(f"-resources__{resource_no}")
         for key, value in dataset_data_to_update.items():
-            if not isinstance(value, list):
-                continue
             if key not in self.old_data:
+                continue
+            if not isinstance(value, list):
                 continue
             orig_list = self.old_data[key]
             elements_to_remove = []
@@ -729,8 +735,6 @@ class Dataset(HDXObject):
         if not self.is_requestable():
             for resource_index in resources_to_delete:
                 del resources_to_update[resource_index]
-                if resource_index == len(resources_to_update):
-                    revise_filter.append(f"-resources__{resource_index}")
                 new_fsresources = {}
                 for index in filestore_resources:
                     if index > resource_index:
@@ -788,7 +792,9 @@ class Dataset(HDXObject):
         ):  # Whether or not CKAN should perform validation steps (checking fields present)
             dataset_data_to_update["skip_validation"] = kwargs["skip_validation"]
         dataset_data_to_update["state"] = "active"
-        revise_filter = self._revise_filter(dataset_data_to_update, keys_to_delete)
+        revise_filter = self._revise_filter(
+            dataset_data_to_update, keys_to_delete, resources_to_delete
+        )
         files_to_upload = self._revise_files_to_upload_resource_deletions(
             revise_filter,
             resources_to_update,
