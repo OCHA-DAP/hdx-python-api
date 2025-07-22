@@ -36,7 +36,7 @@ coverage==7.9.2
     # via pytest-cov
 defopt==7.0.0
     # via hdx-python-api (pyproject.toml)
-distlib==0.3.9
+distlib==0.4.0
     # via virtualenv
 dnspython==2.7.0
     # via email-validator
@@ -96,7 +96,7 @@ jsonlines==4.0.0
     # via hdx-python-utilities
 jsonpath-ng==1.7.0
     # via libhxl
-jsonschema==4.24.0
+jsonschema==4.25.0
     # via
     #   frictionless
     #   tableschema-to-template
@@ -313,7 +313,7 @@ urllib3==2.5.0
     #   requests
 validators==0.35.0
     # via frictionless
-virtualenv==20.31.2
+virtualenv==20.32.0
     # via pre-commit
 watchdog==6.0.0
     # via mkdocs
