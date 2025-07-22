@@ -673,9 +673,9 @@ class Dataset(HDXObject):
         for resource_no in resources_to_delete:
             revise_filter.append(f"-resources__{resource_no}")
         for key, value in dataset_data_to_update.items():
-            if key not in self.old_data:
-                continue
             if not isinstance(value, list):
+                continue
+            if key not in self.old_data:
                 continue
             orig_list = self.old_data[key]
             elements_to_remove = []
