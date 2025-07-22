@@ -670,8 +670,9 @@ class Dataset(HDXObject):
         revise_filter = []
         for key in keys_to_delete:
             revise_filter.append(f"-{key}")
-        for resource_no in resources_to_delete:
-            revise_filter.append(f"-resources__{resource_no}")
+        if not self.is_requestable():
+            for resource_no in resources_to_delete:
+                revise_filter.append(f"-resources__{resource_no}")
         for key, value in dataset_data_to_update.items():
             if not isinstance(value, list):
                 continue
@@ -716,7 +717,6 @@ class Dataset(HDXObject):
 
     def _revise_files_to_upload_resource_deletions(
         self,
-        revise_filter: List[str],
         resources_to_update: ListTuple["Resource"],
         resources_to_delete: ListTuple[int],
         filestore_resources: Dict[int, str],
@@ -726,7 +726,6 @@ class Dataset(HDXObject):
         reflect any deletions.
 
         Args:
-            revise_filter (List[str]): Keys and list elements to delete
             resources_to_update (ListTuple[Resource]): Resources to update
             resources_to_delete (ListTuple[int]): List of indexes of resources to delete
             filestore_resources (Dict[int, str]): List of (index of resources, file to upload)
@@ -796,7 +795,6 @@ class Dataset(HDXObject):
             dataset_data_to_update, keys_to_delete, resources_to_delete
         )
         files_to_upload = self._revise_files_to_upload_resource_deletions(
-            revise_filter,
             resources_to_update,
             resources_to_delete,
             filestore_resources,
