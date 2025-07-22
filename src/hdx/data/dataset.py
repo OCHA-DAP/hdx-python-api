@@ -658,8 +658,8 @@ class Dataset(HDXObject):
         resources_to_delete: ListTuple[int],
     ):
         """Returns the revise filter parameter adding to it any keys in the
-        dataset metadata that are specified to be deleted. Also compare lists
-        in original and updated metadata to see if any have had elements
+        dataset metadata and resources that are specified to be deleted. Also compare
+        lists in original and updated metadata to see if any have had elements
         removed in which case these should be added to the filter
 
         Args:
@@ -671,8 +671,8 @@ class Dataset(HDXObject):
         for key in keys_to_delete:
             revise_filter.append(f"-{key}")
         if not self.is_requestable():
-            for resource_no in resources_to_delete:
-                revise_filter.append(f"-resources__{resource_no}")
+            for resource_index in resources_to_delete:
+                revise_filter.append(f"-resources__{resource_index}")
         for key, value in dataset_data_to_update.items():
             if not isinstance(value, list):
                 continue
@@ -721,9 +721,8 @@ class Dataset(HDXObject):
         resources_to_delete: ListTuple[int],
         filestore_resources: Dict[int, str],
     ):
-        """Returns the files to be uploaded and updates the revise filter with
-        any resources to be deleted also updating filestore_resources to
-        reflect any deletions.
+        """Returns the files to be uploaded and updates resources_to_update and
+        filestore_resources to reflect any deletions.
 
         Args:
             resources_to_update (ListTuple[Resource]): Resources to update
