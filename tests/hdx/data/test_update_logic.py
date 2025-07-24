@@ -166,7 +166,7 @@ class TestUpdateLogic:
             hxl_update=False,
             test=True,
         )
-        assert results["filter"] == []
+        assert results["filter"] == ["-resources__13"]
         update = results["update"]
         del update["updated_by_script"]
         assert update == {
@@ -1118,7 +1118,7 @@ class TestUpdateLogic:
             hxl_update=False,
             test=True,
         )
-        assert results["filter"] == []
+        assert results["filter"] == ["-resources__2", "-resources__1"]
         update = results["update"]
         del update["updated_by_script"]
         assert update == {
