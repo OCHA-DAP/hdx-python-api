@@ -1010,3 +1010,10 @@ class TestDatasetNoncore:
             save_text("null", path)
             dataset = Dataset.load_from_json(path)
             assert dataset is None
+
+    def test_custom_viz(self):
+        dataset = Dataset({"name": "lala", "title": "title", "notes": "description"})
+        url = "http://lala"
+        dataset.set_custom_viz(url)
+        assert dataset.get_custom_viz() == url
+        assert dataset["customviz"] == [{"url": "http://lala"}]

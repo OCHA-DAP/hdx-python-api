@@ -2141,6 +2141,28 @@ class Dataset(HDXObject):
             )
         return self._remove_string_from_commastring("file_types", filetype)
 
+    def set_custom_viz(self, url: str) -> None:
+        """Set custom visualization url for dataset
+
+        Args:
+            url (str): Custom visualization url
+
+        Returns:
+            None
+        """
+        self.data["customviz"] = [{"url": url}]
+
+    def get_custom_viz(self) -> Optional[str]:
+        """Get custom visualization url for dataset
+
+        Returns:
+            Optional[str]: Custom visualization url or None:
+        """
+        viz = self.data.get("customviz")
+        if not isinstance(viz, list):
+            return None
+        return viz[0].get("url")
+
     def preview_off(self) -> None:
         """Set dataset preview off
 
