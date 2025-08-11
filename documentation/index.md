@@ -27,7 +27,7 @@ upload your datasets to HDX.
         -   [Tags](#tags)
         -   [Maintainer](#maintainer)
         -   [Organization](#organization)
-        -   [Custom Visualization](#customviz)
+        -   [Custom Visualization](#custom-visualization)
         -   [Resource Generation](#resource-generation)
         -   [QuickCharts Generation](#quickcharts-generation)
     -   [Resource Specific Operations](#resource-specific-operations)
