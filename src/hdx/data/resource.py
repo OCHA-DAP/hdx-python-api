@@ -1,5 +1,6 @@
 """Resource class containing all logic for creating, checking, and updating resources."""
 
+import hashlib
 import logging
 import warnings
 from datetime import datetime
@@ -358,15 +359,17 @@ class Resource(HDXObject):
         self.check_url_filetoupload()
         self._check_required_fields("resource", ignore_fields)
 
-    def _get_files(self) -> Dict:
-        """Return the files parameter for CKANAPI
+    def _get_hash(self) -> str:
+        """Return the hash of file to upload
 
         Returns:
-            Dict: files parameter for CKANAPI
+            str: Hash of file to upload
         """
-        if self.file_to_upload is None:
-            return {}
-        return {"upload": self.file_to_upload}
+        md5 = hashlib.md5()
+        f = open(self.file_to_upload, "rb")
+        while chunk := f.read(4096):
+            md5.update(chunk)
+        return md5.hexdigest()
 
     def _resource_merge_hdx_update(
         self,
@@ -384,14 +387,21 @@ class Resource(HDXObject):
             None
         """
         data_updated = kwargs.pop("data_updated", self.data_updated)
-        if data_updated and not self.file_to_upload:
+        files = {}
+        if self.file_to_upload:
+            hash = self._get_hash()
+            if hash != self.data.get("hash"):  # update file if hash has changed
+                files["upload"] = self.file_to_upload
+                self.old_data["hash"] = hash
+        elif data_updated:
             # Should not output timezone info here
             self.old_data["last_modified"] = now_utc_notz().isoformat(
                 timespec="microseconds"
             )
             self.data_updated = False
-            # old_data will be merged into data in the next step
-        self._merge_hdx_update("resource", "id", self._get_files(), True, **kwargs)
+
+        # old_data will be merged into data in the next step
+        self._merge_hdx_update("resource", "id", files, True, **kwargs)
 
     def update_in_hdx(self, **kwargs: Any) -> None:
         """Check if resource exists in HDX and if so, update it. To indicate
@@ -441,7 +451,11 @@ class Resource(HDXObject):
                 del self.data["url"]
             self._resource_merge_hdx_update(**kwargs)
         else:
-            self._save_to_hdx("create", "name", self._get_files(), True)
+            files = {}
+            if self.file_to_upload:
+                files["upload"] = self.file_to_upload
+                self.data["hash"] = self._get_hash()
+            self._save_to_hdx("create", "name", files, True)
 
     def delete_from_hdx(self) -> None:
         """Deletes a resource from HDX
