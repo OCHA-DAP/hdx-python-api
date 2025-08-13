@@ -898,6 +898,7 @@ class Dataset(HDXObject):
                     ]
                     logger.warning(f"Resource exists. Updating {resource['name']}")
                     FilestoreHelper.dataset_update_filestore_resource(
+                        resource,
                         resource_data_to_update,
                         filestore_resources,
                         i,
@@ -930,13 +931,15 @@ class Dataset(HDXObject):
                 ):
                     if len(self.resources) > i:
                         updated_resource_name = resource_data_to_update["name"]
-                        resource_name = self.resources[i]["name"]
+                        resource = self.resources[i]
+                        resource_name = resource["name"]
                         logger.warning(f"Resource exists. Updating {resource_name}")
                         if resource_name != updated_resource_name:
                             logger.warning(
                                 f"Changing resource name to: {updated_resource_name}"
                             )
                         FilestoreHelper.dataset_update_filestore_resource(
+                            resource,
                             resource_data_to_update,
                             filestore_resources,
                             i,

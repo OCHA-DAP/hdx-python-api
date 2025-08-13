@@ -206,7 +206,7 @@ class TestDatasetNoncore:
             == "https://feature.data-humdata-org.ahconu.org/api/3/action/package_show?id=MyDataset1"
         )
 
-    def test_get_set_date_of_dataset(self):
+    def test_get_set_date_of_dataset(self, configuration):
         dataset = Dataset({"dataset_date": "[2020-01-07T00:00:00 TO *]"})
         result = dataset.get_time_period(today=datetime(2020, 11, 17))
         assert result == {
@@ -259,7 +259,7 @@ class TestDatasetNoncore:
         retval = dataset.set_time_period_year_range((2005, 2002, 2003))
         assert retval == [2002, 2003, 2005]
 
-    def test_is_set_subnational(self):
+    def test_is_set_subnational(self, configuration):
         datasetdata = copy.deepcopy(dataset_data)
         dataset = Dataset(datasetdata)
         assert dataset["subnational"] == "1"
@@ -963,7 +963,7 @@ class TestDatasetNoncore:
         assert dataset["title"] == "Mon_State_Village_Tract_Boundaries 9999 99"
         assert dataset["dataset_date"] == "[2001-01-01T00:00:00 TO 2001-12-31T23:59:59]"
 
-    def test_load_save_to_json(self, vocabulary_read):
+    def test_load_save_to_json(self, configuration, vocabulary_read):
         with temp_dir(
             "LoadSaveDatasetJSON",
             delete_on_success=True,
@@ -1011,7 +1011,7 @@ class TestDatasetNoncore:
             dataset = Dataset.load_from_json(path)
             assert dataset is None
 
-    def test_custom_viz(self):
+    def test_custom_viz(self, configuration):
         dataset = Dataset({"name": "lala", "title": "title", "notes": "description"})
         url = "http://lala"
         dataset.set_custom_viz(url)

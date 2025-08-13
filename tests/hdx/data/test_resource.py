@@ -382,6 +382,8 @@ class TestResource:
                         resultdictcopy["url"] = (
                             f"http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/{filename}"
                         )
+                        resultdictcopy["size"] = datadict["size"]
+                        resultdictcopy["hash"] = datadict["hash"]
                     resultdictcopy["state"] = datadict["state"]
 
                     result = json.dumps(resultdictcopy)
@@ -701,7 +703,7 @@ class TestResource:
         resource.check_url_filetoupload()
         resource.check_required_fields()
 
-    def test_create_in_hdx(self, configuration, date_pattern, post_create):
+    def test_create_in_hdx(self, configuration, date_pattern, post_create, test_data):
         resource = Resource()
         with pytest.raises(HDXError):
             resource.create_in_hdx()
@@ -723,9 +725,8 @@ class TestResource:
 
         resource_data_copy = copy.deepcopy(resource_data)
         resource = Resource(resource_data_copy)
-        filetoupload = join("tests", "fixtures", "test_data.csv")
-        resource.set_file_to_upload(filetoupload)
-        assert resource.get_file_to_upload() == filetoupload
+        resource.set_file_to_upload(test_data)
+        assert resource.get_file_to_upload() == test_data
         resource.create_in_hdx()
         assert resource["url_type"] == "upload"
         assert resource["resource_type"] == "file.upload"
@@ -733,13 +734,17 @@ class TestResource:
             resource["url"]
             == "http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv"
         )
+        assert resource["size"] == "1548"
+        assert resource["hash"] == "3790da698479326339fa99a074cbc1f7"
         assert resource["state"] == "active"
-        resource.set_file_to_upload(filetoupload)
+        resource.set_file_to_upload(test_data)
         resource.create_in_hdx()
         assert (
             resource["url"]
             == "http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv"
         )
+        assert resource["size"] == "1548"
+        assert resource["hash"] == "3790da698479326339fa99a074cbc1f7"
         resource_data_copy["name"] = "MyResource2"
         resource = Resource(resource_data_copy)
         with pytest.raises(HDXError):
@@ -750,7 +755,7 @@ class TestResource:
         with pytest.raises(HDXError):
             resource.create_in_hdx()
 
-    def test_update_in_hdx(self, configuration, date_pattern, post_update):
+    def test_update_in_hdx(self, configuration, date_pattern, post_update, test_data):
         resource = Resource()
         resource["id"] = "NOTEXIST"
         with pytest.raises(HDXError):
@@ -783,8 +788,7 @@ class TestResource:
         match = date_pattern.search(resource["last_modified"])
         assert match
 
-        filetoupload = join("tests", "fixtures", "test_data.csv")
-        resource.set_file_to_upload(filetoupload, guess_format_from_suffix=True)
+        resource.set_file_to_upload(test_data, guess_format_from_suffix=True)
         assert resource["format"] == "csv"
         resource.update_in_hdx()
         assert resource["url_type"] == "upload"
@@ -793,6 +797,8 @@ class TestResource:
             resource["url"]
             == "http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv"
         )
+        assert resource["size"] == "1548"
+        assert resource["hash"] == "3790da698479326339fa99a074cbc1f7"
         assert resource["state"] == "active"
 
         resource["id"] = "NOTEXIST"

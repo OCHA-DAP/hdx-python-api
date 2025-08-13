@@ -36,6 +36,11 @@ def project_config_yaml():
 
 
 @pytest.fixture(scope="session")
+def test_data(fixturesfolder):
+    return join(fixturesfolder, "test_data.csv")
+
+
+@pytest.fixture(scope="session")
 def locations():
     Locations.set_validlocations(
         [

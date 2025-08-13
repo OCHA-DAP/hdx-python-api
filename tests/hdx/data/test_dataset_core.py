@@ -186,10 +186,6 @@ def mockhxlupdate(url, datadict):
 
 class TestDatasetCore:
     @pytest.fixture(scope="class")
-    def test_file(self):
-        return join("tests", "fixtures", "test_data.csv")
-
-    @pytest.fixture(scope="class")
     def static_yaml(self):
         return join("tests", "fixtures", "config", "hdx_dataset_static.yaml")
 
@@ -512,12 +508,12 @@ class TestDatasetCore:
         dataset = Dataset.read_from_hdx("TEST3")
         assert dataset is None
 
-    def test_revise(self, configuration, test_file, post_revise):
+    def test_revise(self, configuration, test_data, post_revise):
         dataset = Dataset.revise(
             {"name": "MyDataset1"},
             filter=["-resources__0__description"],
             update={"resources": [{"description": "haha"}]},
-            files_to_upload={"update__resources__0__upload": test_file},
+            files_to_upload={"update__resources__0__upload": test_data},
         )
         assert dataset["id"] == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
         assert dataset["name"] == "MyDataset1"

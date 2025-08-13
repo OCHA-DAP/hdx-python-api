@@ -1,6 +1,5 @@
 """Resource class containing all logic for creating, checking, and updating resources."""
 
-import hashlib
 import logging
 import warnings
 from datetime import datetime
@@ -12,6 +11,7 @@ import hdx.data.dataset
 from hdx.api.configuration import Configuration
 from hdx.api.utilities.date_helper import DateHelper
 from hdx.api.utilities.filestore_helper import FilestoreHelper
+from hdx.api.utilities.size_hash import get_size_and_hash
 from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.data.resource_view import ResourceView
 from hdx.utilities.dateparse import now_utc, now_utc_notz, parse_date
@@ -359,18 +359,6 @@ class Resource(HDXObject):
         self.check_url_filetoupload()
         self._check_required_fields("resource", ignore_fields)
 
-    def _get_hash(self) -> str:
-        """Return the hash of file to upload
-
-        Returns:
-            str: Hash of file to upload
-        """
-        md5 = hashlib.md5()
-        f = open(self.file_to_upload, "rb")
-        while chunk := f.read(4096):
-            md5.update(chunk)
-        return md5.hexdigest()
-
     def _resource_merge_hdx_update(
         self,
         **kwargs: Any,
@@ -389,9 +377,16 @@ class Resource(HDXObject):
         data_updated = kwargs.pop("data_updated", self.data_updated)
         files = {}
         if self.file_to_upload:
-            hash = self._get_hash()
-            if hash != self.data.get("hash"):  # update file if hash has changed
+            file_format = self.old_data.get("format", "").lower()
+            size, hash = get_size_and_hash(self.file_to_upload, file_format)
+            if size == self.data.get("size") and hash == self.data.get("hash"):
+                # ensure last_modified is not updated if file hasn't changed
+                if "last_modified" in self.data:
+                    del self.data["last_modified"]
+            else:
+                # update file if size or hash has changed
                 files["upload"] = self.file_to_upload
+                self.old_data["size"] = size
                 self.old_data["hash"] = hash
         elif data_updated:
             # Should not output timezone info here
@@ -403,7 +398,7 @@ class Resource(HDXObject):
         # old_data will be merged into data in the next step
         self._merge_hdx_update("resource", "id", files, True, **kwargs)
 
-    def update_in_hdx(self, **kwargs: Any) -> None:
+    def update_in_hdx(self, **kwargs: Any) -> int:
         """Check if resource exists in HDX and if so, update it. To indicate
         that the data in an external resource (given by a URL) has been
         updated, set data_updated to True, which will result in the resource
@@ -418,7 +413,7 @@ class Resource(HDXObject):
             date_data_updated (datetime): Date to use for last_modified. Default to None.
 
         Returns:
-            None
+            int: Return status code
         """
         self._check_load_existing_object("resource", "id")
         if self.file_to_upload and "url" in self.data:
@@ -454,7 +449,9 @@ class Resource(HDXObject):
             files = {}
             if self.file_to_upload:
                 files["upload"] = self.file_to_upload
-                self.data["hash"] = self._get_hash()
+                self.data["size"], self.data["hash"] = get_size_and_hash(
+                    self.file_to_upload, self.get_format()
+                )
             self._save_to_hdx("create", "name", files, True)
 
     def delete_from_hdx(self) -> None:

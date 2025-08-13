@@ -2,6 +2,7 @@
 
 from typing import TYPE_CHECKING, Any, Dict
 
+from hdx.api.utilities.size_hash import get_size_and_hash
 from hdx.utilities.dateparse import now_utc_notz
 
 if TYPE_CHECKING:
@@ -60,12 +61,17 @@ class FilestoreHelper:
         cls.resource_check_required_fields(resource_data_to_update, **kwargs)
         file_to_upload = resource_data_to_update.get_file_to_upload()
         if file_to_upload:
+            file_format = resource_data_to_update.get("format", "").lower()
+            size, hash = get_size_and_hash(file_to_upload, file_format)
             filestore_resources[resource_index] = file_to_upload
             resource_data_to_update["url"] = cls.temporary_url
+            resource_data_to_update["size"] = size
+            resource_data_to_update["hash"] = hash
 
     @classmethod
     def dataset_update_filestore_resource(
         cls,
+        original_resource_data: "Resource",
         resource_data_to_update: "Resource",
         filestore_resources: Dict[int, str],
         resource_index: int,
@@ -73,6 +79,7 @@ class FilestoreHelper:
         """Helper method to merge updated resource from dataset into HDX resource read from HDX including filestore.
 
         Args:
+            original_resource_data (Resource): Original resource from dataset
             resource_data_to_update (Resource): Updated resource from dataset
             filestore_resources (Dict[int, str]): List of (index of resources, file to upload)
             resource_index (int): Index of resource
@@ -82,11 +89,21 @@ class FilestoreHelper:
         """
         file_to_upload = resource_data_to_update.get_file_to_upload()
         if file_to_upload:
-            filestore_resources[resource_index] = file_to_upload
-            resource_data_to_update["url"] = cls.temporary_url
-
-        data_updated = resource_data_to_update.is_marked_data_updated()
-        if data_updated:
+            file_format = resource_data_to_update.get("format", "").lower()
+            size, hash = get_size_and_hash(file_to_upload, file_format)
+            if size == original_resource_data.get(
+                "size"
+            ) and hash == original_resource_data.get("hash"):
+                # ensure last_modified is not updated if file hasn't changed
+                if "last_modified" in resource_data_to_update:
+                    del resource_data_to_update["last_modified"]
+            else:
+                # update file if size or hash has changed
+                filestore_resources[resource_index] = file_to_upload
+                resource_data_to_update["url"] = cls.temporary_url
+                resource_data_to_update["size"] = size
+                resource_data_to_update["hash"] = hash
+        elif resource_data_to_update.is_marked_data_updated():
             # Should not output timezone info here
             resource_data_to_update["last_modified"] = now_utc_notz().isoformat(
                 timespec="microseconds"
