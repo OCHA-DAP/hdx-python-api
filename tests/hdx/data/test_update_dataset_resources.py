@@ -104,6 +104,7 @@ class TestUpdateDatasetResourcesLogic:
             resources_to_delete,
             filestore_resources,
             new_resource_order,
+            statuses,
         ) = dataset._dataset_update_resources(True, True, True, True)
         assert resources_to_update == expected_resources_to_update
         assert resources_to_delete == [8, 2, 1, 0]
@@ -129,6 +130,17 @@ class TestUpdateDatasetResourcesLogic:
             ("Demographic and Socio-economic indicator list", "csv"),
             ("QuickCharts-SDG 4 Global and Thematic data", "csv"),
         ]
+        assert statuses == {
+            "Demographic and Socio-economic data": 2,
+            "Demographic and Socio-economic indicator list": 2,
+            "Other Policy Relevant Indicators data": 2,
+            "Other Policy Relevant Indicators indicator list": 2,
+            "Other Policy Relevant Indicators metadata": 2,
+            "QuickCharts-SDG 4 Global and Thematic data": 2,
+            "SDG 4 Global and Thematic data": 2,
+            "SDG 4 Global and Thematic indicator list": 2,
+            "SDG 4 Global and Thematic metadata": 2,
+        }
         dataset._prepare_hdx_call(dataset.old_data, {})
         assert (
             dataset["updated_by_script"]

@@ -362,9 +362,16 @@ class Resource(HDXObject):
     def _resource_merge_hdx_update(
         self,
         **kwargs: Any,
-    ) -> None:
+    ) -> int:
         """Helper method to update last_modified for external resources if
         data_updated is True, then check if HDX object exists and update it.
+        Returns status code where:
+        0 = no file to upload and last_modified set to now
+        (data_updated flag is True),
+        1 = no file to upload and data_updated flag is False,
+        2 = file uploaded to filestore (either hash or size of file has changed),
+        3 = file not uploaded to filestore (hash and size of file are the same),
+        4 = file not uploaded (hash, size unchanged), last_modified field ignored
 
         Args:
             **kwargs: See below
@@ -372,7 +379,7 @@ class Resource(HDXObject):
             data_updated (bool): If True, set last_modified to now. Defaults to False.
 
         Returns:
-            None
+            int: Status code
         """
         data_updated = kwargs.pop("data_updated", self.data_updated)
         files = {}
@@ -383,20 +390,28 @@ class Resource(HDXObject):
                 # ensure last_modified is not updated if file hasn't changed
                 if "last_modified" in self.data:
                     del self.data["last_modified"]
+                    status = 4
+                else:
+                    status = 3
             else:
                 # update file if size or hash has changed
                 files["upload"] = self.file_to_upload
                 self.old_data["size"] = size
                 self.old_data["hash"] = hash
+                status = 2
         elif data_updated:
             # Should not output timezone info here
             self.old_data["last_modified"] = now_utc_notz().isoformat(
                 timespec="microseconds"
             )
             self.data_updated = False
+            status = 0
+        else:
+            status = 1
 
         # old_data will be merged into data in the next step
         self._merge_hdx_update("resource", "id", files, True, **kwargs)
+        return status
 
     def update_in_hdx(self, **kwargs: Any) -> int:
         """Check if resource exists in HDX and if so, update it. To indicate
@@ -406,6 +421,14 @@ class Resource(HDXObject):
         is used to supply a file, the resource last_modified field is set to
         now automatically regardless of the value of data_updated.
 
+        Returns status code where:
+        0 = no file to upload and last_modified set to now
+        (data_updated flag is True),
+        1 = no file to upload and data_updated flag is False,
+        2 = file uploaded to filestore (either hash or size of file has changed),
+        3 = file not uploaded to filestore (hash and size of file are the same),
+        4 = file not uploaded (hash, size unchanged), given last_modified ignored
+
         Args:
             **kwargs: See below
             operation (string): Operation to perform eg. patch. Defaults to update.
@@ -413,14 +436,14 @@ class Resource(HDXObject):
             date_data_updated (datetime): Date to use for last_modified. Default to None.
 
         Returns:
-            int: Return status code
+            int: Status code
         """
         self._check_load_existing_object("resource", "id")
         if self.file_to_upload and "url" in self.data:
             del self.data["url"]
-        self._resource_merge_hdx_update(**kwargs)
+        return self._resource_merge_hdx_update(**kwargs)
 
-    def create_in_hdx(self, **kwargs: Any) -> None:
+    def create_in_hdx(self, **kwargs: Any) -> int:
         """Check if resource exists in HDX and if so, update it, otherwise
         create it. To indicate that the data in an external resource (given by
         a URL) has been updated, set data_updated to True, which will result in
@@ -429,13 +452,22 @@ class Resource(HDXObject):
         field is set to now automatically regardless of the value of
         data_updated.
 
+        Returns status code where:
+        0 = no file to upload and last_modified set to now
+        (resource creation or data_updated flag is True),
+        1 = no file to upload and data_updated flag is False,
+        2 = file uploaded to filestore (resource creation or either hash or size of file
+        has changed),
+        3 = file not uploaded to filestore (hash and size of file are the same),
+        4 = file not uploaded (hash, size unchanged), given last_modified ignored
+
         Args:
             **kwargs: See below
             data_updated (bool): If True, set last_modified to now. Defaults to False.
             date_data_updated (datetime): Date to use for last_modified. Default to None.
 
         Returns:
-            None
+            int: Status code
         """
         if "ignore_check" not in kwargs:  # allow ignoring of field checks
             self.check_required_fields()
@@ -444,7 +476,7 @@ class Resource(HDXObject):
             logger.warning(f"{'resource'} exists. Updating {id}")
             if self.file_to_upload and "url" in self.data:
                 del self.data["url"]
-            self._resource_merge_hdx_update(**kwargs)
+            return self._resource_merge_hdx_update(**kwargs)
         else:
             files = {}
             if self.file_to_upload:
@@ -452,7 +484,11 @@ class Resource(HDXObject):
                 self.data["size"], self.data["hash"] = get_size_and_hash(
                     self.file_to_upload, self.get_format()
                 )
+                status = 2
+            else:
+                status = 0
             self._save_to_hdx("create", "name", files, True)
+            return status
 
     def delete_from_hdx(self) -> None:
         """Deletes a resource from HDX

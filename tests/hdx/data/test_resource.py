@@ -714,7 +714,8 @@ class TestResource:
 
         resource_data_copy = copy.deepcopy(resource_data)
         resource = Resource(resource_data_copy)
-        resource.create_in_hdx()
+        status = resource.create_in_hdx()
+        assert status == 0
         assert resource["id"] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
         assert resource["url_type"] == "api"
         assert resource["resource_type"] == "api"
@@ -727,7 +728,8 @@ class TestResource:
         resource = Resource(resource_data_copy)
         resource.set_file_to_upload(test_data)
         assert resource.get_file_to_upload() == test_data
-        resource.create_in_hdx()
+        status = resource.create_in_hdx()
+        assert status == 2
         assert resource["url_type"] == "upload"
         assert resource["resource_type"] == "file.upload"
         assert (
@@ -738,7 +740,8 @@ class TestResource:
         assert resource["hash"] == "3790da698479326339fa99a074cbc1f7"
         assert resource["state"] == "active"
         resource.set_file_to_upload(test_data)
-        resource.create_in_hdx()
+        status = resource.create_in_hdx()
+        assert status == 2
         assert (
             resource["url"]
             == "http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv"
@@ -771,7 +774,8 @@ class TestResource:
         resource.set_format("XLSX")
         resource["id"] = "74b74ae1-df0c-4716-829f-4f939a046811"
         resource["name"] = "MyResource1"
-        resource.update_in_hdx(data_updated=True)
+        status = resource.update_in_hdx(data_updated=True)
+        assert status == 0
         assert resource["id"] == "74b74ae1-df0c-4716-829f-4f939a046811"
         assert resource["format"] == "xlsx"
         resource.set_format(".xsl")
@@ -790,7 +794,8 @@ class TestResource:
 
         resource.set_file_to_upload(test_data, guess_format_from_suffix=True)
         assert resource["format"] == "csv"
-        resource.update_in_hdx()
+        status = resource.update_in_hdx()
+        assert status == 2
         assert resource["url_type"] == "upload"
         assert resource["resource_type"] == "file.upload"
         assert (
@@ -820,7 +825,8 @@ class TestResource:
         resource.mark_data_updated()
         assert resource.data_updated is True
         assert resource.is_marked_data_updated() is True
-        resource.create_in_hdx()
+        status = resource.create_in_hdx()
+        assert status == 0
         assert resource.is_marked_data_updated() is False
         assert resource["id"] == "74b74ae1-df0c-4716-829f-4f939a046811"
         assert resource.get_format() == "xlsx"
@@ -828,7 +834,8 @@ class TestResource:
         match = date_pattern.search(resource["last_modified"])
         assert match
         resource["format"] = "Geoservice"
-        resource.update_in_hdx()
+        status = resource.update_in_hdx()
+        assert status == 1
         assert resource.get_format() == "geoservice"
         resource["format"] = "NOTEXIST"
         with pytest.raises(HDXError):

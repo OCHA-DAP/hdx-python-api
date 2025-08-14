@@ -547,22 +547,27 @@ class TestDatasetCore:
         dataset = Dataset(datasetdata)
         with pytest.raises(HDXError):
             dataset.create_in_hdx()
-        dataset.create_in_hdx(allow_no_resources=True)
+        statuses = dataset.create_in_hdx(allow_no_resources=True)
+        assert statuses == {}
         assert dataset["id"] == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
         dataset = Dataset(datasetdata)
         resourcesdata = copy.deepcopy(resources_data)
         resource = Resource(resourcesdata[0])
+        resource2 = Resource(resourcesdata[1])
         del resource["description"]
         del dataset["tags"]
-        dataset.add_update_resources([resource, resource])
+        dataset.add_update_resources([resource, resource2])
         with pytest.raises(HDXError):
             dataset.create_in_hdx()
-        dataset.create_in_hdx(ignore_fields=["tags", "resource:description"])
+        statuses = dataset.create_in_hdx(ignore_fields=["tags", "resource:description"])
+        assert statuses == {"Resource1": 0, "Resource2": 0}
         dataset = Dataset(datasetdata)
         resourcesdata = copy.deepcopy(resources_data)
         resource = Resource(resourcesdata[0])
-        dataset.add_update_resources([resource, resource])
-        dataset.create_in_hdx()
+        resource2 = Resource(resourcesdata[1])
+        dataset.add_update_resources([resource, resource2])
+        statuses = dataset.create_in_hdx()
+        assert statuses == {"Resource1": 0, "Resource2": 0}
         assert dataset["id"] == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
         assert dataset["state"] == "active"
         assert len(dataset.resources) == 3
@@ -583,7 +588,8 @@ class TestDatasetCore:
         del dataset["tags"]
         with pytest.raises(HDXError):
             dataset.create_in_hdx()
-        dataset.create_in_hdx(ignore_check=True)
+        statuses = dataset.create_in_hdx(ignore_check=True)
+        assert statuses == {"Resource1": 0}
 
         config = Configuration(user_agent="test", hdx_read_only=True)
         config.setup_session_remoteckan()
@@ -603,7 +609,8 @@ class TestDatasetCore:
         del resourcesdata[0]["id"]
         del resourcesdata[1]["id"]
         dataset.add_update_resources(resourcesdata)
-        dataset.create_in_hdx()
+        statuses = dataset.create_in_hdx()
+        assert statuses == {"Resource1": 0, "Resource2": 0}
         assert dataset["id"] == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
         assert len(dataset.resources) == 3
         assert dataset.resources[0].configuration.unique == uniqueval
@@ -615,7 +622,8 @@ class TestDatasetCore:
             file = tempfile.NamedTemporaryFile(delete=False)
             resource.set_file_to_upload(file.name)
             dataset.add_update_resource(resource)
-            dataset.create_in_hdx()
+            statuses = dataset.create_in_hdx()
+            assert statuses == {"Resource1": 2}
             file.close()
             assert dataset["state"] == "active"
             assert len(dataset.resources) == 3
@@ -640,7 +648,8 @@ class TestDatasetCore:
         dataset.remove_tag("crisis-somewhere")
         dataset["id"] = "TEST1"
         dataset["name"] = "MyDataset1"
-        dataset.update_in_hdx()
+        statuses = dataset.update_in_hdx()
+        assert statuses == {"Resource1": 1, "Resource2": 1, "Resource3": 1}
         assert dataset["id"] == "TEST1"
         assert dataset["dataset_date"] == "02/26/2016"
         assert dataset.get_tags() == [
@@ -661,19 +670,23 @@ class TestDatasetCore:
             "view_type": "hdx_hxl_preview",
         }
         dataset.remove_tag("crisis-somewhere")
-        dataset.update_in_hdx(keep_crisis_tags=False)
+        statuses = dataset.update_in_hdx(keep_crisis_tags=False)
+        assert statuses == {"Resource1": 1, "Resource2": 1, "Resource3": 1}
         assert dataset.get_tags() == ["conflict", "political violence"]
         dataset.preview_resourceview = ResourceView(resourceviewdata)
-        dataset.update_in_hdx()
+        statuses = dataset.update_in_hdx()
+        assert statuses == {"Resource1": 1, "Resource2": 1, "Resource3": 1}
         assert dataset.preview_resourceview is None
-        dataset.update_in_hdx(updated_by_script="hi")
+        statuses = dataset.update_in_hdx(updated_by_script="hi")
+        assert statuses == {"Resource1": 1, "Resource2": 1, "Resource3": 1}
         pattern = r"hi \([12]\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d\)"
         match = re.search(pattern, dataset["updated_by_script"])
         assert match
-        dataset.update_in_hdx(
+        statuses = dataset.update_in_hdx(
             updated_by_script="hi",
             batch="6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d",
         )
+        assert statuses == {"Resource1": 1, "Resource2": 1, "Resource3": 1}
         match = re.search(pattern, dataset["updated_by_script"])
         assert match
         assert dataset["batch"] == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
@@ -693,23 +706,27 @@ class TestDatasetCore:
         dataset["groups"] = []
         with pytest.raises(HDXError):
             dataset.update_in_hdx()
-        dataset.update_in_hdx(ignore_check=True)
+        statuses = dataset.update_in_hdx(ignore_check=True)
+        assert statuses == {"Resource1": 1, "Resource2": 1, "Resource3": 1}
 
         # These dataset creates actually do updates
         datasetdata = copy.deepcopy(dataset_data)
         dataset = Dataset(datasetdata)
         dataset["id"] = "NOTEXIST"
         dataset["name"] = "DatasetExist"
-        dataset.create_in_hdx(allow_no_resources=True)
+        statuses = dataset.create_in_hdx(allow_no_resources=True)
+        assert statuses == {}
         assert dataset["name"] == "DatasetExist"
         datasetdata["name"] = "MyDataset1"
         datasetdata["id"] = "TEST1"
         dataset = Dataset(datasetdata)
         resourcesdata = copy.deepcopy(resources_data)
         resource = Resource(resourcesdata[0])
+        resource2 = Resource(resourcesdata[1])
         resource.mark_data_updated()
-        dataset.add_update_resources([resource, resource])
-        dataset.create_in_hdx()
+        dataset.add_update_resources([resource, resource2])
+        statuses = dataset.create_in_hdx()
+        assert statuses == {"Resource1": 0, "Resource2": 1}
         assert dataset["state"] == "active"
         assert len(dataset.resources) == 3
         resource = dataset.get_resource()
@@ -720,38 +737,52 @@ class TestDatasetCore:
         dataset = Dataset(datasetdata)
         resourcesdata = copy.deepcopy(resources_data)
         resource = Resource(resourcesdata[0])
-        dataset.add_update_resources([resource, resource])
-        dataset.create_in_hdx(match_resources_by_metadata=False)
+        resource2 = Resource(resourcesdata[1])
+        dataset.add_update_resources([resource, resource2])
+        statuses = dataset.create_in_hdx(match_resources_by_metadata=False)
+        assert statuses == {"Resource1": 1, "Resource2": 1}
         assert dataset["id"] == "TEST1"
         assert dataset["dataset_date"] == "06/04/2016"
         assert dataset["state"] == "active"
         assert len(dataset.resources) == 3
-        dataset.update_in_hdx()
+        statuses = dataset.update_in_hdx()
+        assert statuses == {"Resource1": 1, "Resource2": 1, "Resource3": 1}
         assert dataset["state"] == "active"
         assert len(dataset.resources) == 3
         dataset = Dataset.read_from_hdx("TEST4")
         dataset["id"] = "TEST4"
         assert dataset["state"] == "active"
-        dataset.update_in_hdx()
+        statuses = dataset.update_in_hdx()
+        assert statuses == {"Resource1": 1, "Resource2": 1, "Resource3": 1}
         assert len(dataset.resources) == 3
         dataset = Dataset.read_from_hdx("TEST4")
         try:
             file = tempfile.NamedTemporaryFile(delete=False)
             resource.set_file_to_upload(file.name)
             dataset.add_update_resource(resource)
-            dataset.update_in_hdx(batch="6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d")
+            statuses = dataset.update_in_hdx(
+                batch="6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
+            )
             assert len(dataset.resources) == 3
+            assert statuses == {"Resource1": 2, "Resource2": 1, "Resource3": 1}
             resource["name"] = "123"
             resource.set_file_to_upload(None)
             resource["url"] = "http://lala"
             dataset.add_update_resource(resource)
-            dataset.update_in_hdx()
+            statuses = dataset.update_in_hdx()
+            assert statuses == {"Resource1": 1, "Resource2": 1, "Resource3": 1}
             assert dataset["state"] == "active"
             assert len(dataset.resources) == 3
             del resource["id"]
-            resource["name"] = "Resource1"
+            resource["name"] = "Resource4"
             dataset.add_update_resource(resource)
-            dataset.update_in_hdx()
+            statuses = dataset.update_in_hdx()
+            assert statuses == {
+                "Resource1": 1,
+                "Resource2": 1,
+                "Resource3": 1,
+                "Resource4": 0,
+            }
             assert dataset["state"] == "active"
             assert len(dataset.resources) == 4
 
@@ -770,9 +801,16 @@ class TestDatasetCore:
             resource["name"] = "changed name"
             resource["id"] = "456"
             resource.set_file_to_upload(file.name)
-            dataset.update_in_hdx(match_resources_by_metadata=True)
+            dataset.add_update_resource(resource)
+            statuses = dataset.update_in_hdx(match_resources_by_metadata=True)
+            assert statuses == {
+                "Resource1": 1,
+                "Resource2": 1,
+                "ResourcePosition": 2,
+                "changed name": 2,
+            }
             assert dataset["state"] == "active"
-            assert len(dataset.resources) == 4
+            assert len(dataset.resources) == 5  # existing resources
 
             dataset = Dataset(datasetdata)
             resourcesdata = copy.deepcopy(resources_data)
@@ -789,7 +827,12 @@ class TestDatasetCore:
             resource["name"] = "changed name"
             resource["id"] = "456"
             resource.set_file_to_upload(file.name)
-            dataset.update_in_hdx(match_resources_by_metadata=False)
+            statuses = dataset.update_in_hdx(match_resources_by_metadata=False)
+            assert statuses == {
+                "Resource2": 1,
+                "ResourcePosition": 2,
+                "changed name": 2,
+            }
             assert dataset["state"] == "active"
             assert len(dataset.resources) == 3
             file.close()
@@ -797,24 +840,27 @@ class TestDatasetCore:
             resourcesdata = copy.deepcopy(resources_data)
             resource = Resource(resourcesdata[0])
             dataset.add_update_resource(resource)
-            dataset.update_in_hdx(remove_additional_resources=False)
+            statuses = dataset.update_in_hdx(remove_additional_resources=False)
+            assert statuses == {"Resource1": 1}
             assert dataset["state"] == "active"
             assert len(dataset.resources) == 3
             dataset = Dataset(datasetdata)
             resourcesdata = copy.deepcopy(resources_data)
             resource = Resource(resourcesdata[0])
             dataset.add_update_resource(resource)
-            dataset.update_in_hdx(remove_additional_resources=True)
+            statuses = dataset.update_in_hdx(remove_additional_resources=True)
+            assert statuses == {"Resource1": 1}
             assert dataset["state"] == "active"
             assert len(dataset.resources) == 1
             dataset = Dataset(datasetdata)
             resourcesdata = copy.deepcopy(resources_data)
             resource = Resource(resourcesdata[0])
             dataset.add_update_resource(resource)
-            dataset.update_in_hdx(
+            statuses = dataset.update_in_hdx(
                 match_resources_by_metadata=False,
                 remove_additional_resources=True,
             )
+            assert statuses == {"Resource1": 1}
             assert dataset["state"] == "active"
             assert len(dataset.resources) == 1
 
@@ -829,7 +875,8 @@ class TestDatasetCore:
             dataset["id"] = "TEST1"
             dataset["name"] = "MyDataset1"
             dataset.resources = [resources[2], resources[0], resources[1]]
-            dataset.update_in_hdx(match_resource_order=True)
+            statuses = dataset.update_in_hdx(match_resource_order=True)
+            assert statuses == {"Resource1": 1, "Resource2": 1, "Resource3": 1}
             resource_ids = [x["id"] for x in dataset.get_resources()]
             assert resource_ids == [
                 "3d777226-96aa-4239-860a-703389d16d1g",
@@ -1269,7 +1316,8 @@ class TestDatasetCore:
         with pytest.raises(HDXError):
             dataset.create_in_hdx()
         dataset["num_of_rows"] = 100
-        dataset.create_in_hdx()
+        statuses = dataset.create_in_hdx()
+        assert statuses == {}
         assert dataset["id"] == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d"
         datasetdata = copy.deepcopy(dataset_data)
         dataset = Dataset(datasetdata)

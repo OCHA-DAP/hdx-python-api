@@ -853,11 +853,15 @@ class Dataset(HDXObject):
         remove_additional_resources: bool,
         match_resource_order: bool,
         **kwargs: Any,
-    ) -> Tuple[List, List, Dict, List]:
+    ) -> Tuple[List, List, Dict, List, Dict]:
         """Helper method to compare new and existing dataset data returning
         resources to be updated, resources to be deleted, resources where files
         need to be uploaded to the filestore and if match_resource_order is
         True, then the new resource order.
+
+        Returns a tuple of resources information of the form:
+        (resources_to_update, resources_to_delete, filestore_resources,
+        new_resource_order, resource status codes)
 
         Args:
             update_resources (bool): Whether to update resources
@@ -866,7 +870,7 @@ class Dataset(HDXObject):
             match_resource_order (bool): Match order of given resources by name
 
         Returns:
-            Tuple[List, List, Dict, List]: (resources_to_update, resources_to_delete, filestore_resources, new_resource_order)
+            Tuple[List, List, Dict, List, Dict]: Tuple of resources information
         """
         # When the user sets up a dataset, "data" contains the metadata. The
         # HDX dataset update process involves copying "data" to "old_data" and
@@ -877,6 +881,7 @@ class Dataset(HDXObject):
         resources_to_update = []
         resources_to_delete = []
         filestore_resources = {}
+        statuses = {}
         if update_resources and resources_metadata_to_update:
             if match_resources_by_metadata:
                 (
@@ -896,13 +901,15 @@ class Dataset(HDXObject):
                     resource_data_to_update = resources_metadata_to_update[
                         updated_resource_matches[match_index]
                     ]
+                    resource_name = resource["name"]
                     logger.warning(f"Resource exists. Updating {resource['name']}")
-                    FilestoreHelper.dataset_update_filestore_resource(
+                    status = FilestoreHelper.dataset_update_filestore_resource(
                         resource,
                         resource_data_to_update,
                         filestore_resources,
                         i,
                     )
+                    statuses[resource_name] = status
                     resources_to_update.append(resource_data_to_update)
 
                 resource_index = len(self.resources)
@@ -910,12 +917,13 @@ class Dataset(HDXObject):
                     resource_data_to_update = resources_metadata_to_update[
                         updated_resource_index
                     ]
-                    FilestoreHelper.check_filestore_resource(
+                    status = FilestoreHelper.check_filestore_resource(
                         resource_data_to_update,
                         filestore_resources,
                         resource_index,
                         **kwargs,
                     )
+                    statuses[resource_data_to_update["name"]] = status
                     resource_index = resource_index + 1
                     resources_to_update.append(resource_data_to_update)
                 if remove_additional_resources:
@@ -938,19 +946,21 @@ class Dataset(HDXObject):
                             logger.warning(
                                 f"Changing resource name to: {updated_resource_name}"
                             )
-                        FilestoreHelper.dataset_update_filestore_resource(
+                        status = FilestoreHelper.dataset_update_filestore_resource(
                             resource,
                             resource_data_to_update,
                             filestore_resources,
                             i,
                         )
+                        statuses[updated_resource_name] = status
                     else:
-                        FilestoreHelper.check_filestore_resource(
+                        status = FilestoreHelper.check_filestore_resource(
                             resource_data_to_update,
                             filestore_resources,
                             i,
                             **kwargs,
                         )
+                        statuses[resource_data_to_update["name"]] = status
                     resources_to_update.append(resource_data_to_update)
 
                 for i, resource in enumerate(self.resources):
@@ -973,6 +983,7 @@ class Dataset(HDXObject):
             resources_to_delete,
             filestore_resources,
             new_resource_order,
+            statuses,
         )
 
     def _dataset_hdx_update(
@@ -985,11 +996,14 @@ class Dataset(HDXObject):
         create_default_views: bool,
         hxl_update: bool,
         **kwargs: Any,
-    ) -> Dict:
+    ) -> Tuple[Dict, Dict]:
         """Helper method to compare new and existing dataset data, update
         resources including those with files in the filestore, delete extra
         resources if needed and update dataset data and save the dataset and
         resources to HDX.
+
+        Returns a tuple of information of the form: (resource status codes,
+        dictionary of what gets passed to the revise call (for testing))
 
         Args:
             update_resources (bool): Whether to update resources
@@ -1001,13 +1015,14 @@ class Dataset(HDXObject):
             hxl_update (bool): Whether to call package_hxl_update.
 
         Returns:
-            Dict: Dictionary of what gets passed to the revise call (for testing)
+            Tuple[Dict, Dict]: Tuple of (resource status codes, revise call info)
         """
         (
             resources_to_update,
             resources_to_delete,
             filestore_resources,
             new_resource_order,
+            statuses,
         ) = self._dataset_update_resources(
             update_resources,
             match_resources_by_metadata,
@@ -1029,7 +1044,7 @@ class Dataset(HDXObject):
                 if not found:
                     self.old_data["tags"].append(tag)
         self._prepare_hdx_call(self.old_data, kwargs)
-        return self._revise_dataset(
+        revise_call = self._revise_dataset(
             keys_to_delete,
             resources_to_update,
             resources_to_delete,
@@ -1039,6 +1054,7 @@ class Dataset(HDXObject):
             create_default_views=create_default_views,
             **kwargs,
         )
+        return statuses, revise_call
 
     def update_in_hdx(
         self,
@@ -1050,9 +1066,18 @@ class Dataset(HDXObject):
         create_default_views: bool = True,
         hxl_update: bool = True,
         **kwargs: Any,
-    ) -> None:
+    ) -> Dict:
         """Check if dataset exists in HDX and if so, update it. match_resources_by_metadata uses ids if they are
         available, otherwise names only if names are unique or format in addition if not.
+
+        Returns a dictionary with key resource name and value status code:
+        0 = no file to upload and last_modified set to now
+        (resource creation or data_updated flag is True),
+        1 = no file to upload and data_updated flag is False,
+        2 = file uploaded to filestore (resource creation or either hash or size of file
+        has changed),
+        3 = file not uploaded to filestore (hash and size of file are the same),
+        4 = file not uploaded (hash, size unchanged), given last_modified ignored
 
         Args:
             update_resources (bool): Whether to update resources. Defaults to True.
@@ -1068,7 +1093,7 @@ class Dataset(HDXObject):
             batch (str): A string you can specify to show which datasets are part of a single batch update
 
         Returns:
-            None
+            Dict: Status codes of resources
         """
         loaded = False
         if "id" in self.data:
@@ -1081,7 +1106,7 @@ class Dataset(HDXObject):
             self._check_existing_object("dataset", "name")
             if not self._dataset_load_from_hdx(self.data["name"]):
                 raise HDXError("No existing dataset to update!")
-        self._dataset_hdx_update(
+        statuses, _ = self._dataset_hdx_update(
             update_resources=update_resources,
             match_resources_by_metadata=match_resources_by_metadata,
             keys_to_delete=keys_to_delete,
@@ -1092,6 +1117,7 @@ class Dataset(HDXObject):
             **kwargs,
         )
         logger.info(f"Updated {self.get_hdx_url()}")
+        return statuses
 
     def create_in_hdx(
         self,
@@ -1104,9 +1130,18 @@ class Dataset(HDXObject):
         create_default_views: bool = True,
         hxl_update: bool = True,
         **kwargs: Any,
-    ) -> None:
+    ) -> Dict:
         """Check if dataset exists in HDX and if so, update it, otherwise create it. match_resources_by_metadata uses
         ids if they are available, otherwise names only if names are unique or format in addition if not.
+
+        Returns a dictionary with key resource name and value status code:
+        0 = no file to upload and last_modified set to now
+        (resource creation or data_updated flag is True),
+        1 = no file to upload and data_updated flag is False,
+        2 = file uploaded to filestore (resource creation or either hash or size of file
+        has changed),
+        3 = file not uploaded to filestore (hash and size of file are the same),
+        4 = file not uploaded (hash, size unchanged), given last_modified ignored
 
         Args:
             allow_no_resources (bool): Whether to allow no resources. Defaults to False.
@@ -1123,7 +1158,7 @@ class Dataset(HDXObject):
             batch (str): A string you can specify to show which datasets are part of a single batch update
 
         Returns:
-            None
+            Dict: Status codes of resources
         """
         if "ignore_check" not in kwargs:  # allow ignoring of field checks
             self.check_required_fields(allow_no_resources=allow_no_resources, **kwargs)
@@ -1139,7 +1174,7 @@ class Dataset(HDXObject):
             if self._dataset_load_from_hdx(self.data["name"]):
                 loadedid = self.data["name"]
         if loadedid:
-            self._dataset_hdx_update(
+            statuses, _ = self._dataset_hdx_update(
                 update_resources=update_resources,
                 match_resources_by_metadata=match_resources_by_metadata,
                 keys_to_delete=keys_to_delete,
@@ -1150,14 +1185,16 @@ class Dataset(HDXObject):
                 **kwargs,
             )
             logger.info(f"Updated {self.get_hdx_url()}")
-            return
+            return statuses
 
+        statuses = {}
         filestore_resources = {}
         if self.resources:
             for i, resource in enumerate(self.resources):
-                FilestoreHelper.check_filestore_resource(
+                status = FilestoreHelper.check_filestore_resource(
                     resource, filestore_resources, i, **kwargs
                 )
+                statuses[resource["name"]] = status
         self.unseparate_resources()
         self._prepare_hdx_call(self.data, kwargs)
         kwargs["operation"] = "create"
@@ -1178,6 +1215,7 @@ class Dataset(HDXObject):
                 **kwargs,
             )
         logger.info(f"Created {self.get_hdx_url()}")
+        return statuses
 
     def delete_from_hdx(self) -> None:
         """Deletes a dataset from HDX.

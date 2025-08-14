@@ -177,7 +177,7 @@ class TestUpdateLogic:
         self.add_dataset_resources(dataset, resources_yaml)
         dataset.old_data = new_dataset.data
         dataset.old_data["resources"] = new_dataset.resources
-        results = dataset._dataset_hdx_update(
+        statuses, results = dataset._dataset_hdx_update(
             update_resources=True,
             match_resources_by_metadata=True,
             keys_to_delete=[],
@@ -187,6 +187,61 @@ class TestUpdateLogic:
             hxl_update=False,
             test=True,
         )
+        assert statuses == {
+            "All Health Indicators for Zambia": 2,
+            "Child health Indicators for Zambia": 2,
+            "Demographic and socioeconomic statistics Indicators for Zambia": 2,
+            "Essential health technologies Indicators for Zambia": 2,
+            "FINANCIAL PROTECTION Indicators for Zambia": 2,
+            "Global Observatory for eHealth (GOe) Indicators for Zambia": 2,
+            "HIV/AIDS and other STIs Indicators for Zambia": 2,
+            "Health Equity Monitor Indicators for Zambia": 2,
+            "Health financing Indicators for Zambia": 2,
+            "Health systems Indicators for Zambia": 2,
+            "Health workforce Indicators for Zambia": 2,
+            "ICD Indicators for Zambia": 2,
+            "Immunization Indicators for Zambia": 2,
+            "Infectious diseases Indicators for Zambia": 2,
+            "Infrastructure Indicators for Zambia": 2,
+            "Injuries and violence Indicators for Zambia": 2,
+            "Insecticide resistance Indicators for Zambia": 2,
+            "International Health Regulations (2005) monitoring framework Indicators for Zambia": 2,
+            "Malaria Indicators for Zambia": 2,
+            "Medical equipment Indicators for Zambia": 2,
+            "Millennium Development Goals (MDGs) Indicators for Zambia": 2,
+            "Mortality and global health estimates Indicators for Zambia": 2,
+            "NLIS Indicators for Zambia": 2,
+            "Negelected tropical diseases Indicators for Zambia": 2,
+            "Neglected Tropical Diseases Indicators for Zambia": 2,
+            "Neglected tropical diseases Indicators for Zambia": 2,
+            "Noncommunicable diseases CCS Indicators for Zambia": 2,
+            "Noncommunicable diseases Indicators for Zambia": 2,
+            "Noncommunicable diseases and mental health Indicators for Zambia": 2,
+            "Nutrition Indicators for Zambia": 2,
+            "Public health and environment Indicators for Zambia": 2,
+            "QuickCharts Indicators for Zambia": 2,
+            "RSUD: GOVERNANCE, POLICY AND FINANCING : PREVENTION Indicators for Zambia": 2,
+            "RSUD: GOVERNANCE, POLICY AND FINANCING: FINANCING Indicators for Zambia": 2,
+            "RSUD: GOVERNANCE, POLICY AND FINANCING: TREATMENT Indicators for Zambia": 2,
+            "RSUD: HUMAN RESOURCES Indicators for Zambia": 2,
+            "RSUD: INFORMATION SYSTEMS Indicators for Zambia": 2,
+            "RSUD: SERVICE ORGANIZATION AND DELIVERY: PHARMACOLOGICAL TREATMENT Indicators for Zambia": 2,
+            "RSUD: SERVICE ORGANIZATION AND DELIVERY: PREVENTION PROGRAMS AND PROVIDERS Indicators for Zambia": 2,
+            "RSUD: SERVICE ORGANIZATION AND DELIVERY: SCREENING AND BRIEF INTERVENTIONS Indicators for Zambia": 2,
+            "RSUD: SERVICE ORGANIZATION AND DELIVERY: SPECIAL PROGRAMMES AND SERVICES Indicators for Zambia": 2,
+            "RSUD: SERVICE ORGANIZATION AND DELIVERY: TREATMENT CAPACITY AND TREATMENT COVERAGE Indicators for Zambia": 2,
+            "RSUD: SERVICE ORGANIZATION AND DELIVERY: TREATMENT SECTORS AND PROVIDERS Indicators for Zambia": 2,
+            "RSUD: YOUTH Indicators for Zambia": 2,
+            "SEXUAL AND REPRODUCTIVE HEALTH Indicators for Zambia": 2,
+            "Substance use and mental health Indicators for Zambia": 2,
+            "Sustainable development goals Indicators for Zambia": 2,
+            "TOBACCO Indicators for Zambia": 2,
+            "Tuberculosis Indicators for Zambia": 2,
+            "UHC Indicators for Zambia": 2,
+            "Universal Health Coverage Indicators for Zambia": 2,
+            "Urban health Indicators for Zambia": 2,
+            "World Health Statistics Indicators for Zambia": 2,
+        }
         assert results["filter"] == ["-resources__13"]
         update = results["update"]
         del update["updated_by_script"]
@@ -845,7 +900,7 @@ class TestUpdateLogic:
         self.add_dataset_resources(dataset, resources_yaml)
         dataset.old_data = new_dataset.data
         dataset.old_data["resources"] = new_dataset.resources
-        results = dataset._dataset_hdx_update(
+        statuses, results = dataset._dataset_hdx_update(
             update_resources=True,
             match_resources_by_metadata=True,
             keys_to_delete=[],
@@ -855,6 +910,61 @@ class TestUpdateLogic:
             hxl_update=False,
             test=True,
         )
+        assert statuses == {
+            "All Health Indicators for Zambia": 2,
+            "Child health Indicators for Zambia": 2,
+            "Demographic and socioeconomic statistics Indicators for Zambia": 2,
+            "Essential health technologies Indicators for Zambia": 2,
+            "FINANCIAL PROTECTION Indicators for Zambia": 2,
+            "Global Observatory for eHealth (GOe) Indicators for Zambia": 2,
+            "HIV/AIDS and other STIs Indicators for Zambia": 2,
+            "Health Equity Monitor Indicators for Zambia": 2,
+            "Health financing Indicators for Zambia": 2,
+            "Health systems Indicators for Zambia": 2,
+            "Health workforce Indicators for Zambia": 2,
+            "ICD Indicators for Zambia": 2,
+            "Immunization Indicators for Zambia": 2,
+            "Infectious diseases Indicators for Zambia": 2,
+            "Infrastructure Indicators for Zambia": 2,
+            "Injuries and violence Indicators for Zambia": 2,
+            "Insecticide resistance Indicators for Zambia": 2,
+            "International Health Regulations (2005) monitoring framework Indicators for Zambia": 2,
+            "Malaria Indicators for Zambia": 2,
+            "Medical equipment Indicators for Zambia": 2,
+            "Millennium Development Goals (MDGs) Indicators for Zambia": 2,
+            "Mortality and global health estimates Indicators for Zambia": 2,
+            "Negelected tropical diseases Indicators for Zambia": 2,
+            "Neglected Tropical Diseases Indicators for Zambia": 2,
+            "Neglected tropical diseases Indicators for Zambia": 2,
+            "Noncommunicable diseases CCS Indicators for Zambia": 2,
+            "Noncommunicable diseases Indicators for Zambia": 2,
+            "Noncommunicable diseases and mental health Indicators for Zambia": 2,
+            "Nutrition Indicators for Zambia": 2,
+            "Public health and environment Indicators for Zambia": 2,
+            "QuickCharts Indicators for Zambia": 2,
+            "RSUD: GOVERNANCE, POLICY AND FINANCING : PREVENTION Indicators for Zambia": 2,
+            "RSUD: GOVERNANCE, POLICY AND FINANCING: FINANCING Indicators for Zambia": 2,
+            "RSUD: GOVERNANCE, POLICY AND FINANCING: TREATMENT Indicators for Zambia": 2,
+            "RSUD: HUMAN RESOURCES Indicators for Zambia": 2,
+            "RSUD: INFORMATION SYSTEMS Indicators for Zambia": 2,
+            "RSUD: SERVICE ORGANIZATION AND DELIVERY: PHARMACOLOGICAL TREATMENT Indicators for Zambia": 2,
+            "RSUD: SERVICE ORGANIZATION AND DELIVERY: PREVENTION PROGRAMS AND PROVIDERS Indicators for Zambia": 2,
+            "RSUD: SERVICE ORGANIZATION AND DELIVERY: SCREENING AND BRIEF INTERVENTIONS Indicators for Zambia": 2,
+            "RSUD: SERVICE ORGANIZATION AND DELIVERY: SPECIAL PROGRAMMES AND SERVICES Indicators for Zambia": 2,
+            "RSUD: SERVICE ORGANIZATION AND DELIVERY: TREATMENT CAPACITY AND TREATMENT COVERAGE Indicators for Zambia": 2,
+            "RSUD: SERVICE ORGANIZATION AND DELIVERY: TREATMENT SECTORS AND PROVIDERS Indicators for Zambia": 2,
+            "RSUD: YOUTH Indicators for Zambia": 2,
+            "SEXUAL AND REPRODUCTIVE HEALTH Indicators for Zambia": 2,
+            "Substance use and mental health Indicators for Zambia": 2,
+            "Sustainable development goals Indicators for Zambia": 2,
+            "TOBACCO Indicators for Zambia": 2,
+            "Tobacco Indicators for Zambia": 2,
+            "Tuberculosis Indicators for Zambia": 2,
+            "UHC Indicators for Zambia": 2,
+            "Universal Health Coverage Indicators for Zambia": 2,
+            "Urban health Indicators for Zambia": 2,
+            "World Health Statistics Indicators for Zambia": 2,
+        }
         assert results["filter"] == ["-resources__53"]
         update = results["update"]
         del update["updated_by_script"]
@@ -1513,7 +1623,7 @@ class TestUpdateLogic:
         self.add_dataset_resources(dataset, resources_yaml, include=[0, 1, 2])
         dataset.old_data = new_dataset.data
         dataset.old_data["resources"] = new_dataset.resources
-        results = dataset._dataset_hdx_update(
+        statuses, results = dataset._dataset_hdx_update(
             update_resources=True,
             match_resources_by_metadata=True,
             keys_to_delete=[],
@@ -1523,6 +1633,10 @@ class TestUpdateLogic:
             hxl_update=False,
             test=True,
         )
+        assert statuses == {
+            "All Health Indicators for Zambia": 2,
+            "Millennium Development Goals (MDGs) Indicators for Zambia": 2,
+        }
         assert results["filter"] == ["-resources__2", "-resources__1"]
         update = results["update"]
         del update["updated_by_script"]

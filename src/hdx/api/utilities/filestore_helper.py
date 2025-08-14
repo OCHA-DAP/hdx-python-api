@@ -47,8 +47,16 @@ class FilestoreHelper:
         filestore_resources: Dict[int, str],
         resource_index: int,
         **kwargs: Any,
-    ) -> None:
+    ) -> int:
         """Helper method to add new resource from dataset including filestore.
+        Returns status code where:
+        0 = no file to upload and last_modified set to now
+        (resource creation or data_updated flag is True),
+        1 = no file to upload and data_updated flag is False,
+        2 = file uploaded to filestore (resource creation or either hash or size of file
+        has changed),
+        3 = file not uploaded to filestore (hash and size of file are the same),
+        4 = file not uploaded (hash, size unchanged), given last_modified ignored
 
         Args:
             resource_data_to_update (Resource): Updated resource from dataset
@@ -56,7 +64,7 @@ class FilestoreHelper:
             resource_index (int): Index of resource
 
         Returns:
-            None
+            int: Status code
         """
         cls.resource_check_required_fields(resource_data_to_update, **kwargs)
         file_to_upload = resource_data_to_update.get_file_to_upload()
@@ -67,6 +75,8 @@ class FilestoreHelper:
             resource_data_to_update["url"] = cls.temporary_url
             resource_data_to_update["size"] = size
             resource_data_to_update["hash"] = hash
+            return 2
+        return 0
 
     @classmethod
     def dataset_update_filestore_resource(
@@ -75,8 +85,16 @@ class FilestoreHelper:
         resource_data_to_update: "Resource",
         filestore_resources: Dict[int, str],
         resource_index: int,
-    ) -> None:
+    ) -> int:
         """Helper method to merge updated resource from dataset into HDX resource read from HDX including filestore.
+        Returns status code where:
+        0 = no file to upload and last_modified set to now
+        (resource creation or data_updated flag is True),
+        1 = no file to upload and data_updated flag is False,
+        2 = file uploaded to filestore (resource creation or either hash or size of file
+        has changed),
+        3 = file not uploaded to filestore (hash and size of file are the same),
+        4 = file not uploaded (hash, size unchanged), given last_modified ignored
 
         Args:
             original_resource_data (Resource): Original resource from dataset
@@ -85,7 +103,7 @@ class FilestoreHelper:
             resource_index (int): Index of resource
 
         Returns:
-            None
+            int: Status code
         """
         file_to_upload = resource_data_to_update.get_file_to_upload()
         if file_to_upload:
@@ -97,15 +115,21 @@ class FilestoreHelper:
                 # ensure last_modified is not updated if file hasn't changed
                 if "last_modified" in resource_data_to_update:
                     del resource_data_to_update["last_modified"]
+                    return 4
+                else:
+                    return 3
             else:
                 # update file if size or hash has changed
                 filestore_resources[resource_index] = file_to_upload
                 resource_data_to_update["url"] = cls.temporary_url
                 resource_data_to_update["size"] = size
                 resource_data_to_update["hash"] = hash
+                return 2
         elif resource_data_to_update.is_marked_data_updated():
             # Should not output timezone info here
             resource_data_to_update["last_modified"] = now_utc_notz().isoformat(
                 timespec="microseconds"
             )
             resource_data_to_update.data_updated = False
+            return 0
+        return 1
