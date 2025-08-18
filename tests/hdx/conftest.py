@@ -41,6 +41,15 @@ def test_data(fixturesfolder):
 
 
 @pytest.fixture(scope="session")
+def test_xlsx(fixturesfolder):
+    return join(
+        fixturesfolder,
+        "size_hash",
+        "ACLED-All-Africa-File_20170101-to-20170708.xlsx",
+    )
+
+
+@pytest.fixture(scope="session")
 def locations():
     Locations.set_validlocations(
         [

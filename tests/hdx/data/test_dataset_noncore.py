@@ -776,9 +776,9 @@ class TestDatasetNoncore:
         dataset = Dataset(datasetdata)
         assert dataset.quickcharts_resource_last() is False
         resource = {"name": "QuickCharts-resource"}
-        dataset.resources.insert(1, resource)
+        dataset._resources.insert(1, resource)
         assert dataset.quickcharts_resource_last() is True
-        assert dataset.resources[3]["name"] == resource["name"]
+        assert dataset._resources[3]["name"] == resource["name"]
         assert dataset.quickcharts_resource_last() is True
 
     def test_generate_resource_view(

@@ -1,19 +1,7 @@
-from os.path import join
-
-import pytest
-
 from hdx.api.utilities.size_hash import get_size_and_hash
 
 
 class TestSizeHash:
-    @pytest.fixture(scope="class")
-    def test_xlsx(self, fixturesfolder):
-        return join(
-            fixturesfolder,
-            "size_hash",
-            "ACLED-All-Africa-File_20170101-to-20170708.xlsx",
-        )
-
     def test_get_size_and_hash(self, test_data, test_xlsx):
         size, hash = get_size_and_hash(test_data, "csv")
         assert size == 1548

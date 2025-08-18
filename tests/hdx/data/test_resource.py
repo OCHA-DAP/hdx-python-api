@@ -661,21 +661,20 @@ class TestResource:
     def test_check_url_filetoupload(self, configuration):
         resource_data_copy = copy.deepcopy(resource_data)
         resource = Resource(resource_data_copy)
-        resource.check_url_filetoupload()
+        resource.set_types()
         resource.set_file_to_upload("abc")
-        resource.check_url_filetoupload()
+        resource.set_types()
         resource["url"] = "lala"
         with pytest.raises(HDXError):
-            resource.check_url_filetoupload()
+            resource.check_both_url_filetoupload()
         resource = Resource(resource_data_copy)
         resource["format"] = "NOTEXIST"
         with pytest.raises(HDXError):
-            resource.check_url_filetoupload()
+            resource.set_types()
         with pytest.raises(HDXError):
             resource.set_format("NOTEXIST")
         del resource["format"]
-        with pytest.raises(HDXError):
-            resource.check_url_filetoupload()
+        resource.set_types()
 
     def test_get_set_date_of_resource(self, configuration):
         resource = Resource({"daterange_for_data": "[2020-01-07T00:00:00 TO *]"})
@@ -700,7 +699,7 @@ class TestResource:
     def test_check_required_fields(self, configuration):
         resource_data_copy = copy.deepcopy(resource_data)
         resource = Resource(resource_data_copy)
-        resource.check_url_filetoupload()
+        resource.set_types()
         resource.check_required_fields()
 
     def test_create_in_hdx(self, configuration, date_pattern, post_create, test_data):
@@ -823,7 +822,7 @@ class TestResource:
         resource_data_copy["id"] = "74b74ae1-df0c-4716-829f-4f939a046811"
         resource = Resource(resource_data_copy)
         resource.mark_data_updated()
-        assert resource.data_updated is True
+        assert resource._data_updated is True
         assert resource.is_marked_data_updated() is True
         status = resource.create_in_hdx()
         assert status == 0

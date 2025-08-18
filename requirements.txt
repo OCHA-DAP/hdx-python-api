@@ -29,10 +29,11 @@ ckanapi==4.8
 click==8.2.1
     # via
     #   mkdocs
+    #   mkdocs-material
     #   typer
 colorama==0.4.6
     # via mkdocs-material
-coverage==7.10.3
+coverage==7.10.4
     # via pytest-cov
 defopt==7.0.0
     # via hdx-python-api (pyproject.toml)
@@ -50,7 +51,7 @@ email-validator==2.2.0
     # via hdx-python-api (pyproject.toml)
 et-xmlfile==2.0.0
     # via openpyxl
-filelock==3.18.0
+filelock==3.19.1
     # via virtualenv
 frictionless==5.18.1
     # via hdx-python-utilities
@@ -96,7 +97,7 @@ jsonlines==4.0.0
     # via hdx-python-utilities
 jsonpath-ng==1.7.0
     # via libhxl
-jsonschema==4.25.0
+jsonschema==4.25.1
     # via
     #   frictionless
     #   tableschema-to-template
@@ -137,7 +138,7 @@ mkdocs==1.6.1
     #   mkdocs-material
 mkdocs-get-deps==0.2.0
     # via mkdocs
-mkdocs-material==9.6.16
+mkdocs-material==9.6.17
     # via mkapi
 mkdocs-material-extensions==1.3.1
     # via mkdocs-material
@@ -236,7 +237,7 @@ referencing==0.36.2
     # via
     #   jsonschema
     #   jsonschema-specifications
-requests==2.32.4
+requests==2.32.5
     # via
     #   hdx-python-api (pyproject.toml)
     #   ckanapi
@@ -291,7 +292,7 @@ text-unidecode==1.3
     # via python-slugify
 typeguard==4.4.4
     # via inflect
-typer==0.16.0
+typer==0.16.1
     # via frictionless
 typing-extensions==4.14.1
     # via

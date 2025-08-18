@@ -139,7 +139,7 @@ class ResourceView(HDXObject):
                 resource_views = self.get_all_for_resource(self.data["resource_id"])
                 for resource_view in resource_views:
                     if self.data["title"] == resource_view["title"]:
-                        self.old_data = self.data
+                        self._old_data = self.data
                         self.data = resource_view.data
                         update = True
                         break

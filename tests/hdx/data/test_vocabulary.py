@@ -1483,13 +1483,13 @@ class TestVocabulary:
             "Action to Take": "merge",
             "New Tag(s)": "refugees",
         }
-        assert Vocabulary.get_mapped_tag("refugee") == (["refugees"], list())
+        assert Vocabulary.get_mapped_tag("refugee") == (["refugees"], [])
         assert Vocabulary.get_mapped_tag("monitoring") == (
             [],
             ["monitoring"],
         )
         tags_dict["refugee"]["Action to Take"] = "ERROR"
-        assert Vocabulary.get_mapped_tag("refugee") == ([], list())
+        assert Vocabulary.get_mapped_tag("refugee") == ([], [])
         refugeesdict = copy.deepcopy(tags_dict["refugees"])
         del tags_dict["refugees"]
         assert Vocabulary.get_mapped_tag("refugees") == (

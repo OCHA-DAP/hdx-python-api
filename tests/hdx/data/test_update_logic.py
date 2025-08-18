@@ -175,9 +175,10 @@ class TestUpdateLogic:
             temp_dir, new_dataset, new_resources_yaml, exclude=[13]
         )
         self.add_dataset_resources(dataset, resources_yaml)
-        dataset.old_data = new_dataset.data
-        dataset.old_data["resources"] = new_dataset.resources
+        dataset._old_data = new_dataset.data
+        dataset._old_data["resources"] = new_dataset._resources
         statuses, results = dataset._dataset_hdx_update(
+            allow_no_resources=False,
             update_resources=True,
             match_resources_by_metadata=True,
             keys_to_delete=[],
@@ -898,9 +899,10 @@ class TestUpdateLogic:
             temp_dir, new_dataset, new_resources_yaml, exclude=[52]
         )
         self.add_dataset_resources(dataset, resources_yaml)
-        dataset.old_data = new_dataset.data
-        dataset.old_data["resources"] = new_dataset.resources
+        dataset._old_data = new_dataset.data
+        dataset._old_data["resources"] = new_dataset._resources
         statuses, results = dataset._dataset_hdx_update(
+            allow_no_resources=False,
             update_resources=True,
             match_resources_by_metadata=True,
             keys_to_delete=[],
@@ -1621,9 +1623,10 @@ class TestUpdateLogic:
             temp_dir, new_dataset, new_resources_yaml, include=[0, 3]
         )
         self.add_dataset_resources(dataset, resources_yaml, include=[0, 1, 2])
-        dataset.old_data = new_dataset.data
-        dataset.old_data["resources"] = new_dataset.resources
+        dataset._old_data = new_dataset.data
+        dataset._old_data["resources"] = new_dataset._resources
         statuses, results = dataset._dataset_hdx_update(
+            allow_no_resources=False,
             update_resources=True,
             match_resources_by_metadata=True,
             keys_to_delete=[],

@@ -13,14 +13,11 @@ class FilestoreHelper:
     temporary_url = "updated_by_file_upload_step"
 
     @staticmethod
-    def resource_check_required_fields(
-        resource: "Resource", check_upload: bool = False, **kwargs: Any
-    ) -> None:
+    def resource_check_required_fields(resource: "Resource", **kwargs: Any) -> None:
         """Helper method to get ignore_fields from kwargs if it exists and add package_id
 
         Args:
             resource (Resource): Resource to check
-            check_upload (bool): Whether to check for file upload. Defaults to False.
             **kwargs: Keyword arguments
 
         Returns:
@@ -28,9 +25,7 @@ class FilestoreHelper:
         """
         if "ignore_check" in kwargs:  # allow ignoring of field checks
             return
-        if check_upload and resource.get_file_to_upload() and "url" in resource.data:
-            del resource.data["url"]
-        ignore_fields = kwargs.get("ignore_fields", list())
+        ignore_fields = kwargs.get("ignore_fields", [])
         resource_ignore_fields = []
         for ignore_field in ignore_fields:
             if ignore_field.startswith("resource:"):
@@ -66,6 +61,7 @@ class FilestoreHelper:
         Returns:
             int: Status code
         """
+        resource_data_to_update.set_types()
         cls.resource_check_required_fields(resource_data_to_update, **kwargs)
         file_to_upload = resource_data_to_update.get_file_to_upload()
         if file_to_upload:
@@ -112,24 +108,31 @@ class FilestoreHelper:
             if size == original_resource_data.get(
                 "size"
             ) and hash == original_resource_data.get("hash"):
+                if resource_data_to_update._url_backup:
+                    resource_data_to_update["url"] = resource_data_to_update._url_backup
+                    resource_data_to_update._url_backup = None
                 # ensure last_modified is not updated if file hasn't changed
                 if "last_modified" in resource_data_to_update:
                     del resource_data_to_update["last_modified"]
-                    return 4
+                    status = 4
                 else:
-                    return 3
+                    status = 3
             else:
                 # update file if size or hash has changed
                 filestore_resources[resource_index] = file_to_upload
                 resource_data_to_update["url"] = cls.temporary_url
                 resource_data_to_update["size"] = size
                 resource_data_to_update["hash"] = hash
-                return 2
+                resource_data_to_update._url_backup = None
+                status = 2
         elif resource_data_to_update.is_marked_data_updated():
             # Should not output timezone info here
             resource_data_to_update["last_modified"] = now_utc_notz().isoformat(
                 timespec="microseconds"
             )
-            resource_data_to_update.data_updated = False
-            return 0
-        return 1
+            resource_data_to_update._data_updated = False
+            status = 0
+        else:
+            status = 1
+        resource_data_to_update.set_types()
+        return status

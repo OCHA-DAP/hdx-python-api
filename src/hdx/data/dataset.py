@@ -137,7 +137,7 @@ class Dataset(HDXObject):
             initial_data = {}
         self.init_resources()
         super().__init__(initial_data, configuration=configuration)
-        self.preview_resourceview = None
+        self._preview_resourceview = None
 
     @staticmethod
     def actions() -> Dict[str, str]:
@@ -148,9 +148,7 @@ class Dataset(HDXObject):
         """
         return {
             "show": "package_show",
-            "update": "package_update",
             "create": "package_create",
-            "patch": "package_patch",
             "revise": "package_revise",
             "delete": "hdx_dataset_purge",
             "search": "package_search",
@@ -183,7 +181,7 @@ class Dataset(HDXObject):
             None
         """
         self._separate_hdxobjects(
-            self.resources, "resources", "name", res_module.Resource
+            self._resources, "resources", "name", res_module.Resource
         )
 
     def unseparate_resources(self) -> None:
@@ -192,8 +190,8 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        if self.resources:
-            self.data["resources"] = self._convert_hdxobjects(self.resources)
+        if self._resources:
+            self.data["resources"] = self._convert_hdxobjects(self._resources)
 
     def get_dataset_dict(self) -> Dict:
         """Move self.resources into resources key in internal dictionary
@@ -202,8 +200,8 @@ class Dataset(HDXObject):
             Dict: Dataset dictionary
         """
         package = deepcopy(self.data)
-        if self.resources:
-            package["resources"] = self._convert_hdxobjects(self.resources)
+        if self._resources:
+            package["resources"] = self._convert_hdxobjects(self._resources)
         return package
 
     def save_to_json(self, path: str, follow_urls: bool = False):
@@ -249,7 +247,7 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        self.resources: List[res_module.Resource] = []
+        self._resources: List[res_module.Resource] = []
 
     def _get_resource_from_obj(
         self, resource: Union["Resource", Dict, str]
@@ -296,13 +294,13 @@ class Dataset(HDXObject):
                 raise HDXError(
                     f"Resource {resource['name']} being added already has a dataset id!"
                 )
-        resource.check_url_filetoupload()
-        resource_index = ResourceMatcher.match_resource_list(self.resources, resource)
+        resource.check_both_url_filetoupload()
+        resource_index = ResourceMatcher.match_resource_list(self._resources, resource)
         if resource_index is None:
-            self.resources.append(resource)
+            self._resources.append(resource)
         else:
             updated_resource = merge_two_dictionaries(
-                self.resources[resource_index], resource
+                self._resources[resource_index], resource
             )
             if resource.get_file_to_upload():
                 updated_resource.set_file_to_upload(resource.get_file_to_upload())
@@ -331,18 +329,18 @@ class Dataset(HDXObject):
                     raise HDXError(
                         f"Resource {resource['name']} being added already has a dataset id!"
                     )
+            resource.check_both_url_filetoupload()
             resource_objects.append(resource)
         (
             resource_matches,
             updated_resource_matches,
             _,
             updated_resource_no_matches,
-        ) = ResourceMatcher.match_resource_lists(self.resources, resource_objects)
+        ) = ResourceMatcher.match_resource_lists(self._resources, resource_objects)
         for i, resource_index in enumerate(resource_matches):
             resource = resource_objects[updated_resource_matches[i]]
-            resource.check_url_filetoupload()
             updated_resource = merge_two_dictionaries(
-                self.resources[resource_index], resource
+                self._resources[resource_index], resource
             )
             if resource.get_file_to_upload():
                 updated_resource.set_file_to_upload(resource.get_file_to_upload())
@@ -350,8 +348,7 @@ class Dataset(HDXObject):
                 updated_resource.mark_data_updated()
         for resource_index in updated_resource_no_matches:
             resource = resource_objects[resource_index]
-            resource.check_url_filetoupload()
-            self.resources.append(resource)
+            self._resources.append(resource)
 
     def delete_resource(
         self,
@@ -370,7 +367,7 @@ class Dataset(HDXObject):
         if isinstance(resource, str):
             if is_valid_uuid(resource) is False:
                 raise HDXError(f"{resource} is not a valid resource id!")
-        return self._remove_hdxobject(self.resources, resource, delete=delete)
+        return self._remove_hdxobject(self._resources, resource, delete=delete)
 
     def get_resources(self) -> List["Resource"]:
         """Get dataset's resources
@@ -378,7 +375,7 @@ class Dataset(HDXObject):
         Returns:
             List[Resource]: List of Resource objects
         """
-        return self.resources
+        return self._resources
 
     def get_resource(self, index: int = 0) -> "Resource":
         """Get one resource from dataset by index
@@ -389,7 +386,7 @@ class Dataset(HDXObject):
         Returns:
             Resource: Resource object
         """
-        return self.resources[index]
+        return self._resources[index]
 
     def number_of_resources(self) -> int:
         """Get number of dataset's resources
@@ -397,7 +394,7 @@ class Dataset(HDXObject):
         Returns:
             int: Number of Resource objects
         """
-        return len(self.resources)
+        return len(self._resources)
 
     def reorder_resources(
         self, resource_ids: ListTuple[str], hxl_update: bool = True
@@ -425,9 +422,9 @@ class Dataset(HDXObject):
         ordered_ids = results["order"]
         reordered_resources = []
         for resource_id in ordered_ids:
-            resource = next(x for x in self.resources if x["id"] == resource_id)
+            resource = next(x for x in self._resources if x["id"] == resource_id)
             reordered_resources.append(resource)
-        self.resources = reordered_resources
+        self._resources = reordered_resources
         if hxl_update:
             self.hxl_update()
 
@@ -448,7 +445,7 @@ class Dataset(HDXObject):
         """
         from_index = None
         to_index = None
-        for i, resource in enumerate(self.resources):
+        for i, resource in enumerate(self._resources):
             res_name = resource["name"]
             if res_name == resource_name:
                 from_index = i
@@ -457,11 +454,11 @@ class Dataset(HDXObject):
         if to_index is None:
             # insert at the start if resource cannot be found
             to_index = 0
-        resource = self.resources.pop(from_index)
+        resource = self._resources.pop(from_index)
         if from_index < to_index:
             # to index was calculated while element was in front
             to_index -= 1
-        self.resources.insert(to_index, resource)
+        self._resources.insert(to_index, resource)
         return resource
 
     def update_from_yaml(
@@ -516,10 +513,10 @@ class Dataset(HDXObject):
         """Creates resource objects in dataset"""
 
         if "resources" in self.data:
-            self.old_data["resources"] = self._copy_hdxobjects(
-                self.resources,
+            self._old_data["resources"] = self._copy_hdxobjects(
+                self._resources,
                 res_module.Resource,
-                ("file_to_upload", "data_updated"),
+                ("_file_to_upload", "_data_updated", "_url_backup"),
             )
             self.init_resources()
             self.separate_resources()
@@ -539,12 +536,7 @@ class Dataset(HDXObject):
         self._dataset_create_resources()
         return True
 
-    def check_required_fields(
-        self,
-        ignore_fields: ListTuple[str] = tuple(),
-        allow_no_resources: bool = False,
-        **kwargs: Any,
-    ) -> None:
+    def check_resources_url_filetoupload(self) -> None:
         """Check that metadata for dataset and its resources is complete. The parameter ignore_fields
         should be set if required to any fields that should be ignored for the particular operation.
         Prepend "resource:" for resource fields.
@@ -556,21 +548,49 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        dataset_ignore_fields = []
-        for ignore_field in ignore_fields:
-            if not ignore_field.startswith("resource:"):
-                dataset_ignore_fields.append(ignore_field)
+        for resource in self._resources:
+            resource.check_both_url_filetoupload()
+
+    def check_resources_fields(self, ignore_fields: ListTuple[str] = tuple()) -> None:
+        """Check that metadata for resources is complete. The parameter ignore_fields
+        should be set if required to any fields that should be ignored for the
+        particular operation.
+
+        Args:
+            ignore_fields (ListTuple[str]): Fields to ignore. Default is tuple().
+
+        Returns:
+            None
+        """
+        for resource in self._resources:
+            FilestoreHelper.resource_check_required_fields(
+                resource, ignore_fields=ignore_fields
+            )
+
+    def check_required_fields(
+        self,
+        ignore_fields: ListTuple[str] = tuple(),
+        allow_no_resources: bool = False,
+        **kwargs: Any,
+    ) -> None:
+        """Check that metadata for dataset is complete. The parameter ignore_fields
+        should be set if required to any fields that should be ignored for the
+        particular operation.
+
+        Args:
+            ignore_fields (ListTuple[str]): Fields to ignore. Default is tuple().
+            allow_no_resources (bool): Whether to allow no resources. Defaults to False.
+
+        Returns:
+            None
+        """
         if self.is_requestable():
-            self._check_required_fields("dataset-requestable", dataset_ignore_fields)
+            self._check_required_fields("dataset-requestable", ignore_fields)
         else:
-            self._check_required_fields("dataset", dataset_ignore_fields)
-            if len(self.resources) == 0 and not allow_no_resources:
+            self._check_required_fields("dataset", ignore_fields)
+            if len(self._resources) == 0 and not allow_no_resources:
                 raise HDXError(
                     "There are no resources! Please add at least one resource!"
-                )
-            for resource in self.resources:
-                FilestoreHelper.resource_check_required_fields(
-                    resource, ignore_fields=ignore_fields
                 )
 
     @staticmethod
@@ -676,9 +696,9 @@ class Dataset(HDXObject):
         for key, value in dataset_data_to_update.items():
             if not isinstance(value, list):
                 continue
-            if key not in self.old_data:
+            if key not in self._old_data:
                 continue
-            orig_list = self.old_data[key]
+            orig_list = self._old_data[key]
             elements_to_remove = []
             for i, orig_value in enumerate(orig_list):
                 if isinstance(orig_value, dict) and any(
@@ -751,6 +771,7 @@ class Dataset(HDXObject):
 
     def _revise_dataset(
         self,
+        allow_no_resources: bool,
         keys_to_delete: ListTuple[str],
         resources_to_update: ListTuple["Resource"],
         resources_to_delete: ListTuple[int],
@@ -764,6 +785,7 @@ class Dataset(HDXObject):
         """Helper method to save the modified dataset and add any filestore resources
 
         Args:
+            allow_no_resources (bool): Whether to allow no resources
             keys_to_delete (ListTuple[str]): List of top level metadata keys to delete
             resources_to_update (ListTuple[Resource]): Resources to update
             resources_to_delete (ListTuple[int]): List of indexes of resources to delete
@@ -779,8 +801,8 @@ class Dataset(HDXObject):
             Dict: Dictionary of what gets passed to the revise call (for testing)
         """
         results = {}
-        dataset_data_to_update = self.old_data
-        self.old_data = self.data
+        dataset_data_to_update = self._old_data
+        self._old_data = self.data
         if (
             "batch_mode" in kwargs
         ):  # Whether or not CKAN should change groupings of datasets on /datasets page
@@ -813,25 +835,28 @@ class Dataset(HDXObject):
             files_to_upload=files_to_upload,
         )
         self.data = new_dataset.data
-        self.resources = new_dataset.resources
+        self._resources = new_dataset._resources
 
         # We do field check after call so that we have the changed data
         if "ignore_check" not in kwargs or not kwargs.get(
             "ignore_check"
         ):  # allow ignoring of field checks
-            ignore_fields = kwargs.get("ignore_fields", list())
+            ignore_fields = kwargs.get("ignore_fields", [])
             ignore_field = self.configuration["dataset"].get("ignore_on_update")
             if ignore_field and ignore_field not in ignore_fields:
                 ignore_fields.append(ignore_field)
             ignore_field = kwargs.get("ignore_field")
             if ignore_field and ignore_field not in ignore_fields:
                 ignore_fields.append(ignore_field)
-            self.check_required_fields(ignore_fields=ignore_fields)
+            self.check_required_fields(
+                ignore_fields=ignore_fields, allow_no_resources=allow_no_resources
+            )
+            self.check_resources_fields(ignore_fields=ignore_fields)
         if new_resource_order:
-            existing_order = [(x["name"], x["format"].lower()) for x in self.resources]
+            existing_order = [(x["name"], x["format"].lower()) for x in self._resources]
             if existing_order != new_resource_order:
                 sorted_resources = sorted(
-                    self.resources,
+                    self._resources,
                     key=lambda x: new_resource_order.index(
                         (x["name"], x["format"].lower())
                     ),
@@ -877,7 +902,7 @@ class Dataset(HDXObject):
         # then reading the existing dataset on HDX into "data". Hence,
         # "old_data" below contains the user-supplied data we want to use for
         # updating while "data" contains the data read from HDX
-        resources_metadata_to_update = self.old_data.get("resources", None)
+        resources_metadata_to_update = self._old_data.get("resources", None)
         resources_to_update = []
         resources_to_delete = []
         filestore_resources = {}
@@ -890,9 +915,9 @@ class Dataset(HDXObject):
                     resource_no_matches,
                     updated_resource_no_matches,
                 ) = ResourceMatcher.match_resource_lists(
-                    self.resources, resources_metadata_to_update
+                    self._resources, resources_metadata_to_update
                 )
-                for i, resource in enumerate(self.resources):
+                for i, resource in enumerate(self._resources):
                     try:
                         match_index = resource_matches.index(i)
                     except ValueError:
@@ -912,7 +937,7 @@ class Dataset(HDXObject):
                     statuses[resource_name] = status
                     resources_to_update.append(resource_data_to_update)
 
-                resource_index = len(self.resources)
+                resource_index = len(self._resources)
                 for updated_resource_index in updated_resource_no_matches:
                     resource_data_to_update = resources_metadata_to_update[
                         updated_resource_index
@@ -928,7 +953,7 @@ class Dataset(HDXObject):
                     resources_to_update.append(resource_data_to_update)
                 if remove_additional_resources:
                     for resource_index in resource_no_matches:
-                        resource = self.resources[resource_index]
+                        resource = self._resources[resource_index]
                         logger.warning(
                             f"Removing additional resource {resource['name']}!"
                         )
@@ -937,9 +962,9 @@ class Dataset(HDXObject):
                 for i, resource_data_to_update in enumerate(
                     resources_metadata_to_update
                 ):
-                    if len(self.resources) > i:
+                    if len(self._resources) > i:
                         updated_resource_name = resource_data_to_update["name"]
-                        resource = self.resources[i]
+                        resource = self._resources[i]
                         resource_name = resource["name"]
                         logger.warning(f"Resource exists. Updating {resource_name}")
                         if resource_name != updated_resource_name:
@@ -963,7 +988,7 @@ class Dataset(HDXObject):
                         statuses[resource_data_to_update["name"]] = status
                     resources_to_update.append(resource_data_to_update)
 
-                for i, resource in enumerate(self.resources):
+                for i, resource in enumerate(self._resources):
                     if len(resources_metadata_to_update) <= i:
                         resources_to_update.append(resource)
                         if remove_additional_resources:
@@ -988,6 +1013,7 @@ class Dataset(HDXObject):
 
     def _dataset_hdx_update(
         self,
+        allow_no_resources: bool,
         update_resources: bool,
         match_resources_by_metadata: bool,
         keys_to_delete: ListTuple[str],
@@ -1006,6 +1032,7 @@ class Dataset(HDXObject):
         dictionary of what gets passed to the revise call (for testing))
 
         Args:
+            allow_no_resources (bool): Whether to allow no resources
             update_resources (bool): Whether to update resources
             match_resources_by_metadata (bool): Compare resource metadata rather than position in list
             keys_to_delete (ListTuple[str]): List of top level metadata keys to delete
@@ -1032,19 +1059,22 @@ class Dataset(HDXObject):
         )
         keep_crisis_tags = kwargs.get("keep_crisis_tags", True)
         if keep_crisis_tags:
-            for tag in self.data["tags"]:
+            old_tags = self._old_data.get("tags", [])
+            for tag in self.data.get("tags", []):
                 tag_name = tag["name"]
                 if tag_name[:7] != "crisis-":
                     continue
                 found = False
-                for old_tag in self.old_data["tags"]:
+                for old_tag in old_tags:
                     if old_tag["name"] == tag_name:
                         found = True
                         break
                 if not found:
-                    self.old_data["tags"].append(tag)
-        self._prepare_hdx_call(self.old_data, kwargs)
+                    old_tags.append(tag)
+            self._old_data["tags"] = old_tags
+        self._prepare_hdx_call(self._old_data, kwargs)
         revise_call = self._revise_dataset(
+            allow_no_resources,
             keys_to_delete,
             resources_to_update,
             resources_to_delete,
@@ -1058,6 +1088,7 @@ class Dataset(HDXObject):
 
     def update_in_hdx(
         self,
+        allow_no_resources: bool = False,
         update_resources: bool = True,
         match_resources_by_metadata: bool = True,
         keys_to_delete: ListTuple[str] = tuple(),
@@ -1080,6 +1111,7 @@ class Dataset(HDXObject):
         4 = file not uploaded (hash, size unchanged), given last_modified ignored
 
         Args:
+            allow_no_resources (bool): Whether to allow no resources. Defaults to False.
             update_resources (bool): Whether to update resources. Defaults to True.
             match_resources_by_metadata (bool): Compare resource metadata rather than position in list. Defaults to True.
             keys_to_delete (ListTuple[str]): List of top level metadata keys to delete. Defaults to tuple().
@@ -1107,6 +1139,7 @@ class Dataset(HDXObject):
             if not self._dataset_load_from_hdx(self.data["name"]):
                 raise HDXError("No existing dataset to update!")
         statuses, _ = self._dataset_hdx_update(
+            allow_no_resources=allow_no_resources,
             update_resources=update_resources,
             match_resources_by_metadata=match_resources_by_metadata,
             keys_to_delete=keys_to_delete,
@@ -1160,21 +1193,19 @@ class Dataset(HDXObject):
         Returns:
             Dict: Status codes of resources
         """
-        if "ignore_check" not in kwargs:  # allow ignoring of field checks
-            self.check_required_fields(allow_no_resources=allow_no_resources, **kwargs)
-            # No need to check again after revising dataset
-            kwargs["ignore_check"] = True
-        loadedid = None
-        if "id" in self.data:
-            if self._dataset_load_from_hdx(self.data["id"]):
-                loadedid = self.data["id"]
-            else:
-                logger.warning(f"Failed to load dataset with id {self.data['id']}")
+        loadedid = self.data.get("id")
+        if loadedid is not None:
+            if not self._dataset_load_from_hdx(loadedid):
+                logger.warning(f"Failed to load dataset with id {loadedid}")
+                loadedid = None
         if not loadedid:
-            if self._dataset_load_from_hdx(self.data["name"]):
-                loadedid = self.data["name"]
+            loadedid = self.data.get("name")
+            if loadedid is not None:
+                if not self._dataset_load_from_hdx(loadedid):
+                    loadedid = None
         if loadedid:
             statuses, _ = self._dataset_hdx_update(
+                allow_no_resources=allow_no_resources,
                 update_resources=update_resources,
                 match_resources_by_metadata=match_resources_by_metadata,
                 keys_to_delete=keys_to_delete,
@@ -1187,10 +1218,14 @@ class Dataset(HDXObject):
             logger.info(f"Updated {self.get_hdx_url()}")
             return statuses
 
+        if "ignore_check" not in kwargs:  # allow ignoring of field checks
+            self.check_required_fields(allow_no_resources=allow_no_resources, **kwargs)
+            # No need to check again after revising dataset
+            kwargs["ignore_check"] = True
         statuses = {}
         filestore_resources = {}
-        if self.resources:
-            for i, resource in enumerate(self.resources):
+        if self._resources:
+            for i, resource in enumerate(self._resources):
                 status = FilestoreHelper.check_filestore_resource(
                     resource, filestore_resources, i, **kwargs
                 )
@@ -1206,8 +1241,9 @@ class Dataset(HDXObject):
             self.separate_resources()
         else:
             self._revise_dataset(
+                allow_no_resources,
                 keys_to_delete,
-                self.resources,
+                self._resources,
                 [],
                 filestore_resources,
                 None,
@@ -1315,7 +1351,7 @@ class Dataset(HDXObject):
                         no_results = len(result["results"])
                         for datasetdict in result["results"]:
                             dataset = Dataset(configuration=configuration)
-                            dataset.old_data = {}
+                            dataset._old_data = {}
                             dataset.data = datasetdict
                             dataset._dataset_create_resources()
                             datasets.append(dataset)
@@ -2134,7 +2170,7 @@ class Dataset(HDXObject):
             List[str]: List of filetypes
         """
         if not self.is_requestable():
-            return [resource.get_format() for resource in self.resources]
+            return [resource.get_format() for resource in self._resources]
         return self._get_stringlist_from_commastring("file_types")
 
     def add_filetype(self, filetype: str) -> bool:
@@ -2211,7 +2247,7 @@ class Dataset(HDXObject):
             None
         """
         self.data["dataset_preview"] = "no_preview"
-        for resource in self.resources:
+        for resource in self._resources:
             resource.disable_dataset_preview()
 
     def preview_resource(self) -> None:
@@ -2234,7 +2270,7 @@ class Dataset(HDXObject):
             Resource: Resource that is used for preview or None if no preview set
         """
         if isinstance(resource, int) and not isinstance(resource, bool):
-            resource = self.resources[resource]
+            resource = self._resources[resource]
         if isinstance(resource, res_module.Resource) or isinstance(resource, dict):
             res = resource.get("id")
             if res is None:
@@ -2250,7 +2286,7 @@ class Dataset(HDXObject):
         else:
             search = "name"
         preview_resource = None
-        for dataset_resource in self.resources:
+        for dataset_resource in self._resources:
             if preview_resource is None and dataset_resource[search] == resource:
                 dataset_resource.enable_dataset_preview()
                 self.preview_resource()
@@ -2265,9 +2301,9 @@ class Dataset(HDXObject):
         Returns:
             bool: True if QuickCharts resource found, False if not
         """
-        for i, resource in enumerate(self.resources):
+        for i, resource in enumerate(self._resources):
             if resource["name"][:12] == "QuickCharts-":
-                self.resources.append(self.resources.pop(i))
+                self._resources.append(self._resources.pop(i))
                 return True
         return False
 
@@ -2292,13 +2328,13 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        if self.preview_resourceview:
-            for resource in self.resources:
-                if resource["name"] == self.preview_resourceview["resource_name"]:
-                    del self.preview_resourceview["resource_name"]
-                    self.preview_resourceview["resource_id"] = resource["id"]
-                    self.preview_resourceview.create_in_hdx()
-                    self.preview_resourceview = None
+        if self._preview_resourceview:
+            for resource in self._resources:
+                if resource["name"] == self._preview_resourceview["resource_name"]:
+                    del self._preview_resourceview["resource_name"]
+                    self._preview_resourceview["resource_id"] = resource["id"]
+                    self._preview_resourceview.create_in_hdx()
+                    self._preview_resourceview = None
                     break
 
     def _generate_resource_view(
@@ -2454,9 +2490,9 @@ class Dataset(HDXObject):
 
         if "resource_id" in resourceview:
             resourceview.create_in_hdx()
-            self.preview_resourceview = None
+            self._preview_resourceview = None
         else:
-            self.preview_resourceview = resourceview
+            self._preview_resourceview = resourceview
         return resourceview
 
     def generate_quickcharts(

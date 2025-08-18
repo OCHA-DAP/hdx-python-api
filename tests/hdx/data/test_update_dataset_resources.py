@@ -95,9 +95,11 @@ class TestUpdateDatasetResourcesLogic:
         new_dataset,
         expected_resources_to_update,
     ):
-        dataset.old_data = new_dataset.data
-        dataset.old_data["resources"] = new_dataset._copy_hdxobjects(
-            new_dataset.resources, Resource, ("file_to_upload", "data_updated")
+        dataset._old_data = new_dataset.data
+        dataset._old_data["resources"] = new_dataset._copy_hdxobjects(
+            new_dataset._resources,
+            Resource,
+            ("_file_to_upload", "_data_updated", "_url_backup"),
         )
         (
             resources_to_update,
@@ -141,12 +143,13 @@ class TestUpdateDatasetResourcesLogic:
             "SDG 4 Global and Thematic indicator list": 2,
             "SDG 4 Global and Thematic metadata": 2,
         }
-        dataset._prepare_hdx_call(dataset.old_data, {})
+        dataset._prepare_hdx_call(dataset._old_data, {})
         assert (
             dataset["updated_by_script"]
             == "HDX Scraper: UNESCO (2022-12-19T12:51:30.579185)"
         )
         results = dataset._revise_dataset(
+            False,
             tuple(),
             resources_to_update,
             resources_to_delete,
