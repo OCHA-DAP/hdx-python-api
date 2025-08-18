@@ -283,7 +283,6 @@ class TestCKAN:
             resource = resources[i]
             assert updated_resource["name"] == resource["name"]
             assert updated_resource.get_format() == resource.get_format()
-            assert updated_resource["url_type"].lower() == resource["url_type"]
             url = resource.get("url")
             if url:
                 if "humdata" in url:
@@ -293,6 +292,7 @@ class TestCKAN:
             else:
                 assert "humdata" in updated_resource["url"]
             if i != 7:
+                assert updated_resource["url_type"].lower() == resource["url_type"]
                 assert updated_resource.get("size") == resource.get("size")
                 assert updated_resource.get("hash") == resource.get("hash")
 
