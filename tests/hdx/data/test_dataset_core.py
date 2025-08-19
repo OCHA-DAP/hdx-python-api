@@ -365,6 +365,12 @@ class TestDatasetCore:
                                 datadict["resources"][i] = resultdictcopy["resources"][
                                     i
                                 ]
+                            if datadict["id"] == "TEST5":
+                                resultdictcopy["resources"][i].update(
+                                    datadict["resources"][i]
+                                )
+                        if datadict["id"] == "TEST5":
+                            del datadict["resources"]
                         merge_two_dictionaries(resultdictcopy, datadict)
                         for i, resource in enumerate(resultdictcopy["resources"]):
                             resource["package_id"] = resultdictcopy["id"]

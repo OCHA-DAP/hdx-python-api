@@ -678,26 +678,37 @@ class TestResource:
         with pytest.raises(HDXError):
             Resource.read_from_hdx("ABC")
 
-    def test_check_types_url_filetoupload(self, configuration):
-        resource_data_copy = copy.deepcopy(resource_data)
-        del resource_data_copy["url"]
-        resource = Resource(resource_data_copy)
+    def test_url_filetoupload(self, configuration):
+        resource = Resource(resource_data)
+        del resource["url"]
         with pytest.raises(HDXError):
             resource.check_neither_url_filetoupload()
-        resource.set_types()
         resource.set_file_to_upload("abc")
-        resource.set_types()
         resource["url"] = "lala"
         with pytest.raises(HDXError):
             resource.check_both_url_filetoupload()
-        resource = Resource(resource_data_copy)
+
+    def test_check_types(self, configuration):
+        resource = Resource(resource_data)
+        resource.set_types()
+        assert resource["resource_type"] == "api"
+        assert resource["url_type"] == "api"
+        resource.set_file_to_upload("abc")
+        resource.set_types()
+        assert resource["resource_type"] == "file.upload"
+        assert resource["url_type"] == "upload"
+
+    def test_correct_format(self, configuration):
+        resource = Resource(resource_data)
+        resource["format"] = "XLSX"
+        resource.correct_format(resource.data)
+        assert resource.get_format() == "xlsx"
         resource["format"] = "NOTEXIST"
         with pytest.raises(HDXError):
-            resource.set_types()
-        with pytest.raises(HDXError):
-            resource.set_format("NOTEXIST")
+            resource.correct_format(resource.data)
         del resource["format"]
-        resource.set_types()
+        resource.correct_format(resource.data)
+        assert resource.get_format() is None
 
     def test_get_set_date_of_resource(self, configuration):
         resource = Resource({"daterange_for_data": "[2020-01-07T00:00:00 TO *]"})

@@ -62,6 +62,7 @@ class FilestoreHelper:
             int: Status code
         """
         resource_data_to_update.set_types()
+        resource_data_to_update.correct_format(resource_data_to_update.data)
         cls.resource_check_required_fields(resource_data_to_update, **kwargs)
         file_to_upload = resource_data_to_update.get_file_to_upload()
         if file_to_upload:
@@ -120,19 +121,30 @@ class FilestoreHelper:
             else:
                 # update file if size or hash has changed
                 filestore_resources[resource_index] = file_to_upload
+                resource_data_to_update["resource_type"] = "file.upload"
+                resource_data_to_update["url_type"] = "upload"
+                if "tracking_summary" in resource_data_to_update:
+                    del resource_data_to_update["tracking_summary"]
                 resource_data_to_update["url"] = cls.temporary_url
                 resource_data_to_update["size"] = size
                 resource_data_to_update["hash"] = hash
                 resource_data_to_update._url_backup = None
                 status = 2
-        elif resource_data_to_update.is_marked_data_updated():
-            # Should not output timezone info here
-            resource_data_to_update["last_modified"] = now_utc_notz().isoformat(
-                timespec="microseconds"
-            )
-            resource_data_to_update._data_updated = False
-            status = 0
         else:
-            status = 1
-        resource_data_to_update.set_types()
+            if (
+                "url" in resource_data_to_update
+                and resource_data_to_update.get("url_type") != "upload"
+            ):
+                resource_data_to_update["resource_type"] = "api"
+                resource_data_to_update["url_type"] = "api"
+            if resource_data_to_update.is_marked_data_updated():
+                # Should not output timezone info here
+                resource_data_to_update["last_modified"] = now_utc_notz().isoformat(
+                    timespec="microseconds"
+                )
+                resource_data_to_update._data_updated = False
+                status = 0
+            else:
+                status = 1
+        resource_data_to_update.correct_format(resource_data_to_update.data)
         return status
