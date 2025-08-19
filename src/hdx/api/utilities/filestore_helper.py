@@ -112,7 +112,7 @@ class FilestoreHelper:
             if size == original_resource_data.get(
                 "size"
             ) and hash == original_resource_data.get("hash"):
-                logger.info(
+                logger.warning(
                     f"Updating metadata not filestore for resource {original_resource_data['name']} as size and hash are unchanged!"
                 )
                 if resource_data_to_update._url_backup:

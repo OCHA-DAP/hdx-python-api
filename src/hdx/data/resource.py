@@ -412,7 +412,7 @@ class Resource(HDXObject):
             file_format = self._old_data.get("format", "").lower()
             size, hash = get_size_and_hash(self._file_to_upload, file_format)
             if size == self.data.get("size") and hash == self.data.get("hash"):
-                logger.info(
+                logger.warning(
                     f"Updating metadata not filestore for resource {self.data['name']} as size and hash are unchanged!"
                 )
                 if self._url_backup:
