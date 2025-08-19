@@ -152,23 +152,24 @@ def mockshow(url, datadict):
             '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}',
         )
     result = json.dumps(resultdict)
-    if datadict["id"] == "74b74ae1-df0c-4716-829f-4f939a046811":
+    datadict_id = datadict["id"]
+    if datadict_id == "74b74ae1-df0c-4716-829f-4f939a046811":
         return MockResponse(
             200,
             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}'
             % result,
         )
-    if datadict["id"] == "74b74ae1-df0c-4716-829f-4f939a046812":
+    if datadict_id == "74b74ae1-df0c-4716-829f-4f939a046812":
         return MockResponse(
             404,
             '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}',
         )
-    if datadict["id"] == "74b74ae1-df0c-4716-829f-4f939a046813":
+    if datadict_id == "74b74ae1-df0c-4716-829f-4f939a046813":
         return MockResponse(
             200,
             '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}',
         )
-    if datadict["id"] == "74b74ae1-df0c-4716-829f-4f939a046814":
+    if datadict_id == "74b74ae1-df0c-4716-829f-4f939a046814":
         resdictcopy = copy.deepcopy(resultdict)
         resdictcopy["url"] = "lalalala"
         result = json.dumps(resdictcopy)
@@ -177,9 +178,28 @@ def mockshow(url, datadict):
             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}'
             % result,
         )
-    if datadict["id"] == "74b74ae1-df0c-4716-829f-4f939a046815":
+    if datadict_id == "74b74ae1-df0c-4716-829f-4f939a046815":
         resdictcopy = copy.deepcopy(resultdict)
         resdictcopy["id"] = "datastore_unknown_resource"
+        result = json.dumps(resdictcopy)
+        return MockResponse(
+            200,
+            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}'
+            % result,
+        )
+    if datadict_id in (
+        "74b74ae1-df0c-4716-829f-4f939a046816",
+        "74b74ae1-df0c-4716-829f-4f939a046817",
+    ):
+        resdictcopy = copy.deepcopy(resultdict)
+        resdictcopy["url_type"] = "upload"
+        resdictcopy["resource_type"] = "file.upload"
+        resdictcopy["size"] = 1548
+        resdictcopy["hash"] = "3790da698479326339fa99a074cbc1f7"
+        if datadict_id == "74b74ae1-df0c-4716-829f-4f939a046817":
+            resdictcopy["last_modified"] = "2023-05-08T13:09:42.209741"
+        else:
+            del resdictcopy["last_modified"]
         result = json.dumps(resdictcopy)
         return MockResponse(
             200,
@@ -382,7 +402,7 @@ class TestResource:
                         resultdictcopy["url"] = (
                             f"http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/{filename}"
                         )
-                        resultdictcopy["size"] = datadict["size"]
+                        resultdictcopy["size"] = int(datadict["size"])
                         resultdictcopy["hash"] = datadict["hash"]
                     resultdictcopy["state"] = datadict["state"]
 
@@ -658,9 +678,12 @@ class TestResource:
         with pytest.raises(HDXError):
             Resource.read_from_hdx("ABC")
 
-    def test_check_url_filetoupload(self, configuration):
+    def test_check_types_url_filetoupload(self, configuration):
         resource_data_copy = copy.deepcopy(resource_data)
+        del resource_data_copy["url"]
         resource = Resource(resource_data_copy)
+        with pytest.raises(HDXError):
+            resource.check_neither_url_filetoupload()
         resource.set_types()
         resource.set_file_to_upload("abc")
         resource.set_types()
@@ -735,7 +758,7 @@ class TestResource:
             resource["url"]
             == "http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv"
         )
-        assert resource["size"] == "1548"
+        assert resource["size"] == 1548
         assert resource["hash"] == "3790da698479326339fa99a074cbc1f7"
         assert resource["state"] == "active"
         resource.set_file_to_upload(test_data)
@@ -745,7 +768,7 @@ class TestResource:
             resource["url"]
             == "http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv"
         )
-        assert resource["size"] == "1548"
+        assert resource["size"] == 1548
         assert resource["hash"] == "3790da698479326339fa99a074cbc1f7"
         resource_data_copy["name"] = "MyResource2"
         resource = Resource(resource_data_copy)
@@ -804,7 +827,6 @@ class TestResource:
         assert resource["size"] == "1548"
         assert resource["hash"] == "3790da698479326339fa99a074cbc1f7"
         assert resource["state"] == "active"
-
         resource["id"] = "NOTEXIST"
         with pytest.raises(HDXError):
             resource.update_in_hdx()
@@ -836,6 +858,18 @@ class TestResource:
         status = resource.update_in_hdx()
         assert status == 1
         assert resource.get_format() == "geoservice"
+
+        # These resource ids are set up so that the test datasets read have the same
+        # hash and size as the file being uploaded
+        resource["id"] = "74b74ae1-df0c-4716-829f-4f939a046816"
+        resource.set_file_to_upload(test_data, guess_format_from_suffix=True)
+        status = resource.update_in_hdx()
+        assert status == 3
+        resource["id"] = "74b74ae1-df0c-4716-829f-4f939a046817"
+        resource.set_file_to_upload(test_data, guess_format_from_suffix=True)
+        status = resource.update_in_hdx()
+        assert status == 4
+
         resource["format"] = "NOTEXIST"
         with pytest.raises(HDXError):
             resource.update_in_hdx()

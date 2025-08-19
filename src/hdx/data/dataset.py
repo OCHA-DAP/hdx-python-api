@@ -1220,8 +1220,6 @@ class Dataset(HDXObject):
 
         if "ignore_check" not in kwargs:  # allow ignoring of field checks
             self.check_required_fields(allow_no_resources=allow_no_resources, **kwargs)
-            # No need to check again after revising dataset
-            kwargs["ignore_check"] = True
         statuses = {}
         filestore_resources = {}
         if self._resources:
@@ -1230,6 +1228,8 @@ class Dataset(HDXObject):
                     resource, filestore_resources, i, **kwargs
                 )
                 statuses[resource["name"]] = status
+        # No need to check again after revising dataset
+        kwargs["ignore_check"] = True
         self.unseparate_resources()
         self._prepare_hdx_call(self.data, kwargs)
         kwargs["operation"] = "create"

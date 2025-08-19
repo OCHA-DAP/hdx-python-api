@@ -346,15 +346,11 @@ class Resource(HDXObject):
             data = self.data
         if self._file_to_upload is None:
             if "url" in data:
-                if "resource_type" not in data:
-                    data["resource_type"] = "api"
-                if "url_type" not in data:
-                    data["url_type"] = "api"
+                data["resource_type"] = "api"
+                data["url_type"] = "api"
         else:
-            if "resource_type" not in data:
-                data["resource_type"] = "file.upload"
-            if "url_type" not in data:
-                data["url_type"] = "upload"
+            data["resource_type"] = "file.upload"
+            data["url_type"] = "upload"
             if "tracking_summary" in data:
                 del data["tracking_summary"]
         file_format = data.get("format")

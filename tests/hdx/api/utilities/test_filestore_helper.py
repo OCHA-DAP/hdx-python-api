@@ -46,8 +46,8 @@ class TestFilestoreHelper:
             "hash": "3790da698479326339fa99a074cbc1f7",
             "size": 1548,
             "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d",
-            "resource_type": "api",
-            "url_type": "api",
+            "resource_type": "file.upload",
+            "url_type": "upload",
             "url": "updated_by_file_upload_step",
         }
         assert filestore_resources == {0: test_data}
@@ -63,8 +63,8 @@ class TestFilestoreHelper:
             "hash": "3790da698479326339fa99a074cbc1f7",
             "size": 1548,
             "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d",
-            "resource_type": "api",
-            "url_type": "api",
+            "resource_type": "file.upload",
+            "url_type": "upload",
             "url": "updated_by_file_upload_step",
         }
         assert filestore_resources == {}
