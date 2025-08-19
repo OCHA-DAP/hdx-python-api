@@ -1,5 +1,6 @@
 """Helper to the Dataset class for handling resources with filestores."""
 
+import logging
 from typing import TYPE_CHECKING, Any, Dict
 
 from hdx.api.utilities.size_hash import get_size_and_hash
@@ -7,6 +8,8 @@ from hdx.utilities.dateparse import now_utc_notz
 
 if TYPE_CHECKING:
     from hdx.data.resource import Resource
+
+logger = logging.getLogger(__name__)
 
 
 class FilestoreHelper:
@@ -109,6 +112,9 @@ class FilestoreHelper:
             if size == original_resource_data.get(
                 "size"
             ) and hash == original_resource_data.get("hash"):
+                logger.info(
+                    f"Updating metadata not filestore for resource {original_resource_data['name']} as size and hash are unchanged!"
+                )
                 if resource_data_to_update._url_backup:
                     resource_data_to_update["url"] = resource_data_to_update._url_backup
                     resource_data_to_update._url_backup = None
