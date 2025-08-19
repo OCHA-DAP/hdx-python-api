@@ -164,9 +164,9 @@ class ResourceView(HDXObject):
         Returns:
             None
         """
-        if "ignore_check" not in kwargs:  # allow ignoring of field checks
-            self.check_required_fields()
         if not self._update_resource_view(log=True, **kwargs):
+            if "ignore_check" not in kwargs:  # allow ignoring of field checks
+                self.check_required_fields()
             self._save_to_hdx("create", "title")
 
     def delete_from_hdx(self) -> None:
