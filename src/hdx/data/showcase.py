@@ -134,11 +134,11 @@ class Showcase(HDXObject):
             merge_two_dictionaries(self.data, self._old_data)
             self.clean_tags()
             self._hdx_update("showcase", "name", force_active=True, **kwargs)
-        else:
-            if "ignore_check" not in kwargs:  # allow ignoring of field checks
-                self.check_required_fields()
-            self.clean_tags()
-            self._save_to_hdx("create", "title", force_active=True)
+            return
+        if "ignore_check" not in kwargs:  # allow ignoring of field checks
+            self.check_required_fields()
+        self.clean_tags()
+        self._save_to_hdx("create", "title", force_active=True)
 
     def delete_from_hdx(self) -> None:
         """Deletes a showcase from HDX.
