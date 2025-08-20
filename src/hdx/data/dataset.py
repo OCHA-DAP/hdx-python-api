@@ -537,13 +537,7 @@ class Dataset(HDXObject):
         return True
 
     def check_resources_url_filetoupload(self) -> None:
-        """Check that metadata for dataset and its resources is complete. The parameter ignore_fields
-        should be set if required to any fields that should be ignored for the particular operation.
-        Prepend "resource:" for resource fields.
-
-        Args:
-            ignore_fields (ListTuple[str]): Fields to ignore. Default is tuple().
-            allow_no_resources (bool): Whether to allow no resources. Defaults to False.
+        """Check for error where both url or file to upload are provided for resources
 
         Returns:
             None
@@ -1127,6 +1121,7 @@ class Dataset(HDXObject):
         Returns:
             Dict: Status codes of resources
         """
+        self.check_resources_url_filetoupload()
         loaded = False
         if "id" in self.data:
             self._check_existing_object("dataset", "id")
@@ -1193,6 +1188,7 @@ class Dataset(HDXObject):
         Returns:
             Dict: Status codes of resources
         """
+        self.check_resources_url_filetoupload()
         loadedid = self.data.get("id")
         if loadedid is not None:
             if not self._dataset_load_from_hdx(loadedid):

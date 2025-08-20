@@ -265,3 +265,79 @@ class TestUpdateDatasetResourcesLogic:
                 "url_type": "upload",
             },
         ]
+
+    def test_dataset_update_resources_position(
+        self, fixture_path, configuration, test_data, test_xlsx
+    ):
+        dataset = Dataset({"name": "test"})
+        resource = Resource(
+            {
+                "name": "test1",
+                "format": "csv",
+            }
+        )
+        resource.set_file_to_upload(test_data)
+        dataset.add_update_resource(resource)
+        resource2 = Resource(
+            {
+                "name": "test2",
+                "description": "test2",
+                "format": "xlsx",
+            }
+        )
+        resource2.set_file_to_upload(test_xlsx)
+        dataset.add_update_resource(resource2)
+
+        dataset._old_data = dataset.data
+        dataset._old_data["resources"] = dataset._copy_hdxobjects(
+            dataset._resources,
+            Resource,
+            ("_file_to_upload", "_data_updated", "_url_backup"),
+        )
+
+        dataset._resources = []
+        resource = Resource(
+            {
+                "name": "test1",
+                "url": "https://data.humdata.org/dataset/resource/file1.csv",
+                "format": "csv",
+                "resource_type": "file.upload",
+                "url_type": "upload",
+            }
+        )
+        dataset.add_update_resource(resource)
+        (
+            resources_to_update,
+            resources_to_delete,
+            filestore_resources,
+            new_resource_order,
+            statuses,
+        ) = dataset._dataset_update_resources(True, False, True, True)
+        assert resources_to_update == [
+            {
+                "format": "csv",
+                "hash": "3790da698479326339fa99a074cbc1f7",
+                "name": "test1",
+                "resource_type": "file.upload",
+                "size": 1548,
+                "url": "updated_by_file_upload_step",
+                "url_type": "upload",
+            },
+            {
+                "description": "test2",
+                "format": "xlsx",
+                "hash": "6b8acf7e28d62685a1e829e7fa220d17",
+                "name": "test2",
+                "resource_type": "file.upload",
+                "size": 23724,
+                "url": "updated_by_file_upload_step",
+                "url_type": "upload",
+            },
+        ]
+        assert resources_to_delete == []
+        assert filestore_resources == {
+            0: "tests/fixtures/test_data.csv",
+            1: "tests/fixtures/size_hash/ACLED-All-Africa-File_20170101-to-20170708.xlsx",
+        }
+        assert new_resource_order == [("test1", "csv"), ("test2", "xlsx")]
+        assert statuses == {"test1": 2, "test2": 2}
