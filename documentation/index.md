@@ -54,8 +54,8 @@ The library has detailed API documentation which can be found in the menu at the
 
 
 ## Breaking Changes
-From 6.5.0, files will not be uploaded to the HDX filestore if the hash and size have 
-not changed, but if there are any resource metadata changes, except for last_modified, 
+From 6.5.0, files will not be uploaded to the HDX filestore if the hash and size have
+not changed, but if there are any resource metadata changes, except for last_modified,
 they will still take place).
 
 From 6.4.5, fix for changes in dependency defopt 7.0.0
