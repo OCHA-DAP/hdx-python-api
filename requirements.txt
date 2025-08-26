@@ -22,17 +22,18 @@ cfgv==3.4.0
     # via pre-commit
 chardet==5.2.0
     # via frictionless
-charset-normalizer==3.4.2
+charset-normalizer==3.4.3
     # via requests
 ckanapi==4.8
     # via hdx-python-api (pyproject.toml)
 click==8.2.1
     # via
     #   mkdocs
+    #   mkdocs-material
     #   typer
 colorama==0.4.6
     # via mkdocs-material
-coverage==7.10.2
+coverage==7.10.4
     # via pytest-cov
 defopt==7.0.0
     # via hdx-python-api (pyproject.toml)
@@ -50,7 +51,7 @@ email-validator==2.2.0
     # via hdx-python-api (pyproject.toml)
 et-xmlfile==2.0.0
     # via openpyxl
-filelock==3.18.0
+filelock==3.19.1
     # via virtualenv
 frictionless==5.18.1
     # via hdx-python-utilities
@@ -72,7 +73,7 @@ hdx-python-utilities==3.9.0
     #   hdx-python-country
 humanize==4.12.3
     # via frictionless
-identify==2.6.12
+identify==2.6.13
     # via pre-commit
 idna==3.10
     # via
@@ -96,7 +97,7 @@ jsonlines==4.0.0
     # via hdx-python-utilities
 jsonpath-ng==1.7.0
     # via libhxl
-jsonschema==4.25.0
+jsonschema==4.25.1
     # via
     #   frictionless
     #   tableschema-to-template
@@ -115,9 +116,9 @@ markdown==3.8.2
     #   mkdocs
     #   mkdocs-material
     #   pymdown-extensions
-markdown-it-py==3.0.0
+markdown-it-py==4.0.0
     # via rich
-marko==2.1.4
+marko==2.2.0
     # via frictionless
 markupsafe==3.0.2
     # via
@@ -137,7 +138,7 @@ mkdocs==1.6.1
     #   mkdocs-material
 mkdocs-get-deps==0.2.0
     # via mkdocs
-mkdocs-material==9.6.16
+mkdocs-material==9.6.17
     # via mkapi
 mkdocs-material-extensions==1.3.1
     # via mkdocs-material
@@ -175,7 +176,7 @@ ply==3.11
     #   libhxl
 pockets==0.9.1
     # via sphinxcontrib-napoleon
-pre-commit==4.2.0
+pre-commit==4.3.0
     # via hdx-python-api (pyproject.toml)
 pyasn1==0.6.1
     # via
@@ -236,7 +237,7 @@ referencing==0.36.2
     # via
     #   jsonschema
     #   jsonschema-specifications
-requests==2.32.4
+requests==2.32.5
     # via
     #   hdx-python-api (pyproject.toml)
     #   ckanapi
@@ -253,13 +254,13 @@ rfc3986==2.0.0
     # via frictionless
 rich==14.1.0
     # via typer
-rpds-py==0.26.0
+rpds-py==0.27.0
     # via
     #   jsonschema
     #   referencing
 rsa==4.9.1
     # via google-auth
-ruamel-yaml==0.18.14
+ruamel-yaml==0.18.15
     # via hdx-python-utilities
 ruamel-yaml-clib==0.2.12
     # via ruamel-yaml
@@ -291,7 +292,7 @@ text-unidecode==1.3
     # via python-slugify
 typeguard==4.4.4
     # via inflect
-typer==0.16.0
+typer==0.16.1
     # via frictionless
 typing-extensions==4.14.1
     # via
@@ -313,7 +314,7 @@ urllib3==2.5.0
     #   requests
 validators==0.35.0
     # via frictionless
-virtualenv==20.33.1
+virtualenv==20.34.0
     # via pre-commit
 watchdog==6.0.0
     # via mkdocs

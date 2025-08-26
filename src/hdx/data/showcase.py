@@ -118,7 +118,7 @@ class Showcase(HDXObject):
         # We load an existing object even though it may well have been loaded already
         # to prevent an admittedly unlikely race condition where someone has updated
         # the object in the intervening time
-        merge_two_dictionaries(self.data, self.old_data)
+        merge_two_dictionaries(self.data, self._old_data)
         self.clean_tags()
         self._hdx_update("showcase", "name", force_active=True, **kwargs)
         self._update_in_hdx("showcase", "name", **kwargs)
@@ -129,18 +129,16 @@ class Showcase(HDXObject):
         Returns:
             None
         """
-        if "ignore_check" not in kwargs:  # allow ignoring of field checks
-            self.check_required_fields()
         if "name" in self.data and self._load_from_hdx("showcase", self.data["name"]):
             logger.warning(f"{'showcase'} exists. Updating {self.data['name']}")
-            merge_two_dictionaries(self.data, self.old_data)
+            merge_two_dictionaries(self.data, self._old_data)
             self.clean_tags()
             self._hdx_update("showcase", "name", force_active=True, **kwargs)
-        else:
-            self.clean_tags()
-            self._save_to_hdx("create", "title", force_active=True)
-
-        self._create_in_hdx("showcase", "name", "title", **kwargs)
+            return
+        if "ignore_check" not in kwargs:  # allow ignoring of field checks
+            self.check_required_fields()
+        self.clean_tags()
+        self._save_to_hdx("create", "title", force_active=True)
 
     def delete_from_hdx(self) -> None:
         """Deletes a showcase from HDX.
@@ -364,7 +362,7 @@ class Showcase(HDXObject):
         for dataset in datasets:
             showcase = Showcase(configuration=configuration)
             showcase.data = dataset.data
-            showcase.old_data = dataset.old_data
+            showcase._old_data = dataset._old_data
             showcases.append(showcase)
         return showcases
 

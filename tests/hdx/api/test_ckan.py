@@ -46,10 +46,6 @@ class TestCKAN:
     def datasetmetadata(self):
         return join("tests", "fixtures", "CKAN", "hdx_dataset_static.yaml")
 
-    @pytest.fixture(scope="function")
-    def testdata(self):
-        return join("tests", "fixtures", "test_data.csv")
-
     @pytest.fixture(scope="class")
     def params(self):
         return {
@@ -101,7 +97,7 @@ class TestCKAN:
     def test_create_dataset(
         self,
         datasetmetadata,
-        testdata,
+        test_data,
         setup_teardown_folder,
         params,
     ):
@@ -156,7 +152,7 @@ class TestCKAN:
             filestore = resource_no % 2 == 0
             if filestore:
                 resource.set_format("csv")
-                resource.set_file_to_upload(testdata)
+                resource.set_file_to_upload(test_data)
             else:
                 wks, url = create_gsheet(
                     "resource1",
@@ -217,7 +213,7 @@ class TestCKAN:
         resources.pop()
         gsheet_resource = resources[5]
         gsheet_resource.set_format("csv")
-        gsheet_resource.set_file_to_upload(testdata)
+        gsheet_resource.set_file_to_upload(test_data)
         for resource in resources:
             del resource["package_id"]
         dataset.add_update_resources(resources)
@@ -249,6 +245,8 @@ class TestCKAN:
                     assert "humdata" not in updated_resource["url"]
             else:
                 assert "humdata" in updated_resource["url"]
+            assert updated_resource.get("size") == resource.get("size")
+            assert updated_resource.get("hash") == resource.get("hash")
 
         # modify dataset again starting with existing dataset
         title = "HDX Python API test changed again"
@@ -260,7 +258,7 @@ class TestCKAN:
         countryiso3s.append("YEM")
         dataset.add_country_location("YEM")
         dataset.delete_resource(updated_resources[5])
-        updated_resources[0].set_file_to_upload(testdata)
+        updated_resources[0].set_file_to_upload(test_data)
         create_resource()
         resources = dataset.get_resources()
 
@@ -285,7 +283,6 @@ class TestCKAN:
             resource = resources[i]
             assert updated_resource["name"] == resource["name"]
             assert updated_resource.get_format() == resource.get_format()
-            assert updated_resource["url_type"].lower() == resource["url_type"]
             url = resource.get("url")
             if url:
                 if "humdata" in url:
@@ -294,6 +291,10 @@ class TestCKAN:
                     assert "humdata" not in updated_resource["url"]
             else:
                 assert "humdata" in updated_resource["url"]
+            if i != 7:
+                assert updated_resource["url_type"].lower() == resource["url_type"]
+                assert updated_resource.get("size") == resource.get("size")
+                assert updated_resource.get("hash") == resource.get("hash")
 
         # tear down
         dataset.delete_from_hdx()

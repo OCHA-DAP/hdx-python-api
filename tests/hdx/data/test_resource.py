@@ -152,23 +152,24 @@ def mockshow(url, datadict):
             '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}',
         )
     result = json.dumps(resultdict)
-    if datadict["id"] == "74b74ae1-df0c-4716-829f-4f939a046811":
+    datadict_id = datadict["id"]
+    if datadict_id == "74b74ae1-df0c-4716-829f-4f939a046811":
         return MockResponse(
             200,
             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}'
             % result,
         )
-    if datadict["id"] == "74b74ae1-df0c-4716-829f-4f939a046812":
+    if datadict_id == "74b74ae1-df0c-4716-829f-4f939a046812":
         return MockResponse(
             404,
             '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}',
         )
-    if datadict["id"] == "74b74ae1-df0c-4716-829f-4f939a046813":
+    if datadict_id == "74b74ae1-df0c-4716-829f-4f939a046813":
         return MockResponse(
             200,
             '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}',
         )
-    if datadict["id"] == "74b74ae1-df0c-4716-829f-4f939a046814":
+    if datadict_id == "74b74ae1-df0c-4716-829f-4f939a046814":
         resdictcopy = copy.deepcopy(resultdict)
         resdictcopy["url"] = "lalalala"
         result = json.dumps(resdictcopy)
@@ -177,9 +178,28 @@ def mockshow(url, datadict):
             '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}'
             % result,
         )
-    if datadict["id"] == "74b74ae1-df0c-4716-829f-4f939a046815":
+    if datadict_id == "74b74ae1-df0c-4716-829f-4f939a046815":
         resdictcopy = copy.deepcopy(resultdict)
         resdictcopy["id"] = "datastore_unknown_resource"
+        result = json.dumps(resdictcopy)
+        return MockResponse(
+            200,
+            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}'
+            % result,
+        )
+    if datadict_id in (
+        "74b74ae1-df0c-4716-829f-4f939a046816",
+        "74b74ae1-df0c-4716-829f-4f939a046817",
+    ):
+        resdictcopy = copy.deepcopy(resultdict)
+        resdictcopy["url_type"] = "upload"
+        resdictcopy["resource_type"] = "file.upload"
+        resdictcopy["size"] = 1548
+        resdictcopy["hash"] = "3790da698479326339fa99a074cbc1f7"
+        if datadict_id == "74b74ae1-df0c-4716-829f-4f939a046817":
+            resdictcopy["last_modified"] = "2023-05-08T13:09:42.209741"
+        else:
+            del resdictcopy["last_modified"]
         result = json.dumps(resdictcopy)
         return MockResponse(
             200,
@@ -382,6 +402,8 @@ class TestResource:
                         resultdictcopy["url"] = (
                             f"http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/{filename}"
                         )
+                        resultdictcopy["size"] = int(datadict["size"])
+                        resultdictcopy["hash"] = datadict["hash"]
                     resultdictcopy["state"] = datadict["state"]
 
                     result = json.dumps(resultdictcopy)
@@ -656,24 +678,37 @@ class TestResource:
         with pytest.raises(HDXError):
             Resource.read_from_hdx("ABC")
 
-    def test_check_url_filetoupload(self, configuration):
-        resource_data_copy = copy.deepcopy(resource_data)
-        resource = Resource(resource_data_copy)
-        resource.check_url_filetoupload()
+    def test_url_filetoupload(self, configuration):
+        resource = Resource(resource_data)
+        del resource["url"]
+        with pytest.raises(HDXError):
+            resource.check_neither_url_filetoupload()
         resource.set_file_to_upload("abc")
-        resource.check_url_filetoupload()
         resource["url"] = "lala"
         with pytest.raises(HDXError):
-            resource.check_url_filetoupload()
-        resource = Resource(resource_data_copy)
+            resource.check_both_url_filetoupload()
+
+    def test_check_types(self, configuration):
+        resource = Resource(resource_data)
+        resource.set_types()
+        assert resource["resource_type"] == "api"
+        assert resource["url_type"] == "api"
+        resource.set_file_to_upload("abc")
+        resource.set_types()
+        assert resource["resource_type"] == "file.upload"
+        assert resource["url_type"] == "upload"
+
+    def test_correct_format(self, configuration):
+        resource = Resource(resource_data)
+        resource["format"] = "XLSX"
+        resource.correct_format(resource.data)
+        assert resource.get_format() == "xlsx"
         resource["format"] = "NOTEXIST"
         with pytest.raises(HDXError):
-            resource.check_url_filetoupload()
-        with pytest.raises(HDXError):
-            resource.set_format("NOTEXIST")
+            resource.correct_format(resource.data)
         del resource["format"]
-        with pytest.raises(HDXError):
-            resource.check_url_filetoupload()
+        resource.correct_format(resource.data)
+        assert resource.get_format() is None
 
     def test_get_set_date_of_resource(self, configuration):
         resource = Resource({"daterange_for_data": "[2020-01-07T00:00:00 TO *]"})
@@ -698,10 +733,10 @@ class TestResource:
     def test_check_required_fields(self, configuration):
         resource_data_copy = copy.deepcopy(resource_data)
         resource = Resource(resource_data_copy)
-        resource.check_url_filetoupload()
+        resource.set_types()
         resource.check_required_fields()
 
-    def test_create_in_hdx(self, configuration, date_pattern, post_create):
+    def test_create_in_hdx(self, configuration, date_pattern, post_create, test_data):
         resource = Resource()
         with pytest.raises(HDXError):
             resource.create_in_hdx()
@@ -712,7 +747,8 @@ class TestResource:
 
         resource_data_copy = copy.deepcopy(resource_data)
         resource = Resource(resource_data_copy)
-        resource.create_in_hdx()
+        status = resource.create_in_hdx()
+        assert status == 0
         assert resource["id"] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
         assert resource["url_type"] == "api"
         assert resource["resource_type"] == "api"
@@ -723,23 +759,28 @@ class TestResource:
 
         resource_data_copy = copy.deepcopy(resource_data)
         resource = Resource(resource_data_copy)
-        filetoupload = join("tests", "fixtures", "test_data.csv")
-        resource.set_file_to_upload(filetoupload)
-        assert resource.get_file_to_upload() == filetoupload
-        resource.create_in_hdx()
+        resource.set_file_to_upload(test_data)
+        assert resource.get_file_to_upload() == test_data
+        status = resource.create_in_hdx()
+        assert status == 2
         assert resource["url_type"] == "upload"
         assert resource["resource_type"] == "file.upload"
         assert (
             resource["url"]
             == "http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv"
         )
+        assert resource["size"] == 1548
+        assert resource["hash"] == "3790da698479326339fa99a074cbc1f7"
         assert resource["state"] == "active"
-        resource.set_file_to_upload(filetoupload)
-        resource.create_in_hdx()
+        resource.set_file_to_upload(test_data)
+        status = resource.create_in_hdx()
+        assert status == 2
         assert (
             resource["url"]
             == "http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv"
         )
+        assert resource["size"] == 1548
+        assert resource["hash"] == "3790da698479326339fa99a074cbc1f7"
         resource_data_copy["name"] = "MyResource2"
         resource = Resource(resource_data_copy)
         with pytest.raises(HDXError):
@@ -750,7 +791,7 @@ class TestResource:
         with pytest.raises(HDXError):
             resource.create_in_hdx()
 
-    def test_update_in_hdx(self, configuration, date_pattern, post_update):
+    def test_update_in_hdx(self, configuration, date_pattern, post_update, test_data):
         resource = Resource()
         resource["id"] = "NOTEXIST"
         with pytest.raises(HDXError):
@@ -766,7 +807,8 @@ class TestResource:
         resource.set_format("XLSX")
         resource["id"] = "74b74ae1-df0c-4716-829f-4f939a046811"
         resource["name"] = "MyResource1"
-        resource.update_in_hdx(data_updated=True)
+        status = resource.update_in_hdx(data_updated=True)
+        assert status == 0
         assert resource["id"] == "74b74ae1-df0c-4716-829f-4f939a046811"
         assert resource["format"] == "xlsx"
         resource.set_format(".xsl")
@@ -783,18 +825,19 @@ class TestResource:
         match = date_pattern.search(resource["last_modified"])
         assert match
 
-        filetoupload = join("tests", "fixtures", "test_data.csv")
-        resource.set_file_to_upload(filetoupload, guess_format_from_suffix=True)
+        resource.set_file_to_upload(test_data, guess_format_from_suffix=True)
         assert resource["format"] == "csv"
-        resource.update_in_hdx()
+        status = resource.update_in_hdx()
+        assert status == 2
         assert resource["url_type"] == "upload"
         assert resource["resource_type"] == "file.upload"
         assert (
             resource["url"]
             == "http://test-data.humdata.org/dataset/6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d/resource/de6549d8-268b-4dfe-adaf-a4ae5c8510d5/download/test_data.csv"
         )
+        assert resource["size"] == "1548"
+        assert resource["hash"] == "3790da698479326339fa99a074cbc1f7"
         assert resource["state"] == "active"
-
         resource["id"] = "NOTEXIST"
         with pytest.raises(HDXError):
             resource.update_in_hdx()
@@ -812,9 +855,10 @@ class TestResource:
         resource_data_copy["id"] = "74b74ae1-df0c-4716-829f-4f939a046811"
         resource = Resource(resource_data_copy)
         resource.mark_data_updated()
-        assert resource.data_updated is True
+        assert resource._data_updated is True
         assert resource.is_marked_data_updated() is True
-        resource.create_in_hdx()
+        status = resource.create_in_hdx()
+        assert status == 0
         assert resource.is_marked_data_updated() is False
         assert resource["id"] == "74b74ae1-df0c-4716-829f-4f939a046811"
         assert resource.get_format() == "xlsx"
@@ -822,8 +866,21 @@ class TestResource:
         match = date_pattern.search(resource["last_modified"])
         assert match
         resource["format"] = "Geoservice"
-        resource.update_in_hdx()
+        status = resource.update_in_hdx()
+        assert status == 1
         assert resource.get_format() == "geoservice"
+
+        # These resource ids are set up so that the test datasets read have the same
+        # hash and size as the file being uploaded
+        resource["id"] = "74b74ae1-df0c-4716-829f-4f939a046816"
+        resource.set_file_to_upload(test_data, guess_format_from_suffix=True)
+        status = resource.update_in_hdx()
+        assert status == 3
+        resource["id"] = "74b74ae1-df0c-4716-829f-4f939a046817"
+        resource.set_file_to_upload(test_data, guess_format_from_suffix=True)
+        status = resource.update_in_hdx()
+        assert status == 4
+
         resource["format"] = "NOTEXIST"
         with pytest.raises(HDXError):
             resource.update_in_hdx()

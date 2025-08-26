@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import hdx.data.dataset
 from hdx.api.configuration import Configuration
 from hdx.api.utilities.date_helper import DateHelper
-from hdx.api.utilities.filestore_helper import FilestoreHelper
+from hdx.api.utilities.size_hash import get_size_and_hash
 from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.data.resource_view import ResourceView
 from hdx.utilities.dateparse import now_utc, now_utc_notz, parse_date
@@ -40,8 +40,9 @@ class Resource(HDXObject):
         if not initial_data:
             initial_data = {}
         super().__init__(initial_data, configuration=configuration)
-        self.file_to_upload = None
-        self.data_updated = False
+        self._file_to_upload = None
+        self._data_updated = False
+        self._url_backup = None
 
     @staticmethod
     def actions() -> Dict[str, str]:
@@ -293,7 +294,7 @@ class Resource(HDXObject):
         Returns:
             Optional[str]: The file that will be or has been uploaded or None if there isn't one
         """
-        return self.file_to_upload
+        return self._file_to_upload
 
     def set_file_to_upload(
         self, file_to_upload: str, guess_format_from_suffix: bool = False
@@ -308,41 +309,66 @@ class Resource(HDXObject):
             Optional[str]: The format that was guessed or None if no format was set
         """
         if "url" in self.data:
+            self._url_backup = self.data["url"]
             del self.data["url"]
-        self.file_to_upload = file_to_upload
+        self._file_to_upload = file_to_upload
         file_format = None
         if guess_format_from_suffix:
             file_format = self.set_format(Path(file_to_upload).suffix)
         return file_format
 
-    def check_url_filetoupload(self) -> None:
-        """Check if url or file to upload provided for resource and add resource_type
-        and url_type if not supplied. Correct the file type.
+    def check_both_url_filetoupload(self) -> None:
+        """Check for error where both url or file to upload are provided for resource.
 
         Returns:
             None
         """
-        if self.file_to_upload is None:
+        if self._file_to_upload is not None and "url" in self.data:
+            raise HDXError(
+                "Either a url or a file to upload must be supplied not both!"
+            )
+
+    def check_neither_url_filetoupload(self) -> None:
+        if self._file_to_upload is None and "url" not in self.data:
+            raise HDXError("Either a url or a file to upload must be supplied!")
+
+    def correct_format(self, data: Dict = None) -> None:
+        """Correct the format of the file
+
+        Args:
+            data (Dict): Resource data.
+
+        Returns:
+            None
+        """
+        file_format = data.get("format")
+        if file_format is None:
+            return
+        file_format = self.get_mapped_format(
+            file_format, configuration=self.configuration
+        )
+        if not file_format:
+            raise HDXError(
+                f"Supplied file format {file_format} is invalid and could not be mapped to a known type!"
+            )
+        data["format"] = file_format
+
+    def set_types(self) -> None:
+        """Add resource_type and url_type if not supplied based on url or file to
+        upload.
+
+        Returns:
+            None
+        """
+        if self._file_to_upload is None:
             if "url" in self.data:
-                if "resource_type" not in self.data:
-                    self.data["resource_type"] = "api"
-                if "url_type" not in self.data:
-                    self.data["url_type"] = "api"
-            else:
-                raise HDXError("Either a url or a file to upload must be supplied!")
+                self.data["resource_type"] = "api"
+                self.data["url_type"] = "api"
         else:
-            if "url" in self.data:
-                if self.data["url"] != FilestoreHelper.temporary_url:
-                    raise HDXError(
-                        "Either a url or a file to upload must be supplied not both!"
-                    )
-            if "resource_type" not in self.data:
-                self.data["resource_type"] = "file.upload"
-            if "url_type" not in self.data:
-                self.data["url_type"] = "upload"
+            self.data["resource_type"] = "file.upload"
+            self.data["url_type"] = "upload"
             if "tracking_summary" in self.data:
                 del self.data["tracking_summary"]
-        self.clean_format()
 
     def check_required_fields(self, ignore_fields: ListTuple[str] = tuple()) -> None:
         """Check that metadata for resource is complete. The parameter ignore_fields
@@ -355,25 +381,22 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        self.check_url_filetoupload()
         self._check_required_fields("resource", ignore_fields)
-
-    def _get_files(self) -> Dict:
-        """Return the files parameter for CKANAPI
-
-        Returns:
-            Dict: files parameter for CKANAPI
-        """
-        if self.file_to_upload is None:
-            return {}
-        return {"upload": self.file_to_upload}
+        self.check_neither_url_filetoupload()
 
     def _resource_merge_hdx_update(
         self,
         **kwargs: Any,
-    ) -> None:
+    ) -> int:
         """Helper method to update last_modified for external resources if
         data_updated is True, then check if HDX object exists and update it.
+        Returns status code where:
+        0 = no file to upload and last_modified set to now
+        (data_updated flag is True),
+        1 = no file to upload and data_updated flag is False,
+        2 = file uploaded to filestore (either hash or size of file has changed),
+        3 = file not uploaded to filestore (hash and size of file are the same),
+        4 = file not uploaded (hash, size unchanged), last_modified field ignored
 
         Args:
             **kwargs: See below
@@ -381,25 +404,70 @@ class Resource(HDXObject):
             data_updated (bool): If True, set last_modified to now. Defaults to False.
 
         Returns:
-            None
+            int: Status code
         """
-        data_updated = kwargs.pop("data_updated", self.data_updated)
-        if data_updated and not self.file_to_upload:
-            # Should not output timezone info here
-            self.old_data["last_modified"] = now_utc_notz().isoformat(
-                timespec="microseconds"
-            )
-            self.data_updated = False
-            # old_data will be merged into data in the next step
-        self._merge_hdx_update("resource", "id", self._get_files(), True, **kwargs)
+        data_updated = kwargs.pop("data_updated", self._data_updated)
+        files = {}
+        if self._file_to_upload:
+            file_format = self._old_data.get("format", "").lower()
+            size, hash = get_size_and_hash(self._file_to_upload, file_format)
+            if size == self.data.get("size") and hash == self.data.get("hash"):
+                logger.warning(
+                    f"Not updating filestore for resource {self.data['name']} as size and hash unchanged!"
+                )
+                if self._url_backup:
+                    self._old_data["url"] = self._url_backup
+                # ensure last_modified is not updated if file hasn't changed
+                if "last_modified" in self.data:
+                    del self.data["last_modified"]
+                    status = 4
+                else:
+                    status = 3
+            else:
+                # update file if size or hash has changed
+                files["upload"] = self._file_to_upload
+                self._old_data["resource_type"] = "file.upload"
+                self._old_data["url_type"] = "upload"
+                if "tracking_summary" in self._old_data:
+                    del self._old_data["tracking_summary"]
+                self._old_data["size"] = size
+                self._old_data["hash"] = hash
+                status = 2
+            self._url_backup = None
+        else:
+            if "url" in self._old_data:
+                self._old_data["resource_type"] = "api"
+                self._old_data["url_type"] = "api"
+            if data_updated:
+                # Should not output timezone info here
+                self._old_data["last_modified"] = now_utc_notz().isoformat(
+                    timespec="microseconds"
+                )
+                self._data_updated = False
+                status = 0
+            else:
+                status = 1
 
-    def update_in_hdx(self, **kwargs: Any) -> None:
+        self.correct_format(self._old_data)
+        # old_data will be merged into data in the next step
+        self._merge_hdx_update("resource", "id", files, True, **kwargs)
+        return status
+
+    def update_in_hdx(self, **kwargs: Any) -> int:
         """Check if resource exists in HDX and if so, update it. To indicate
         that the data in an external resource (given by a URL) has been
         updated, set data_updated to True, which will result in the resource
         last_modified field being set to now. If the method set_file_to_upload
         is used to supply a file, the resource last_modified field is set to
         now automatically regardless of the value of data_updated.
+
+        Returns status code where:
+        0 = no file to upload and last_modified set to now
+        (data_updated flag is True),
+        1 = no file to upload and data_updated flag is False,
+        2 = file uploaded to filestore (either hash or size of file has changed),
+        3 = file not uploaded to filestore (hash and size of file are the same),
+        4 = file not uploaded (hash, size unchanged), given last_modified ignored
 
         Args:
             **kwargs: See below
@@ -408,14 +476,13 @@ class Resource(HDXObject):
             date_data_updated (datetime): Date to use for last_modified. Default to None.
 
         Returns:
-            None
+            int: Status code
         """
+        self.check_both_url_filetoupload()
         self._check_load_existing_object("resource", "id")
-        if self.file_to_upload and "url" in self.data:
-            del self.data["url"]
-        self._resource_merge_hdx_update(**kwargs)
+        return self._resource_merge_hdx_update(**kwargs)
 
-    def create_in_hdx(self, **kwargs: Any) -> None:
+    def create_in_hdx(self, **kwargs: Any) -> int:
         """Check if resource exists in HDX and if so, update it, otherwise
         create it. To indicate that the data in an external resource (given by
         a URL) has been updated, set data_updated to True, which will result in
@@ -424,24 +491,44 @@ class Resource(HDXObject):
         field is set to now automatically regardless of the value of
         data_updated.
 
+        Returns status code where:
+        0 = no file to upload and last_modified set to now
+        (resource creation or data_updated flag is True),
+        1 = no file to upload and data_updated flag is False,
+        2 = file uploaded to filestore (resource creation or either hash or size of file
+        has changed),
+        3 = file not uploaded to filestore (hash and size of file are the same),
+        4 = file not uploaded (hash, size unchanged), given last_modified ignored
+
         Args:
             **kwargs: See below
             data_updated (bool): If True, set last_modified to now. Defaults to False.
             date_data_updated (datetime): Date to use for last_modified. Default to None.
 
         Returns:
-            None
+            int: Status code
         """
-        if "ignore_check" not in kwargs:  # allow ignoring of field checks
-            self.check_required_fields()
+        self.check_both_url_filetoupload()
         id = self.data.get("id")
         if id and self._load_from_hdx("resource", id):
             logger.warning(f"{'resource'} exists. Updating {id}")
-            if self.file_to_upload and "url" in self.data:
-                del self.data["url"]
-            self._resource_merge_hdx_update(**kwargs)
+            return self._resource_merge_hdx_update(**kwargs)
+
+        self.set_types()
+        self.correct_format(self.data)
+        if "ignore_check" not in kwargs:  # allow ignoring of field checks
+            self.check_required_fields()
+        files = {}
+        if self._file_to_upload:
+            files["upload"] = self._file_to_upload
+            self.data["size"], self.data["hash"] = get_size_and_hash(
+                self._file_to_upload, self.get_format()
+            )
+            status = 2
         else:
-            self._save_to_hdx("create", "name", self._get_files(), True)
+            status = 0
+        self._save_to_hdx("create", "name", files, True)
+        return status
 
     def delete_from_hdx(self) -> None:
         """Deletes a resource from HDX
@@ -763,7 +850,7 @@ class Resource(HDXObject):
         Returns:
             bool: Whether resource's data is marked to be updated
         """
-        return self.data_updated
+        return self._data_updated
 
     def mark_data_updated(self) -> None:
         """Mark resource data as updated
@@ -771,7 +858,7 @@ class Resource(HDXObject):
         Returns:
             None
         """
-        self.data_updated = True
+        self._data_updated = True
 
     def get_date_data_updated(self) -> datetime:
         """Get date resource data was updated

@@ -84,7 +84,7 @@ resources_data = [
         "id": "de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
         "description": "Resource1",
         "name": "Resource1",
-        "url": "http://resource1.xlsx",
+        "url": "http://data.humdata.org/dataset/resource/resource1.xlsx",
         "format": "xlsx",
     },
     {
@@ -148,9 +148,9 @@ dataset_resultdict = {
             "hash": "",
             "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d",
             "name": "Resource1",
-            "url": "http://resource1.xlsx",
-            "resource_type": "api",
-            "url_type": "api",
+            "url": "http://data.humdata.org/dataset/resource/resource1.xlsx",
+            "resource_type": "file.upload",
+            "url_type": "upload",
             "size": None,
             "mimetype_inner": None,
             "cache_last_updated": None,
@@ -193,11 +193,11 @@ dataset_resultdict = {
             "mimetype": None,
             "state": "active",
             "created": "2016-06-07T08:57:27.367959",
-            "description": "Resource2",
+            "description": "Resource3",
             "position": 2,
             "hash": "",
             "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d",
-            "name": "Resource2",
+            "name": "Resource3",
             "url": "http://resource2_csv.zip",
             "resource_type": "api",
             "url_type": "api",
@@ -275,14 +275,7 @@ def dataset_mockshow(url, datadict):
             % result,
         )
     else:
-        if datadict["id"] == "TEST1":
-            result = json.dumps(dataset_resultdict)
-            return MockResponse(
-                200,
-                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}'
-                % result,
-            )
-        if datadict["id"] == "DatasetExist":
+        if datadict["id"] in ("TEST1", "DatasetExist"):
             result = json.dumps(dataset_resultdict)
             return MockResponse(
                 200,
@@ -299,9 +292,14 @@ def dataset_mockshow(url, datadict):
                 200,
                 '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}',
             )
-        if datadict["id"] == "TEST4":
+        if datadict["id"] in ("TEST4", "TEST5"):
             resultdictcopy = copy.deepcopy(dataset_resultdict)
             resultdictcopy["id"] = "TEST4"
+            if datadict["id"] == "TEST5":
+                # test existing size and hash same
+                resource = resultdictcopy["resources"][0]
+                resource["size"] = 23724
+                resource["hash"] = "6b8acf7e28d62685a1e829e7fa220d17"
             result = json.dumps(resultdictcopy)
             return MockResponse(
                 200,

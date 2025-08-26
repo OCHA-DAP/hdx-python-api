@@ -400,9 +400,6 @@ hello there"""
             "hdx_prod_site": {
                 "url": "https://data.humdata.org",
             },
-            "hdx_demo_site": {
-                "url": "https://demo.data-humdata-org.ahconu.org",
-            },
             "hdx_stage_site": {
                 "url": "https://stage.data-humdata-org.ahconu.org",
             },
@@ -411,6 +408,15 @@ hello there"""
             },
             "hdx_dev_site": {
                 "url": "https://dev.data-humdata-org.ahconu.org",
+            },
+            "hdx_demo_site": {
+                "url": "https://demo.data-humdata-org.ahconu.org",
+            },
+            "hdx_bluedemo_site": {
+                "url": "https://blue.demo.data-humdata-org.ahconu.org",
+            },
+            "hdx_greendemo_site": {
+                "url": "https://green.demo.data-humdata-org.ahconu.org",
             },
             "dataset": {
                 "required_fields": [
@@ -523,9 +529,6 @@ hello there"""
             "hdx_prod_site": {
                 "url": "https://data.humdata.org",
             },
-            "hdx_demo_site": {
-                "url": "https://demo.data-humdata-org.ahconu.org",
-            },
             "hdx_stage_site": {
                 "url": "https://stage.data-humdata-org.ahconu.org",
             },
@@ -534,6 +537,15 @@ hello there"""
             },
             "hdx_dev_site": {
                 "url": "https://dev.data-humdata-org.ahconu.org",
+            },
+            "hdx_demo_site": {
+                "url": "https://demo.data-humdata-org.ahconu.org",
+            },
+            "hdx_bluedemo_site": {
+                "url": "https://blue.demo.data-humdata-org.ahconu.org",
+            },
+            "hdx_greendemo_site": {
+                "url": "https://green.demo.data-humdata-org.ahconu.org",
             },
             "my_param": "abc",
             "dataset": {
@@ -640,9 +652,6 @@ hello there"""
             "hdx_prod_site": {
                 "url": "https://data.humdata.org",
             },
-            "hdx_demo_site": {
-                "url": "https://demo.data-humdata-org.ahconu.org",
-            },
             "hdx_stage_site": {
                 "url": "https://stage.data-humdata-org.ahconu.org",
             },
@@ -651,6 +660,15 @@ hello there"""
             },
             "hdx_dev_site": {
                 "url": "https://dev.data-humdata-org.ahconu.org",
+            },
+            "hdx_demo_site": {
+                "url": "https://demo.data-humdata-org.ahconu.org",
+            },
+            "hdx_bluedemo_site": {
+                "url": "https://blue.demo.data-humdata-org.ahconu.org",
+            },
+            "hdx_greendemo_site": {
+                "url": "https://green.demo.data-humdata-org.ahconu.org",
             },
             "dataset": {
                 "required_fields": [

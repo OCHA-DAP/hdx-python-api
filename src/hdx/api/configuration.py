@@ -350,7 +350,7 @@ class Configuration(UserDict):
             Dict: The response from the remote CKAN call_action method
 
         """
-        requests_kwargs = kwargs.get("requests_kwargs", dict())
+        requests_kwargs = kwargs.get("requests_kwargs", {})
         credentials = self._get_credentials()
         if credentials:
             requests_kwargs["auth"] = credentials

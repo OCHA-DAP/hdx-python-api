@@ -68,8 +68,6 @@ class TestDatasetResourceGeneration:
                     "name": "Conflict Data for Algeria",
                     "description": "Conflict data with HXL tags",
                     "format": "csv",
-                    "resource_type": "file.upload",
-                    "url_type": "upload",
                 }
                 assert_files_same(
                     join("tests", "fixtures", "qc_from_rows", qc_filename),
@@ -146,8 +144,6 @@ class TestDatasetResourceGeneration:
                         "description": "Conflict data with HXL tags",
                         "format": "csv",
                         "name": "Conflict Data for Algeria",
-                        "resource_type": "file.upload",
-                        "url_type": "upload",
                     },
                     "headers": [
                         "lala",
@@ -323,8 +319,6 @@ class TestDatasetResourceGeneration:
                         "description": "Cut down data for QuickCharts",
                         "format": "csv",
                         "name": "QuickCharts-Conflict Data for Algeria",
-                        "resource_type": "file.upload",
-                        "url_type": "upload",
                     },
                     "qcheaders": [
                         "EVENT_ID_CNTY",
@@ -412,15 +406,11 @@ class TestDatasetResourceGeneration:
                         "name": "Conflict Data for Algeria",
                         "description": "Conflict data with HXL tags",
                         "format": "csv",
-                        "resource_type": "file.upload",
-                        "url_type": "upload",
                     },
                     {
                         "name": "QuickCharts-Conflict Data for Algeria",
                         "description": "Cut down data for QuickCharts",
                         "format": "csv",
-                        "resource_type": "file.upload",
-                        "url_type": "upload",
                     },
                 ]
                 assert_files_same(
@@ -479,8 +469,6 @@ class TestDatasetResourceGeneration:
                         "description": "Conflict data with HXL tags",
                         "format": "csv",
                         "name": "Conflict Data for Algeria",
-                        "resource_type": "file.upload",
-                        "url_type": "upload",
                     },
                     "headers": [
                         "lala",
@@ -656,8 +644,6 @@ class TestDatasetResourceGeneration:
                         "description": "Cut down data for QuickCharts",
                         "format": "csv",
                         "name": "QuickCharts-Conflict Data for Algeria",
-                        "resource_type": "file.upload",
-                        "url_type": "upload",
                     },
                     "qcheaders": ["EVENT_ID_CNTY", "FATALITIES"],
                     "qcrows": [

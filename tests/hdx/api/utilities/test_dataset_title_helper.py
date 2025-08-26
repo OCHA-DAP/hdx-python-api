@@ -134,10 +134,10 @@ class TestDatasetTitleHelper:
         )
         assert DatasetTitleHelper.get_dates_from_title(
             "Ward boundaries Yangon City_mimu_v8_1"
-        ) == ("Ward boundaries Yangon City_mimu_v8_1", list())
+        ) == ("Ward boundaries Yangon City_mimu_v8_1", [])
         assert DatasetTitleHelper.get_dates_from_title(
             "Mon_State_Village_Tract_Boundaries"
-        ) == ("Mon_State_Village_Tract_Boundaries", list())
+        ) == ("Mon_State_Village_Tract_Boundaries", [])
         assert DatasetTitleHelper.get_dates_from_title(
             "ICA Afghanistan, 2019 - Landslide hazard, 2013"
         ) == (
@@ -181,10 +181,10 @@ class TestDatasetTitleHelper:
         )
         assert DatasetTitleHelper.get_dates_from_title(
             "Mon_State_Village_Tract_Boundaries 9999"
-        ) == ("Mon_State_Village_Tract_Boundaries 9999", list())
+        ) == ("Mon_State_Village_Tract_Boundaries 9999", [])
         assert DatasetTitleHelper.get_dates_from_title(
             "Mon_State_Village_Tract_Boundaries 10/12/01 lala"
-        ) == ("Mon_State_Village_Tract_Boundaries 10/12/01 lala", list())
+        ) == ("Mon_State_Village_Tract_Boundaries 10/12/01 lala", [])
         # It's the "Mon" that makes an extra date component that causes it to ignore the date (correctly)
         assert DatasetTitleHelper.get_dates_from_title(
             "State_Village_Tract_Boundaries 10/12/01 lala"

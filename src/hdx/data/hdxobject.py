@@ -47,7 +47,7 @@ class HDXObject(UserDict, ABC):
     def __init__(
         self, initial_data: Dict, configuration: Optional[Configuration] = None
     ) -> None:
-        self.old_data = None
+        self._old_data = None
         if configuration is None:
             self.configuration: Configuration = Configuration.read()
         else:
@@ -60,7 +60,7 @@ class HDXObject(UserDict, ABC):
         Returns:
             Dict: Previous internal dictionary
         """
-        return self.old_data
+        return self._old_data
 
     def update_from_yaml(self, path: str) -> None:
         """Update metadata with static metadata from YAML file
@@ -134,7 +134,7 @@ class HDXObject(UserDict, ABC):
         """
         success, result = self._read_from_hdx(object_type, id_field)
         if success:
-            self.old_data = self.data
+            self._old_data = self.data
             self.data = result
             return True
         logger.debug(result)
@@ -231,12 +231,33 @@ class HDXObject(UserDict, ABC):
                 if not self.data[field] and not isinstance(self.data[field], bool):
                     raise HDXError(f"Field {field} is empty in {object_type}!")
 
-    def _check_kwargs_fields(self, object_type: str, **kwargs: Any) -> None:
-        """Helper method to check kwargs and set fields appropriately and to check metadata fields unless it is
-        specified not to do so.
+    def _check_fields(self, object_type: str, **kwargs: Any) -> None:
+        """Helper method to check metadata fields unless it is specified not to do so.
 
         Args:
             object_type (str): Description of HDX object type (for messages)
+            **kwargs: See below
+            ignore_field (str): Any field to ignore when checking dataset metadata. Defaults to None.
+
+        Returns:
+            None
+        """
+        if "ignore_check" not in kwargs or not kwargs.get(
+            "ignore_check"
+        ):  # allow ignoring of field checks
+            ignore_fields = kwargs.get("ignore_fields", [])
+            ignore_field = self.configuration[object_type].get("ignore_on_update")
+            if ignore_field and ignore_field not in ignore_fields:
+                ignore_fields.append(ignore_field)
+            ignore_field = kwargs.get("ignore_field")
+            if ignore_field and ignore_field not in ignore_fields:
+                ignore_fields.append(ignore_field)
+            self.check_required_fields(ignore_fields=ignore_fields)
+
+    def _check_kwargs(self, **kwargs: Any) -> None:
+        """Helper method to check kwargs and set fields appropriately
+
+        Args:
             **kwargs: See below
             ignore_field (str): Any field to ignore when checking dataset metadata. Defaults to None.
 
@@ -251,17 +272,6 @@ class HDXObject(UserDict, ABC):
             "skip_validation" in kwargs
         ):  # Whether or not CKAN should perform validation steps (checking fields present)
             self.data["skip_validation"] = kwargs["skip_validation"]
-        if "ignore_check" not in kwargs or not kwargs.get(
-            "ignore_check"
-        ):  # allow ignoring of field checks
-            ignore_fields = kwargs.get("ignore_fields", list())
-            ignore_field = self.configuration[object_type].get("ignore_on_update")
-            if ignore_field and ignore_field not in ignore_fields:
-                ignore_fields.append(ignore_field)
-            ignore_field = kwargs.get("ignore_field")
-            if ignore_field and ignore_field not in ignore_fields:
-                ignore_fields.append(ignore_field)
-            self.check_required_fields(ignore_fields=ignore_fields)
 
     def _hdx_update(
         self,
@@ -285,9 +295,11 @@ class HDXObject(UserDict, ABC):
         Returns:
             None
         """
-        self._check_kwargs_fields(object_type, **kwargs)
+        self._check_kwargs(**kwargs)
         operation = kwargs.pop("operation", "update")
         self._save_to_hdx(operation, id_field_name, files_to_upload, force_active)
+        # We do field check after call so that we have the changed data
+        self._check_fields(object_type, **kwargs)
 
     def _merge_hdx_update(
         self,
@@ -311,7 +323,7 @@ class HDXObject(UserDict, ABC):
         Returns:
             None
         """
-        merge_two_dictionaries(self.data, self.old_data)
+        merge_two_dictionaries(self.data, self._old_data)
         self._hdx_update(
             object_type,
             id_field_name,
@@ -421,7 +433,7 @@ class HDXObject(UserDict, ABC):
         if force_active:
             self.data["state"] = "active"
         result = self._write_to_hdx(action, self.data, id_field_name, files_to_upload)
-        self.old_data = self.data
+        self._old_data = self.data
         self.data = result
 
     @abstractmethod
@@ -454,8 +466,6 @@ class HDXObject(UserDict, ABC):
         Returns:
             None
         """
-        if "ignore_check" not in kwargs:  # allow ignoring of field checks
-            self.check_required_fields()
         if id_field_name in self.data and self._load_from_hdx(
             object_type, self.data[id_field_name]
         ):
@@ -468,6 +478,8 @@ class HDXObject(UserDict, ABC):
                 **kwargs,
             )
         else:
+            if "ignore_check" not in kwargs:  # allow ignoring of field checks
+                self.check_required_fields()
             self._save_to_hdx("create", name_field_name, files_to_upload, force_active)
 
     @abstractmethod
@@ -640,7 +652,7 @@ class HDXObject(UserDict, ABC):
         Returns:
             None
         """
-        new_hdxobjects = self.data.get(hdxobjects_name, list())
+        new_hdxobjects = self.data.get(hdxobjects_name, [])
         """:type : List["HDXObject"]"""
         if new_hdxobjects:
             hdxobject_names = set()
