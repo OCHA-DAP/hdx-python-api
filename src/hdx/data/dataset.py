@@ -927,6 +927,7 @@ class Dataset(HDXObject):
                         resource_data_to_update,
                         filestore_resources,
                         i,
+                        **kwargs,
                     )
                     statuses[resource_name] = status
                     resources_to_update.append(resource_data_to_update)
@@ -970,6 +971,7 @@ class Dataset(HDXObject):
                             resource_data_to_update,
                             filestore_resources,
                             i,
+                            **kwargs,
                         )
                         statuses[updated_resource_name] = status
                     else:
@@ -1117,6 +1119,7 @@ class Dataset(HDXObject):
             keep_crisis_tags (bool): Whether to keep existing crisis tags. Defaults to True.
             updated_by_script (str): String to identify your script. Defaults to your user agent.
             batch (str): A string you can specify to show which datasets are part of a single batch update
+            force_update (bool): Forces files to be updated even if they haven't changed
 
         Returns:
             Dict: Status codes of resources
@@ -1184,6 +1187,7 @@ class Dataset(HDXObject):
             keep_crisis_tags (bool): Whether to keep existing crisis tags. Defaults to True.
             updated_by_script (str): String to identify your script. Defaults to your user agent.
             batch (str): A string you can specify to show which datasets are part of a single batch update
+            force_update (bool): Forces files to be updated even if they haven't changed
 
         Returns:
             Dict: Status codes of resources

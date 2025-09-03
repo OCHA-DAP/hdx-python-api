@@ -402,6 +402,7 @@ class Resource(HDXObject):
             **kwargs: See below
             operation (str): Operation to perform eg. patch. Defaults to update.
             data_updated (bool): If True, set last_modified to now. Defaults to False.
+            force_update (bool): Force file to be updated even if it hasn't changed. Defaults to False.
 
         Returns:
             int: Status code
@@ -409,9 +410,14 @@ class Resource(HDXObject):
         data_updated = kwargs.pop("data_updated", self._data_updated)
         files = {}
         if self._file_to_upload:
+            force_update = kwargs.pop("force_update", False)
             file_format = self._old_data.get("format", "").lower()
             size, hash = get_size_and_hash(self._file_to_upload, file_format)
-            if size == self.data.get("size") and hash == self.data.get("hash"):
+            if (
+                not force_update
+                and size == self.data.get("size")
+                and hash == self.data.get("hash")
+            ):
                 logger.warning(
                     f"Not updating filestore for resource {self.data['name']} as size and hash unchanged!"
                 )
@@ -474,6 +480,7 @@ class Resource(HDXObject):
             operation (string): Operation to perform eg. patch. Defaults to update.
             data_updated (bool): If True, set last_modified to now. Defaults to False.
             date_data_updated (datetime): Date to use for last_modified. Default to None.
+            force_update (bool): Force file to be updated even if it hasn't changed. Defaults to False.
 
         Returns:
             int: Status code
@@ -504,6 +511,7 @@ class Resource(HDXObject):
             **kwargs: See below
             data_updated (bool): If True, set last_modified to now. Defaults to False.
             date_data_updated (datetime): Date to use for last_modified. Default to None.
+            force_update (bool): Force file to be updated even if it hasn't changed. Defaults to False.
 
         Returns:
             int: Status code

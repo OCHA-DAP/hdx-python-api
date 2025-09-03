@@ -878,6 +878,9 @@ class TestResource:
         assert status == 3
         resource["id"] = "74b74ae1-df0c-4716-829f-4f939a046817"
         resource.set_file_to_upload(test_data, guess_format_from_suffix=True)
+        status = resource.update_in_hdx(force_update=True)
+        assert status == 2
+        resource.set_file_to_upload(test_data, guess_format_from_suffix=True)
         status = resource.update_in_hdx()
         assert status == 4
 
