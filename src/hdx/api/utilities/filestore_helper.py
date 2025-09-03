@@ -85,6 +85,7 @@ class FilestoreHelper:
         resource_data_to_update: "Resource",
         filestore_resources: Dict[int, str],
         resource_index: int,
+        **kwargs: Any,
     ) -> int:
         """Helper method to merge updated resource from dataset into HDX resource read from HDX including filestore.
         Returns status code where:
@@ -101,17 +102,21 @@ class FilestoreHelper:
             resource_data_to_update (Resource): Updated resource from dataset
             filestore_resources (Dict[int, str]): List of (index of resources, file to upload)
             resource_index (int): Index of resource
+            **kwargs: Any,
 
         Returns:
             int: Status code
         """
         file_to_upload = resource_data_to_update.get_file_to_upload()
         if file_to_upload:
+            force_update = kwargs.pop("force_update", False)
             file_format = resource_data_to_update.get("format", "").lower()
             size, hash = get_size_and_hash(file_to_upload, file_format)
-            if size == original_resource_data.get(
-                "size"
-            ) and hash == original_resource_data.get("hash"):
+            if (
+                not force_update
+                and size == original_resource_data.get("size")
+                and hash == original_resource_data.get("hash")
+            ):
                 logger.warning(
                     f"Not updating filestore for resource {original_resource_data['name']} as size and hash unchanged!"
                 )

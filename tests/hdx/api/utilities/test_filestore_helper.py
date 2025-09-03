@@ -21,9 +21,10 @@ class TestFilestoreHelper:
         orig_resource = Resource(resource_data_copy)
         resource = Resource(resource_data_copy)
         filestore_resources = {}
-        FilestoreHelper.dataset_update_filestore_resource(
+        status = FilestoreHelper.dataset_update_filestore_resource(
             orig_resource, resource, filestore_resources, 0
         )
+        assert status == 1
         assert resource == {
             "description": "My Resource",
             "format": "xlsx",
@@ -36,9 +37,10 @@ class TestFilestoreHelper:
         assert filestore_resources == {}
 
         resource.set_file_to_upload(test_data)
-        FilestoreHelper.dataset_update_filestore_resource(
+        status = FilestoreHelper.dataset_update_filestore_resource(
             orig_resource, resource, filestore_resources, 0
         )
+        assert status == 2
         assert resource == {
             "description": "My Resource",
             "format": "xlsx",
@@ -53,9 +55,15 @@ class TestFilestoreHelper:
         assert filestore_resources == {0: test_data}
 
         filestore_resources = {}
-        FilestoreHelper.dataset_update_filestore_resource(
+        status = FilestoreHelper.dataset_update_filestore_resource(
+            resource, resource, filestore_resources, 0, force_update=True
+        )
+        assert status == 2
+        filestore_resources = {}
+        status = FilestoreHelper.dataset_update_filestore_resource(
             resource, resource, filestore_resources, 0
         )
+        assert status == 3
         assert resource == {
             "description": "My Resource",
             "format": "xlsx",
@@ -71,9 +79,10 @@ class TestFilestoreHelper:
 
         resource._file_to_upload = None
         resource.mark_data_updated()
-        FilestoreHelper.dataset_update_filestore_resource(
+        status = FilestoreHelper.dataset_update_filestore_resource(
             orig_resource, resource, filestore_resources, 0
         )
+        assert status == 0
         regex = r"^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d$"
         assert re.match(regex, resource["last_modified"])
         assert filestore_resources == {}
