@@ -38,68 +38,6 @@ class TestDatasetResourceGeneration:
         "ISO3": "#country+code",
     }
 
-    def test_generate_qc_resource_from_rows(self, configuration):
-        with temp_dir("test") as folder:
-            with Download(user_agent="test") as downloader:
-                _, rows = downloader.get_tabular_rows(
-                    TestDatasetResourceGeneration.url,
-                    dict_form=True,
-                    format="csv",
-                )
-                rows = list(rows)
-                dataset = Dataset({"name": "test"})
-                qc_filename = "qc_conflict_data_alg.csv"
-                resourcedata = {
-                    "name": "Conflict Data for Algeria",
-                    "description": "Conflict data with HXL tags",
-                }
-                columnname = "EVENT_ID_CNTY"
-                qc_indicator_codes = ["1416RTA", "XXXXRTA", "2231RTA"]
-                resource = dataset.generate_qc_resource_from_rows(
-                    folder,
-                    qc_filename,
-                    rows,
-                    resourcedata,
-                    TestDatasetResourceGeneration.hxltags,
-                    columnname,
-                    qc_indicator_codes,
-                )
-                assert resource == {
-                    "name": "Conflict Data for Algeria",
-                    "description": "Conflict data with HXL tags",
-                    "format": "csv",
-                }
-                assert_files_same(
-                    join("tests", "fixtures", "qc_from_rows", qc_filename),
-                    join(folder, qc_filename),
-                )
-                qc_filename = "qc_conflict_data_alg_one_col.csv"
-                dataset.generate_qc_resource_from_rows(
-                    folder,
-                    qc_filename,
-                    rows,
-                    resourcedata,
-                    TestDatasetResourceGeneration.hxltags,
-                    columnname,
-                    qc_indicator_codes,
-                    headers=[columnname],
-                )
-                assert_files_same(
-                    join("tests", "fixtures", "qc_from_rows", qc_filename),
-                    join(folder, qc_filename),
-                )
-                rows = []
-                resource = dataset.generate_qc_resource_from_rows(
-                    folder,
-                    qc_filename,
-                    rows,
-                    resourcedata,
-                    TestDatasetResourceGeneration.hxltags,
-                    columnname,
-                    qc_indicator_codes,
-                )
-                assert resource is None
-
     def test_download_and_generate_resource(self, configuration):
         with temp_dir("test") as folder:
             filename = "conflict_data_alg.csv"

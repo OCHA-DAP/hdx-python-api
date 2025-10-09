@@ -45,11 +45,11 @@ from hdx.utilities.dateparse import (
     parse_date,
     parse_date_range,
 )
-from hdx.utilities.dictandlist import merge_two_dictionaries, write_list_to_csv
+from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_json
 from hdx.utilities.path import script_dir_plus_file
-from hdx.utilities.saver import save_json
+from hdx.utilities.saver import save_iterable, save_json
 from hdx.utilities.typehint import ListTuple, ListTupleDict
 from hdx.utilities.uuid import is_valid_uuid
 
@@ -2619,11 +2619,12 @@ class Dataset(HDXObject):
         self,
         folder: str,
         filename: str,
-        rows: List[ListTupleDict],
+        rows: Iterable[ListTupleDict],
         resourcedata: Dict,
         headers: Optional[ListTuple[str]] = None,
+        format: str = "csv",
         encoding: Optional[str] = None,
-    ) -> "Resource":
+    ) -> Optional["Resource"]:
         """Write rows to csv and create resource, adding it to the dataset.
         The headers argument is either a row number (rows start counting at
         1), or the actual headers defined as a list of strings. If not set, all
@@ -2632,71 +2633,26 @@ class Dataset(HDXObject):
         Args:
             folder (str): Folder to which to write file containing rows
             filename (str): Filename of file to write rows
-            rows (List[ListTupleDict]): List of rows in dict or list form
+            rows (Iterable[ListTupleDict]): List of rows in dict or list form
             resourcedata (Dict): Resource data
             headers (Optional[ListTuple[str]]): List of headers. Defaults to None.
+            format (str): Format to write. Defaults to csv.
             encoding (Optional[str]): Encoding to use. Defaults to None (infer encoding).
 
         Returns:
-            Resource: The created resource
+            Optional[Resource]: The created resource or None if not created
         """
         filepath = join(folder, filename)
-        write_list_to_csv(filepath, rows, columns=headers, encoding=encoding)
+        res = save_iterable(
+            filepath, rows, columns=headers, format=format, encoding=encoding
+        )
+        if not res:
+            return None
         resource = res_module.Resource(resourcedata)
-        resource.set_format("csv")
+        resource.set_format(format)
         resource.set_file_to_upload(filepath)
         self.add_update_resource(resource)
         return resource
-
-    def generate_qc_resource_from_rows(
-        self,
-        folder: str,
-        filename: str,
-        rows: List[Dict],
-        resourcedata: Dict,
-        hxltags: Dict[str, str],
-        columnname: str,
-        qc_identifiers: ListTuple[str],
-        headers: Optional[ListTuple[str]] = None,
-        encoding: Optional[str] = None,
-    ) -> Optional["Resource"]:
-        """Generate QuickCharts rows by cutting down input rows by relevant
-        identifiers and optionally restricting to certain columns. Output to
-        csv and create resource, adding it to the dataset.
-
-        Args:
-            folder (str): Folder to which to write file containing rows
-            filename (str): Filename of file to write rows
-            rows (List[Dict]): List of rows in dict form
-            resourcedata (Dict): Resource data
-            hxltags (Dict[str,str]): Header to HXL hashtag mapping
-            columnname (str): Name of column containing identifier
-            qc_identifiers (ListTuple[str]): List of ids to match
-            headers (Optional[ListTuple[str]]): List of headers to output. Defaults to None (all headers).
-            encoding (Optional[str]): Encoding to use. Defaults to None (infer encoding).
-
-        Returns:
-            Optional[Resource]: The created resource or None
-        """
-        qc_rows = []
-        for row in rows:
-            if row[columnname] in qc_identifiers:
-                if headers:
-                    qcrow = {x: row[x] for x in headers}
-                else:
-                    qcrow = row
-                qc_rows.append(qcrow)
-        if len(qc_rows) == 0:
-            return None
-        qc_rows.insert(0, hxltags)
-        return self.generate_resource_from_rows(
-            folder,
-            filename,
-            qc_rows,
-            resourcedata,
-            headers=headers,
-            encoding=encoding,
-        )
 
     def generate_resource_from_iterable(
         self,
