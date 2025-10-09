@@ -2615,6 +2615,134 @@ class Dataset(HDXObject):
             self.set_time_period(startdate, enddate)
         return ranges
 
+    def generate_resource(
+        self,
+        folder: str,
+        filename: str,
+        rows: Iterable[ListTupleDict],
+        resourcedata: Dict,
+        headers: Union[int, ListTuple[str], None] = None,
+        columns: Union[ListTuple[int], ListTuple[str], None] = None,
+        format: str = "csv",
+        encoding: Optional[str] = None,
+        datecol: Optional[Union[int, str]] = None,
+        yearcol: Optional[Union[int, str]] = None,
+        date_function: Optional[Callable[[Dict], Optional[Dict]]] = None,
+    ) -> Tuple[bool, Dict]:
+        """Write rows to file and create resource, adding it to the dataset. The headers
+        argument is either a row number (rows start counting at 1), or the actual
+        headers defined as a list of strings. If not set, all rows will be treated as
+        containing values. Specific columns to include can be specified (ie. a subset of
+        the headers).
+
+        The returned dictionary will contain the resource in the key resource, headers
+        in the key headers and list of rows in the key rows.
+
+        The time period can optionally be set by supplying a column in
+        which the date or year is to be looked up. Note that any timezone
+        information is ignored and UTC assumed. Alternatively, a function can
+        be supplied to handle any dates in a row. It should accept a row and
+        should return None to ignore the row or a dictionary which can either
+        be empty if there are no dates in the row or can be populated with
+        keys startdate and/or enddate which are of type timezone-aware
+        datetime. The lowest start date and highest end date are used to set
+        the time period and are returned in the results dictionary in keys
+        startdate and enddate.
+
+        Args:
+            folder (str): Folder to which to write file containing rows
+            filename (str): Filename of file to write rows
+            rows (Iterable[ListTupleDict]): List of rows in dict or list form
+            resourcedata (Dict): Resource data
+            headers (Union[int, ListTuple[str], None]): All headers. Defaults to None.
+            columns (Union[ListTuple[int], ListTuple[str], None]): Columns to write. Defaults to all.
+            format (str): Format to write. Defaults to csv.
+            encoding (Optional[str]): Encoding to use. Defaults to None (infer encoding).
+            datecol: Optional[Union[int, str]] = None,
+            yearcol: Optional[Union[int, str]] = None,
+            date_function: Optional[Callable[[Dict], Optional[Dict]]] = None,
+
+        Returns:
+            Tuple[bool, Dict]: (True if resource added, dictionary of results)
+        """
+        if [datecol, yearcol, date_function].count(None) < 2:
+            raise HDXError("Supply one of datecol, yearcol or date_function!")
+        retdict = {}
+        dates = [default_enddate, default_date]
+
+        if yearcol is not None:
+
+            def yearcol_function(row):
+                result = {}
+                year = row[yearcol]
+                if year:
+                    result["startdate"], result["enddate"] = parse_date_range(
+                        year,
+                        zero_time=True,
+                        max_endtime=True,
+                    )
+                return result
+
+            date_function = yearcol_function
+        elif datecol is not None:
+
+            def datecol_function(row):
+                result = {}
+                date = row[datecol]
+                if date:
+                    date = parse_date(date)
+                    result["startdate"] = date
+                    result["enddate"] = date
+                return result
+
+            date_function = datecol_function
+
+        def process_row(row: ListTupleDict) -> Optional[ListTupleDict]:
+            if date_function is None:
+                return row
+            result = date_function(row)
+            if result is None:
+                return None
+            startdate = result.get("startdate")
+            if startdate is not None:
+                if startdate < dates[0]:
+                    dates[0] = startdate
+            enddate = result.get("enddate")
+            if enddate is not None:
+                if enddate > dates[1]:
+                    dates[1] = enddate
+            return row
+
+        filepath = join(folder, filename)
+        rows = save_iterable(
+            filepath,
+            rows,
+            headers,
+            columns,
+            format=format,
+            encoding=encoding,
+            row_function=process_row,
+        )
+        if not rows:
+            logger.error(f"No data rows in {filename}!")
+            return False, retdict
+        if yearcol is not None or date_function is not None:
+            if dates[0] == default_enddate or dates[1] == default_date:
+                logger.error(f"No dates in {filename}!")
+                return False, retdict
+            else:
+                retdict["startdate"] = dates[0]
+                retdict["enddate"] = dates[1]
+                self.set_time_period(dates[0], dates[1])
+        resource = res_module.Resource(resourcedata)
+        resource.set_format(format)
+        resource.set_file_to_upload(filepath)
+        self.add_update_resource(resource)
+        retdict["resource"] = resource
+        retdict["headers"] = headers
+        retdict["rows"] = rows
+        return True, retdict
+
     def generate_resource_from_rows(
         self,
         folder: str,
@@ -2622,7 +2750,6 @@ class Dataset(HDXObject):
         rows: Iterable[ListTupleDict],
         resourcedata: Dict,
         headers: Optional[ListTuple[str]] = None,
-        format: str = "csv",
         encoding: Optional[str] = None,
     ) -> Optional["Resource"]:
         """Write rows to csv and create resource, adding it to the dataset.
@@ -2636,23 +2763,19 @@ class Dataset(HDXObject):
             rows (Iterable[ListTupleDict]): List of rows in dict or list form
             resourcedata (Dict): Resource data
             headers (Optional[ListTuple[str]]): List of headers. Defaults to None.
-            format (str): Format to write. Defaults to csv.
             encoding (Optional[str]): Encoding to use. Defaults to None (infer encoding).
 
         Returns:
             Optional[Resource]: The created resource or None if not created
         """
-        filepath = join(folder, filename)
-        res = save_iterable(
-            filepath, rows, columns=headers, format=format, encoding=encoding
+        warnings.warn(
+            "generate_resource_from_rows() is deprecated, use generate_resource() instead",
+            DeprecationWarning,
         )
-        if not res:
-            return None
-        resource = res_module.Resource(resourcedata)
-        resource.set_format(format)
-        resource.set_file_to_upload(filepath)
-        self.add_update_resource(resource)
-        return resource
+        res, retdict = self.generate_resource(
+            folder, filename, rows, resourcedata, headers, headers, "csv", encoding
+        )
+        return retdict["resource"] if res else None
 
     def generate_resource_from_iterable(
         self,
@@ -2719,6 +2842,10 @@ class Dataset(HDXObject):
         Returns:
             Tuple[bool, Dict]: (True if resource added, dictionary of results)
         """
+        warnings.warn(
+            "generate_resource_from_iterable() is deprecated, use generate_resource() instead",
+            DeprecationWarning,
+        )
         if [datecol, yearcol, date_function].count(None) < 2:
             raise HDXError("Supply one of datecol, yearcol or date_function!")
         retdict = {}
@@ -2877,7 +3004,7 @@ class Dataset(HDXObject):
         encoding: Optional[str] = None,
     ) -> Tuple[bool, Dict]:
         warnings.warn(
-            "generate_resource_from_iterator() is deprecated, use generate_resource_from_iterable() instead",
+            "generate_resource_from_iterator() is deprecated, use generate_resource() instead",
             DeprecationWarning,
         )
         return self.generate_resource_from_iterable(
@@ -2892,6 +3019,103 @@ class Dataset(HDXObject):
             date_function,
             quickcharts,
             encoding,
+        )
+
+    def download_generate_resource(
+        self,
+        downloader: BaseDownload,
+        url: str,
+        folder: str,
+        filename: str,
+        resourcedata: Dict,
+        header_insertions: Optional[ListTuple[Tuple[int, str]]] = None,
+        row_function: Optional[Callable[[List[str], Dict], Dict]] = None,
+        datecol: Optional[str] = None,
+        yearcol: Optional[str] = None,
+        date_function: Optional[Callable[[Dict], Optional[Dict]]] = None,
+        **kwargs: Any,
+    ) -> Tuple[bool, Dict]:
+        """Download url, write rows to csv and create resource, adding to it
+        the dataset. The returned dictionary will contain the resource in the
+        key resource, headers in the key headers and list of rows in the key
+        rows.
+
+        Optionally, headers can be inserted at specific positions. This is
+        achieved using the header_insertions argument. If supplied, it is a
+        list of tuples of the form (position, header) to be inserted. A
+        function is called for each row. If supplied, it takes as arguments:
+        headers (prior to any insertions) and row (which will be in dict or
+        list form depending upon the dict_rows argument) and outputs a modified
+        row.
+
+        The time period can optionally be set by supplying a column in
+        which the date or year is to be looked up. Note that any timezone
+        information is ignored and UTC assumed. Alternatively, a function can
+        be supplied to handle any dates in a row. It should accept a row and
+        should return None to ignore the row or a dictionary which can either
+        be empty if there are no dates in the row or can be populated with
+        keys startdate and/or enddate which are of type timezone-aware
+        datetime. The lowest start date and highest end date are used to set
+        the time period and are returned in the results dictionary in keys
+        startdate and enddate.
+
+        If the parameter quickcharts is supplied then various QuickCharts
+        related actions will occur depending upon the keys given in the
+        dictionary and the returned dictionary will contain the QuickCharts
+        resource in the key qc_resource. If the keys: hashtag - the HXL hashtag
+        to examine - and values - the 3 values to look for in that column - are
+        supplied, then a list of booleans indicating which QuickCharts bites
+        should be enabled will be returned in the key bites_disabled in the
+        returned dictionary. For the 3 values, if the key: numeric_hashtag is
+        supplied then if that column for a given value contains no numbers,
+        then the corresponding bite will be disabled. If the key: cutdown is
+        given, if it is 1, then a separate cut down list is created containing
+        only columns with HXL hashtags and rows with desired values (if hashtag
+        and values are supplied) for the purpose of driving QuickCharts. It is
+        returned in the key qcrows in the returned dictionary with the matching
+        headers in qcheaders. If cutdown is 2, then a resource is created using
+        the cut down list. If the key cutdownhashtags is supplied, then only
+        the provided hashtags are used for cutting down otherwise the full list
+        of HXL tags is used.
+
+        Args:
+            downloader (BaseDownload): A Download or Retrieve object
+            url (str): URL to download
+            hxltags (Dict[str,str]): Header to HXL hashtag mapping
+            folder (str): Folder to which to write file containing rows
+            filename (str): Filename of file to write rows
+            resourcedata (Dict): Resource data
+            header_insertions (Optional[ListTuple[Tuple[int,str]]]): List of (position, header) to insert. Defaults to None.
+            row_function (Optional[Callable[[List[str],Dict],Dict]]): Function to call for each row. Defaults to None.
+            datecol (Optional[str]): Date column for setting time period. Defaults to None (don't set).
+            yearcol (Optional[str]): Year column for setting dataset year range. Defaults to None (don't set).
+            date_function (Optional[Callable[[Dict],Optional[Dict]]]): Date function to call for each row. Defaults to None.
+            quickcharts (Optional[Dict]): Dictionary containing optional keys: hashtag, values, cutdown and/or cutdownhashtags
+            **kwargs: Any additional args to pass to downloader.get_tabular_rows
+
+        Returns:
+            Tuple[bool, Dict]: (True if resource added, dictionary of results)
+        """
+        headers, iterator = downloader.get_tabular_rows(
+            url,
+            dict_form=True,
+            header_insertions=header_insertions,
+            row_function=row_function,
+            format="csv",
+            **kwargs,
+        )
+        return self.generate_resource_from_iterable(
+            headers,
+            iterator,
+            hxltags,
+            folder,
+            filename,
+            resourcedata,
+            datecol=datecol,
+            yearcol=yearcol,
+            date_function=date_function,
+            quickcharts=quickcharts,
+            encoding=kwargs.get("encoding", None),
         )
 
     def download_and_generate_resource(

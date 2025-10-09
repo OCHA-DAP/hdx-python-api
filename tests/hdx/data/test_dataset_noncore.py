@@ -909,7 +909,7 @@ class TestDatasetNoncore:
         with pytest.raises(IOError):
             dataset.generate_quickcharts()
 
-    def test_remove_dates_from_title(self):
+    def test_remove_dates_from_title(self, configuration):
         dataset = Dataset()
         with pytest.raises(HDXError):
             dataset.remove_dates_from_title()
