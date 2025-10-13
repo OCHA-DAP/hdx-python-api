@@ -3030,8 +3030,11 @@ class Dataset(HDXObject):
         resourcedata: Dict,
         header_insertions: Optional[ListTuple[Tuple[int, str]]] = None,
         row_function: Optional[Callable[[List[str], Dict], Dict]] = None,
-        datecol: Optional[str] = None,
-        yearcol: Optional[str] = None,
+        columns: Union[ListTuple[int], ListTuple[str], None] = None,
+        format: str = "csv",
+        encoding: Optional[str] = None,
+        datecol: Optional[Union[int, str]] = None,
+        yearcol: Optional[Union[int, str]] = None,
         date_function: Optional[Callable[[Dict], Optional[Dict]]] = None,
         **kwargs: Any,
     ) -> Tuple[bool, Dict]:
@@ -3087,10 +3090,12 @@ class Dataset(HDXObject):
             resourcedata (Dict): Resource data
             header_insertions (Optional[ListTuple[Tuple[int,str]]]): List of (position, header) to insert. Defaults to None.
             row_function (Optional[Callable[[List[str],Dict],Dict]]): Function to call for each row. Defaults to None.
-            datecol (Optional[str]): Date column for setting time period. Defaults to None (don't set).
-            yearcol (Optional[str]): Year column for setting dataset year range. Defaults to None (don't set).
-            date_function (Optional[Callable[[Dict],Optional[Dict]]]): Date function to call for each row. Defaults to None.
-            quickcharts (Optional[Dict]): Dictionary containing optional keys: hashtag, values, cutdown and/or cutdownhashtags
+            columns (Union[ListTuple[int], ListTuple[str], None]): Columns to write. Defaults to all.
+            format (str): Format to write. Defaults to csv.
+            encoding (Optional[str]): Encoding to use. Defaults to None (infer encoding).
+            datecol: Optional[Union[int, str]] = None,
+            yearcol: Optional[Union[int, str]] = None,
+            date_function: Optional[Callable[[Dict], Optional[Dict]]] = None,
             **kwargs: Any additional args to pass to downloader.get_tabular_rows
 
         Returns:
@@ -3104,18 +3109,18 @@ class Dataset(HDXObject):
             format="csv",
             **kwargs,
         )
-        return self.generate_resource_from_iterable(
-            headers,
-            iterator,
-            hxltags,
+        return self.generate_resource(
             folder,
             filename,
+            iterator,
             resourcedata,
+            headers,
+            columns=columns,
+            format=format,
+            encoding=encoding,
             datecol=datecol,
             yearcol=yearcol,
             date_function=date_function,
-            quickcharts=quickcharts,
-            encoding=kwargs.get("encoding", None),
         )
 
     def download_and_generate_resource(
@@ -3195,6 +3200,10 @@ class Dataset(HDXObject):
         Returns:
             Tuple[bool, Dict]: (True if resource added, dictionary of results)
         """
+        warnings.warn(
+            "download_and_generate_resource() is deprecated, use download_generate_resource() instead",
+            DeprecationWarning,
+        )
         headers, iterator = downloader.get_tabular_rows(
             url,
             dict_form=True,

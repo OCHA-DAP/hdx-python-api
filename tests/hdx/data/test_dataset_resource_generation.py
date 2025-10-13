@@ -38,7 +38,7 @@ class TestDatasetResourceGeneration:
         "ISO3": "#country+code",
     }
 
-    def test_generate_resource(self, configuration):
+    def test_download_generate_resource(self, configuration):
         with temp_dir("test") as folder:
             filename = "conflict_data_alg.csv"
             resourcedata = {
@@ -56,20 +56,14 @@ class TestDatasetResourceGeneration:
 
             dataset = Dataset()
             with Download(user_agent="test") as downloader:
-                headers, iterator = downloader.get_tabular_rows(
+                success, results = dataset.download_generate_resource(
+                    downloader,
                     TestDatasetResourceGeneration.url,
-                    dict_form=True,
-                    header_insertions=[(0, "lala")],
-                    row_function=process_row,
-                    format="csv",
-                )
-
-                success, results = dataset.generate_resource(
                     folder,
                     filename,
-                    iterator,
                     resourcedata,
-                    headers,
+                    header_insertions=[(0, "lala")],
+                    row_function=process_row,
                     yearcol="YEAR",
                 )
                 assert success is True
@@ -242,17 +236,15 @@ class TestDatasetResourceGeneration:
                     join(folder, filename),
                 )
 
-                success, results = dataset.download_and_generate_resource(
+                success, results = dataset.download_generate_resource(
                     downloader,
                     TestDatasetResourceGeneration.url,
-                    TestDatasetResourceGeneration.hxltags,
                     folder,
                     filename,
                     resourcedata,
                     header_insertions=[(0, "lala")],
                     row_function=process_row,
                     datecol="EVENT_DATE",
-                    quickcharts=quickcharts,
                 )
                 assert success is True
                 assert (
@@ -260,30 +252,20 @@ class TestDatasetResourceGeneration:
                     == "[2001-04-18T00:00:00 TO 2001-04-21T23:59:59]"
                 )
 
-                quickcharts = {
-                    "hashtag": "#event+code",
-                    "values": ["1416RTA", "2230RTA", "2231RTA"],
-                    "numeric_hashtag": "#affected+killed",
-                    "cutdown": 2,
-                    "cutdownhashtags": ["#event+code"],
-                }
-                success, results = dataset.download_and_generate_resource(
+                success, results = dataset.download_generate_resource(
                     downloader,
                     TestDatasetResourceGeneration.url,
-                    TestDatasetResourceGeneration.hxltags,
                     folder,
                     filename,
                     resourcedata,
                     header_insertions=[(0, "lala")],
                     row_function=process_row,
                     yearcol="YEAR",
-                    quickcharts=quickcharts,
                 )
                 assert success is True
                 assert results == {
                     "startdate": datetime(2001, 1, 1, 0, 0, tzinfo=timezone.utc),
                     "enddate": datetime(2002, 12, 31, 23, 59, 59, tzinfo=timezone.utc),
-                    "bites_disabled": [False, True, False],
                     "resource": {
                         "description": "Conflict data with HXL tags",
                         "format": "csv",
@@ -318,34 +300,6 @@ class TestDatasetResourceGeneration:
                         "FATALITIES",
                     ],
                     "rows": [
-                        {
-                            "lala": "",
-                            "GWNO": "",
-                            "EVENT_ID_CNTY": "#event+code",
-                            "EVENT_ID_NO_CNTY": "",
-                            "EVENT_DATE": "#date+occurred",
-                            "YEAR": "#date+year",
-                            "TIME_PRECISION": "",
-                            "EVENT_TYPE": "#event+type",
-                            "ACTOR1": "#group+name+first",
-                            "ALLY_ACTOR_1": "",
-                            "INTER1": "",
-                            "ACTOR2": "#group+name+second",
-                            "ALLY_ACTOR_2": "",
-                            "INTER2": "",
-                            "INTERACTION": "",
-                            "COUNTRY": "#country+name",
-                            "ADMIN1": "#adm1+name",
-                            "ADMIN2": "#adm2+name",
-                            "ADMIN3": "#adm3+name",
-                            "LOCATION": "#loc+name",
-                            "LATITUDE": "#geo+lat",
-                            "LONGITUDE": "#geo+lon",
-                            "GEO_PRECISION": "",
-                            "SOURCE": "#meta+source",
-                            "NOTES": "#description",
-                            "FATALITIES": "#affected+killed",
-                        },
                         {
                             "GWNO": "615",
                             "EVENT_ID_CNTY": "1416RTA",
@@ -459,20 +413,6 @@ class TestDatasetResourceGeneration:
                             "lala": "lala",
                         },
                     ],
-                    "qc_resource": {
-                        "description": "Cut down data for QuickCharts",
-                        "format": "csv",
-                        "name": "QuickCharts-Conflict Data for Algeria",
-                    },
-                    "qcheaders": ["EVENT_ID_CNTY", "FATALITIES"],
-                    "qcrows": [
-                        {
-                            "EVENT_ID_CNTY": "#event+code",
-                            "FATALITIES": "#affected+killed",
-                        },
-                        {"EVENT_ID_CNTY": "1416RTA", "FATALITIES": "1"},
-                        {"EVENT_ID_CNTY": "2231RTA", "FATALITIES": "0"},
-                    ],
                 }
 
                 def process_year(row):
@@ -484,19 +424,15 @@ class TestDatasetResourceGeneration:
                     )
                     return {"startdate": startdate, "enddate": enddate}
 
-                del quickcharts["hashtag"]
-                del quickcharts["numeric_hashtag"]
-                success, results = dataset.download_and_generate_resource(
+                success, results = dataset.download_generate_resource(
                     downloader,
                     TestDatasetResourceGeneration.url,
-                    TestDatasetResourceGeneration.hxltags,
                     folder,
                     filename,
                     resourcedata,
                     header_insertions=[(0, "lala")],
                     row_function=process_row,
                     date_function=process_year,
-                    quickcharts=quickcharts,
                 )
                 assert success is True
                 assert results["startdate"] == datetime(
@@ -508,15 +444,6 @@ class TestDatasetResourceGeneration:
                 assert (
                     dataset["dataset_date"]
                     == "[2001-01-01T00:00:00 TO 2001-12-31T23:59:59]"
-                )
-                assert_files_same(
-                    join(
-                        "tests",
-                        "fixtures",
-                        "gen_resource",
-                        f"min_{qc_filename}",
-                    ),
-                    join(folder, qc_filename),
                 )
 
                 with pytest.raises(HDXError):
@@ -530,10 +457,9 @@ class TestDatasetResourceGeneration:
                         yearcol="YEAR",
                         date_function=process_year,
                     )
-                success, results = dataset.download_and_generate_resource(
+                success, results = dataset.download_generate_resource(
                     downloader,
                     TestDatasetResourceGeneration.url,
-                    TestDatasetResourceGeneration.hxltags,
                     folder,
                     filename,
                     resourcedata,
@@ -542,10 +468,9 @@ class TestDatasetResourceGeneration:
                 )
                 assert success is True
                 url = "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/empty.csv"
-                success, results = dataset.download_and_generate_resource(
+                success, results = dataset.download_generate_resource(
                     downloader,
                     url,
-                    TestDatasetResourceGeneration.hxltags,
                     folder,
                     filename,
                     resourcedata,
@@ -555,23 +480,20 @@ class TestDatasetResourceGeneration:
                 )
                 assert success is False
                 url = "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/gen_resource/test_data_no_data.csv"
-                success, results = dataset.download_and_generate_resource(
+                success, results = dataset.download_generate_resource(
                     downloader,
                     url,
-                    TestDatasetResourceGeneration.hxltags,
                     folder,
                     filename,
                     resourcedata,
                     header_insertions=[(0, "lala")],
                     row_function=process_row,
-                    quickcharts=quickcharts,
                 )
                 assert success is False
                 url = "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/gen_resource/test_data_no_years.csv"
-                success, results = dataset.download_and_generate_resource(
+                success, results = dataset.download_generate_resource(
                     downloader,
                     url,
-                    TestDatasetResourceGeneration.hxltags,
                     folder,
                     filename,
                     resourcedata,
