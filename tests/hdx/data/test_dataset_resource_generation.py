@@ -43,7 +43,7 @@ class TestDatasetResourceGeneration:
             filename = "conflict_data_alg.csv"
             resourcedata = {
                 "name": "Conflict Data for Algeria",
-                "description": "Conflict data with HXL tags",
+                "description": "Conflict data",
             }
             admin1s = set()
 
@@ -66,45 +66,47 @@ class TestDatasetResourceGeneration:
                     row_function=process_row,
                     yearcol="YEAR",
                 )
+                expected_headers = [
+                    "lala",
+                    "GWNO",
+                    "EVENT_ID_CNTY",
+                    "EVENT_ID_NO_CNTY",
+                    "EVENT_DATE",
+                    "YEAR",
+                    "TIME_PRECISION",
+                    "EVENT_TYPE",
+                    "ACTOR1",
+                    "ALLY_ACTOR_1",
+                    "INTER1",
+                    "ACTOR2",
+                    "ALLY_ACTOR_2",
+                    "INTER2",
+                    "INTERACTION",
+                    "COUNTRY",
+                    "ADMIN1",
+                    "ADMIN2",
+                    "ADMIN3",
+                    "LOCATION",
+                    "LATITUDE",
+                    "LONGITUDE",
+                    "GEO_PRECISION",
+                    "SOURCE",
+                    "NOTES",
+                    "FATALITIES",
+                ]
                 assert success is True
                 assert results == {
                     "startdate": datetime(2001, 1, 1, 0, 0, tzinfo=timezone.utc),
                     "enddate": datetime(2002, 12, 31, 23, 59, 59, tzinfo=timezone.utc),
                     "resource": {
-                        "description": "Conflict data with HXL tags",
+                        "description": "Conflict data",
                         "format": "csv",
                         "name": "Conflict Data for Algeria",
                     },
-                    "headers": [
-                        "lala",
-                        "GWNO",
-                        "EVENT_ID_CNTY",
-                        "EVENT_ID_NO_CNTY",
-                        "EVENT_DATE",
-                        "YEAR",
-                        "TIME_PRECISION",
-                        "EVENT_TYPE",
-                        "ACTOR1",
-                        "ALLY_ACTOR_1",
-                        "INTER1",
-                        "ACTOR2",
-                        "ALLY_ACTOR_2",
-                        "INTER2",
-                        "INTERACTION",
-                        "COUNTRY",
-                        "ADMIN1",
-                        "ADMIN2",
-                        "ADMIN3",
-                        "LOCATION",
-                        "LATITUDE",
-                        "LONGITUDE",
-                        "GEO_PRECISION",
-                        "SOURCE",
-                        "NOTES",
-                        "FATALITIES",
-                    ],
+                    "headers": expected_headers,
                     "rows": [
                         {
+                            "lala": "lala",
                             "GWNO": "615",
                             "EVENT_ID_CNTY": "1416RTA",
                             "EVENT_ID_NO_CNTY": None,
@@ -130,9 +132,9 @@ class TestDatasetResourceGeneration:
                             "SOURCE": "Associated Press Online",
                             "NOTES": "A Berber student was shot while in police custody at a police station in Beni Douala. He later died on Apr.21.",
                             "FATALITIES": "1",
-                            "lala": "lala",
                         },
                         {
+                            "lala": "lala",
                             "GWNO": "615",
                             "EVENT_ID_CNTY": "2229RTA",
                             "EVENT_ID_NO_CNTY": None,
@@ -158,9 +160,9 @@ class TestDatasetResourceGeneration:
                             "SOURCE": "Kabylie report",
                             "NOTES": "Riots were reported in numerous villages in Kabylie, resulting in dozens wounded in clashes between protesters and police and significant material damage.",
                             "FATALITIES": "0",
-                            "lala": "lala",
                         },
                         {
+                            "lala": "lala",
                             "GWNO": "615",
                             "EVENT_ID_CNTY": "2230RTA",
                             "EVENT_ID_NO_CNTY": None,
@@ -186,9 +188,9 @@ class TestDatasetResourceGeneration:
                             "SOURCE": "Crisis Group",
                             "NOTES": "Students protested in the Amizour area. At least 3 were later arrested for allegedly insulting gendarmes.",
                             "FATALITIES": None,
-                            "lala": "lala",
                         },
                         {
+                            "lala": "lala",
                             "GWNO": "615",
                             "EVENT_ID_CNTY": "2231RTA",
                             "EVENT_ID_NO_CNTY": None,
@@ -214,7 +216,6 @@ class TestDatasetResourceGeneration:
                             "SOURCE": "Kabylie report",
                             "NOTES": "Rioters threw molotov cocktails, rocks and burning tires at gendarmerie stations in Beni Douala, El-Kseur and Amizour.",
                             "FATALITIES": "0",
-                            "lala": "lala",
                         },
                     ],
                 }
@@ -227,7 +228,7 @@ class TestDatasetResourceGeneration:
                 assert resources == [
                     {
                         "name": "Conflict Data for Algeria",
-                        "description": "Conflict data with HXL tags",
+                        "description": "Conflict data",
                         "format": "csv",
                     },
                 ]
@@ -236,12 +237,35 @@ class TestDatasetResourceGeneration:
                     join(folder, filename),
                 )
 
+                columns_to_include = [
+                    "lala",
+                    "GWNO",
+                    "EVENT_ID_CNTY",
+                    "EVENT_ID_NO_CNTY",
+                    "EVENT_DATE",
+                    "YEAR",
+                    "TIME_PRECISION",
+                    "EVENT_TYPE",
+                    "ACTOR1",
+                    "ALLY_ACTOR_1",
+                    "INTER1",
+                    "ACTOR2",
+                    "ALLY_ACTOR_2",
+                    "INTER2",
+                    "INTERACTION",
+                    "COUNTRY",
+                    "ADMIN1",
+                    "ADMIN2",
+                    "ADMIN3",
+                    "FATALITIES",
+                ]
                 success, results = dataset.download_generate_resource(
                     downloader,
                     TestDatasetResourceGeneration.url,
                     folder,
                     filename,
                     resourcedata,
+                    columns=columns_to_include,
                     header_insertions=[(0, "lala")],
                     row_function=process_row,
                     datecol="EVENT_DATE",
@@ -251,6 +275,30 @@ class TestDatasetResourceGeneration:
                     dataset["dataset_date"]
                     == "[2001-04-18T00:00:00 TO 2001-04-21T23:59:59]"
                 )
+                assert results["headers"] == columns_to_include
+                assert results["original_headers"] == expected_headers
+                assert results["rows"][0] == {
+                    "lala": "lala",
+                    "GWNO": "615",
+                    "EVENT_ID_CNTY": "1416RTA",
+                    "EVENT_ID_NO_CNTY": None,
+                    "EVENT_DATE": "18/04/2001",
+                    "YEAR": "2001",
+                    "TIME_PRECISION": "1",
+                    "EVENT_TYPE": "Violence against civilians",
+                    "ACTOR1": "Police Forces of Algeria (1999-)",
+                    "ALLY_ACTOR_1": None,
+                    "INTER1": "1",
+                    "ACTOR2": "Civilians (Algeria)",
+                    "ALLY_ACTOR_2": "Berber Ethnic Group (Algeria)",
+                    "INTER2": "7",
+                    "INTERACTION": "17",
+                    "COUNTRY": "Algeria",
+                    "ADMIN1": "Tizi Ouzou",
+                    "ADMIN2": "Beni-Douala",
+                    "ADMIN3": None,
+                    "FATALITIES": "1",
+                }
 
                 success, results = dataset.download_generate_resource(
                     downloader,
@@ -267,40 +315,14 @@ class TestDatasetResourceGeneration:
                     "startdate": datetime(2001, 1, 1, 0, 0, tzinfo=timezone.utc),
                     "enddate": datetime(2002, 12, 31, 23, 59, 59, tzinfo=timezone.utc),
                     "resource": {
-                        "description": "Conflict data with HXL tags",
+                        "description": "Conflict data",
                         "format": "csv",
                         "name": "Conflict Data for Algeria",
                     },
-                    "headers": [
-                        "lala",
-                        "GWNO",
-                        "EVENT_ID_CNTY",
-                        "EVENT_ID_NO_CNTY",
-                        "EVENT_DATE",
-                        "YEAR",
-                        "TIME_PRECISION",
-                        "EVENT_TYPE",
-                        "ACTOR1",
-                        "ALLY_ACTOR_1",
-                        "INTER1",
-                        "ACTOR2",
-                        "ALLY_ACTOR_2",
-                        "INTER2",
-                        "INTERACTION",
-                        "COUNTRY",
-                        "ADMIN1",
-                        "ADMIN2",
-                        "ADMIN3",
-                        "LOCATION",
-                        "LATITUDE",
-                        "LONGITUDE",
-                        "GEO_PRECISION",
-                        "SOURCE",
-                        "NOTES",
-                        "FATALITIES",
-                    ],
+                    "headers": expected_headers,
                     "rows": [
                         {
+                            "lala": "lala",
                             "GWNO": "615",
                             "EVENT_ID_CNTY": "1416RTA",
                             "EVENT_ID_NO_CNTY": None,
@@ -326,9 +348,9 @@ class TestDatasetResourceGeneration:
                             "SOURCE": "Associated Press Online",
                             "NOTES": "A Berber student was shot while in police custody at a police station in Beni Douala. He later died on Apr.21.",
                             "FATALITIES": "1",
-                            "lala": "lala",
                         },
                         {
+                            "lala": "lala",
                             "GWNO": "615",
                             "EVENT_ID_CNTY": "2229RTA",
                             "EVENT_ID_NO_CNTY": None,
@@ -354,9 +376,9 @@ class TestDatasetResourceGeneration:
                             "SOURCE": "Kabylie report",
                             "NOTES": "Riots were reported in numerous villages in Kabylie, resulting in dozens wounded in clashes between protesters and police and significant material damage.",
                             "FATALITIES": "0",
-                            "lala": "lala",
                         },
                         {
+                            "lala": "lala",
                             "GWNO": "615",
                             "EVENT_ID_CNTY": "2230RTA",
                             "EVENT_ID_NO_CNTY": None,
@@ -382,9 +404,9 @@ class TestDatasetResourceGeneration:
                             "SOURCE": "Crisis Group",
                             "NOTES": "Students protested in the Amizour area. At least 3 were later arrested for allegedly insulting gendarmes.",
                             "FATALITIES": None,
-                            "lala": "lala",
                         },
                         {
+                            "lala": "lala",
                             "GWNO": "615",
                             "EVENT_ID_CNTY": "2231RTA",
                             "EVENT_ID_NO_CNTY": None,
@@ -410,7 +432,6 @@ class TestDatasetResourceGeneration:
                             "SOURCE": "Kabylie report",
                             "NOTES": "Rioters threw molotov cocktails, rocks and burning tires at gendarmerie stations in Beni Douala, El-Kseur and Amizour.",
                             "FATALITIES": "0",
-                            "lala": "lala",
                         },
                     ],
                 }

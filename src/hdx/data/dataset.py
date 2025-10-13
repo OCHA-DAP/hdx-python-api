@@ -2739,7 +2739,11 @@ class Dataset(HDXObject):
         resource.set_file_to_upload(filepath)
         self.add_update_resource(resource)
         retdict["resource"] = resource
-        retdict["headers"] = headers
+        if columns is not None:
+            retdict["headers"] = columns
+            retdict["original_headers"] = headers
+        else:
+            retdict["headers"] = headers
         retdict["rows"] = rows
         return True, retdict
 
