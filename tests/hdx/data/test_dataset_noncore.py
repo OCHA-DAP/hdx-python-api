@@ -769,7 +769,7 @@ class TestDatasetNoncore:
         assert resources[0]["dataset_preview_enabled"] == "True"
         assert resources[1]["dataset_preview_enabled"] == "False"
 
-    def test_quickcharts_resource_last(self):
+    def test_quickcharts_resource_last(self, configuration):
         datasetdata = copy.deepcopy(dataset_data)
         resourcesdata = copy.deepcopy(resources_data)
         datasetdata["resources"] = resourcesdata
@@ -909,7 +909,7 @@ class TestDatasetNoncore:
         with pytest.raises(IOError):
             dataset.generate_quickcharts()
 
-    def test_remove_dates_from_title(self):
+    def test_remove_dates_from_title(self, configuration):
         dataset = Dataset()
         with pytest.raises(HDXError):
             dataset.remove_dates_from_title()
