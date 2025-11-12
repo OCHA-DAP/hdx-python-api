@@ -16,7 +16,9 @@ from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
 from hdx.utilities.dateparse import parse_date
 from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.downloader import DownloadError
+from hdx.utilities.downloader import Download, DownloadError
+from hdx.utilities.path import get_temp_dir
+from hdx.utilities.retriever import Retrieve
 
 resultdict = {
     "cache_last_updated": None,
@@ -940,7 +942,6 @@ class TestResource:
 
     def test_download(self, configuration, read):
         resource = Resource.read_from_hdx("74b74ae1-df0c-4716-829f-4f939a046811")
-        resource2 = Resource.read_from_hdx("74b74ae1-df0c-4716-829f-4f939a046814")
         url, path = resource.download()
         remove(path)
         assert (
@@ -948,9 +949,19 @@ class TestResource:
             == "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/test_data.csv"
         )
         assert basename(path) == "MyResource1.csv"
+        tempdir = get_temp_dir()
+        retriever = Retrieve(Download(user_agent="test"), tempdir, tempdir, tempdir)
+        url, path = resource.download(retriever=retriever)
+        remove(path)
+        assert (
+            url
+            == "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/test_data.csv"
+        )
+
         resource["url"] = ""
         with pytest.raises(HDXError):
             resource.download()
+        resource2 = Resource.read_from_hdx("74b74ae1-df0c-4716-829f-4f939a046814")
         with pytest.raises(DownloadError):
             resource2.download()
 

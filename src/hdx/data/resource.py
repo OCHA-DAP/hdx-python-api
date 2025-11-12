@@ -15,6 +15,7 @@ from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.data.resource_view import ResourceView
 from hdx.utilities.dateparse import now_utc, now_utc_notz, parse_date
 from hdx.utilities.downloader import Download
+from hdx.utilities.retriever import Retrieve
 from hdx.utilities.typehint import ListTuple
 from hdx.utilities.uuid import is_valid_uuid
 
@@ -591,12 +592,15 @@ class Resource(HDXObject):
             logger.debug(result)
         return resources
 
-    def download(self, folder: Optional[str] = None) -> Tuple[str, str]:
+    def download(
+        self, folder: Optional[str] = None, retriever: Optional[Retrieve] = None
+    ) -> Tuple[str, str]:
         """Download resource store to provided folder or temporary folder if no folder
         supplied
 
         Args:
             folder (Optional[str]): Folder to download resource to. Defaults to None.
+            retriever (Optional[Retrieve]): Retrieve object to use. Defaults to None.
 
         Returns:
             Tuple[str, str]: (URL downloaded, Path to downloaded file)
@@ -613,7 +617,7 @@ class Resource(HDXObject):
             filename = f"{filename}{file_format}"
         apikey = self.configuration.get_api_key()
         if apikey:
-            headers = {"Authorization": self.configuration.get_api_key()}
+            headers = {"Authorization": apikey}
         else:
             headers = None
         with Download(
@@ -621,6 +625,8 @@ class Resource(HDXObject):
             use_env=False,
             headers=headers,
         ) as downloader:
+            if retriever:
+                downloader = retriever.clone(downloader)
             path = downloader.download_file(url, folder=folder, filename=filename)
             return url, path
 
