@@ -950,8 +950,8 @@ class TestResource:
         )
         assert basename(path) == "MyResource1.csv"
         tempdir = get_temp_dir()
-        retrieve = Retrieve(Download(user_agent="test"), tempdir, tempdir, tempdir)
-        url, path = resource.download(retriever=retrieve)
+        retriever = Retrieve(Download(user_agent="test"), tempdir, tempdir, tempdir)
+        url, path = resource.download(retriever=retriever)
         remove(path)
         assert (
             url
