@@ -442,7 +442,7 @@ class Resource(HDXObject):
                 status = 2
             self._url_backup = None
         else:
-            if "url" in self._old_data:
+            if "url" in self._old_data and self._old_data.get("url_type") != "upload":
                 self._old_data["resource_type"] = "api"
                 self._old_data["url_type"] = "api"
             if data_updated:
