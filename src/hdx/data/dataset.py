@@ -278,7 +278,7 @@ class Dataset(HDXObject):
         self,
         resource: Union["Resource", Dict, str],
         ignore_datasetid: bool = False,
-    ) -> None:
+    ) -> "Resource":
         """Add new or update existing resource in dataset with new metadata
 
         Args:
@@ -286,7 +286,7 @@ class Dataset(HDXObject):
             ignore_datasetid (bool): Whether to ignore dataset id in the resource
 
         Returns:
-            None
+            Resource: The resource that was added after matching with any existing resource
         """
         resource = self._get_resource_from_obj(resource)
         if "package_id" in resource:
@@ -298,14 +298,15 @@ class Dataset(HDXObject):
         resource_index = ResourceMatcher.match_resource_list(self._resources, resource)
         if resource_index is None:
             self._resources.append(resource)
-        else:
-            updated_resource = merge_two_dictionaries(
-                self._resources[resource_index], resource
-            )
-            if resource.get_file_to_upload():
-                updated_resource.set_file_to_upload(resource.get_file_to_upload())
-            if resource.is_marked_data_updated():
-                updated_resource.mark_data_updated()
+            return resource
+        updated_resource = merge_two_dictionaries(
+            self._resources[resource_index], resource
+        )
+        if resource.get_file_to_upload():
+            updated_resource.set_file_to_upload(resource.get_file_to_upload())
+        if resource.is_marked_data_updated():
+            updated_resource.mark_data_updated()
+        return updated_resource
 
     def add_update_resources(
         self,
