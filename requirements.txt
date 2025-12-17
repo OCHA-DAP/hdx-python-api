@@ -175,7 +175,7 @@ ply==3.11
     #   libhxl
 pockets==0.9.1
     # via sphinxcontrib-napoleon
-pre-commit==4.5.0
+pre-commit==4.5.1
     # via hdx-python-api (pyproject.toml)
 pyasn1==0.6.1
     # via
