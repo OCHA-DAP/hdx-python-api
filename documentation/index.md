@@ -899,6 +899,13 @@ The built-in configuration assumes data will be of form similar to below:
 
 ## Resource Specific Operations
 
+When creating or updating a resource that doesn't have an id, if you supply a parameter
+dataset, then the resource will be assigned to that dataset and it will be compared to
+resources in that dataset. If a match is found, then the resource will be given the
+corresponding id and that resource on HDX will be overwritten.
+
+    resource.create_in_hdx(dataset=DATASET)
+
 You can download a resource using the **download** function eg.
 
     url, path = resource.download("FOLDER_TO_DOWNLOAD_TO")

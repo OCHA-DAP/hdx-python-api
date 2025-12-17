@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import hdx.data.dataset
+import hdx.data.resource_matcher
 from hdx.api.configuration import Configuration
 from hdx.api.utilities.date_helper import DateHelper
 from hdx.api.utilities.size_hash import get_size_and_hash
@@ -460,6 +461,39 @@ class Resource(HDXObject):
         self._merge_hdx_update("resource", "id", files, True, **kwargs)
         return status
 
+    def _get_resource_id(self, **kwargs: Any) -> Optional[str]:
+        """Helper function to get resource id if available from given resource or by
+        comparing ot a given dataset's resources.
+
+        Args:
+            **kwargs: See below
+            dataset (Dataset): Existing dataset if available to obtain resource id
+
+        Returns:
+            Optional[str]: Resource id or None
+        """
+        loadedid = self.data.get("id")
+        if loadedid is None:
+            dataset = kwargs.get("dataset")
+            if dataset:
+                dataset_id = dataset.get("id")
+                if dataset_id:
+                    existing_dataset_id = self.data.get("package_id")
+                    if not existing_dataset_id or existing_dataset_id == dataset_id:
+                        self.data["package_id"] = dataset["id"]
+                        dataset_resources = dataset.get_resources()
+                        matching_index = hdx.data.resource_matcher.ResourceMatcher.match_resource_list(
+                            dataset_resources, self
+                        )
+                        if matching_index:
+                            matching_resource = dataset_resources[matching_index]
+                            loadedid = matching_resource.get("id")
+                            if loadedid:
+                                self.data["id"] = loadedid
+                            else:
+                                loadedid = None
+        return loadedid
+
     def update_in_hdx(self, **kwargs: Any) -> int:
         """Check if resource exists in HDX and if so, update it. To indicate
         that the data in an external resource (given by a URL) has been
@@ -482,11 +516,13 @@ class Resource(HDXObject):
             data_updated (bool): If True, set last_modified to now. Defaults to False.
             date_data_updated (datetime): Date to use for last_modified. Default to None.
             force_update (bool): Force file to be updated even if it hasn't changed. Defaults to False.
+            dataset (Dataset): Existing dataset if available to obtain resource id
 
         Returns:
             int: Status code
         """
         self.check_both_url_filetoupload()
+        _ = self._get_resource_id(**kwargs)
         self._check_load_existing_object("resource", "id")
         return self._resource_merge_hdx_update(**kwargs)
 
@@ -513,15 +549,18 @@ class Resource(HDXObject):
             data_updated (bool): If True, set last_modified to now. Defaults to False.
             date_data_updated (datetime): Date to use for last_modified. Default to None.
             force_update (bool): Force file to be updated even if it hasn't changed. Defaults to False.
+            dataset (Dataset): Existing dataset if available to obtain resource id
 
         Returns:
             int: Status code
         """
         self.check_both_url_filetoupload()
-        id = self.data.get("id")
-        if id and self._load_from_hdx("resource", id):
-            logger.warning(f"{'resource'} exists. Updating {id}")
-            return self._resource_merge_hdx_update(**kwargs)
+        loadedid = self._get_resource_id(**kwargs)
+        if loadedid:
+            if self._load_from_hdx("resource", loadedid):
+                logger.warning(f"{'resource'} exists. Updating {loadedid}")
+                return self._resource_merge_hdx_update(**kwargs)
+            logger.warning(f"Failed to load resource with id {loadedid}")
 
         self.set_types()
         self.correct_format(self.data)
