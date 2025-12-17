@@ -12,6 +12,7 @@ import pytest
 from .. import MockResponse, dataset_resultdict, resource_data
 from .test_resource_view import resource_view_list, resource_view_mocklist
 from hdx.api.configuration import Configuration
+from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
 from hdx.utilities.dateparse import parse_date
@@ -1068,3 +1069,16 @@ class TestResource:
         )
         del resource["id"]
         assert resource.get_api_url() is None
+
+    def test_get_resource_id(self, configuration, read):
+        resources = [
+            {"id": "abcd", "name": "test_resource", "format": "CSV"},
+            {"id": "efgh", "name": "test_resource2", "format": "CSV"},
+            {"id": "ijkl", "name": "test_resource2", "format": "XLSX"},
+        ]
+        dataset = Dataset({"id": "1234", "name": "test_dataset", "format": "CSV"})
+        dataset.add_update_resources(resources)
+
+        resource = Resource({"name": "test_resource2", "format": "CSV"})
+        result = resource._get_resource_id(dataset=dataset)
+        assert result == "efgh"
