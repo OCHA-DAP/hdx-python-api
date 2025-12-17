@@ -259,7 +259,7 @@ rpds-py==0.30.0
     #   referencing
 rsa==4.9.1
     # via google-auth
-ruamel-yaml==0.18.16
+ruamel-yaml==0.18.17
     # via hdx-python-utilities
 ruamel-yaml-clib==0.2.15
     # via ruamel-yaml
