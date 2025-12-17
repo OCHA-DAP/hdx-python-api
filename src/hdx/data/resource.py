@@ -477,21 +477,39 @@ class Resource(HDXObject):
             dataset = kwargs.get("dataset")
             if dataset:
                 dataset_id = dataset.get("id")
+                if not dataset_id:
+                    dataset_name = dataset.get("name")
+                    if dataset_name:
+                        dataset = hdx.data.dataset.Dataset.read_from_hdx(dataset_name)
+                        if dataset:
+                            dataset_id = dataset["id"]
+                    else:
+                        raise HDXError("No dataset id or name in dataset!")
                 if dataset_id:
-                    existing_dataset_id = self.data.get("package_id")
-                    if not existing_dataset_id or existing_dataset_id == dataset_id:
-                        self.data["package_id"] = dataset["id"]
-                        dataset_resources = dataset.get_resources()
-                        matching_index = hdx.data.resource_matcher.ResourceMatcher.match_resource_list(
-                            dataset_resources, self
+                    package_id = self.data.get("package_id")
+                    if package_id and package_id != dataset_id:
+                        logger.warning(
+                            f"Using dataset id {dataset_id} from dataset parameter which doesn't match {package_id} in resource!"
                         )
-                        if matching_index:
-                            matching_resource = dataset_resources[matching_index]
-                            loadedid = matching_resource.get("id")
-                            if loadedid:
-                                self.data["id"] = loadedid
-                            else:
-                                loadedid = None
+            else:
+                dataset_id = self.data.get("package_id")
+                if dataset_id:
+                    dataset = hdx.data.dataset.Dataset.read_from_hdx(dataset_id)
+                    if not dataset:
+                        dataset_id = None
+            if dataset_id:
+                self.data["package_id"] = dataset["id"]
+                dataset_resources = dataset.get_resources()
+                matching_index = (
+                    hdx.data.resource_matcher.ResourceMatcher.match_resource_list(
+                        dataset_resources, self
+                    )
+                )
+                if matching_index:
+                    matching_resource = dataset_resources[matching_index]
+                    loadedid = matching_resource.get("id")
+                    if loadedid:
+                        self.data["id"] = loadedid
         return loadedid
 
     def update_in_hdx(self, **kwargs: Any) -> int:

@@ -235,11 +235,20 @@ def mockdataset(url, datadict):
             404,
             '{"success": false, "error": {"message": "TEST ERROR: Not show", "__type": "TEST ERROR: Not Show Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}',
         )
-    result = json.dumps(dataset_resultdict)
+    if datadict["id"] in (
+        "1234",
+        "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d",
+        "test_dataset",
+    ):
+        result = json.dumps(dataset_resultdict)
+        return MockResponse(
+            200,
+            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}'
+            % result,
+        )
     return MockResponse(
-        200,
-        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}'
-        % result,
+        404,
+        '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}',
     )
 
 
@@ -1070,15 +1079,50 @@ class TestResource:
         del resource["id"]
         assert resource.get_api_url() is None
 
-    def test_get_resource_id(self, configuration, read):
+    def test_get_resource_id(self, configuration, post_dataset):
         resources = [
-            {"id": "abcd", "name": "test_resource", "format": "CSV"},
-            {"id": "efgh", "name": "test_resource2", "format": "CSV"},
-            {"id": "ijkl", "name": "test_resource2", "format": "XLSX"},
+            {"id": "abcd", "name": "Resource1", "format": "CSV"},
+            {"id": "efgh", "name": "Resource2", "format": "CSV"},
+            {"id": "ijkl", "name": "Resource3", "format": "XLSX"},
         ]
         dataset = Dataset({"id": "1234", "name": "test_dataset", "format": "CSV"})
         dataset.add_update_resources(resources)
 
-        resource = Resource({"name": "test_resource2", "format": "CSV"})
+        # Uses resource["name"] and resource["format"]
+        resource = Resource({"name": "Resource2", "format": "CSV"})
         result = resource._get_resource_id(dataset=dataset)
         assert result == "efgh"
+
+        # Uses resource["id"]
+        result = resource._get_resource_id(dataset=dataset)
+        assert result == "efgh"
+
+        # Uses dataset["name"]
+        del resource["id"]
+        del resource["package_id"]
+        del dataset["id"]
+        result = resource._get_resource_id(dataset=dataset)
+        assert result == "3d777226-96aa-4239-860a-703389d16d1f"
+
+        # Uses resource["package id"]
+        del resource["id"]
+        result = resource._get_resource_id()
+        assert result == "3d777226-96aa-4239-860a-703389d16d1f"
+
+        # Uses resource["package id"]
+        del resource["id"]
+        resource["package_id"] = "NOTFOUND"
+        result = resource._get_resource_id()
+        assert result is None
+
+        # resource["package id"] != dataset["id"]
+        resource["package_id"] = "NOTFOUND"
+        result = resource._get_resource_id(dataset=dataset)
+        assert result == "3d777226-96aa-4239-860a-703389d16d1f"
+
+        # Invalid dataset
+        del resource["id"]
+        del resource["package_id"]
+        del dataset["name"]
+        with pytest.raises(HDXError):
+            resource._get_resource_id(dataset=dataset)
