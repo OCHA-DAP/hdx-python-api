@@ -906,6 +906,12 @@ corresponding id and that resource on HDX will be overwritten.
 
     resource.create_in_hdx(dataset=DATASET)
 
+Alternatively, if a resource doesn't have an id, but contains a package_id, the create 
+and update methods will use it to load the corresponding dataset, the resource will be 
+assigned to that dataset and it will be compared to resources in that dataset. If a 
+match is found, then the resource will be given the corresponding id and that resource 
+on HDX will be overwritten. 
+
 You can download a resource using the **download** function eg.
 
     url, path = resource.download("FOLDER_TO_DOWNLOAD_TO")
