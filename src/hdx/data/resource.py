@@ -11,11 +11,11 @@ import hdx.data.dataset
 import hdx.data.resource_matcher
 from hdx.api.configuration import Configuration
 from hdx.api.utilities.date_helper import DateHelper
-from hdx.api.utilities.size_hash import get_size_and_hash
 from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.data.resource_view import ResourceView
 from hdx.utilities.dateparse import now_utc, now_utc_notz, parse_date
 from hdx.utilities.downloader import Download
+from hdx.utilities.file_hashing import get_size_and_hash
 from hdx.utilities.retriever import Retrieve
 from hdx.utilities.typehint import ListTuple
 from hdx.utilities.uuid import is_valid_uuid

@@ -54,6 +54,8 @@ The library has detailed API documentation which can be found in the menu at the
 
 
 ## Breaking Changes
+From 6.5.7, get_size_and_hash moved to HDX Python Utilities
+
 From 6.5.2, remove unused `generate_qc_resource_from_rows` method.
 `generate_resource_from_rows`, `generate_resource_from_iterable` and
 `download_and_generate_resource` are deprecated. They are replaced by
@@ -906,11 +908,11 @@ corresponding id and that resource on HDX will be overwritten.
 
     resource.create_in_hdx(dataset=DATASET)
 
-Alternatively, if a resource doesn't have an id, but contains a package_id, the create 
-and update methods will use it to load the corresponding dataset, the resource will be 
-assigned to that dataset and it will be compared to resources in that dataset. If a 
-match is found, then the resource will be given the corresponding id and that resource 
-on HDX will be overwritten. 
+Alternatively, if a resource doesn't have an id, but contains a package_id, the create
+and update methods will use it to load the corresponding dataset, the resource will be
+assigned to that dataset and it will be compared to resources in that dataset. If a
+match is found, then the resource will be given the corresponding id and that resource
+on HDX will be overwritten.
 
 You can download a resource using the **download** function eg.
 

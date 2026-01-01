@@ -3,8 +3,8 @@
 import logging
 from typing import TYPE_CHECKING, Any, Dict
 
-from hdx.api.utilities.size_hash import get_size_and_hash
 from hdx.utilities.dateparse import now_utc_notz
+from hdx.utilities.file_hashing import get_size_and_hash
 
 if TYPE_CHECKING:
     from hdx.data.resource import Resource
