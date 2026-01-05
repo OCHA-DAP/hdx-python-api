@@ -38,7 +38,7 @@ dependencies = [
     "defopt>=7.0.0",
     "email_validator",
     "hdx-python-country>=3.9.8",
-    "hdx-python-utilities>=3.9.7",
+    "hdx-python-utilities>=3.9.9",
     "libhxl>=5.2.2",
     "makefun",
     "quantulum3",

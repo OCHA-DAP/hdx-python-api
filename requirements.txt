@@ -56,7 +56,7 @@ frictionless==5.18.1
     # via hdx-python-utilities
 ghp-import==2.1.0
     # via mkdocs
-google-auth==2.45.0
+google-auth==2.46.0
     # via
     #   google-auth-oauthlib
     #   gspread
@@ -66,7 +66,7 @@ gspread==6.2.1
     # via hdx-python-api (pyproject.toml)
 hdx-python-country==3.9.8
     # via hdx-python-api (pyproject.toml)
-hdx-python-utilities==3.9.7
+hdx-python-utilities==3.9.9
     # via
     #   hdx-python-api (pyproject.toml)
     #   hdx-python-country
@@ -117,7 +117,7 @@ markdown==3.10
     #   pymdown-extensions
 markdown-it-py==4.0.0
     # via rich
-marko==2.2.1
+marko==2.2.2
     # via frictionless
 markupsafe==3.0.3
     # via

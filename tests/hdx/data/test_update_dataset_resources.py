@@ -326,7 +326,7 @@ class TestUpdateDatasetResourcesLogic:
             {
                 "description": "test2",
                 "format": "xlsx",
-                "hash": "6b8acf7e28d62685a1e829e7fa220d17",
+                "hash": "b2f92ef4b1c895568421cb887859a13d",
                 "name": "test2",
                 "resource_type": "file.upload",
                 "size": 23724,
