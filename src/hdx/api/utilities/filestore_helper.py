@@ -3,8 +3,8 @@
 import logging
 from typing import TYPE_CHECKING, Any, Dict
 
-from hdx.api.utilities.size_hash import get_size_and_hash
 from hdx.utilities.dateparse import now_utc_notz
+from hdx.utilities.file_hashing import get_size_and_hash
 
 if TYPE_CHECKING:
     from hdx.data.resource import Resource
@@ -112,13 +112,9 @@ class FilestoreHelper:
             force_update = kwargs.pop("force_update", False)
             file_format = resource_data_to_update.get("format", "").lower()
             size, hash = get_size_and_hash(file_to_upload, file_format)
-            if (
-                not force_update
-                and size == original_resource_data.get("size")
-                and hash == original_resource_data.get("hash")
-            ):
+            if not force_update and hash == original_resource_data.get("hash"):
                 logger.warning(
-                    f"Not updating filestore for resource {original_resource_data['name']} as size and hash unchanged!"
+                    f"Not updating filestore for resource {original_resource_data['name']} as hash unchanged!"
                 )
                 if resource_data_to_update._url_backup:
                     resource_data_to_update["url"] = resource_data_to_update._url_backup

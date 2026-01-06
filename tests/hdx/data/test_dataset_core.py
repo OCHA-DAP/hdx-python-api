@@ -774,7 +774,7 @@ class TestDatasetCore:
             assert len(dataset._resources) == 3
             result = dataset.get_resource()
             assert result["size"] == 23724
-            assert result["hash"] == "6b8acf7e28d62685a1e829e7fa220d17"
+            assert result["hash"] == "b2f92ef4b1c895568421cb887859a13d"
             assert statuses == {"Resource1": 2, "Resource2": 1, "Resource3": 1}
             resource["name"] = "123"
             resource.set_file_to_upload(None)
@@ -848,7 +848,7 @@ class TestDatasetCore:
             }
             result = dataset.get_resource(2)
             assert result["size"] == 23724
-            assert result["hash"] == "6b8acf7e28d62685a1e829e7fa220d17"
+            assert result["hash"] == "b2f92ef4b1c895568421cb887859a13d"
             assert dataset["state"] == "active"
             assert len(dataset._resources) == 3
             dataset = Dataset(datasetdata)

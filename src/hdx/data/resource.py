@@ -11,11 +11,11 @@ import hdx.data.dataset
 import hdx.data.resource_matcher
 from hdx.api.configuration import Configuration
 from hdx.api.utilities.date_helper import DateHelper
-from hdx.api.utilities.size_hash import get_size_and_hash
 from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.data.resource_view import ResourceView
 from hdx.utilities.dateparse import now_utc, now_utc_notz, parse_date
 from hdx.utilities.downloader import Download
+from hdx.utilities.file_hashing import get_size_and_hash
 from hdx.utilities.retriever import Retrieve
 from hdx.utilities.typehint import ListTuple
 from hdx.utilities.uuid import is_valid_uuid
@@ -415,13 +415,9 @@ class Resource(HDXObject):
             force_update = kwargs.pop("force_update", False)
             file_format = self._old_data.get("format", "").lower()
             size, hash = get_size_and_hash(self._file_to_upload, file_format)
-            if (
-                not force_update
-                and size == self.data.get("size")
-                and hash == self.data.get("hash")
-            ):
+            if not force_update and hash == self.data.get("hash"):
                 logger.warning(
-                    f"Not updating filestore for resource {self.data['name']} as size and hash unchanged!"
+                    f"Not updating filestore for resource {self.data['name']} as hash unchanged!"
                 )
                 if self._url_backup:
                     self._old_data["url"] = self._url_backup

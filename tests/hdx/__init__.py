@@ -299,7 +299,7 @@ def dataset_mockshow(url, datadict):
                 # test existing size and hash same
                 resource = resultdictcopy["resources"][0]
                 resource["size"] = 23724
-                resource["hash"] = "6b8acf7e28d62685a1e829e7fa220d17"
+                resource["hash"] = "b2f92ef4b1c895568421cb887859a13d"
             result = json.dumps(resultdictcopy)
             return MockResponse(
                 200,
