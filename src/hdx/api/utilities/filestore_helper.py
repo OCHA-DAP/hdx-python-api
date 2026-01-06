@@ -114,7 +114,7 @@ class FilestoreHelper:
             size, hash = get_size_and_hash(file_to_upload, file_format)
             if not force_update and hash == original_resource_data.get("hash"):
                 logger.warning(
-                    f"Not updating filestore for resource {original_resource_data['name']} as size and hash unchanged!"
+                    f"Not updating filestore for resource {original_resource_data['name']} as hash unchanged!"
                 )
                 if resource_data_to_update._url_backup:
                     resource_data_to_update["url"] = resource_data_to_update._url_backup
