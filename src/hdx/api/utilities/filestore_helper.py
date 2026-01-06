@@ -112,11 +112,7 @@ class FilestoreHelper:
             force_update = kwargs.pop("force_update", False)
             file_format = resource_data_to_update.get("format", "").lower()
             size, hash = get_size_and_hash(file_to_upload, file_format)
-            if (
-                not force_update
-                and size == original_resource_data.get("size")
-                and hash == original_resource_data.get("hash")
-            ):
+            if not force_update and hash == original_resource_data.get("hash"):
                 logger.warning(
                     f"Not updating filestore for resource {original_resource_data['name']} as size and hash unchanged!"
                 )

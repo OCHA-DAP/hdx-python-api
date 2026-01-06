@@ -415,11 +415,7 @@ class Resource(HDXObject):
             force_update = kwargs.pop("force_update", False)
             file_format = self._old_data.get("format", "").lower()
             size, hash = get_size_and_hash(self._file_to_upload, file_format)
-            if (
-                not force_update
-                and size == self.data.get("size")
-                and hash == self.data.get("hash")
-            ):
+            if not force_update and hash == self.data.get("hash"):
                 logger.warning(
                     f"Not updating filestore for resource {self.data['name']} as size and hash unchanged!"
                 )
