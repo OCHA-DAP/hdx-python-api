@@ -305,7 +305,7 @@ unidecode==1.4.0
     # via
     #   libhxl
     #   pyphonetics
-urllib3==2.6.2
+urllib3==2.6.3
     # via
     #   libhxl
     #   requests
