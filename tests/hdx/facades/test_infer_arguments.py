@@ -3,11 +3,12 @@
 import sys
 
 import pytest
+from hdx.utilities.useragent import UserAgent
 
-from . import my_testfnia, testresult
 from hdx.api.configuration import ConfigurationError
 from hdx.facades.infer_arguments import facade
-from hdx.utilities.useragent import UserAgent
+
+from . import my_testfnia, testresult
 
 
 class TestInferArguments:

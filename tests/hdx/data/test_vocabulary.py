@@ -5,13 +5,14 @@ import json
 from os.path import join
 
 import pytest
+from hdx.utilities.dictandlist import merge_two_dictionaries
 from requests.exceptions import RetryError
 
-from .. import MockResponse
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.vocabulary import ChainRuleError, Vocabulary
-from hdx.utilities.dictandlist import merge_two_dictionaries
+
+from .. import MockResponse
 
 vocabulary_list = [
     {

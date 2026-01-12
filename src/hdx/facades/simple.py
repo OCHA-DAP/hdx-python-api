@@ -1,12 +1,14 @@
 """Facade to simplify project setup that calls project main function"""
 
 import logging
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
+
+from hdx.utilities.easy_logging import setup_logging
+from hdx.utilities.useragent import UserAgent
 
 from hdx.api import __version__
 from hdx.api.configuration import Configuration
-from hdx.utilities.easy_logging import setup_logging
-from hdx.utilities.useragent import UserAgent
 
 logger = logging.getLogger(__name__)
 setup_logging(log_file="errors.log")
@@ -16,7 +18,7 @@ def facade(projectmainfn: Callable[[], None], **kwargs: Any):
     """Facade to simplify project setup that calls project main function
 
     Args:
-        projectmainfn (() -> None): main function of project
+        projectmainfn: main function of project
         **kwargs: configuration parameters to pass to HDX Configuration class
 
     Returns:

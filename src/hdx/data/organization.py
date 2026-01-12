@@ -1,14 +1,14 @@
 """Organization class containing all logic for creating, checking, and updating organizations."""
 
 import logging
+from collections.abc import Sequence
 from os.path import join
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 import hdx.data.dataset
 import hdx.data.user as user_module
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError, HDXObject
-from hdx.utilities.typehint import ListTuple
 
 if TYPE_CHECKING:
     from hdx.data.user import User
@@ -20,25 +20,25 @@ class Organization(HDXObject):
     """Organization class containing all logic for creating, checking, and updating organizations.
 
     Args:
-        initial_data (Optional[Dict]): Initial organization metadata dictionary. Defaults to None.
-        configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+        initial_data: Initial organization metadata dictionary. Defaults to None.
+        configuration: HDX configuration. Defaults to global configuration.
     """
 
     def __init__(
         self,
-        initial_data: Optional[Dict] = None,
-        configuration: Optional[Configuration] = None,
+        initial_data: dict | None = None,
+        configuration: Configuration | None = None,
     ) -> None:
         if not initial_data:
             initial_data = {}
         super().__init__(initial_data, configuration=configuration)
 
     @staticmethod
-    def actions() -> Dict[str, str]:
+    def actions() -> dict[str, str]:
         """Dictionary of actions that can be performed on object
 
         Returns:
-            Dict[str, str]: Dictionary of actions that can be performed on object
+            Dictionary of actions that can be performed on object
         """
         return {
             "show": "organization_show",
@@ -55,7 +55,7 @@ class Organization(HDXObject):
         """Update organization metadata with static metadata from YAML file
 
         Args:
-            path (str): Path to YAML dataset metadata. Defaults to config/hdx_organization_static.yaml.
+            path: Path to YAML dataset metadata. Defaults to config/hdx_organization_static.yaml.
 
         Returns:
             None
@@ -68,7 +68,7 @@ class Organization(HDXObject):
         """Update organization metadata with static metadata from JSON file
 
         Args:
-            path (str): Path to JSON dataset metadata. Defaults to config/hdx_organization_static.json.
+            path: Path to JSON dataset metadata. Defaults to config/hdx_organization_static.json.
 
         Returns:
             None
@@ -77,25 +77,25 @@ class Organization(HDXObject):
 
     @classmethod
     def read_from_hdx(
-        cls, identifier: str, configuration: Optional[Configuration] = None
+        cls, identifier: str, configuration: Configuration | None = None
     ) -> Optional["Organization"]:
         """Reads the organization given by identifier from HDX and returns Organization object
 
         Args:
-            identifier (str): Identifier of organization
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            identifier: Identifier of organization
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            Optional[Organization]: Organization object if successful read, None if not
+            Organization object if successful read, None if not
         """
         return cls._read_from_hdx_class("organization", identifier, configuration)
 
-    def check_required_fields(self, ignore_fields: ListTuple[str] = tuple()) -> None:
+    def check_required_fields(self, ignore_fields: Sequence[str] = ()) -> None:
         """Check that metadata for organization is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
         Args:
-            ignore_fields (ListTuple[str]): Fields to ignore. Default is tuple().
+            ignore_fields: Fields to ignore. Default is ().
 
         Returns:
             None
@@ -126,13 +126,13 @@ class Organization(HDXObject):
         """
         self._delete_from_hdx("organization", "id")
 
-    def get_users(self, capacity: Optional[str] = None) -> List["User"]:
+    def get_users(self, capacity: str | None = None) -> list["User"]:
         """Returns the organization's users.
 
         Args:
-            capacity (Optional[str]): Filter by capacity eg. member, admin. Defaults to None.
+            capacity: Filter by capacity eg. member, admin. Defaults to None.
         Returns:
-            List[User]: Organization's users.
+            Organization's users.
         """
         users = []
         usersdicts = self.data.get("users")
@@ -152,16 +152,16 @@ class Organization(HDXObject):
 
     def add_update_user(
         self,
-        user: Union["User", Dict, str],
-        capacity: Optional[str] = None,
+        user: Union["User", dict, str],
+        capacity: str | None = None,
     ) -> None:
         """Add new or update existing user in organization with new metadata. Capacity eg. member, admin
         must be supplied either within the User object or dictionary or using the capacity argument (which takes
         precedence).
 
         Args:
-            user (Union[User,Dict,str]): Either a user id or user metadata either from a User object or a dictionary
-            capacity (Optional[str]): Capacity of user eg. member, admin. Defaults to None.
+            user: Either a user id or user metadata either from a User object or a dictionary
+            capacity: Capacity of user eg. member, admin. Defaults to None.
 
         Returns:
             None
@@ -186,16 +186,16 @@ class Organization(HDXObject):
 
     def add_update_users(
         self,
-        users: ListTuple[Union["User", Dict, str]],
-        capacity: Optional[str] = None,
+        users: Sequence[Union["User", dict, str]],
+        capacity: str | None = None,
     ) -> None:
         """Add new or update existing users in organization with new metadata. Capacity eg. member, admin
         must be supplied either within the User object or dictionary or using the capacity argument (which takes
         precedence).
 
         Args:
-            users (ListTuple[Union[User,Dict,str]]): A list of either user ids or users metadata from User objects or dictionaries
-            capacity (Optional[str]): Capacity of users eg. member, admin. Defaults to None.
+            users: A list of either user ids or users metadata from User objects or dictionaries
+            capacity: Capacity of users eg. member, admin. Defaults to None.
 
         Returns:
             None
@@ -203,22 +203,22 @@ class Organization(HDXObject):
         for user in users:
             self.add_update_user(user, capacity)
 
-    def remove_user(self, user: Union["User", Dict, str]) -> bool:
+    def remove_user(self, user: Union["User", dict, str]) -> bool:
         """Remove a user from the organization
 
         Args:
-            user (Union[User,Dict,str]): Either a user id or user metadata either from a User object or a dictionary
+            user: Either a user id or user metadata either from a User object or a dictionary
 
         Returns:
-            bool: True if user removed or False if not
+            True if user removed or False if not
         """
         return self._remove_hdxobject(self.data.get("users"), user)
 
-    def get_datasets(self, query: str = "*:*", **kwargs: Any) -> List["Dataset"]:  # noqa: F821
+    def get_datasets(self, query: str = "*:*", **kwargs: Any) -> list["Dataset"]:  # noqa: F821
         """Get list of datasets in organization
 
         Args:
-            query (str): Restrict datasets returned to this query (in Solr format). Defaults to '*:*'.
+            query: Restrict datasets returned to this query (in Solr format). Defaults to '*:*'.
             **kwargs: See below
             sort (string): Sorting of the search results. Defaults to 'relevance asc, metadata_modified desc'.
             rows (int): Number of matching rows to return. Defaults to all datasets (sys.maxsize).
@@ -226,11 +226,11 @@ class Organization(HDXObject):
             facet (string): Whether to enable faceted results. Default to True.
             facet.mincount (int): Minimum counts for facet fields should be included in the results
             facet.limit (int): Maximum number of values the facet fields return (- = unlimited). Defaults to 50.
-            facet.field (List[str]): Fields to facet upon. Default is empty.
+            facet.field (list[str]): Fields to facet upon. Default is empty.
             use_default_schema (bool): Use default package schema instead of custom schema. Defaults to False.
 
         Returns:
-            List[Dataset]: List of datasets in organization
+            List of datasets in organization
         """
         return hdx.data.dataset.Dataset.search_in_hdx(
             query=query,
@@ -241,23 +241,23 @@ class Organization(HDXObject):
 
     @staticmethod
     def get_all_organization_names(
-        configuration: Optional[Configuration] = None, **kwargs: Any
-    ) -> List[str]:
+        configuration: Configuration | None = None, **kwargs: Any
+    ) -> list[str]:
         """Get all organization names in HDX
 
         Args:
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            configuration: HDX configuration. Defaults to global configuration.
             **kwargs: See below
             sort (str): Sort the search results according to field name and sort-order. Allowed fields are ‘name’, ‘package_count’ and ‘title’. Defaults to 'name asc'.
-            organizations (List[str]): List of names of the groups to return.
+            organizations (list[str]): List of names of the groups to return.
             all_fields (bool): Return group dictionaries instead of just names. Only core fields are returned - get some more using the include_* options. Defaults to False.
             include_extras (bool): If all_fields, include the group extra fields. Defaults to False.
             include_tags (bool): If all_fields, include the group tags. Defaults to False.
-            include_groups: If all_fields, include the groups the groups are in. Defaults to False.
+            include_groups (bool): If all_fields, include the groups the groups are in. Defaults to False.
             include_users (bool): If all_fields, include the organization users. Defaults to False.
 
         Returns:
-            List[str]: List of all organization names in HDX
+            List of all organization names in HDX
         """
         organization = Organization(configuration=configuration)
         return organization._write_to_hdx("list", kwargs)
@@ -267,16 +267,16 @@ class Organization(HDXObject):
         cls,
         name: str,
         limit: int = 20,
-        configuration: Optional[Configuration] = None,
-    ) -> List:
+        configuration: Configuration | None = None,
+    ) -> list:
         """Autocomplete an organization name and return matches
 
         Args:
-            name (str): Name to autocomplete
-            limit (int): Maximum number of matches to return
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            name: Name to autocomplete
+            limit: Maximum number of matches to return
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            List: Autocomplete matches
+            Autocomplete matches
         """
         return cls._autocomplete(name, limit, configuration)

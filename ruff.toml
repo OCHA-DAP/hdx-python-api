@@ -1,15 +1,10 @@
+target-version = "py310"
+src = ["src"]
 exclude = ["_version.py"]
 
 [lint]
 # List of rules: https://docs.astral.sh/ruff/rules/
-select = [
-  "E",   # pycodestyle - default
-  "F",   # pyflakes - default
-  "I"    # isort
+extend-select = [
+  "I",   # isort
+  "UP"   # Upgrade Python
 ]
-ignore = [
-    "E501" # Line too long
-]
-
-[lint.isort]
-known-local-folder = ["hdx"]

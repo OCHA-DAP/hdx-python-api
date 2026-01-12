@@ -2,13 +2,14 @@
 
 import logging
 from collections import OrderedDict
+from collections.abc import Sequence
 from os.path import join
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
+
+from hdx.utilities.downloader import Download
 
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXObject
-from hdx.utilities.downloader import Download
-from hdx.utilities.typehint import ListTuple
 
 logger = logging.getLogger(__name__)
 
@@ -21,10 +22,10 @@ class Vocabulary(HDXObject):
     """Vocabulary class containing all logic for creating, checking, and updating vocabularies.
 
     Args:
-        initial_data (Optional[Dict]): Initial dataset metadata dictionary. Defaults to None.
-        name (str): Name of vocabulary
-        tags (Optional[List]): Initial list of tags. Defaults to None.
-        configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+        initial_data: Initial dataset metadata dictionary. Defaults to None.
+        name: Name of vocabulary
+        tags: Initial list of tags. Defaults to None.
+        configuration: HDX configuration. Defaults to global configuration.
     """
 
     _approved_vocabulary = None
@@ -32,10 +33,10 @@ class Vocabulary(HDXObject):
 
     def __init__(
         self,
-        initial_data: Optional[Dict] = None,
+        initial_data: dict | None = None,
         name: str = None,
-        tags: Optional[List] = None,
-        configuration: Optional[Configuration] = None,
+        tags: list | None = None,
+        configuration: Configuration | None = None,
     ) -> None:
         if not initial_data:
             initial_data = {}
@@ -46,11 +47,11 @@ class Vocabulary(HDXObject):
             self.add_tags(tags)
 
     @staticmethod
-    def actions() -> Dict[str, str]:
+    def actions() -> dict[str, str]:
         """Dictionary of actions that can be performed on object
 
         Returns:
-            Dict[str, str]: Dictionary of actions that can be performed on object
+            Dictionary of actions that can be performed on object
         """
         return {
             "show": "vocabulary_show",
@@ -67,7 +68,7 @@ class Vocabulary(HDXObject):
         """Update vocabulary metadata with static metadata from YAML file
 
         Args:
-            path (Optional[str]): Path to YAML dataset metadata. Defaults to config/hdx_vocabulary_static.yaml.
+            path: Path to YAML dataset metadata. Defaults to config/hdx_vocabulary_static.yaml.
 
         Returns:
             None
@@ -80,7 +81,7 @@ class Vocabulary(HDXObject):
         """Update vocabulary metadata with static metadata from JSON file
 
         Args:
-            path (Optional[str]): Path to JSON dataset metadata. Defaults to config/hdx_vocabulary_static.json.
+            path: Path to JSON dataset metadata. Defaults to config/hdx_vocabulary_static.json.
 
         Returns:
             None
@@ -89,31 +90,31 @@ class Vocabulary(HDXObject):
 
     @classmethod
     def read_from_hdx(
-        cls, identifier: str, configuration: Optional[Configuration] = None
+        cls, identifier: str, configuration: Configuration | None = None
     ) -> Optional["Vocabulary"]:
         """Reads the vocabulary given by identifier from HDX and returns Vocabulary object
 
         Args:
-            identifier (str): Identifier of vocabulary
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            identifier: Identifier of vocabulary
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            Optional[Vocabulary]: Vocabulary object if successful read, None if not
+            Vocabulary object if successful read, None if not
         """
         return cls._read_from_hdx_class("vocabulary", identifier, configuration)
 
     @staticmethod
     def get_all_vocabularies(
-        configuration: Optional[Configuration] = None,
-    ) -> List["Vocabulary"]:
+        configuration: Configuration | None = None,
+    ) -> list["Vocabulary"]:
         """Get all vocabulary names in HDX
 
         Args:
-            identifier (str): Identifier of resource
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            identifier: Identifier of resource
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            List[Vocabulary]: List of Vocabulary objects
+            List of Vocabulary objects
         """
 
         vocabulary = Vocabulary(configuration=configuration)
@@ -123,12 +124,12 @@ class Vocabulary(HDXObject):
             vocabularies.append(Vocabulary(vocabularydict, configuration=configuration))
         return vocabularies
 
-    def check_required_fields(self, ignore_fields: ListTuple[str] = tuple()) -> None:
+    def check_required_fields(self, ignore_fields: Sequence[str] = ()) -> None:
         """Check that metadata for vocabulary is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
         Args:
-            ignore_fields (ListTuple[str]): Fields to ignore. Default is tuple().
+            ignore_fields: Fields to ignore. Default is ().
 
         Returns:
             None
@@ -155,7 +156,7 @@ class Vocabulary(HDXObject):
         """Deletes a vocabulary from HDX. First tags are removed then vocabulary is deleted.
 
         Args:
-            empty (bool): Remove all tags and update before deleting. Defaults to True.
+            empty: Remove all tags and update before deleting. Defaults to True.
 
         Returns:
             None
@@ -167,11 +168,11 @@ class Vocabulary(HDXObject):
             )
         self._delete_from_hdx("vocabulary", "id")
 
-    def get_tags(self) -> List[str]:
+    def get_tags(self) -> list[str]:
         """Lists tags in vocabulary
 
         Returns:
-            List[str]: List of tags in vocabulary
+            List of tags in vocabulary
         """
         return self._get_tags()
 
@@ -179,21 +180,21 @@ class Vocabulary(HDXObject):
         """Add a tag
 
         Args:
-            tag (str): Tag to add
+            tag: Tag to add
 
         Returns:
-            bool: True if tag added or False if tag already present
+            True if tag added or False if tag already present
         """
         return self._add_tag(tag)
 
-    def add_tags(self, tags: ListTuple[str]) -> List[str]:
+    def add_tags(self, tags: Sequence[str]) -> list[str]:
         """Add a list of tags
 
         Args:
-            tags (ListTuple[str]): list of tags to add
+            tags: list of tags to add
 
         Returns:
-            List[str]: Tags that were successfully added
+            Tags that were successfully added
         """
         return self._add_tags(tags)
 
@@ -201,10 +202,10 @@ class Vocabulary(HDXObject):
         """Remove a tag
 
         Args:
-            tag (str): Tag to remove
+            tag: Tag to remove
 
         Returns:
-            bool: True if tag removed or False if not
+            True if tag removed or False if not
         """
         return self._remove_hdxobject(
             self.data.get("tags"), tag.lower(), matchon="name"
@@ -212,16 +213,16 @@ class Vocabulary(HDXObject):
 
     @classmethod
     def get_approved_vocabulary(
-        cls, configuration: Optional[Configuration] = None
+        cls, configuration: Configuration | None = None
     ) -> "Vocabulary":
         """
         Get the HDX approved vocabulary
 
         Args:
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            Vocabulary: HDX Vocabulary object
+            HDX Vocabulary object
         """
         if cls._approved_vocabulary is None:
             if configuration is None:
@@ -235,18 +236,18 @@ class Vocabulary(HDXObject):
     @classmethod
     def _read_approved_tags(
         cls,
-        url: Optional[str] = None,
-        configuration: Optional[Configuration] = None,
-    ) -> List[str]:
+        url: str | None = None,
+        configuration: Configuration | None = None,
+    ) -> list[str]:
         """
         Read approved tags
 
         Args:
-            url (Optional[str]): Url to read approved tags from. Defaults to None (url in internal configuration).
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            url: Url to read approved tags from. Defaults to None (url in internal configuration).
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            List[str]: List of approved tags
+            List of approved tags
         """
         with Download(
             full_agent=configuration.get_user_agent(), use_env=False
@@ -262,18 +263,18 @@ class Vocabulary(HDXObject):
     @classmethod
     def create_approved_vocabulary(
         cls,
-        url: Optional[str] = None,
-        configuration: Optional[Configuration] = None,
+        url: str | None = None,
+        configuration: Configuration | None = None,
     ) -> "Vocabulary":
         """
         Create the HDX approved vocabulary
 
         Args:
-            url (Optional[str]): Tag to check. Defaults to None (url in internal configuration).
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            url: Tag to check. Defaults to None (url in internal configuration).
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            Vocabulary: HDX Vocabulary object
+            HDX Vocabulary object
         """
         if configuration is None:
             configuration = Configuration.read()
@@ -288,20 +289,20 @@ class Vocabulary(HDXObject):
     @classmethod
     def update_approved_vocabulary(
         cls,
-        url: Optional[str] = None,
-        configuration: Optional[Configuration] = None,
+        url: str | None = None,
+        configuration: Configuration | None = None,
         replace: bool = True,
     ) -> "Vocabulary":
         """
         Update the HDX approved vocabulary
 
         Args:
-            url (Optional[str]): Tag to check. Defaults to None (url in internal configuration).
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
-            replace (bool): True to replace existing tags, False to append. Defaults to True.
+            url: Tag to check. Defaults to None (url in internal configuration).
+            configuration: HDX configuration. Defaults to global configuration.
+            replace: True to replace existing tags, False to append. Defaults to True.
 
         Returns:
-            Vocabulary: HDX Vocabulary object
+            HDX Vocabulary object
         """
         if configuration is None:
             configuration = Configuration.read()
@@ -316,13 +317,13 @@ class Vocabulary(HDXObject):
 
     @classmethod
     def delete_approved_vocabulary(
-        cls, configuration: Optional[Configuration] = None
+        cls, configuration: Configuration | None = None
     ) -> None:
         """
         Delete the approved vocabulary
 
         Args:
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
             None
@@ -333,15 +334,15 @@ class Vocabulary(HDXObject):
         vocabulary.delete_from_hdx()
 
     @classmethod
-    def approved_tags(cls, configuration: Optional[Configuration] = None) -> List[str]:
+    def approved_tags(cls, configuration: Configuration | None = None) -> list[str]:
         """
         Return list of approved tags
 
         Args:
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            List[str]: List of approved tags
+            List of approved tags
         """
         return [
             x["name"]
@@ -349,18 +350,16 @@ class Vocabulary(HDXObject):
         ]
 
     @classmethod
-    def is_approved(
-        cls, tag: str, configuration: Optional[Configuration] = None
-    ) -> bool:
+    def is_approved(cls, tag: str, configuration: Configuration | None = None) -> bool:
         """
         Return if tag is an approved one or not
 
         Args:
-            tag (str): Tag to check
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            tag: Tag to check
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            bool: True if tag is approved, False if not
+            True if tag is approved, False if not
         """
         if tag.lower() in cls.approved_tags(configuration):
             return True
@@ -369,22 +368,22 @@ class Vocabulary(HDXObject):
     @classmethod
     def read_tags_mappings(
         cls,
-        configuration: Optional[Configuration] = None,
-        url: Optional[str] = None,
+        configuration: Configuration | None = None,
+        url: str | None = None,
         keycolumn: int = 1,
         failchained: bool = True,
-    ) -> Dict:
+    ) -> dict:
         """
         Read tag mappings and setup tags cleanup dictionaries
 
         Args:
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
-            url (Optional[str]): Url of tags cleanup spreadsheet. Defaults to None (internal configuration parameter).
-            keycolumn (int): Column number of tag column in spreadsheet. Defaults to 1.
-            failchained (bool): Fail if chained rules found. Defaults to True.
+            configuration: HDX configuration. Defaults to global configuration.
+            url: Url of tags cleanup spreadsheet. Defaults to None (internal configuration parameter).
+            keycolumn: Column number of tag column in spreadsheet. Defaults to 1.
+            failchained: Fail if chained rules found. Defaults to True.
 
         Returns:
-            Dict: Returns Tags dictionary
+            Returns Tags dictionary
         """
         if not cls._tags_dict:
             if configuration is None:
@@ -434,12 +433,12 @@ class Vocabulary(HDXObject):
         return cls._tags_dict
 
     @classmethod
-    def set_tagsdict(cls, tags_dict: Dict) -> None:
+    def set_tagsdict(cls, tags_dict: dict) -> None:
         """
         Set tags dictionary
 
         Args:
-            tags_dict (Dict): Tags dictionary
+            tags_dict: Tags dictionary
 
         Returns:
             None
@@ -451,17 +450,17 @@ class Vocabulary(HDXObject):
         cls,
         tag: str,
         log_deleted: bool = True,
-        configuration: Optional[Configuration] = None,
-    ) -> Tuple[List[str], List[str]]:
+        configuration: Configuration | None = None,
+    ) -> tuple[list[str], list[str]]:
         """Given a tag, return a list of tag(s) to which it maps and any deleted tags
 
         Args:
-            tag (str): Tag to map
-            log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            tag: Tag to map
+            log_deleted: Whether to log informational messages about deleted tags. Defaults to True.
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            Tuple[List[str], List[str]]: Tuple containing list of mapped tag(s) and list of deleted tags
+            Tuple containing list of mapped tag(s) and list of deleted tags
         """
         if configuration is None:
             configuration = Configuration.read()
@@ -509,19 +508,19 @@ class Vocabulary(HDXObject):
     @classmethod
     def get_mapped_tags(
         cls,
-        tags: ListTuple[str],
+        tags: Sequence[str],
         log_deleted: bool = True,
-        configuration: Optional[Configuration] = None,
-    ) -> Tuple[List[str], List[str]]:
+        configuration: Configuration | None = None,
+    ) -> tuple[list[str], list[str]]:
         """Given a list of tags, return a list of tags to which they map and any deleted tags
 
         Args:
-            tags (ListTuple[str]): List of tags to map
-            log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            tags: List of tags to map
+            log_deleted: Whether to log informational messages about deleted tags. Defaults to True.
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            Tuple[List[str], List[str]]: Tuple containing list of mapped tags and list of deleted tags
+            Tuple containing list of mapped tags and list of deleted tags
         """
         new_tags = []
         deleted_tags = []
@@ -538,16 +537,16 @@ class Vocabulary(HDXObject):
     @classmethod
     def add_mapped_tag(
         cls, hdxobject: HDXObject, tag: str, log_deleted: bool = True
-    ) -> Tuple[List[str], List[str]]:
+    ) -> tuple[list[str], list[str]]:
         """Add a tag to an HDX object that has tags
 
         Args:
-            hdxobject (HDXObject): HDX object such as dataset
-            tag (str): Tag to add
-            log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
+            hdxobject: HDX object such as dataset
+            tag: Tag to add
+            log_deleted: Whether to log informational messages about deleted tags. Defaults to True.
 
         Returns:
-            Tuple[List[str], List[str]]: Tuple containing list of added tags and list of deleted tags and tags not added
+            Tuple containing list of added tags and list of deleted tags and tags not added
         """
         return cls.add_mapped_tags(hdxobject, [tag], log_deleted=log_deleted)
 
@@ -555,18 +554,18 @@ class Vocabulary(HDXObject):
     def add_mapped_tags(
         cls,
         hdxobject: HDXObject,
-        tags: ListTuple[str],
+        tags: Sequence[str],
         log_deleted: bool = True,
-    ) -> Tuple[List[str], List[str]]:
+    ) -> tuple[list[str], list[str]]:
         """Add a list of tag to an HDX object that has tags
 
         Args:
-            hdxobject (HDXObject): HDX object such as dataset
-            tags (ListTuple[str]): List of tags to add
-            log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
+            hdxobject: HDX object such as dataset
+            tags: List of tags to add
+            log_deleted: Whether to log informational messages about deleted tags. Defaults to True.
 
         Returns:
-            Tuple[List[str], List[str]]: Tuple containing list of added tags and list of deleted tags and tags not added
+            Tuple containing list of added tags and list of deleted tags and tags not added
         """
         new_tags, deleted_tags = cls.get_mapped_tags(
             tags,
@@ -584,15 +583,15 @@ class Vocabulary(HDXObject):
     @classmethod
     def clean_tags(
         cls, hdxobject: HDXObject, log_deleted: bool = True
-    ) -> Tuple[List[str], List[str]]:
+    ) -> tuple[list[str], list[str]]:
         """Clean tags in an HDX object according to tags cleanup spreadsheet
 
         Args:
-            hdxobject (HDXObject): HDX object such as dataset
-            log_deleted (bool): Whether to log informational messages about deleted tags. Defaults to True.
+            hdxobject: HDX object such as dataset
+            log_deleted: Whether to log informational messages about deleted tags. Defaults to True.
 
         Returns:
-            Tuple[List[str], List[str]]: Tuple containing list of mapped tags and list of deleted tags and tags not added
+            Tuple containing list of mapped tags and list of deleted tags and tags not added
         """
         tags = hdxobject._get_tags()
         hdxobject["tags"] = []
@@ -603,19 +602,19 @@ class Vocabulary(HDXObject):
         cls,
         name: str,
         limit: int = 20,
-        configuration: Optional[Configuration] = None,
+        configuration: Configuration | None = None,
         **kwargs: Any,
-    ) -> List:
+    ) -> list:
         """Autocomplete a tag name and return matches
 
         Args:
-            name (str): Name to autocomplete
-            limit (int): Maximum number of matches to return
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            name: Name to autocomplete
+            limit: Maximum number of matches to return
+            configuration: HDX configuration. Defaults to global configuration.
             **kwargs:
-            offset (int): The offset to start returning tags from.
+            offset: The offset to start returning tags from.
 
         Returns:
-            List: Autocomplete matches
+            Autocomplete matches
         """
         return cls._autocomplete(name, limit, configuration, **kwargs)

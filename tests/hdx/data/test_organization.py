@@ -5,15 +5,16 @@ import json
 from os.path import join
 
 import pytest
+from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.loader import load_yaml
 
-from .. import MockResponse, organization_data, user_data
-from .test_user import user_mockshow
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.organization import Organization
 from hdx.data.user import User
-from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.loader import load_yaml
+
+from .. import MockResponse, organization_data, user_data
+from .test_user import user_mockshow
 
 resultdict = load_yaml(join("tests", "fixtures", "organization_show_results.yaml"))
 

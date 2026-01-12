@@ -2,7 +2,6 @@
 
 from collections.abc import Iterable
 from datetime import datetime, timezone
-from typing import Dict, List, Optional, Tuple, Union
 
 from hdx.utilities.dateparse import now_utc, parse_date
 
@@ -10,7 +9,7 @@ from hdx.utilities.dateparse import now_utc, parse_date
 class DateHelper:
     @staticmethod
     def get_hdx_date(
-        date: Union[datetime, str],
+        date: datetime | str,
         ignore_timeinfo: bool,
         include_microseconds=False,
         max=False,
@@ -18,12 +17,12 @@ class DateHelper:
         """Get an HDX date as a string from a datetime.datetime object.
 
         Args:
-            date (Union[datetime, str]): Date as datetime or string
-            ignore_timeinfo (bool): Ignore time and time zone of date. Defaults to True.
-            include_microseconds (bool): Include microsconds. Defaults to False.
+            date: Date as datetime or string
+            ignore_timeinfo: Ignore time and time zone of date. Defaults to True.
+            include_microseconds: Include microsconds. Defaults to False.
 
         Returns:
-            str: HDX date as a string
+            HDX date as a string
         """
         if ignore_timeinfo:
             timezone_handling = 0
@@ -63,9 +62,9 @@ class DateHelper:
     @staticmethod
     def get_time_period_info(
         hdx_time_period: str,
-        date_format: Optional[str] = None,
+        date_format: str | None = None,
         today: datetime = now_utc(),
-    ) -> Dict:
+    ) -> dict:
         """Get time period as datetimes and strings in specified format.
         If no format is supplied, the ISO 8601 format is used. Returns a
         dictionary containing keys startdate (start date as datetime), enddate
@@ -74,12 +73,12 @@ class DateHelper:
         forward every day).
 
         Args:
-            hdx_time_period (str): Input time period
-            date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
-            today (datetime): Date to use for today. Defaults to now_utc().
+            hdx_time_period: Input time period
+            date_format: Date format. None is taken to be ISO 8601. Defaults to None.
+            today: Date to use for today. Defaults to now_utc().
 
         Returns:
-            Dict: Dictionary of date information
+            Dictionary of date information
         """
         result = {}
         if hdx_time_period:
@@ -115,8 +114,8 @@ class DateHelper:
     @classmethod
     def get_hdx_time_period(
         cls,
-        startdate: Union[datetime, str],
-        enddate: Union[datetime, str, None] = None,
+        startdate: datetime | str,
+        enddate: datetime | str | None = None,
         ongoing: bool = False,
         ignore_timeinfo: bool = True,
     ) -> str:
@@ -124,13 +123,13 @@ class DateHelper:
         strings with option to set ongoing.
 
         Args:
-            startdate (Union[datetime, str]): Dataset start date
-            enddate (Union[datetime, str, None]): Dataset end date. Defaults to None.
-            ongoing (bool): True if ongoing, False if not. Defaults to False.
-            ignore_timeinfo (bool): Ignore time and time zone of date. Defaults to True.
+            startdate: Dataset start date
+            enddate: Dataset end date. Defaults to None.
+            ongoing: True if ongoing, False if not. Defaults to False.
+            ignore_timeinfo: Ignore time and time zone of date. Defaults to True.
 
         Returns:
-            str: HDX time period
+            HDX time period
         """
         startdate = cls.get_hdx_date(
             startdate,
@@ -154,18 +153,18 @@ class DateHelper:
     @classmethod
     def get_hdx_time_period_from_years(
         cls,
-        startyear: Union[str, int, Iterable],
-        endyear: Union[str, int, None] = None,
-    ) -> Tuple[str, List[int]]:
+        startyear: str | int | Iterable,
+        endyear: str | int | None = None,
+    ) -> tuple[str, list[int]]:
         """Get an HDX time period from an iterable of years or a start and
         end year.
 
         Args:
-            startyear (Union[str, int, Iterable]): Start year given as string or int or range in an iterable
-            endyear (Union[str, int, None]): End year given as string or int
+            startyear: Start year given as string or int or range in an iterable
+            endyear: End year given as string or int
 
         Returns:
-            Tuple[str,List[int]]: (HDX time period, the start and end year if supplied or sorted list of years)
+            (HDX time period, the start and end year if supplied or sorted list of years)
         """
         retval = []
         if isinstance(startyear, str):

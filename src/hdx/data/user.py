@@ -1,13 +1,13 @@
 """User class containing all logic for creating, checking, and updating users."""
 
 import logging
+from collections.abc import Sequence
 from os.path import join
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import hdx.data.organization
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError, HDXObject
-from hdx.utilities.typehint import ListTuple
 
 logger = logging.getLogger(__name__)
 
@@ -16,25 +16,25 @@ class User(HDXObject):
     """User class containing all logic for creating, checking, and updating users.
 
     Args:
-        initial_data (Optional[Dict]): Initial user metadata dictionary. Defaults to None.
-        configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+        initial_data: Initial user metadata dictionary. Defaults to None.
+        configuration: HDX configuration. Defaults to global configuration.
     """
 
     def __init__(
         self,
-        initial_data: Optional[Dict] = None,
-        configuration: Optional[Configuration] = None,
+        initial_data: dict | None = None,
+        configuration: Configuration | None = None,
     ) -> None:
         if not initial_data:
             initial_data = {}
         super().__init__(initial_data, configuration=configuration)
 
     @staticmethod
-    def actions() -> Dict[str, str]:
+    def actions() -> dict[str, str]:
         """Dictionary of actions that can be performed on object
 
         Returns:
-            Dict[str, str]: Dictionary of actions that can be performed on object
+            Dictionary of actions that can be performed on object
         """
         return {
             "show": "user_show",
@@ -53,7 +53,7 @@ class User(HDXObject):
         """Update user metadata with static metadata from YAML file
 
         Args:
-            path (Optional[str]): Path to YAML dataset metadata. Defaults to config/hdx_user_static.yaml.
+            path: Path to YAML dataset metadata. Defaults to config/hdx_user_static.yaml.
 
         Returns:
             None
@@ -66,7 +66,7 @@ class User(HDXObject):
         """Update user metadata with static metadata from JSON file
 
         Args:
-            path (Optional[str]): Path to JSON dataset metadata. Defaults to config/hdx_user_static.json.
+            path: Path to JSON dataset metadata. Defaults to config/hdx_user_static.json.
 
         Returns:
             None
@@ -75,25 +75,25 @@ class User(HDXObject):
 
     @classmethod
     def read_from_hdx(
-        cls, identifier: str, configuration: Optional[Configuration] = None
+        cls, identifier: str, configuration: Configuration | None = None
     ) -> Optional["User"]:
         """Reads the user given by identifier from HDX and returns User object
 
         Args:
-            identifier (str): Identifier of user
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            identifier: Identifier of user
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            Optional[User]: User object if successful read, None if not
+            User object if successful read, None if not
         """
         return cls._read_from_hdx_class("user", identifier, configuration)
 
-    def check_required_fields(self, ignore_fields: ListTuple[str] = tuple()) -> None:
+    def check_required_fields(self, ignore_fields: Sequence[str] = ()) -> None:
         """Check that metadata for user is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
         Args:
-            ignore_fields (ListTuple[str]): Fields to ignore. Default is tuple().
+            ignore_fields: Fields to ignore. Default is ().
 
         Returns:
             None
@@ -140,17 +140,17 @@ class User(HDXObject):
         self,
         subject: str,
         text_body: str,
-        html_body: Optional[str] = None,
-        sender: Optional[str] = None,
+        html_body: str | None = None,
+        sender: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Emails a user.
 
         Args:
-            subject (str): Email subject
-            text_body (str): Plain text email body
-            html_body (str): HTML email body
-            sender (Optional[str]): Email sender. Defaults to SMTP username.
+            subject: Email subject
+            text_body: Plain text email body
+            html_body: HTML email body
+            sender: Email sender. Defaults to SMTP username.
             **kwargs: See below
             mail_options (List): Mail options (see smtplib documentation)
             rcpt_options (List): Recipient options (see smtplib documentation)
@@ -168,14 +168,14 @@ class User(HDXObject):
         )
 
     @staticmethod
-    def get_current_user(configuration: Optional[Configuration] = None) -> "User":
+    def get_current_user(configuration: Configuration | None = None) -> "User":
         """Get current user (based on authorisation from API token)
 
         Args:
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            User: Current user
+            Current user
         """
         user = User(configuration=configuration)
         user._save_to_hdx("show", {})
@@ -183,18 +183,18 @@ class User(HDXObject):
 
     @staticmethod
     def get_all_users(
-        configuration: Optional[Configuration] = None, **kwargs: Any
-    ) -> List["User"]:
+        configuration: Configuration | None = None, **kwargs: Any
+    ) -> list["User"]:
         """Get all users in HDX
 
         Args:
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            configuration: HDX configuration. Defaults to global configuration.
             **kwargs: See below
             q (str): Restrict to names containing a string. Defaults to all users.
             order_by (str): Field by which to sort - any user field or edits (number_of_edits). Defaults to 'name'.
 
         Returns:
-            List[User]: List of all users in HDX
+            List of all users in HDX
         """
         user = User(configuration=configuration)
         result = user._write_to_hdx("list", kwargs)
@@ -209,27 +209,27 @@ class User(HDXObject):
 
     @staticmethod
     def email_users(
-        users: ListTuple["User"],
+        users: Sequence["User"],
         subject: str,
         text_body: str,
-        html_body: Optional[str] = None,
-        sender: Optional[str] = None,
-        cc: Optional[ListTuple["User"]] = None,
-        bcc: Optional[ListTuple["User"]] = None,
-        configuration: Optional[Configuration] = None,
+        html_body: str | None = None,
+        sender: str | None = None,
+        cc: Sequence["User"] | None = None,
+        bcc: Sequence["User"] | None = None,
+        configuration: Configuration | None = None,
         **kwargs: Any,
     ) -> None:
         """Email a list of users
 
         Args:
-            users (ListTuple[User]): List of users in To address
-            subject (str): Email subject
-            text_body (str): Plain text email body
-            html_body (str): HTML email body
-            sender (Optional[str]): Email sender. Defaults to SMTP username.
-            cc (Optional[ListTuple[User]]: List of users to cc. Defaults to None.
-            bcc (Optional[ListTuple[User]]: List of users to bcc. Defaults to None.
-            configuration (Optional[Configuration]): HDX configuration. Defaults to configuration of first user in list.
+            users: List of users in To address
+            subject: Email subject
+            text_body: Plain text email body
+            html_body: HTML email body
+            sender: Email sender. Defaults to SMTP username.
+            cc (Optional[Sequence[User]]: List of users to cc. Defaults to None.
+            bcc (Optional[Sequence[User]]: List of users to bcc. Defaults to None.
+            configuration: HDX configuration. Defaults to configuration of first user in list.
             **kwargs: See below
             mail_options (List): Mail options (see smtplib documentation)
             rcpt_options (List): Recipient options (see smtplib documentation)
@@ -261,14 +261,14 @@ class User(HDXObject):
             **kwargs,
         )
 
-    def get_organization_dicts(self, permission: str = "read") -> List[Dict]:  # noqa: F821
+    def get_organization_dicts(self, permission: str = "read") -> list[dict]:  # noqa: F821
         """Get organization dictionaries (not organization objects)  in HDX that this user is a member of.
 
         Args:
-            permission (str): Permission to check for. Defaults to 'read'.
+            permission: Permission to check for. Defaults to 'read'.
 
         Returns:
-            List[Dict]: List of organization dicts in HDX that this user is a member of
+            List of organization dicts in HDX that this user is a member of
         """
         success, result = self._read_from_hdx(
             "user",
@@ -281,14 +281,14 @@ class User(HDXObject):
             return result
         return []
 
-    def get_organizations(self, permission: str = "read") -> List["Organization"]:  # noqa: F821
+    def get_organizations(self, permission: str = "read") -> list["Organization"]:  # noqa: F821
         """Get organizations in HDX that this user is a member of.
 
         Args:
-            permission (str): Permission to check for. Defaults to 'read'.
+            permission: Permission to check for. Defaults to 'read'.
 
         Returns:
-            List[Organization]: List of organizations in HDX that this user is a member of
+            List of organizations in HDX that this user is a member of
         """
         result = self.get_organization_dicts(permission)
         organizations = []
@@ -305,11 +305,11 @@ class User(HDXObject):
         """Check user is a member of a given organization.
 
         Args:
-            organization (str): Organization id or name.
-            permission (str): Permission to check for. Defaults to 'read'.
+            organization: Organization id or name.
+            permission: Permission to check for. Defaults to 'read'.
 
         Returns:
-            bool: True if the logged in user is a member of the organization.
+            True if the logged in user is a member of the organization.
         """
         for organization_dict in self.get_organization_dicts(permission):
             if organization_dict["id"] == organization:
@@ -322,16 +322,16 @@ class User(HDXObject):
     def get_current_user_organization_dicts(
         cls,
         permission: str = "read",
-        configuration: Optional[Configuration] = None,
-    ) -> List["Organization"]:  # noqa: F821
+        configuration: Configuration | None = None,
+    ) -> list["Organization"]:  # noqa: F821
         """Get organization dictionaries (not Organization objects) in HDX that the logged in user is a member of.
 
         Args:
-            permission (str): Permission to check for. Defaults to 'read'.
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            permission: Permission to check for. Defaults to 'read'.
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            List[Dict]: List of organization dicts in HDX that logged in user is a member of
+            List of organization dicts in HDX that logged in user is a member of
         """
         user = User(configuration=configuration)
         try:
@@ -345,16 +345,16 @@ class User(HDXObject):
     def get_current_user_organizations(
         cls,
         permission: str = "read",
-        configuration: Optional[Configuration] = None,
-    ) -> List["Organization"]:  # noqa: F821
+        configuration: Configuration | None = None,
+    ) -> list["Organization"]:  # noqa: F821
         """Get organizations in HDX that the logged in user is a member of.
 
         Args:
-            permission (str): Permission to check for. Defaults to 'read'.
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            permission: Permission to check for. Defaults to 'read'.
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            List[Organization]: List of organizations in HDX that logged in user is a member of
+            List of organizations in HDX that logged in user is a member of
         """
         result = cls.get_current_user_organization_dicts(permission, configuration)
         organizations = []
@@ -370,17 +370,17 @@ class User(HDXObject):
         cls,
         organization: str,
         permission: str = "read",
-        configuration: Optional[Configuration] = None,
+        configuration: Configuration | None = None,
     ) -> bool:
         """Check logged in user is a member of a given organization.
 
         Args:
-            organization (str): Organization id or name.
-            permission (str): Permission to check for. Defaults to 'read'.
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            organization: Organization id or name.
+            permission: Permission to check for. Defaults to 'read'.
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            bool: True if the logged in user is a member of the organization.
+            True if the logged in user is a member of the organization.
         """
         for organization_dict in cls.get_current_user_organization_dicts(
             permission, configuration
@@ -396,19 +396,19 @@ class User(HDXObject):
         cls,
         organization: str,
         permission: str = "create_dataset",
-        configuration: Optional[Configuration] = None,
+        configuration: Configuration | None = None,
     ) -> "User":
         """Check logged in user has write access to a given organization. Raises
         PermissionError if the user does not have access otherwise logs and returns the
         current username.
 
         Args:
-            organization (str): Organization id or name.
-            permission (str): Permission to check for. Defaults to 'create_dataset'.
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            organization: Organization id or name.
+            permission: Permission to check for. Defaults to 'create_dataset'.
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            str: Username of current user
+            Username of current user
         """
         if configuration is None:
             configuration = Configuration.read()
@@ -441,7 +441,7 @@ class User(HDXObject):
         """Get API tokens for user.
 
         Returns:
-            List[Dict]: List of API token details
+            List of API token details
         """
         success, result = self._read_from_hdx(
             "user",
@@ -458,16 +458,16 @@ class User(HDXObject):
         cls,
         name: str,
         limit: int = 20,
-        configuration: Optional[Configuration] = None,
-    ) -> List:
+        configuration: Configuration | None = None,
+    ) -> list:
         """Autocomplete a user name and return matches
 
         Args:
-            name (str): Name to autocomplete
-            limit (int): Maximum number of matches to return
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            name: Name to autocomplete
+            limit: Maximum number of matches to return
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            List: Autocomplete matches
+            Autocomplete matches
         """
         return cls._autocomplete(name, limit, configuration)

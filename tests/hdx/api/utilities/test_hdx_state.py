@@ -9,12 +9,13 @@ from shutil import copyfile, rmtree
 from tempfile import gettempdir
 
 import pytest
+from hdx.utilities.dateparse import iso_string_from_datetime, parse_date
+
+from hdx.api.configuration import Configuration
+from hdx.api.utilities.hdx_state import HDXState
 
 from ... import MockResponse, dataset_resultdict
 from ...data.test_resource import resultdict
-from hdx.api.configuration import Configuration
-from hdx.api.utilities.hdx_state import HDXState
-from hdx.utilities.dateparse import iso_string_from_datetime, parse_date
 
 
 class TestState:

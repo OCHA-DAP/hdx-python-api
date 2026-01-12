@@ -1,13 +1,14 @@
 """Resource view class containing all logic for creating, checking, and updating resource views."""
 
 import logging
+from collections.abc import Sequence
 from os.path import join
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
+
+from hdx.utilities.uuid import is_valid_uuid
 
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError, HDXObject
-from hdx.utilities.typehint import ListTuple
-from hdx.utilities.uuid import is_valid_uuid
 
 logger = logging.getLogger(__name__)
 
@@ -16,25 +17,25 @@ class ResourceView(HDXObject):
     """ResourceView class containing all logic for creating, checking, and updating resource views.
 
     Args:
-        initial_data (Optional[Dict]): Initial resource view metadata dictionary. Defaults to None.
-        configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+        initial_data: Initial resource view metadata dictionary. Defaults to None.
+        configuration: HDX configuration. Defaults to global configuration.
     """
 
     def __init__(
         self,
-        initial_data: Optional[Dict] = None,
-        configuration: Optional[Configuration] = None,
+        initial_data: dict | None = None,
+        configuration: Configuration | None = None,
     ) -> None:
         if not initial_data:
             initial_data = {}
         super().__init__(initial_data, configuration=configuration)
 
     @staticmethod
-    def actions() -> Dict[str, str]:
+    def actions() -> dict[str, str]:
         """Dictionary of actions that can be performed on object
 
         Returns:
-            Dict[str, str]: Dictionary of actions that can be performed on object
+            Dictionary of actions that can be performed on object
         """
         return {
             "show": "resource_view_show",
@@ -51,7 +52,7 @@ class ResourceView(HDXObject):
         """Update resource view metadata with static metadata from YAML file
 
         Args:
-            path (Optional[str]): Path to YAML resource view metadata. Defaults to config/hdx_resource_view_static.yaml.
+            path: Path to YAML resource view metadata. Defaults to config/hdx_resource_view_static.yaml.
 
         Returns:
             None
@@ -64,7 +65,7 @@ class ResourceView(HDXObject):
         """Update resource view metadata with static metadata from JSON file
 
         Args:
-            path (Optional[str]): Path to JSON dataset metadata. Defaults to config/hdx_resource_view_static.json.
+            path: Path to JSON dataset metadata. Defaults to config/hdx_resource_view_static.json.
 
         Returns:
             None
@@ -73,31 +74,31 @@ class ResourceView(HDXObject):
 
     @classmethod
     def read_from_hdx(
-        cls, identifier: str, configuration: Optional[Configuration] = None
+        cls, identifier: str, configuration: Configuration | None = None
     ) -> Optional["ResourceView"]:
         """Reads the resource view given by identifier from HDX and returns ResourceView object
 
         Args:
-            identifier (str): Identifier of resource view
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            identifier: Identifier of resource view
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            Optional[ResourceView]: ResourceView object if successful read, None if not
+            ResourceView object if successful read, None if not
         """
         return cls._read_from_hdx_class("resource view", identifier, configuration)
 
     @staticmethod
     def get_all_for_resource(
-        identifier: str, configuration: Optional[Configuration] = None
-    ) -> List["ResourceView"]:
+        identifier: str, configuration: Configuration | None = None
+    ) -> list["ResourceView"]:
         """Read all resource views for a resource given by identifier from HDX and returns list of ResourceView objects
 
         Args:
-            identifier (str): Identifier of resource
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            identifier: Identifier of resource
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            List[ResourceView]: List of ResourceView objects
+            List of ResourceView objects
         """
 
         resourceview = ResourceView(configuration=configuration)
@@ -113,12 +114,12 @@ class ResourceView(HDXObject):
                 resourceviews.append(resourceview)
         return resourceviews
 
-    def check_required_fields(self, ignore_fields: ListTuple[str] = tuple()) -> None:
+    def check_required_fields(self, ignore_fields: Sequence[str] = ()) -> None:
         """Check that metadata for resource view is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
         Args:
-            ignore_fields (ListTuple[str]): Fields to ignore. Default is tuple().
+            ignore_fields: Fields to ignore. Default is ().
 
         Returns:
             None
@@ -129,7 +130,7 @@ class ResourceView(HDXObject):
         """Check if resource view exists in HDX and if so, update resource view
 
         Returns:
-            bool: True if updated and False if not
+            True if updated and False if not
         """
         updated = False
         if "id" in self.data and self._load_from_hdx("resource view", self.data["id"]):
@@ -179,11 +180,11 @@ class ResourceView(HDXObject):
         """
         self._delete_from_hdx("resource view", "id")
 
-    def copy(self, resource_view: Union["ResourceView", Dict, str]) -> None:
+    def copy(self, resource_view: Union["ResourceView", dict, str]) -> None:
         """Copies all fields except id, resource_id and package_id from another resource view.
 
         Args:
-            resource_view (Union[ResourceView,Dict,str]): Either a resource view id or resource view metadata either from a ResourceView object or a dictionary
+            resource_view: Either a resource view id or resource view metadata either from a ResourceView object or a dictionary
 
         Returns:
             None

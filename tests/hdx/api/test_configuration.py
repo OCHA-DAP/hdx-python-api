@@ -3,12 +3,12 @@
 from os.path import join
 
 import pytest
+from hdx.utilities.loader import LoadError
+from hdx.utilities.useragent import UserAgentError
 
 from hdx.api import __version__
 from hdx.api.configuration import Configuration, ConfigurationError
 from hdx.api.remotehdx import RemoteHDX
-from hdx.utilities.loader import LoadError
-from hdx.utilities.useragent import UserAgentError
 
 
 class TestConfiguration:
