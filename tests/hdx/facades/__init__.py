@@ -1,5 +1,3 @@
-from typing import Optional
-
 from hdx.api.configuration import Configuration
 
 

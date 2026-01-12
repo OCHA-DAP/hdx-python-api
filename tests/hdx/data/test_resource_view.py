@@ -51,8 +51,7 @@ def resource_view_mockshow(url, datadict):
     ):
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_show"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_show"}}',
         )
     if datadict["id"] == "TEST2":
         return MockResponse(
@@ -79,8 +78,7 @@ def resource_view_mocklist(url, datadict):
     if datadict["id"] == "25982d1c-f45a-45e1-b14e-87d367413045":
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_list"}'
-            % json.dumps(resource_view_list),
+            f'{{"success": true, "result": {json.dumps(resource_view_list)}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_list"}}',
         )
     return MockResponse(
         404,
@@ -98,16 +96,14 @@ def resource_view_mockcreate(url, datadict):
         result = json.dumps(resultdict)
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}}',
         )
     if datadict["title"] == "Quick Charts":
         resultdictcopy = copy.deepcopy(resultdict)
         result = json.dumps(merge_two_dictionaries(resultdictcopy, datadict))
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}}',
         )
     if datadict["title"] == "XXX":
         return MockResponse(
@@ -192,8 +188,7 @@ class TestResourceView:
                 if datadict["title"] == "Quick Charts":
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_update"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_update"}}',
                     )
                 if datadict["title"] == "XXX":
                     return MockResponse(

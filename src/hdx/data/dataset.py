@@ -1786,8 +1786,7 @@ class Dataset(HDXObject):
         return self.add_other_location(
             iso3,
             exact=exact,
-            alterror="Country: %s with iso3: %s could not be found in HDX list!"
-            % (country, iso3),
+            alterror=f"Country: {country} with iso3: {iso3} could not be found in HDX list!",
             locations=locations,
         )
 

@@ -417,15 +417,7 @@ class Vocabulary(HDXObject):
                                         chainerror = True
                                         if failchained:
                                             logger.error(
-                                                "Chained rules: %s (%s -> %s) | %s (%s -> %s)"
-                                                % (
-                                                    action,
-                                                    tag,
-                                                    final_tags,
-                                                    action2,
-                                                    final_tag,
-                                                    final_tags2,
-                                                )
+                                                f"Chained rules: {action} ({tag} -> {final_tags}) | {action2} ({final_tag} -> {final_tags2})"
                                             )
 
                 if failchained and chainerror:

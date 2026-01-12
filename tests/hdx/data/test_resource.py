@@ -160,8 +160,7 @@ def mockshow(url, datadict):
     if datadict_id == "74b74ae1-df0c-4716-829f-4f939a046811":
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}}',
         )
     if datadict_id == "74b74ae1-df0c-4716-829f-4f939a046812":
         return MockResponse(
@@ -179,8 +178,7 @@ def mockshow(url, datadict):
         result = json.dumps(resdictcopy)
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}}',
         )
     if datadict_id == "74b74ae1-df0c-4716-829f-4f939a046815":
         resdictcopy = copy.deepcopy(resultdict)
@@ -188,8 +186,7 @@ def mockshow(url, datadict):
         result = json.dumps(resdictcopy)
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}}',
         )
     if datadict_id in (
         "74b74ae1-df0c-4716-829f-4f939a046816",
@@ -207,8 +204,7 @@ def mockshow(url, datadict):
         result = json.dumps(resdictcopy)
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}}',
         )
     return MockResponse(
         404,
@@ -225,8 +221,7 @@ def mockpatch(url, datadict):
     result = json.dumps(resultdict)
     return MockResponse(
         200,
-        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_patch"}'
-        % result,
+        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_patch"}}',
     )
 
 
@@ -244,8 +239,7 @@ def mockdataset(url, datadict):
         result = json.dumps(dataset_resultdict)
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}}',
         )
     return MockResponse(
         404,
@@ -263,8 +257,7 @@ def mocksearch(url, datadict):
     if datadict["query"] == "name:ACLED":
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_search"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_search"}}',
         )
     if datadict["query"] == "fail":
         return MockResponse(
@@ -286,8 +279,7 @@ def mockresourceview(url, decodedata):
     if "delete" in url:
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_delete"}'
-            % decodedata,
+            f'{{"success": true, "result": {decodedata}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_delete"}}',
         )
     datadict = json.loads(decodedata)
     if "show" in url:
@@ -300,15 +292,13 @@ def mockresourceview(url, decodedata):
             result = json.dumps(resource_view_list[0])
             return MockResponse(
                 200,
-                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_show"}'
-                % result,
+                f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_show"}}',
             )
         if datadict["title"] == "Quick Charts":
             result = json.dumps(resource_view_list[1])
             return MockResponse(
                 200,
-                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_show"}'
-                % result,
+                f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_show"}}',
             )
     if "list" in url:
         return resource_view_mocklist(url, datadict)
@@ -318,15 +308,13 @@ def mockresourceview(url, decodedata):
             result = json.dumps(resource_view_list[0])
             return MockResponse(
                 200,
-                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}'
-                % result,
+                f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}}',
             )
         if datadict["title"] == "Quick Charts":
             result = json.dumps(resource_view_list[1])
             return MockResponse(
                 200,
-                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_show"}'
-                % result,
+                f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_show"}}',
             )
     if "reorder" in url:
         result = json.dumps(
@@ -340,8 +328,7 @@ def mockresourceview(url, decodedata):
         )
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_reorder"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_reorder"}}',
         )
 
     return MockResponse(
@@ -422,8 +409,7 @@ class TestResource:
                     result = json.dumps(resultdictcopy)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}}',
                     )
                 if datadict["name"] == "MyResource2":
                     return MockResponse(
@@ -482,8 +468,7 @@ class TestResource:
                     result = json.dumps(resultdictcopy)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}}',
                     )
                 if datadict["name"] == "MyResource2":
                     return MockResponse(
@@ -520,8 +505,7 @@ class TestResource:
                 if datadict["id"] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5":
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}'
-                        % decodedata,
+                        f'{{"success": true, "result": {decodedata}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}}',
                     )
 
                 return MockResponse(
@@ -673,8 +657,7 @@ class TestResource:
                 result = json.dumps(resultdictcopy)
                 return MockResponse(
                     200,
-                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=hdx_mark_broken_link_in_resource"}'
-                    % result,
+                    f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=hdx_mark_broken_link_in_resource"}}',
                 )
 
         Configuration.read().remoteckan().session = MockSession()

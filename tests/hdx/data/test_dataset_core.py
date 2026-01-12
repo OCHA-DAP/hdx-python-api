@@ -95,8 +95,7 @@ def mocksearch(url, datadict):
         result = json.dumps(newsearchdict)
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}}',
         )
     if datadict["q"] == '"':
         return MockResponse(
@@ -126,8 +125,7 @@ def mocklist(url, datadict):
     result = json.dumps(dataset_list[offset : offset + limit])
     return MockResponse(
         200,
-        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}'
-        % result,
+        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_list"}}',
     )
 
 
@@ -168,8 +166,7 @@ def mockall(url, datadict):
     result = json.dumps(newsearchdict)
     return MockResponse(
         200,
-        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}'
-        % result,
+        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}}',
     )
 
 
@@ -182,8 +179,7 @@ def mockhxlupdate(url, datadict):
     result = json.dumps(hxlupdate_list)
     return MockResponse(
         200,
-        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_hxl_update"}'
-        % result,
+        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_hxl_update"}}',
     )
 
 
@@ -224,8 +220,7 @@ class TestDatasetCore:
                     result = json.dumps(resultdictcopy)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_revise"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_revise"}}',
                     )
                 return MockResponse(
                     404,
@@ -255,22 +250,19 @@ class TestDatasetCore:
                     result = json.dumps(resource_view_list)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_create_default_resource_views"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_create_default_resource_views"}}',
                     )
                 if "resource_view" in url:
                     result = json.dumps(resource_view_list[1])
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}}',
                     )
                 if "resource" in url:
                     result = json.dumps(resources_data[0])
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}}',
                     )
                 if "create" not in url and "revise" not in url:
                     return MockResponse(
@@ -287,8 +279,7 @@ class TestDatasetCore:
                     result = json.dumps(resultdictcopy)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_create"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_create"}}',
                     )
                 if datadict["name"] == "MyDataset2":
                     return MockResponse(
@@ -322,8 +313,7 @@ class TestDatasetCore:
                     result = json.dumps(resource_view_list)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_create_default_resource_views"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_create_default_resource_views"}}',
                     )
                 if "resource_view" in url:
                     if "show" in url:
@@ -349,8 +339,7 @@ class TestDatasetCore:
                     result = json.dumps(resultdictcopy)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_update"}}',
                     )
                 else:
                     if "revise" not in url:
@@ -379,8 +368,7 @@ class TestDatasetCore:
                         result = json.dumps(resultdictcopy)
                         return MockResponse(
                             200,
-                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}'
-                            % result,
+                            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_update"}}',
                         )
                     return MockResponse(
                         404,
@@ -408,8 +396,7 @@ class TestDatasetCore:
                 if datadict["id"] == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d":
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_resource_reorder"}'
-                        % decodedata,
+                        f'{{"success": true, "result": {decodedata}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_resource_reorder"}}',
                     )
 
                 return MockResponse(
@@ -436,15 +423,13 @@ class TestDatasetCore:
                 if "resource" in url:
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_delete"}'
-                        % decodedata,
+                        f'{{"success": true, "result": {decodedata}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_delete"}}',
                     )
 
                 if datadict["id"] == "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d":
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_delete"}'
-                        % decodedata,
+                        f'{{"success": true, "result": {decodedata}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=dataset_delete"}}',
                     )
 
                 return MockResponse(
@@ -499,8 +484,7 @@ class TestDatasetCore:
                 result = json.dumps(dataset_autocomplete)
                 return MockResponse(
                     200,
-                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_autocomplete"}'
-                    % result,
+                    f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_autocomplete"}}',
                 )
 
         Configuration.read().remoteckan().session = MockSession()
@@ -666,10 +650,7 @@ class TestDatasetCore:
             "crisis-somewhere",
         ]
         assert dataset["state"] == "active"
-        pattern = (
-            r"HDXPythonLibrary/%s-test \([12]\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d\)"
-            % __version__
-        )
+        pattern = rf"HDXPythonLibrary/{__version__}-test \([12]\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d\)"
         match = re.search(pattern, dataset["updated_by_script"])
         assert match
         resourceviewdata = {

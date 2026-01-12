@@ -52,8 +52,7 @@ class TestState:
                     result = json.dumps(resultdict)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}}',
                     )
                 else:
                     myresultdict = deepcopy(dataset_resultdict)
@@ -63,8 +62,7 @@ class TestState:
                     result = json.dumps(myresultdict)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}}',
                     )
 
         Configuration.read().remoteckan().session = MockSession()
@@ -78,8 +76,7 @@ class TestState:
                     result = json.dumps(resultdict)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}}',
                     )
                 else:
                     myresultdict = deepcopy(dataset_resultdict)
@@ -89,8 +86,7 @@ class TestState:
                     result = json.dumps(myresultdict)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}}',
                     )
 
         Configuration.read().remoteckan().session = MockSession()

@@ -33,8 +33,7 @@ class TestDatasetAddHAPIError:
                     result = json.dumps(resource_json)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_create"}}',
                     )
                 if "patch" not in url:
                     return MockResponse(
@@ -44,8 +43,7 @@ class TestDatasetAddHAPIError:
                 result = json.dumps(datadict)
                 return MockResponse(
                     200,
-                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_patch"}'
-                    % result,
+                    f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_patch"}}',
                 )
 
         Configuration.read().remoteckan().session = MockSession()

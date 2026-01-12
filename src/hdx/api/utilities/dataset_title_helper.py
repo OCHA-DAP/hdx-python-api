@@ -26,7 +26,7 @@ class DatasetTitleHelper:
         r"([12]\d\d\d)(/(\d{1,2}))?(-| & | and )([12]\d\d\d)"
     )
     YEAR_RANGE_PATTERN2 = re.compile(r"([12]\d\d\d)([/-])(\d{1,2})")
-    PUNCTUATION_PATTERN = re.compile(r"[%s]" % punctuation)
+    PUNCTUATION_PATTERN = re.compile(rf"[{punctuation}]")
     EMPTY_BRACKET_PATTERN = re.compile(r"(\s?\(\s*\)\s?)")
     WORD_RIGHT_BRACKET_PATTERN = re.compile(r"\b(\s*)(\w{2,})\b\)")
     DATE_INTRO_WORDS = ["on", "at", "for", "of", "in"]

@@ -1055,8 +1055,7 @@ def vocabulary_mockshow(url, datadict):
         result = json.dumps(resultdict)
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_show"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_show"}}',
         )
     if (
         datadict["id"] == "Topics"
@@ -1065,8 +1064,7 @@ def vocabulary_mockshow(url, datadict):
         result = json.dumps(vocabulary_list[2])
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_show"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_show"}}',
         )
     if datadict["id"] == "TEST2":
         return MockResponse(
@@ -1093,8 +1091,7 @@ def vocabulary_delete(url, datadict):
         result = json.dumps(resultdictcopy)
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_update"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_update"}}',
         )
     if "delete" not in url:
         return MockResponse(
@@ -1126,8 +1123,7 @@ def vocabulary_mocklist(url, datadict):
         )
     return MockResponse(
         200,
-        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_list"}'
-        % json.dumps(vocabulary_list),
+        f'{{"success": true, "result": {json.dumps(vocabulary_list)}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_list"}}',
     )
 
 
@@ -1175,15 +1171,13 @@ class TestVocabulary:
                     result = json.dumps(resultdict)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_create"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_create"}}',
                     )
                 if datadict["name"] == "Topics":
                     result = json.dumps(vocabulary_list[2])
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_show"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_show"}}',
                     )
                 if datadict["name"] == "XXX":
                     return MockResponse(
@@ -1222,8 +1216,7 @@ class TestVocabulary:
                     result = json.dumps(datadict)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_show"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_show"}}',
                     )
                 resultdictcopy = copy.deepcopy(resultdict)
                 merge_two_dictionaries(resultdictcopy, datadict)
@@ -1236,8 +1229,7 @@ class TestVocabulary:
                 ]:
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_update"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=vocabulary_update"}}',
                     )
                 if datadict["name"] == "XXX":
                     return MockResponse(
@@ -1292,8 +1284,7 @@ class TestVocabulary:
                 result = json.dumps(tag_autocomplete)
                 return MockResponse(
                     200,
-                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=tag_autocomplete"}'
-                    % result,
+                    f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=tag_autocomplete"}}',
                 )
 
         Configuration.read().remoteckan().session = MockSession()

@@ -90,8 +90,7 @@ class TestDatasetNoncore:
                     result = json.dumps([showcase_resultdict])
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_package_showcase_list"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_package_showcase_list"}}',
                     )
                 if "association_delete" in url:
                     TestDatasetNoncore.association = "delete"
@@ -104,8 +103,7 @@ class TestDatasetNoncore:
                     result = json.dumps(datadict)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_package_association_create"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_package_association_create"}}',
                     )
                 return dataset_mockshow(url, datadict)
 
@@ -126,8 +124,7 @@ class TestDatasetNoncore:
                     result = json.dumps(resource_view_list)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_create_default_resource_views"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_create_default_resource_views"}}',
                     )
                 if "resource_view" in url:
                     if "show" in url:
