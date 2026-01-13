@@ -54,7 +54,7 @@ The library has detailed API documentation which can be found in the menu at the
 
 
 ## Breaking Changes
-From 6.6.0, Python 3.10 or later is required 
+From 6.6.0, Python 3.10 or later is required
 
 From 6.5.7, get_size_and_hash moved to HDX Python Utilities
 
