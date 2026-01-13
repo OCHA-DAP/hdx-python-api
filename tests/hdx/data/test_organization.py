@@ -5,15 +5,16 @@ import json
 from os.path import join
 
 import pytest
+from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.loader import load_yaml
 
-from .. import MockResponse, organization_data, user_data
-from .test_user import user_mockshow
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.organization import Organization
 from hdx.data.user import User
-from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.loader import load_yaml
+
+from .. import MockResponse, organization_data, user_data
+from .test_user import user_mockshow
 
 resultdict = load_yaml(join("tests", "fixtures", "organization_show_results.yaml"))
 
@@ -53,8 +54,7 @@ def organization_mockshow(url, datadict):
     ):
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_show"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_show"}}',
         )
     if datadict["id"] == "TEST2":
         return MockResponse(
@@ -80,8 +80,7 @@ def mocklist(url):
         )
     return MockResponse(
         200,
-        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_list"}'
-        % json.dumps(organization_list),
+        f'{{"success": true, "result": {json.dumps(organization_list)}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_list"}}',
     )
 
 
@@ -94,8 +93,7 @@ def mockgetdatasets(url, datadict):
     if datadict["fq"] == "organization:acled":
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}'
-            % json.dumps(searchdict),
+            f'{{"success": true, "result": {json.dumps(searchdict)}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}}',
         )
 
 
@@ -138,8 +136,7 @@ class TestOrganization:
                 if datadict["name"] == "MyOrganization1":
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_create"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_create"}}',
                     )
                 if datadict["name"] == "MyOrganization2":
                     return MockResponse(
@@ -179,8 +176,7 @@ class TestOrganization:
                 if datadict["name"] == "MyOrganization1":
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_update"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_update"}}',
                     )
                 if datadict["name"] == "MyOrganization2":
                     return MockResponse(
@@ -217,8 +213,7 @@ class TestOrganization:
                 if datadict["id"] == "b67e6c74-c185-4f43-b561-0e114a736f19":
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_delete"}'
-                        % decodedata,
+                        f'{{"success": true, "result": {decodedata}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_delete"}}',
                     )
 
                 return MockResponse(
@@ -273,8 +268,7 @@ class TestOrganization:
                 result = json.dumps(organization_autocomplete)
                 return MockResponse(
                     200,
-                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_autocomplete"}'
-                    % result,
+                    f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_autocomplete"}}',
                 )
 
         Configuration.read().remoteckan().session = MockSession()

@@ -271,16 +271,14 @@ def dataset_mockshow(url, datadict):
         result = json.dumps(resources_data[0])
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}}',
         )
     else:
         if datadict["id"] in ("TEST1", "DatasetExist"):
             result = json.dumps(dataset_resultdict)
             return MockResponse(
                 200,
-                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}'
-                % result,
+                f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}}',
             )
         if datadict["id"] == "TEST2":
             return MockResponse(
@@ -303,8 +301,7 @@ def dataset_mockshow(url, datadict):
             result = json.dumps(resultdictcopy)
             return MockResponse(
                 200,
-                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}'
-                % result,
+                f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}}',
             )
 
     return MockResponse(

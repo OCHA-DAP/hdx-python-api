@@ -6,6 +6,16 @@ from datetime import datetime, timezone
 from os.path import join
 
 import pytest
+from hdx.location.country import Country
+from hdx.utilities.path import temp_dir
+from hdx.utilities.saver import save_text
+
+from hdx.api.configuration import Configuration
+from hdx.data.dataset import Dataset
+from hdx.data.hdxobject import HDXError
+from hdx.data.organization import Organization
+from hdx.data.user import User
+from hdx.data.vocabulary import Vocabulary
 
 from .. import (
     MockResponse,
@@ -28,15 +38,6 @@ from .test_resource_view import (
 from .test_showcase import showcase_resultdict
 from .test_user import user_mockshow
 from .test_vocabulary import vocabulary_mockshow
-from hdx.api.configuration import Configuration
-from hdx.data.dataset import Dataset
-from hdx.data.hdxobject import HDXError
-from hdx.data.organization import Organization
-from hdx.data.user import User
-from hdx.data.vocabulary import Vocabulary
-from hdx.location.country import Country
-from hdx.utilities.path import temp_dir
-from hdx.utilities.saver import save_text
 
 
 class TestDatasetNoncore:
@@ -89,8 +90,7 @@ class TestDatasetNoncore:
                     result = json.dumps([showcase_resultdict])
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_package_showcase_list"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_package_showcase_list"}}',
                     )
                 if "association_delete" in url:
                     TestDatasetNoncore.association = "delete"
@@ -103,8 +103,7 @@ class TestDatasetNoncore:
                     result = json.dumps(datadict)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_package_association_create"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_package_association_create"}}',
                     )
                 return dataset_mockshow(url, datadict)
 
@@ -125,8 +124,7 @@ class TestDatasetNoncore:
                     result = json.dumps(resource_view_list)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_create_default_resource_views"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_create_default_resource_views"}}',
                     )
                 if "resource_view" in url:
                     if "show" in url:

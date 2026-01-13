@@ -5,15 +5,16 @@ import json
 from os.path import join
 
 import pytest
+from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.loader import load_yaml
 
-from .. import MockResponse
-from .test_vocabulary import vocabulary_mockshow
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.showcase import Showcase
 from hdx.data.vocabulary import Vocabulary
-from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.loader import load_yaml
+
+from .. import MockResponse
+from .test_vocabulary import vocabulary_mockshow
 
 showcase_resultdict = {
     "relationships_as_object": [],
@@ -66,8 +67,7 @@ def mockshow(url, datadict):
         result = json.dumps(datasetsdict["results"])
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_package_list"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_package_list"}}',
         )
     if "_show" not in url:
         return MockResponse(
@@ -81,8 +81,7 @@ def mockshow(url, datadict):
     ):
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_show"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_show"}}',
         )
     if datadict["id"] == "TEST2":
         return MockResponse(
@@ -111,8 +110,7 @@ def mockallsearch(url, datadict):
         newsearchdict["results"] = [newsearchdict["results"][0]]
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}'
-            % json.dumps(newsearchdict),
+            f'{{"success": true, "result": {json.dumps(newsearchdict)}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}}',
         )
     if datadict["q"] == "ACLED":
         newsearchdict = copy.deepcopy(allsearchdict)
@@ -134,8 +132,7 @@ def mockallsearch(url, datadict):
         result = json.dumps(newsearchdict)
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}}',
         )
     if datadict["q"] == "*:*":
         newsearchdict = copy.deepcopy(allsearchdict)
@@ -144,8 +141,7 @@ def mockallsearch(url, datadict):
             x["id"] = f"{x['id']}{i}"
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}'
-            % json.dumps(newsearchdict),
+            f'{{"success": true, "result": {json.dumps(newsearchdict)}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_search"}}',
         )
     if datadict["q"] == '"':
         return MockResponse(
@@ -201,8 +197,7 @@ class TestShowcase:
                     result = json.dumps(datadict)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_package_association_create"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_package_association_create"}}',
                     )
                 return mockshow(url, datadict)
 
@@ -230,8 +225,7 @@ class TestShowcase:
                 if datadict["title"] == "MyShowcase1":
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_create"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_create"}}',
                     )
                 if datadict["title"] == "MyShowcase2":
                     return MockResponse(
@@ -276,8 +270,7 @@ class TestShowcase:
                 if datadict["title"] == "MyShowcase1":
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_update"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_update"}}',
                     )
                 if datadict["title"] == "MyShowcase2":
                     return MockResponse(
@@ -314,8 +307,7 @@ class TestShowcase:
                 if datadict["id"] == "05e392bf-04e0-4ca6-848c-4e87bba10746":
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_delete"}'
-                        % decodedata,
+                        f'{{"success": true, "result": {decodedata}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=ckanext_showcase_delete"}}',
                     )
 
                 return MockResponse(

@@ -5,13 +5,14 @@ import json
 from os.path import join
 
 import pytest
+from hdx.utilities.dictandlist import merge_two_dictionaries
+from hdx.utilities.loader import load_yaml
 
-from .. import MockResponse, user_data
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.user import User
-from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.loader import load_yaml
+
+from .. import MockResponse, user_data
 
 resultdict = {
     "openid": None,
@@ -72,8 +73,7 @@ def user_mockshow(url, datadict):
     ):
         return MockResponse(
             200,
-            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}'
-            % result,
+            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}}',
         )
     if datadict["id"] == "TEST2":
         return MockResponse(
@@ -99,8 +99,7 @@ def mocklist(url):
         )
     return MockResponse(
         200,
-        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_list"}'
-        % json.dumps(user_list),
+        f'{{"success": true, "result": {json.dumps(user_list)}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_list"}}',
     )
 
 
@@ -173,8 +172,7 @@ class TestUser:
                 if datadict["name"] == "MyUser1":
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_create"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_create"}}',
                     )
                 if datadict["name"] == "MyUser2":
                     return MockResponse(
@@ -214,8 +212,7 @@ class TestUser:
                 if datadict["name"] == "MyUser1":
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_update"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_update"}}',
                     )
                 if datadict["name"] == "MyUser2":
                     return MockResponse(
@@ -252,8 +249,7 @@ class TestUser:
                 if datadict["id"] == "9f3e9973-7dbe-4c65-8820-f48578e3ffea":
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_delete"}'
-                        % decodedata,
+                        f'{{"success": true, "result": {decodedata}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_delete"}}',
                     )
 
                 return MockResponse(
@@ -276,8 +272,7 @@ class TestUser:
                 result = json.dumps(resultdict)
                 return MockResponse(
                     200,
-                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}'
-                    % result,
+                    f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}}',
                 )
 
         Configuration.read().remoteckan().session = MockSession()
@@ -305,8 +300,7 @@ class TestUser:
                     elif "list" in url:
                         return MockResponse(
                             200,
-                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_list"}'
-                            % json.dumps(orglist),
+                            f'{{"success": true, "result": {json.dumps(orglist)}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_list"}}',
                         )
                 elif "organization" in url:
                     if "show" in url:
@@ -317,8 +311,7 @@ class TestUser:
                         ):
                             return MockResponse(
                                 200,
-                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}'
-                                % result,
+                                f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}}',
                             )
 
         Configuration.read().remoteckan().session = MockSession()
@@ -342,14 +335,12 @@ class TestUser:
                         result = json.dumps(resultdict)
                         return MockResponse(
                             200,
-                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}'
-                            % result,
+                            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}}',
                         )
                     elif "list" in url:
                         return MockResponse(
                             200,
-                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_list"}'
-                            % json.dumps(orglist),
+                            f'{{"success": true, "result": {json.dumps(orglist)}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_list"}}',
                         )
                 elif "organization" in url:
                     if "show" in url:
@@ -360,8 +351,7 @@ class TestUser:
                         ):
                             return MockResponse(
                                 200,
-                                '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}'
-                                % result,
+                                f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}}',
                             )
 
         Configuration.read().remoteckan().session = MockSession()
@@ -398,8 +388,7 @@ class TestUser:
                         result = json.dumps(user_tokenlist)
                         return MockResponse(
                             200,
-                            '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_tokenlist"}'
-                            % result,
+                            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_tokenlist"}}',
                         )
                 return MockResponse(
                     404,
@@ -423,8 +412,7 @@ class TestUser:
                 result = json.dumps(user_autocomplete)
                 return MockResponse(
                     200,
-                    '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_autocomplete"}'
-                    % result,
+                    f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_autocomplete"}}',
                 )
 
         Configuration.read().remoteckan().session = MockSession()

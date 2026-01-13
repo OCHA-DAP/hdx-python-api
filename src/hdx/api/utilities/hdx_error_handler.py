@@ -1,12 +1,13 @@
 import logging
+from collections.abc import Sequence
 from os import getenv
-from typing import Any, Tuple
+from typing import Any
+
+from hdx.utilities.dictandlist import dict_of_sets_add
+from hdx.utilities.error_handler import ErrorHandler
 
 from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
-from hdx.utilities.dictandlist import dict_of_sets_add
-from hdx.utilities.error_handler import ErrorHandler
-from hdx.utilities.typehint import ListTuple
 
 logger = logging.getLogger(__name__)
 
@@ -19,8 +20,8 @@ class HDXErrorHandler(ErrorHandler):
     sorted.
 
     Args:
-        should_exit_on_error (bool): Whether to exit with a 1 code if there are errors. Default is False.
-        write_to_hdx (Any): Whether to write errors to HDX resources. Default is None (write errors).
+        should_exit_on_error: Whether to exit with a 1 code if there are errors. Default is False.
+        write_to_hdx: Whether to write errors to HDX resources. Default is None (write errors).
 
     """
 
@@ -46,10 +47,10 @@ class HDXErrorHandler(ErrorHandler):
         Get category from pipeline and identifier
 
         Args:
-            pipeline (str): Name of the pipeline originating the error
-            identifier (str): Identifier e.g. dataset name
+            pipeline: Name of the pipeline originating the error
+            identifier: Identifier e.g. dataset name
         Returns:
-            str: Category
+            Category
         """
         return f"{pipeline} - {identifier}"
 
@@ -65,12 +66,12 @@ class HDXErrorHandler(ErrorHandler):
         Add a new message to the hdx_error type
 
         Args:
-            pipeline (str): Name of the pipeline originating the error
-            identifier (str): Identifier e.g. dataset name
-            text (str): Text to use e.g. "sector CSS not found in table"
-            resource_name (str): The resource name that the message applies to. Only needed if writing errors to HDX
-            message_type (str): The type of message (error or warning). Default is "error"
-            err_to_hdx (bool): Flag indicating if the message should be added to HDX metadata. Default is False
+            pipeline: Name of the pipeline originating the error
+            identifier: Identifier e.g. dataset name
+            text: Text to use e.g. "sector CSS not found in table"
+            resource_name: The resource name that the message applies to. Only needed if writing errors to HDX
+            message_type: The type of message (error or warning). Default is "error"
+            err_to_hdx: Flag indicating if the message should be added to HDX metadata. Default is False
         Returns:
             None
         """
@@ -94,12 +95,12 @@ class HDXErrorHandler(ErrorHandler):
         identifier is usually a dataset name.
 
         Args:
-            pipeline (str): Name of the pipeline originating the error
-            identifier (str): Identifier e.g. dataset name
-            text (str): Text to use e.g. "sector CSS not found in table"
-            resource_name (str): The resource name that the message applies to. Only needed if writing errors to HDX
-            message_type (str): The type of message (error or warning). Default is "error"
-            err_to_hdx (bool): Flag indicating if the message should be added to HDX metadata. Default is False
+            pipeline: Name of the pipeline originating the error
+            identifier: Identifier e.g. dataset name
+            text: Text to use e.g. "sector CSS not found in table"
+            resource_name: The resource name that the message applies to. Only needed if writing errors to HDX
+            message_type: The type of message (error or warning). Default is "error"
+            err_to_hdx: Flag indicating if the message should be added to HDX metadata. Default is False
         Returns:
             None
         """
@@ -123,13 +124,13 @@ class HDXErrorHandler(ErrorHandler):
         identifier is usually a dataset name.
 
         Args:
-            pipeline (str): Name of the scaper originating the error
-            identifier (str): Identifier e.g. dataset name
-            value_type (str): Type of value e.g. "sector"
-            value (Any): Missing value
-            resource_name (str): The resource name that the message applies to. Only needed if writing errors to HDX
-            message_type (str): The type of message (error or warning). Default is "error"
-            err_to_hdx (bool): Flag indicating if the message should be added to HDX metadata. Default is False
+            pipeline: Name of the scaper originating the error
+            identifier: Identifier e.g. dataset name
+            value_type: Type of value e.g. "sector"
+            value: Missing value
+            resource_name: The resource name that the message applies to. Only needed if writing errors to HDX
+            message_type: The type of message (error or warning). Default is "error"
+            err_to_hdx: Flag indicating if the message should be added to HDX metadata. Default is False
         Returns:
             None
         """
@@ -148,7 +149,7 @@ class HDXErrorHandler(ErrorHandler):
         pipeline: str,
         identifier: str,
         text: str,
-        values: ListTuple,
+        values: Sequence,
         resource_name: str = "",
         message_type: str = "error",
         err_to_hdx: bool = False,
@@ -161,15 +162,15 @@ class HDXErrorHandler(ErrorHandler):
         a dataset name.
 
         Args:
-            pipeline (str): Name of the scaper originating the error
-            identifier (str): Identifier e.g. dataset name
-            text (str): Text to use e.g. "negative values removed"
-            values (ListTuple): The list of related values of concern
-            resource_name (str): The resource name that the message applies to. Only needed if writing errors to HDX
-            message_type (str): The type of message (error or warning). Default is "error"
-            err_to_hdx (bool): Flag indicating if the message should be added to HDX metadata. Default is False
+            pipeline: Name of the scaper originating the error
+            identifier: Identifier e.g. dataset name
+            text: Text to use e.g. "negative values removed"
+            values: The list of related values of concern
+            resource_name: The resource name that the message applies to. Only needed if writing errors to HDX
+            message_type: The type of message (error or warning). Default is "error"
+            err_to_hdx: Flag indicating if the message should be added to HDX metadata. Default is False
         Returns:
-            bool: True if a message was added, False if not
+            True if a message was added, False if not
         """
         text = self.multi_valued_message(text, values)
         if text is None:
@@ -216,17 +217,17 @@ class HDXErrorHandler(ErrorHandler):
 
 
 def write_errors_to_resource(
-    identifier: Tuple[str, str, str], errors: set[str]
+    identifier: tuple[str, str, str], errors: set[str]
 ) -> bool:
     """
     Writes error messages to a resource on HDX. If the resource already has an
     error message, it is only overwritten if the two messages are different.
 
     Args:
-        identifier (Tuple[str, str, str]): Scraper, dataset, and resource names that the message applies to
-        errors (set[str]): Set of errors to use e.g. "negative values removed"
+        identifier: Scraper, dataset, and resource names that the message applies to
+        errors: Set of errors to use e.g. "negative values removed"
     Returns:
-        bool: True if a message was added, False if not
+        True if a message was added, False if not
     """
     # We are using the names here because errors may be specified in the YAML by us
     _, dataset_name, resource_name = identifier

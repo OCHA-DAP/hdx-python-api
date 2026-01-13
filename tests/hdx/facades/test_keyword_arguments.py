@@ -1,11 +1,12 @@
 """Simple Facade Tests"""
 
 import pytest
+from hdx.utilities.useragent import UserAgent, UserAgentError
 
-from . import my_testfnkw, testresult
 from hdx.api import __version__
 from hdx.facades.keyword_arguments import facade
-from hdx.utilities.useragent import UserAgent, UserAgentError
+
+from . import my_testfnkw, testresult
 
 
 class TestKeywordArguments:

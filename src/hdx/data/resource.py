@@ -2,10 +2,17 @@
 
 import logging
 import warnings
+from collections.abc import Sequence
 from datetime import datetime
 from os.path import join
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional
+
+from hdx.utilities.dateparse import now_utc, now_utc_notz, parse_date
+from hdx.utilities.downloader import Download
+from hdx.utilities.file_hashing import get_size_and_hash
+from hdx.utilities.retriever import Retrieve
+from hdx.utilities.uuid import is_valid_uuid
 
 import hdx.data.dataset
 import hdx.data.resource_matcher
@@ -13,12 +20,6 @@ from hdx.api.configuration import Configuration
 from hdx.api.utilities.date_helper import DateHelper
 from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.data.resource_view import ResourceView
-from hdx.utilities.dateparse import now_utc, now_utc_notz, parse_date
-from hdx.utilities.downloader import Download
-from hdx.utilities.file_hashing import get_size_and_hash
-from hdx.utilities.retriever import Retrieve
-from hdx.utilities.typehint import ListTuple
-from hdx.utilities.uuid import is_valid_uuid
 
 logger = logging.getLogger(__name__)
 
@@ -28,16 +29,16 @@ class Resource(HDXObject):
     resources.
 
     Args:
-        initial_data (Optional[Dict]): Initial resource metadata dictionary. Defaults to None.
-        configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+        initial_data: Initial resource metadata dictionary. Defaults to None.
+        configuration: HDX configuration. Defaults to global configuration.
     """
 
     _formats_dict = None
 
     def __init__(
         self,
-        initial_data: Optional[Dict] = None,
-        configuration: Optional[Configuration] = None,
+        initial_data: dict | None = None,
+        configuration: Configuration | None = None,
     ) -> None:
         if not initial_data:
             initial_data = {}
@@ -47,11 +48,11 @@ class Resource(HDXObject):
         self._url_backup = None
 
     @staticmethod
-    def actions() -> Dict[str, str]:
+    def actions() -> dict[str, str]:
         """Dictionary of actions that can be performed on object
 
         Returns:
-            Dict[str, str]: Dictionary of actions that can be performed on object
+            Dictionary of actions that can be performed on object
         """
         return {
             "show": "resource_show",
@@ -71,7 +72,7 @@ class Resource(HDXObject):
         """Update resource metadata with static metadata from YAML file
 
         Args:
-            path (Optional[str]): Path to YAML dataset metadata. Defaults to config/hdx_resource_static.yaml.
+            path: Path to YAML dataset metadata. Defaults to config/hdx_resource_static.yaml.
 
         Returns:
             None
@@ -84,7 +85,7 @@ class Resource(HDXObject):
         """Update resource metadata with static metadata from JSON file
 
         Args:
-            path (Optional[str]): Path to JSON dataset metadata. Defaults to config/hdx_resource_static.json.
+            path: Path to JSON dataset metadata. Defaults to config/hdx_resource_static.json.
 
         Returns:
             None
@@ -93,16 +94,16 @@ class Resource(HDXObject):
 
     @classmethod
     def read_from_hdx(
-        cls, identifier: str, configuration: Optional[Configuration] = None
+        cls, identifier: str, configuration: Configuration | None = None
     ) -> Optional["Resource"]:
         """Reads the resource given by identifier from HDX and returns Resource object
 
         Args:
-            identifier (str): Identifier of resource
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            identifier: Identifier of resource
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            Optional[Resource]: Resource object if successful read, None if not
+            Resource object if successful read, None if not
         """
 
         if is_valid_uuid(identifier) is False:
@@ -111,9 +112,9 @@ class Resource(HDXObject):
 
     def get_date_of_resource(
         self,
-        date_format: Optional[str] = None,
+        date_format: str | None = None,
         today: datetime = now_utc(),
-    ) -> Dict:
+    ) -> dict:
         """Get resource date as datetimes and strings in specified format. If no format
         is supplied, the ISO 8601 format is used. Returns a dictionary containing keys
         startdate (start date as datetime), enddate (end date as datetime),
@@ -121,11 +122,11 @@ class Resource(HDXObject):
         ongoing (whether the end date is a rolls forward every day).
 
         Args:
-            date_format (Optional[str]): Date format. None is taken to be ISO 8601. Defaults to None.
-            today (datetime): Date to use for today. Defaults to now_utc().
+            date_format: Date format. None is taken to be ISO 8601. Defaults to None.
+            today: Date to use for today. Defaults to now_utc().
 
         Returns:
-            Dict: Dictionary of date information
+            Dictionary of date information
         """
         return DateHelper.get_time_period_info(
             self.data.get("daterange_for_data"), date_format, today
@@ -133,8 +134,8 @@ class Resource(HDXObject):
 
     def set_date_of_resource(
         self,
-        startdate: Union[datetime, str],
-        enddate: Union[datetime, str],
+        startdate: datetime | str,
+        enddate: datetime | str,
         ignore_timeinfo: bool = True,
     ) -> None:
         """Set resource date from either datetime objects or strings. Any time and time
@@ -144,9 +145,9 @@ class Resource(HDXObject):
         ignore_timeinfo to False. In this case, the time will be converted to UTC.
 
         Args:
-            startdate (Union[datetime, str]): Resource start date
-            enddate (Union[datetime, str]): Resource end date
-            ignore_timeinfo (bool): Ignore time and time zone of date. Defaults to True.
+            startdate: Resource start date
+            enddate: Resource end date
+            ignore_timeinfo: Ignore time and time zone of date. Defaults to True.
 
         Returns:
             None
@@ -158,18 +159,18 @@ class Resource(HDXObject):
     @classmethod
     def read_formats_mappings(
         cls,
-        configuration: Optional[Configuration] = None,
-        url: Optional[str] = None,
-    ) -> Dict:
+        configuration: Configuration | None = None,
+        url: str | None = None,
+    ) -> dict:
         """
         Read HDX formats list
 
         Args:
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
-            url (Optional[str]): Url of tags cleanup spreadsheet. Defaults to None (internal configuration parameter).
+            configuration: HDX configuration. Defaults to global configuration.
+            url: Url of tags cleanup spreadsheet. Defaults to None (internal configuration parameter).
 
         Returns:
-            Dict: Returns formats dictionary
+            Returns formats dictionary
         """
         if not cls._formats_dict:
             if configuration is None:
@@ -192,12 +193,12 @@ class Resource(HDXObject):
         return cls._formats_dict
 
     @classmethod
-    def set_formatsdict(cls, formats_dict: Dict) -> None:
+    def set_formatsdict(cls, formats_dict: dict) -> None:
         """
         Set formats dictionary
 
         Args:
-            formats_dict (Dict): Formats dictionary
+            formats_dict: Formats dictionary
 
         Returns:
             None
@@ -206,16 +207,16 @@ class Resource(HDXObject):
 
     @classmethod
     def get_mapped_format(
-        cls, format: str, configuration: Optional[Configuration] = None
-    ) -> Optional[str]:
+        cls, format: str, configuration: Configuration | None = None
+    ) -> str | None:
         """Given a file format, return an HDX format to which it maps
 
         Args:
-            format (str): File type to map
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            format: File type to map
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            Optional[str]: Mapped format or None if no mapping found
+            Mapped format or None if no mapping found
         """
         if not format:
             return None
@@ -232,18 +233,18 @@ class Resource(HDXObject):
             hdx_format = mappings.get(file_format)
         return hdx_format
 
-    def get_format(self) -> Optional[str]:
+    def get_format(self) -> str | None:
         """Get the resource's format
 
         Returns:
-            Optional[str]: Resource's format or None if it has not been set
+            Resource's format or None if it has not been set
         """
         file_format = self.data.get("format")
         if file_format:
             file_format = file_format.lower()
         return file_format
 
-    def get_file_type(self) -> Optional[str]:
+    def get_file_type(self) -> str | None:
         warnings.warn(
             "get_file_type() is deprecated, use get_format() instead",
             DeprecationWarning,
@@ -254,10 +255,10 @@ class Resource(HDXObject):
         """Set the resource's file type
 
         Args:
-            format (str): Format to set on resource
+            format: Format to set on resource
 
         Returns:
-            str: Format that was set
+            Format that was set
         """
         file_format = self.get_mapped_format(format, configuration=self.configuration)
         if not file_format:
@@ -279,7 +280,7 @@ class Resource(HDXObject):
         cannot be mapped
 
         Returns:
-            str: Format that was set
+            Format that was set
         """
         return self.set_format(self.data.get("format"))
 
@@ -290,11 +291,11 @@ class Resource(HDXObject):
         )
         return self.set_format(self.data.get("format"))
 
-    def get_file_to_upload(self) -> Optional[str]:
+    def get_file_to_upload(self) -> str | None:
         """Get the file uploaded
 
         Returns:
-            Optional[str]: The file that will be or has been uploaded or None if there isn't one
+            The file that will be or has been uploaded or None if there isn't one
         """
         return self._file_to_upload
 
@@ -304,11 +305,11 @@ class Resource(HDXObject):
         """Delete any existing url and set the file uploaded to the local path provided
 
         Args:
-            file_to_upload (str): Local path to file to upload
-            guess_format_from_suffix (bool): Set format from file suffix. Defaults to False.
+            file_to_upload: Local path to file to upload
+            guess_format_from_suffix: Set format from file suffix. Defaults to False.
 
         Returns:
-            Optional[str]: The format that was guessed or None if no format was set
+            The format that was guessed or None if no format was set
         """
         if "url" in self.data:
             self._url_backup = self.data["url"]
@@ -334,11 +335,11 @@ class Resource(HDXObject):
         if self._file_to_upload is None and "url" not in self.data:
             raise HDXError("Either a url or a file to upload must be supplied!")
 
-    def correct_format(self, data: Dict = None) -> None:
+    def correct_format(self, data: dict = None) -> None:
         """Correct the format of the file
 
         Args:
-            data (Dict): Resource data.
+            data: Resource data.
 
         Returns:
             None
@@ -372,13 +373,13 @@ class Resource(HDXObject):
             if "tracking_summary" in self.data:
                 del self.data["tracking_summary"]
 
-    def check_required_fields(self, ignore_fields: ListTuple[str] = tuple()) -> None:
+    def check_required_fields(self, ignore_fields: Sequence[str] = ()) -> None:
         """Check that metadata for resource is complete. The parameter ignore_fields
         should be set if required to any fields that should be ignored for the
         particular operation.
 
         Args:
-            ignore_fields (ListTuple[str]): Fields to ignore. Default is tuple().
+            ignore_fields: Fields to ignore. Default is ().
 
         Returns:
             None
@@ -407,7 +408,7 @@ class Resource(HDXObject):
             force_update (bool): Force file to be updated even if it hasn't changed. Defaults to False.
 
         Returns:
-            int: Status code
+            Status code
         """
         data_updated = kwargs.pop("data_updated", self._data_updated)
         files = {}
@@ -457,7 +458,7 @@ class Resource(HDXObject):
         self._merge_hdx_update("resource", "id", files, True, **kwargs)
         return status
 
-    def _get_resource_id(self, **kwargs: Any) -> Optional[str]:
+    def _get_resource_id(self, **kwargs: Any) -> str | None:
         """Helper function to get resource id if available from given resource or by
         comparing ot a given dataset's resources.
 
@@ -466,7 +467,7 @@ class Resource(HDXObject):
             dataset (Dataset): Existing dataset if available to obtain resource id
 
         Returns:
-            Optional[str]: Resource id or None
+            Resource id or None
         """
         loadedid = self.data.get("id")
         if loadedid is None:
@@ -533,7 +534,7 @@ class Resource(HDXObject):
             dataset (Dataset): Existing dataset if available to obtain resource id
 
         Returns:
-            int: Status code
+            Status code
         """
         self.check_both_url_filetoupload()
         _ = self._get_resource_id(**kwargs)
@@ -566,7 +567,7 @@ class Resource(HDXObject):
             dataset (Dataset): Existing dataset if available to obtain resource id
 
         Returns:
-            int: Status code
+            Status code
         """
         self.check_both_url_filetoupload()
         loadedid = self._get_resource_id(**kwargs)
@@ -604,7 +605,7 @@ class Resource(HDXObject):
         """Return dataset containing this resource
 
         Returns:
-            Dataset: Dataset containing this resource
+            Dataset containing this resource
         """
         package_id = self.data.get("package_id")
         if package_id is None:
@@ -614,20 +615,20 @@ class Resource(HDXObject):
     @staticmethod
     def search_in_hdx(
         query: str,
-        configuration: Optional[Configuration] = None,
+        configuration: Configuration | None = None,
         **kwargs: Any,
-    ) -> List["Resource"]:
+    ) -> list["Resource"]:
         """Searches for resources in HDX. NOTE: Does not search dataset metadata!
 
         Args:
-            query (str): Query
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            query: Query
+            configuration: HDX configuration. Defaults to global configuration.
             **kwargs: See below
             order_by (str): A field on the Resource model that orders the results
             offset (int): Apply an offset to the query
             limit (int): Apply a limit to the query
         Returns:
-            List[Resource]: List of resources resulting from query
+            List of resources resulting from query
         """
 
         resources = []
@@ -646,17 +647,17 @@ class Resource(HDXObject):
         return resources
 
     def download(
-        self, folder: Optional[str] = None, retriever: Optional[Retrieve] = None
-    ) -> Tuple[str, str]:
+        self, folder: str | None = None, retriever: Retrieve | None = None
+    ) -> tuple[str, str]:
         """Download resource store to provided folder or temporary folder if no folder
         supplied
 
         Args:
-            folder (Optional[str]): Folder to download resource to. Defaults to None.
-            retriever (Optional[Retrieve]): Retrieve object to use. Defaults to None.
+            folder: Folder to download resource to. Defaults to None.
+            retriever: Retrieve object to use. Defaults to None.
 
         Returns:
-            Tuple[str, str]: (URL downloaded, Path to downloaded file)
+            (URL downloaded, Path to downloaded file)
 
         """
         # Download the resource
@@ -685,15 +686,15 @@ class Resource(HDXObject):
 
     @staticmethod
     def get_all_resource_ids_in_datastore(
-        configuration: Optional[Configuration] = None,
-    ) -> List[str]:
+        configuration: Configuration | None = None,
+    ) -> list[str]:
         """Get list of resources that have a datastore returning their ids.
 
         Args:
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            List[str]: List of resource ids that are in the datastore
+            List of resource ids that are in the datastore
         """
         resource = Resource(configuration=configuration)
         success, result = resource._read_from_hdx(
@@ -715,7 +716,7 @@ class Resource(HDXObject):
         """Check if the resource has a datastore.
 
         Returns:
-            bool: Whether the resource has a datastore or not
+            Whether the resource has a datastore or not
         """
         success, result = self._read_from_hdx(
             "datastore",
@@ -746,24 +747,22 @@ class Resource(HDXObject):
         if not success:
             logger.debug(result)
 
-    def get_resource_views(self) -> List[ResourceView]:
+    def get_resource_views(self) -> list[ResourceView]:
         """Get any resource views in the resource
 
         Returns:
-            List[ResourceView]: List of resource views
+            List of resource views
         """
         return ResourceView.get_all_for_resource(self.data["id"])
 
-    def _get_resource_view(
-        self, resource_view: Union[ResourceView, Dict]
-    ) -> ResourceView:
+    def _get_resource_view(self, resource_view: ResourceView | dict) -> ResourceView:
         """Get resource view id
 
         Args:
-            resource_view (Union[ResourceView,Dict]): ResourceView metadata from a ResourceView object or dictionary
+            resource_view: ResourceView metadata from a ResourceView object or dictionary
 
         Returns:
-            ResourceView: ResourceView object
+            ResourceView object
         """
         if isinstance(resource_view, dict):
             resource_view = ResourceView(
@@ -775,13 +774,11 @@ class Resource(HDXObject):
             f"Type {type(resource_view).__name__} is not a valid resource view!"
         )
 
-    def add_update_resource_view(
-        self, resource_view: Union[ResourceView, Dict]
-    ) -> None:
+    def add_update_resource_view(self, resource_view: ResourceView | dict) -> None:
         """Add new resource view in resource with new metadata
 
         Args:
-            resource_view (Union[ResourceView,Dict]): Resource view metadata either from a ResourceView object or a dictionary
+            resource_view: Resource view metadata either from a ResourceView object or a dictionary
 
         Returns:
             None
@@ -791,12 +788,12 @@ class Resource(HDXObject):
         resource_view.create_in_hdx()
 
     def add_update_resource_views(
-        self, resource_views: ListTuple[Union[ResourceView, Dict]]
+        self, resource_views: Sequence[ResourceView | dict]
     ) -> None:
         """Add new or update existing resource views in resource with new metadata.
 
         Args:
-            resource_views (ListTuple[Union[ResourceView,Dict]]): A list of resource views metadata from ResourceView objects or dictionaries
+            resource_views: A list of resource views metadata from ResourceView objects or dictionaries
 
         Returns:
             None
@@ -807,12 +804,12 @@ class Resource(HDXObject):
             self.add_update_resource_view(resource_view)
 
     def reorder_resource_views(
-        self, resource_views: ListTuple[Union[ResourceView, Dict, str]]
+        self, resource_views: Sequence[ResourceView | dict | str]
     ) -> None:
         """Order resource views in resource.
 
         Args:
-            resource_views (ListTuple[Union[ResourceView,Dict,str]]): A list of either resource view ids or resource views metadata from ResourceView objects or dictionaries
+            resource_views: A list of either resource view ids or resource views metadata from ResourceView objects or dictionaries
 
         Returns:
             None
@@ -836,13 +833,11 @@ class Resource(HDXObject):
             order=ids,
         )
 
-    def delete_resource_view(
-        self, resource_view: Union[ResourceView, Dict, str]
-    ) -> None:
+    def delete_resource_view(self, resource_view: ResourceView | dict | str) -> None:
         """Delete a resource view from the resource and HDX
 
         Args:
-            resource_view (Union[ResourceView,Dict,str]): Either a resource view id or resource view metadata either from a ResourceView object or a dictionary
+            resource_view: Either a resource view id or resource view metadata either from a ResourceView object or a dictionary
 
         Returns:
             None
@@ -889,7 +884,7 @@ class Resource(HDXObject):
         """Return if resource is broken
 
         Returns:
-            bool: Whether resource is broken
+            Whether resource is broken
         """
         return self.data.get("broken_link", False)
 
@@ -915,7 +910,7 @@ class Resource(HDXObject):
         """Return if the resource's data is marked to be updated
 
         Returns:
-            bool: Whether resource's data is marked to be updated
+            Whether resource's data is marked to be updated
         """
         return self._data_updated
 
@@ -931,18 +926,18 @@ class Resource(HDXObject):
         """Get date resource data was updated
 
         Returns:
-            datetime: Date resource data was updated
+            Date resource data was updated
         """
         return parse_date(self.data["last_modified"], include_microseconds=True)
 
     def set_date_data_updated(
-        self, date: Union[datetime, str], ignore_timeinfo: bool = False
+        self, date: datetime | str, ignore_timeinfo: bool = False
     ) -> None:
         """Set date resource data was updated
 
         Args:
-            date (Union[datetime, str]): Date resource data was updated
-            ignore_timeinfo (bool): Ignore time and time zone of date. Defaults to False.
+            date: Date resource data was updated
+            ignore_timeinfo: Ignore time and time zone of date. Defaults to False.
 
         Returns:
             None
@@ -951,11 +946,11 @@ class Resource(HDXObject):
             date, ignore_timeinfo=ignore_timeinfo, include_microseconds=True
         )
 
-    def get_hdx_url(self) -> Optional[str]:
+    def get_hdx_url(self) -> str | None:
         """Get the url of the resource on HDX
 
         Returns:
-            Optional[str]: Url of the resource on HDX or None if the resource is missing the id field
+            Url of the resource on HDX or None if the resource is missing the id field
         """
         id = self.data.get("id")
         if not id:
@@ -965,11 +960,11 @@ class Resource(HDXObject):
             return None
         return f"{self.configuration.get_hdx_site_url()}/dataset/{dataset_id}/resource/{id}"
 
-    def get_api_url(self) -> Optional[str]:
+    def get_api_url(self) -> str | None:
         """Get the API url of the resource on HDX
 
         Returns:
-            Optional[str]: API url of the resource on HDX or None if the resource is missing the id field
+            API url of the resource on HDX or None if the resource is missing the id field
         """
         id = self.data.get("id")
         if not id:

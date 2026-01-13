@@ -3,12 +3,10 @@
 import logging
 import re
 from datetime import datetime, timedelta
+from re import Match
 from string import punctuation, whitespace
-from typing import List, Match, Optional, Tuple
 
 from dateutil.parser import ParserError
-from quantulum3 import parser
-
 from hdx.utilities.dateparse import parse_date, parse_date_range
 from hdx.utilities.text import (
     PUNCTUATION_MINUS_BRACKETS,
@@ -16,6 +14,7 @@ from hdx.utilities.text import (
     remove_from_end,
     remove_string,
 )
+from quantulum3 import parser
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +26,7 @@ class DatasetTitleHelper:
         r"([12]\d\d\d)(/(\d{1,2}))?(-| & | and )([12]\d\d\d)"
     )
     YEAR_RANGE_PATTERN2 = re.compile(r"([12]\d\d\d)([/-])(\d{1,2})")
-    PUNCTUATION_PATTERN = re.compile(r"[%s]" % punctuation)
+    PUNCTUATION_PATTERN = re.compile(rf"[{punctuation}]")
     EMPTY_BRACKET_PATTERN = re.compile(r"(\s?\(\s*\)\s?)")
     WORD_RIGHT_BRACKET_PATTERN = re.compile(r"\b(\s*)(\w{2,})\b\)")
     DATE_INTRO_WORDS = ["on", "at", "for", "of", "in"]
@@ -36,19 +35,19 @@ class DatasetTitleHelper:
     def fuzzy_match_dates_in_title(
         cls,
         title: str,
-        ranges: List[Tuple[datetime, datetime]],
-        ignore_wrong_years: List[int],
+        ranges: list[tuple[datetime, datetime]],
+        ignore_wrong_years: list[int],
     ) -> str:
         """
         Fuzzy match dates in title appending to ranges
 
         Args:
-            title (str): Title to parse
-            ranges (List[Tuple[datetime,datetime]]): List of date ranges found so far
-            ignore_wrong_years (List[int]): Numbers identified as years that probably are not years
+            title: Title to parse
+            ranges: List of date ranges found so far
+            ignore_wrong_years: Numbers identified as years that probably are not years
 
         Returns:
-            str: Title with dates removed
+            Title with dates removed
 
         """
         for quant in parser.parse(title):
@@ -139,17 +138,17 @@ class DatasetTitleHelper:
 
     @classmethod
     def get_month_year_in_slash_range(
-        cls, match: Match, ignore_wrong_years: List[int]
-    ) -> Tuple[Optional[int], Optional[int], Optional[int]]:
+        cls, match: Match, ignore_wrong_years: list[int]
+    ) -> tuple[int | None, int | None, int | None]:
         """
         Get year(s) and month from slash range eg. 2007/08. If second value is between 1 and 12, take it as a month.
 
         Args:
             match (Match): Match object
-            ignore_wrong_years (List[int]): Numbers identified as years that probably are not years
+            ignore_wrong_years: Numbers identified as years that probably are not years
 
         Returns:
-            Tuple[Optional[int], Optional[int], Optional[int]]: First year, first month, second year
+            First year, first month, second year
 
         """
         first_year_str = match.group(1)
@@ -174,15 +173,15 @@ class DatasetTitleHelper:
     @classmethod
     def get_dates_from_title(
         cls, title: str
-    ) -> Tuple[str, List[Tuple[datetime, datetime]]]:
+    ) -> tuple[str, list[tuple[datetime, datetime]]]:
         """
         Get dataset dates (start and end dates in a list) from title and clean title of dates
 
         Args:
-            title (str): Title to get date from and clean
+            title: Title to get date from and clean
 
         Returns:
-            Tuple[str,List[Tuple[datetime,datetime]]]: Cleaned title, list of start and end dates
+            Cleaned title, list of start and end dates
 
         """
         ranges = []

@@ -2,16 +2,17 @@
 
 import logging
 import sys
+from collections.abc import Callable  # noqa: F401
 from inspect import getdoc
-from typing import Any, Callable, Optional  # noqa: F401
+from typing import Any
 
 import defopt
+from hdx.utilities.easy_logging import setup_logging
+from hdx.utilities.useragent import UserAgent
 from makefun import with_signature
 
 from hdx.api import __version__
 from hdx.api.configuration import Configuration
-from hdx.utilities.easy_logging import setup_logging
-from hdx.utilities.useragent import UserAgent
 
 logger = logging.getLogger(__name__)
 setup_logging(log_file="errors.log")
@@ -20,12 +21,12 @@ setup_logging(log_file="errors.log")
 def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
     """Facade to simplify project setup that calls project main function. It infers
     command line arguments from the passed in function using defopt. The function passed
-    in should have type hints and a docstring from which to infer the command line
+    in should have type hints from which to infer the command line
     arguments. Any **kwargs given will be merged with command line arguments, with the
     command line arguments taking precedence.
 
     Args:
-        projectmainfn ((Any) -> None): main function of project
+        projectmainfn: main function of project
         **kwargs: Configuration parameters to pass to HDX Configuration & other parameters to pass to main function
 
     Returns:
@@ -66,7 +67,7 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
             count += 1
         else:
             if param_type == "str":
-                param_type = "Optional[str]"
+                param_type = "str | None"
                 default = None
             elif param_type == "bool":
                 default = False
@@ -75,7 +76,7 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
                     "Configuration.create has new parameter with unknown type!"
                 )
             param_names.append(f"{param_name}: {param_type} = {default}")
-        main_doc.append(f"\n    {param_name} ({param_type}): {param_info.doc}")
+        main_doc.append(f"\n    {param_name}: {param_info.doc}")
     main_doc = "".join(main_doc)
 
     projectmainname = projectmainfn.__name__

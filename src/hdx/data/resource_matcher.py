@@ -1,9 +1,8 @@
 """Helper to the Dataset class for handling matching resources."""
 
 import collections
-from typing import TYPE_CHECKING, List, Optional, Tuple
-
-from hdx.utilities.typehint import ListTuple
+from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from hdx.data.resource import Resource
@@ -12,17 +11,17 @@ if TYPE_CHECKING:
 class ResourceMatcher:
     @staticmethod
     def match_resource_list(
-        resources1: ListTuple["Resource"],
+        resources1: Sequence["Resource"],
         resource2: "Resource",
-    ) -> Optional[int]:
+    ) -> int | None:
         """Helper method to find the index of a resource that matches a given resource
 
         Args:
-            resources1 (ListTuple[Resource]): List of resources
-            resource2 (Resource): Resource to match with list
+            resources1: List of resources
+            resource2: Resource to match with list
 
         Returns:
-            Optional[int]: Index of resource that matches in list or None
+            Index of resource that matches in list or None
         """
         id2 = resource2.get("id")
         grouping2 = resource2.get("grouping")
@@ -55,18 +54,18 @@ class ResourceMatcher:
 
     @staticmethod
     def match_resource_lists(
-        resources1: ListTuple["Resource"],
-        resources2: ListTuple["Resource"],
-    ) -> Tuple[List, List, List, List]:
+        resources1: Sequence["Resource"],
+        resources2: Sequence["Resource"],
+    ) -> tuple[list, list, list, list]:
         """Helper method to match two lists of resources returning the indices that match in two lists and
         that don't match in two more lists
 
         Args:
-            resources1 (ListTuple[Resource]): List of resources
-            resources2 (ListTuple[Resource]): List of resources to match with first list
+            resources1: List of resources
+            resources2: List of resources to match with first list
 
         Returns:
-            Tuple[List, List, List, List]: Returns indices that match (2 lists) and that don't match (2 lists)
+            Returns indices that match (2 lists) and that don't match (2 lists)
         """
         ids1 = [x.get("id") for x in resources1]
         groups1 = [x.get("grouping") for x in resources1]

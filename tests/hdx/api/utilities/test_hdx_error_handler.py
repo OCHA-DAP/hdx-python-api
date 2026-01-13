@@ -3,9 +3,9 @@
 import logging
 
 import pytest
+from hdx.utilities.easy_logging import setup_logging
 
 from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
-from hdx.utilities.easy_logging import setup_logging
 
 setup_logging()
 

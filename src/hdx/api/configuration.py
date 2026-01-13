@@ -5,18 +5,18 @@ import os
 from base64 import b64decode
 from collections import UserDict
 from os.path import expanduser, isfile, join
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Optional
 
 import ckanapi
 import requests
-
-from hdx.api import __version__
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.email import Email
 from hdx.utilities.loader import load_json, load_yaml
 from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.session import get_session
 from hdx.utilities.useragent import UserAgent, UserAgentError
+
+from hdx.api import __version__
 
 logger = logging.getLogger(__name__)
 
@@ -229,7 +229,7 @@ class Configuration(UserDict):
         Set HDX read only flag
 
         Args:
-            read_only (bool): Value to set HDX read only flag. Defaults to True.
+            read_only: Value to set HDX read only flag. Defaults to True.
         Returns:
             None
 
@@ -241,19 +241,19 @@ class Configuration(UserDict):
         Set HDX api key
 
         Args:
-            apikey (str): Value to set api key.
+            apikey: Value to set api key.
         Returns:
             None
 
         """
         self.hdx_key = apikey
 
-    def get_api_key(self) -> Optional[str]:
+    def get_api_key(self) -> str | None:
         """
         Return HDX api key or None if read only
 
         Returns:
-            Optional[str]: HDX api key or None if read only
+            HDX api key or None if read only
 
         """
         if self.hdx_read_only:
@@ -265,7 +265,7 @@ class Configuration(UserDict):
         Return user agent
 
         Returns:
-            str: User agent
+            User agent
 
         """
         return self.user_agent
@@ -275,7 +275,7 @@ class Configuration(UserDict):
         Return HDX web site url
 
         Returns:
-            str: HDX web site url
+            HDX web site url
 
         """
         return self.data[self.hdx_site]["url"]
@@ -288,17 +288,17 @@ class Configuration(UserDict):
             name: Dataset name
 
         Returns:
-            str: HDX dataset url
+            HDX dataset url
 
         """
         return f"{self.get_hdx_site_url()}/dataset/{name}"
 
-    def _get_credentials(self) -> Optional[Tuple[str, str]]:
+    def _get_credentials(self) -> tuple[str, str] | None:
         """
         Return HDX site username and password
 
         Returns:
-            Optional[Tuple[str, str]]: HDX site username and password or None
+            HDX site username and password or None
 
         """
         site = self.data[self.hdx_site]
@@ -315,7 +315,7 @@ class Configuration(UserDict):
         Return the session object
 
         Returns:
-            requests.Session: The session object
+            The session object
 
         """
         if self._session is None:
@@ -329,7 +329,7 @@ class Configuration(UserDict):
         Return the remote CKAN object (see ckanapi library)
 
         Returns:
-            ckanapi.RemoteCKAN: The remote CKAN object
+            The remote CKAN object
 
         """
         if self._remoteckan is None:
@@ -338,7 +338,7 @@ class Configuration(UserDict):
             )
         return self._remoteckan
 
-    def call_remoteckan(self, *args: Any, **kwargs: Any) -> Dict:
+    def call_remoteckan(self, *args: Any, **kwargs: Any) -> dict:
         """
         Calls the remote CKAN
 
@@ -347,7 +347,7 @@ class Configuration(UserDict):
             **kwargs: Keyword arguments to pass to remote CKAN call_action method
 
         Returns:
-            Dict: The response from the remote CKAN call_action method
+            The response from the remote CKAN call_action method
 
         """
         requests_kwargs = kwargs.get("requests_kwargs", {})
@@ -363,24 +363,24 @@ class Configuration(UserDict):
     def create_session_user_agent(
         cls,
         session: requests.Session = None,
-        user_agent: Optional[str] = None,
-        user_agent_config_yaml: Optional[str] = None,
-        user_agent_lookup: Optional[str] = None,
+        user_agent: str | None = None,
+        user_agent_config_yaml: str | None = None,
+        user_agent_lookup: str | None = None,
         use_env: bool = False,
         **kwargs: Any,
-    ) -> Tuple[requests.Session, str]:
+    ) -> tuple[requests.Session, str]:
         """
         Create session and user agent from configuration
 
         Args:
-            session (requests.Session): requests Session object to use. Defaults to calling hdx.utilities.session.get_session()
-            user_agent (Optional[str]): User agent string. HDXPythonLibrary/X.X.X- is prefixed.
-            user_agent_config_yaml (Optional[str]): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yaml.
-            user_agent_lookup (Optional[str]): Lookup key for YAML. Ignored if user_agent supplied.
-            use_env (bool): Whether to read environment variables. Defaults to False.
+            session: requests Session object to use. Defaults to calling hdx.utilities.session.get_session()
+            user_agent: User agent string. HDXPythonLibrary/X.X.X- is prefixed.
+            user_agent_config_yaml: Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yaml.
+            user_agent_lookup: Lookup key for YAML. Ignored if user_agent supplied.
+            use_env: Whether to read environment variables. Defaults to False.
 
         Returns:
-            Tuple[requests.Session, str]: Tuple of (session, user agent)
+            Tuple of (session, user agent)
 
         """
         if not session:
@@ -416,13 +416,13 @@ class Configuration(UserDict):
         return session, ua
 
     def setup_session_remoteckan(
-        self, remoteckan: Optional[ckanapi.RemoteCKAN] = None, **kwargs: Any
+        self, remoteckan: ckanapi.RemoteCKAN | None = None, **kwargs: Any
     ) -> None:
         """
         Set up remote CKAN from provided CKAN or by creating from configuration
 
         Args:
-            remoteckan (Optional[ckanapi.RemoteCKAN]): CKAN instance. Defaults to setting one up from configuration.
+            remoteckan: CKAN instance. Defaults to setting one up from configuration.
 
         Returns:
             None
@@ -445,7 +445,7 @@ class Configuration(UserDict):
         Return the Email object (see :any:`Email`)
 
         Returns:
-            Email: The email object
+            The email object
 
         """
         if self._emailer is None:
@@ -482,7 +482,7 @@ class Configuration(UserDict):
         Read the HDX configuration
 
         Returns:
-            Configuration: The HDX configuration
+            The HDX configuration
 
         """
         if cls._configuration is None:
@@ -499,7 +499,7 @@ class Configuration(UserDict):
         Construct the HDX configuration
 
         Args:
-            configuration (Optional[Configuration]): Configuration instance. Defaults to setting one up from passed arguments.
+            configuration: Configuration instance. Defaults to setting one up from passed arguments.
             **kwargs: See below
             user_agent (str): User agent string. HDXPythonLibrary/X.X.X- is prefixed. Must be supplied if remoteckan is not.
             user_agent_config_yaml (str): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yaml.
@@ -531,15 +531,15 @@ class Configuration(UserDict):
     def _create(
         cls,
         configuration: Optional["Configuration"] = None,
-        remoteckan: Optional[ckanapi.RemoteCKAN] = None,
+        remoteckan: ckanapi.RemoteCKAN | None = None,
         **kwargs: Any,
     ) -> str:
         """
         Create HDX configuration
 
         Args:
-            configuration (Optional[Configuration]): Configuration instance. Defaults to setting one up from passed arguments.
-            remoteckan (Optional[ckanapi.RemoteCKAN]): CKAN instance. Defaults to setting one up from configuration.
+            configuration: Configuration instance. Defaults to setting one up from passed arguments.
+            remoteckan: CKAN instance. Defaults to setting one up from configuration.
             **kwargs: See below
             user_agent (str): User agent string. HDXPythonLibrary/X.X.X- is prefixed. Must be supplied if remoteckan is not.
             user_agent_config_yaml (str): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yaml.
@@ -559,7 +559,7 @@ class Configuration(UserDict):
             hdx_base_config_yaml (str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yaml.
 
         Returns:
-            str: HDX site url
+            HDX site url
 
         """
         cls.setup(configuration, **kwargs)
@@ -570,15 +570,15 @@ class Configuration(UserDict):
     def create(
         cls,
         configuration: Optional["Configuration"] = None,
-        remoteckan: Optional[ckanapi.RemoteCKAN] = None,
+        remoteckan: ckanapi.RemoteCKAN | None = None,
         **kwargs: Any,
     ) -> str:
         """
         Create HDX configuration. Can only be called once (will raise an error if called more than once).
 
         Args:
-            configuration (Optional[Configuration]): Configuration instance. Defaults to setting one up from passed arguments.
-            remoteckan (Optional[ckanapi.RemoteCKAN]): CKAN instance. Defaults to setting one up from configuration.
+            configuration: Configuration instance. Defaults to setting one up from passed arguments.
+            remoteckan: CKAN instance. Defaults to setting one up from configuration.
             **kwargs: See below
             user_agent (str): User agent string. HDXPythonLibrary/X.X.X- is prefixed. Must be supplied if remoteckan is not.
             user_agent_config_yaml (str): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yaml.
@@ -598,7 +598,7 @@ class Configuration(UserDict):
             hdx_base_config_yaml (str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yaml.
 
         Returns:
-            str: HDX site url
+            HDX site url
 
         """
         if cls._configuration is not None:

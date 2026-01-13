@@ -9,12 +9,13 @@ from shutil import copyfile, rmtree
 from tempfile import gettempdir
 
 import pytest
+from hdx.utilities.dateparse import iso_string_from_datetime, parse_date
+
+from hdx.api.configuration import Configuration
+from hdx.api.utilities.hdx_state import HDXState
 
 from ... import MockResponse, dataset_resultdict
 from ...data.test_resource import resultdict
-from hdx.api.configuration import Configuration
-from hdx.api.utilities.hdx_state import HDXState
-from hdx.utilities.dateparse import iso_string_from_datetime, parse_date
 
 
 class TestState:
@@ -51,8 +52,7 @@ class TestState:
                     result = json.dumps(resultdict)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}}',
                     )
                 else:
                     myresultdict = deepcopy(dataset_resultdict)
@@ -62,8 +62,7 @@ class TestState:
                     result = json.dumps(myresultdict)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}}',
                     )
 
         Configuration.read().remoteckan().session = MockSession()
@@ -77,8 +76,7 @@ class TestState:
                     result = json.dumps(resultdict)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_show"}}',
                     )
                 else:
                     myresultdict = deepcopy(dataset_resultdict)
@@ -88,8 +86,7 @@ class TestState:
                     result = json.dumps(myresultdict)
                     return MockResponse(
                         200,
-                        '{"success": true, "result": %s, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}'
-                        % result,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_show"}}',
                     )
 
         Configuration.read().remoteckan().session = MockSession()

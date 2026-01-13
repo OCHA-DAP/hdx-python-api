@@ -1,14 +1,16 @@
 """Utility to save state to a dataset and read it back."""
 
 import logging
+from collections.abc import Callable
 from os.path import join
-from typing import Any, Callable, Optional
+from typing import Any
 
-from hdx.api.configuration import Configuration
-from hdx.data.dataset import Dataset
 from hdx.utilities.loader import load_text
 from hdx.utilities.saver import save_text
 from hdx.utilities.state import State
+
+from hdx.api.configuration import Configuration
+from hdx.data.dataset import Dataset
 
 logger = logging.getLogger(__name__)
 
@@ -20,11 +22,11 @@ class HDXState(State):
     while the output transformation outputs a string.
 
     Args:
-        dataset_name_or_id (str): Dataset name or ID
-        path (str): Path to temporary folder for state
-        read_fn (Callable[[str], Any]): Input state transformation. Defaults to lambda x: x.
+        dataset_name_or_id: Dataset name or ID
+        path: Path to temporary folder for state
+        read_fn: Input state transformation. Defaults to lambda x: x.
         write_fn: Callable[[Any], str]: Output state transformation. Defaults to lambda x: x.
-        configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+        configuration: HDX configuration. Defaults to global configuration.
     """
 
     def __init__(
@@ -33,7 +35,7 @@ class HDXState(State):
         path: str,
         read_fn: Callable[[str], Any] = lambda x: x,
         write_fn: Callable[[Any], str] = lambda x: x,
-        configuration: Optional[Configuration] = None,
+        configuration: Configuration | None = None,
     ) -> None:
         self._dataset_name_or_id = dataset_name_or_id
         self._resource = None
@@ -44,7 +46,7 @@ class HDXState(State):
         """Read state from HDX dataset
 
         Returns:
-            Any: State
+            State
         """
         dataset = Dataset.read_from_hdx(
             self._dataset_name_or_id, configuration=self._configuration

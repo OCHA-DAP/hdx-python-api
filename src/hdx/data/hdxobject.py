@@ -6,18 +6,18 @@ import copy
 import logging
 from abc import ABC, abstractmethod
 from collections import UserDict
+from collections.abc import Sequence
 from os.path import isfile
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
 from ckanapi.errors import NotFound
-
-from hdx.api.configuration import Configuration
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import (
     load_json_into_existing_dict,
     load_yaml_into_existing_dict,
 )
-from hdx.utilities.typehint import ListTuple
+
+from hdx.api.configuration import Configuration
 
 logger = logging.getLogger(__name__)
 
@@ -31,21 +31,21 @@ class HDXObject(UserDict, ABC):
     New HDX objects should extend this in similar fashion to Resource for example.
 
     Args:
-        initial_data (Dict): Initial metadata dictionary
-        configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+        initial_data: Initial metadata dictionary
+        configuration: HDX configuration. Defaults to global configuration.
     """
 
     @staticmethod
     @abstractmethod
-    def actions() -> Dict[str, str]:
+    def actions() -> dict[str, str]:
         """Dictionary of actions that can be performed on object
 
         Returns:
-            Dict[str, str]: Dictionary of actions that can be performed on object
+            Dictionary of actions that can be performed on object
         """
 
     def __init__(
-        self, initial_data: Dict, configuration: Optional[Configuration] = None
+        self, initial_data: dict, configuration: Configuration | None = None
     ) -> None:
         self._old_data = None
         if configuration is None:
@@ -54,11 +54,11 @@ class HDXObject(UserDict, ABC):
             self.configuration: Configuration = configuration
         super().__init__(initial_data)
 
-    def get_old_data_dict(self) -> Dict:
+    def get_old_data_dict(self) -> dict:
         """Get previous internal dictionary
 
         Returns:
-            Dict: Previous internal dictionary
+            Previous internal dictionary
         """
         return self._old_data
 
@@ -66,7 +66,7 @@ class HDXObject(UserDict, ABC):
         """Update metadata with static metadata from YAML file
 
         Args:
-            path (str): Path to YAML dataset metadata
+            path: Path to YAML dataset metadata
 
         Returns:
             None
@@ -79,7 +79,7 @@ class HDXObject(UserDict, ABC):
         """Update metadata with static metadata from JSON file
 
         Args:
-            path (str): Path to JSON dataset metadata
+            path: Path to JSON dataset metadata
 
         Returns:
             None
@@ -91,20 +91,20 @@ class HDXObject(UserDict, ABC):
         object_type: str,
         value: str,
         fieldname: str = "id",
-        action: Optional[str] = None,
+        action: str | None = None,
         **kwargs: Any,
-    ) -> Tuple[bool, Union[Dict, str]]:
+    ) -> tuple[bool, dict | str]:
         """Makes a read call to HDX passing in given parameter.
 
         Args:
-            object_type (str): Description of HDX object type (for messages)
-            value (str): Value of HDX field
-            fieldname (str): HDX field name. Defaults to id.
-            action (Optional[str]): Replacement CKAN action url to use. Defaults to None.
+            object_type: Description of HDX object type (for messages)
+            value: Value of HDX field
+            fieldname: HDX field name. Defaults to id.
+            action: Replacement CKAN action url to use. Defaults to None.
             **kwargs: Other fields to pass to CKAN.
 
         Returns:
-            Tuple[bool, Union[Dict, str]]: (True/False, HDX object metadata/Error)
+            (True/False, HDX object metadata/Error)
         """
         if not fieldname:
             raise HDXError(f"Empty {object_type} field name!")
@@ -126,11 +126,11 @@ class HDXObject(UserDict, ABC):
         """Helper method to load the HDX object given by identifier from HDX
 
         Args:
-            object_type (str): Description of HDX object type (for messages)
-            id_field (str): HDX object identifier
+            object_type: Description of HDX object type (for messages)
+            id_field: HDX object identifier
 
         Returns:
-            bool: True if loaded, False if not
+            True if loaded, False if not
         """
         success, result = self._read_from_hdx(object_type, id_field)
         if success:
@@ -143,16 +143,16 @@ class HDXObject(UserDict, ABC):
     @staticmethod
     @abstractmethod
     def read_from_hdx(
-        id_field: str, configuration: Optional[Configuration] = None
+        id_field: str, configuration: Configuration | None = None
     ) -> Optional["HDXObject"]:
         """Abstract method to read the HDX object given by identifier from HDX and return it
 
         Args:
-            id_field (str): HDX object identifier
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            id_field: HDX object identifier
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            Optional[HDXObject]: HDX object if successful read, None if not
+            HDX object if successful read, None if not
         """
 
     @classmethod
@@ -160,17 +160,17 @@ class HDXObject(UserDict, ABC):
         cls,
         object_type: str,
         identifier: str,
-        configuration: Optional[Configuration] = None,
+        configuration: Configuration | None = None,
     ) -> Optional["HDXObject"]:
         """Reads the HDX object given by identifier from HDX and returns it
 
         Args:
-            object_type (str): Description of HDX object type (for messages)
-            identifier (str): Identifier
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            object_type: Description of HDX object type (for messages)
+            identifier: Identifier
+            configuration: HDX configuration. Defaults to global configuration.
 
         Returns:
-            Optional[HDXObject]: HDX object if successful read, None if not
+            HDX object if successful read, None if not
         """
         hdxobject = cls(configuration=configuration)
         result = hdxobject._load_from_hdx(object_type, identifier)
@@ -190,9 +190,9 @@ class HDXObject(UserDict, ABC):
         """Check metadata exists and contains HDX object identifier, and if so load HDX object
 
         Args:
-            object_type (str): Description of HDX object type (for messages)
-            id_field_name (str): Name of field containing HDX object identifier
-            operation (str): Operation to report if error. Defaults to update.
+            object_type: Description of HDX object type (for messages)
+            id_field_name: Name of field containing HDX object identifier
+            operation: Operation to report if error. Defaults to update.
 
         Returns:
             None
@@ -202,24 +202,24 @@ class HDXObject(UserDict, ABC):
             raise HDXError(f"No existing {object_type} to {operation}!")
 
     @abstractmethod
-    def check_required_fields(self, ignore_fields: ListTuple[str] = []) -> None:
+    def check_required_fields(self, ignore_fields: Sequence[str] = ()) -> None:
         """Abstract method to check that metadata for HDX object is complete. The parameter ignore_fields should
         be set if required to any fields that should be ignored for the particular operation.
 
         Args:
-            ignore_fields (ListTuple[str]): Fields to ignore. Default is [].
+            ignore_fields: Fields to ignore. Default is ().
 
         Returns:
             None
         """
 
     def _check_required_fields(
-        self, object_type: str, ignore_fields: ListTuple[str]
+        self, object_type: str, ignore_fields: Sequence[str]
     ) -> None:
         """Helper method to check that metadata for HDX object is complete
 
         Args:
-            ignore_fields (ListTuple[str]): Any fields to ignore in the check
+            ignore_fields: Any fields to ignore in the check
 
         Returns:
             None
@@ -235,7 +235,7 @@ class HDXObject(UserDict, ABC):
         """Helper method to check metadata fields unless it is specified not to do so.
 
         Args:
-            object_type (str): Description of HDX object type (for messages)
+            object_type: Description of HDX object type (for messages)
             **kwargs: See below
             ignore_field (str): Any field to ignore when checking dataset metadata. Defaults to None.
 
@@ -277,17 +277,17 @@ class HDXObject(UserDict, ABC):
         self,
         object_type: str,
         id_field_name: str,
-        files_to_upload: Dict = {},
+        files_to_upload: dict | None = None,
         force_active: bool = False,
         **kwargs: Any,
     ) -> None:
         """Helper method to update HDX object
 
         Args:
-            object_type (str): Description of HDX object type (for messages)
-            id_field_name (str): Name of field containing HDX object identifier
-            files_to_upload (Dict): Files to upload to HDX
-            force_active (bool): Make object state active. Defaults to False.
+            object_type: Description of HDX object type (for messages)
+            id_field_name: Name of field containing HDX object identifier
+            files_to_upload: Files to upload to HDX
+            force_active: Make object state active. Defaults to False.
             **kwargs: See below
             operation (str): Operation to perform eg. patch. Defaults to update.
             ignore_field (str): Any field to ignore when checking metadata. Defaults to None.
@@ -305,17 +305,17 @@ class HDXObject(UserDict, ABC):
         self,
         object_type: str,
         id_field_name: str,
-        files_to_upload: Dict = {},
+        files_to_upload: dict | None = None,
         force_active: bool = False,
         **kwargs: Any,
     ) -> None:
         """Helper method to check if HDX object exists and update it
 
         Args:
-            object_type (str): Description of HDX object type (for messages)
-            id_field_name (str): Name of field containing HDX object identifier
-            files_to_upload (Dict): Files to upload to HDX
-            force_active (bool): Make object state active. Defaults to False.
+            object_type: Description of HDX object type (for messages)
+            id_field_name: Name of field containing HDX object identifier
+            files_to_upload: Files to upload to HDX
+            force_active: Make object state active. Defaults to False.
             **kwargs: See below
             operation (str): Operation to perform eg. patch. Defaults to update.
             ignore_field (str): Any field to ignore when checking metadata. Defaults to None.
@@ -344,17 +344,17 @@ class HDXObject(UserDict, ABC):
         self,
         object_type: str,
         id_field_name: str,
-        files_to_upload: Dict = {},
+        files_to_upload: dict | None = None,
         force_active: bool = True,
         **kwargs: Any,
     ) -> None:
         """Helper method to check if HDX object exists in HDX and if so, update it
 
         Args:
-            object_type (str): Description of HDX object type (for messages)
-            id_field_name (str): Name of field containing HDX object identifier
-            files_to_upload (Dict): Files to upload to HDX
-            force_active (bool): Make object state active. Defaults to True.
+            object_type: Description of HDX object type (for messages)
+            id_field_name: Name of field containing HDX object identifier
+            files_to_upload: Files to upload to HDX
+            force_active: Make object state active. Defaults to True.
             **kwargs: See below
             operation (str): Operation to perform eg. patch. Defaults to update.
             ignore_field (str): Any field to ignore when checking dataset metadata. Defaults to None.
@@ -378,26 +378,28 @@ class HDXObject(UserDict, ABC):
     def _write_to_hdx(
         self,
         action: str,
-        data: Dict,
-        id_field_name: Optional[str] = None,
-        files_to_upload: Dict = {},
-    ) -> Union[Dict, List]:
+        data: dict,
+        id_field_name: str | None = None,
+        files_to_upload: dict | None = None,
+    ) -> dict | list:
         """Creates or updates an HDX object in HDX and return HDX object metadata dict
 
         Args:
-            action (str): Action to perform eg. 'create', 'update'
-            data (Dict): Data to write to HDX
-            id_field_name (Optional[str]): Name of field containing HDX object identifier. Defaults to None.
-            files_to_upload (Dict): Files to upload to HDX
+            action: Action to perform eg. 'create', 'update'
+            data: Data to write to HDX
+            id_field_name: Name of field containing HDX object identifier. Defaults to None.
+            files_to_upload: Files to upload to HDX
 
         Returns:
-            Union[Dict,List]: HDX object metadata
+            HDX object metadata
         """
+        open_files_to_upload = {}
         try:
-            for key, value in files_to_upload.items():
-                files_to_upload[key] = open(value, "rb")
+            if files_to_upload:
+                for key, value in files_to_upload.items():
+                    open_files_to_upload[key] = open(value, "rb")
             return self.configuration.call_remoteckan(
-                self.actions()[action], data, files=files_to_upload
+                self.actions()[action], data, files=open_files_to_upload
             )
         except Exception as e:
             if id_field_name:
@@ -406,26 +408,24 @@ class HDXObject(UserDict, ABC):
                 idstr = ""
             raise HDXError(f"Failed when trying to {action}{idstr}! (POST)") from e
         finally:
-            for file in files_to_upload.values():
-                if isinstance(file, str):
-                    continue
+            for file in open_files_to_upload.values():
                 file.close()
 
     def _save_to_hdx(
         self,
         action: str,
         id_field_name: str,
-        files_to_upload: Dict = {},
+        files_to_upload: dict | None = None,
         force_active: bool = False,
     ) -> None:
         """Creates or updates an HDX object in HDX, saving current data and replacing with returned HDX object data
         from HDX
 
         Args:
-            action (str): Action to perform: 'create' or 'update'
-            id_field_name (str): Name of field containing HDX object identifier
-            files_to_upload (Dict): Files to upload to HDX
-            force_active (bool): Make object state active. Defaults to False.
+            action: Action to perform: 'create' or 'update'
+            id_field_name: Name of field containing HDX object identifier
+            files_to_upload: Files to upload to HDX
+            force_active: Make object state active. Defaults to False.
 
         Returns:
             None
@@ -449,7 +449,7 @@ class HDXObject(UserDict, ABC):
         object_type: str,
         id_field_name: str,
         name_field_name: str,
-        files_to_upload: Dict = {},
+        files_to_upload: dict | None = None,
         force_active: bool = True,
         **kwargs: Any,
     ) -> None:
@@ -457,11 +457,11 @@ class HDXObject(UserDict, ABC):
 
 
         Args:
-            object_type (str): Description of HDX object type (for messages)
-            id_field_name (str): Name of field containing HDX object identifier
-            name_field_name (str): Name of field containing HDX object name
-            files_to_upload (Dict): Files to upload to HDX
-            force_active (bool): Make object state active. Defaults to True.
+            object_type: Description of HDX object type (for messages)
+            id_field_name: Name of field containing HDX object identifier
+            name_field_name: Name of field containing HDX object name
+            files_to_upload: Files to upload to HDX
+            force_active: Make object state active. Defaults to True.
 
         Returns:
             None
@@ -494,8 +494,8 @@ class HDXObject(UserDict, ABC):
         """Helper method to deletes a resource from HDX
 
         Args:
-            object_type (str): Description of HDX object type (for messages)
-            id_field_name (str): Name of field containing HDX object identifier
+            object_type: Description of HDX object type (for messages)
+            id_field_name: Name of field containing HDX object identifier
 
         Returns:
             None
@@ -509,20 +509,20 @@ class HDXObject(UserDict, ABC):
         cls,
         name: str,
         limit: int = 20,
-        configuration: Optional[Configuration] = None,
+        configuration: Configuration | None = None,
         **kwargs: Any,
-    ) -> List:
+    ) -> list:
         """Helper method to autocomplete a name and return matches
 
         Args:
-            name (str): Name to autocomplete
-            limit (int): Maximum number of matches to return
-            configuration (Optional[Configuration]): HDX configuration. Defaults to global configuration.
+            name: Name to autocomplete
+            limit: Maximum number of matches to return
+            configuration: HDX configuration. Defaults to global configuration.
             **kwargs:
-            offset (int): The offset to start returning tags from.
+            offset: The offset to start returning tags from.
 
         Returns:
-            List: Autocomplete matches
+            Autocomplete matches
         """
         hdxobject = cls(configuration=configuration)
         data = {"q": name, "limit": limit}
@@ -531,7 +531,7 @@ class HDXObject(UserDict, ABC):
 
     def _addupdate_hdxobject(
         self,
-        hdxobjects: ListTuple["HDXObject"],
+        hdxobjects: Sequence["HDXObject"],
         id_field: str,
         new_hdxobject: "HDXObject",
     ) -> "HDXObject":
@@ -539,12 +539,12 @@ class HDXObject(UserDict, ABC):
         already exists in the list
 
         Args:
-            hdxobjects (ListTuple[HDXObject]): list of HDX objects to which to add new objects or update existing ones
-            id_field (str): Field on which to match to determine if object already exists in list
-            new_hdxobject (HDXObject): The HDX object to be added/updated
+            hdxobjects: list of HDX objects to which to add new objects or update existing ones
+            id_field: Field on which to match to determine if object already exists in list
+            new_hdxobject: The HDX object to be added/updated
 
         Returns:
-            HDXObject: The HDX object which was added or updated
+            The HDX object which was added or updated
         """
         for hdxobject in hdxobjects:
             if hdxobject[id_field] == new_hdxobject[id_field]:
@@ -555,21 +555,21 @@ class HDXObject(UserDict, ABC):
 
     def _remove_hdxobject(
         self,
-        objlist: ListTuple[Union["HDXObject", Dict]],
-        obj: Union["HDXObject", Dict, str],
+        objlist: Sequence[Union["HDXObject", dict]],
+        obj: Union["HDXObject", dict, str],
         matchon: str = "id",
         delete: bool = False,
     ) -> bool:
         """Remove an HDX object from a list within the parent HDX object
 
         Args:
-            objlist (ListTuple[Union[HDXObject,Dict]]): list of HDX objects
-            obj (Union[HDXObject,Dict,str]): Either an id or hdx object metadata either from an HDX object or a dictionary
-            matchon (str): Field to match on. Defaults to id.
-            delete (bool): Whether to delete HDX object. Defaults to False.
+            objlist: list of HDX objects
+            obj: Either an id or hdx object metadata either from an HDX object or a dictionary
+            matchon: Field to match on. Defaults to id.
+            delete: Whether to delete HDX object. Defaults to False.
 
         Returns:
-            bool: True if object removed, False if not
+            True if object removed, False if not
         """
         if objlist is None:
             return False
@@ -590,14 +590,15 @@ class HDXObject(UserDict, ABC):
                 return True
         return False
 
-    def _convert_hdxobjects(self, hdxobjects: ListTuple["HDXObject"]) -> List[Dict]:
+    @staticmethod
+    def _convert_hdxobjects(hdxobjects: Sequence["HDXObject"]) -> list[dict]:
         """Helper function to convert supplied list of HDX objects to a list of dict
 
         Args:
-            hdxobjects (ListTuple[HDXObject]): List of HDX objects to convert
+            hdxobjects: List of HDX objects to convert
 
         Returns:
-            List[Dict]: List of HDX objects converted to simple dictionaries
+            List of HDX objects converted to simple dictionaries
         """
         newhdxobjects = []
         for hdxobject in hdxobjects:
@@ -606,19 +607,19 @@ class HDXObject(UserDict, ABC):
 
     def _copy_hdxobjects(
         self,
-        hdxobjects: ListTuple["HDXObject"],
+        hdxobjects: Sequence["HDXObject"],
         hdxobjectclass: type,
-        attributes_to_copy: ListTuple[str] = (),
-    ) -> List["HDXObject"]:
+        attributes_to_copy: Sequence[str] = (),
+    ) -> list["HDXObject"]:
         """Helper function to make a deep copy of a supplied list of HDX objects
 
         Args:
-            hdxobjects (ListTuple[HDXObject]): list of HDX objects to copy
-            hdxobjectclass (type): Type of the HDX Objects to be copied
-            attributes_to_copy (ListTuple[str]): Attributes to copy over from the HDX object. Defaults to ().
+            hdxobjects: list of HDX objects to copy
+            hdxobjectclass: Type of the HDX Objects to be copied
+            attributes_to_copy: Attributes to copy over from the HDX object. Defaults to ().
 
         Returns:
-            List[HDXObject]: Deep copy of list of HDX objects
+            Deep copy of list of HDX objects
         """
         newhdxobjects = []
         for hdxobject in hdxobjects:
@@ -634,7 +635,7 @@ class HDXObject(UserDict, ABC):
 
     def _separate_hdxobjects(
         self,
-        hdxobjects: ListTuple["HDXObject"],
+        hdxobjects: list["HDXObject"],
         hdxobjects_name: str,
         id_field: str,
         hdxobjectclass: type,
@@ -644,10 +645,10 @@ class HDXObject(UserDict, ABC):
         the internal dictionary is then deleted.
 
         Args:
-            hdxobjects (ListTuple[HDXObject]): list of HDX objects to which to add new objects or update existing ones
-            hdxobjects_name (str): Name of key in internal dictionary from which to obtain list of HDX objects
-            id_field (str): Field on which to match to determine if object already exists in list
-            hdxobjectclass (type): Type of the HDX Object to be added/updated
+            hdxobjects: list of HDX objects to which to add new objects or update existing ones
+            hdxobjects_name: Name of key in internal dictionary from which to obtain list of HDX objects
+            id_field: Field on which to match to determine if object already exists in list
+            hdxobjectclass: Type of the HDX Object to be added/updated
 
         Returns:
             None
@@ -670,26 +671,26 @@ class HDXObject(UserDict, ABC):
                     )
             del self.data[hdxobjects_name]
 
-    def _get_tags(self) -> List[str]:
+    def _get_tags(self) -> list[str]:
         """Return the dataset's list of tags
 
         Returns:
-            List[str]: list of tags or [] if there are none
+            list of tags or [] if there are none
         """
         tags = self.data.get("tags", None)
         if not tags:
             return []
         return [x["name"] for x in tags]
 
-    def _add_tag(self, tag: str, vocabulary_id: Optional[str] = None) -> bool:
+    def _add_tag(self, tag: str, vocabulary_id: str | None = None) -> bool:
         """Add a tag
 
         Args:
-            tag (str): Tag to add
-            vocabulary_id (Optional[str]): Vocabulary tag is in. Defaults to None.
+            tag: Tag to add
+            vocabulary_id: Vocabulary tag is in. Defaults to None.
 
         Returns:
-            bool: True if tag added or False if tag already present
+            True if tag added or False if tag already present
         """
         tag = tag.lower()
         tags = self.data.get("tags", None)
@@ -706,16 +707,16 @@ class HDXObject(UserDict, ABC):
         return True
 
     def _add_tags(
-        self, tags: ListTuple[str], vocabulary_id: Optional[str] = None
-    ) -> List[str]:
+        self, tags: Sequence[str], vocabulary_id: str | None = None
+    ) -> list[str]:
         """Add a list of tag
 
         Args:
-            tags (ListTuple[str]): list of tags to add
-            vocabulary_id (Optional[str]): Vocabulary tag is in. Defaults to None.
+            tags: list of tags to add
+            vocabulary_id: Vocabulary tag is in. Defaults to None.
 
         Returns:
-            List[str]: Tags that were successfully added
+            Tags that were successfully added
         """
         added_tags = []
         for tag in tags:
@@ -723,14 +724,14 @@ class HDXObject(UserDict, ABC):
                 added_tags.append(tag)
         return added_tags
 
-    def _get_stringlist_from_commastring(self, field: str) -> List[str]:
+    def _get_stringlist_from_commastring(self, field: str) -> list[str]:
         """Return list of strings from comma separated list
 
         Args:
-            field (str): Field containing comma separated list
+            field: Field containing comma separated list
 
         Returns:
-            List[str]: List of strings
+            List of strings
         """
         strings = self.data.get(field)
         if strings:
@@ -742,11 +743,11 @@ class HDXObject(UserDict, ABC):
         """Add a string to a comma separated list of strings
 
         Args:
-            field (str): Field containing comma separated list
-            string (str): String to add
+            field: Field containing comma separated list
+            string: String to add
 
         Returns:
-            bool: True if string added or False if string already present
+            True if string added or False if string already present
         """
         if string in self._get_stringlist_from_commastring(field):
             return False
@@ -756,15 +757,15 @@ class HDXObject(UserDict, ABC):
         self.data[field] = strings
         return True
 
-    def _add_strings_to_commastring(self, field: str, strings: ListTuple[str]) -> bool:
+    def _add_strings_to_commastring(self, field: str, strings: Sequence[str]) -> bool:
         """Add a list of strings to a comma separated list of strings
 
         Args:
-            field (str): Field containing comma separated list
-            strings (ListTuple[str]): list of strings to add
+            field: Field containing comma separated list
+            strings: list of strings to add
 
         Returns:
-            bool: True if all strings added or False if any already present.
+            True if all strings added or False if any already present.
         """
         allstringsadded = True
         for string in strings:
@@ -776,11 +777,11 @@ class HDXObject(UserDict, ABC):
         """Remove a string from a comma separated list of strings
 
         Args:
-            field (str): Field containing comma separated list
-            string (str): String to remove
+            field: Field containing comma separated list
+            string: String to remove
 
         Returns:
-            bool: True if string removed or False if not
+            True if string removed or False if not
         """
         commastring = self.data.get(field, "")
         if string in commastring:

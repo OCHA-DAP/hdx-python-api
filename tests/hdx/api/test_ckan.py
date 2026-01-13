@@ -14,6 +14,8 @@ from time import sleep
 import gspread
 import pytest
 from gspread.urls import DRIVE_FILES_API_V3_URL
+from hdx.location.country import Country
+from hdx.utilities.dateparse import now_utc
 
 from hdx.api.configuration import Configuration
 from hdx.api.locations import Locations
@@ -21,8 +23,6 @@ from hdx.data.dataset import Dataset
 from hdx.data.resource import Resource
 from hdx.data.user import User
 from hdx.data.vocabulary import Vocabulary
-from hdx.location.country import Country
-from hdx.utilities.dateparse import now_utc
 
 logger = logging.getLogger(__name__)
 

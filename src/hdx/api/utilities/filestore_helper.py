@@ -1,7 +1,7 @@
 """Helper to the Dataset class for handling resources with filestores."""
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 from hdx.utilities.dateparse import now_utc_notz
 from hdx.utilities.file_hashing import get_size_and_hash
@@ -20,7 +20,7 @@ class FilestoreHelper:
         """Helper method to get ignore_fields from kwargs if it exists and add package_id
 
         Args:
-            resource (Resource): Resource to check
+            resource: Resource to check
             **kwargs: Keyword arguments
 
         Returns:
@@ -42,7 +42,7 @@ class FilestoreHelper:
     def check_filestore_resource(
         cls,
         resource_data_to_update: "Resource",
-        filestore_resources: Dict[int, str],
+        filestore_resources: dict[int, str],
         resource_index: int,
         **kwargs: Any,
     ) -> int:
@@ -57,12 +57,12 @@ class FilestoreHelper:
         4 = file not uploaded (hash, size unchanged), given last_modified ignored
 
         Args:
-            resource_data_to_update (Resource): Updated resource from dataset
-            filestore_resources (Dict[int, str]): List of (index of resource, file to upload)
-            resource_index (int): Index of resource
+            resource_data_to_update: Updated resource from dataset
+            filestore_resources: List of (index of resource, file to upload)
+            resource_index: Index of resource
 
         Returns:
-            int: Status code
+            Status code
         """
         resource_data_to_update.set_types()
         resource_data_to_update.correct_format(resource_data_to_update.data)
@@ -83,7 +83,7 @@ class FilestoreHelper:
         cls,
         original_resource_data: "Resource",
         resource_data_to_update: "Resource",
-        filestore_resources: Dict[int, str],
+        filestore_resources: dict[int, str],
         resource_index: int,
         **kwargs: Any,
     ) -> int:
@@ -98,14 +98,15 @@ class FilestoreHelper:
         4 = file not uploaded (hash, size unchanged), given last_modified ignored
 
         Args:
-            original_resource_data (Resource): Original resource from dataset
-            resource_data_to_update (Resource): Updated resource from dataset
-            filestore_resources (Dict[int, str]): List of (index of resources, file to upload)
-            resource_index (int): Index of resource
-            **kwargs: Any,
+            original_resource_data: Original resource from dataset
+            resource_data_to_update: Updated resource from dataset
+            filestore_resources: List of (index of resources, file to upload)
+            resource_index: Index of resource
+            **kwargs: See below
+            force_update (bool): Whether to force an update
 
         Returns:
-            int: Status code
+            Status code
         """
         file_to_upload = resource_data_to_update.get_file_to_upload()
         if file_to_upload:
