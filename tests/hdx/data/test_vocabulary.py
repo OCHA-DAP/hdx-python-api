@@ -2,7 +2,6 @@
 
 import copy
 import json
-from os.path import join
 
 import pytest
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -1134,12 +1133,12 @@ class TestVocabulary:
     }
 
     @pytest.fixture(scope="class")
-    def static_yaml(self):
-        return join("tests", "fixtures", "config", "hdx_vocabulary_static.yaml")
+    def static_yaml(self, configfolder):
+        return configfolder / "hdx_vocabulary_static.yaml"
 
     @pytest.fixture(scope="class")
-    def static_json(self):
-        return join("tests", "fixtures", "config", "hdx_vocabulary_static.json")
+    def static_json(self, configfolder):
+        return configfolder / "hdx_vocabulary_static.json"
 
     @pytest.fixture(scope="function")
     def read(self):

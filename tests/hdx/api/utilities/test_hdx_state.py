@@ -4,7 +4,8 @@ import json
 from copy import deepcopy
 from datetime import datetime, timezone
 from os import makedirs
-from os.path import exists, join
+from os.path import exists
+from pathlib import Path
 from shutil import copyfile, rmtree
 from tempfile import gettempdir
 
@@ -21,11 +22,11 @@ from ...data.test_resource import resultdict
 class TestState:
     @pytest.fixture(scope="class")
     def tempfolder(self):
-        return join(gettempdir(), "test_state")
+        return Path(gettempdir(), "test_state")
 
     @pytest.fixture(scope="class")
     def statefolder(self, fixturesfolder):
-        return join(fixturesfolder, "state")
+        return fixturesfolder / "state"
 
     @pytest.fixture(scope="class")
     def statefile(self):
@@ -58,7 +59,7 @@ class TestState:
                     myresultdict = deepcopy(dataset_resultdict)
                     resource = myresultdict["resources"][0]
                     resource["name"] = statefile
-                    resource["url"] = join(tempfolder, statefile)
+                    resource["url"] = str(tempfolder / statefile)
                     result = json.dumps(myresultdict)
                     return MockResponse(
                         200,
@@ -82,7 +83,7 @@ class TestState:
                     myresultdict = deepcopy(dataset_resultdict)
                     resource = myresultdict["resources"][0]
                     resource["name"] = multidatestatefile
-                    resource["url"] = join(tempfolder, multidatestatefile)
+                    resource["url"] = str(tempfolder / multidatestatefile)
                     result = json.dumps(myresultdict)
                     return MockResponse(
                         200,
@@ -96,8 +97,8 @@ class TestState:
     ):
         if not exists(tempfolder):
             makedirs(tempfolder)
-        statepath = join(tempfolder, statefile)
-        copyfile(join(statefolder, statefile), statepath)
+        statepath = tempfolder / statefile
+        copyfile(statefolder / statefile, statepath)
         with HDXState(
             "test_dataset", tempfolder, parse_date, iso_string_from_datetime
         ) as state:
@@ -125,8 +126,8 @@ class TestState:
     ):
         if not exists(tempfolder):
             makedirs(tempfolder)
-        statepath = join(tempfolder, multidatestatefile)
-        copyfile(join(statefolder, multidatestatefile), statepath)
+        statepath = tempfolder / multidatestatefile
+        copyfile(statefolder / multidatestatefile, statepath)
         with HDXState(
             "test_dataset",
             tempfolder,

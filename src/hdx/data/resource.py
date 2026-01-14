@@ -4,7 +4,6 @@ import logging
 import warnings
 from collections.abc import Sequence
 from datetime import datetime
-from os.path import join
 from pathlib import Path
 from typing import Any, Optional
 
@@ -67,7 +66,7 @@ class Resource(HDXObject):
         }
 
     def update_from_yaml(
-        self, path: str = join("config", "hdx_resource_static.yaml")
+        self, path: Path | str = Path("config", "hdx_resource_static.yaml")
     ) -> None:
         """Update resource metadata with static metadata from YAML file
 
@@ -80,7 +79,7 @@ class Resource(HDXObject):
         super().update_from_yaml(path)
 
     def update_from_json(
-        self, path: str = join("config", "hdx_resource_static.json")
+        self, path: Path | str = Path("config", "hdx_resource_static.json")
     ) -> None:
         """Update resource metadata with static metadata from JSON file
 
@@ -300,7 +299,7 @@ class Resource(HDXObject):
         return self._file_to_upload
 
     def set_file_to_upload(
-        self, file_to_upload: str, guess_format_from_suffix: bool = False
+        self, file_to_upload: Path | str, guess_format_from_suffix: bool = False
     ) -> str:
         """Delete any existing url and set the file uploaded to the local path provided
 
@@ -647,8 +646,8 @@ class Resource(HDXObject):
         return resources
 
     def download(
-        self, folder: str | None = None, retriever: Retrieve | None = None
-    ) -> tuple[str, str]:
+        self, folder: Path | str | None = None, retriever: Retrieve | None = None
+    ) -> tuple[str, Path]:
         """Download resource store to provided folder or temporary folder if no folder
         supplied
 

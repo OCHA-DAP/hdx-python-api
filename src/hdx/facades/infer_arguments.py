@@ -2,8 +2,9 @@
 
 import logging
 import sys
-from collections.abc import Callable  # noqa: F401
+from collections.abc import Callable
 from inspect import getdoc
+from pathlib import Path
 from typing import Any
 
 import defopt
@@ -66,15 +67,16 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
         if count < no_main_parameters:
             count += 1
         else:
-            if param_type == "str":
-                param_type = "str | None"
-                default = None
-            elif param_type == "bool":
-                default = False
-            else:
-                raise ValueError(
-                    "Configuration.create has new parameter with unknown type!"
-                )
+            match param_type:
+                case "str" | "Path" | "Path | str":
+                    param_type = "str | None"
+                    default = None
+                case "bool":
+                    default = False
+                case _:
+                    raise ValueError(
+                        f"Configuration.create has new parameter {param_name} with unknown type {param_type}!"
+                    )
             param_names.append(f"{param_name}: {param_type} = {default}")
         main_doc.append(f"\n    {param_name}: {param_info.doc}")
     main_doc = "".join(main_doc)
@@ -87,7 +89,10 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
         name = f"--{key.replace('_', '-')}"
         if name not in argv:
             argv.append(name)
-            argv.append(kwargs[key])
+            value = kwargs[key]
+            if isinstance(value, Path):
+                value = str(value)
+            argv.append(value)
 
     @with_signature(main_sig)
     def gen_func(*args, **kwargs):

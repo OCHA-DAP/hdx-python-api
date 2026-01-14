@@ -5,10 +5,10 @@ Unit tests for the freshness class.
 
 import json
 import logging
-import os
 import random
 from os import getenv
-from os.path import join
+from os.path import expanduser
+from pathlib import Path
 from time import sleep
 
 import gspread
@@ -43,8 +43,8 @@ class TestCKAN:
         Vocabulary._tags_dict = None
 
     @pytest.fixture(scope="function")
-    def datasetmetadata(self):
-        return join("tests", "fixtures", "CKAN", "hdx_dataset_static.yaml")
+    def datasetmetadata(self, fixturesfolder):
+        return fixturesfolder / "CKAN" / "hdx_dataset_static.yaml"
 
     @pytest.fixture(scope="class")
     def params(self):
@@ -59,9 +59,9 @@ class TestCKAN:
     def gclient(self):
         gsheet_auth = getenv("GSHEET_AUTH")
         if not gsheet_auth:
-            auth_file_path = os.path.join(os.path.expanduser("~"), ".gsheet_auth.json")
-            if os.path.exists(auth_file_path):
-                with open(auth_file_path, encoding="utf-8") as auth_file:
+            auth_file_path = Path(expanduser("~"), ".gsheet_auth.json")
+            if auth_file_path.exists():
+                with auth_file_path.open(encoding="utf-8") as auth_file:
                     gsheet_auth = auth_file.read()
             else:
                 raise ValueError("No gsheet authorisation supplied!")

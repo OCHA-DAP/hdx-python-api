@@ -2,7 +2,7 @@
 
 import logging
 from collections.abc import Sequence
-from os.path import join
+from pathlib import Path
 from typing import Any, Optional
 
 import hdx.data.organization
@@ -48,7 +48,7 @@ class User(HDXObject):
         }
 
     def update_from_yaml(
-        self, path: str = join("config", "hdx_user_static.yaml")
+        self, path: Path | str = Path("config", "hdx_user_static.yaml")
     ) -> None:
         """Update user metadata with static metadata from YAML file
 
@@ -61,7 +61,7 @@ class User(HDXObject):
         super().update_from_yaml(path)
 
     def update_from_json(
-        self, path: str = join("config", "hdx_user_static.json")
+        self, path: Path | str = Path("config", "hdx_user_static.json")
     ) -> None:
         """Update user metadata with static metadata from JSON file
 

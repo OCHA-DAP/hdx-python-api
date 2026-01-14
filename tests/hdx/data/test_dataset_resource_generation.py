@@ -1,7 +1,6 @@
 """Dataset Tests (noncore methods)"""
 
 from datetime import datetime, timezone
-from os.path import join
 
 import pytest
 from hdx.utilities.compare import assert_files_same
@@ -38,7 +37,7 @@ class TestDatasetResourceGeneration:
         "ISO3": "#country+code",
     }
 
-    def test_download_generate_resource(self, configuration):
+    def test_download_generate_resource(self, configuration, fixturesfolder):
         with temp_dir("test") as folder:
             filename = "conflict_data_alg.csv"
             resourcedata = {
@@ -233,8 +232,8 @@ class TestDatasetResourceGeneration:
                     },
                 ]
                 assert_files_same(
-                    join("tests", "fixtures", "gen_resource", filename),
-                    join(folder, filename),
+                    fixturesfolder / "gen_resource" / filename,
+                    folder / filename,
                 )
 
                 columns_to_include = [
@@ -524,7 +523,7 @@ class TestDatasetResourceGeneration:
                 )
                 assert success is False
 
-    def test_download_and_generate_resource(self, configuration):
+    def test_download_and_generate_resource(self, configuration, fixturesfolder):
         with temp_dir("test") as folder:
             filename = "conflict_data_alg.csv"
             resourcedata = {
@@ -838,13 +837,13 @@ class TestDatasetResourceGeneration:
                     },
                 ]
                 assert_files_same(
-                    join("tests", "fixtures", "download_gen_resource", filename),
-                    join(folder, filename),
+                    fixturesfolder / "download_gen_resource" / filename,
+                    folder / filename,
                 )
                 qc_filename = f"qc_{filename}"
                 assert_files_same(
-                    join("tests", "fixtures", "gen_resource", qc_filename),
-                    join(folder, qc_filename),
+                    fixturesfolder / "gen_resource" / qc_filename,
+                    folder / qc_filename,
                 )
 
                 success, results = dataset.download_and_generate_resource(
@@ -1115,13 +1114,8 @@ class TestDatasetResourceGeneration:
                     == "[2001-01-01T00:00:00 TO 2001-12-31T23:59:59]"
                 )
                 assert_files_same(
-                    join(
-                        "tests",
-                        "fixtures",
-                        "gen_resource",
-                        f"min_{qc_filename}",
-                    ),
-                    join(folder, qc_filename),
+                    fixturesfolder / "gen_resource" / f"min_{qc_filename}",
+                    folder / qc_filename,
                 )
 
                 with pytest.raises(HDXError):

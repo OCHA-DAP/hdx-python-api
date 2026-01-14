@@ -2,7 +2,7 @@
 
 import re
 import smtplib
-from os.path import join
+from pathlib import Path
 
 import pytest
 
@@ -12,40 +12,38 @@ from hdx.api.locations import Locations
 
 @pytest.fixture(scope="session")
 def fixturesfolder():
-    return join("tests", "fixtures")
+    return Path("tests") / "fixtures"
 
 
 @pytest.fixture(scope="session")
 def configfolder(fixturesfolder):
-    return join(fixturesfolder, "config")
+    return fixturesfolder / "config"
 
 
 @pytest.fixture(scope="session")
 def hdx_config_yaml(configfolder):
-    return join(configfolder, "hdx_config.yaml")
+    return configfolder / "hdx_config.yaml"
 
 
 @pytest.fixture(scope="session")
 def hdx_config_json(configfolder):
-    return join(configfolder, "hdx_config.json")
+    return configfolder / "hdx_config.json"
 
 
 @pytest.fixture(scope="session")
-def project_config_yaml():
-    return join("tests", "fixtures", "config", "project_configuration.yaml")
+def project_config_yaml(configfolder):
+    return configfolder / "project_configuration.yaml"
 
 
 @pytest.fixture(scope="session")
 def test_data(fixturesfolder):
-    return join(fixturesfolder, "test_data.csv")
+    return fixturesfolder / "test_data.csv"
 
 
 @pytest.fixture(scope="session")
 def test_xlsx(fixturesfolder):
-    return join(
-        fixturesfolder,
-        "size_hash",
-        "ACLED-All-Africa-File_20170101-to-20170708.xlsx",
+    return (
+        fixturesfolder / "size_hash" / "ACLED-All-Africa-File_20170101-to-20170708.xlsx"
     )
 
 

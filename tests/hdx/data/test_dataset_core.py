@@ -6,7 +6,7 @@ import os
 import re
 import shutil
 import tempfile
-from os.path import join
+from pathlib import Path
 
 import pytest
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -36,7 +36,7 @@ from .test_resource_view import (
 )
 from .test_vocabulary import vocabulary_mockshow
 
-searchdict = load_yaml(join("tests", "fixtures", "dataset_search_results.yaml"))
+searchdict = load_yaml(Path("tests") / "fixtures" / "dataset_search_results.yaml")
 dataset_list = [
     "acled-conflict-data-for-libya",
     "acled-conflict-data-for-liberia",
@@ -185,12 +185,12 @@ def mockhxlupdate(url, datadict):
 
 class TestDatasetCore:
     @pytest.fixture(scope="class")
-    def static_yaml(self):
-        return join("tests", "fixtures", "config", "hdx_dataset_static.yaml")
+    def static_yaml(self, configfolder):
+        return configfolder / "hdx_dataset_static.yaml"
 
     @pytest.fixture(scope="class")
-    def static_json(self):
-        return join("tests", "fixtures", "config", "hdx_dataset_static.json")
+    def static_json(self, configfolder):
+        return configfolder / "hdx_dataset_static.json"
 
     @pytest.fixture(scope="function")
     def read(self):
@@ -746,7 +746,7 @@ class TestDatasetCore:
         assert len(dataset._resources) == 3
         dataset = Dataset.read_from_hdx("TEST4")
         with temp_dir("test_update_in_hdx") as tempdir:
-            path = join(tempdir, "test_update_in_hdx.xlsx")
+            path = tempdir / "test_update_in_hdx.xlsx"
             shutil.copyfile(test_xlsx, path)
             resource.set_file_to_upload(path)
             dataset.add_update_resource(resource)

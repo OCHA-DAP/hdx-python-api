@@ -3,7 +3,7 @@
 import logging
 from collections import OrderedDict
 from collections.abc import Sequence
-from os.path import join
+from pathlib import Path
 from typing import Any, Optional
 
 from hdx.utilities.downloader import Download
@@ -63,7 +63,7 @@ class Vocabulary(HDXObject):
         }
 
     def update_from_yaml(
-        self, path: str = join("config", "hdx_vocabulary_static.yaml")
+        self, path: Path | str = Path("config", "hdx_vocabulary_static.yaml")
     ) -> None:
         """Update vocabulary metadata with static metadata from YAML file
 
@@ -76,7 +76,7 @@ class Vocabulary(HDXObject):
         super().update_from_yaml(path)
 
     def update_from_json(
-        self, path: str = join("config", "hdx_vocabulary_static.json")
+        self, path: Path | str = Path("config", "hdx_vocabulary_static.json")
     ) -> None:
         """Update vocabulary metadata with static metadata from JSON file
 
