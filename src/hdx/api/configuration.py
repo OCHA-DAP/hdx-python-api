@@ -4,7 +4,7 @@ import logging
 import os
 from base64 import b64decode
 from collections import UserDict
-from os.path import expanduser, isfile
+from os.path import expanduser
 from pathlib import Path
 from typing import Any, Optional
 
@@ -112,10 +112,10 @@ class Configuration(UserDict):
                 raise ConfigurationError("More than one HDX configuration given!")
         else:
             if not hdx_config_yaml:
-                hdx_config_yaml = Configuration.default_hdx_config_yaml
-                if not isfile(hdx_config_yaml):
-                    hdx_config_yaml = hdx_config_yaml.replace(".yaml", ".yml")
-                if isfile(hdx_config_yaml):
+                hdx_config_yaml = Path(Configuration.default_hdx_config_yaml)
+                if not hdx_config_yaml.is_file():
+                    hdx_config_yaml = hdx_config_yaml.with_suffix(".yml")
+                if hdx_config_yaml.is_file():
                     logger.info(
                         f"No HDX configuration parameter. Using default configuration file: {hdx_config_yaml}."
                     )
@@ -365,7 +365,7 @@ class Configuration(UserDict):
         cls,
         session: requests.Session = None,
         user_agent: str | None = None,
-        user_agent_config_yaml: str | None = None,
+        user_agent_config_yaml: Path | str | None = None,
         user_agent_lookup: str | None = None,
         use_env: bool = False,
         **kwargs: Any,
