@@ -43,8 +43,8 @@ class TestUpdateLogic:
         }
 
     @pytest.fixture(scope="class")
-    def fixture_path(self):
-        return join("tests", "fixtures", "update_logic")
+    def fixture_path(self, fixturesfolder):
+        return fixturesfolder / "update_logic"
 
     @pytest.fixture(scope="class")
     def temp_dir(self):
@@ -52,11 +52,11 @@ class TestUpdateLogic:
 
     @pytest.fixture(scope="class")
     def new_resources_yaml(self, fixture_path):
-        return join(fixture_path, "update_logic_resources_new.yaml")
+        return fixture_path / "update_logic_resources_new.yaml"
 
     @pytest.fixture(scope="class")
     def resources_yaml(self, fixture_path):
-        return join(fixture_path, "update_logic_resources.yaml")
+        return fixture_path / "update_logic_resources.yaml"
 
     @pytest.fixture(scope="class")
     def dataset_data(self):

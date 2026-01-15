@@ -4,7 +4,8 @@ import logging
 import os
 from base64 import b64decode
 from collections import UserDict
-from os.path import expanduser, isfile, join
+from os.path import expanduser
+from pathlib import Path
 from typing import Any, Optional
 
 import ckanapi
@@ -38,14 +39,14 @@ class Configuration(UserDict):
         hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
         hdx_key (str): Your HDX key. Ignored if hdx_read_only = True.
         hdx_config_dict (dict): HDX configuration dictionary to use instead of above 3 parameters OR
-        hdx_config_json (str): Path to JSON HDX configuration OR
-        hdx_config_yaml (str): Path to YAML HDX configuration
+        hdx_config_json (Path | str): Path to JSON HDX configuration OR
+        hdx_config_yaml (Path | str): Path to YAML HDX configuration
         project_config_dict (dict): Project configuration dictionary OR
-        project_config_json (str): Path to JSON Project configuration OR
-        project_config_yaml (str): Path to YAML Project configuration
+        project_config_json (Path | str): Path to JSON Project configuration OR
+        project_config_yaml (Path | str): Path to YAML Project configuration
         hdx_base_config_dict (dict): HDX base configuration dictionary OR
-        hdx_base_config_json (str): Path to JSON HDX base configuration OR
-        hdx_base_config_yaml (str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yaml.
+        hdx_base_config_json (Path | str): Path to JSON HDX base configuration OR
+        hdx_base_config_yaml (Path | str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yaml.
     """
 
     _configuration = None
@@ -53,7 +54,7 @@ class Configuration(UserDict):
     default_hdx_base_config_yaml = script_dir_plus_file(
         "hdx_base_configuration.yaml", ConfigurationError
     )
-    default_hdx_config_yaml = join(home_folder, ".hdx_configuration.yaml")
+    default_hdx_config_yaml = Path(home_folder, ".hdx_configuration.yaml")
 
     prefix = f"HDXPythonLibrary/{__version__}"
 
@@ -111,10 +112,10 @@ class Configuration(UserDict):
                 raise ConfigurationError("More than one HDX configuration given!")
         else:
             if not hdx_config_yaml:
-                hdx_config_yaml = Configuration.default_hdx_config_yaml
-                if not isfile(hdx_config_yaml):
-                    hdx_config_yaml = hdx_config_yaml.replace(".yaml", ".yml")
-                if isfile(hdx_config_yaml):
+                hdx_config_yaml = Path(Configuration.default_hdx_config_yaml)
+                if not hdx_config_yaml.is_file():
+                    hdx_config_yaml = hdx_config_yaml.with_suffix(".yml")
+                if hdx_config_yaml.is_file():
                     logger.info(
                         f"No HDX configuration parameter. Using default configuration file: {hdx_config_yaml}."
                     )
@@ -364,7 +365,7 @@ class Configuration(UserDict):
         cls,
         session: requests.Session = None,
         user_agent: str | None = None,
-        user_agent_config_yaml: str | None = None,
+        user_agent_config_yaml: Path | str | None = None,
         user_agent_lookup: str | None = None,
         use_env: bool = False,
         **kwargs: Any,
@@ -509,14 +510,14 @@ class Configuration(UserDict):
             hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
             hdx_key (str): Your HDX key. Ignored if hdx_read_only = True.
             hdx_config_dict (dict): HDX configuration dictionary to use instead of above 3 parameters OR
-            hdx_config_json (str): Path to JSON HDX configuration OR
-            hdx_config_yaml (str): Path to YAML HDX configuration
+            hdx_config_json (Path | str): Path to JSON HDX configuration OR
+            hdx_config_yaml (Path | str): Path to YAML HDX configuration
             project_config_dict (dict): Project configuration dictionary OR
-            project_config_json (str): Path to JSON Project configuration OR
-            project_config_yaml (str): Path to YAML Project configuration
+            project_config_json (Path | str): Path to JSON Project configuration OR
+            project_config_yaml (Path | str): Path to YAML Project configuration
             hdx_base_config_dict (dict): HDX base configuration dictionary OR
-            hdx_base_config_json (str): Path to JSON HDX base configuration OR
-            hdx_base_config_yaml (str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yaml.
+            hdx_base_config_json (Path | str): Path to JSON HDX base configuration OR
+            hdx_base_config_yaml (Path | str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yaml.
 
         Returns:
             None
@@ -549,14 +550,14 @@ class Configuration(UserDict):
             hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
             hdx_key (str): Your HDX key. Ignored if hdx_read_only = True.
             hdx_config_dict (dict): HDX configuration dictionary to use instead of above 3 parameters OR
-            hdx_config_json (str): Path to JSON HDX configuration OR
-            hdx_config_yaml (str): Path to YAML HDX configuration
+            hdx_config_json (Path | str): Path to JSON HDX configuration OR
+            hdx_config_yaml (Path | str): Path to YAML HDX configuration
             project_config_dict (dict): Project configuration dictionary OR
-            project_config_json (str): Path to JSON Project configuration OR
-            project_config_yaml (str): Path to YAML Project configuration
+            project_config_json (Path | str): Path to JSON Project configuration OR
+            project_config_yaml (Path | str): Path to YAML Project configuration
             hdx_base_config_dict (dict): HDX base configuration dictionary OR
-            hdx_base_config_json (str): Path to JSON HDX base configuration OR
-            hdx_base_config_yaml (str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yaml.
+            hdx_base_config_json (Path | str): Path to JSON HDX base configuration OR
+            hdx_base_config_yaml (Path | str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yaml.
 
         Returns:
             HDX site url
@@ -588,14 +589,14 @@ class Configuration(UserDict):
             hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
             hdx_key (str): Your HDX key. Ignored if hdx_read_only = True.
             hdx_config_dict (dict): HDX configuration dictionary to use instead of above 3 parameters OR
-            hdx_config_json (str): Path to JSON HDX configuration OR
-            hdx_config_yaml (str): Path to YAML HDX configuration
+            hdx_config_json (Path | str): Path to JSON HDX configuration OR
+            hdx_config_yaml (Path | str): Path to YAML HDX configuration
             project_config_dict (dict): Project configuration dictionary OR
-            project_config_json (str): Path to JSON Project configuration OR
-            project_config_yaml (str): Path to YAML Project configuration
+            project_config_json (Path | str): Path to JSON Project configuration OR
+            project_config_yaml (Path | str): Path to YAML Project configuration
             hdx_base_config_dict (dict): HDX base configuration dictionary OR
-            hdx_base_config_json (str): Path to JSON HDX base configuration OR
-            hdx_base_config_yaml (str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yaml.
+            hdx_base_config_json (Path | str): Path to JSON HDX base configuration OR
+            hdx_base_config_yaml (Path | str): Path to YAML HDX base configuration. Defaults to library's internal hdx_base_configuration.yaml.
 
         Returns:
             HDX site url

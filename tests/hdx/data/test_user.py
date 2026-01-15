@@ -2,7 +2,7 @@
 
 import copy
 import json
-from os.path import join
+from pathlib import Path
 
 import pytest
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -31,7 +31,7 @@ resultdict = {
     "id": "9f3e9973-7dbe-4c65-8820-f48578e3ffea",
     "number_created_packages": 0,
 }
-orgdict = load_yaml(join("tests", "fixtures", "organization_show_results.yaml"))
+orgdict = load_yaml(Path("tests") / "fixtures" / "organization_show_results.yaml")
 orgdict2 = copy.deepcopy(orgdict)
 del orgdict2["users"]
 del orgdict2["packages"]
@@ -135,12 +135,12 @@ class TestUser:
     email_config_dict.update(smtp_initargs)
 
     @pytest.fixture(scope="class")
-    def static_yaml(self):
-        return join("tests", "fixtures", "config", "hdx_user_static.yaml")
+    def static_yaml(self, configfolder):
+        return configfolder / "hdx_user_static.yaml"
 
     @pytest.fixture(scope="class")
-    def static_json(self):
-        return join("tests", "fixtures", "config", "hdx_user_static.json")
+    def static_json(self, configfolder):
+        return configfolder / "hdx_user_static.json"
 
     @pytest.fixture(scope="function")
     def read(self):

@@ -2,7 +2,7 @@
 
 import logging
 from collections.abc import Callable
-from os.path import join
+from pathlib import Path
 from typing import Any
 
 from hdx.utilities.loader import load_text
@@ -32,7 +32,7 @@ class HDXState(State):
     def __init__(
         self,
         dataset_name_or_id: str,
-        path: str,
+        path: Path | str,
         read_fn: Callable[[str], Any] = lambda x: x,
         write_fn: Callable[[Any], str] = lambda x: x,
         configuration: Configuration | None = None,
@@ -65,7 +65,7 @@ class HDXState(State):
         """
         logger.info(f"State written to {self._dataset_name_or_id} = {self.state}")
         filename = self._resource["name"]
-        file_to_upload = join(self.path, filename)
+        file_to_upload = self.path / filename
         save_text(self.write_fn(self.state), file_to_upload)
         self._resource.set_file_to_upload(file_to_upload)
         self._resource.update_in_hdx()

@@ -1,7 +1,5 @@
 """Configuration Tests"""
 
-from os.path import join
-
 import pytest
 from hdx.utilities.loader import LoadError
 from hdx.utilities.useragent import UserAgentError
@@ -14,39 +12,39 @@ from hdx.api.remotehdx import RemoteHDX
 class TestConfiguration:
     @pytest.fixture(scope="class")
     def hdx_base_config_yaml(self, configfolder):
-        return join(configfolder, "hdx_base_config.yaml")
+        return configfolder / "hdx_base_config.yaml"
 
     @pytest.fixture(scope="class")
     def hdx_base_config_json(self, configfolder):
-        return join(configfolder, "hdx_base_config.json")
+        return configfolder / "hdx_base_config.json"
 
     @pytest.fixture(scope="class")
     def hdx_missing_site_config_json(self, configfolder):
-        return join(configfolder, "hdx_missing_site_config.json")
+        return configfolder / "hdx_missing_site_config.json"
 
     @pytest.fixture(scope="class")
     def project_config_json(self, configfolder):
-        return join(configfolder, "project_configuration.json")
+        return configfolder / "project_configuration.json"
 
     @pytest.fixture(scope="class")
     def user_agent_config_yaml(self, configfolder):
-        return join(configfolder, "user_agent_config.yaml")
+        return configfolder / "user_agent_config.yaml"
 
     @pytest.fixture(scope="class")
     def user_agent_config2_yaml(self, configfolder):
-        return join(configfolder, "user_agent_config2.yaml")
+        return configfolder / "user_agent_config2.yaml"
 
     @pytest.fixture(scope="class")
     def user_agent_config3_yaml(self, configfolder):
-        return join(configfolder, "user_agent_config3.yaml")
+        return configfolder / "user_agent_config3.yaml"
 
     @pytest.fixture(scope="class")
     def empty_yaml(self, configfolder):
-        return join(configfolder, "empty.yaml")
+        return configfolder / "empty.yaml"
 
     @pytest.fixture(scope="class")
     def user_agent_config_wrong_yaml(self, configfolder):
-        return join(configfolder, "user_agent_config_wrong.yaml")
+        return configfolder / "user_agent_config_wrong.yaml"
 
     def test_init(
         self,

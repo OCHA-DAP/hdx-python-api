@@ -2,7 +2,7 @@
 
 import logging
 from collections.abc import Sequence
-from os.path import join
+from pathlib import Path
 from typing import Any, Optional, Union
 
 from hdx.utilities.uuid import is_valid_uuid
@@ -47,7 +47,7 @@ class ResourceView(HDXObject):
         }
 
     def update_from_yaml(
-        self, path: str = join("config", "hdx_resource_view_static.yaml")
+        self, path: Path | str = Path("config", "hdx_resource_view_static.yaml")
     ) -> None:
         """Update resource view metadata with static metadata from YAML file
 
@@ -60,7 +60,7 @@ class ResourceView(HDXObject):
         super().update_from_yaml(path)
 
     def update_from_json(
-        self, path: str = join("config", "hdx_resource_view_static.json")
+        self, path: Path | str = Path("config", "hdx_resource_view_static.json")
     ) -> None:
         """Update resource view metadata with static metadata from JSON file
 

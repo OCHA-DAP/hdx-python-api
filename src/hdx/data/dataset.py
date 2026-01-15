@@ -7,7 +7,8 @@ import warnings
 from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence
 from copy import deepcopy
 from datetime import datetime
-from os.path import isfile, join
+from os.path import isfile
+from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -198,7 +199,7 @@ class Dataset(HDXObject):
             package["resources"] = self._convert_hdxobjects(self._resources)
         return package
 
-    def save_to_json(self, path: str, follow_urls: bool = False):
+    def save_to_json(self, path: Path | str, follow_urls: bool = False):
         """Save dataset to JSON. If follow_urls is True, resource urls that point to
         datasets, HXL proxy urls etc. are followed to retrieve final urls.
 
@@ -219,7 +220,7 @@ class Dataset(HDXObject):
         save_json(dataset_dict, path)
 
     @staticmethod
-    def load_from_json(path: str) -> Optional["Dataset"]:
+    def load_from_json(path: Path | str) -> Optional["Dataset"]:
         """Load dataset from JSON
 
         Args:
@@ -457,7 +458,7 @@ class Dataset(HDXObject):
         return resource
 
     def update_from_yaml(
-        self, path: str = join("config", "hdx_dataset_static.yaml")
+        self, path: Path | str = Path("config", "hdx_dataset_static.yaml")
     ) -> None:
         """Update dataset metadata with static metadata from YAML file
 
@@ -471,7 +472,7 @@ class Dataset(HDXObject):
         self.separate_resources()
 
     def update_from_json(
-        self, path: str = join("config", "hdx_dataset_static.json")
+        self, path: Path | str = Path("config", "hdx_dataset_static.json")
     ) -> None:
         """Update dataset metadata with static metadata from JSON file
 
@@ -2330,7 +2331,7 @@ class Dataset(HDXObject):
     def _generate_resource_view(
         self,
         resource: Union["Resource", dict, str, int] = 0,
-        path: str | None = None,
+        path: Path | str | None = None,
         bites_disabled: Sequence[bool] | None = None,
         indicators: Sequence[dict] | None = None,
         findreplace: dict | None = None,
@@ -2374,9 +2375,9 @@ class Dataset(HDXObject):
         resourceview = resource_view.ResourceView(resourceview_data)
         if path is None:
             if indicators is None:
-                path = join("config", "hdx_resource_view_static.yaml")
+                path = Path("config", "hdx_resource_view_static.yaml")
                 if not isfile(path):
-                    path = path.replace(".yaml", ".yml")
+                    path = path.with_suffix(".yml")
             else:
                 path = script_dir_plus_file(
                     "indicator_resource_view_template.yaml",
@@ -2488,7 +2489,7 @@ class Dataset(HDXObject):
     def generate_quickcharts(
         self,
         resource: Union["Resource", dict, str, int] = 0,
-        path: str | None = None,
+        path: Path | str | None = None,
         bites_disabled: Sequence[bool] | None = None,
         indicators: Sequence[dict] | None = None,
         findreplace: dict | None = None,
@@ -2607,7 +2608,7 @@ class Dataset(HDXObject):
 
     def generate_resource(
         self,
-        folder: str,
+        folder: Path | str,
         filename: str,
         rows: Iterable[Sequence | Mapping],
         resourcedata: dict,
@@ -2703,7 +2704,7 @@ class Dataset(HDXObject):
                     dates[1] = enddate
             return row
 
-        filepath = join(folder, filename)
+        filepath = Path(folder) / filename
         rows = save_iterable(
             filepath,
             rows,
@@ -2739,7 +2740,7 @@ class Dataset(HDXObject):
 
     def generate_resource_from_rows(
         self,
-        folder: str,
+        folder: Path | str,
         filename: str,
         rows: Iterable[Sequence | Mapping],
         resourcedata: dict,
@@ -2776,7 +2777,7 @@ class Dataset(HDXObject):
         headers: Sequence[str],
         iterable: Iterable[Sequence | dict],
         hxltags: dict[str, str],
-        folder: str,
+        folder: Path | str,
         filename: str,
         resourcedata: dict,
         datecol: int | str | None = None,
@@ -2988,7 +2989,7 @@ class Dataset(HDXObject):
         headers: Sequence[str],
         iterator: Iterator[Sequence | dict],
         hxltags: dict[str, str],
-        folder: str,
+        folder: Path | str,
         filename: str,
         resourcedata: dict,
         datecol: int | str | None = None,
@@ -3019,7 +3020,7 @@ class Dataset(HDXObject):
         self,
         downloader: BaseDownload,
         url: str,
-        folder: str,
+        folder: Path | str,
         filename: str,
         resourcedata: dict,
         header_insertions: Sequence[tuple[int, str]] | None = None,
@@ -3122,7 +3123,7 @@ class Dataset(HDXObject):
         downloader: BaseDownload,
         url: str,
         hxltags: dict[str, str],
-        folder: str,
+        folder: Path | str,
         filename: str,
         resourcedata: dict,
         header_insertions: Sequence[tuple[int, str]] | None = None,

@@ -2,7 +2,7 @@
 
 import copy
 import json
-from os.path import join
+from pathlib import Path
 
 import pytest
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -16,7 +16,7 @@ from hdx.data.user import User
 from .. import MockResponse, organization_data, user_data
 from .test_user import user_mockshow
 
-resultdict = load_yaml(join("tests", "fixtures", "organization_show_results.yaml"))
+resultdict = load_yaml(Path("tests") / "fixtures" / "organization_show_results.yaml")
 
 organization_list = [
     "acaps",
@@ -30,7 +30,7 @@ organization_list = [
     "afdb",
     "afghanistan-protection-cluster",
 ]
-searchdict = load_yaml(join("tests", "fixtures", "dataset_search_results.yaml"))
+searchdict = load_yaml(Path("tests") / "fixtures" / "dataset_search_results.yaml")
 
 organization_autocomplete = [
     {
@@ -99,12 +99,12 @@ def mockgetdatasets(url, datadict):
 
 class TestOrganization:
     @pytest.fixture(scope="class")
-    def static_yaml(self):
-        return join("tests", "fixtures", "config", "hdx_organization_static.yaml")
+    def static_yaml(self, configfolder):
+        return configfolder / "hdx_organization_static.yaml"
 
     @pytest.fixture(scope="class")
-    def static_json(self):
-        return join("tests", "fixtures", "config", "hdx_organization_static.json")
+    def static_json(self, configfolder):
+        return configfolder / "hdx_organization_static.json"
 
     @pytest.fixture(scope="function")
     def read(self):

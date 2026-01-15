@@ -8,6 +8,7 @@ from abc import ABC, abstractmethod
 from collections import UserDict
 from collections.abc import Sequence
 from os.path import isfile
+from pathlib import Path
 from typing import Any, Optional, Union
 
 from ckanapi.errors import NotFound
@@ -62,7 +63,7 @@ class HDXObject(UserDict, ABC):
         """
         return self._old_data
 
-    def update_from_yaml(self, path: str) -> None:
+    def update_from_yaml(self, path: Path | str) -> None:
         """Update metadata with static metadata from YAML file
 
         Args:
@@ -72,10 +73,10 @@ class HDXObject(UserDict, ABC):
             None
         """
         if not isfile(path):
-            path = path.replace(".yaml", ".yml")
-        self.data = load_yaml_into_existing_dict(self.data, path)
+            path = Path(path).with_suffix(".yml")
+        load_yaml_into_existing_dict(self.data, path)
 
-    def update_from_json(self, path: str) -> None:
+    def update_from_json(self, path: Path | str) -> None:
         """Update metadata with static metadata from JSON file
 
         Args:
@@ -84,7 +85,7 @@ class HDXObject(UserDict, ABC):
         Returns:
             None
         """
-        self.data = load_json_into_existing_dict(self.data, path)
+        load_json_into_existing_dict(self.data, path)
 
     def _read_from_hdx(
         self,

@@ -1,4 +1,5 @@
 from os.path import join
+from pathlib import Path
 
 import pytest
 from hdx.location.country import Country
@@ -51,20 +52,20 @@ class TestUpdateDatasetResourcesLogic:
         }
 
     @pytest.fixture(scope="class")
-    def fixture_path(self):
-        return join("tests", "fixtures", "update_dataset_resources")
+    def fixture_path(self, fixturesfolder):
+        return fixturesfolder / "update_dataset_resources"
 
     @pytest.fixture(scope="class")
     def new_dataset_json(self, fixture_path):
-        return join(fixture_path, "unesco_update_dataset.json")
+        return fixture_path / "unesco_update_dataset.json"
 
     @pytest.fixture(scope="class")
     def dataset_json(self, fixture_path):
-        return join(fixture_path, "unesco_dataset.json")
+        return fixture_path / "unesco_dataset.json"
 
     @pytest.fixture(scope="class")
     def expected_resources_to_update_json(self, fixture_path):
-        return join(fixture_path, "expected_resources_to_update.json")
+        return fixture_path / "expected_resources_to_update.json"
 
     @pytest.fixture(scope="function")
     def dataset(self, dataset_json):
@@ -79,7 +80,7 @@ class TestUpdateDatasetResourcesLogic:
         for resourceobj in resourceobjs:
             resource = Resource(resourceobj)
             filename = self.file_mapping[resourceobj["name"]]
-            resource.set_file_to_upload(join(fixture_path, filename))
+            resource.set_file_to_upload(fixture_path / filename)
             dataset.add_update_resource(resource)
         return dataset
 
@@ -111,15 +112,15 @@ class TestUpdateDatasetResourcesLogic:
         assert resources_to_update == expected_resources_to_update
         assert resources_to_delete == [8, 2, 1, 0]
         assert filestore_resources == {
-            3: join(fixture_path, "sdg_data_zwe.csv"),
-            4: join(fixture_path, "sdg_indicatorlist_zwe.csv"),
-            5: join(fixture_path, "sdg_metadata_zwe.csv"),
-            6: join(fixture_path, "dem_data_zwe.csv"),
-            7: join(fixture_path, "dem_indicatorlist_zwe.csv"),
-            9: join(fixture_path, "opri_data_zwe.csv"),
-            10: join(fixture_path, "opri_indicatorlist_zwe.csv"),
-            11: join(fixture_path, "opri_metadata_zwe.csv"),
-            12: join(fixture_path, "qc_sdg_data_zwe.csv"),
+            3: fixture_path / "sdg_data_zwe.csv",
+            4: fixture_path / "sdg_indicatorlist_zwe.csv",
+            5: fixture_path / "sdg_metadata_zwe.csv",
+            6: fixture_path / "dem_data_zwe.csv",
+            7: fixture_path / "dem_indicatorlist_zwe.csv",
+            9: fixture_path / "opri_data_zwe.csv",
+            10: fixture_path / "opri_indicatorlist_zwe.csv",
+            11: fixture_path / "opri_metadata_zwe.csv",
+            12: fixture_path / "qc_sdg_data_zwe.csv",
         }
         assert new_resource_order == [
             ("SDG 4 Global and Thematic data", "csv"),
@@ -160,21 +161,15 @@ class TestUpdateDatasetResourcesLogic:
             test=True,
         )
         assert results["files_to_upload"] == {
-            "update__resources__0__upload": join(fixture_path, "sdg_data_zwe.csv"),
-            "update__resources__1__upload": join(
-                fixture_path, "sdg_indicatorlist_zwe.csv"
-            ),
-            "update__resources__2__upload": join(fixture_path, "sdg_metadata_zwe.csv"),
-            "update__resources__3__upload": join(fixture_path, "dem_data_zwe.csv"),
-            "update__resources__4__upload": join(
-                fixture_path, "dem_indicatorlist_zwe.csv"
-            ),
-            "update__resources__5__upload": join(fixture_path, "opri_data_zwe.csv"),
-            "update__resources__6__upload": join(
-                fixture_path, "opri_indicatorlist_zwe.csv"
-            ),
-            "update__resources__7__upload": join(fixture_path, "opri_metadata_zwe.csv"),
-            "update__resources__8__upload": join(fixture_path, "qc_sdg_data_zwe.csv"),
+            "update__resources__0__upload": fixture_path / "sdg_data_zwe.csv",
+            "update__resources__1__upload": fixture_path / "sdg_indicatorlist_zwe.csv",
+            "update__resources__2__upload": fixture_path / "sdg_metadata_zwe.csv",
+            "update__resources__3__upload": fixture_path / "dem_data_zwe.csv",
+            "update__resources__4__upload": fixture_path / "dem_indicatorlist_zwe.csv",
+            "update__resources__5__upload": fixture_path / "opri_data_zwe.csv",
+            "update__resources__6__upload": fixture_path / "opri_indicatorlist_zwe.csv",
+            "update__resources__7__upload": fixture_path / "opri_metadata_zwe.csv",
+            "update__resources__8__upload": fixture_path / "qc_sdg_data_zwe.csv",
         }
         resources = results["update"]["resources"]
         cutdown_resources = []
@@ -336,8 +331,11 @@ class TestUpdateDatasetResourcesLogic:
         ]
         assert resources_to_delete == []
         assert filestore_resources == {
-            0: "tests/fixtures/test_data.csv",
-            1: "tests/fixtures/size_hash/ACLED-All-Africa-File_20170101-to-20170708.xlsx",
+            0: Path("tests") / "fixtures" / "test_data.csv",
+            1: Path("tests")
+            / "fixtures"
+            / "size_hash"
+            / "ACLED-All-Africa-File_20170101-to-20170708.xlsx",
         }
         assert new_resource_order == [("test1", "csv"), ("test2", "xlsx")]
         assert statuses == {"test1": 2, "test2": 2}

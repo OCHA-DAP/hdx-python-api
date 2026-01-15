@@ -5,7 +5,7 @@ import json
 import os
 from datetime import datetime, timezone
 from os import remove
-from os.path import basename, join
+from os.path import basename
 
 import pytest
 from hdx.utilities.dateparse import parse_date
@@ -341,20 +341,20 @@ class TestResource:
     datastore = None
 
     @pytest.fixture(scope="class")
-    def static_yaml(self):
-        return join("tests", "fixtures", "config", "hdx_resource_static.yaml")
+    def static_yaml(self, configfolder):
+        return configfolder / "hdx_resource_static.yaml"
 
     @pytest.fixture(scope="class")
-    def static_json(self):
-        return join("tests", "fixtures", "config", "hdx_resource_static.json")
+    def static_json(self, configfolder):
+        return configfolder / "hdx_resource_static.json"
 
     @pytest.fixture(scope="class")
-    def topline_yaml(self):
-        return join("tests", "fixtures", "config", "hdx_datasource_topline.yaml")
+    def topline_yaml(self, configfolder):
+        return configfolder / "hdx_datasource_topline.yaml"
 
     @pytest.fixture(scope="class")
-    def topline_json(self):
-        return join("tests", "fixtures", "config", "hdx_datasource_topline.json")
+    def topline_json(self, configfolder):
+        return configfolder / "hdx_datasource_topline.json"
 
     @pytest.fixture(scope="function")
     def read(self):

@@ -3,7 +3,7 @@
 import logging
 import sys
 from collections.abc import Sequence
-from os.path import join
+from pathlib import Path
 from typing import Any, Optional, Union
 
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -57,7 +57,7 @@ class Showcase(HDXObject):
         }
 
     def update_from_yaml(
-        self, path: str = join("config", "hdx_showcase_static.yaml")
+        self, path: Path | str = Path("config", "hdx_showcase_static.yaml")
     ) -> None:
         """Update showcase metadata with static metadata from YAML file
 
@@ -70,7 +70,7 @@ class Showcase(HDXObject):
         super().update_from_yaml(path)
 
     def update_from_json(
-        self, path: str = join("config", "hdx_showcase_static.json")
+        self, path: Path | str = Path("config", "hdx_showcase_static.json")
     ) -> None:
         """Update showcase metadata with static metadata from JSON file
 

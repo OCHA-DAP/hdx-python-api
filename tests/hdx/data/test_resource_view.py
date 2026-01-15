@@ -2,7 +2,6 @@
 
 import copy
 import json
-from os.path import join
 
 import pytest
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -130,12 +129,12 @@ class TestResourceView:
     }
 
     @pytest.fixture(scope="class")
-    def static_yaml(self):
-        return join("tests", "fixtures", "config", "hdx_resource_view_static.yaml")
+    def static_yaml(self, configfolder):
+        return configfolder / "hdx_resource_view_static.yaml"
 
     @pytest.fixture(scope="class")
-    def static_json(self):
-        return join("tests", "fixtures", "config", "hdx_resource_view_static.json")
+    def static_json(self, configfolder):
+        return configfolder / "hdx_resource_view_static.json"
 
     @pytest.fixture(scope="function")
     def read(self):

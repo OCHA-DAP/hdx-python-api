@@ -3,7 +3,6 @@
 import copy
 import json
 from datetime import datetime, timezone
-from os.path import join
 
 import pytest
 from hdx.location.country import Country
@@ -44,8 +43,8 @@ class TestDatasetNoncore:
     association = None
 
     @pytest.fixture(scope="class")
-    def static_resource_view_yaml(self):
-        return join("tests", "fixtures", "config", "hdx_resource_view_static.yaml")
+    def static_resource_view_yaml(self, configfolder):
+        return configfolder / "hdx_resource_view_static.yaml"
 
     @pytest.fixture(scope="function")
     def vocabulary_read(self):
@@ -988,7 +987,7 @@ class TestDatasetNoncore:
                 "url": "https://docs.google.com/spreadsheets/d/1NjSI2LaS3SqbgYc0HdD8oIb7lofGtiHgoKKATCpwVdY/edit#gid=1088874596",
             }
             dataset.add_update_resource(resourcedata)
-            path = join(temp_folder, "dataset.json")
+            path = temp_folder / "dataset.json"
             dataset.save_to_json(path, follow_urls=True)
             dataset = Dataset.load_from_json(path)
             assert dataset["name"] == name

@@ -2,7 +2,7 @@
 
 import copy
 import json
-from os.path import join
+from pathlib import Path
 
 import pytest
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -58,8 +58,10 @@ showcase_resultdict = {
     "name": "showcase-1",
 }
 
-datasetsdict = load_yaml(join("tests", "fixtures", "dataset_search_results.yaml"))
-allsearchdict = load_yaml(join("tests", "fixtures", "showcase_all_search_results.yaml"))
+datasetsdict = load_yaml(Path("tests") / "fixtures" / "dataset_search_results.yaml")
+allsearchdict = load_yaml(
+    Path("tests") / "fixtures" / "showcase_all_search_results.yaml"
+)
 
 
 def mockshow(url, datadict):
@@ -173,12 +175,12 @@ class TestShowcase:
     association = None
 
     @pytest.fixture(scope="class")
-    def static_yaml(self):
-        return join("tests", "fixtures", "config", "hdx_showcase_static.yaml")
+    def static_yaml(self, configfolder):
+        return configfolder / "hdx_showcase_static.yaml"
 
     @pytest.fixture(scope="class")
-    def static_json(self):
-        return join("tests", "fixtures", "config", "hdx_showcase_static.json")
+    def static_json(self, configfolder):
+        return configfolder / "hdx_showcase_static.json"
 
     @pytest.fixture(scope="function")
     def read(self):
