@@ -185,7 +185,6 @@ class TestUpdateLogic:
             remove_additional_resources=True,
             match_resource_order=False,
             create_default_views=False,
-            hxl_update=False,
             test=True,
         )
         assert statuses == {
@@ -909,7 +908,6 @@ class TestUpdateLogic:
             remove_additional_resources=True,
             match_resource_order=False,
             create_default_views=False,
-            hxl_update=False,
             test=True,
         )
         assert statuses == {
@@ -1633,7 +1631,6 @@ class TestUpdateLogic:
             remove_additional_resources=True,
             match_resource_order=False,
             create_default_views=False,
-            hxl_update=False,
             test=True,
         )
         assert statuses == {

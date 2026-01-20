@@ -168,9 +168,7 @@ class TestCKAN:
         for i in range(10):
             create_resource()
 
-        dataset.create_in_hdx(
-            hxl_update=False, updated_by_script="hdx_python_api_ignore"
-        )
+        dataset.create_in_hdx(updated_by_script="hdx_python_api_ignore")
 
         # check created dataset
         dataset = Dataset.read_from_hdx(name)
@@ -219,7 +217,7 @@ class TestCKAN:
         dataset.add_update_resources(resources)
 
         sleep(2)
-        dataset.update_in_hdx(hxl_update=False, remove_additional_resources=True)
+        dataset.update_in_hdx(remove_additional_resources=True)
         sleep(2)
 
         # check updated dataset
@@ -264,7 +262,6 @@ class TestCKAN:
 
         sleep(2)
         dataset.create_in_hdx(
-            hxl_update=False,
             remove_additional_resources=True,
             keys_to_delete=("caveats",),
         )

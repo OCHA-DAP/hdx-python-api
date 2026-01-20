@@ -150,7 +150,6 @@ class Dataset(HDXObject):
             "reorder": "package_resource_reorder",
             "list": "package_list",
             "autocomplete": "package_autocomplete",
-            "hxl": "package_hxl_update",
             "create_default_views": "package_create_default_resource_views",
         }
 
@@ -392,9 +391,7 @@ class Dataset(HDXObject):
         """
         return len(self._resources)
 
-    def reorder_resources(
-        self, resource_ids: Sequence[str], hxl_update: bool = True
-    ) -> None:
+    def reorder_resources(self, resource_ids: Sequence[str]) -> None:
         """Reorder resources in dataset according to provided list. Resources are
         updated in the dataset object to match new order. However, the dataset is not
         refreshed by rereading from HDX. If only some resource ids are supplied then
@@ -403,7 +400,6 @@ class Dataset(HDXObject):
 
         Args:
             resource_ids: List of resource ids
-            hxl_update: Whether to call package_hxl_update. Defaults to True.
 
         Returns:
             None
@@ -421,8 +417,6 @@ class Dataset(HDXObject):
             resource = next(x for x in self._resources if x["id"] == resource_id)
             reordered_resources.append(resource)
         self._resources = reordered_resources
-        if hxl_update:
-            self.hxl_update()
 
     def move_resource(
         self,
@@ -767,7 +761,6 @@ class Dataset(HDXObject):
         resources_to_delete: Sequence[int],
         filestore_resources: dict[int, str],
         new_resource_order: Sequence[str] | None,
-        hxl_update: bool,
         create_default_views: bool = False,
         test: bool = False,
         **kwargs: Any,
@@ -781,7 +774,6 @@ class Dataset(HDXObject):
             resources_to_delete: List of indexes of resources to delete
             filestore_resources: List of (index of resources, file to upload)
             new_resource_order: New resource order to use or None
-            hxl_update: Whether to call package_hxl_update.
             create_default_views: Whether to create default views. Defaults to False.
             test: Whether running in a test. Defaults to False.
             **kwargs: See below
@@ -851,14 +843,10 @@ class Dataset(HDXObject):
                         (x["name"], x["format"].lower())
                     ),
                 )
-                self.reorder_resources(
-                    [x["id"] for x in sorted_resources], hxl_update=False
-                )
+                self.reorder_resources([x["id"] for x in sorted_resources])
         if create_default_views:
             self.create_default_views()
         self._create_preview_resourceview()
-        if hxl_update:
-            self.hxl_update()
         return results
 
     def _dataset_update_resources(
@@ -1012,7 +1000,6 @@ class Dataset(HDXObject):
         remove_additional_resources: bool,
         match_resource_order: bool,
         create_default_views: bool,
-        hxl_update: bool,
         **kwargs: Any,
     ) -> tuple[dict, dict]:
         """Helper method to compare new and existing dataset data, update
@@ -1031,7 +1018,6 @@ class Dataset(HDXObject):
             remove_additional_resources: Remove additional resources found in dataset (if updating)
             match_resource_order: Match order of given resources by name
             create_default_views: Whether to call package_create_default_resource_views.
-            hxl_update: Whether to call package_hxl_update.
 
         Returns:
             Tuple of (resource status codes, revise call info)
@@ -1072,7 +1058,6 @@ class Dataset(HDXObject):
             resources_to_delete,
             filestore_resources,
             new_resource_order,
-            hxl_update,
             create_default_views=create_default_views,
             **kwargs,
         )
@@ -1087,7 +1072,6 @@ class Dataset(HDXObject):
         remove_additional_resources: bool = False,
         match_resource_order: bool = False,
         create_default_views: bool = True,
-        hxl_update: bool = True,
         **kwargs: Any,
     ) -> dict:
         """Check if dataset exists in HDX and if so, update it. match_resources_by_metadata uses ids if they are
@@ -1110,7 +1094,6 @@ class Dataset(HDXObject):
             remove_additional_resources: Remove additional resources found in dataset. Defaults to False.
             match_resource_order: Match order of given resources by name. Defaults to False.
             create_default_views: Whether to call package_create_default_resource_views. Defaults to True.
-            hxl_update: Whether to call package_hxl_update. Defaults to True.
             **kwargs: See below
             keep_crisis_tags (bool): Whether to keep existing crisis tags. Defaults to True.
             updated_by_script (str): String to identify your script. Defaults to your user agent.
@@ -1140,7 +1123,6 @@ class Dataset(HDXObject):
             remove_additional_resources=remove_additional_resources,
             match_resource_order=match_resource_order,
             create_default_views=create_default_views,
-            hxl_update=hxl_update,
             **kwargs,
         )
         logger.info(f"Updated {self.get_hdx_url()}")
@@ -1155,7 +1137,6 @@ class Dataset(HDXObject):
         remove_additional_resources: bool = False,
         match_resource_order: bool = False,
         create_default_views: bool = True,
-        hxl_update: bool = True,
         **kwargs: Any,
     ) -> dict:
         """Check if dataset exists in HDX and if so, update it, otherwise create it. match_resources_by_metadata uses
@@ -1178,7 +1159,6 @@ class Dataset(HDXObject):
             remove_additional_resources: Remove additional resources found in dataset (if updating). Defaults to False.
             match_resource_order: Match order of given resources by name. Defaults to False.
             create_default_views: Whether to call package_create_default_resource_views (if updating). Defaults to True.
-            hxl_update: Whether to call package_hxl_update. Defaults to True.
             **kwargs: See below
             keep_crisis_tags (bool): Whether to keep existing crisis tags. Defaults to True.
             updated_by_script (str): String to identify your script. Defaults to your user agent.
@@ -1208,7 +1188,6 @@ class Dataset(HDXObject):
                 remove_additional_resources=remove_additional_resources,
                 match_resource_order=match_resource_order,
                 create_default_views=create_default_views,
-                hxl_update=hxl_update,
                 **kwargs,
             )
             logger.info(f"Updated {self.get_hdx_url()}")
@@ -1243,7 +1222,6 @@ class Dataset(HDXObject):
                 [],
                 filestore_resources,
                 None,
-                hxl_update,
                 **kwargs,
             )
         logger.info(f"Created {self.get_hdx_url()}")
@@ -1256,14 +1234,6 @@ class Dataset(HDXObject):
             None
         """
         self._delete_from_hdx("dataset", "id")
-
-    def hxl_update(self) -> None:
-        """Checks dataset for HXL in resources and updates tags and other metadata to trigger HXL preview.
-
-        Returns:
-            None
-        """
-        self._read_from_hdx("dataset", self.data["id"], action=self.actions()["hxl"])
 
     @classmethod
     def search_in_hdx(

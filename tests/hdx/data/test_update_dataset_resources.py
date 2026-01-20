@@ -156,7 +156,6 @@ class TestUpdateDatasetResourcesLogic:
             resources_to_delete,
             filestore_resources,
             new_resource_order,
-            hxl_update=False,
             create_default_views=False,
             test=True,
         )
