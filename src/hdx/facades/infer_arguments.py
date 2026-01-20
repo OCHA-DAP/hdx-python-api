@@ -71,6 +71,9 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
                 case "str" | "Path" | "Path | str":
                     param_type = "str | None"
                     default = None
+                case "Optional[bool]" | "bool | None":
+                    param_type = "bool | None"
+                    default = None
                 case "bool":
                     default = False
                 case _:
