@@ -7,7 +7,6 @@ import warnings
 from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence
 from copy import deepcopy
 from datetime import datetime
-from os.path import isfile
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
@@ -29,14 +28,12 @@ from hdx.utilities.dateparse import (
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_json
-from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.saver import save_iterable, save_json
 from hdx.utilities.uuid import is_valid_uuid
 from hxl.input import HXLIOException, InputOptions, munge_url
 
 import hdx.data.organization as org_module
 import hdx.data.resource as res_module
-import hdx.data.resource_view as resource_view
 import hdx.data.showcase as sc_module
 import hdx.data.user as user
 import hdx.data.vocabulary as vocabulary
@@ -391,7 +388,9 @@ class Dataset(HDXObject):
         """
         return len(self._resources)
 
-    def reorder_resources(self, resource_ids: Sequence[str]) -> None:
+    def reorder_resources(
+        self, resource_ids: Sequence[str], hxl_update: bool = True
+    ) -> None:
         """Reorder resources in dataset according to provided list. Resources are
         updated in the dataset object to match new order. However, the dataset is not
         refreshed by rereading from HDX. If only some resource ids are supplied then
@@ -1072,6 +1071,7 @@ class Dataset(HDXObject):
         remove_additional_resources: bool = False,
         match_resource_order: bool = False,
         create_default_views: bool = True,
+        hxl_update: bool = True,
         **kwargs: Any,
     ) -> dict:
         """Check if dataset exists in HDX and if so, update it. match_resources_by_metadata uses ids if they are
@@ -1137,6 +1137,7 @@ class Dataset(HDXObject):
         remove_additional_resources: bool = False,
         match_resource_order: bool = False,
         create_default_views: bool = True,
+        hxl_update: bool = True,
         **kwargs: Any,
     ) -> dict:
         """Check if dataset exists in HDX and if so, update it, otherwise create it. match_resources_by_metadata uses
@@ -2219,10 +2220,10 @@ class Dataset(HDXObject):
         """
         self.data["dataset_preview"] = "resource_id"
 
-    def set_quickchart_resource(
+    def set_preview_resource(
         self, resource: Union["Resource", dict, str, int]
     ) -> "Resource":
-        """Set the resource that will be used for displaying QuickCharts in dataset preview
+        """Set the resource that will be used for displaying previews in dataset preview
 
         Args:
             resource: Either resource id or name, resource metadata from a Resource object or a dictionary or position
@@ -2256,17 +2257,14 @@ class Dataset(HDXObject):
                 dataset_resource.disable_dataset_preview()
         return preview_resource
 
-    def quickcharts_resource_last(self) -> bool:
-        """Move the QuickCharts resource to be last. Assumes that it's name begins 'QuickCharts-'.
-
-        Returns:
-            True if QuickCharts resource found, False if not
-        """
-        for i, resource in enumerate(self._resources):
-            if resource["name"][:12] == "QuickCharts-":
-                self._resources.append(self._resources.pop(i))
-                return True
-        return False
+    def set_quickcharts_resource(
+        self, resource: Union["Resource", dict, str, int]
+    ) -> "Resource":
+        warnings.warn(
+            "set_quickcharts_resource() is deprecated, use set_preview_resource() instead",
+            DeprecationWarning,
+        )
+        return self.set_preview_resource(resource)
 
     def create_default_views(self, create_datastore_views: bool = False) -> None:
         """Create default resource views for all resources in dataset
@@ -2298,164 +2296,6 @@ class Dataset(HDXObject):
                     self._preview_resourceview = None
                     break
 
-    def _generate_resource_view(
-        self,
-        resource: Union["Resource", dict, str, int] = 0,
-        path: Path | str | None = None,
-        bites_disabled: Sequence[bool] | None = None,
-        indicators: Sequence[dict] | None = None,
-        findreplace: dict | None = None,
-    ) -> resource_view.ResourceView | None:
-        """Create QuickCharts for the given resource in a dataset. If you do
-        not supply a path, then the internal indicators resource view template
-        will be used. You can disable specific bites by providing
-        bites_disabled, a list of 3 bools where True indicates a specific bite
-        is disabled and False indicates leave enabled. The parameter indicators
-        is a list with 3 dictionaries of form:
-        {"code": "MY_INDICATOR_CODE", "title": "MY_INDICATOR_TITLE",
-        "unit": "MY_INDICATOR_UNIT"}. Optionally, the following defaults can be
-        overridden in the parameter indicators: {"code_col": "#indicator+code",
-        "value_col": "#indicator+value+num", "date_col": "#date+year",
-        "date_format": "%Y", "aggregate_col": "null"}.
-
-        Creation of the resource view will be delayed until after the next
-        dataset create or update if a resource id is not yet available.
-
-        Args:
-            resource: Either resource id or name, resource metadata from a Resource object or a dictionary or position. Defaults to 0.
-            path: Path to YAML resource view metadata. Defaults to None (config/hdx_resource_view_static.yaml or internal template).
-            bites_disabled: Which QC bites should be disabled. Defaults to None (all bites enabled).
-            indicators: Indicator codes, QC titles and units for resource view template. Defaults to None (don't use template).
-            findreplace: Replacements for anything else in resource view. Defaults to None.
-
-        Returns:
-            The resource view if QuickCharts created, None is not
-        """
-        if not bites_disabled:
-            bites_disabled = [False, False, False]
-        elif all(i for i in bites_disabled):
-            return None
-        res = self.set_quickchart_resource(resource)
-        if res is None:
-            return None
-        if "id" in res:
-            resourceview_data = {"resource_id": res["id"]}
-        else:
-            resourceview_data = {"resource_name": res["name"]}
-        resourceview = resource_view.ResourceView(resourceview_data)
-        if path is None:
-            if indicators is None:
-                path = Path("config", "hdx_resource_view_static.yaml")
-                if not isfile(path):
-                    path = path.with_suffix(".yml")
-            else:
-                path = script_dir_plus_file(
-                    "indicator_resource_view_template.yaml",
-                    NotRequestableError,
-                )
-        resourceview.update_from_yaml(path=path)
-
-        def replace_string(instr, what, withwhat):
-            return instr.replace(what, str(withwhat))
-
-        defaults = {
-            "code_col": "#indicator+code",
-            "value_col": "#indicator+value+num",
-            "date_col": "#date+year",
-            "date_format": "%Y",
-            "aggregate_col": "null",
-        }
-
-        def replace_col(hxl_preview_cfg, col_str, ind, col, with_quotes=False):
-            if with_quotes:
-                col_str = f'"{col_str}"'
-            replace = ind.get(col)
-            if replace:
-                if with_quotes:
-                    replace = f'"{replace}"'
-            else:
-                replace = defaults[col]
-            return replace_string(hxl_preview_cfg, col_str, replace)
-
-        hxl_preview_config = resourceview["hxl_preview_config"]
-        if indicators is None:
-            indicators_notexist = [False, False, False]
-        else:
-            len_indicators = len(indicators)
-            if len_indicators == 0:
-                return None
-            indicators_notexist = [True, True, True]
-
-            def replace_indicator(qc_config, index):
-                indicator = indicators[index]
-                ind_str = str(index + 1)
-                qc_config = replace_string(
-                    qc_config, f"CODE_VALUE_{ind_str}", str(indicator["code"])
-                )
-                replace = indicator.get("description", "")
-                qc_config = replace_string(
-                    qc_config, f"DESCRIPTION_VALUE_{ind_str}", replace
-                )
-                qc_config = replace_string(
-                    qc_config, f"TITLE_VALUE_{ind_str}", indicator["title"]
-                )
-                replace = indicator.get("unit", "")
-                qc_config = replace_string(qc_config, f"UNIT_VALUE_{ind_str}", replace)
-                qc_config = replace_col(
-                    qc_config, f"CODE_COL_{ind_str}", indicator, "code_col"
-                )
-                qc_config = replace_col(
-                    qc_config, f"VALUE_COL_{ind_str}", indicator, "value_col"
-                )
-                qc_config = replace_col(
-                    qc_config, f"DATE_COL_{ind_str}", indicator, "date_col"
-                )
-                qc_config = replace_col(
-                    qc_config,
-                    f"DATE_FORMAT_{ind_str}",
-                    indicator,
-                    "date_format",
-                )
-                qc_config = replace_col(
-                    qc_config,
-                    f"AGGREGATE_COL_{ind_str}",
-                    indicator,
-                    "aggregate_col",
-                    True,
-                )
-                indicators_notexist[index] = False
-                return qc_config
-
-            if indicators[0]:
-                hxl_preview_config = replace_indicator(hxl_preview_config, 0)
-            if len_indicators > 1 and indicators[1]:
-                hxl_preview_config = replace_indicator(hxl_preview_config, 1)
-            if len_indicators > 2 and indicators[2]:
-                hxl_preview_config = replace_indicator(hxl_preview_config, 2)
-            if indicators_notexist == [True, True, True]:
-                return None
-        hxl_preview_config = json.loads(hxl_preview_config)
-        bites = hxl_preview_config["bites"]
-        for i, disable in reversed(list(enumerate(bites_disabled))):
-            if disable or indicators_notexist[i]:
-                del bites[i]
-        hxl_preview_config = json.dumps(
-            hxl_preview_config, indent=None, separators=(",", ":")
-        )
-        if findreplace:
-            for find in findreplace:
-                hxl_preview_config = replace_string(
-                    hxl_preview_config, find, findreplace[find]
-                )
-        resourceview["hxl_preview_config"] = hxl_preview_config
-
-        if "resource_id" in resourceview:
-            resourceview.create_in_hdx()
-            self._preview_resourceview = None
-        else:
-            self._preview_resourceview = resourceview
-        return resourceview
-
     def generate_quickcharts(
         self,
         resource: Union["Resource", dict, str, int] = 0,
@@ -2463,22 +2303,8 @@ class Dataset(HDXObject):
         bites_disabled: Sequence[bool] | None = None,
         indicators: Sequence[dict] | None = None,
         findreplace: dict | None = None,
-    ) -> resource_view.ResourceView:
-        """Create QuickCharts for the given resource in a dataset. If you do
-        not supply a path, then the internal indicators resource view template
-        will be used. You can disable specific bites by providing
-        bites_disabled, a list of 3 bools where True indicates a specific bite
-        is disabled and False indicates leave enabled. The parameter indicators
-        is a list with 3 dictionaries of form:
-        {"code": "MY_INDICATOR_CODE", "title": "MY_INDICATOR_TITLE",
-        "unit": "MY_INDICATOR_UNIT"}. Optionally, the following defaults can be
-        overridden in the parameter indicators: {"code_col": "#indicator+code",
-        "value_col": "#indicator+value+num", "date_col": "#date+year",
-        "date_format": "%Y", "aggregate_col": "null"}.
-
-        Creation of the resource view will be delayed until after the next
-        dataset create or update if a resource id is not yet available and will
-        be disabled if there are no valid charts to display.
+    ) -> None:
+        """To be removed
 
         Args:
             resource: Either resource id or name, resource metadata from a Resource object or a dictionary or position. Defaults to 0.
@@ -2488,14 +2314,9 @@ class Dataset(HDXObject):
             findreplace: Replacements for anything else in resource view. Defaults to None.
 
         Returns:
-            The resource view if QuickCharts created, None is not
+            None
         """
-        resourceview = self._generate_resource_view(
-            resource, path, bites_disabled, indicators, findreplace=findreplace
-        )
-        if resourceview is None:
-            self.preview_off()
-        return resourceview
+        return None
 
     def get_name_or_id(self, prefer_name: bool = True) -> str | None:
         """Get dataset name or id eg. for use in urls. If prefer_name is True,
@@ -2772,25 +2593,6 @@ class Dataset(HDXObject):
         the time period and are returned in the results dictionary in keys
         startdate and enddate.
 
-        If the parameter quickcharts is supplied then various QuickCharts
-        related actions will occur depending upon the keys given in the
-        dictionary and the returned dictionary will contain the QuickCharts
-        resource in the key qc_resource. If the keys: hashtag - the HXL hashtag
-        to examine - and values - the 3 values to look for in that column - are
-        supplied, then a list of booleans indicating which QuickCharts bites
-        should be enabled will be returned in the key bites_disabled in the
-        returned dictionary. For the 3 values, if the key: numeric_hashtag is
-        supplied then if that column for a given value contains no numbers,
-        then the corresponding bite will be disabled. If the key: cutdown is
-        given, if it is 1, then a separate cut down list is created containing
-        only columns with HXL hashtags and rows with desired values (if hashtag
-        and values are supplied) for the purpose of driving QuickCharts. It is
-        returned in the key qcrows in the returned dictionary with the matching
-        headers in qcheaders. If cutdown is 2, then a resource is created using
-        the cut down list. If the key cutdownhashtags is supplied, then only
-        the provided hashtags are used for cutting down otherwise the full list
-        of HXL tags is used.
-
         Args:
             headers: Headers
             iterable: Iterable returning rows
@@ -2801,7 +2603,6 @@ class Dataset(HDXObject):
             datecol: Date column for setting time period. Defaults to None (don't set).
             yearcol: Year column for setting dataset year range. Defaults to None (don't set).
             date_function: Date function to call for each row. Defaults to None.
-            quickcharts: Dictionary containing optional keys: hashtag, values, cutdown and/or cutdownhashtags
             encoding: Encoding to use. Defaults to None (infer encoding).
 
         Returns:
@@ -2818,40 +2619,6 @@ class Dataset(HDXObject):
             return False, retdict
         rows = [Download.hxl_row(headers, hxltags, dict_form=True)]
         dates = [default_enddate, default_date]
-        qc = {"cutdown": 0}
-        bites_disabled = [True, True, True]
-        if quickcharts is not None:
-            hashtag = quickcharts.get("hashtag")
-            if hashtag:
-                qc["column"] = next(
-                    key for key, value in hxltags.items() if value == hashtag
-                )  # reverse dict lookup
-            else:
-                qc["column"] = None
-            numeric_hashtag = quickcharts.get("numeric_hashtag")
-            if numeric_hashtag:
-                qc["numeric"] = next(
-                    key for key, value in hxltags.items() if value == numeric_hashtag
-                )  # reverse lookup
-            else:
-                qc["numeric"] = None
-            cutdown = quickcharts.get("cutdown", 0)
-            if cutdown:
-                qc["cutdown"] = cutdown
-                cutdownhashtags = quickcharts.get("cutdownhashtags")
-                if cutdownhashtags is None:
-                    cutdownhashtags = list(hxltags.keys())
-                else:
-                    cutdownhashtags = [
-                        key
-                        for key, value in hxltags.items()
-                        if value in cutdownhashtags
-                    ]
-                if numeric_hashtag and qc["numeric"] not in cutdownhashtags:
-                    cutdownhashtags.append(qc["numeric"])
-                qc["headers"] = [x for x in headers if x in cutdownhashtags]
-                qc["rows"] = [Download.hxl_row(qc["headers"], hxltags, dict_form=True)]
-
         if yearcol is not None:
 
             def yearcol_function(row):
@@ -2893,24 +2660,6 @@ class Dataset(HDXObject):
                     if enddate > dates[1]:
                         dates[1] = enddate
             rows.append(row)
-            if quickcharts is not None:
-                if qc["column"] is None:
-                    if qc["cutdown"]:
-                        qcrow = {x: row[x] for x in qc["headers"]}
-                        qc["rows"].append(qcrow)
-                else:
-                    value = row[qc["column"]]
-                    for i, lookup in enumerate(quickcharts["values"]):
-                        if value == lookup:
-                            if qc["numeric"]:
-                                try:
-                                    float(row[qc["numeric"]])
-                                except (TypeError, ValueError):
-                                    continue
-                            bites_disabled[i] = False
-                            if qc["cutdown"]:
-                                qcrow = {x: row[x] for x in qc["headers"]}
-                                qc["rows"].append(qcrow)
         if len(rows) == 1:
             logger.error(f"No data rows in {filename}!")
             return False, retdict
@@ -2933,25 +2682,6 @@ class Dataset(HDXObject):
         retdict["resource"] = resource
         retdict["headers"] = headers
         retdict["rows"] = rows
-        if quickcharts is not None:
-            retdict["bites_disabled"] = bites_disabled
-            if qc["cutdown"]:
-                retdict["qcheaders"] = qc["headers"]
-                retdict["qcrows"] = qc["rows"]
-                if qc["cutdown"] == 2:
-                    qc_resourcedata = {
-                        "name": f"QuickCharts-{resourcedata['name']}",
-                        "description": "Cut down data for QuickCharts",
-                    }
-                    resource = self.generate_resource_from_rows(
-                        folder,
-                        f"qc_{filename}",
-                        qc["rows"],
-                        qc_resourcedata,
-                        headers=qc["headers"],
-                        encoding=encoding,
-                    )
-                    retdict["qc_resource"] = resource
         return True, retdict
 
     def generate_resource_from_iterator(
@@ -3026,25 +2756,6 @@ class Dataset(HDXObject):
         datetime. The lowest start date and highest end date are used to set
         the time period and are returned in the results dictionary in keys
         startdate and enddate.
-
-        If the parameter quickcharts is supplied then various QuickCharts
-        related actions will occur depending upon the keys given in the
-        dictionary and the returned dictionary will contain the QuickCharts
-        resource in the key qc_resource. If the keys: hashtag - the HXL hashtag
-        to examine - and values - the 3 values to look for in that column - are
-        supplied, then a list of booleans indicating which QuickCharts bites
-        should be enabled will be returned in the key bites_disabled in the
-        returned dictionary. For the 3 values, if the key: numeric_hashtag is
-        supplied then if that column for a given value contains no numbers,
-        then the corresponding bite will be disabled. If the key: cutdown is
-        given, if it is 1, then a separate cut down list is created containing
-        only columns with HXL hashtags and rows with desired values (if hashtag
-        and values are supplied) for the purpose of driving QuickCharts. It is
-        returned in the key qcrows in the returned dictionary with the matching
-        headers in qcheaders. If cutdown is 2, then a resource is created using
-        the cut down list. If the key cutdownhashtags is supplied, then only
-        the provided hashtags are used for cutting down otherwise the full list
-        of HXL tags is used.
 
         Args:
             downloader: A Download or Retrieve object
@@ -3128,25 +2839,6 @@ class Dataset(HDXObject):
         the time period and are returned in the results dictionary in keys
         startdate and enddate.
 
-        If the parameter quickcharts is supplied then various QuickCharts
-        related actions will occur depending upon the keys given in the
-        dictionary and the returned dictionary will contain the QuickCharts
-        resource in the key qc_resource. If the keys: hashtag - the HXL hashtag
-        to examine - and values - the 3 values to look for in that column - are
-        supplied, then a list of booleans indicating which QuickCharts bites
-        should be enabled will be returned in the key bites_disabled in the
-        returned dictionary. For the 3 values, if the key: numeric_hashtag is
-        supplied then if that column for a given value contains no numbers,
-        then the corresponding bite will be disabled. If the key: cutdown is
-        given, if it is 1, then a separate cut down list is created containing
-        only columns with HXL hashtags and rows with desired values (if hashtag
-        and values are supplied) for the purpose of driving QuickCharts. It is
-        returned in the key qcrows in the returned dictionary with the matching
-        headers in qcheaders. If cutdown is 2, then a resource is created using
-        the cut down list. If the key cutdownhashtags is supplied, then only
-        the provided hashtags are used for cutting down otherwise the full list
-        of HXL tags is used.
-
         Args:
             downloader: A Download or Retrieve object
             url: URL to download
@@ -3159,7 +2851,6 @@ class Dataset(HDXObject):
             datecol: Date column for setting time period. Defaults to None (don't set).
             yearcol: Year column for setting dataset year range. Defaults to None (don't set).
             date_function: Date function to call for each row. Defaults to None.
-            quickcharts: Dictionary containing optional keys: hashtag, values, cutdown and/or cutdownhashtags
             **kwargs: Any additional args to pass to downloader.get_tabular_rows
 
         Returns:

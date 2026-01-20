@@ -717,9 +717,7 @@ class TestDatasetNoncore:
         dataset = Dataset(datasetdata)
         assert "dataset_preview" not in dataset
         assert (
-            dataset.set_quickchart_resource("3d777226-96aa-4239-860a-703389d16d1f")[
-                "id"
-            ]
+            dataset.set_preview_resource("3d777226-96aa-4239-860a-703389d16d1f")["id"]
             == "3d777226-96aa-4239-860a-703389d16d1f"
         )
         assert dataset["dataset_preview"] == "resource_id"
@@ -727,184 +725,44 @@ class TestDatasetNoncore:
         assert resources[0]["dataset_preview_enabled"] == "False"
         assert resources[1]["dataset_preview_enabled"] == "True"
         assert (
-            dataset.set_quickchart_resource(resources[0])["id"]
+            dataset.set_preview_resource(resources[0])["id"]
             == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
         )
         assert resources[0]["dataset_preview_enabled"] == "True"
         assert resources[1]["dataset_preview_enabled"] == "False"
         assert (
-            dataset.set_quickchart_resource(resources[1].data)["id"]
+            dataset.set_preview_resource(resources[1].data)["id"]
             == "3d777226-96aa-4239-860a-703389d16d1f"
         )
         assert resources[0]["dataset_preview_enabled"] == "False"
         assert resources[1]["dataset_preview_enabled"] == "True"
         assert (
-            dataset.set_quickchart_resource(0)["id"]
+            dataset.set_preview_resource(0)["id"]
             == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
         )
         assert resources[0]["dataset_preview_enabled"] == "True"
         assert resources[1]["dataset_preview_enabled"] == "False"
-        assert dataset.set_quickchart_resource("12345") is None
+        assert dataset.set_preview_resource("12345") is None
         with pytest.raises(HDXError):
-            dataset.set_quickchart_resource(True)
+            dataset.set_preview_resource(True)
         dataset.preview_off()
         assert dataset["dataset_preview"] == "no_preview"
         assert resources[0]["dataset_preview_enabled"] == "False"
         assert resources[1]["dataset_preview_enabled"] == "False"
         assert (
-            dataset.set_quickchart_resource("Resource2")["id"]
+            dataset.set_preview_resource("Resource2")["id"]
             == "3d777226-96aa-4239-860a-703389d16d1f"
         )
         assert dataset["dataset_preview"] == "resource_id"
         assert resources[0]["dataset_preview_enabled"] == "False"
         assert resources[1]["dataset_preview_enabled"] == "True"
         assert (
-            dataset.set_quickchart_resource({"name": "Resource1"})["id"]
+            dataset.set_preview_resource({"name": "Resource1"})["id"]
             == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
         )
         assert dataset["dataset_preview"] == "resource_id"
         assert resources[0]["dataset_preview_enabled"] == "True"
         assert resources[1]["dataset_preview_enabled"] == "False"
-
-    def test_quickcharts_resource_last(self, configuration):
-        datasetdata = copy.deepcopy(dataset_data)
-        resourcesdata = copy.deepcopy(resources_data)
-        datasetdata["resources"] = resourcesdata
-        dataset = Dataset(datasetdata)
-        assert dataset.quickcharts_resource_last() is False
-        resource = {"name": "QuickCharts-resource"}
-        dataset._resources.insert(1, resource)
-        assert dataset.quickcharts_resource_last() is True
-        assert dataset._resources[3]["name"] == resource["name"]
-        assert dataset.quickcharts_resource_last() is True
-
-    def test_generate_resource_view(
-        self, configuration, vocabulary_update, static_resource_view_yaml
-    ):
-        datasetdata = copy.deepcopy(dataset_data)
-        resourcesdata = copy.deepcopy(resources_data)
-        datasetdata["resources"] = resourcesdata
-        dataset = Dataset(datasetdata)
-        assert "dataset_preview" not in dataset
-        resourceview = dataset.generate_quickcharts(path=static_resource_view_yaml)
-        hxl_preview_config = json.loads(resourceview["hxl_preview_config"])
-        assert resourceview["id"] == "c06b5a0d-1d41-4a74-a196-41c251c76023"
-        assert hxl_preview_config["bites"][0]["title"] == "Sum of fatalities"
-        assert (
-            hxl_preview_config["bites"][1]["title"]
-            == "Sum of fatalities grouped by admin1"
-        )
-        assert (
-            hxl_preview_config["bites"][2]["title"]
-            == "Sum of fatalities grouped by admin2"
-        )
-        resourceview = dataset.generate_quickcharts(
-            path=static_resource_view_yaml, bites_disabled=[False, True, False]
-        )
-        hxl_preview_config = json.loads(resourceview["hxl_preview_config"])
-        assert resourceview["id"] == "c06b5a0d-1d41-4a74-a196-41c251c76023"
-        assert hxl_preview_config["bites"][0]["title"] == "Sum of fatalities"
-        assert (
-            hxl_preview_config["bites"][1]["title"]
-            == "Sum of fatalities grouped by admin2"
-        )
-        resourceview = dataset.generate_quickcharts(
-            path=static_resource_view_yaml, bites_disabled=[True, True, True]
-        )
-        assert resourceview is None
-        indicators = [
-            {
-                "code": "1",
-                "title": "My1",
-                "unit": "ones",
-                "description": "This is my one!",
-            },
-            {
-                "code": "2",
-                "title": "My2",
-                "unit": "twos",
-                "aggregate_col": "Agg2",
-            },
-            {
-                "code": "3",
-                "title": "My3",
-                "description": "This is my three!",
-                "date_col": "dt3",
-                "date_format": "%b %Y",
-            },
-        ]
-        resourceview = dataset.generate_quickcharts(indicators=indicators)
-        hxl_preview_config = json.loads(resourceview["hxl_preview_config"])
-        assert resourceview["id"] == "c06b5a0d-1d41-4a74-a196-41c251c76023"
-        assert (
-            hxl_preview_config["bites"][0]["ingredient"]["filters"]["filterWith"][0][
-                "#indicator+code"
-            ]
-            == "1"
-        )
-        assert (
-            hxl_preview_config["bites"][0]["ingredient"]["description"]
-            == "This is my one!"
-        )
-        assert hxl_preview_config["bites"][0]["uiProperties"]["title"] == "My1"
-        assert (
-            hxl_preview_config["bites"][0]["computedProperties"]["dataTitle"] == "ones"
-        )
-        assert (
-            hxl_preview_config["bites"][1]["ingredient"]["filters"]["filterWith"][0][
-                "#indicator+code"
-            ]
-            == "2"
-        )
-        assert hxl_preview_config["bites"][1]["ingredient"]["description"] == ""
-        assert hxl_preview_config["bites"][1]["uiProperties"]["title"] == "My2"
-        assert (
-            hxl_preview_config["bites"][1]["computedProperties"]["dataTitle"] == "twos"
-        )
-        assert hxl_preview_config["bites"][1]["ingredient"]["aggregateColumn"] == "Agg2"
-        assert (
-            hxl_preview_config["bites"][2]["ingredient"]["filters"]["filterWith"][0][
-                "#indicator+code"
-            ]
-            == "3"
-        )
-        assert (
-            hxl_preview_config["bites"][2]["ingredient"]["description"]
-            == "This is my three!"
-        )
-        assert hxl_preview_config["bites"][2]["ingredient"]["dateColumn"] == "dt3"
-        assert hxl_preview_config["bites"][2]["uiProperties"]["title"] == "My3"
-        assert hxl_preview_config["bites"][2]["computedProperties"]["dataTitle"] == ""
-        assert hxl_preview_config["bites"][2]["uiProperties"]["dateFormat"] == "%b %Y"
-        resourceview = dataset.generate_quickcharts(
-            indicators=indicators,
-            findreplace={
-                "#indicator+code": "#item+code",
-                "#indicator+value+num": "#value",
-            },
-        )
-        hxl_preview_config = json.loads(resourceview["hxl_preview_config"])
-        assert resourceview["id"] == "c06b5a0d-1d41-4a74-a196-41c251c76023"
-        assert (
-            hxl_preview_config["bites"][0]["ingredient"]["filters"]["filterWith"][0][
-                "#item+code"
-            ]
-            == "1"
-        )
-        assert hxl_preview_config["bites"][0]["ingredient"]["valueColumn"] == "#value"
-        assert dataset.generate_quickcharts(indicators=[]) is None
-        assert dataset.generate_quickcharts(indicators=[None, None, None]) is None
-        assert (
-            dataset.generate_quickcharts(resource="123", path=static_resource_view_yaml)
-            is None
-        )
-        del dataset.get_resources()[0]["id"]
-        resourceview = dataset.generate_quickcharts(path=static_resource_view_yaml)
-        assert "id" not in resourceview
-        assert "resource_id" not in resourceview
-        assert resourceview["resource_name"] == "Resource1"
-        with pytest.raises(IOError):
-            dataset.generate_quickcharts()
 
     def test_remove_dates_from_title(self, configuration):
         dataset = Dataset()
