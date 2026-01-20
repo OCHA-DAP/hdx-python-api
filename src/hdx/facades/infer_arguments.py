@@ -5,7 +5,7 @@ import sys
 from collections.abc import Callable
 from inspect import getdoc
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional  # noqa: F401
 
 import defopt
 from hdx.utilities.easy_logging import setup_logging

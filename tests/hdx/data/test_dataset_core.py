@@ -170,19 +170,6 @@ def mockall(url, datadict):
     )
 
 
-def mockhxlupdate(url, datadict):
-    if "hxl" not in url:
-        return MockResponse(
-            404,
-            '{"success": false, "error": {"message": "TEST ERROR: Not HXL Update", "__type": "TEST ERROR: Not HXL Update Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_hxl_update"}',
-        )
-    result = json.dumps(hxlupdate_list)
-    return MockResponse(
-        200,
-        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=package_hxl_update"}}',
-    )
-
-
 class TestDatasetCore:
     @pytest.fixture(scope="class")
     def static_yaml(self, configfolder):
@@ -244,8 +231,6 @@ class TestDatasetCore:
                     return vocabulary_mockshow(url, datadict)
                 if "show" in url:
                     return dataset_mockshow(url, datadict)
-                if "hxl" in url:
-                    return mockhxlupdate(url, datadict)
                 if "default" in url:
                     result = json.dumps(resource_view_list)
                     return MockResponse(
@@ -331,8 +316,6 @@ class TestDatasetCore:
                     return vocabulary_mockshow(url, datadict)
                 if "show" in url:
                     return dataset_mockshow(url, datadict)
-                if "hxl" in url:
-                    return mockhxlupdate(url, datadict)
                 if "resource" in url:
                     resultdictcopy = copy.deepcopy(resources_data[0])
                     merge_two_dictionaries(resultdictcopy, datadict)
@@ -386,8 +369,6 @@ class TestDatasetCore:
                 datadict = json.loads(decodedata)
                 if "show" in url:
                     return dataset_mockshow(url, datadict)
-                if "hxl" in url:
-                    return mockhxlupdate(url, datadict)
                 if "reorder" not in url:
                     return MockResponse(
                         404,

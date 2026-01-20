@@ -562,7 +562,6 @@ class TestDatasetResourceGeneration:
                 assert results == {
                     "startdate": datetime(2001, 1, 1, 0, 0, tzinfo=timezone.utc),
                     "enddate": datetime(2002, 12, 31, 23, 59, 59, tzinfo=timezone.utc),
-                    "bites_disabled": [False, True, False],
                     "resource": {
                         "description": "Conflict data with HXL tags",
                         "format": "csv",
@@ -738,85 +737,6 @@ class TestDatasetResourceGeneration:
                             "lala": "lala",
                         },
                     ],
-                    "qc_resource": {
-                        "description": "Cut down data for QuickCharts",
-                        "format": "csv",
-                        "name": "QuickCharts-Conflict Data for Algeria",
-                    },
-                    "qcheaders": [
-                        "EVENT_ID_CNTY",
-                        "EVENT_DATE",
-                        "YEAR",
-                        "EVENT_TYPE",
-                        "ACTOR1",
-                        "ACTOR2",
-                        "COUNTRY",
-                        "ADMIN1",
-                        "ADMIN2",
-                        "ADMIN3",
-                        "LOCATION",
-                        "LATITUDE",
-                        "LONGITUDE",
-                        "SOURCE",
-                        "NOTES",
-                        "FATALITIES",
-                    ],
-                    "qcrows": [
-                        {
-                            "EVENT_ID_CNTY": "#event+code",
-                            "EVENT_DATE": "#date+occurred",
-                            "YEAR": "#date+year",
-                            "EVENT_TYPE": "#event+type",
-                            "ACTOR1": "#group+name+first",
-                            "ACTOR2": "#group+name+second",
-                            "COUNTRY": "#country+name",
-                            "ADMIN1": "#adm1+name",
-                            "ADMIN2": "#adm2+name",
-                            "ADMIN3": "#adm3+name",
-                            "LOCATION": "#loc+name",
-                            "LATITUDE": "#geo+lat",
-                            "LONGITUDE": "#geo+lon",
-                            "SOURCE": "#meta+source",
-                            "NOTES": "#description",
-                            "FATALITIES": "#affected+killed",
-                        },
-                        {
-                            "EVENT_ID_CNTY": "1416RTA",
-                            "EVENT_DATE": "18/04/2001",
-                            "YEAR": "2001",
-                            "EVENT_TYPE": "Violence against civilians",
-                            "ACTOR1": "Police Forces of Algeria (1999-)",
-                            "ACTOR2": "Civilians (Algeria)",
-                            "COUNTRY": "Algeria",
-                            "ADMIN1": "Tizi Ouzou",
-                            "ADMIN2": "Beni-Douala",
-                            "ADMIN3": None,
-                            "LOCATION": "Beni Douala",
-                            "LATITUDE": "36.61954",
-                            "LONGITUDE": "4.08282",
-                            "SOURCE": "Associated Press Online",
-                            "NOTES": "A Berber student was shot while in police custody at a police station in Beni Douala. He later died on Apr.21.",
-                            "FATALITIES": "1",
-                        },
-                        {
-                            "EVENT_ID_CNTY": "2231RTA",
-                            "EVENT_DATE": "21/04/2001",
-                            "YEAR": "2001",
-                            "EVENT_TYPE": "Riots/Protests",
-                            "ACTOR1": "Rioters (Algeria)",
-                            "ACTOR2": "Police Forces of Algeria (1999-)",
-                            "COUNTRY": "Algeria",
-                            "ADMIN1": "Bejaia",
-                            "ADMIN2": "Amizour",
-                            "ADMIN3": None,
-                            "LOCATION": "Amizour",
-                            "LATITUDE": "36.64022",
-                            "LONGITUDE": "4.90131",
-                            "SOURCE": "Kabylie report",
-                            "NOTES": "Rioters threw molotov cocktails, rocks and burning tires at gendarmerie stations in Beni Douala, El-Kseur and Amizour.",
-                            "FATALITIES": "0",
-                        },
-                    ],
                 }
                 assert (
                     dataset["dataset_date"]
@@ -830,22 +750,11 @@ class TestDatasetResourceGeneration:
                         "description": "Conflict data with HXL tags",
                         "format": "csv",
                     },
-                    {
-                        "name": "QuickCharts-Conflict Data for Algeria",
-                        "description": "Cut down data for QuickCharts",
-                        "format": "csv",
-                    },
                 ]
                 assert_files_same(
                     fixturesfolder / "download_gen_resource" / filename,
                     folder / filename,
                 )
-                qc_filename = f"qc_{filename}"
-                assert_files_same(
-                    fixturesfolder / "gen_resource" / qc_filename,
-                    folder / qc_filename,
-                )
-
                 success, results = dataset.download_and_generate_resource(
                     downloader,
                     TestDatasetResourceGeneration.url,
@@ -887,7 +796,6 @@ class TestDatasetResourceGeneration:
                 assert results == {
                     "startdate": datetime(2001, 1, 1, 0, 0, tzinfo=timezone.utc),
                     "enddate": datetime(2002, 12, 31, 23, 59, 59, tzinfo=timezone.utc),
-                    "bites_disabled": [False, True, False],
                     "resource": {
                         "description": "Conflict data with HXL tags",
                         "format": "csv",
@@ -1063,20 +971,6 @@ class TestDatasetResourceGeneration:
                             "lala": "lala",
                         },
                     ],
-                    "qc_resource": {
-                        "description": "Cut down data for QuickCharts",
-                        "format": "csv",
-                        "name": "QuickCharts-Conflict Data for Algeria",
-                    },
-                    "qcheaders": ["EVENT_ID_CNTY", "FATALITIES"],
-                    "qcrows": [
-                        {
-                            "EVENT_ID_CNTY": "#event+code",
-                            "FATALITIES": "#affected+killed",
-                        },
-                        {"EVENT_ID_CNTY": "1416RTA", "FATALITIES": "1"},
-                        {"EVENT_ID_CNTY": "2231RTA", "FATALITIES": "0"},
-                    ],
                 }
 
                 def process_year(row):
@@ -1112,10 +1006,6 @@ class TestDatasetResourceGeneration:
                 assert (
                     dataset["dataset_date"]
                     == "[2001-01-01T00:00:00 TO 2001-12-31T23:59:59]"
-                )
-                assert_files_same(
-                    fixturesfolder / "gen_resource" / f"min_{qc_filename}",
-                    folder / qc_filename,
                 )
 
                 with pytest.raises(HDXError):
