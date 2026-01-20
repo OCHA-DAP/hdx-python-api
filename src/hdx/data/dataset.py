@@ -2257,11 +2257,11 @@ class Dataset(HDXObject):
                 dataset_resource.disable_dataset_preview()
         return preview_resource
 
-    def set_quickcharts_resource(
+    def set_quickchart_resource(
         self, resource: Union["Resource", dict, str, int]
     ) -> "Resource":
         warnings.warn(
-            "set_quickcharts_resource() is deprecated, use set_preview_resource() instead",
+            "set_quickchart_resource() is deprecated, use set_preview_resource() instead",
             DeprecationWarning,
         )
         return self.set_preview_resource(resource)
