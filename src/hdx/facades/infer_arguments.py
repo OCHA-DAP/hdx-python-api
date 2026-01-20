@@ -5,7 +5,7 @@ import sys
 from collections.abc import Callable
 from inspect import getdoc
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional  # noqa: F401
 
 import defopt
 from hdx.utilities.easy_logging import setup_logging
@@ -70,9 +70,6 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
             match param_type:
                 case "str" | "Path" | "Path | str":
                     param_type = "str | None"
-                    default = None
-                case "Optional[bool]" | "bool | None":
-                    param_type = "bool | None"
                     default = None
                 case "bool":
                     default = False
