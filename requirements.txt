@@ -194,7 +194,7 @@ urllib3==2.6.3
     #   requests
 validators==0.35.0
     # via frictionless
-wheel==0.45.1
+wheel==0.46.2
     # via libhxl
 xlrd==2.0.2
     # via hdx-python-utilities
