@@ -2506,8 +2506,9 @@ class Dataset(HDXObject):
             format=format,
             encoding=encoding,
             row_function=process_row,
+            no_empty=no_empty,
         )
-        if not rows and no_empty:
+        if not rows:
             logger.error(f"No data rows in {filename}!")
             return False, retdict
         if yearcol is not None or date_function is not None:

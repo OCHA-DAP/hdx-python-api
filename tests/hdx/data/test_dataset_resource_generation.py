@@ -506,6 +506,23 @@ class TestDatasetResourceGeneration:
                     folder,
                     filename,
                     resourcedata,
+                )
+                assert success is False
+                success, results = dataset.download_generate_resource(
+                    downloader,
+                    url,
+                    folder,
+                    filename,
+                    resourcedata,
+                    no_empty=False,
+                )
+                assert success is True
+                success, results = dataset.download_generate_resource(
+                    downloader,
+                    url,
+                    folder,
+                    filename,
+                    resourcedata,
                     header_insertions=[(0, "lala")],
                     row_function=process_row,
                 )
