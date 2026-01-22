@@ -2410,6 +2410,7 @@ class Dataset(HDXObject):
         datecol: int | str | None = None,
         yearcol: int | str | None = None,
         date_function: Callable[[dict], dict | None] | None = None,
+        no_empty: bool = True,
     ) -> tuple[bool, dict]:
         """Write rows to file and create resource, adding it to the dataset. The headers
         argument is either a row number (rows start counting at 1), or the actual
@@ -2440,9 +2441,10 @@ class Dataset(HDXObject):
             columns: Columns to write. Defaults to all.
             format: Format to write. Defaults to csv.
             encoding: Encoding to use. Defaults to None (infer encoding).
-            datecol: Optional[Union[int, str]] = None,
-            yearcol: Optional[Union[int, str]] = None,
-            date_function: Optional[Callable[[Dict], Optional[Dict]]] = None,
+            datecol: Date column for setting time period. Defaults to None (don't set).
+            yearcol: Year column for setting dataset year range. Defaults to None (don't set).
+            date_function: Date function to call for each row. Defaults to None.
+            no_empty: Don't generate resource if there are no data rows. Defaults to True.
 
         Returns:
             (True if resource added, dictionary of results)
@@ -2505,7 +2507,7 @@ class Dataset(HDXObject):
             encoding=encoding,
             row_function=process_row,
         )
-        if not rows:
+        if not rows and no_empty:
             logger.error(f"No data rows in {filename}!")
             return False, retdict
         if yearcol is not None or date_function is not None:
@@ -2731,6 +2733,7 @@ class Dataset(HDXObject):
         datecol: int | str | None = None,
         yearcol: int | str | None = None,
         date_function: Callable[[dict], dict | None] | None = None,
+        no_empty: bool = True,
         **kwargs: Any,
     ) -> tuple[bool, dict]:
         """Download url, write rows to csv and create resource, adding to it
@@ -2769,9 +2772,10 @@ class Dataset(HDXObject):
             columns: Columns to write. Defaults to all.
             format: Format to write. Defaults to csv.
             encoding: Encoding to use. Defaults to None (infer encoding).
-            datecol: Optional[Union[int, str]] = None,
-            yearcol: Optional[Union[int, str]] = None,
-            date_function: Optional[Callable[[Dict], Optional[Dict]]] = None,
+            datecol: Date column for setting time period. Defaults to None (don't set).
+            yearcol: Year column for setting dataset year range. Defaults to None (don't set).
+            date_function: Date function to call for each row. Defaults to None.
+            no_empty: Don't generate resource if there are no data rows. Defaults to True.
             **kwargs: Any additional args to pass to downloader.get_tabular_rows
 
         Returns:
@@ -2797,6 +2801,7 @@ class Dataset(HDXObject):
             datecol=datecol,
             yearcol=yearcol,
             date_function=date_function,
+            no_empty=no_empty,
         )
 
     def download_and_generate_resource(
