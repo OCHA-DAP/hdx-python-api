@@ -18,11 +18,11 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
@@ -31,6 +31,8 @@ classifiers = [
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
 ]
+readme = "README.md"
+dynamic = ["version"]
 requires-python = ">=3.10"
 
 dependencies = [
@@ -38,22 +40,110 @@ dependencies = [
     "defopt>=7.0.0",
     "email_validator",
     "hdx-python-country>=4.0.1",
-    "hdx-python-utilities>=4.0.3",
-    "libhxl>=5.2.2",
+    "hdx-python-utilities>=4.0.4",
     "makefun",
     "quantulum3",
     "requests",
 ]
-dynamic = ["version"]
 
-[project.readme]
-file = "README.md"
-content-type = "text/markdown"
+[project.optional-dependencies]
+docs = ["mkapi"]
+
+[dependency-groups]
+dev = [
+    "gspread",
+    "pytest",
+    "pytest-check",
+    "pytest-cov",
+    "pytest-mock",
+    "pre-commit",
+    "ruff==0.14.13",
+]
 
 [project.urls]
 Homepage = "https://github.com/OCHA-DAP/hdx-python-api"
 
-[project.optional-dependencies]
-test = ["gspread", "pytest", "pytest-check", "pytest-cov"]
-dev = ["pre-commit"]
-docs = ["mkapi"]
+# ----------------------------------------------------------------------------
+# Hatchling (Build & Versioning)
+# ----------------------------------------------------------------------------
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+local_scheme = "no-local-version"
+version_scheme = "python-simplified-semver"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/hdx/api/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hdx"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+# ----------------------------------------------------------------------------
+# Ruff (Linting & Formatting)
+# ----------------------------------------------------------------------------
+
+[tool.ruff]
+target-version = "py310"
+src = ["src"]
+exclude = ["_version.py"]
+
+[tool.ruff.lint]
+# Defaults are E (pycodestyle) and F (pyflakes). We extend them:
+extend-select = [
+  "I",   # isort
+  "UP",  # pyupgrade
+]
+ignore = [
+    "E501", # Line too long
+]
+
+[tool.ruff.lint.isort]
+known-local-folder = ["hdx.api", "hdx.data", "hdx.facades"]
+known-third-party = [
+    "hdx.location",
+    "hdx.utilities",
+]
+
+# ----------------------------------------------------------------------------
+# Pytest (Testing)
+# ----------------------------------------------------------------------------
+
+[tool.pytest.ini_options]
+pythonpath = "src"
+log_cli = true
+addopts = """
+    --color=yes
+    --rootdir=.
+    --junitxml=test-results.xml
+    --cov
+    --no-cov-on-fail
+    --cov-report=lcov
+    --cov-report=term-missing
+"""
+
+# ----------------------------------------------------------------------------
+# Coverage (Reporting)
+# ----------------------------------------------------------------------------
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["*/_version.py"]
+
+[tool.coverage.report]
+exclude_also = [
+    "from ._version",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@(abc\\.)?abstractmethod",
+]
