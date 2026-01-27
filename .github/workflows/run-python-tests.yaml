@@ -33,6 +33,9 @@ jobs:
           uv run ruff check
 
       - name: Test with pytest
+        env:
+          HDX_KEY_TEST: ${{ secrets.HDX_BOT_SCRAPERS_API_TOKEN }}
+          GSHEET_AUTH: ${{ secrets.HDX_PIPELINE_GSHEET_AUTH }}
         run: uv run pytest
 
       - name: Publish Unit Test Results
