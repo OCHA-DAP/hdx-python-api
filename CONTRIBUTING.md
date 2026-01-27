@@ -10,6 +10,24 @@ Development is currently done using Python 3.13. The environment can be created 
 
 This creates a .venv folder with the versions specified in the project's uv.lock file.
 
+### Pre-commit
+
+pre-commit will be installed when syncing uv. It is run every time you make a git
+commit if you call it like this:
+
+```shell
+    pre-commit install
+```
+
+With pre-commit, all code is formatted according to
+[ruff](https://docs.astral.sh/ruff/) guidelines.
+
+To check if your changes pass pre-commit without committing, run:
+
+```shell
+    pre-commit run --all-files
+```
+
 ## Packages
 
 [uv](https://github.com/astral-sh/uv) is used for package management.  If

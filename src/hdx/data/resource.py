@@ -13,7 +13,7 @@ from hdx.utilities.file_hashing import get_size_and_hash
 from hdx.utilities.retriever import Retrieve
 from hdx.utilities.uuid import is_valid_uuid
 
-import hdx.api.utilities.url_utils as url_utils
+import hdx.api.utilities.url_utils
 import hdx.data.dataset
 import hdx.data.resource_matcher
 from hdx.api.configuration import Configuration
@@ -669,7 +669,7 @@ class Resource(HDXObject):
         file_format = f".{self.get_format()}"
         if not filename.endswith(file_format):
             filename = f"{filename}{file_format}"
-        session = url_utils.get_ckan_ready_session(self.configuration)
+        session = hdx.api.utilities.url_utils.get_ckan_ready_session(self.configuration)
         with Download(session=session) as downloader:
             if retriever:
                 downloader = retriever.clone(downloader)

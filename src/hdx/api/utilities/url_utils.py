@@ -128,7 +128,6 @@ def _get_ckan_urls(dataset_id: str, resource_id: str) -> list[str]:
         if resource:
             result_urls.append(resource["url"])
     else:
-        # CKAN dataset (package) URL
         dataset = hdx.data.dataset.Dataset.read_from_hdx(dataset_id)
         for resource in dataset.get_resources():
             if url := resource.get("url"):

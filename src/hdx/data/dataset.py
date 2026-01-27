@@ -32,7 +32,7 @@ from hdx.utilities.saver import save_iterable, save_json
 from hdx.utilities.uuid import is_valid_uuid
 from requests import Session
 
-import hdx.api.utilities.url_utils as url_utils
+import hdx.api.utilities.url_utils
 import hdx.data.organization as org_module
 import hdx.data.resource as res_module
 import hdx.data.showcase as sc_module
@@ -215,9 +215,9 @@ class Dataset(HDXObject):
         """
         dataset_dict = self.get_dataset_dict()
         if follow_urls:
-            session = url_utils.get_ckan_ready_session(self.configuration)
+            session = hdx.api.utilities.url_utils.get_ckan_ready_session(self.configuration)
             for resource in dataset_dict.get("resources", tuple()):
-                resource["url"] = url_utils.follow_url(resource["url"], session=session)
+                resource["url"] = hdx.api.utilities.url_utils.follow_url(resource["url"], session=session)
         save_json(dataset_dict, path)
 
     @staticmethod
