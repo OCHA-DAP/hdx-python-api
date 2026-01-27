@@ -215,9 +215,13 @@ class Dataset(HDXObject):
         """
         dataset_dict = self.get_dataset_dict()
         if follow_urls:
-            session = hdx.api.utilities.url_utils.get_ckan_ready_session(self.configuration)
+            session = hdx.api.utilities.url_utils.get_ckan_ready_session(
+                self.configuration
+            )
             for resource in dataset_dict.get("resources", tuple()):
-                resource["url"] = hdx.api.utilities.url_utils.follow_url(resource["url"], session=session)
+                resource["url"] = hdx.api.utilities.url_utils.follow_url(
+                    resource["url"], session=session
+                )
         save_json(dataset_dict, path)
 
     @staticmethod

@@ -67,9 +67,9 @@ def follow_url(
         # Is it a CKAN resource? (Assumes the v.3 API for now)
         result = CKAN_URL.match(url)
         if result:
-            urls = _get_ckan_urls(result.group(2), result.group(3))
-            if urls:
-                return urls[0]
+            result = _get_ckan_urls(result.group(2), result.group(3))
+            if result:
+                return result
 
         # Is it a Google Drive "open" URL?
         result = GOOGLE_DRIVE_URL.match(url)
@@ -106,7 +106,7 @@ def follow_url(
     return url
 
 
-def _get_ckan_urls(dataset_id: str, resource_id: str) -> list[str]:
+def _get_ckan_urls(dataset_id: str, resource_id: str) -> str | None:
     """Look up a CKAN download URL starting from a dataset or resource page
 
     If the link is to a dataset page, try the first resource. If it's
@@ -120,16 +120,16 @@ def _get_ckan_urls(dataset_id: str, resource_id: str) -> list[str]:
 
     Returns:
         The direct-download URL for the CKAN dataset
-
     """
-    result_urls = []
     if resource_id:
         resource = hdx.data.resource.Resource.read_from_hdx(resource_id)
         if resource:
-            result_urls.append(resource["url"])
-    else:
-        dataset = hdx.data.dataset.Dataset.read_from_hdx(dataset_id)
-        for resource in dataset.get_resources():
-            if url := resource.get("url"):
-                result_urls.append(url)
-    return result_urls
+            return resource["url"]
+
+    dataset = hdx.data.dataset.Dataset.read_from_hdx(dataset_id)
+    if not dataset:
+        return None
+    for resource in dataset.get_resources():
+        if url := resource.get("url"):
+            return url
+    return None
