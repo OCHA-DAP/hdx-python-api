@@ -30,8 +30,9 @@ from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_json
 from hdx.utilities.saver import save_iterable, save_json
 from hdx.utilities.uuid import is_valid_uuid
-from hxl.input import HXLIOException, InputOptions, munge_url
+from requests import Session
 
+import hdx.api.utilities.url_utils
 import hdx.data.organization as org_module
 import hdx.data.resource as res_module
 import hdx.data.showcase as sc_module
@@ -195,24 +196,32 @@ class Dataset(HDXObject):
             package["resources"] = self._convert_hdxobjects(self._resources)
         return package
 
-    def save_to_json(self, path: Path | str, follow_urls: bool = False):
+    def save_to_json(
+        self,
+        path: Path | str,
+        follow_urls: bool = False,
+        session: Session | None = None,
+    ) -> None:
         """Save dataset to JSON. If follow_urls is True, resource urls that point to
         datasets, HXL proxy urls etc. are followed to retrieve final urls.
 
         Args:
             path: Path to save dataset
             follow_urls: Whether to follow urls. Defaults to False.
+            session:
 
         Returns:
             None
         """
         dataset_dict = self.get_dataset_dict()
         if follow_urls:
+            session = hdx.api.utilities.url_utils.get_ckan_ready_session(
+                self.configuration
+            )
             for resource in dataset_dict.get("resources", tuple()):
-                try:
-                    resource["url"] = munge_url(resource["url"], InputOptions())
-                except HXLIOException:
-                    pass
+                resource["url"] = hdx.api.utilities.url_utils.follow_url(
+                    resource["url"], session=session
+                )
         save_json(dataset_dict, path)
 
     @staticmethod

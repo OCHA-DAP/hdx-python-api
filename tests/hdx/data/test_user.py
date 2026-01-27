@@ -8,11 +8,10 @@ import pytest
 from hdx.utilities.dictandlist import merge_two_dictionaries
 from hdx.utilities.loader import load_yaml
 
+from .. import MockResponse, user_data
 from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.user import User
-
-from .. import MockResponse, user_data
 
 resultdict = {
     "openid": None,

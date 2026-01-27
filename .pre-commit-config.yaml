@@ -1,26 +1,27 @@
 default_language_version:
-    python: python3.13
+  python: python3.13
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
+        exclude: (test_loader.py|pretty-false_sortkeys-false.yaml|pretty-false_sortkeys-true.yaml)
       - id: end-of-file-fixer
+        exclude: (test_csv_processing_blanks.csv|test.txt)
       - id: check-ast
+
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.10
+    rev: v0.14.13
     hooks:
       # Run the linter.
       - id: ruff-check
         args: [ --fix ]
       # Run the formatter.
       - id: ruff-format
+
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.9.22
+    rev: 0.9.25
     hooks:
-      # Run the pip compile
-      - id: pip-compile
-        name: pip-compile requirements.txt
-        files: pyproject.toml
-        args: [ pyproject.toml, --resolver=backtracking, --upgrade, -q,
-                -o, requirements.txt ]
+      # Ensure the lockfile is up-to-date with pyproject.toml
+      - id: uv-lock

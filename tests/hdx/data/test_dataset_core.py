@@ -14,13 +14,6 @@ from hdx.utilities.loader import load_yaml
 from hdx.utilities.path import temp_dir
 from pytest_check import check
 
-from hdx.api import __version__
-from hdx.api.configuration import Configuration
-from hdx.data.dataset import Dataset, NotRequestableError
-from hdx.data.hdxobject import HDXError
-from hdx.data.resource import Resource
-from hdx.data.resource_view import ResourceView
-
 from .. import (
     MockResponse,
     dataset_data,
@@ -35,6 +28,12 @@ from .test_resource_view import (
     resource_view_mockshow,
 )
 from .test_vocabulary import vocabulary_mockshow
+from hdx.api import __version__
+from hdx.api.configuration import Configuration
+from hdx.data.dataset import Dataset, NotRequestableError
+from hdx.data.hdxobject import HDXError
+from hdx.data.resource import Resource
+from hdx.data.resource_view import ResourceView
 
 searchdict = load_yaml(Path("tests") / "fixtures" / "dataset_search_results.yaml")
 dataset_list = [

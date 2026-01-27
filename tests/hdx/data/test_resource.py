@@ -14,13 +14,12 @@ from hdx.utilities.downloader import Download, DownloadError
 from hdx.utilities.path import get_temp_dir
 from hdx.utilities.retriever import Retrieve
 
+from .. import MockResponse, dataset_resultdict, resource_data
+from .test_resource_view import resource_view_list, resource_view_mocklist
 from hdx.api.configuration import Configuration
 from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
-
-from .. import MockResponse, dataset_resultdict, resource_data
-from .test_resource_view import resource_view_list, resource_view_mocklist
 
 resultdict = {
     "cache_last_updated": None,
