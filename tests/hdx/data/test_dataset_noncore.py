@@ -763,60 +763,6 @@ class TestDatasetNoncore:
         assert resources[0]["dataset_preview_enabled"] == "True"
         assert resources[1]["dataset_preview_enabled"] == "False"
 
-    def test_remove_dates_from_title(self, configuration):
-        dataset = Dataset()
-        with pytest.raises(HDXError):
-            dataset.remove_dates_from_title()
-        assert "title" not in dataset
-        title = "Title with no dates"
-        dataset["title"] = title
-        assert dataset.remove_dates_from_title() == []
-        assert dataset["title"] == title
-        assert "dataset_date" not in dataset
-        assert dataset.remove_dates_from_title(set_time_period=True) == []
-        title = "ICA Armenia, 2017 - Drought Risk, 1981-2015"
-        dataset["title"] = title
-        expected = [
-            (
-                datetime(1981, 1, 1, 0, 0, tzinfo=timezone.utc),
-                datetime(2015, 12, 31, 23, 59, 59, tzinfo=timezone.utc),
-            ),
-            (
-                datetime(2017, 1, 1, 0, 0, tzinfo=timezone.utc),
-                datetime(2017, 12, 31, 23, 59, 59, tzinfo=timezone.utc),
-            ),
-        ]
-        assert dataset.remove_dates_from_title(change_title=False) == expected
-        assert dataset["title"] == title
-        assert "dataset_date" not in dataset
-        assert dataset.remove_dates_from_title() == expected
-        newtitle = "ICA Armenia - Drought Risk"
-        assert dataset["title"] == newtitle
-        assert "dataset_date" not in dataset
-        dataset["title"] = title
-        assert dataset.remove_dates_from_title(set_time_period=True) == expected
-        assert dataset["title"] == newtitle
-        assert dataset["dataset_date"] == "[1981-01-01T00:00:00 TO 2015-12-31T23:59:59]"
-        assert dataset.remove_dates_from_title() == []
-        dataset["title"] = "Mon_State_Village_Tract_Boundaries 9999 2001"
-        expected = [
-            (
-                datetime(2001, 1, 1, 0, 0, tzinfo=timezone.utc),
-                datetime(2001, 12, 31, 23, 59, 59, tzinfo=timezone.utc),
-            )
-        ]
-        assert dataset.remove_dates_from_title(set_time_period=True) == expected
-        assert dataset["title"] == "Mon_State_Village_Tract_Boundaries 9999"
-        assert dataset["dataset_date"] == "[2001-01-01T00:00:00 TO 2001-12-31T23:59:59]"
-        dataset["title"] = "Mon_State_Village_Tract_Boundaries 2001 99"
-        assert dataset.remove_dates_from_title(set_time_period=True) == expected
-        assert dataset["title"] == "Mon_State_Village_Tract_Boundaries 99"
-        assert dataset["dataset_date"] == "[2001-01-01T00:00:00 TO 2001-12-31T23:59:59]"
-        dataset["title"] = "Mon_State_Village_Tract_Boundaries 9999 2001 99"
-        assert dataset.remove_dates_from_title(set_time_period=True) == expected
-        assert dataset["title"] == "Mon_State_Village_Tract_Boundaries 9999 99"
-        assert dataset["dataset_date"] == "[2001-01-01T00:00:00 TO 2001-12-31T23:59:59]"
-
     def test_load_save_to_json(self, configuration, vocabulary_read):
         with temp_dir(
             "LoadSaveDatasetJSON",

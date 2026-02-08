@@ -42,7 +42,6 @@ dependencies = [
     "hdx-python-country>=4.0.1",
     "hdx-python-utilities>=4.0.4",
     "makefun",
-    "quantulum3",
     "requests",
 ]
 
@@ -57,7 +56,7 @@ dev = [
     "pytest-cov",
     "pytest-mock",
     "pre-commit",
-    "ruff==0.14.13",
+    "ruff==0.14.14",
 ]
 
 [project.urls]

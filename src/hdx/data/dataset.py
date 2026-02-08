@@ -40,7 +40,6 @@ import hdx.data.user as user
 import hdx.data.vocabulary as vocabulary
 from hdx.api.configuration import Configuration
 from hdx.api.locations import Locations
-from hdx.api.utilities.dataset_title_helper import DatasetTitleHelper
 from hdx.api.utilities.date_helper import DateHelper
 from hdx.api.utilities.filestore_helper import FilestoreHelper
 from hdx.data.hdxobject import HDXError, HDXObject
@@ -2378,33 +2377,6 @@ class Dataset(HDXObject):
         if not name_or_id:
             return None
         return f"{self.configuration.get_hdx_site_url()}/api/3/action/package_show?id={name_or_id}"
-
-    def remove_dates_from_title(
-        self, change_title: bool = True, set_time_period: bool = False
-    ) -> list[tuple[datetime, datetime]]:
-        """Remove dates from dataset title returning sorted the dates that were found in
-        title. The title in the dataset metadata will be changed by default. The
-        dataset's metadata field time period will not be changed by default, but if
-        set_time_period is True, then the range with the lowest start date will be used
-        to set the time period field.
-
-        Args:
-            change_title: Whether to change the dataset title. Defaults to True.
-            set_time_period: Whether to set time period from date or range in title. Defaults to False.
-
-        Returns:
-            Date ranges found in title
-        """
-        if "title" not in self.data:
-            raise HDXError("Dataset has no title!")
-        title = self.data["title"]
-        newtitle, ranges = DatasetTitleHelper.get_dates_from_title(title)
-        if change_title:
-            self.data["title"] = newtitle
-        if set_time_period and len(ranges) != 0:
-            startdate, enddate = ranges[0]
-            self.set_time_period(startdate, enddate)
-        return ranges
 
     def generate_resource(
         self,
