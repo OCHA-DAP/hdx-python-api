@@ -211,6 +211,3 @@
       \ vitamin A deficiency in preschool-age children (s", format: csv, url_type: upload,
     resource_type: file.upload}
   file_to_upload: /tmp/WHO/nlis_indicators_ZMB.csv
-- resource: {name: QuickCharts Indicators for Zambia, description: Cut down data for
-      QuickCharts, format: csv, url_type: upload, resource_type: file.upload}
-  file_to_upload: /tmp/WHO/qc_health_indicators_ZMB.csv

@@ -192,9 +192,6 @@
     for Zambia, description: "*Neglected Tropical Diseases:*\n[Number of new leprosy\
     \ cases](https://w", format: CSV, url: https://stage.data-humdata-org.ahconu.org/dataset/3adc4bb0-faef-42ae-bd67-0ea08918a629/resource/12fdb6cb-5e00-45b5-a6b5-611847866440/download/neglected-tropical-diseases_indicators_zmb.csv,
   url_type: upload, resource_type: file.upload}
-- {id: ad2d521e-3a0e-451e-977c-bcbf125cec55, name: QuickCharts Indicators for Zambia,
-  description: Cut down data for QuickCharts, format: CSV, url: https://stage.data-humdata-org.ahconu.org/dataset/3adc4bb0-faef-42ae-bd67-0ea08918a629/resource/ad2d521e-3a0e-451e-977c-bcbf125cec55/download/qc_health_indicators_zmb.csv,
-  url_type: upload, resource_type: file.upload}
 - {id: 19caff60-fd38-42b4-a17a-63abfaf0911e, name: TOBACCO Indicators for Zambia,
   description: "*TOBACCO:*\n[Monitor](https://www.who.int/data/gho/indicator-metadata-r",
   format: CSV, url: https://stage.data-humdata-org.ahconu.org/dataset/3adc4bb0-faef-42ae-bd67-0ea08918a629/resource/19caff60-fd38-42b4-a17a-63abfaf0911e/download/tobacco_indicators_zmb.csv,

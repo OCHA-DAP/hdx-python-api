@@ -29,7 +29,6 @@ upload your datasets to HDX.
         -   [Organization](#organization)
         -   [Custom Visualization](#custom-visualization)
         -   [Resource Generation](#resource-generation)
-        -   [QuickCharts Generation](#quickcharts-generation)
     -   [Resource Specific Operations](#resource-specific-operations)
     -   [Showcase Management](#showcase-management)
     -   [User Management](#user-management)
@@ -870,38 +869,6 @@ The rest of the arguments are the same as for `generate_resource`.
     dataset.download_generate_resource(DOWNLOADER, "URL", "FOLDER", "FILENAME",
                                        RESOURCE_DATA, HEADER_INSERTIONS, ROW_FUNCTION,
                                        DATECOL or YEARCOL or DATE_FUNCTION, **KWARGS)
-
-### QuickCharts Generation
-
-QuickCharts can be generated for datasets using the call below. RESOURCE is a
-a resource id or name, or resource metadata from a Resource object or a
-dictionary, or the position of the resource in the dataset. It defaults to the
-position 0. PATH points to configuration which if not supplied, defaults to the
-internal indicators resource view template. You can disable specific bites by
-providing BITES_DISABLED, a list of 3 bools where True indicates a specific bite
-is disabled and False indicates leave enabled.
-
-    datasets.generate_quickcharts(RESOURCE, "PATH", BITES_DISABLED, INDICATORS,
-                                  FIND_REPLACE)
-
-The parameter INDICATORS is only for use with the built-in configuration and is
-a list with 3 dictionaries of form:
-
-        {"code": "MY_INDICATOR_CODE", "title": "MY_INDICATOR_TITLE",
-        "unit": "MY_INDICATOR_UNIT"}.
-
-Optionally, the following defaults can be overridden in INDICATORS:
-
-    {"code_col": "#indicator+code", "value_col": "#indicator+value+num",
-     "date_col": "#date+year", "date_format": "%Y", "aggregate_col": "null"}.
-
-The built-in configuration assumes data will be of form similar to below:
-
-    GHO (CODE),ENDYEAR,Numeric
-    #indicator+code,#date+year+end,#indicator+value+num
-    VIOLENCE_HOMICIDERATE,1994,123.4
-    MDG_0000000001,2015,123.4
-
 
 ## Resource Specific Operations
 

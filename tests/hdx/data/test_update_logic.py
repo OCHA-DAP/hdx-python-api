@@ -149,7 +149,6 @@ class TestUpdateLogic:
                 name,
                 {
                     "all_health": "health",
-                    "quickcharts": "qc_health",
                     "for_zambia": "ZMB.csv",
                 },
             )
@@ -216,7 +215,6 @@ class TestUpdateLogic:
             "Noncommunicable diseases and mental health Indicators for Zambia": 2,
             "Nutrition Indicators for Zambia": 2,
             "Public health and environment Indicators for Zambia": 2,
-            "QuickCharts Indicators for Zambia": 2,
             "RSUD: GOVERNANCE, POLICY AND FINANCING : PREVENTION Indicators for Zambia": 2,
             "RSUD: GOVERNANCE, POLICY AND FINANCING: FINANCING Indicators for Zambia": 2,
             "RSUD: GOVERNANCE, POLICY AND FINANCING: TREATMENT Indicators for Zambia": 2,
@@ -793,16 +791,6 @@ class TestUpdateLogic:
                     "url_type": "upload",
                 },
                 {
-                    "description": "Cut down data for QuickCharts",
-                    "format": "csv",
-                    "hash": "d82c8d1619ad8176d665453cfb2e55f0",
-                    "name": "QuickCharts Indicators for Zambia",
-                    "resource_type": "file.upload",
-                    "size": 2,
-                    "url": "updated_by_file_upload_step",
-                    "url_type": "upload",
-                },
-                {
                     "description": "*TOBACCO:*\n"
                     "[Monitor](https://www.who.int/data/gho/indicator-metadata-r",
                     "format": "csv",
@@ -936,7 +924,6 @@ class TestUpdateLogic:
             "Noncommunicable diseases and mental health Indicators for Zambia": 2,
             "Nutrition Indicators for Zambia": 2,
             "Public health and environment Indicators for Zambia": 2,
-            "QuickCharts Indicators for Zambia": 2,
             "RSUD: GOVERNANCE, POLICY AND FINANCING : PREVENTION Indicators for Zambia": 2,
             "RSUD: GOVERNANCE, POLICY AND FINANCING: FINANCING Indicators for Zambia": 2,
             "RSUD: GOVERNANCE, POLICY AND FINANCING: TREATMENT Indicators for Zambia": 2,
@@ -960,7 +947,7 @@ class TestUpdateLogic:
             "Urban health Indicators for Zambia": 2,
             "World Health Statistics Indicators for Zambia": 2,
         }
-        assert results["filter"] == ["-resources__53"]
+        assert results["filter"] == ["-resources__52"]
         update = results["update"]
         del update["updated_by_script"]
         assert update == {
@@ -1520,16 +1507,6 @@ class TestUpdateLogic:
                     "format": "csv",
                     "hash": "33e75ff09dd601bbe69f351039152189",
                     "name": "Neglected Tropical Diseases Indicators for Zambia",
-                    "resource_type": "file.upload",
-                    "size": 2,
-                    "url": "updated_by_file_upload_step",
-                    "url_type": "upload",
-                },
-                {
-                    "description": "Cut down data for QuickCharts",
-                    "format": "csv",
-                    "hash": "d82c8d1619ad8176d665453cfb2e55f0",
-                    "name": "QuickCharts Indicators for Zambia",
                     "resource_type": "file.upload",
                     "size": 2,
                     "url": "updated_by_file_upload_step",

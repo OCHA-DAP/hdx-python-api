@@ -22,7 +22,6 @@ class TestUpdateDatasetResourcesLogic:
         "Other Policy Relevant Indicators metadata": "opri_metadata_zwe.csv",
         "Demographic and Socio-economic data": "dem_data_zwe.csv",
         "Demographic and Socio-economic indicator list": "dem_indicatorlist_zwe.csv",
-        "QuickCharts-SDG 4 Global and Thematic data": "qc_sdg_data_zwe.csv",
     }
 
     @pytest.fixture(scope="function")
@@ -109,17 +108,15 @@ class TestUpdateDatasetResourcesLogic:
             statuses,
         ) = dataset._dataset_update_resources(True, True, True, True)
         assert resources_to_update == expected_resources_to_update
-        assert resources_to_delete == [8, 2, 1, 0]
+        assert resources_to_delete == [6, 2, 1, 0]
         assert filestore_resources == {
             3: fixture_path / "sdg_data_zwe.csv",
             4: fixture_path / "sdg_indicatorlist_zwe.csv",
             5: fixture_path / "sdg_metadata_zwe.csv",
-            6: fixture_path / "dem_data_zwe.csv",
             7: fixture_path / "dem_indicatorlist_zwe.csv",
-            9: fixture_path / "opri_data_zwe.csv",
-            10: fixture_path / "opri_indicatorlist_zwe.csv",
-            11: fixture_path / "opri_metadata_zwe.csv",
-            12: fixture_path / "qc_sdg_data_zwe.csv",
+            8: fixture_path / "opri_data_zwe.csv",
+            9: fixture_path / "opri_indicatorlist_zwe.csv",
+            10: fixture_path / "opri_metadata_zwe.csv",
         }
         assert new_resource_order == [
             ("SDG 4 Global and Thematic data", "csv"),
@@ -128,17 +125,13 @@ class TestUpdateDatasetResourcesLogic:
             ("Other Policy Relevant Indicators data", "csv"),
             ("Other Policy Relevant Indicators indicator list", "csv"),
             ("Other Policy Relevant Indicators metadata", "csv"),
-            ("Demographic and Socio-economic data", "csv"),
             ("Demographic and Socio-economic indicator list", "csv"),
-            ("QuickCharts-SDG 4 Global and Thematic data", "csv"),
         ]
         assert statuses == {
-            "Demographic and Socio-economic data": 2,
             "Demographic and Socio-economic indicator list": 2,
             "Other Policy Relevant Indicators data": 2,
             "Other Policy Relevant Indicators indicator list": 2,
             "Other Policy Relevant Indicators metadata": 2,
-            "QuickCharts-SDG 4 Global and Thematic data": 2,
             "SDG 4 Global and Thematic data": 2,
             "SDG 4 Global and Thematic indicator list": 2,
             "SDG 4 Global and Thematic metadata": 2,
@@ -162,12 +155,10 @@ class TestUpdateDatasetResourcesLogic:
             "update__resources__0__upload": fixture_path / "sdg_data_zwe.csv",
             "update__resources__1__upload": fixture_path / "sdg_indicatorlist_zwe.csv",
             "update__resources__2__upload": fixture_path / "sdg_metadata_zwe.csv",
-            "update__resources__3__upload": fixture_path / "dem_data_zwe.csv",
-            "update__resources__4__upload": fixture_path / "dem_indicatorlist_zwe.csv",
-            "update__resources__5__upload": fixture_path / "opri_data_zwe.csv",
-            "update__resources__6__upload": fixture_path / "opri_indicatorlist_zwe.csv",
-            "update__resources__7__upload": fixture_path / "opri_metadata_zwe.csv",
-            "update__resources__8__upload": fixture_path / "qc_sdg_data_zwe.csv",
+            "update__resources__3__upload": fixture_path / "dem_indicatorlist_zwe.csv",
+            "update__resources__4__upload": fixture_path / "opri_data_zwe.csv",
+            "update__resources__5__upload": fixture_path / "opri_indicatorlist_zwe.csv",
+            "update__resources__6__upload": fixture_path / "opri_metadata_zwe.csv",
         }
         resources = results["update"]["resources"]
         cutdown_resources = []
@@ -212,14 +203,6 @@ class TestUpdateDatasetResourcesLogic:
             {
                 "dataset_preview_enabled": "False",
                 "format": "csv",
-                "name": "Demographic and Socio-economic data",
-                "resource_type": "file.upload",
-                "url": "updated_by_file_upload_step",
-                "url_type": "upload",
-            },
-            {
-                "dataset_preview_enabled": "False",
-                "format": "csv",
                 "name": "Demographic and Socio-economic indicator list",
                 "resource_type": "file.upload",
                 "url": "updated_by_file_upload_step",
@@ -245,14 +228,6 @@ class TestUpdateDatasetResourcesLogic:
                 "dataset_preview_enabled": "False",
                 "format": "csv",
                 "name": "Other Policy Relevant Indicators metadata",
-                "resource_type": "file.upload",
-                "url": "updated_by_file_upload_step",
-                "url_type": "upload",
-            },
-            {
-                "dataset_preview_enabled": "True",
-                "format": "csv",
-                "name": "QuickCharts-SDG 4 Global and Thematic data",
                 "resource_type": "file.upload",
                 "url": "updated_by_file_upload_step",
                 "url_type": "upload",
