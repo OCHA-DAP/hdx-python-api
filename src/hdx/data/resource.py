@@ -1,7 +1,6 @@
 """Resource class containing all logic for creating, checking, and updating resources."""
 
 import logging
-import warnings
 from collections.abc import Sequence
 from datetime import datetime
 from pathlib import Path
@@ -244,13 +243,6 @@ class Resource(HDXObject):
             file_format = file_format.lower()
         return file_format
 
-    def get_file_type(self) -> str | None:
-        warnings.warn(
-            "get_file_type() is deprecated, use get_format() instead",
-            DeprecationWarning,
-        )
-        return self.get_format()
-
     def set_format(self, format: str) -> str:
         """Set the resource's file type
 
@@ -268,13 +260,6 @@ class Resource(HDXObject):
         self.data["format"] = file_format
         return file_format
 
-    def set_file_type(self, file_type: str) -> str:
-        warnings.warn(
-            "set_file_type() is deprecated, use set_format() instead",
-            DeprecationWarning,
-        )
-        return self.set_format(file_type)
-
     def clean_format(self) -> str:
         """Clean the resource's format, setting it to None if it is invalid and
         cannot be mapped
@@ -282,13 +267,6 @@ class Resource(HDXObject):
         Returns:
             Format that was set
         """
-        return self.set_format(self.data.get("format"))
-
-    def clean_file_type(self) -> str:
-        warnings.warn(
-            "clean_file_type() is deprecated, use clean_format() instead",
-            DeprecationWarning,
-        )
         return self.set_format(self.data.get("format"))
 
     def get_file_to_upload(self) -> str | None:

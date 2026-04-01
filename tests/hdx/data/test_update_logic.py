@@ -32,7 +32,6 @@ class TestUpdateLogic:
         Vocabulary._tags_dict = {}
         Vocabulary._approved_vocabulary = {
             "tags": [
-                {"name": "hxl"},
                 {"name": "indicators"},
                 {"name": "health"},
                 {"name": "demographics"},
@@ -80,7 +79,6 @@ class TestUpdateLogic:
         new_dataset.set_subnational(False)
         new_dataset.set_time_period_year_range(1961, 2019)
         new_dataset.add_country_location("zmb")
-        new_dataset.add_tag("hxl")
         return new_dataset
 
     @pytest.fixture(scope="function")
@@ -92,7 +90,6 @@ class TestUpdateLogic:
         dataset.set_subnational(False)
         dataset.set_time_period_year_range(1961, 2019)
         dataset.add_country_location("zmb")
-        dataset.add_tag("hxl")
         dataset["id"] = "3adc4bb0-faef-42ae-bd67-0ea08918a629"
         return dataset
 
@@ -878,9 +875,7 @@ class TestUpdateLogic:
             ],
             "state": "active",
             "subnational": "0",
-            "tags": [
-                {"name": "hxl", "vocabulary_id": "4e61d464-4943-4e97-973a-84673c1aaa87"}
-            ],
+            "tags": [],
             "title": "Zambia - Health Indicators",
         }
         self.check_resources(update, results)
@@ -1601,9 +1596,7 @@ class TestUpdateLogic:
             ],
             "state": "active",
             "subnational": "0",
-            "tags": [
-                {"name": "hxl", "vocabulary_id": "4e61d464-4943-4e97-973a-84673c1aaa87"}
-            ],
+            "tags": [],
             "title": "Zambia - Health Indicators",
         }
         self.check_resources(update, results)
@@ -1679,9 +1672,7 @@ class TestUpdateLogic:
             ],
             "state": "active",
             "subnational": "0",
-            "tags": [
-                {"name": "hxl", "vocabulary_id": "4e61d464-4943-4e97-973a-84673c1aaa87"}
-            ],
+            "tags": [],
             "title": "Zambia - Health Indicators",
         }
         self.check_resources(update, results)

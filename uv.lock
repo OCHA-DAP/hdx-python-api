@@ -515,8 +515,8 @@ requires-dist = [
     { name = "ckanapi", specifier = ">=4.8" },
     { name = "defopt", specifier = ">=7.0.0" },
     { name = "email-validator" },
-    { name = "hdx-python-country", specifier = ">=4.0.1" },
-    { name = "hdx-python-utilities", specifier = ">=4.0.4" },
+    { name = "hdx-python-country", specifier = ">=4.1.1" },
+    { name = "hdx-python-utilities", specifier = ">=4.0.8" },
     { name = "makefun" },
     { name = "mkapi", marker = "extra == 'docs'" },
     { name = "requests" },
@@ -536,21 +536,20 @@ dev = [
 
 [[package]]
 name = "hdx-python-country"
-version = "4.0.1"
+version = "4.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "hdx-python-utilities" },
-    { name = "libhxl" },
     { name = "tenacity" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/87/df/90e4992a7222bd119b506217d7cae1e662a9548a6f98895f36d532a3a119/hdx_python_country-4.0.1.tar.gz", hash = "sha256:51434f2dbe6d2b9fdff8af6f8d13dd7158152086afeb012b76beb82e48d4c68b", size = 530230, upload-time = "2026-01-15T03:20:33.58Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/93/7e/758b107aabb62c578c9306865eebf8e451cb663b3b598a3fdaae858ba76b/hdx_python_country-4.1.1.tar.gz", hash = "sha256:210fd077a2761dcbd28561a209d401c81f2314e4279939fd1c5ff75cae12eea0", size = 619107, upload-time = "2026-02-11T04:06:52.311Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/68/52/ab255d7568f724166bf3e956ec95db6d816676c403d0bbd00c47d3a0feb3/hdx_python_country-4.0.1-py3-none-any.whl", hash = "sha256:4f90c923a52d21c8627e6e44f53faf8b6ebfb8d402b2218fcf24500ff11765f8", size = 55935, upload-time = "2026-01-15T03:20:31.71Z" },
+    { url = "https://files.pythonhosted.org/packages/28/e0/baa284cd1d9f41945333554276c5e54ea14857a4619a7d521e932630be01/hdx_python_country-4.1.1-py3-none-any.whl", hash = "sha256:e22408664e25401a399fc2ac24cdae93b9ec9317b2238d70f09760ec5a41423a", size = 55317, upload-time = "2026-02-11T04:06:51.334Z" },
 ]
 
 [[package]]
 name = "hdx-python-utilities"
-version = "4.0.4"
+version = "4.0.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "frictionless" },
@@ -569,9 +568,9 @@ dependencies = [
     { name = "xlsx2csv" },
     { name = "xlwt" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/92/fb/771c502dad4abcc7e309aca1edf27ebce2465174c179b7558d0f99b61d45/hdx_python_utilities-4.0.4.tar.gz", hash = "sha256:63b0d859076df4b700f5e08a22124617ff7d55b8491823f85984441d11debbf1", size = 2061336, upload-time = "2026-01-26T04:04:15.702Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6f/05/35b56fae90e5c5e9c6cfc6250ab17d1ab54c20db381aee4cef2cc7005e5e/hdx_python_utilities-4.0.8.tar.gz", hash = "sha256:53a9c45f7be4ce15d4ae3c039ad696ca5dd0b1ee64f4c623a06c7ea66c4dc3b0", size = 2108216, upload-time = "2026-02-26T02:17:05.493Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f3/3b/134a5f3700cc03b26020a692037b32b3cc772302cc010c5f35576bfd87dc/hdx_python_utilities-4.0.4-py3-none-any.whl", hash = "sha256:f6d83a6582d706dc041658523a96795da0bd0458b724489b6f6a3a2bac128cff", size = 64585, upload-time = "2026-01-26T04:04:13.792Z" },
+    { url = "https://files.pythonhosted.org/packages/fc/8b/d23c78422ce1754cd4d93df8f41bea79defb1a0672d0860d7929348abcec/hdx_python_utilities-4.0.8-py3-none-any.whl", hash = "sha256:d6f608c680ec3a19357e0e6506fed25f8c8b9ac253e1886962e60f7817de6cd6", size = 66204, upload-time = "2026-02-26T02:17:04.091Z" },
 ]
 
 [[package]]
@@ -735,18 +734,6 @@ wheels = [
 ]
 
 [[package]]
-name = "jsonpath-ng"
-version = "1.7.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "ply" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/6d/86/08646239a313f895186ff0a4573452038eed8c86f54380b3ebac34d32fb2/jsonpath-ng-1.7.0.tar.gz", hash = "sha256:f6f5f7fd4e5ff79c785f1573b394043b39849fb2bb47bcead935d12b00beab3c", size = 37838, upload-time = "2024-10-11T15:41:42.404Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/35/5a/73ecb3d82f8615f32ccdadeb9356726d6cae3a4bbc840b437ceb95708063/jsonpath_ng-1.7.0-py3-none-any.whl", hash = "sha256:f3d7f9e848cba1b6da28c55b1c26ff915dc9e0b1ba7e752a53d6da8d5cbd00b6", size = 30105, upload-time = "2024-11-20T17:58:30.418Z" },
-]
-
-[[package]]
 name = "jsonschema"
 version = "4.26.0"
 source = { registry = "https://pypi.org/simple" }
@@ -772,24 +759,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/19/74/a633ee74eb36c44aa
 wheels = [
     { url = "https://files.pythonhosted.org/packages/41/45/1a4ed80516f02155c51f51e8cedb3c1902296743db0bbc66608a0db2814f/jsonschema_specifications-2025.9.1-py3-none-any.whl", hash = "sha256:98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe", size = 18437, upload-time = "2025-09-08T01:34:57.871Z" },
 ]
-
-[[package]]
-name = "libhxl"
-version = "5.2.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "jsonpath-ng" },
-    { name = "ply" },
-    { name = "python-dateutil" },
-    { name = "python-io-wrapper" },
-    { name = "requests" },
-    { name = "structlog" },
-    { name = "unidecode" },
-    { name = "urllib3" },
-    { name = "wheel" },
-    { name = "xlrd3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/63/ad/c1dafb7c59e685692a2eeafce83245b7c5f46e05881fdb77a0cbb7c19c74/libhxl-5.2.2.tar.gz", hash = "sha256:3a74d9f23561bfcefd20e5229c574bc68dfc114fdb6ba1ba684d9e9d7ea52483", size = 127736, upload-time = "2024-10-25T09:19:11.202Z" }
 
 [[package]]
 name = "loguru"
@@ -1116,15 +1085,6 @@ wheels = [
 ]
 
 [[package]]
-name = "ply"
-version = "3.11"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e5/69/882ee5c9d017149285cab114ebeab373308ef0f874fcdac9beb90e0ac4da/ply-3.11.tar.gz", hash = "sha256:00c7c1aaa88358b9c765b6d3000c6eec0ba42abca5351b095321aef446081da3", size = 159130, upload-time = "2018-02-15T19:01:31.097Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a3/58/35da89ee790598a0700ea49b2a66594140f44dec458c07e8e3d4979137fc/ply-3.11-py2.py3-none-any.whl", hash = "sha256:096f9b8350b65ebd2fd1346b12452efe5b9607f7482813ffca50c22722a807ce", size = 49567, upload-time = "2018-02-15T19:01:27.172Z" },
-]
-
-[[package]]
 name = "pockets"
 version = "0.9.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1408,12 +1368,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/66/c0/0c8b6ad9f17a802ee
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl", hash = "sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427", size = 229892, upload-time = "2024-03-01T18:36:18.57Z" },
 ]
-
-[[package]]
-name = "python-io-wrapper"
-version = "0.3.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/d7/74/8dc5f7d0b7cc1a0ca9e5c320abf11adee2094998c93ae8c9c80d9a8323ff/python-io-wrapper-0.3.1.tar.gz", hash = "sha256:e3391787ff0d9870e739294c6392437915502153e695a017450aa46b6d091762", size = 3271, upload-time = "2022-11-14T15:00:10.932Z" }
 
 [[package]]
 name = "python-slugify"
@@ -1865,18 +1819,6 @@ wheels = [
 ]
 
 [[package]]
-name = "structlog"
-version = "25.5.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ef/52/9ba0f43b686e7f3ddfeaa78ac3af750292662284b3661e91ad5494f21dbc/structlog-25.5.0.tar.gz", hash = "sha256:098522a3bebed9153d4570c6d0288abf80a031dfdb2048d59a49e9dc2190fc98", size = 1460830, upload-time = "2025-10-27T08:28:23.028Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a8/45/a132b9074aa18e799b891b91ad72133c98d8042c70f6240e4c5f9dabee2f/structlog-25.5.0-py3-none-any.whl", hash = "sha256:a8453e9b9e636ec59bd9e79bbd4a72f025981b3ba0f5837aebf48f02f37a7f9f", size = 72510, upload-time = "2025-10-27T08:28:21.535Z" },
-]
-
-[[package]]
 name = "tableschema-to-template"
 version = "0.0.13"
 source = { registry = "https://pypi.org/simple" }
@@ -2082,18 +2024,6 @@ wheels = [
 ]
 
 [[package]]
-name = "wheel"
-version = "0.46.3"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "packaging" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/89/24/a2eb353a6edac9a0303977c4cb048134959dd2a51b48a269dfc9dde00c8a/wheel-0.46.3.tar.gz", hash = "sha256:e3e79874b07d776c40bd6033f8ddf76a7dad46a7b8aa1b2787a83083519a1803", size = 60605, upload-time = "2026-01-22T12:39:49.136Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/87/22/b76d483683216dde3d67cba61fb2444be8d5be289bf628c13fc0fd90e5f9/wheel-0.46.3-py3-none-any.whl", hash = "sha256:4b399d56c9d9338230118d705d9737a2a468ccca63d5e813e2a4fc7815d8bc4d", size = 30557, upload-time = "2026-01-22T12:39:48.099Z" },
-]
-
-[[package]]
 name = "win32-setctime"
 version = "1.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2109,15 +2039,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/07/5a/377161c2d3538d1990d7af382c79f3b2372e880b65de21b01b1a2b78691e/xlrd-2.0.2.tar.gz", hash = "sha256:08b5e25de58f21ce71dc7db3b3b8106c1fa776f3024c54e45b45b374e89234c9", size = 100167, upload-time = "2025-06-14T08:46:39.039Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/1a/62/c8d562e7766786ba6587d09c5a8ba9f718ed3fa8af7f4553e8f91c36f302/xlrd-2.0.2-py2.py3-none-any.whl", hash = "sha256:ea762c3d29f4cca48d82df517b6d89fbce4db3107f9d78713e48cd321d5c9aa9", size = 96555, upload-time = "2025-06-14T08:46:37.766Z" },
-]
-
-[[package]]
-name = "xlrd3"
-version = "1.1.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/79/db/88d8d49ddacc203956ecb98dc86c6ffeee6e933ef1f50da9b369de518f7f/xlrd3-1.1.0.tar.gz", hash = "sha256:20e6ed2e5f7f8b4ab61e30faffebceff6fab348332b4c915373f0a72742dc177", size = 58919847, upload-time = "2021-04-25T12:27:10.03Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/5d/08/fce745025e58f160e7dcb5a45d4d43eb0bd44c0d8851425be87ef90271fa/xlrd3-1.1.0-py2.py3-none-any.whl", hash = "sha256:8e8e808f938144e7936a6e07c1d57be7a0f6c6f5b37c9c67974b43246d8aacb6", size = 105268, upload-time = "2021-04-25T12:26:55.264Z" },
 ]
 
 [[package]]

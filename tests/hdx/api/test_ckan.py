@@ -135,7 +135,7 @@ class TestCKAN:
         dataset.set_subnational(True)
         countryiso3s = ["AFG", "PSE", "SYR", "YEM"]
         dataset.add_country_locations(countryiso3s)
-        tags = ["conflict-violence", "displacement", "hxl"]
+        tags = ["conflict-violence", "displacement"]
         dataset.add_tags(tags)
         resource_no = 0
 
@@ -250,7 +250,7 @@ class TestCKAN:
         title = "HDX Python API test changed again"
         dataset["title"] = title
         del dataset["caveats"]
-        tags = ["agriculture-livestock", "climate-weather", "hxl"]
+        tags = ["agriculture-livestock", "climate-weather"]
         dataset["tags"] = []
         dataset.add_tags(tags)
         countryiso3s.append("YEM")
