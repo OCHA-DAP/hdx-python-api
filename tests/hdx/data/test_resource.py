@@ -293,7 +293,7 @@ def mockresourceview(url, decodedata):
                 200,
                 f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_show"}}',
             )
-        if datadict["title"] == "Quick Charts":
+        if datadict["title"] == "Preview":
             result = json.dumps(resource_view_list[1])
             return MockResponse(
                 200,
@@ -309,7 +309,7 @@ def mockresourceview(url, decodedata):
                 200,
                 f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}}',
             )
-        if datadict["title"] == "Quick Charts":
+        if datadict["title"] == "Preview":
             result = json.dumps(resource_view_list[1])
             return MockResponse(
                 200,

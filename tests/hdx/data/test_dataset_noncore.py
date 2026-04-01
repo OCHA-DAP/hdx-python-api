@@ -130,7 +130,7 @@ class TestDatasetNoncore:
                     if "list" in url:
                         return resource_view_mocklist(url, datadict)
                     if "create" in url:
-                        if datadict["title"] == "Quick Charts":
+                        if datadict["title"] == "Preview":
                             return resource_view_mockcreate(url, datadict)
                     return MockResponse(
                         404,
@@ -709,7 +709,7 @@ class TestDatasetNoncore:
         with pytest.raises(HDXError):
             dataset.add_showcase(123)
 
-    def test_set_quickchart_resource(self, configuration):
+    def test_set_preview_resource(self, configuration):
         datasetdata = copy.deepcopy(dataset_data)
         resourcesdata = copy.deepcopy(resources_data)
         datasetdata["resources"] = resourcesdata
@@ -780,7 +780,7 @@ class TestDatasetNoncore:
             expected_update_frequency = "Every day"
             dataset.set_expected_update_frequency(expected_update_frequency)
             dataset.set_subnational(False)
-            tags = ["hxl", "funding"]
+            tags = ["funding"]
             dataset.add_tags(tags)
             resource_name = "filename.csv"
             resourcedata = {

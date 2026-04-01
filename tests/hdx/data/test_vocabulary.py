@@ -550,12 +550,6 @@ vocabulary_list = [
                 "display_name": "humanitarian response plan-hrp",
             },
             {
-                "id": "a0fbb23a-6aad-4ccc-8062-e9ef9f20e5d2",
-                "name": "hxl",
-                "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
-                "display_name": "hxl",
-            },
-            {
                 "id": "4fc0b5ba-330e-41d4-846a-13415a517f03",
                 "name": "hydrology",
                 "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",

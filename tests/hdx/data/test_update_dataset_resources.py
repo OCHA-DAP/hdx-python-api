@@ -39,7 +39,6 @@ class TestUpdateDatasetResourcesLogic:
         Vocabulary._tags_dict = {}
         Vocabulary._approved_vocabulary = {
             "tags": [
-                {"name": "hxl"},
                 {"name": "indicators"},
                 {"name": "socioeconomics"},
                 {"name": "demographics"},

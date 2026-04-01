@@ -48,12 +48,12 @@ dataset_list = [
     "acled-conflict-data-for-ethiopia",
     "acled-conflict-data-for-eritrea",
 ]
-hxlupdate_list = [
+resourceview_update_list = [
     {
-        "title": "Quick Charts",
+        "title": "Preview",
         "resource_id": "de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
         "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d",
-        "view_type": "hdx_hxl_preview",
+        "view_type": "recline_view",
         "description": "",
         "id": "29cc5894-4306-4bef-96ce-b7a833e7986a",
     }
@@ -305,7 +305,7 @@ class TestDatasetCore:
                     if "list" in url:
                         return resource_view_mocklist(url, datadict)
                     if "create" in url:
-                        if datadict["title"] == "Quick Charts":
+                        if datadict["title"] == "Preview":
                             return resource_view_mockcreate(url, datadict)
                     return MockResponse(
                         404,
@@ -634,9 +634,9 @@ class TestDatasetCore:
         match = re.search(pattern, dataset["updated_by_script"])
         assert match
         resourceviewdata = {
-            "title": "Quick Charts",
+            "title": "Preview",
             "resource_name": "Resource1",
-            "view_type": "hdx_hxl_preview",
+            "view_type": "recline_view",
         }
         dataset.remove_tag("crisis-somewhere")
         statuses = dataset.update_in_hdx(keep_crisis_tags=False)

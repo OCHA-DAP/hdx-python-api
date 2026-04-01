@@ -11,8 +11,6 @@ from hdx.api.configuration import Configuration
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource_view import ResourceView
 
-hxl_preview_config = '{"configVersion":2,"bites":[{"init":true,"type":"key figure","filteredValues":[],"errorMsg":null,"ingredient":{"aggregateColumn":null,"valueColumn":"#affected+killed","aggregateFunction":"sum"},"dataTitle":"#affected+killed","displayCategory":"Key Figures","unit":null,"hashCode":-1955043658,"title":"Sum of fatalities","value":null},{"init":true,"type":"chart","filteredValues":[],"errorMsg":null,"swapAxis":true,"showGrid":true,"pieChart":false,"ingredient":{"aggregateColumn":"#adm1+name","valueColumn":"#affected+killed","aggregateFunction":"sum"},"dataTitle":"#affected+killed","displayCategory":"Charts","hashCode":738289179,"title":"Sum of fatalities grouped by admin1","values":null,"categories":null},{"init":true,"type":"chart","filteredValues":[],"errorMsg":null,"swapAxis":true,"showGrid":true,"pieChart":false,"ingredient":{"aggregateColumn":"#adm2+name","valueColumn":"#affected+killed","aggregateFunction":"sum"},"dataTitle":"#affected+killed","displayCategory":"Charts","hashCode":766918330,"title":"Sum of fatalities grouped by admin2","values":null,"categories":null}]}'
-
 resource_view_list = [
     {
         "description": "",
@@ -25,9 +23,8 @@ resource_view_list = [
     {
         "description": "",
         "resource_id": "25982d1c-f45a-45e1-b14e-87d367413045",
-        "hxl_preview_config": hxl_preview_config,
-        "view_type": "hdx_hxl_preview",
-        "title": "Quick Charts",
+        "view_type": "recline_view",
+        "title": "Preview",
         "package_id": "53f4375e-8872-4bcd-9746-c0fda941dadb",
         "id": "c06b5a0d-1d41-4a74-a196-41c251c76023",
     },
@@ -96,7 +93,7 @@ def resource_view_mockcreate(url, datadict):
             200,
             f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}}',
         )
-    if datadict["title"] == "Quick Charts":
+    if datadict["title"] == "Preview":
         resultdictcopy = copy.deepcopy(resultdict)
         result = json.dumps(merge_two_dictionaries(resultdictcopy, datadict))
         return MockResponse(
@@ -183,7 +180,7 @@ class TestResourceView:
                 merge_two_dictionaries(resultdictcopy, datadict)
 
                 result = json.dumps(resultdictcopy)
-                if datadict["title"] == "Quick Charts":
+                if datadict["title"] == "Preview":
                     return MockResponse(
                         200,
                         f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_update"}}',
@@ -248,7 +245,7 @@ class TestResourceView:
             "c06b5a0d-1d41-4a74-a196-41c251c76023"
         )
         assert resource_view["id"] == "c06b5a0d-1d41-4a74-a196-41c251c76023"
-        assert resource_view["title"] == "Quick Charts"
+        assert resource_view["title"] == "Preview"
         resource_view = ResourceView.read_from_hdx("TEST2")
         assert resource_view is None
         resource_view = ResourceView.read_from_hdx("TEST3")
@@ -267,7 +264,7 @@ class TestResourceView:
         resource_view["title"] = "A Preview"
         resource_view.create_in_hdx()
         assert resource_view["id"] == "c06b5a0d-1d41-4a74-a196-41c251c76023"
-        assert resource_view["view_type"] == "hdx_hxl_preview"
+        assert resource_view["view_type"] == "recline_view"
         assert "state" not in resource_view
 
         data["title"] = "XXX"
@@ -293,7 +290,7 @@ class TestResourceView:
             "c06b5a0d-1d41-4a74-a196-41c251c76023"
         )
         assert resource_view["id"] == "c06b5a0d-1d41-4a74-a196-41c251c76023"
-        assert resource_view["view_type"] == "hdx_hxl_preview"
+        assert resource_view["view_type"] == "recline_view"
 
         resource_view["id"] = "c06b5a0d-1d41-4a74-a196-41c251c76023"
         resource_view["view_type"] = "recline_view"
@@ -308,11 +305,11 @@ class TestResourceView:
         with pytest.raises(HDXError):
             resource_view.update_in_hdx()
 
-        resource_view["view_type"] = "hdx_hxl_preview"
+        resource_view["view_type"] = "recline_view"
         resource_view["resource_id"] = "25982d1c-f45a-45e1-b14e-87d367413045"
         resource_view.update_in_hdx()
         assert resource_view["id"] == "NOTEXIST"
-        assert resource_view["view_type"] == "hdx_hxl_preview"
+        assert resource_view["view_type"] == "recline_view"
         assert resource_view["resource_id"] == "25982d1c-f45a-45e1-b14e-87d367413045"
 
         del resource_view["id"]
@@ -322,7 +319,7 @@ class TestResourceView:
 
         data = copy.deepcopy(self.resource_view_data)
         data["id"] = "c06b5a0d-1d41-4a74-a196-41c251c76023"
-        data["title"] = "Quick Charts"
+        data["title"] = "Preview"
         data["description"] = "Custom chart X"
         resource_view = ResourceView(data)
         resource_view.create_in_hdx()
@@ -349,8 +346,8 @@ class TestResourceView:
         assert resource_view["view_type"] == "recline_view"
         assert resource_view["title"] == "Data Explorer"
         resource_view.update_from_yaml(static_yaml)
-        assert resource_view["view_type"] == "hdx_hxl_preview"
-        assert resource_view["title"] == "Quick Charts"
+        assert resource_view["view_type"] == "recline_view"
+        assert resource_view["title"] == "Preview"
         assert resource_view["description"] == "lala"
         assert resource_view["resource_id"] == "25982d1c-f45a-45e1-b14e-87d367413045"
 
@@ -359,7 +356,7 @@ class TestResourceView:
         resource_view = ResourceView(data)
         assert resource_view["view_type"] == "recline_view"
         assert resource_view["title"] == "Data Explorer"
-        resource_view["view_type"] = "hdx_hxl_preview"
+        resource_view["view_type"] = "recline_view"
         resource_view.update_from_json(static_json)
         assert resource_view["view_type"] == "recline_view"
         assert resource_view["title"] == "Data Explorer"
@@ -371,14 +368,12 @@ class TestResourceView:
         resource_view = ResourceView(data)
         resource_view.copy(resultdict)
         assert resource_view["resource_id"] == self.resource_view_data["resource_id"]
-        assert resource_view["view_type"] == "hdx_hxl_preview"
-        assert resource_view["hxl_preview_config"] == hxl_preview_config
+        assert resource_view["view_type"] == "recline_view"
         data = copy.deepcopy(self.resource_view_data)
         resource_view = ResourceView(data)
         resource_view.copy("c06b5a0d-1d41-4a74-a196-41c251c76023")
         assert resource_view["resource_id"] == self.resource_view_data["resource_id"]
-        assert resource_view["view_type"] == "hdx_hxl_preview"
-        assert resource_view["hxl_preview_config"] == hxl_preview_config
+        assert resource_view["view_type"] == "recline_view"
         with pytest.raises(HDXError):
             resource_view.copy("123")
         with pytest.raises(HDXError):

@@ -3,8 +3,7 @@
 import json
 import logging
 import sys
-import warnings
-from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
@@ -26,7 +25,6 @@ from hdx.utilities.dateparse import (
     parse_date_range,
 )
 from hdx.utilities.dictandlist import merge_two_dictionaries
-from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_json
 from hdx.utilities.saver import save_iterable, save_json
 from hdx.utilities.uuid import is_valid_uuid
@@ -202,7 +200,7 @@ class Dataset(HDXObject):
         session: Session | None = None,
     ) -> None:
         """Save dataset to JSON. If follow_urls is True, resource urls that point to
-        datasets, HXL proxy urls etc. are followed to retrieve final urls.
+        datasets are followed to retrieve final urls.
 
         Args:
             path: Path to save dataset
@@ -396,35 +394,6 @@ class Dataset(HDXObject):
         """
         return len(self._resources)
 
-    def reorder_resources(
-        self, resource_ids: Sequence[str], hxl_update: bool = True
-    ) -> None:
-        """Reorder resources in dataset according to provided list. Resources are
-        updated in the dataset object to match new order. However, the dataset is not
-        refreshed by rereading from HDX. If only some resource ids are supplied then
-        these are assumed to be first and the other resources will stay in their
-        original order.
-
-        Args:
-            resource_ids: List of resource ids
-
-        Returns:
-            None
-        """
-        dataset_id = self.data.get("id")
-        if not dataset_id:
-            raise HDXError(
-                "Dataset has no id! It must be read, created or updated first."
-            )
-        data = {"id": dataset_id, "order": resource_ids}
-        results = self._write_to_hdx("reorder", data)
-        ordered_ids = results["order"]
-        reordered_resources = []
-        for resource_id in ordered_ids:
-            resource = next(x for x in self._resources if x["id"] == resource_id)
-            reordered_resources.append(resource)
-        self._resources = reordered_resources
-
     def move_resource(
         self,
         resource_name: str,
@@ -517,6 +486,33 @@ class Dataset(HDXObject):
             )
             self.init_resources()
             self.separate_resources()
+
+    def reorder_resources(self, resource_ids: Sequence[str]) -> None:
+        """Reorder resources in dataset according to provided list. Resources are
+        updated in the dataset object to match new order. However, the dataset is not
+        refreshed by rereading from HDX. If only some resource ids are supplied then
+        these are assumed to be first and the other resources will stay in their
+        original order.
+
+        Args:
+            resource_ids: List of resource ids
+
+        Returns:
+            None
+        """
+        dataset_id = self.data.get("id")
+        if not dataset_id:
+            raise HDXError(
+                "Dataset has no id! It must be read, created or updated first."
+            )
+        data = {"id": dataset_id, "order": resource_ids}
+        results = self._write_to_hdx("reorder", data)
+        ordered_ids = results["order"]
+        reordered_resources = []
+        for resource_id in ordered_ids:
+            resource = next(x for x in self._resources if x["id"] == resource_id)
+            reordered_resources.append(resource)
+        self._resources = reordered_resources
 
     def _dataset_load_from_hdx(self, id_or_name: str) -> bool:
         """Loads the dataset given by either id or name from HDX
@@ -1079,7 +1075,6 @@ class Dataset(HDXObject):
         remove_additional_resources: bool = False,
         match_resource_order: bool = False,
         create_default_views: bool = True,
-        hxl_update: bool = True,
         **kwargs: Any,
     ) -> dict:
         """Check if dataset exists in HDX and if so, update it. match_resources_by_metadata uses ids if they are
@@ -1145,7 +1140,6 @@ class Dataset(HDXObject):
         remove_additional_resources: bool = False,
         match_resource_order: bool = False,
         create_default_views: bool = True,
-        hxl_update: bool = True,
         **kwargs: Any,
     ) -> dict:
         """Check if dataset exists in HDX and if so, update it, otherwise create it. match_resources_by_metadata uses
@@ -1474,17 +1468,6 @@ class Dataset(HDXObject):
             self.data.get("dataset_date"), date_format, today
         )
 
-    def get_reference_period(
-        self,
-        date_format: str | None = None,
-        today: datetime = now_utc(),
-    ) -> dict:
-        warnings.warn(
-            "get_reference_period() is deprecated, use get_time_period() instead",
-            DeprecationWarning,
-        )
-        return self.get_time_period(date_format, today)
-
     def set_time_period(
         self,
         startdate: datetime | str,
@@ -1511,19 +1494,6 @@ class Dataset(HDXObject):
             startdate, enddate, ongoing, ignore_timeinfo
         )
 
-    def set_reference_period(
-        self,
-        startdate: datetime | str,
-        enddate: datetime | str | None = None,
-        ongoing: bool = False,
-        ignore_timeinfo: bool = True,
-    ) -> None:
-        warnings.warn(
-            "set_reference_period() is deprecated, use set_time_period() instead",
-            DeprecationWarning,
-        )
-        self.set_time_period(startdate, enddate, ongoing, ignore_timeinfo)
-
     def set_time_period_year_range(
         self,
         dataset_year: str | int | Iterable,
@@ -1543,17 +1513,6 @@ class Dataset(HDXObject):
             retval,
         ) = DateHelper.get_hdx_time_period_from_years(dataset_year, dataset_end_year)
         return retval
-
-    def set_reference_period_year_range(
-        self,
-        dataset_year: str | int | Iterable,
-        dataset_end_year: str | int | None = None,
-    ) -> list[int]:
-        warnings.warn(
-            "set_reference_period_year_range() is deprecated, use set_time_period_year_range() instead",
-            DeprecationWarning,
-        )
-        return self.set_time_period_year_range(dataset_year, dataset_end_year)
 
     @classmethod
     def list_valid_update_frequencies(cls) -> list[str]:
@@ -2265,15 +2224,6 @@ class Dataset(HDXObject):
                 dataset_resource.disable_dataset_preview()
         return preview_resource
 
-    def set_quickchart_resource(
-        self, resource: Union["Resource", dict, str, int]
-    ) -> "Resource":
-        warnings.warn(
-            "set_quickchart_resource() is deprecated, use set_preview_resource() instead",
-            DeprecationWarning,
-        )
-        return self.set_preview_resource(resource)
-
     def create_default_views(self, create_datastore_views: bool = False) -> None:
         """Create default resource views for all resources in dataset
 
@@ -2303,28 +2253,6 @@ class Dataset(HDXObject):
                     self._preview_resourceview.create_in_hdx()
                     self._preview_resourceview = None
                     break
-
-    def generate_quickcharts(
-        self,
-        resource: Union["Resource", dict, str, int] = 0,
-        path: Path | str | None = None,
-        bites_disabled: Sequence[bool] | None = None,
-        indicators: Sequence[dict] | None = None,
-        findreplace: dict | None = None,
-    ) -> None:
-        """To be removed
-
-        Args:
-            resource: Either resource id or name, resource metadata from a Resource object or a dictionary or position. Defaults to 0.
-            path: Path to YAML resource view metadata. Defaults to None (config/hdx_resource_view_static.yaml or internal template).
-            bites_disabled: Which QC bites should be disabled. Defaults to None (all bites enabled).
-            indicators: Indicator codes, QC titles and units for resource view template. Defaults to None (don't use template).
-            findreplace: Replacements for anything else in resource view. Defaults to None.
-
-        Returns:
-            None
-        """
-        return None
 
     def get_name_or_id(self, prefer_name: bool = True) -> str | None:
         """Get dataset name or id eg. for use in urls. If prefer_name is True,
@@ -2513,193 +2441,6 @@ class Dataset(HDXObject):
         retdict["rows"] = rows
         return True, retdict
 
-    def generate_resource_from_rows(
-        self,
-        folder: Path | str,
-        filename: str,
-        rows: Iterable[Sequence | Mapping],
-        resourcedata: dict,
-        headers: Sequence[str] | None = None,
-        encoding: str | None = None,
-    ) -> Optional["Resource"]:
-        """Write rows to csv and create resource, adding it to the dataset.
-        The headers argument is either a row number (rows start counting at
-        1), or the actual headers defined as a list of strings. If not set, all
-        rows will be treated as containing values.
-
-        Args:
-            folder: Folder to which to write file containing rows
-            filename: Filename of file to write rows
-            rows: List of rows in dict or list form
-            resourcedata: Resource data
-            headers: List of headers. Defaults to None.
-            encoding: Encoding to use. Defaults to None (infer encoding).
-
-        Returns:
-            The created resource or None if not created
-        """
-        warnings.warn(
-            "generate_resource_from_rows() is deprecated, use generate_resource() instead",
-            DeprecationWarning,
-        )
-        res, retdict = self.generate_resource(
-            folder, filename, rows, resourcedata, headers, headers, "csv", encoding
-        )
-        return retdict["resource"] if res else None
-
-    def generate_resource_from_iterable(
-        self,
-        headers: Sequence[str],
-        iterable: Iterable[Sequence | dict],
-        hxltags: dict[str, str],
-        folder: Path | str,
-        filename: str,
-        resourcedata: dict,
-        datecol: int | str | None = None,
-        yearcol: int | str | None = None,
-        date_function: Callable[[dict], dict | None] | None = None,
-        quickcharts: dict | None = None,
-        encoding: str | None = None,
-    ) -> tuple[bool, dict]:
-        """Given headers and an iterable, write rows to csv and create
-        resource, adding to it the dataset. The returned dictionary will
-        contain the resource in the key resource, headers in the key headers
-        and list of rows in the key rows.
-
-        The time period can optionally be set by supplying a column in
-        which the date or year is to be looked up. Note that any timezone
-        information is ignored and UTC assumed. Alternatively, a function can
-        be supplied to handle any dates in a row. It should accept a row and
-        should return None to ignore the row or a dictionary which can either
-        be empty if there are no dates in the row or can be populated with
-        keys startdate and/or enddate which are of type timezone-aware
-        datetime. The lowest start date and highest end date are used to set
-        the time period and are returned in the results dictionary in keys
-        startdate and enddate.
-
-        Args:
-            headers: Headers
-            iterable: Iterable returning rows
-            hxltags: Header to HXL hashtag mapping
-            folder: Folder to which to write file containing rows
-            filename: Filename of file to write rows
-            resourcedata: Resource data
-            datecol: Date column for setting time period. Defaults to None (don't set).
-            yearcol: Year column for setting dataset year range. Defaults to None (don't set).
-            date_function: Date function to call for each row. Defaults to None.
-            encoding: Encoding to use. Defaults to None (infer encoding).
-
-        Returns:
-            (True if resource added, dictionary of results)
-        """
-        warnings.warn(
-            "generate_resource_from_iterable() is deprecated, use generate_resource() instead",
-            DeprecationWarning,
-        )
-        if [datecol, yearcol, date_function].count(None) < 2:
-            raise HDXError("Supply one of datecol, yearcol or date_function!")
-        retdict = {}
-        if headers is None:
-            return False, retdict
-        rows = [Download.hxl_row(headers, hxltags, dict_form=True)]
-        dates = [default_enddate, default_date]
-        if yearcol is not None:
-
-            def yearcol_function(row):
-                result = {}
-                year = row[yearcol]
-                if year:
-                    result["startdate"], result["enddate"] = parse_date_range(
-                        year,
-                        zero_time=True,
-                        max_endtime=True,
-                    )
-                return result
-
-            date_function = yearcol_function
-        elif datecol is not None:
-
-            def datecol_function(row):
-                result = {}
-                date = row[datecol]
-                if date:
-                    date = parse_date(date)
-                    result["startdate"] = date
-                    result["enddate"] = date
-                return result
-
-            date_function = datecol_function
-
-        for row in iterable:
-            if date_function is not None:
-                result = date_function(row)
-                if result is None:
-                    continue
-                startdate = result.get("startdate")
-                if startdate is not None:
-                    if startdate < dates[0]:
-                        dates[0] = startdate
-                enddate = result.get("enddate")
-                if enddate is not None:
-                    if enddate > dates[1]:
-                        dates[1] = enddate
-            rows.append(row)
-        if len(rows) == 1:
-            logger.error(f"No data rows in {filename}!")
-            return False, retdict
-        if yearcol is not None or date_function is not None:
-            if dates[0] == default_enddate or dates[1] == default_date:
-                logger.error(f"No dates in {filename}!")
-                return False, retdict
-            else:
-                retdict["startdate"] = dates[0]
-                retdict["enddate"] = dates[1]
-                self.set_time_period(dates[0], dates[1])
-        resource = self.generate_resource_from_rows(
-            folder,
-            filename,
-            rows,
-            resourcedata,
-            headers=headers,
-            encoding=encoding,
-        )
-        retdict["resource"] = resource
-        retdict["headers"] = headers
-        retdict["rows"] = rows
-        return True, retdict
-
-    def generate_resource_from_iterator(
-        self,
-        headers: Sequence[str],
-        iterator: Iterator[Sequence | dict],
-        hxltags: dict[str, str],
-        folder: Path | str,
-        filename: str,
-        resourcedata: dict,
-        datecol: int | str | None = None,
-        yearcol: int | str | None = None,
-        date_function: Callable[[dict], dict | None] | None = None,
-        quickcharts: dict | None = None,
-        encoding: str | None = None,
-    ) -> tuple[bool, dict]:
-        warnings.warn(
-            "generate_resource_from_iterator() is deprecated, use generate_resource() instead",
-            DeprecationWarning,
-        )
-        return self.generate_resource_from_iterable(
-            headers,
-            iterator,
-            hxltags,
-            folder,
-            filename,
-            resourcedata,
-            datecol,
-            yearcol,
-            date_function,
-            quickcharts,
-            encoding,
-        )
-
     def download_generate_resource(
         self,
         downloader: BaseDownload,
@@ -2745,7 +2486,6 @@ class Dataset(HDXObject):
         Args:
             downloader: A Download or Retrieve object
             url: URL to download
-            hxltags: Header to HXL hashtag mapping
             folder: Folder to which to write file containing rows
             filename: Filename of file to write rows
             resourcedata: Resource data
@@ -2784,89 +2524,6 @@ class Dataset(HDXObject):
             yearcol=yearcol,
             date_function=date_function,
             no_empty=no_empty,
-        )
-
-    def download_and_generate_resource(
-        self,
-        downloader: BaseDownload,
-        url: str,
-        hxltags: dict[str, str],
-        folder: Path | str,
-        filename: str,
-        resourcedata: dict,
-        header_insertions: Sequence[tuple[int, str]] | None = None,
-        row_function: Callable[[list[str], dict], dict] | None = None,
-        datecol: str | None = None,
-        yearcol: str | None = None,
-        date_function: Callable[[dict], dict | None] | None = None,
-        quickcharts: dict | None = None,
-        **kwargs: Any,
-    ) -> tuple[bool, dict]:
-        """Download url, write rows to csv and create resource, adding to it
-        the dataset. The returned dictionary will contain the resource in the
-        key resource, headers in the key headers and list of rows in the key
-        rows.
-
-        Optionally, headers can be inserted at specific positions. This is
-        achieved using the header_insertions argument. If supplied, it is a
-        list of tuples of the form (position, header) to be inserted. A
-        function is called for each row. If supplied, it takes as arguments:
-        headers (prior to any insertions) and row (which will be in dict or
-        list form depending upon the dict_rows argument) and outputs a modified
-        row.
-
-        The time period can optionally be set by supplying a column in
-        which the date or year is to be looked up. Note that any timezone
-        information is ignored and UTC assumed. Alternatively, a function can
-        be supplied to handle any dates in a row. It should accept a row and
-        should return None to ignore the row or a dictionary which can either
-        be empty if there are no dates in the row or can be populated with
-        keys startdate and/or enddate which are of type timezone-aware
-        datetime. The lowest start date and highest end date are used to set
-        the time period and are returned in the results dictionary in keys
-        startdate and enddate.
-
-        Args:
-            downloader: A Download or Retrieve object
-            url: URL to download
-            hxltags: Header to HXL hashtag mapping
-            folder: Folder to which to write file containing rows
-            filename: Filename of file to write rows
-            resourcedata: Resource data
-            header_insertions: List of (position, header) to insert. Defaults to None.
-            row_function: Function to call for each row. Defaults to None.
-            datecol: Date column for setting time period. Defaults to None (don't set).
-            yearcol: Year column for setting dataset year range. Defaults to None (don't set).
-            date_function: Date function to call for each row. Defaults to None.
-            **kwargs: Any additional args to pass to downloader.get_tabular_rows
-
-        Returns:
-            (True if resource added, dictionary of results)
-        """
-        warnings.warn(
-            "download_and_generate_resource() is deprecated, use download_generate_resource() instead",
-            DeprecationWarning,
-        )
-        headers, iterator = downloader.get_tabular_rows(
-            url,
-            dict_form=True,
-            header_insertions=header_insertions,
-            row_function=row_function,
-            format="csv",
-            **kwargs,
-        )
-        return self.generate_resource_from_iterable(
-            headers,
-            iterator,
-            hxltags,
-            folder,
-            filename,
-            resourcedata,
-            datecol=datecol,
-            yearcol=yearcol,
-            date_function=date_function,
-            quickcharts=quickcharts,
-            encoding=kwargs.get("encoding", None),
         )
 
     def add_hapi_error(
