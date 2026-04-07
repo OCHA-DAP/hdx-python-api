@@ -15,7 +15,9 @@ from hdx.data.hdxobject import HDXError
 from hdx.data.organization import Organization
 from hdx.data.user import User
 
-resultdict = load_yaml(Path("tests") / "fixtures" / "organization_show_results.yaml")
+resultdict = load_yaml(
+    Path("tests") / "fixtures" / "organization" / "organization_show_results.yaml"
+)
 
 organization_list = [
     "acaps",
@@ -29,6 +31,10 @@ organization_list = [
     "afdb",
     "afghanistan-protection-cluster",
 ]
+organization_list_all_fields = load_yaml(
+    Path("tests") / "fixtures" / "organization" / "organization_list_all_fields.yaml"
+)
+
 searchdict = load_yaml(Path("tests") / "fixtures" / "dataset_search_results.yaml")
 
 organization_autocomplete = [
@@ -233,6 +239,28 @@ class TestOrganization:
         Configuration.read().remoteckan().session = MockSession()
 
     @pytest.fixture(scope="function")
+    def post_all_fields(self, fixturesfolder):
+        class MockSession:
+            @staticmethod
+            def post(url, data, headers, files, allow_redirects, auth=None):
+                kwargs = json.loads(data.decode("utf-8"))
+                if "show" in url:
+                    return organization_mockshow(url, kwargs)
+                if kwargs["all_fields"]:
+                    return MockResponse(
+                        200,
+                        f'{{"success": true, "result": {json.dumps(organization_list_all_fields)}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_list"}}',
+                    )
+                names = [x["name"] for x in organization_list_all_fields]
+                names.append("TEST1")
+                return MockResponse(
+                    200,
+                    f'{{"success": true, "result": {json.dumps(names)}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_list"}}',
+                )
+
+        Configuration.read().remoteckan().session = MockSession()
+
+    @pytest.fixture(scope="function")
     def user_read(self):
         class MockSession:
             @staticmethod
@@ -378,6 +406,10 @@ class TestOrganization:
     def test_get_all_organizations(self, configuration, post_list):
         organizations = Organization.get_all_organization_names()
         assert len(organizations) == 10
+
+    def test_get_all_organizations_all_fields(self, configuration, post_all_fields):
+        organizations = Organization.get_all_organization_names(all_fields=True)
+        assert len(organizations) == 6
 
     def test_users(self, configuration, user_read):
         org_data = copy.deepcopy(resultdict)

@@ -30,7 +30,9 @@ resultdict = {
     "id": "9f3e9973-7dbe-4c65-8820-f48578e3ffea",
     "number_created_packages": 0,
 }
-orgdict = load_yaml(Path("tests") / "fixtures" / "organization_show_results.yaml")
+orgdict = load_yaml(
+    Path("tests") / "fixtures" / "organization" / "organization_show_results.yaml"
+)
 orgdict2 = copy.deepcopy(orgdict)
 del orgdict2["users"]
 del orgdict2["packages"]

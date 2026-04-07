@@ -260,7 +260,56 @@ class Organization(HDXObject):
             List of all organization names in HDX
         """
         organization = Organization(configuration=configuration)
-        return organization._write_to_hdx("list", kwargs)
+
+        # Early return for the standard, non-paginated case
+        if not kwargs.get("all_fields"):
+            return organization._write_to_hdx("list", kwargs)
+
+        compiled_orgs = {}
+        # Extract limit and offset to dictate our paging sizes, defaulting to 400 and 0
+        page_size = kwargs.pop("limit", 400)
+        current_offset = kwargs.pop("offset", 0)
+
+        # 1. Fetch in pages using the provided/default page size
+        while True:
+            page_kwargs = kwargs.copy()
+            page_kwargs["limit"] = page_size
+            page_kwargs["offset"] = current_offset
+
+            page_data = organization._write_to_hdx("list", page_kwargs)
+
+            if not page_data:
+                break
+
+            # Store by name to automatically deduplicate offset shifts
+            for org in page_data:
+                compiled_orgs[org["name"]] = org
+
+            if len(page_data) < page_size:
+                break
+
+            current_offset += page_size
+
+        # 2. Establish Ground Truth LAST (without limit/offset constraints)
+        truth_kwargs = kwargs.copy()
+        truth_kwargs["all_fields"] = False
+
+        ground_truth_names = organization._write_to_hdx("list", truth_kwargs)
+
+        # 3 & 4. Check for missing IDs, fetch individually, and implicitly prune deletes
+        final_orgs = []
+        for name in ground_truth_names:
+            if name in compiled_orgs:
+                final_orgs.append(compiled_orgs[name])
+            else:
+                try:
+                    missing_org = organization._write_to_hdx("show", {"id": name})
+                    if missing_org:
+                        final_orgs.append(missing_org)
+                except Exception:
+                    pass
+
+        return final_orgs
 
     @classmethod
     def autocomplete(

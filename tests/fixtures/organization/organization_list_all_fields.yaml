@@ -1,0 +1,389 @@
+- approval_status: approved
+  closed_organization: true
+  created: '2017-08-11T10:55:20.401051'
+  custom_org: '1'
+  customization: '{"highlight_color": "", "logo_bg_color": "", "topline_resource": "", "image_sq": "2017-08-21-220827.782974save.png", "image_rect": "2017-08-21-220827.783390save.png"}'
+  description: Save the Children comprises Save the Children International and 30 member organisations working to deliver change for children in around 120 countries. Save the Children International delivers our programmes internationally to ensure we achieve the greatest possible impact for children. We have a small centre and seven regional offices. Our members work together to campaign for better outcomes for children, and to deliver programmes at scale to support children.
+  display_name: Save the Children (inactive)
+  fts_id: ''
+  hdx_org_type: international_org
+  id: b1d11528-6af6-4eef-afd5-0c0349e31a94
+  image_display_url: ''
+  image_url: ''
+  is_organization: true
+  modified_at: '1720443787139'
+  name: savethechildren
+  num_followers: 250
+  org_acronym: STC
+  org_url: https://www.savethechildren.net
+  package_count: 1
+  request_membership: 'true'
+  state: active
+  title: Save the Children (inactive)
+  type: organization
+  user_survey_url: ''
+  visualization_config: '{"visualization-select":"Choose Visualization Type"}'
+  users:
+    - about: null
+      activity_streams_email_notifications: false
+      capacity: member
+      created: '2022-07-15T16:45:16.358461'
+      display_name: Alejandro López
+      email_hash: fa21957e7ab27bde7c042c6da3b09696
+      fullname: Alejandro López
+      id: 9dcd302e-56df-4547-8b59-e7824e33037f
+      image_display_url: null
+      image_url: null
+      last_active: null
+      name: ajlopez
+      number_created_packages: 0
+      state: active
+      sysadmin: false
+    - about: null
+      activity_streams_email_notifications: false
+      capacity: editor
+      created: '2019-12-11T19:15:37.772639'
+      display_name: Arshad Malik
+      email_hash: 34ea9c834b77c91a44df94da38afe207
+      fullname: Arshad Malik
+      id: e00af48c-c3be-4d73-920a-525a9a3bb36b
+      image_display_url: null
+      image_url: null
+      last_active: null
+      name: arshadmalik
+      number_created_packages: 0
+      state: active
+      sysadmin: false
+    - about: null
+      activity_streams_email_notifications: false
+      capacity: member
+      created: '2022-02-02T11:27:50.675851'
+      display_name: Bahjat Mansour
+      email_hash: 5513e9038fa6a87f6288e963cfd77420
+      fullname: Bahjat Mansour
+      id: 5fc0f51a-cc53-4fa2-ab29-b79911d2a681
+      image_display_url: null
+      image_url: null
+      last_active: null
+      name: beej
+      number_created_packages: 0
+      state: active
+      sysadmin: false
+    - about: null
+      activity_streams_email_notifications: false
+      capacity: member
+      created: '2021-01-26T02:46:18.340073'
+      display_name: Ros Chanborith
+      email_hash: 593d08c254d88ed56a6c8bb4f053f253
+      fullname: Ros Chanborith
+      id: 982632fb-3ed9-49a5-935e-7d13807ecba4
+      image_display_url: null
+      image_url: null
+      last_active: null
+      name: chanborithros
+      number_created_packages: 0
+      state: active
+      sysadmin: false
+    - about: null
+      activity_streams_email_notifications: false
+      capacity: member
+      created: '2023-03-09T18:12:04.331114'
+      display_name: Gemechis Bizuayehu
+      email_hash: f6baf7069036d4b7516b720cc192585c
+      fullname: Gemechis Bizuayehu
+      id: 185e3a50-cc11-4e41-90c1-638c1258849f
+      image_display_url: null
+      image_url: null
+      last_active: '2024-06-19T16:32:53.981045'
+      name: gemechisb
+      number_created_packages: 0
+      state: active
+      sysadmin: false
+    - about: null
+      activity_streams_email_notifications: false
+      capacity: admin
+      created: '2022-11-14T09:35:17.908745'
+      display_name: Closed Bot
+      email_hash: 86b409033c7182eb516f93f3ddf3110d
+      fullname: Closed Bot
+      id: e32d5afb-cc7e-4715-85b7-5a3b849443f5
+      image_display_url: null
+      image_url: null
+      last_active: null
+      name: hdxclosedorgbot
+      number_created_packages: 0
+      state: active
+      sysadmin: false
+
+- approval_status: approved
+  closed_organization: false
+  created: '2025-07-09T12:48:46.623265'
+  custom_org: '1'
+  customization: '{"highlight_color": "", "logo_bg_color": "", "topline_resource": "", "image_sq": "2025-07-09-125523.735905Sawa-World-Logo--small-01.png", "image_rect": "2025-07-09-124846.601972Sawa-World-Logo---FULL-01.png"}'
+  description: |
+    Sawa World is a global organization with its headquarters in Uganda, East Africa. The organization uses a locally-led and innovative approach to eradicate global poverty by providing large-scale access to locally created, easy-to-start, and eco-friendly local solutions that are found by youth living in poverty. These locally created business skills can generate income and improve the lives of youth and their households.
+    Since 2011, Sawa World has reached over 88,000 youth, encouraged them to start over 19,000 micro-businesses, and improved the livelihoods of an estimated 780,000 families. Sawa World’s model has been implemented in 11 countries. We have worked with numerous international governments and development organizations, including the Lavazza Foundation, U.S. President's Emergency Plan for AIDS Relief (PEPFAR), TechnoServe, Mercy Corps, Italia Uganda Foundation, Stromme Foundation, School For Life Foundation, Komo Learning Centres, and Aidsfonds (Netherlands), among others.
+  display_name: Sawa World
+  fts_id: ''
+  hdx_org_type: national_ngo
+  id: 80c2001f-743b-46de-90a8-d3c761f0e26a
+  image_display_url: ''
+  image_url: ''
+  is_organization: true
+  modified_at: '1753864829787'
+  name: sawa-world
+  num_followers: 0
+  org_acronym: SW
+  org_url: https://sawaworld.org/
+  package_count: 3
+  request_membership: 'true'
+  state: active
+  title: Sawa World
+  type: organization
+  user_survey_url: ''
+  visualization_config: '{"visualization-select":"Choose Visualization Type"}'
+  users:
+    - about: HDX Data Manager
+      activity_streams_email_notifications: false
+      capacity: admin
+      created: '2022-03-04T11:39:36.361842'
+      display_name: HDX Nyamgeroh
+      email_hash: b81807158748c46734d7d8b574bd1d9e
+      fullname: HDX Nyamgeroh
+      id: b682f6f7-cd7e-4bd4-8aa7-f74138dc6313
+      image_display_url: null
+      image_url: null
+      last_active: '2026-04-02T15:56:33.140194'
+      name: berylnyamgeroh
+      number_created_packages: 76
+      state: active
+      sysadmin: true
+    - about: null
+      activity_streams_email_notifications: false
+      capacity: admin
+      created: '2025-07-03T12:57:47.407907'
+      display_name: Esther Makooma
+      email_hash: 9fdd2141f5b4e0a00ff3343c5fdcfa05
+      fullname: Esther Makooma
+      id: 00e2ee07-f00d-4d6d-a0f4-802086eb39d9
+      image_display_url: null
+      image_url: null
+      last_active: '2025-12-16T09:19:55.239180'
+      name: esther_makooma
+      number_created_packages: 3
+      state: active
+      sysadmin: false
+
+- approval_status: approved
+  closed_organization: false
+  created: '2018-01-09T08:02:11.710347'
+  custom_org: '1'
+  customization: '{"highlight_color": "#fa0404", "logo_bg_color": "", "topline_resource": "", "image_sq": "2021-07-12-121351.546970Scofield_Associates_icon_logo.jpg", "image_rect": "2021-07-12-121351.55547220210407_Youtube_Cover.png"}'
+  description: Scofield Associates is a premier research consultancy firm specializing in Conflict Management Consulting, Market Research, Big Data Analytics, and Monitoring and Evaluation. Our extensive presence spans across Kenya, Somalia, Uganda, Tanzania, Rwanda, Ethiopia, Sudan, South Sudan, and Eritrea. By seamlessly integrating cutting-edge research, robust Big Data Analytics, and meticulous Evaluation methodologies, we are dedicated to delivering impactful and sustainable solutions in the diverse landscapes of the countries we serve.
+  display_name: Scofield Associates Limited
+  hdx_org_type: academic_research
+  id: 23919c28-c5c0-4ba7-ab94-21a0611f12a8
+  image_display_url: ''
+  image_url: ''
+  is_organization: true
+  modified_at: '1703494980711'
+  name: scofieldassociates
+  num_followers: 46
+  org_acronym: SA
+  org_url: https://scofieldassociates.co.ke/
+  package_count: 2
+  request_membership: 'true'
+  state: active
+  title: Scofield Associates Limited
+  type: organization
+  visualization_config: '{"visualization-select":"Choose Visualization Type"}'
+  users:
+    - about: null
+      activity_streams_email_notifications: false
+      capacity: editor
+      created: '2018-02-05T09:24:25.968897'
+      display_name: fmuchai-6945
+      email_hash: 25abf03a6c27611496fb9b1ab3f53c19
+      fullname: fmuchai-6945
+      id: c56508e3-2e05-42ce-8103-6ca0884269cf
+      image_display_url: null
+      image_url: null
+      last_active: null
+      name: fmuchai-6945
+      number_created_packages: 0
+      state: pending
+      sysadmin: false
+    - about: null
+      activity_streams_email_notifications: false
+      capacity: admin
+      created: '2017-12-27T16:25:30.729265'
+      display_name: Scofield Muliru
+      email_hash: 90439734e2abf380581af437df6d8f93
+      fullname: Scofield Muliru
+      id: e030b0f7-3105-41a3-b160-f77c2c11606b
+      image_display_url: null
+      image_url: null
+      last_active: '2024-12-19T06:30:31.074116'
+      name: muliruscofield
+      number_created_packages: 1
+      state: active
+      sysadmin: false
+
+- approval_status: approved
+  closed_organization: false
+  created: '2014-12-11T22:14:09.014535'
+  custom_org: '1'
+  customization: '{"highlight_color": "", "logo_bg_color": "", "topline_resource": "", "image_sq": "2018-09-18-103125.409429SAS1.jpg", "image_rect": "2021-12-31-032512.043481Screen-Shot-2021-12-31-at-10.24.56.png"}'
+  description: The Small Arms Survey is an independent research project located at the Graduate Institute of International and Development Studies in Geneva, Switzerland. It serves as the principal international source of public information on all aspects of small arms and armed violence and as a resource for governments, policymakers, researchers, and civil society. The Small Arms Survey commissions research and conducts collaborative projects with independent researchers, international organizations, governmental entities, UN agencies, research organizations, NGOs, and partner institutions throughout the world. Findings from resulting field research are presented in the project's various publications.
+  display_name: Small Arms Survey
+  fts_id: ''
+  hdx_org_type: academic_research
+  id: 8cec3715-5ec7-4c0f-9029-7635b045f368
+  image_display_url: ''
+  image_url: ''
+  is_organization: true
+  modified_at: '1720089422351'
+  name: small-arms-survey
+  num_followers: 127
+  org_acronym: Small Arms Survey
+  org_url: https://www.smallarmssurvey.org
+  package_count: 5
+  request_membership: 'true'
+  state: active
+  title: Small Arms Survey
+  type: organization
+  user_survey_url: ''
+  visualization_config: '{"visualization-select":"Choose Visualization Type"}'
+  users:
+    - about: null
+      activity_streams_email_notifications: false
+      capacity: admin
+      created: '2019-03-08T09:19:21.454864'
+      display_name: Anne-Severine Fabre
+      email_hash: b6f7bae88b1df9a46d002fff261beec1
+      fullname: Anne-Severine Fabre
+      id: 12bb9fa2-401f-4406-a475-509df6513fdc
+      image_display_url: null
+      image_url: null
+      last_active: '2024-12-17T14:21:00.799909'
+      name: anneseverine
+      number_created_packages: 6
+      state: active
+      sysadmin: false
+    - about: Gianluca Boo is a senior data expert at the Small Arms Survey focusing on data management, analysis, and visualization...
+      activity_streams_email_notifications: false
+      capacity: admin
+      created: '2022-11-10T08:09:03.587752'
+      display_name: Gianluca Boo
+      email_hash: 47c513d26c0b590b5a87181262bba0aa
+      fullname: Gianluca Boo
+      id: 695d74ec-10ae-45d0-a9b3-35cc98ed4443
+      image_display_url: null
+      image_url: null
+      last_active: '2024-02-27T13:40:36.567255'
+      name: gianluca_boo
+      number_created_packages: 1
+      state: active
+      sysadmin: false
+    - about: The Small Arms Survey is an independent research project located at the Graduate Institute of International and Development Studies in Geneva, Switzerland...
+      activity_streams_email_notifications: false
+      capacity: admin
+      created: '2014-12-11T15:41:43.232603'
+      display_name: Small Arms Survey
+      email_hash: d58c55e6df4626478c4ce662ede65979
+      fullname: Small Arms Survey
+      id: bf5a74f6-ea35-43dc-90d9-d08171d55220
+      image_display_url: null
+      image_url: null
+      last_active: null
+      name: smallarmssurvey
+      number_created_packages: 6
+      state: active
+      sysadmin: false
+
+- approval_status: approved
+  closed_organization: false
+  created: '2024-09-27T08:59:55.305261'
+  custom_org: '1'
+  customization: '{"highlight_color": "", "logo_bg_color": "", "topline_resource": "", "image_sq": "2024-09-27-090239.960350SWSS_Logo_03_RGB_Transparent.png", "image_rect": "2024-09-27-090239.962685SWSS_Logo_03_RGB_Transparent.png"}'
+  description: Solidarity with South Sudan is an international and intercongregational organization that initiated its first projects in South Sudan in 2008...
+  display_name: Solidarity with South Sudan
+  fts_id: ''
+  hdx_org_type: religious
+  id: acdd2940-ede6-4314-a75d-0a38dd54bb17
+  image_display_url: ''
+  image_url: ''
+  is_organization: true
+  modified_at: '1727443737702'
+  name: solidarity-ssd
+  num_followers: 0
+  org_acronym: CHTI
+  org_url: https://solidarityssudan.org/
+  package_count: 1
+  request_membership: 'true'
+  state: active
+  title: Solidarity with South Sudan
+  type: organization
+  user_survey_url: ''
+  visualization_config: '{"visualization-select":"Choose Visualization Type"}'
+  users:
+    - about: HDX Data Manager
+      activity_streams_email_notifications: false
+      capacity: admin
+      created: '2022-03-04T11:39:36.361842'
+      display_name: HDX Nyamgeroh
+      email_hash: b81807158748c46734d7d8b574bd1d9e
+      fullname: HDX Nyamgeroh
+      id: b682f6f7-cd7e-4bd4-8aa7-f74138dc6313
+      image_display_url: null
+      image_url: null
+      last_active: '2026-04-02T15:56:33.140194'
+      name: berylnyamgeroh
+      number_created_packages: 76
+      state: active
+      sysadmin: true
+    - about: null
+      activity_streams_email_notifications: false
+      capacity: admin
+      created: '2024-09-19T08:54:11.854348'
+      display_name: Emanuela De Mattia
+      email_hash: a56a977da95edf7785be36fa0b19fae1
+      fullname: Emanuela De Mattia
+      id: 58871533-e7a7-4c7e-a908-fd86398397c3
+      image_display_url: null
+      image_url: null
+      last_active: '2024-12-27T15:00:48.340827'
+      name: emanuela-80
+      number_created_packages: 1
+      state: active
+      sysadmin: false
+    - about: null
+      activity_streams_email_notifications: false
+      capacity: admin
+      created: '2024-09-27T10:08:11.871424'
+      display_name: fundraising-officer-930
+      email_hash: f2504d4970b3fc6d908f50e14c8119b9
+      fullname: fundraising-officer-930
+      id: bc416e07-90bf-47fe-a2d2-bcf78bad3e0d
+      image_display_url: null
+      image_url: null
+      last_active: '2024-09-27T10:18:25.470340'
+      name: fundraising-officer-930
+      number_created_packages: 0
+      state: active
+      sysadmin: false
+    - about: null
+      activity_streams_email_notifications: false
+      capacity: admin
+      created: '2024-09-27T10:08:10.746600'
+      display_name: officemanagereurope-2874
+      email_hash: a8458c187cc30dfce6e22d66293a24bc
+      fullname: officemanagereurope-2874
+      id: 9d5c6911-3359-4c4d-b2ba-ff10ad8f5280
+      image_display_url: null
+      image_url: null
+      last_active: '2024-09-27T10:12:07.710661'
+      name: officemanagereurope-2874
+      number_created_packages: 0
+      state: active
+      sysadmin: false
