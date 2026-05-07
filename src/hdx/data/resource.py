@@ -62,6 +62,9 @@ class Resource(HDXObject):
             "search": "resource_search",
             "broken": "hdx_mark_broken_link_in_resource",
             "datastore_delete": "datastore_delete",
+            "datastore_create": "datastore_create",
+            "datastore_insert": "datastore_insert",
+            "datastore_upsert": "datastore_upsert",
             "datastore_search": "datastore_search",
         }
 
