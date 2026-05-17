@@ -575,18 +575,17 @@ class TestResource:
                     )
                 if (
                     "upsert" in url
-                    and datadict["resource_id"] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
+                    and datadict["resource_id"]
+                    == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
                 ):
                     TestResource.datastore = "upsert"
                     return MockResponse(
                         200,
                         '{"success": true, "result": {"method": "upsert", "resource_id": "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_upsert"}',
                     )
-                if (
-                    "create" in url
-                    or "insert" in url
-                    or "search" in url
-                ) and datadict["resource_id"] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5":
+                if ("create" in url or "insert" in url or "search" in url) and datadict[
+                    "resource_id"
+                ] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5":
                     TestResource.datastore = "create"
                     return MockResponse(
                         200,
