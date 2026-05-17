@@ -486,6 +486,7 @@ name = "hdx-python-api"
 source = { editable = "." }
 dependencies = [
     { name = "ckanapi" },
+    { name = "coverage" },
     { name = "defopt" },
     { name = "email-validator" },
     { name = "hdx-python-country" },
@@ -513,6 +514,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "ckanapi", specifier = ">=4.8" },
+    { name = "coverage", specifier = ">=7.13.2" },
     { name = "defopt", specifier = ">=7.0.0" },
     { name = "email-validator" },
     { name = "hdx-python-country", specifier = ">=4.1.1" },

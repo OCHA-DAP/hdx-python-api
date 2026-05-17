@@ -574,9 +574,17 @@ class TestResource:
                         '{"success": true, "result": {"include_total": true, "resource_id": "_table_metadata", "fields": [{"type": "int", "id": "_id"}, {"type": "name", "id": "name"}, {"type": "oid", "id": "oid"}, {"type": "name", "id": "alias_of"}], "records_format": "objects", "records": [{"_id":"f9cd60f3d7f2f6d0","name":"f9228459-d808-4b51-948f-68a5850abfde","oid":"919290","alias_of":null},{"_id":"7ae63490de9b7d7b","name":"af618a0b-09b8-42c8-836f-2be597e1ea34","oid":"135294","alias_of":null},{"_id":"1dc37f4e89988644","name":"748b40dd-7bd3-40a3-941b-e76f0bfbe0eb","oid":"117144","alias_of":null},{"_id":"2a554a61bd366206","name":"91c78d24-eab3-40b5-ba91-6b29bcda7178","oid":"116963","alias_of":null},{"_id":"fd787575143afe90","name":"9320cfce-4620-489a-bcbe-25c73867d4fc","oid":"107430","alias_of":null},{"_id":"a70093abd230f647","name":"b9d2eb36-e65c-417a-bc28-f4dadb149302","oid":"107409","alias_of":null},{"_id":"95fbdd2d06c07aea","name":"ca6a0891-8395-4d58-9168-6c44e17e0193","oid":"107385","alias_of":null}], "limit": 10000, "_links": {"start": "/api/action/datastore_search?limit=10000&resource_id=_table_metadata", "next": "/api/action/datastore_search?offset=10000&limit=10000&resource_id=_table_metadata"}, "total": 7}}',
                     )
                 if (
+                    "upsert" in url
+                    and datadict["resource_id"] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
+                ):
+                    TestResource.datastore = "upsert"
+                    return MockResponse(
+                        200,
+                        '{"success": true, "result": {"method": "upsert", "resource_id": "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_upsert"}',
+                    )
+                if (
                     "create" in url
                     or "insert" in url
-                    or "upsert" in url
                     or "search" in url
                 ) and datadict["resource_id"] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5":
                     TestResource.datastore = "create"
@@ -976,6 +984,29 @@ class TestResource:
         assert TestResource.datastore == "create"
         TestResource.datastore = None
         assert resource2.has_datastore() is False
+
+        schema = [{"id": "code", "type": "text"}, {"id": "value", "type": "float"}]
+        records = [{"code": "A", "value": 1.0}, {"code": "B", "value": 2.0}]
+
+        TestResource.datastore = None
+        resource.create_datastore(schema, primary_key="code")
+        assert TestResource.datastore == "create"
+
+        TestResource.datastore = None
+        resource.create_datastore(schema, primary_key=["code", "value"])
+        assert TestResource.datastore == "create"
+
+        TestResource.datastore = None
+        resource.create_datastore(schema)
+        assert TestResource.datastore == "create"
+
+        TestResource.datastore = None
+        resource.update_datastore(records)
+        assert TestResource.datastore == "upsert"
+
+        TestResource.datastore = None
+        resource.update_datastore(records, method="insert")
+        assert TestResource.datastore == "upsert"
 
     def test_resource_views(self, configuration, post_resourceview):
         resource = Resource({"id": "25982d1c-f45a-45e1-b14e-87d367413045"})
