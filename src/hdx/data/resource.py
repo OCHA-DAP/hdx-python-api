@@ -706,13 +706,13 @@ class Resource(HDXObject):
 
     def create_datastore(
         self,
-        schema: list[dict],
-        primary_key: str | list[str] | None = None,
+        schema: Sequence[dict],
+        primary_key: str | Sequence[str] | None = None,
     ) -> None:
         """Create a datastore for the resource with the given schema.
 
         Args:
-            schema: List of field definitions, each a dict with 'id' and 'type' keys.
+            schema: Sequence of field definitions, each a dict with 'id' and 'type' keys.
             primary_key: Primary key field name(s). Defaults to None.
 
         Returns:
@@ -724,20 +724,20 @@ class Resource(HDXObject):
             "fields": schema,
         }
         if primary_key is not None:
-            if isinstance(primary_key, list):
+            if not isinstance(primary_key, str):
                 primary_key = ",".join(primary_key)
             data["primary_key"] = primary_key
         self._write_to_hdx("datastore_create", data, "resource_id")
 
     def update_datastore(
         self,
-        records: list[dict],
+        records: Sequence[dict],
         method: str = "upsert",
     ) -> None:
         """Update (upsert) records into the resource datastore.
 
         Args:
-            records: List of record dicts to insert or update.
+            records: Sequence of record dicts to insert or update.
             method: Datastore update method ('upsert', 'insert', or 'update'). Defaults to 'upsert'.
 
         Returns:

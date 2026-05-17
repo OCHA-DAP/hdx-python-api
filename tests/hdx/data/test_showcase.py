@@ -185,7 +185,7 @@ class TestShowcase:
     def read(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 if "association_delete" in url:
                     TestShowcase.association = "delete"
@@ -208,7 +208,7 @@ class TestShowcase:
     def post_create(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 if "vocabulary" in url:
                     return vocabulary_mockshow(url, datadict)
@@ -253,7 +253,7 @@ class TestShowcase:
 
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 if "vocabulary" in url:
                     return vocabulary_mockshow(url, datadict)
@@ -295,7 +295,7 @@ class TestShowcase:
     def post_delete(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 decodedata = data.decode("utf-8")
                 datadict = json.loads(decodedata)
                 if url.endswith("show") or "list" in url:
@@ -322,7 +322,7 @@ class TestShowcase:
     def allsearch(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 return mockallsearch(url, datadict)
 

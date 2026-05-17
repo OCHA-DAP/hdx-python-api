@@ -115,7 +115,7 @@ class TestOrganization:
     def read(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 return organization_mockshow(url, datadict)
 
@@ -125,7 +125,7 @@ class TestOrganization:
     def post_create(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 if "show" in url:
                     return organization_mockshow(url, datadict)
@@ -165,7 +165,7 @@ class TestOrganization:
     def post_update(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 if "show" in url:
                     return organization_mockshow(url, datadict)
@@ -205,7 +205,7 @@ class TestOrganization:
     def post_delete(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 decodedata = data.decode("utf-8")
                 datadict = json.loads(decodedata)
                 if "show" in url:
@@ -232,7 +232,7 @@ class TestOrganization:
     def post_list(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 json.loads(data.decode("utf-8"))
                 return mocklist(url)
 
@@ -242,7 +242,7 @@ class TestOrganization:
     def post_all_fields(self, fixturesfolder):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 kwargs = json.loads(data.decode("utf-8"))
                 if "show" in url:
                     return organization_mockshow(url, kwargs)
@@ -264,7 +264,7 @@ class TestOrganization:
     def user_read(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 return user_mockshow(url, datadict)
 
@@ -274,7 +274,7 @@ class TestOrganization:
     def datasets_get(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 return mockgetdatasets(url, datadict)
 
@@ -284,7 +284,7 @@ class TestOrganization:
     def post_autocomplete(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 decodedata = data.decode("utf-8")
                 datadict = json.loads(decodedata)
                 if "autocomplete" not in url or "innago" not in datadict["q"]:

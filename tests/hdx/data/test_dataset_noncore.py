@@ -52,7 +52,7 @@ class TestDatasetNoncore:
 
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 return vocabulary_mockshow(url, datadict)
 
@@ -62,7 +62,7 @@ class TestDatasetNoncore:
     def user_read(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 return user_mockshow(url, datadict)
 
@@ -72,7 +72,7 @@ class TestDatasetNoncore:
     def organization_read(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 return organization_mockshow(url, datadict)
 
@@ -82,7 +82,7 @@ class TestDatasetNoncore:
     def showcase_read(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 if "showcase_list" in url:
                     result = json.dumps([showcase_resultdict])
@@ -111,7 +111,7 @@ class TestDatasetNoncore:
     def vocabulary_update(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 if isinstance(data, dict):
                     datadict = {
                         k.decode("utf8"): v.decode("utf8") for k, v in data.items()

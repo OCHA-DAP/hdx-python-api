@@ -182,7 +182,7 @@ class TestDatasetCore:
     def read(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 return dataset_mockshow(url, datadict)
 
@@ -192,7 +192,7 @@ class TestDatasetCore:
     def post_revise(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 if isinstance(data, dict):
                     datadict = {
                         k.decode("utf8"): v.decode("utf8") for k, v in data.items()
@@ -219,7 +219,7 @@ class TestDatasetCore:
     def post_create(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 if isinstance(data, dict):
                     datadict = {
                         k.decode("utf8"): v.decode("utf8") for k, v in data.items()
@@ -286,7 +286,7 @@ class TestDatasetCore:
     def post_update(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 if isinstance(data, dict):
                     datadict = {
                         k.decode("utf8"): v.decode("utf8") for k, v in data.items()
@@ -363,7 +363,7 @@ class TestDatasetCore:
     def post_reorder(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 decodedata = data.decode("utf-8")
                 datadict = json.loads(decodedata)
                 if "show" in url:
@@ -390,7 +390,7 @@ class TestDatasetCore:
     def post_delete(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 decodedata = data.decode("utf-8")
                 datadict = json.loads(decodedata)
                 if "show" in url:
@@ -423,7 +423,7 @@ class TestDatasetCore:
     def search(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 return mocksearch(url, datadict)
 
@@ -433,7 +433,7 @@ class TestDatasetCore:
     def post_list(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 return mocklist(url, datadict)
 
@@ -443,7 +443,7 @@ class TestDatasetCore:
     def all(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 return mockall(url, datadict)
 
@@ -453,7 +453,7 @@ class TestDatasetCore:
     def post_autocomplete(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 decodedata = data.decode("utf-8")
                 datadict = json.loads(decodedata)
                 if "autocomplete" not in url or "acled" not in datadict["q"]:

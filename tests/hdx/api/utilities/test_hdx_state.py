@@ -47,7 +47,7 @@ class TestState:
     def do_state(self, tempfolder, statefile):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 if "resource" in url:
                     result = json.dumps(resultdict)
                     return MockResponse(
@@ -71,7 +71,7 @@ class TestState:
     def do_state_multi(self, tempfolder, multidatestatefile):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 if "resource" in url:
                     result = json.dumps(resultdict)
                     return MockResponse(
