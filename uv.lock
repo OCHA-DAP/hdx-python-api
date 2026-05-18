@@ -170,7 +170,7 @@ wheels = [
 
 [[package]]
 name = "ckanapi"
-version = "4.9"
+version = "4.11"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "docopt" },
@@ -178,11 +178,10 @@ dependencies = [
     { name = "requests" },
     { name = "setuptools" },
     { name = "simplejson" },
-    { name = "six" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/52/4b/c8e6ad9c549918c9503b59c7ce95fd49c211d862c82229df2034ec661c41/ckanapi-4.9.tar.gz", hash = "sha256:4d5d59da939586e9f34324c016f5cbea1f6ab4753f792d45d24379aa79ccbc06", size = 37717, upload-time = "2025-11-10T19:50:49.35Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/be/fd/53ad4c91cba8eb829262f723d38f63da07778e056f8dbe17547a90bf8591/ckanapi-4.11.tar.gz", hash = "sha256:913dc04e23e16dac9357d013eefda797f2ae5b7a5b584077c10b70d7336b467e", size = 43151, upload-time = "2026-03-20T14:51:19.806Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/14/83/ee5d03e4394a1bcb69215321ac6f116fb02554cee40b0390b9190cf052d5/ckanapi-4.9-py3-none-any.whl", hash = "sha256:845c066dd7bdfc768644aee50336058aafddc70b1db23649a48e05782032bf45", size = 46527, upload-time = "2025-11-10T19:50:47.123Z" },
+    { url = "https://files.pythonhosted.org/packages/de/c9/c8e1c0e0188a60fc2dc77b7d5dec784ea7152edc0f3a79e162a08786ce5c/ckanapi-4.11-py3-none-any.whl", hash = "sha256:6625efd482ef969487dfcd3cc5d6c81d296cf240c7371b7daf5e7a5e430a9f2a", size = 50959, upload-time = "2026-03-20T14:51:18.208Z" },
 ]
 
 [[package]]
@@ -512,7 +511,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "ckanapi", specifier = ">=4.8" },
+    { name = "ckanapi", specifier = ">=4.11" },
     { name = "defopt", specifier = ">=7.0.0" },
     { name = "email-validator" },
     { name = "hdx-python-country", specifier = ">=4.1.1" },

@@ -1137,7 +1137,7 @@ class TestVocabulary:
     def read(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 return vocabulary_mockshow(url, datadict)
 
@@ -1147,7 +1147,7 @@ class TestVocabulary:
     def post_create(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 if "show" in url:
                     return vocabulary_mockshow(url, datadict)
@@ -1193,7 +1193,7 @@ class TestVocabulary:
     def post_update(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 if "show" in url:
                     return vocabulary_mockshow(url, datadict)
@@ -1245,7 +1245,7 @@ class TestVocabulary:
     def post_delete(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 return vocabulary_delete(url, datadict)
 
@@ -1255,7 +1255,7 @@ class TestVocabulary:
     def post_list(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 return vocabulary_mocklist(url, datadict)
 
@@ -1265,7 +1265,7 @@ class TestVocabulary:
     def post_autocomplete(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 decodedata = data.decode("utf-8")
                 datadict = json.loads(decodedata)
                 if "autocomplete" not in url or "health" not in datadict["q"]:

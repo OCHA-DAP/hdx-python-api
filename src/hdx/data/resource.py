@@ -62,6 +62,9 @@ class Resource(HDXObject):
             "search": "resource_search",
             "broken": "hdx_mark_broken_link_in_resource",
             "datastore_delete": "datastore_delete",
+            "datastore_create": "datastore_create",
+            "datastore_insert": "datastore_insert",
+            "datastore_upsert": "datastore_upsert",
             "datastore_search": "datastore_search",
         }
 
@@ -700,6 +703,53 @@ class Resource(HDXObject):
             if result:
                 return True
         return False
+
+    def create_datastore(
+        self,
+        schema: Sequence[dict],
+        primary_key: str | Sequence[str] | None = None,
+    ) -> None:
+        """Create a datastore for the resource with the given schema.
+
+        Args:
+            schema: Sequence of field definitions, each a dict with 'id' and 'type' keys.
+            primary_key: Primary key field name(s). Defaults to None.
+
+        Returns:
+            None
+        """
+        data: dict = {
+            "resource_id": self.data["id"],
+            "force": True,
+            "fields": schema,
+        }
+        if primary_key is not None:
+            if not isinstance(primary_key, str):
+                primary_key = ",".join(primary_key)
+            data["primary_key"] = primary_key
+        self._write_to_hdx("datastore_create", data, "resource_id")
+
+    def update_datastore(
+        self,
+        records: Sequence[dict],
+        method: str = "upsert",
+    ) -> None:
+        """Update (upsert) records into the resource datastore.
+
+        Args:
+            records: Sequence of record dicts to insert or update.
+            method: Datastore update method ('upsert', 'insert', or 'update'). Defaults to 'upsert'.
+
+        Returns:
+            None
+        """
+        data = {
+            "resource_id": self.data["id"],
+            "force": True,
+            "method": method,
+            "records": records,
+        }
+        self._write_to_hdx("datastore_upsert", data, "resource_id")
 
     def delete_datastore(self) -> None:
         """Delete a resource from the HDX datastore

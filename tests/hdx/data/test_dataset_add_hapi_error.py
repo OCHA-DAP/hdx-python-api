@@ -13,7 +13,7 @@ class TestDatasetAddHAPIError:
     def hapi_resource_update(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 if "show" in url:
                     resource_id = datadict["id"]

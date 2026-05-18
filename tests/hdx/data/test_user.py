@@ -147,7 +147,7 @@ class TestUser:
     def read(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 return user_mockshow(url, datadict)
 
@@ -157,7 +157,7 @@ class TestUser:
     def post_create(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 if "show" in url:
                     return user_mockshow(url, datadict)
@@ -197,7 +197,7 @@ class TestUser:
     def post_update(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 datadict = json.loads(data.decode("utf-8"))
                 if "show" in url:
                     return user_mockshow(url, datadict)
@@ -237,7 +237,7 @@ class TestUser:
     def post_delete(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 decodedata = data.decode("utf-8")
                 datadict = json.loads(decodedata)
                 if "show" in url:
@@ -264,7 +264,7 @@ class TestUser:
     def show_current_user(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 if "show" not in url:
                     return MockResponse(
                         404,
@@ -282,7 +282,7 @@ class TestUser:
     def post_list(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 json.loads(data.decode("utf-8"))
                 return mocklist(url)
 
@@ -292,7 +292,7 @@ class TestUser:
     def post_listorgs(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 decodedata = data.decode("utf-8")
                 datadict = json.loads(decodedata)
                 if "user" in url:
@@ -321,7 +321,7 @@ class TestUser:
     def post_check_current_user_write_access(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 decodedata = data.decode("utf-8")
                 datadict = json.loads(decodedata)
                 if "user" in url:
@@ -361,7 +361,7 @@ class TestUser:
     def post_listorgs_invalid(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 decodedata = data.decode("utf-8")
                 datadict = json.loads(decodedata)
                 if "user" in url:
@@ -379,7 +379,7 @@ class TestUser:
     def post_tokenlist(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 decodedata = data.decode("utf-8")
                 datadict = json.loads(decodedata)
                 if "user" in url:
@@ -402,7 +402,7 @@ class TestUser:
     def post_autocomplete(self):
         class MockSession:
             @staticmethod
-            def post(url, data, headers, files, allow_redirects, auth=None):
+            def post(url, data, **kwargs):
                 decodedata = data.decode("utf-8")
                 datadict = json.loads(decodedata)
                 if "autocomplete" not in url or "fake" not in datadict["q"]:
