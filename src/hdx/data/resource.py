@@ -1,5 +1,6 @@
 """Resource class containing all logic for creating, checking, and updating resources."""
 
+import json
 import logging
 from collections.abc import Sequence
 from datetime import datetime
@@ -262,6 +263,46 @@ class Resource(HDXObject):
             )
         self.data["format"] = file_format
         return file_format
+
+    def get_hdx_data_dictionary(self) -> list[dict] | None:
+        """Get the resource's data dictionary (column definitions)
+
+        Returns:
+            List of column definition dictionaries or None if not set
+        """
+        data_dictionary = self.data.get("hdx_data_dictionary")
+        if data_dictionary is None:
+            return None
+        if isinstance(data_dictionary, str):
+            return json.loads(data_dictionary)
+        return data_dictionary
+
+    def set_hdx_data_dictionary(self, data_dictionary: Sequence[dict]) -> None:
+        """Set the resource's data dictionary (column definitions). Each column
+        definition must be a dict with non-empty string values for field
+        (column name in the CSV file), label (human-readable column label) and
+        description (human-readable description of the column).
+
+        Args:
+            data_dictionary: Sequence of column definition dictionaries
+
+        Returns:
+            None
+        """
+        if not data_dictionary:
+            raise HDXError("hdx_data_dictionary must be a non-empty list!")
+        for i, column in enumerate(data_dictionary):
+            if not isinstance(column, dict):
+                raise HDXError(f"hdx_data_dictionary[{i}] must be a dict!")
+            for required_key in ("field", "label", "description"):
+                value = column.get(required_key)
+                if not isinstance(value, str) or not value.strip():
+                    raise HDXError(
+                        f"hdx_data_dictionary[{i}] is missing a non-empty '{required_key}'!"
+                    )
+        self.data["hdx_data_dictionary"] = json.dumps(
+            data_dictionary, separators=(",", ":")
+        )
 
     def clean_format(self) -> str:
         """Clean the resource's format, setting it to None if it is invalid and
