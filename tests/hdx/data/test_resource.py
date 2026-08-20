@@ -734,6 +734,70 @@ class TestResource:
             "ongoing": False,
         }
 
+    def test_get_set_hdx_data_dictionary(self, configuration):
+        resource = Resource({})
+        assert resource.get_hdx_data_dictionary() is None
+
+        data_dictionary = [
+            {"field": "col_name", "label": "Column Label", "description": "Desc."},
+            {
+                "field": "another_col",
+                "label": "Another Label",
+                "description": "Second column description.",
+            },
+        ]
+        resource.set_hdx_data_dictionary(data_dictionary)
+        assert resource.data["hdx_data_dictionary"] == json.dumps(
+            data_dictionary, separators=(",", ":")
+        )
+        assert resource.get_hdx_data_dictionary() == data_dictionary
+
+        resource2 = Resource({"hdx_data_dictionary": json.dumps(data_dictionary)})
+        assert resource2.get_hdx_data_dictionary() == data_dictionary
+
+        with pytest.raises(HDXError):
+            resource.set_hdx_data_dictionary([])
+        with pytest.raises(HDXError):
+            resource.set_hdx_data_dictionary([{"field": "col_name", "label": "Label"}])
+        with pytest.raises(HDXError):
+            resource.set_hdx_data_dictionary(
+                [{"field": "", "label": "Label", "description": "Desc."}]
+            )
+        with pytest.raises(HDXError):
+            resource.set_hdx_data_dictionary(
+                [{"field": "col_name", "label": "  ", "description": "Desc."}]
+            )
+        with pytest.raises(HDXError):
+            resource.set_hdx_data_dictionary(["not a dict"])
+        with pytest.raises(HDXError):
+            resource.set_hdx_data_dictionary(
+                [
+                    {
+                        "field": "col_name",
+                        "label": "Label",
+                        "description": "Desc.",
+                        "data_type": "varchar",
+                    }
+                ]
+            )
+
+        data_dictionary_with_types = [
+            {
+                "field": "col_name",
+                "label": "Column Label",
+                "description": "Desc.",
+                "data_type": "numeric",
+            },
+            {
+                "field": "another_col",
+                "label": "Another Label",
+                "description": "Second column description.",
+                "data_type": "timestamp without time zone",
+            },
+        ]
+        resource.set_hdx_data_dictionary(data_dictionary_with_types)
+        assert resource.get_hdx_data_dictionary() == data_dictionary_with_types
+
     def test_check_required_fields(self, configuration):
         resource_data_copy = copy.deepcopy(resource_data)
         resource = Resource(resource_data_copy)

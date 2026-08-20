@@ -937,6 +937,33 @@ If the method **set_file_to_upload** is used to supply a file, the resource
 `last_modified` field is set to now automatically regardless of the value of
 `data_updated` or whether **mark_data_updated** has been called.
 
+### Data Dictionary
+
+A resource can have a data dictionary describing the columns in the data it
+contains. It is a list of dictionaries, each with the keys `field` (the
+column name as it appears in the file), `label` (a human-readable label) and
+`description` (a human-readable description of the column). Set it using
+**set_hdx_data_dictionary**:
+
+    resource.set_hdx_data_dictionary([
+        {
+            "field": "col_name",
+            "label": "Column Label",
+            "description": "Human-readable description.",
+        },
+        {
+            "field": "another_col",
+            "label": "Another Label",
+            "description": "Second column description.",
+        },
+    ])
+
+`field`, `label` and `description` must all be non-empty strings for every
+column, otherwise an `HDXError` is raised. Read the data dictionary back
+using the getter:
+
+    data_dictionary = resource.get_hdx_data_dictionary()
+
 ## Showcase Management
 
 The **Showcase** class enables you to manage showcases, creating, deleting and updating
