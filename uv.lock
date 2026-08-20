@@ -545,7 +545,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "ckanapi", specifier = ">=4.1" },
+    { name = "ckanapi", specifier = ">=4.11" },
     { name = "defopt", specifier = ">=7.0.0" },
     { name = "email-validator" },
     { name = "hdx-python-country", specifier = ">=4.1.3" },
