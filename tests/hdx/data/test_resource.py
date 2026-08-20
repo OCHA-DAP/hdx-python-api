@@ -769,6 +769,34 @@ class TestResource:
             )
         with pytest.raises(HDXError):
             resource.set_hdx_data_dictionary(["not a dict"])
+        with pytest.raises(HDXError):
+            resource.set_hdx_data_dictionary(
+                [
+                    {
+                        "field": "col_name",
+                        "label": "Label",
+                        "description": "Desc.",
+                        "data_type": "varchar",
+                    }
+                ]
+            )
+
+        data_dictionary_with_types = [
+            {
+                "field": "col_name",
+                "label": "Column Label",
+                "description": "Desc.",
+                "data_type": "numeric",
+            },
+            {
+                "field": "another_col",
+                "label": "Another Label",
+                "description": "Second column description.",
+                "data_type": "timestamp without time zone",
+            },
+        ]
+        resource.set_hdx_data_dictionary(data_dictionary_with_types)
+        assert resource.get_hdx_data_dictionary() == data_dictionary_with_types
 
     def test_check_required_fields(self, configuration):
         resource_data_copy = copy.deepcopy(resource_data)
