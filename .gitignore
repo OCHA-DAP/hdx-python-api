@@ -100,3 +100,4 @@ _version.py
 tests/hdx/api/gsheet_auth.json
 
 .vscode/settings.json
+.claude/

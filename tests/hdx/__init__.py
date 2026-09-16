@@ -119,6 +119,11 @@ organization_data = {
     "description": "We do humanitarian work",
 }
 
+location_data = {
+    "name": "MyLocation1",
+    "title": "My Location",
+}
+
 user_data = {
     "name": "MyUser1",
     "email": "xxx@yyy.com",

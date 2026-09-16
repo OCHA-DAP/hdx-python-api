@@ -7,8 +7,10 @@ from hdx.api.locations import Locations
 
 
 class MyConfiguration:
-    def call_remoteckan(self, a, b):
-        return [{"name": "zaf", "title": "South Africa"}]
+    def call_remoteckan(self, a, b, files=None):
+        if b.get("all_fields"):
+            return [{"name": "zaf", "title": "South Africa"}]
+        return ["zaf"]
 
 
 class TestHDXLocations:

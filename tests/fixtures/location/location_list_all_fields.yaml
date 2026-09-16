@@ -1,0 +1,31 @@
+- id: afg
+  name: afg
+  title: Afghanistan
+  display_name: Afghanistan
+  type: group
+  is_organization: false
+  state: active
+  data_completeness: active
+  description: ""
+  package_count: 480
+
+- id: zmb
+  name: zmb
+  title: Zambia
+  display_name: Zambia
+  type: group
+  is_organization: false
+  state: active
+  data_completeness: inactive
+  description: ""
+  package_count: 120
+
+- id: world
+  name: world
+  title: World
+  display_name: World
+  type: group
+  is_organization: false
+  state: active
+  description: ""
+  package_count: 12
