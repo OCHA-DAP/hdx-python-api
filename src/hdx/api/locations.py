@@ -3,6 +3,7 @@
 from collections.abc import Sequence
 
 from hdx.api.configuration import Configuration
+from hdx.data.location import Location
 
 
 class Locations:
@@ -22,10 +23,8 @@ class Locations:
             A list of valid locations
         """
         if cls._validlocations is None:
-            if configuration is None:
-                configuration = Configuration.read()
-            cls._validlocations = configuration.call_remoteckan(
-                "group_list", {"all_fields": True}
+            cls._validlocations = Location.get_all_location_names(
+                configuration=configuration, all_fields=True
             )
         return cls._validlocations
 

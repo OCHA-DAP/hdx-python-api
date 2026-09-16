@@ -487,6 +487,12 @@ hello there"""
                     "description",
                 ]
             },
+            "group": {
+                "required_fields": [
+                    "name",
+                    "title",
+                ]
+            },
             "resource view": {
                 "required_fields": [
                     "resource_id",
@@ -617,6 +623,12 @@ hello there"""
                     "description",
                 ]
             },
+            "group": {
+                "required_fields": [
+                    "name",
+                    "title",
+                ]
+            },
             "resource view": {
                 "required_fields": [
                     "resource_id",
@@ -737,6 +749,12 @@ hello there"""
                     "name",
                     "title",
                     "description",
+                ]
+            },
+            "group": {
+                "required_fields": [
+                    "name",
+                    "title",
                 ]
             },
             "resource view": {
