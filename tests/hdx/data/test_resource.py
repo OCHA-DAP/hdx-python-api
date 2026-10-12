@@ -6,6 +6,7 @@ import os
 from datetime import datetime, timezone
 from os import remove
 from os.path import basename
+from pathlib import Path
 
 import pytest
 from hdx.utilities.dateparse import parse_date
@@ -338,6 +339,7 @@ def mockresourceview(url, decodedata):
 
 class TestResource:
     datastore = None
+    datastore_request = None
 
     @pytest.fixture(scope="class")
     def static_yaml(self, configfolder):
@@ -596,6 +598,73 @@ class TestResource:
                 return MockResponse(
                     404,
                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_delete"}',
+                )
+
+        Configuration.read().remoteckan().session = MockSession()
+
+    @pytest.fixture(scope="function")
+    def post_datastore_query(self):
+        all_records = [
+            {"_id": 1, "code": "A", "value": 1.0},
+            {"_id": 2, "code": "B", "value": 2.0},
+            {"_id": 3, "code": "C", "value": 3.0},
+        ]
+        fields = [
+            {"id": "_id", "type": "int"},
+            {"id": "code", "type": "text"},
+            {"id": "value", "type": "numeric"},
+        ]
+
+        class MockSession:
+            @staticmethod
+            def post(url, data, **kwargs):
+                datadict = json.loads(data.decode("utf-8"))
+                if url.endswith("datastore_search_sql"):
+                    if "error" in datadict["sql"]:
+                        return MockResponse(
+                            409,
+                            '{"success": false, "error": {"message": "Bad SQL", "__type": "Validation Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_search_sql"}',
+                        )
+                    result = {"records": all_records[:2], "fields": fields}
+                    return MockResponse(
+                        200,
+                        json.dumps(
+                            {
+                                "success": True,
+                                "result": result,
+                                "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_search_sql",
+                            }
+                        ),
+                    )
+                if url.endswith("datastore_search"):
+                    if datadict["resource_id"] != "datastore_query_resource":
+                        return MockResponse(
+                            404,
+                            '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_search"}',
+                        )
+                    TestResource.datastore_request = datadict
+                    offset = datadict["offset"]
+                    limit = datadict["limit"]
+                    result = {
+                        "resource_id": datadict["resource_id"],
+                        "fields": fields,
+                        "records": all_records[offset : offset + limit],
+                    }
+                    if datadict["include_total"]:
+                        result["total"] = len(all_records)
+                    return MockResponse(
+                        200,
+                        json.dumps(
+                            {
+                                "success": True,
+                                "result": result,
+                                "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_search",
+                            }
+                        ),
+                    )
+                return MockResponse(
+                    404,
+                    '{"success": false, "error": {"message": "TEST ERROR: Not datastore search", "__type": "TEST ERROR: Not Datastore Search Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_search"}',
                 )
 
         Configuration.read().remoteckan().session = MockSession()
@@ -1031,6 +1100,39 @@ class TestResource:
         with pytest.raises(DownloadError):
             resource2.download()
 
+    def test_download_datastore(self, configuration, read, monkeypatch):
+        downloads = []
+
+        def download_file(self, url, folder=None, filename=None, path=None, **kwargs):
+            if path is None:
+                path = Path(folder or "tmp") / filename
+            downloads.append(url)
+            return path
+
+        monkeypatch.setattr(Download, "download_file", download_file)
+        resource = Resource.read_from_hdx("74b74ae1-df0c-4716-829f-4f939a046811")
+        site_url = resource.configuration.get_hdx_site_url()
+        dump_url = f"{site_url}/datastore/dump/{resource['id']}"
+        assert resource.get_datastore_dump_url() == dump_url
+        assert resource.get_datastore_dump_url("JSON") == f"{dump_url}?format=json"
+        with pytest.raises(HDXError):
+            resource.get_datastore_dump_url("xlsx")
+
+        url, path = resource.download_datastore("folder")
+        assert url == dump_url
+        assert path == Path("folder", "MyResource1.csv")
+        url, path = resource.download_datastore(
+            filename="builds.tsv", file_format="tsv"
+        )
+        assert url == f"{dump_url}?format=tsv"
+        assert path == Path("tmp", "builds.tsv")
+        tempdir = get_temp_dir()
+        retriever = Retrieve(Download(user_agent="test"), tempdir, tempdir, tempdir)
+        url, path = resource.download_datastore(retriever=retriever)
+        assert url == dump_url
+        assert path.name == "MyResource1.csv"
+        assert len(downloads) == 3
+
     def test_datastore(self, configuration, post_datastore, topline_yaml, topline_json):
         resource_ids = Resource.get_all_resource_ids_in_datastore()
         assert resource_ids == [
@@ -1072,6 +1174,68 @@ class TestResource:
         TestResource.datastore = None
         resource.update_datastore(records, method="insert")
         assert TestResource.datastore == "upsert"
+
+    def test_datastore_queries(self, configuration, post_datastore_query):
+        resource = Resource({"id": "datastore_query_resource"})
+        result = resource.search_datastore()
+        assert result["total"] == 3
+        assert len(result["records"]) == 3
+        assert TestResource.datastore_request == {
+            "resource_id": "datastore_query_resource",
+            "limit": 100,
+            "offset": 0,
+            "include_total": True,
+        }
+
+        resource.search_datastore(
+            filters={"code": ["A", "B"]},
+            q="A",
+            fields=["code", "value"],
+            sort="value desc",
+            distinct=True,
+            limit=2,
+            offset=1,
+            plain=False,
+        )
+        assert TestResource.datastore_request == {
+            "resource_id": "datastore_query_resource",
+            "limit": 2,
+            "offset": 1,
+            "include_total": True,
+            "filters": {"code": ["A", "B"]},
+            "q": "A",
+            "fields": "code,value",
+            "sort": "value desc",
+            "distinct": True,
+            "plain": False,
+        }
+
+        records = list(resource.get_datastore_records(sort="code", page_size=2))
+        assert [record["code"] for record in records] == ["A", "B", "C"]
+        assert TestResource.datastore_request["offset"] == 2
+        assert TestResource.datastore_request["sort"] == "code"
+        assert TestResource.datastore_request["include_total"] is False
+
+        records = list(resource.get_datastore_records(page_size=3))
+        assert len(records) == 3
+        assert TestResource.datastore_request["offset"] == 3
+
+        assert resource.get_datastore_fields() == [
+            {"id": "code", "type": "text"},
+            {"id": "value", "type": "numeric"},
+        ]
+        assert TestResource.datastore_request["limit"] == 0
+
+        records = Resource.search_datastore_sql(
+            'SELECT * FROM "datastore_query_resource" LIMIT 2'
+        )
+        assert [record["code"] for record in records] == ["A", "B"]
+        with pytest.raises(HDXError):
+            Resource.search_datastore_sql("error")
+
+        resource = Resource({"id": "datastore_unknown_resource"})
+        with pytest.raises(HDXError):
+            resource.search_datastore()
 
     def test_resource_views(self, configuration, post_resourceview):
         resource = Resource({"id": "25982d1c-f45a-45e1-b14e-87d367413045"})

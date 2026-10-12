@@ -2,7 +2,7 @@
 
 import json
 import logging
-from collections.abc import Sequence
+from collections.abc import Iterator, Sequence
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
@@ -34,6 +34,7 @@ class Resource(HDXObject):
     """
 
     _formats_dict = None
+    _valid_datastore_dump_formats = frozenset({"csv", "tsv", "json", "xml"})
     _valid_data_dictionary_types = frozenset(
         {"text", "numeric", "date", "timestamp without time zone"}
     )
@@ -70,6 +71,7 @@ class Resource(HDXObject):
             "datastore_insert": "datastore_insert",
             "datastore_upsert": "datastore_upsert",
             "datastore_search": "datastore_search",
+            "datastore_search_sql": "datastore_search_sql",
         }
 
     def update_from_yaml(
@@ -711,6 +713,62 @@ class Resource(HDXObject):
             path = downloader.download_file(url, folder=folder, filename=filename)
             return url, path
 
+    def get_datastore_dump_url(self, file_format: str = "csv") -> str:
+        """Get the URL from which the resource datastore can be downloaded in
+        full.
+
+        Args:
+            file_format: Dump format (csv, tsv, json or xml). Defaults to csv.
+
+        Returns:
+            Datastore dump URL
+        """
+        file_format = file_format.lower()
+        if file_format not in self._valid_datastore_dump_formats:
+            valid_formats = ", ".join(sorted(self._valid_datastore_dump_formats))
+            raise HDXError(
+                f"Invalid datastore dump format '{file_format}'! Must be one of: {valid_formats}"
+            )
+        url = (
+            f"{self.configuration.get_hdx_site_url()}/datastore/dump/{self.data['id']}"
+        )
+        if file_format != "csv":
+            url = f"{url}?format={file_format}"
+        return url
+
+    def download_datastore(
+        self,
+        folder: Path | str | None = None,
+        filename: str | None = None,
+        file_format: str = "csv",
+        retriever: Retrieve | None = None,
+    ) -> tuple[str, Path]:
+        """Download the resource datastore in full to provided folder or
+        temporary folder if no folder supplied
+
+        Args:
+            folder: Folder to download datastore to. Defaults to None.
+            filename: Filename to use. Defaults to None (resource name with file_format extension).
+            file_format: Dump format (csv, tsv, json or xml). Defaults to csv.
+            retriever: Retrieve object to use. Defaults to None.
+
+        Returns:
+            (URL downloaded, Path to downloaded file)
+        """
+        url = self.get_datastore_dump_url(file_format)
+        logger.debug(f"Downloading {url}")
+        if filename is None:
+            filename = self.data["name"]
+            extension = f".{file_format.lower()}"
+            if not filename.endswith(extension):
+                filename = f"{filename}{extension}"
+        session = hdx.api.utilities.url_utils.get_ckan_ready_session(self.configuration)
+        with Download(session=session) as downloader:
+            if retriever:
+                downloader = retriever.clone(downloader)
+            path = downloader.download_file(url, folder=folder, filename=filename)
+            return url, path
+
     @staticmethod
     def get_all_resource_ids_in_datastore(
         configuration: Configuration | None = None,
@@ -804,6 +862,127 @@ class Resource(HDXObject):
             "records": records,
         }
         self._write_to_hdx("datastore_upsert", data, "resource_id")
+
+    def search_datastore(
+        self,
+        filters: dict | None = None,
+        q: str | dict | None = None,
+        fields: Sequence[str] | None = None,
+        sort: str | None = None,
+        distinct: bool = False,
+        limit: int = 100,
+        offset: int = 0,
+        include_total: bool = True,
+        **kwargs: Any,
+    ) -> dict:
+        """Search the resource datastore using CKAN datastore_search.
+
+        Args:
+            filters: Dictionary of field name to value(s) to match. Defaults to None.
+            q: Full text query string or dictionary of field name to query. Defaults to None.
+            fields: Fields to return. Defaults to None (all fields).
+            sort: Comma separated field names with optional asc/desc eg. "code desc". Defaults to None.
+            distinct: Whether to return only distinct rows. Defaults to False.
+            limit: Maximum number of rows to return. Defaults to 100.
+            offset: Number of rows to skip. Defaults to 0.
+            include_total: Whether to include total number of matching rows. Defaults to True.
+            **kwargs: Other parameters to pass to datastore_search eg. plain, language.
+
+        Returns:
+            datastore_search result dictionary with keys including records, fields and total
+        """
+        data: dict = {
+            "resource_id": self.data["id"],
+            "limit": limit,
+            "offset": offset,
+            "include_total": include_total,
+        }
+        if filters is not None:
+            data["filters"] = filters
+        if q is not None:
+            data["q"] = q
+        if fields is not None:
+            data["fields"] = ",".join(fields)
+        if sort is not None:
+            data["sort"] = sort
+        if distinct:
+            data["distinct"] = True
+        data.update(kwargs)
+        return self._write_to_hdx("datastore_search", data, "resource_id")
+
+    def get_datastore_records(
+        self,
+        filters: dict | None = None,
+        q: str | dict | None = None,
+        fields: Sequence[str] | None = None,
+        sort: str | None = None,
+        distinct: bool = False,
+        page_size: int = 10000,
+        **kwargs: Any,
+    ) -> Iterator[dict]:
+        """Iterate over all matching records in the resource datastore, paging
+        through datastore_search results.
+
+        Args:
+            filters: Dictionary of field name to value(s) to match. Defaults to None.
+            q: Full text query string or dictionary of field name to query. Defaults to None.
+            fields: Fields to return. Defaults to None (all fields).
+            sort: Comma separated field names with optional asc/desc eg. "code desc". Defaults to None.
+            distinct: Whether to return only distinct rows. Defaults to False.
+            page_size: Number of rows to request per call. Defaults to 10000.
+            **kwargs: Other parameters to pass to datastore_search eg. plain, language.
+
+        Returns:
+            Iterator of record dictionaries
+        """
+        offset = 0
+        while True:
+            result = self.search_datastore(
+                filters=filters,
+                q=q,
+                fields=fields,
+                sort=sort,
+                distinct=distinct,
+                limit=page_size,
+                offset=offset,
+                include_total=False,
+                **kwargs,
+            )
+            records = result["records"]
+            yield from records
+            if len(records) < page_size:
+                return
+            offset += page_size
+
+    def get_datastore_fields(self) -> list[dict]:
+        """Get the field definitions of the resource datastore excluding the
+        internal _id field.
+
+        Returns:
+            List of field dictionaries each with id and type keys
+        """
+        result = self.search_datastore(limit=0, include_total=False)
+        return [field for field in result["fields"] if field["id"] != "_id"]
+
+    @staticmethod
+    def search_datastore_sql(
+        sql: str,
+        configuration: Configuration | None = None,
+    ) -> list[dict]:
+        """Run a read-only SQL query against the HDX datastore using CKAN
+        datastore_search_sql. Tables are named by resource id, which must be
+        double quoted eg. SELECT * FROM "RESOURCE_ID".
+
+        Args:
+            sql: SQL SELECT statement
+            configuration: HDX configuration. Defaults to global configuration.
+
+        Returns:
+            List of record dictionaries
+        """
+        resource = Resource(configuration=configuration)
+        result = resource._write_to_hdx("datastore_search_sql", {"sql": sql})
+        return result["records"]
 
     def delete_datastore(self) -> None:
         """Delete a resource from the HDX datastore
