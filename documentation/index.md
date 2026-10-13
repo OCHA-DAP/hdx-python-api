@@ -832,9 +832,13 @@ dictionary. HEADERS is either a row number (rows start counting at 1), or the
 actual headers defined as a list of strings. If not set, all rows will be
 treated as containing values:
 
-    dataset.generate_resource("FOLDER", "FILENAME", ROWS, RESOURCE DATA, HEADERS,
-                              COLUMNS, "FORMAT", "ENCODING", DATECOL or YEARCOL or
-                              DATE_FUNCTION)
+    dataset.generate_resource("FOLDER", "FILENAME", ROWS, RESOURCE_DATA,
+                              headers=HEADERS, columns=COLUMNS, format="FORMAT",
+                              encoding="ENCODING", datecol=DATECOL)
+
+To use years or a custom date function instead, replace `datecol=DATECOL` with
+`yearcol=YEARCOL` or `date_function=DATE_FUNCTION`. Supply only one of these
+three arguments, using its keyword.
 
 The first 4 parameters are mandatory, the rest are optional. A resource can be generated
 from a given list or tuple or other iterable. The method returns a tuple with a bool
@@ -868,8 +872,12 @@ and outputs a modified row.
 The rest of the arguments are the same as for `generate_resource`.
 
     dataset.download_generate_resource(DOWNLOADER, "URL", "FOLDER", "FILENAME",
-                                       RESOURCE_DATA, HEADER_INSERTIONS, ROW_FUNCTION,
-                                       DATECOL or YEARCOL or DATE_FUNCTION, **KWARGS)
+                                       RESOURCE_DATA, header_insertions=HEADER_INSERTIONS,
+                                       row_function=ROW_FUNCTION, datecol=DATECOL,
+                                       **KWARGS)
+
+As with `generate_resource`, use `yearcol=YEARCOL` or
+`date_function=DATE_FUNCTION` instead of `datecol=DATECOL` when appropriate.
 
 ## Resource Specific Operations
 
