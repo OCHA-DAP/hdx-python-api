@@ -973,6 +973,58 @@ using the getter:
 
     data_dictionary = resource.get_hdx_data_dictionary()
 
+### Datastore
+
+A resource's data can be loaded into the HDX datastore and queried. HDX
+requires an API key for all datastore actions and dumps, including reads of
+public resources. To create, update or delete the datastore for a resource:
+
+    resource.create_datastore(
+        [{"id": "code", "type": "text"}, {"id": "value", "type": "numeric"}],
+        primary_key="code",
+    )
+    resource.update_datastore([{"code": "A", "value": 1.0}])  # upsert by default
+    has_datastore = resource.has_datastore()
+    resource.delete_datastore()
+
+To download the whole datastore (rather than the resource's file) use
+**download_datastore**, which returns the URL and path like **download**.
+`file_format` can be `csv` (default), `tsv`, `json` or `xml`, and `filename`
+defaults to the resource name with that extension. **get_datastore_dump_url**
+returns the URL without downloading:
+
+    url, path = resource.download_datastore("FOLDER_TO_DOWNLOAD_TO")
+    url = resource.get_datastore_dump_url(file_format="json")
+
+**search_datastore** wraps CKAN's `datastore_search`, returning the result
+dictionary (with keys including `records`, `fields` and `total`). It accepts
+`filters`, `q`, `fields`, `sort`, `distinct`, `limit` (default 100), `offset`
+and `include_total`, and passes any other keyword arguments to CKAN:
+
+    result = resource.search_datastore(
+        filters={"code": ["A", "B"]}, fields=["code", "value"], sort="value desc"
+    )
+    records = result["records"]
+
+**get_datastore_records** takes the same query parameters but pages through
+all matching rows, yielding each record (`page_size` defaults to 10000):
+
+    for record in resource.get_datastore_records(filters={"code": "A"}):
+        ...
+
+**get_datastore_fields** returns the datastore field definitions excluding the
+internal `_id` field:
+
+    fields = resource.get_datastore_fields()
+
+**search_datastore_sql** wraps CKAN's `datastore_search_sql`, running a
+SELECT statement where tables are named by double quoted resource id and
+returning the list of records:
+
+    records = Resource.search_datastore_sql(
+        'SELECT code, SUM(value) AS total FROM "RESOURCE_ID" GROUP BY code'
+    )
+
 ## Showcase Management
 
 The **Showcase** class enables you to manage showcases, creating, deleting and updating
