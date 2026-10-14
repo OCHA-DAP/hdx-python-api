@@ -1008,7 +1008,8 @@ and `include_total`, and passes any other keyword arguments to CKAN:
     records = result["records"]
 
 **get_datastore_records** takes the same query parameters but pages through
-all matching rows, yielding each record (`page_size` defaults to 10000):
+all matching rows, yielding each record (`page_size` defaults to 10000).
+`records_format` csv and tsv are not supported; use `search_datastore` for those:
 
     for record in resource.get_datastore_records(filters={"code": "A"}):
         ...
