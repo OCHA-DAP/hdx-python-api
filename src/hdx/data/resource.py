@@ -1174,6 +1174,21 @@ class Resource(HDXObject):
         else:
             logger.debug(result)
 
+    def get_fs_check_info(self) -> list[dict]:
+        """Get file structure check information for the resource from its
+        fs_check_info field. Each check event can have keys such as state,
+        timestamp, sheet_changes and hxl_proxy_response.
+
+        Returns:
+            List of file structure check events
+        """
+        fs_check_info = self.data.get("fs_check_info")
+        if not fs_check_info:
+            return []
+        if isinstance(fs_check_info, str):
+            return json.loads(fs_check_info)
+        return fs_check_info
+
     def is_marked_data_updated(self) -> bool:
         """Return if the resource's data is marked to be updated
 

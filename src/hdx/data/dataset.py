@@ -147,6 +147,7 @@ class Dataset(HDXObject):
             "list": "package_list",
             "autocomplete": "package_autocomplete",
             "create_default_views": "package_create_default_resource_views",
+            "fs_check_info": "fs_check_info_show",
         }
 
     def __setitem__(self, key: Any, value: Any) -> None:
@@ -2332,6 +2333,25 @@ class Dataset(HDXObject):
         if not name_or_id:
             return None
         return f"{self.configuration.get_hdx_site_url()}/api/3/action/package_show?id={name_or_id}"
+
+    def get_fs_check_info(self) -> list[dict]:
+        """Get file structure check information for the dataset's resources
+        from HDX. Each list item is a dictionary from resource name to a list
+        of check events, each of which can have keys such as state, timestamp,
+        sheet_changes and hxl_proxy_response.
+
+        Returns:
+            List of dictionaries from resource name to file structure checks
+        """
+        success, result = self._read_from_hdx(
+            "dataset",
+            self.get_name_or_id(prefer_name=False),
+            "id",
+            self.actions()["fs_check_info"],
+        )
+        if success:
+            return result
+        return []
 
     def generate_resource(
         self,

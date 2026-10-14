@@ -36,6 +36,7 @@ upload your datasets to HDX.
     -   [Location Management](#location-management)
     -   [Vocabulary Management](#vocabulary-management)
     -   [Activity Streams](#activity-streams)
+    -   [HDX Statistics](#hdx-statistics)
     -   [Pipeline State](#pipeline-state)
 -   [Working Examples](#working-examples)
 -   [Project Framework](#project-framework)
@@ -636,6 +637,16 @@ function, for example:
 
     dataset.remove_showcase(showcase)
 
+HDX runs file structure checks on resources, recording schema changes (eg.
+column names, order or types) and whether sheets have merged cells. You can get
+these checks for all of a dataset's resources from HDX:
+
+    fs_check_info = dataset.get_fs_check_info()
+
+This returns a list of dictionaries, each from a resource name to a list of
+check events with keys such as `state`, `timestamp`, `sheet_changes` and
+`hxl_proxy_response`.
+
 ### Time Period
 
 Time Period is a mandatory field in HDX. It is the earliest start date and
@@ -947,6 +958,12 @@ If the method **set_file_to_upload** is used to supply a file, the resource
 `last_modified` field is set to now automatically regardless of the value of
 `data_updated` or whether **mark_data_updated** has been called.
 
+The file structure check events of a resource (see Dataset Specific
+Operations) can be obtained from its `fs_check_info` field without a call to
+HDX:
+
+    events = resource.get_fs_check_info()
+
 ### Data Dictionary
 
 A resource can have a data dictionary describing the columns in the data it
@@ -1073,6 +1090,11 @@ You can obtain the currently logged in user (which is based on the API token use
 configuration):
 
     user = User.get_current_user()
+
+You can get the name of the API token in the configuration and the md5 hash
+of its owner's email:
+
+    token_info = User.get_current_token_info()  # {"email_hash": ..., "token_name": ...}
 
 You can check that the current user has a particular permission to a specific
 organization:
@@ -1229,6 +1251,20 @@ permission to edit the object the activity relates to for these:
     activity = Activity.read_from_hdx("ACTIVITY_ID")
     data = activity.get_data()
     diff = activity.get_diff(diff_type="unified")  # or "context" or "html"
+
+## HDX Statistics
+
+General statistics about datasets, organizations and users on HDX can be
+obtained as follows:
+
+    from hdx.api.utilities.hdx_stats import get_general_statistics, push_general_stats
+
+    stats = get_general_statistics()
+
+Users with permission to manage basic scheduled tasks can compute the statistics
+and push them to analytics:
+
+    pushed_stats = push_general_stats()
 
 ## Pipeline State
 

@@ -105,6 +105,7 @@ def mocklist(url):
 
 
 class TestUser:
+    token_valid = True
     smtp_initargs = {
         "host": "localhost",
         "port": 123,
@@ -394,6 +395,23 @@ class TestUser:
                 return MockResponse(
                     404,
                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_tokenlist"}',
+                )
+
+        Configuration.read().remoteckan().session = MockSession()
+
+    @pytest.fixture(scope="function")
+    def post_tokeninfo(self):
+        class MockSession:
+            @staticmethod
+            def post(url, data, **kwargs):
+                if "hdx_token_info" in url and TestUser.token_valid:
+                    return MockResponse(
+                        200,
+                        '{"success": true, "result": {"email_hash": "9e2fc15d8cc65f43136f9dcef05fa184", "token_name": "my_token"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=hdx_token_info"}',
+                    )
+                return MockResponse(
+                    409,
+                    '{"success": false, "error": {"message": "Invalid token", "__type": "Validation Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=hdx_token_info"}',
                 )
 
         Configuration.read().remoteckan().session = MockSession()
@@ -727,6 +745,16 @@ Content-Transfer-Encoding: 7bit
         ]
         user["name"] = "lala"
         assert user.get_token_list() == []
+
+    def test_get_current_token_info(self, configuration, post_tokeninfo):
+        assert User.get_current_token_info() == {
+            "email_hash": "9e2fc15d8cc65f43136f9dcef05fa184",
+            "token_name": "my_token",
+        }
+        TestUser.token_valid = False
+        with pytest.raises(HDXError):
+            User.get_current_token_info()
+        TestUser.token_valid = True
 
     def test_autocomplete(self, configuration, post_autocomplete):
         assert User.autocomplete("fake%20test") == user_autocomplete

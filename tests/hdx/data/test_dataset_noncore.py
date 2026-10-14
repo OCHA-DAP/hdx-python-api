@@ -37,6 +37,19 @@ from hdx.data.organization import Organization
 from hdx.data.user import User
 from hdx.data.vocabulary import Vocabulary
 
+fs_check_info = [
+    {
+        "MyResource1": [
+            {
+                "state": "success",
+                "timestamp": "2026-10-01T10:00:00",
+                "sheet_changes": {"nrows": 10},
+                "hxl_proxy_response": {"has_merged_cells": False},
+            }
+        ]
+    }
+]
+
 
 class TestDatasetNoncore:
     association = None
@@ -138,6 +151,31 @@ class TestDatasetNoncore:
                     )
 
         Configuration.read().remoteckan().session = MockSession()
+
+    @pytest.fixture(scope="function")
+    def post_fs_check_info(self):
+        class MockSession:
+            @staticmethod
+            def post(url, data, **kwargs):
+                datadict = json.loads(data.decode("utf-8"))
+                if "fs_check_info_show" in url and datadict["id"] == "TEST1":
+                    result = json.dumps(fs_check_info)
+                    return MockResponse(
+                        200,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=fs_check_info_show"}}',
+                    )
+                return MockResponse(
+                    404,
+                    '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=fs_check_info_show"}',
+                )
+
+        Configuration.read().remoteckan().session = MockSession()
+
+    def test_get_fs_check_info(self, configuration, post_fs_check_info):
+        dataset = Dataset({"id": "TEST1", "name": "test-dataset"})
+        assert dataset.get_fs_check_info() == fs_check_info
+        dataset = Dataset({"id": "TEST2"})
+        assert dataset.get_fs_check_info() == []
 
     def test_get_name_or_id(self, configuration, hdx_config_yaml, project_config_yaml):
         dataset = Dataset()
