@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 import hdx.data.dataset
 import hdx.data.user as user_module
 from hdx.api.configuration import Configuration
+from hdx.data.activity import Activity
 from hdx.data.hdxobject import HDXError, HDXObject
 
 if TYPE_CHECKING:
@@ -310,6 +311,28 @@ class Organization(HDXObject):
                     pass
 
         return final_orgs
+
+    def get_activities(self, all_pages: bool = False, **kwargs: Any) -> list[Activity]:
+        """Get the activity stream of this organization. One page of results (whose size
+        is given by limit) is returned unless all_pages is True.
+
+        Args:
+            all_pages: Whether to get all pages of results. Defaults to False.
+            **kwargs: See below
+            offset (int): Where to start getting activity items from. Defaults to 0.
+            limit (int): Maximum number of activities per page. Defaults to 31 (HDX maximum 100) or 100 if all_pages is True.
+            include_hidden_activity (bool): Include hidden activity (sysadmins only)
+
+        Returns:
+            List of Activity objects
+        """
+        return Activity.get_activities(
+            "organization",
+            self.data.get("id") or self.data.get("name"),
+            self.configuration,
+            all_pages,
+            **kwargs,
+        )
 
     @classmethod
     def autocomplete(

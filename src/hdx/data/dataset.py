@@ -40,6 +40,7 @@ from hdx.api.configuration import Configuration
 from hdx.api.locations import Locations
 from hdx.api.utilities.date_helper import DateHelper
 from hdx.api.utilities.filestore_helper import FilestoreHelper
+from hdx.data.activity import Activity
 from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.data.resource_matcher import ResourceMatcher
 
@@ -1427,6 +1428,32 @@ class Dataset(HDXObject):
             for resource in dataset.get_resources():
                 resources.append(resource)
         return resources
+
+    def get_activities(self, all_pages: bool = False, **kwargs: Any) -> list[Activity]:
+        """Get the activity stream of this dataset. One page of results (whose size
+        is given by limit) is returned unless all_pages is True.
+
+        Args:
+            all_pages: Whether to get all pages of results. Defaults to False.
+            **kwargs: See below
+            offset (int): Where to start getting activity items from. Defaults to 0.
+            limit (int): Maximum number of activities per page. Defaults to 31 (HDX maximum 100) or 100 if all_pages is True.
+            after (int | str): Only activities after this timestamp
+            before (int | str): Only activities before this timestamp
+            include_hidden_activity (bool): Include hidden activity (sysadmins only)
+            activity_types (list): Activity types to include
+            exclude_activity_types (list): Activity types to exclude
+
+        Returns:
+            List of Activity objects
+        """
+        return Activity.get_activities(
+            "package",
+            self.data.get("id") or self.data.get("name"),
+            self.configuration,
+            all_pages,
+            **kwargs,
+        )
 
     @classmethod
     def autocomplete(
