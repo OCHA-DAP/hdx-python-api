@@ -950,9 +950,11 @@ class Resource(HDXObject):
             )
             records = result["records"]
             yield from records
-            if len(records) < page_size:
+            # HDX caps limit at its maximum rows per call and returns the limit applied
+            limit = result["limit"]
+            if len(records) < limit:
                 return
-            offset += page_size
+            offset += limit
 
     def get_datastore_fields(self) -> list[dict]:
         """Get the field definitions of the resource datastore excluding the
@@ -971,7 +973,8 @@ class Resource(HDXObject):
     ) -> list[dict]:
         """Run a read-only SQL query against the HDX datastore using CKAN
         datastore_search_sql. Tables are named by resource id, which must be
-        double quoted eg. SELECT * FROM "RESOURCE_ID".
+        double quoted eg. SELECT * FROM "RESOURCE_ID". Logs a warning if HDX
+        truncates the results.
 
         Args:
             sql: SQL SELECT statement
@@ -982,7 +985,12 @@ class Resource(HDXObject):
         """
         resource = Resource(configuration=configuration)
         result = resource._write_to_hdx("datastore_search_sql", {"sql": sql})
-        return result["records"]
+        records = result["records"]
+        if result.get("records_truncated"):
+            logger.warning(
+                f"SQL query results truncated by HDX to {len(records)} rows!"
+            )
+        return records
 
     def delete_datastore(self) -> None:
         """Delete a resource from the HDX datastore

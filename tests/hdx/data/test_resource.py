@@ -2,6 +2,7 @@
 
 import copy
 import json
+import logging
 import os
 from datetime import datetime, timezone
 from os import remove
@@ -340,6 +341,7 @@ def mockresourceview(url, decodedata):
 class TestResource:
     datastore = None
     datastore_request = None
+    datastore_rows_max = None
 
     @pytest.fixture(scope="class")
     def static_yaml(self, configfolder):
@@ -604,6 +606,7 @@ class TestResource:
 
     @pytest.fixture(scope="function")
     def post_datastore_query(self):
+        TestResource.datastore_rows_max = None
         all_records = [
             {"_id": 1, "code": "A", "value": 1.0},
             {"_id": 2, "code": "B", "value": 2.0},
@@ -626,6 +629,8 @@ class TestResource:
                             '{"success": false, "error": {"message": "Bad SQL", "__type": "Validation Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_search_sql"}',
                         )
                     result = {"records": all_records[:2], "fields": fields}
+                    if "truncated" in datadict["sql"]:
+                        result["records_truncated"] = True
                     return MockResponse(
                         200,
                         json.dumps(
@@ -645,10 +650,13 @@ class TestResource:
                     TestResource.datastore_request = datadict
                     offset = datadict["offset"]
                     limit = datadict["limit"]
+                    if TestResource.datastore_rows_max is not None:
+                        limit = min(limit, TestResource.datastore_rows_max)
                     result = {
                         "resource_id": datadict["resource_id"],
                         "fields": fields,
                         "records": all_records[offset : offset + limit],
+                        "limit": limit,
                     }
                     if datadict["include_total"]:
                         result["total"] = len(all_records)
@@ -1175,7 +1183,7 @@ class TestResource:
         resource.update_datastore(records, method="insert")
         assert TestResource.datastore == "upsert"
 
-    def test_datastore_queries(self, configuration, post_datastore_query):
+    def test_datastore_queries(self, configuration, post_datastore_query, caplog):
         resource = Resource({"id": "datastore_query_resource"})
         result = resource.search_datastore()
         assert result["total"] == 3
@@ -1220,6 +1228,13 @@ class TestResource:
         assert len(records) == 3
         assert TestResource.datastore_request["offset"] == 3
 
+        TestResource.datastore_rows_max = 2
+        records = list(resource.get_datastore_records(page_size=5))
+        assert [record["code"] for record in records] == ["A", "B", "C"]
+        assert TestResource.datastore_request["offset"] == 2
+        assert TestResource.datastore_request["limit"] == 5
+        TestResource.datastore_rows_max = None
+
         assert resource.get_datastore_fields() == [
             {"id": "code", "type": "text"},
             {"id": "value", "type": "numeric"},
@@ -1230,6 +1245,13 @@ class TestResource:
             'SELECT * FROM "datastore_query_resource" LIMIT 2'
         )
         assert [record["code"] for record in records] == ["A", "B"]
+        assert "truncated" not in caplog.text
+        with caplog.at_level(logging.WARNING):
+            records = Resource.search_datastore_sql(
+                'SELECT * FROM "truncated_resource"'
+            )
+        assert len(records) == 2
+        assert "truncated by HDX to 2 rows" in caplog.text
         with pytest.raises(HDXError):
             Resource.search_datastore_sql("error")
 
