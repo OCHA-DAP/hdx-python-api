@@ -930,11 +930,18 @@ class Resource(HDXObject):
             sort: Comma separated field names with optional asc/desc eg. "code desc". Defaults to None.
             distinct: Whether to return only distinct rows. Defaults to False.
             page_size: Number of rows to request per call. Defaults to 10000.
-            **kwargs: Other parameters to pass to datastore_search eg. plain, language.
+            **kwargs: Other parameters to pass to datastore_search eg. plain, language. records_format csv and tsv are not supported.
 
         Returns:
             Iterator of record dictionaries
         """
+        if page_size < 1:
+            raise HDXError("page_size must be at least 1!")
+        records_format = kwargs.get("records_format")
+        if records_format in ("csv", "tsv"):
+            raise HDXError(
+                f"records_format {records_format} is not supported! Use search_datastore instead."
+            )
         offset = 0
         while True:
             result = self.search_datastore(

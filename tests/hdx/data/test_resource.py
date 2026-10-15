@@ -1227,6 +1227,10 @@ class TestResource:
         records = list(resource.get_datastore_records(page_size=3))
         assert len(records) == 3
         assert TestResource.datastore_request["offset"] == 3
+        with pytest.raises(HDXError):
+            list(resource.get_datastore_records(page_size=0))
+        with pytest.raises(HDXError):
+            list(resource.get_datastore_records(records_format="csv"))
 
         TestResource.datastore_rows_max = 2
         records = list(resource.get_datastore_records(page_size=5))
