@@ -72,6 +72,8 @@ class Resource(HDXObject):
             "datastore_upsert": "datastore_upsert",
             "datastore_search": "datastore_search",
             "datastore_search_sql": "datastore_search_sql",
+            "datapusher_submit": "datapusher_submit",
+            "datapusher_status": "datapusher_status",
         }
 
     def update_from_yaml(
@@ -317,6 +319,72 @@ class Resource(HDXObject):
                     )
         self.data["hdx_data_dictionary"] = json.dumps(
             data_dictionary, separators=(",", ":")
+        )
+
+    def update_hdx_data_dictionary(
+        self,
+        data_dictionary: Sequence[dict],
+        replace: bool = False,
+        update_datastore: bool = True,
+    ) -> None:
+        """Update the resource's data dictionary (column definitions) in HDX
+        without changing last_modified, so no dataset update notifications are
+        sent. Column definitions are as for set_hdx_data_dictionary. Unless
+        replace is True, they are merged by field into the existing data
+        dictionary in the resource metadata (so call read_from_hdx first).
+        The resource's hdx_data_dictionary field is patched, then if
+        update_datastore is True and the resource has a datastore, the
+        datastore field labels and descriptions are updated using
+        datastore_create without reloading the data.
+
+        Args:
+            data_dictionary: Sequence of column definition dictionaries
+            replace: Replace rather than merge into existing data dictionary. Defaults to False.
+            update_datastore: Update datastore field labels and descriptions. Defaults to True.
+
+        Returns:
+            None
+        """
+        if replace:
+            merged = [dict(column) for column in data_dictionary]
+        else:
+            new_columns = {column["field"]: column for column in data_dictionary}
+            merged = []
+            for column in self.get_hdx_data_dictionary() or []:
+                new_column = new_columns.pop(column.get("field"), None)
+                if new_column:
+                    merged.append({**column, **new_column})
+                else:
+                    merged.append(column)
+            merged.extend(new_columns.values())
+        self.set_hdx_data_dictionary(merged)
+        self._write_to_hdx(
+            "patch",
+            {
+                "id": self.data["id"],
+                "hdx_data_dictionary": self.data["hdx_data_dictionary"],
+            },
+            "id",
+        )
+        if not update_datastore or not self.has_datastore():
+            return
+        columns = {column["field"]: column for column in merged}
+        fields = []
+        for field in self.get_datastore_fields():
+            info = dict(field.get("info") or {})
+            column = columns.pop(field["id"], None)
+            if column:
+                info["label"] = column["label"]
+                info["notes"] = column["description"]
+            fields.append({"id": field["id"], "type": field["type"], "info": info})
+        if columns:
+            logger.warning(
+                f"Data dictionary fields {', '.join(columns)} not in datastore for resource {self.data['id']}!"
+            )
+        self._write_to_hdx(
+            "datastore_create",
+            {"resource_id": self.data["id"], "force": True, "fields": fields},
+            "resource_id",
         )
 
     def clean_format(self) -> str:
@@ -1014,6 +1082,41 @@ class Resource(HDXObject):
         )
         if not success:
             logger.debug(result)
+
+    def submit_to_datapusher(self, ignore_hash: bool = False) -> bool:
+        """Submit the resource to DataPusher+ to load its file into the
+        datastore. This does not change last_modified. Unlike the automatic
+        submission on file upload, HDX's datastore allowlist and format checks
+        are not applied.
+
+        Args:
+            ignore_hash: Reload even if the file hash is unchanged. Defaults to False.
+
+        Returns:
+            True if submitted, False if not (eg. a job is already pending)
+        """
+        return self._write_to_hdx(
+            "datapusher_submit",
+            {"resource_id": self.data["id"], "ignore_hash": ignore_hash},
+            "resource_id",
+        )
+
+    def get_datapusher_status(self) -> dict | None:
+        """Get the status of the resource's latest DataPusher+ job
+
+        Returns:
+            Status dictionary with keys including status and error or None if no job
+        """
+        success, result = self._read_from_hdx(
+            "datapusher",
+            self.data["id"],
+            "resource_id",
+            self.actions()["datapusher_status"],
+        )
+        if success:
+            return result
+        logger.debug(result)
+        return None
 
     def get_resource_views(self) -> list[ResourceView]:
         """Get any resource views in the resource
