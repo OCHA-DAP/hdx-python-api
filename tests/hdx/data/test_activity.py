@@ -66,7 +66,7 @@ class TestActivity:
                     ):
                         return mocknotfound(action)
                     offset = datadict.get("offset", 0)
-                    limit = datadict.get("limit", 31)
+                    limit = min(datadict.get("limit", 31), 100)
                     return mockresponse(activities[offset : offset + limit], action)
                 if datadict["id"] != activity_id:
                     return mocknotfound(action)
@@ -134,6 +134,11 @@ class TestActivity:
         )
         assert [x["id"] for x in result] == [x["id"] for x in activities[150:]]
         assert [x[1]["offset"] for x in TestActivity.calls] == [150, 200, 250]
+        TestActivity.calls = []
+        result = Activity.get_activities("package", "TEST1", all_pages=True, limit=500)
+        assert [x["id"] for x in result] == [x["id"] for x in activities]
+        assert [x[1]["limit"] for x in TestActivity.calls] == [100, 100, 100]
+        assert [x[1]["offset"] for x in TestActivity.calls] == [0, 100, 200]
 
     def test_get_recently_changed_packages(self, configuration, post_activity):
         result = Activity.get_recently_changed_packages(limit=3)

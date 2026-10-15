@@ -335,7 +335,7 @@ class User(HDXObject):
         Returns:
             List of organization dicts in HDX that logged in user is a member of
         """
-        user = User(configuration=configuration)
+        user = cls(configuration=configuration)
         try:
             return user.configuration.call_remoteckan(
                 cls.actions()["listorgs"], {"permission": permission}
@@ -471,13 +471,7 @@ class User(HDXObject):
         Returns:
             List of Activity objects
         """
-        return Activity.get_activities(
-            "user",
-            self.data.get("id") or self.data.get("name"),
-            self.configuration,
-            all_pages,
-            **kwargs,
-        )
+        return self._get_activities("user", all_pages, **kwargs)
 
     @classmethod
     def get_current_token_info(cls, configuration: Configuration | None = None) -> dict:
@@ -491,7 +485,7 @@ class User(HDXObject):
         Returns:
             Dictionary with keys email_hash and token_name
         """
-        user = User(configuration=configuration)
+        user = cls(configuration=configuration)
         try:
             return user.configuration.call_remoteckan(cls.actions()["token_info"], {})
         except Exception as e:

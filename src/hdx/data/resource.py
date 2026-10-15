@@ -352,10 +352,7 @@ class Resource(HDXObject):
             merged = []
             for column in self.get_hdx_data_dictionary() or []:
                 new_column = new_columns.pop(column.get("field"), None)
-                if new_column:
-                    merged.append({**column, **new_column})
-                else:
-                    merged.append(column)
+                merged.append({**column, **new_column} if new_column else column)
             merged.extend(new_columns.values())
         self.set_hdx_data_dictionary(merged)
         self._write_to_hdx(
@@ -751,6 +748,30 @@ class Resource(HDXObject):
             logger.debug(result)
         return resources
 
+    def _download_file(
+        self,
+        url: str,
+        folder: Path | str | None,
+        filename: str,
+        retriever: Retrieve | None,
+    ) -> Path:
+        """Helper method to download a file from HDX
+
+        Args:
+            url: URL to download
+            folder: Folder to download file to. None means temporary folder.
+            filename: Filename to use
+            retriever: Retrieve object to use. None means do not use one.
+
+        Returns:
+            Path to downloaded file
+        """
+        session = hdx.api.utilities.url_utils.get_ckan_ready_session(self.configuration)
+        with Download(session=session) as downloader:
+            if retriever:
+                downloader = retriever.clone(downloader)
+            return downloader.download_file(url, folder=folder, filename=filename)
+
     def download(
         self, folder: Path | str | None = None, retriever: Retrieve | None = None
     ) -> tuple[str, Path]:
@@ -774,12 +795,7 @@ class Resource(HDXObject):
         file_format = f".{self.get_format()}"
         if not filename.endswith(file_format):
             filename = f"{filename}{file_format}"
-        session = hdx.api.utilities.url_utils.get_ckan_ready_session(self.configuration)
-        with Download(session=session) as downloader:
-            if retriever:
-                downloader = retriever.clone(downloader)
-            path = downloader.download_file(url, folder=folder, filename=filename)
-            return url, path
+        return url, self._download_file(url, folder, filename, retriever)
 
     def get_datastore_dump_url(self, file_format: str = "csv") -> str:
         """Get the URL from which the resource datastore can be downloaded in
@@ -823,19 +839,15 @@ class Resource(HDXObject):
         Returns:
             (URL downloaded, Path to downloaded file)
         """
+        file_format = file_format.lower()
         url = self.get_datastore_dump_url(file_format)
         logger.debug(f"Downloading {url}")
         if filename is None:
             filename = self.data["name"]
-            extension = f".{file_format.lower()}"
+            extension = f".{file_format}"
             if not filename.endswith(extension):
                 filename = f"{filename}{extension}"
-        session = hdx.api.utilities.url_utils.get_ckan_ready_session(self.configuration)
-        with Download(session=session) as downloader:
-            if retriever:
-                downloader = retriever.clone(downloader)
-            path = downloader.download_file(url, folder=folder, filename=filename)
-            return url, path
+        return url, self._download_file(url, folder, filename, retriever)
 
     @staticmethod
     def get_all_resource_ids_in_datastore(
