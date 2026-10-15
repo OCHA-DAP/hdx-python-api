@@ -976,9 +976,13 @@ using the getter:
 
 ### Datastore
 
-A resource's data can be loaded into the HDX datastore and queried. HDX
-requires an API key for all datastore actions and dumps, including reads of
-public resources. To create, update or delete the datastore for a resource:
+A resource's data can be loaded into the HDX datastore and queried. HDX calls this
+[Tabular Data Endpoints (TDE)](https://docs.humdata.org/build/hdx-apis/tabular-data-endpoints),
+and it is available only for resources with TDE enabled (their `datastore_active`
+field is true). Contact hdx@un.org to request TDE for your datasets. HDX requires an
+API key for all datastore actions and dumps, including reads of public resources,
+and limits each IP address to 60 requests per minute. To create, update or delete
+the datastore for a resource:
 
     resource.create_datastore(
         [{"id": "code", "type": "text"}, {"id": "value", "type": "numeric"}],
@@ -1020,7 +1024,9 @@ internal `_id` field:
 
 **search_datastore_sql** wraps CKAN's `datastore_search_sql`, running a
 SELECT statement where tables are named by double quoted resource id and
-returning the list of records:
+returning the list of records. HDX returns at most 32,000 rows per query and
+cuts off larger results, in which case a warning is logged (see
+[paging in the TDE docs](https://docs.humdata.org/build/hdx-apis/tabular-data-endpoints/troubleshooting-and-error-handling#pagination)):
 
     records = Resource.search_datastore_sql(
         'SELECT code, SUM(value) AS total FROM "RESOURCE_ID" GROUP BY code'
