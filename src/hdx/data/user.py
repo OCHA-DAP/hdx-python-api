@@ -45,6 +45,7 @@ class User(HDXObject):
             "list": "user_list",
             "listorgs": "organization_list_for_user",
             "token_list": "api_token_list",
+            "token_info": "hdx_token_info",
             "autocomplete": "user_autocomplete",
         }
 
@@ -477,6 +478,24 @@ class User(HDXObject):
             all_pages,
             **kwargs,
         )
+
+    @classmethod
+    def get_current_token_info(cls, configuration: Configuration | None = None) -> dict:
+        """Get information about the API token in the configuration: the md5
+        hash of the token owner's email (email_hash) and the token name
+        (token_name).
+
+        Args:
+            configuration: HDX configuration. Defaults to global configuration.
+
+        Returns:
+            Dictionary with keys email_hash and token_name
+        """
+        user = User(configuration=configuration)
+        try:
+            return user.configuration.call_remoteckan(cls.actions()["token_info"], {})
+        except Exception as e:
+            raise HDXError("Failed when trying to get API token info!") from e
 
     @classmethod
     def autocomplete(

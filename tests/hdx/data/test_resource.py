@@ -1327,6 +1327,22 @@ class TestResource:
             == expected
         )
 
+    def test_get_fs_check_info(self, configuration):
+        resource = Resource({"name": "MyResource1"})
+        assert resource.get_fs_check_info() == []
+        events = [
+            {
+                "state": "success",
+                "timestamp": "2026-10-01T10:00:00",
+                "sheet_changes": {"nrows": 10},
+                "hxl_proxy_response": {"has_merged_cells": False},
+            }
+        ]
+        resource["fs_check_info"] = json.dumps(events)
+        assert resource.get_fs_check_info() == events
+        resource["fs_check_info"] = events
+        assert resource.get_fs_check_info() == events
+
     def test_get_hdx_url(self, configuration, read):
         resource = Resource.read_from_hdx("74b74ae1-df0c-4716-829f-4f939a046811")
         assert (
