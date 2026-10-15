@@ -991,6 +991,27 @@ using the getter:
 
     data_dictionary = resource.get_hdx_data_dictionary()
 
+To change the data dictionary of a resource already in HDX without sending
+dataset update notifications, use **update_hdx_data_dictionary**. It patches
+only the `hdx_data_dictionary` field (so `last_modified` is unchanged), then,
+if the resource has a datastore, updates the datastore field labels and
+descriptions without reloading the data. The given columns are merged by
+`field` into the existing data dictionary in the resource metadata, so read
+the resource from HDX first. Pass `replace=True` to replace the data
+dictionary instead and `update_datastore=False` to leave the datastore alone:
+
+    resource = Resource.read_from_hdx(RESOURCE_ID)
+    resource.update_hdx_data_dictionary([
+        {
+            "field": "col_name",
+            "label": "Column Label",
+            "description": "New description.",
+        },
+    ])
+
+Columns are matched to datastore fields by `field`. A warning is logged for
+any column with no matching datastore field.
+
 ### Datastore
 
 A resource's data can be loaded into the HDX datastore and queried. HDX calls this
@@ -1008,6 +1029,17 @@ the datastore for a resource:
     resource.update_datastore([{"code": "A", "value": 1.0}])  # upsert by default
     has_datastore = resource.has_datastore()
     resource.delete_datastore()
+
+HDX loads uploaded files into the datastore using DataPusher+. To reload a
+resource's file into the datastore without uploading it again (so
+`last_modified` is unchanged), use **submit_to_datapusher**. It returns False
+if the job was not submitted, eg. because one is already pending. HDX's
+datastore allowlist and format checks, which apply to automatic submissions
+on upload, are not applied. **get_datapusher_status** returns the status of
+the latest job or None if there is none:
+
+    submitted = resource.submit_to_datapusher(ignore_hash=True)
+    status = resource.get_datapusher_status()  # eg. status["status"] == "complete"
 
 To download the whole datastore (rather than the resource's file) use
 **download_datastore**, which returns the URL and path like **download**.

@@ -747,6 +747,70 @@ class TestResource:
 
         Configuration.read().remoteckan().session = MockSession()
 
+    @pytest.fixture(scope="function")
+    def post_datapusher(self):
+        calls = []
+
+        class MockSession:
+            @staticmethod
+            def post(url, data, **kwargs):
+                datadict = json.loads(data.decode("utf-8"))
+                action = url.split("/")[-1]
+                calls.append((action, datadict))
+                if datadict.get("resource_id") == "NOTFOUND":
+                    return MockResponse(
+                        404,
+                        f'{{"success": false, "error": {{"message": "Not found", "__type": "Not Found Error"}}, "help": "http://test-data.humdata.org/api/3/action/help_show?name={action}"}}',
+                    )
+                if action == "datapusher_submit":
+                    result = "true"
+                elif action == "datapusher_status":
+                    result = '{"status": "complete", "error": {}}'
+                elif action == "resource_patch":
+                    resultdictcopy = copy.deepcopy(resultdict)
+                    resultdictcopy["hdx_data_dictionary"] = datadict[
+                        "hdx_data_dictionary"
+                    ]
+                    result = json.dumps(resultdictcopy)
+                elif action == "datastore_search":
+                    result = json.dumps(
+                        {
+                            "fields": [
+                                {"id": "_id", "type": "int"},
+                                {
+                                    "id": "code",
+                                    "type": "text",
+                                    "info": {
+                                        "label": "Code",
+                                        "notes": "Old code",
+                                        "type_override": "text",
+                                    },
+                                },
+                                {
+                                    "id": "value",
+                                    "type": "numeric",
+                                    "info": {"label": "Value", "notes": "Old value"},
+                                },
+                                {"id": "notes", "type": "text"},
+                            ],
+                            "records": [],
+                        }
+                    )
+                elif action == "datastore_create":
+                    result = json.dumps(datadict)
+                else:
+                    return MockResponse(
+                        404,
+                        f'{{"success": false, "error": {{"message": "TEST ERROR: Unexpected {action}", "__type": "TEST ERROR"}}, "help": "http://test-data.humdata.org/api/3/action/help_show?name={action}"}}',
+                    )
+                return MockResponse(
+                    200,
+                    f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name={action}"}}',
+                )
+
+        Configuration.read().remoteckan().session = MockSession()
+        return calls
+
     def test_read_from_hdx(self, configuration, read):
         resource = Resource.read_from_hdx("74b74ae1-df0c-4716-829f-4f939a046811")
         assert resource["id"] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
@@ -1342,6 +1406,109 @@ class TestResource:
         assert resource.get_fs_check_info() == events
         resource["fs_check_info"] = events
         assert resource.get_fs_check_info() == events
+
+    def test_datapusher(self, configuration, post_datapusher):
+        resource = Resource({"id": "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"})
+        assert resource.submit_to_datapusher(ignore_hash=True) is True
+        assert post_datapusher[-1] == (
+            "datapusher_submit",
+            {
+                "resource_id": "de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
+                "ignore_hash": True,
+            },
+        )
+        assert resource.get_datapusher_status() == {
+            "status": "complete",
+            "error": {},
+        }
+        resource = Resource({"id": "NOTFOUND"})
+        assert resource.get_datapusher_status() is None
+        with pytest.raises(HDXError):
+            resource.submit_to_datapusher()
+
+    def test_update_hdx_data_dictionary(self, configuration, post_datapusher):
+        existing = [
+            {
+                "field": "code",
+                "label": "Code",
+                "description": "Old code",
+                "data_type": "text",
+            },
+            {"field": "value", "label": "Value", "description": "Old value"},
+        ]
+        resource = Resource(
+            {
+                "id": "de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
+                "hdx_data_dictionary": json.dumps(existing),
+            }
+        )
+        resource.update_hdx_data_dictionary(
+            [
+                {"field": "code", "label": "Code", "description": "New code"},
+                {"field": "extra", "label": "Extra", "description": "Not in datastore"},
+            ]
+        )
+        expected = [
+            {
+                "field": "code",
+                "label": "Code",
+                "description": "New code",
+                "data_type": "text",
+            },
+            {"field": "value", "label": "Value", "description": "Old value"},
+            {"field": "extra", "label": "Extra", "description": "Not in datastore"},
+        ]
+        assert resource.get_hdx_data_dictionary() == expected
+        actions = [action for action, _ in post_datapusher]
+        assert actions == [
+            "resource_patch",
+            "datastore_search",
+            "datastore_search",
+            "datastore_create",
+        ]
+        _, patch = post_datapusher[0]
+        assert patch == {
+            "id": "de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
+            "hdx_data_dictionary": json.dumps(expected, separators=(",", ":")),
+        }
+        _, create = post_datapusher[-1]
+        assert create == {
+            "resource_id": "de6549d8-268b-4dfe-adaf-a4ae5c8510d5",
+            "force": True,
+            "fields": [
+                {
+                    "id": "code",
+                    "type": "text",
+                    "info": {
+                        "label": "Code",
+                        "notes": "New code",
+                        "type_override": "text",
+                    },
+                },
+                {
+                    "id": "value",
+                    "type": "numeric",
+                    "info": {"label": "Value", "notes": "Old value"},
+                },
+                {"id": "notes", "type": "text", "info": {}},
+            ],
+        }
+
+        post_datapusher.clear()
+        resource.update_hdx_data_dictionary(
+            [{"field": "value", "label": "Value", "description": "New value"}],
+            replace=True,
+            update_datastore=False,
+        )
+        assert resource.get_hdx_data_dictionary() == [
+            {"field": "value", "label": "Value", "description": "New value"}
+        ]
+        assert [action for action, _ in post_datapusher] == ["resource_patch"]
+
+        with pytest.raises(HDXError):
+            resource.update_hdx_data_dictionary(
+                [{"field": "value", "label": "Value"}], replace=True
+            )
 
     def test_get_hdx_url(self, configuration, read):
         resource = Resource.read_from_hdx("74b74ae1-df0c-4716-829f-4f939a046811")
