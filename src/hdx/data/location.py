@@ -232,13 +232,7 @@ class Location(HDXObject):
         Returns:
             List of Activity objects
         """
-        return Activity.get_activities(
-            "group",
-            self.data.get("id") or self.data.get("name"),
-            self.configuration,
-            all_pages,
-            **kwargs,
-        )
+        return self._get_activities("group", all_pages, **kwargs)
 
     @classmethod
     def autocomplete(

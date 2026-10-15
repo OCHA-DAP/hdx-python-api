@@ -9,7 +9,7 @@ from collections import UserDict
 from collections.abc import Sequence
 from os.path import isfile
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from ckanapi.errors import NotFound
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -19,6 +19,9 @@ from hdx.utilities.loader import (
 )
 
 from hdx.api.configuration import Configuration
+
+if TYPE_CHECKING:
+    from hdx.data.activity import Activity
 
 logger = logging.getLogger(__name__)
 
@@ -373,6 +376,30 @@ class HDXObject(UserDict, ABC):
             id_field_name,
             files_to_upload,
             force_active=force_active,
+            **kwargs,
+        )
+
+    def _get_activities(
+        self, object_type: str, all_pages: bool = False, **kwargs: Any
+    ) -> list["Activity"]:
+        """Helper method to get the activity stream of this object
+
+        Args:
+            object_type: One of package, organization, group or user
+            all_pages: Whether to get all pages of results. Defaults to False.
+            **kwargs: Parameters to pass to Activity.get_activities
+
+        Returns:
+            List of Activity objects
+        """
+        # Imported here as hdx.data.activity imports this module
+        from hdx.data.activity import Activity
+
+        return Activity.get_activities(
+            object_type,
+            self.data.get("id") or self.data.get("name"),
+            self.configuration,
+            all_pages,
             **kwargs,
         )
 

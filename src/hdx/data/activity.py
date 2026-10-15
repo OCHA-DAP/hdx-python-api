@@ -129,7 +129,9 @@ class Activity(HDXObject):
             result = activity._write_to_hdx(action, data)
             return [cls(x, configuration=configuration) for x in result]
         data = dict(data)
-        limit = data.setdefault("limit", 100)
+        # HDX silently caps limit at ckan.activity_list_limit_max
+        limit = min(data.get("limit", 100), 100)
+        data["limit"] = limit
         offset = data.get("offset", 0)
         activities = []
         while True:

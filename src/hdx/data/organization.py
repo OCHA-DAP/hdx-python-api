@@ -326,13 +326,7 @@ class Organization(HDXObject):
         Returns:
             List of Activity objects
         """
-        return Activity.get_activities(
-            "organization",
-            self.data.get("id") or self.data.get("name"),
-            self.configuration,
-            all_pages,
-            **kwargs,
-        )
+        return self._get_activities("organization", all_pages, **kwargs)
 
     @classmethod
     def autocomplete(
