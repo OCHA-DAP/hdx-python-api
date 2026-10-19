@@ -74,6 +74,13 @@ class Resource(HDXObject):
             "datastore_search_sql": "datastore_search_sql",
             "datapusher_submit": "datapusher_submit",
             "datapusher_status": "datapusher_status",
+            "push_to_datastore": "hdx_push_resource_to_datastore",
+            "p_coded": "hdx_p_coded_resource_update",
+            "in_hapi": "hdx_mark_resource_in_hapi",
+            "in_quarantine": "hdx_mark_resource_in_quarantine",
+            "qa_patch": "hdx_qa_resource_patch",
+            "fs_check_revise": "hdx_fs_check_resource_revise",
+            "fs_check_reset": "hdx_fs_check_resource_reset",
         }
 
     def update_from_yaml(
@@ -1113,6 +1120,20 @@ class Resource(HDXObject):
             "resource_id",
         )
 
+    def push_to_datastore(self) -> bool:
+        """Submit the resource to DataPusher+ using HDX's wrapper action.
+        Unlike submit_to_datapusher, this requires sysadmin.
+
+        Returns:
+            True if submitted, False if not
+        """
+        result = self._write_to_hdx(
+            "push_to_datastore", {"resource_id": self.data["id"]}, "resource_id"
+        )
+        if not result["success"]:
+            logger.debug(result["message"])
+        return result["success"]
+
     def get_datapusher_status(self) -> dict | None:
         """Get the status of the resource's latest DataPusher+ job
 
@@ -1303,6 +1324,159 @@ class Resource(HDXObject):
         if isinstance(fs_check_info, str):
             return json.loads(fs_check_info)
         return fs_check_info
+
+    def _set_from_package(self, package: dict) -> None:
+        """Set the resource's metadata from the matching resource in a package
+        metadata dictionary returned by HDX
+
+        Args:
+            package: Package metadata dictionary
+
+        Returns:
+            None
+        """
+        for resource in package.get("resources", []):
+            if resource["id"] == self.data["id"]:
+                self.data = resource
+                return
+
+    def revise_fs_check(self, key: str, value: Any) -> None:
+        """Set a file structure check field of the resource in HDX. If key is
+        fs_check_info and value is a dictionary, it is appended to the
+        existing check events (the last 20 are kept) rather than replacing
+        them. Requires sysadmin or permission to manage QA.
+
+        Args:
+            key: Resource field eg. fs_check_info
+            value: Value to set
+
+        Returns:
+            None
+        """
+        result = self._write_to_hdx(
+            "fs_check_revise",
+            {
+                "package_id": self.data["package_id"],
+                "id": self.data["id"],
+                "key": key,
+                "value": value,
+            },
+            "id",
+        )
+        self._set_from_package(result["package"])
+
+    def reset_fs_check(self, key: str = "fs_check_info") -> None:
+        """Clear a file structure check field of the resource in HDX. Requires
+        sysadmin or permission to manage QA.
+
+        Args:
+            key: Resource field to clear. Defaults to fs_check_info.
+
+        Returns:
+            None
+        """
+        result = self._write_to_hdx(
+            "fs_check_reset",
+            {"package_id": self.data["package_id"], "id": self.data["id"], "key": key},
+            "id",
+        )
+        self._set_from_package(result["package"])
+
+    def is_p_coded(self) -> bool | None:
+        """Return if the resource is marked as containing p-codes
+
+        Returns:
+            Whether resource is p-coded or None if not set
+        """
+        p_coded = self.data.get("p_coded")
+        if p_coded is None:
+            return None
+        if isinstance(p_coded, str):
+            return p_coded.lower() == "true"
+        return p_coded
+
+    def set_p_coded(self, p_coded: bool) -> None:
+        """Mark the resource in HDX as containing p-codes or not. Requires
+        sysadmin or permission to manage p-codes.
+
+        Args:
+            p_coded: Whether resource is p-coded
+
+        Returns:
+            None
+        """
+        self.data = self._write_to_hdx(
+            "p_coded", {"id": self.data["id"], "p_coded": p_coded}, "id"
+        )
+
+    def is_in_hapi(self) -> bool:
+        """Return if the resource is marked as being in HAPI
+
+        Returns:
+            Whether resource is in HAPI
+        """
+        return self.data.get("in_hapi") == "yes"
+
+    def set_in_hapi(self, in_hapi: bool) -> None:
+        """Mark the resource in HDX as being in HAPI or not. Requires sysadmin
+        or permission to manage the in HAPI flag.
+
+        Args:
+            in_hapi: Whether resource is in HAPI
+
+        Returns:
+            None
+        """
+        self.data = self._write_to_hdx(
+            "in_hapi",
+            {"id": self.data["id"], "in_hapi": "yes" if in_hapi else "no-data"},
+            "id",
+        )
+
+    def is_in_quarantine(self) -> bool:
+        """Return if the resource is in quarantine
+
+        Returns:
+            Whether resource is in quarantine
+        """
+        in_quarantine = self.data.get("in_quarantine", False)
+        if isinstance(in_quarantine, str):
+            return in_quarantine.lower() == "true"
+        return in_quarantine
+
+    def set_in_quarantine(self, in_quarantine: bool) -> None:
+        """Put the resource in HDX in quarantine or take it out. Quarantining
+        also removes the resource's shape_info and geopreview. Requires
+        sysadmin or permission to manage QA.
+
+        Args:
+            in_quarantine: Whether resource is in quarantine
+
+        Returns:
+            None
+        """
+        self.data = self._write_to_hdx(
+            "in_quarantine",
+            {
+                "id": self.data["id"],
+                "in_quarantine": "true" if in_quarantine else "false",
+            },
+            "id",
+        )
+
+    def qa_patch(self, **kwargs: Any) -> None:
+        """Patch QA fields of the resource in HDX eg. pii, sdc_report_flag,
+        broken_link. Requires sysadmin or permission to manage QA.
+
+        Args:
+            **kwargs: Resource fields to patch
+
+        Returns:
+            None
+        """
+        self.data = self._write_to_hdx(
+            "qa_patch", {"id": self.data["id"], **kwargs}, "id"
+        )
 
     def is_marked_data_updated(self) -> bool:
         """Return if the resource's data is marked to be updated

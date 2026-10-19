@@ -811,6 +811,59 @@ class TestResource:
         Configuration.read().remoteckan().session = MockSession()
         return calls
 
+    @pytest.fixture(scope="function")
+    def post_qa(self):
+        calls = []
+
+        class MockSession:
+            @staticmethod
+            def post(url, data, **kwargs):
+                datadict = json.loads(data.decode("utf-8"))
+                action = url.split("/")[-1]
+                calls.append((action, datadict))
+                if datadict.get("id") == "NOTFOUND":
+                    return MockResponse(
+                        404,
+                        f'{{"success": false, "error": {{"message": "Not found", "__type": "Not Found Error"}}, "help": "http://test-data.humdata.org/api/3/action/help_show?name={action}"}}',
+                    )
+                if action in (
+                    "hdx_fs_check_resource_revise",
+                    "hdx_fs_check_resource_reset",
+                ):
+                    package = {
+                        "id": datadict["package_id"],
+                        "resources": [
+                            {"id": "OTHER"},
+                            {
+                                "id": datadict["id"],
+                                "package_id": datadict["package_id"],
+                                datadict["key"]: datadict.get("value", ""),
+                            },
+                        ],
+                    }
+                    result = json.dumps({"package": package})
+                elif action in (
+                    "hdx_p_coded_resource_update",
+                    "hdx_mark_resource_in_hapi",
+                    "hdx_mark_resource_in_quarantine",
+                    "hdx_qa_resource_patch",
+                ):
+                    result = json.dumps(datadict)
+                elif action == "hdx_push_resource_to_datastore":
+                    result = '{"success": true, "message": "Resource submitted to Datapusher Plus"}'
+                else:
+                    return MockResponse(
+                        404,
+                        f'{{"success": false, "error": {{"message": "TEST ERROR: Unexpected {action}", "__type": "TEST ERROR"}}, "help": "http://test-data.humdata.org/api/3/action/help_show?name={action}"}}',
+                    )
+                return MockResponse(
+                    200,
+                    f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name={action}"}}',
+                )
+
+        Configuration.read().remoteckan().session = MockSession()
+        return calls
+
     def test_read_from_hdx(self, configuration, read):
         resource = Resource.read_from_hdx("74b74ae1-df0c-4716-829f-4f939a046811")
         assert resource["id"] == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
@@ -1425,6 +1478,82 @@ class TestResource:
         assert resource.get_datapusher_status() is None
         with pytest.raises(HDXError):
             resource.submit_to_datapusher()
+
+    def test_flags_and_qa(self, configuration, post_qa):
+        resource = Resource({"id": "RES1", "package_id": "PKG1"})
+        assert resource.is_p_coded() is None
+        resource.set_p_coded(True)
+        assert post_qa[-1] == (
+            "hdx_p_coded_resource_update",
+            {"id": "RES1", "p_coded": True},
+        )
+        assert resource.is_p_coded() is True
+        resource["p_coded"] = "False"
+        assert resource.is_p_coded() is False
+
+        assert resource.is_in_hapi() is False
+        resource.set_in_hapi(True)
+        assert post_qa[-1] == (
+            "hdx_mark_resource_in_hapi",
+            {"id": "RES1", "in_hapi": "yes"},
+        )
+        assert resource.is_in_hapi() is True
+        resource.set_in_hapi(False)
+        assert post_qa[-1][1]["in_hapi"] == "no-data"
+        assert resource.is_in_hapi() is False
+
+        assert resource.is_in_quarantine() is False
+        resource.set_in_quarantine(True)
+        assert post_qa[-1] == (
+            "hdx_mark_resource_in_quarantine",
+            {"id": "RES1", "in_quarantine": "true"},
+        )
+        assert resource.is_in_quarantine() is True
+        resource.set_in_quarantine(False)
+        assert resource.is_in_quarantine() is False
+
+        resource.qa_patch(pii="true", sdc_report_flag="false")
+        assert post_qa[-1] == (
+            "hdx_qa_resource_patch",
+            {"id": "RES1", "pii": "true", "sdc_report_flag": "false"},
+        )
+        assert resource["pii"] == "true"
+
+        resource = Resource({"id": "RES1", "package_id": "PKG1"})
+        event = {"state": "success", "timestamp": "2026-10-01T10:00:00"}
+        resource.revise_fs_check("fs_check_info", event)
+        assert post_qa[-1] == (
+            "hdx_fs_check_resource_revise",
+            {
+                "package_id": "PKG1",
+                "id": "RES1",
+                "key": "fs_check_info",
+                "value": event,
+            },
+        )
+        assert resource.data == {
+            "id": "RES1",
+            "package_id": "PKG1",
+            "fs_check_info": event,
+        }
+        resource.reset_fs_check()
+        assert post_qa[-1] == (
+            "hdx_fs_check_resource_reset",
+            {"package_id": "PKG1", "id": "RES1", "key": "fs_check_info"},
+        )
+        assert resource["fs_check_info"] == ""
+
+        assert resource.push_to_datastore() is True
+        assert post_qa[-1] == (
+            "hdx_push_resource_to_datastore",
+            {"resource_id": "RES1"},
+        )
+
+        resource = Resource({"id": "NOTFOUND", "package_id": "PKG1"})
+        with pytest.raises(HDXError):
+            resource.set_p_coded(True)
+        with pytest.raises(HDXError):
+            resource.set_in_quarantine(True)
 
     def test_update_hdx_data_dictionary(self, configuration, post_datapusher):
         existing = [

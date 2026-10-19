@@ -647,6 +647,35 @@ This returns a list of dictionaries, each from a resource name to a list of
 check events with keys such as `state`, `timestamp`, `sheet_changes` and
 `hxl_proxy_response`.
 
+Similarly, you can get the geopreview shape information of a dataset's
+resources:
+
+    shape_info = dataset.get_shape_info()
+
+HDX can recommend tags for a dataset based on its title and organization
+(`owner_org`). Tags are ordered from most to least recommended:
+
+    tags = dataset.get_recommended_tags()
+
+You can check if the dataset or its organization is in HDX's allowlist for
+automatic loading of resources into the datastore:
+
+    allowed = dataset.is_allowed_for_datastore()
+
+HDX sysadmins can submit all of a dataset's CSV resources to DataPusher+
+(returning False if there are none):
+
+    submitted = dataset.push_to_datastore()
+
+Users who are sysadmins or have permission to manage QA can mark QA of a
+dataset as completed, set a QA field of all its resources or clear a file
+structure check field (`fs_check_info` by default) of all its resources. The
+dataset is updated from the result:
+
+    dataset.set_qa_completed(True)
+    dataset.qa_revise_resources("pii", "false")
+    dataset.reset_fs_check()
+
 ### Time Period
 
 Time Period is a mandatory field in HDX. It is the earliest start date and
@@ -964,6 +993,32 @@ HDX:
 
     events = resource.get_fs_check_info()
 
+Users who are sysadmins or have permission to manage QA can set or clear a
+file structure check field of a resource. If the key is `fs_check_info` and the
+value is a dictionary, it is appended to the existing check events (the last 20
+are kept):
+
+    resource.revise_fs_check("fs_check_info", {"state": "success", ...})
+    resource.reset_fs_check()  # key defaults to fs_check_info
+
+They can also quarantine a resource (which removes its `shape_info` and
+geopreview) or take it out of quarantine, and patch other QA fields:
+
+    in_quarantine = resource.is_in_quarantine()
+    resource.set_in_quarantine(True)
+    resource.qa_patch(pii="true", sdc_report_flag="false")
+
+A resource can be flagged as containing p-codes or as being in HAPI. Setting
+these flags requires sysadmin or permission to manage p-codes or the in HAPI
+flag respectively:
+
+    p_coded = resource.is_p_coded()  # None if not set
+    resource.set_p_coded(True)
+    in_hapi = resource.is_in_hapi()
+    resource.set_in_hapi(True)
+
+These methods update the resource from the result.
+
 ### Data Dictionary
 
 A resource can have a data dictionary describing the columns in the data it
@@ -1040,6 +1095,11 @@ the latest job or None if there is none:
 
     submitted = resource.submit_to_datapusher(ignore_hash=True)
     status = resource.get_datapusher_status()  # eg. status["status"] == "complete"
+
+HDX sysadmins can instead use **push_to_datastore**, which submits the
+resource through HDX's wrapper action:
+
+    submitted = resource.push_to_datastore()
 
 To download the whole datastore (rather than the resource's file) use
 **download_datastore**, which returns the URL and path like **download**.
@@ -1213,6 +1273,17 @@ since Data Grid membership changes over time, rather than a fixed list):
 
 This returns a sorted list of 3-letter location codes.
 
+HDX sysadmins can get the Data Grid of a country and clear HDX's cached copy of
+it:
+
+    data_grid = Location.get_data_grid("AFG")
+    Location.invalidate_data_grid("AFG")
+
+**get_data_grid** returns a dictionary with keys including `title`, `date`,
+`stats` and `categories` (or None if not found). Each category has
+`subcategories`, each with a list of `datasets`. Complementary datasets have
+`is_complementary` set to True.
+
 You can get the datasets belonging to a location as follows:
 
     datasets = location.get_datasets(**kwargs)
@@ -1297,6 +1368,14 @@ Users with permission to manage basic scheduled tasks can compute the statistics
 and push them to analytics:
 
     pushed_stats = push_general_stats()
+
+HDX sysadmins can get the number of activities of each active user (optionally
+between start and end dates) and lists of active and inactive organizations:
+
+    from hdx.api.utilities.hdx_stats import get_organization_statistics, get_user_statistics
+
+    user_stats = get_user_statistics(start_date="2026-01-01", end_date="2026-06-30")
+    org_stats = get_organization_statistics()
 
 ## Pipeline State
 

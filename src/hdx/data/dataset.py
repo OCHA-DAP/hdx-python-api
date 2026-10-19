@@ -148,6 +148,13 @@ class Dataset(HDXObject):
             "autocomplete": "package_autocomplete",
             "create_default_views": "package_create_default_resource_views",
             "fs_check_info": "fs_check_info_show",
+            "fs_check_reset": "hdx_fs_check_package_reset",
+            "shape_info": "shape_info_show",
+            "recommend_tags": "hdx_recommend_tags",
+            "allowed_for_datastore": "hdx_is_package_allowed_for_datastore",
+            "push_to_datastore": "hdx_push_resource_to_datastore",
+            "qa_completed": "hdx_mark_qa_completed",
+            "qa_revise_resources": "hdx_qa_package_revise_resource",
         }
 
     def __setitem__(self, key: Any, value: Any) -> None:
@@ -2346,6 +2353,136 @@ class Dataset(HDXObject):
         if success:
             return result
         return []
+
+    def _set_from_package(self, package: dict) -> None:
+        """Set the dataset's metadata and resources from a package metadata
+        dictionary returned by HDX
+
+        Args:
+            package: Package metadata dictionary
+
+        Returns:
+            None
+        """
+        self.data = package
+        self.init_resources()
+        self.separate_resources()
+
+    def reset_fs_check(self, key: str = "fs_check_info") -> None:
+        """Clear a file structure check field of all the dataset's resources
+        in HDX. Requires sysadmin or permission to manage QA.
+
+        Args:
+            key: Resource field to clear. Defaults to fs_check_info.
+
+        Returns:
+            None
+        """
+        result = self._write_to_hdx(
+            "fs_check_reset", {"package_id": self.data["id"], "key": key}, "package_id"
+        )
+        self._set_from_package(result["package"])
+
+    def set_qa_completed(self, qa_completed: bool) -> None:
+        """Mark QA of the dataset in HDX as completed or not. Requires
+        sysadmin or permission to manage QA.
+
+        Args:
+            qa_completed: Whether QA is completed
+
+        Returns:
+            None
+        """
+        result = self._write_to_hdx(
+            "qa_completed", {"id": self.data["id"], "qa_completed": qa_completed}, "id"
+        )
+        self._set_from_package(result["package"])
+
+    def qa_revise_resources(self, key: str, value: Any) -> None:
+        """Set a QA field of all the dataset's resources in HDX. Requires
+        sysadmin or permission to manage QA.
+
+        Args:
+            key: Resource field eg. pii
+            value: Value to set
+
+        Returns:
+            None
+        """
+        result = self._write_to_hdx(
+            "qa_revise_resources",
+            {"id": self.data["id"], "key": key, "value": value},
+            "id",
+        )
+        self._set_from_package(result["package"])
+
+    def get_shape_info(self) -> list[dict]:
+        """Get geopreview shape information for the dataset's resources from
+        HDX
+
+        Returns:
+            List of dictionaries from resource name to shape information
+        """
+        success, result = self._read_from_hdx(
+            "dataset",
+            self.get_name_or_id(prefer_name=False),
+            "id",
+            self.actions()["shape_info"],
+        )
+        if success:
+            return result
+        return []
+
+    def get_recommended_tags(self) -> list[str]:
+        """Get tags recommended by HDX for the dataset based on its title and
+        organization. Tags are ordered from most to least recommended.
+
+        Returns:
+            List of recommended tags
+        """
+        data = {"title": self.data.get("title")}
+        organization = self.data.get("owner_org")
+        if organization:
+            data["organization"] = organization
+        try:
+            result = self.configuration.call_remoteckan(
+                self.actions()["recommend_tags"], data
+            )
+        except Exception as e:
+            raise HDXError("Failed when trying to get recommended tags!") from e
+        return [tag["name"] for tag in result]
+
+    def is_allowed_for_datastore(self) -> bool:
+        """Return if the dataset or its organization is in HDX's allowlist for
+        automatic loading of resources into the datastore
+
+        Returns:
+            Whether dataset is allowed for datastore
+        """
+        success, result = self._read_from_hdx(
+            "dataset",
+            self.data["id"],
+            "package_id",
+            self.actions()["allowed_for_datastore"],
+        )
+        if success:
+            return result
+        logger.debug(result)
+        return False
+
+    def push_to_datastore(self) -> bool:
+        """Submit all the dataset's CSV resources to DataPusher+ using HDX's
+        wrapper action. Requires sysadmin.
+
+        Returns:
+            True if submitted, False if not (eg. no CSV resources)
+        """
+        result = self._write_to_hdx(
+            "push_to_datastore", {"dataset_id": self.data["id"]}, "dataset_id"
+        )
+        if not result["success"]:
+            logger.debug(result["message"])
+        return result["success"]
 
     def generate_resource(
         self,

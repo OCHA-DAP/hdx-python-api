@@ -100,6 +100,29 @@ def mockgetdatasets(url, datadict):
         )
 
 
+data_grid = {
+    "iso3": "afg",
+    "title": "Afghanistan",
+    "date": "2026-10-01",
+    "stats": {"complete": 10, "incomplete": 2, "empty": 1},
+    "categories": [
+        {
+            "title": "Health",
+            "stats": {"complete": 1},
+            "subcategories": [
+                {
+                    "title": "Health facilities",
+                    "stats": {"complete": 1},
+                    "datasets": [
+                        {"id": "TEST1", "name": "afg-health", "is_complementary": False}
+                    ],
+                }
+            ],
+        }
+    ],
+}
+
+
 class TestLocation:
     @pytest.fixture(scope="function")
     def read(self):
@@ -280,6 +303,36 @@ class TestLocation:
 
         Configuration.read().remoteckan().session = MockSession()
 
+    @pytest.fixture(scope="function")
+    def post_data_grid(self):
+        calls = []
+
+        class MockSession:
+            @staticmethod
+            def post(url, data, **kwargs):
+                datadict = json.loads(data.decode("utf-8"))
+                action = url.split("/")[-1]
+                calls.append((action, datadict))
+                if action == "hdx_datagrid_show" and datadict["id"] == "afg":
+                    result = json.dumps(data_grid)
+                elif (
+                    action == "invalidate_data_completeness_for_location"
+                    and datadict["name"] == "afg"
+                ):
+                    result = '{"message": "Successfully invalidated data completeness cache for afg"}'
+                else:
+                    return MockResponse(
+                        404,
+                        f'{{"success": false, "error": {{"message": "Not found", "__type": "Not Found Error"}}, "help": "http://test-data.humdata.org/api/3/action/help_show?name={action}"}}',
+                    )
+                return MockResponse(
+                    200,
+                    f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name={action}"}}',
+                )
+
+        Configuration.read().remoteckan().session = MockSession()
+        return calls
+
     def test_read_from_hdx(self, configuration, read, mocksmtp):
         location = Location.read_from_hdx("f8b0e58f-9be5-4b25-9d5f-1c8b6d8b6a0a")
         assert location["id"] == "f8b0e58f-9be5-4b25-9d5f-1c8b6d8b6a0a"
@@ -379,3 +432,15 @@ class TestLocation:
     def test_get_data_grid_countries(self, configuration, post_all_fields):
         countries = Location.get_data_grid_countries()
         assert countries == ["afg", "gnq"]
+
+    def test_data_grid(self, configuration, post_data_grid):
+        assert Location.get_data_grid("AFG") == data_grid
+        assert post_data_grid[-1] == ("hdx_datagrid_show", {"id": "afg"})
+        assert Location.get_data_grid("xyz") is None
+        Location.invalidate_data_grid("AFG")
+        assert post_data_grid[-1] == (
+            "invalidate_data_completeness_for_location",
+            {"name": "afg"},
+        )
+        with pytest.raises(HDXError):
+            Location.invalidate_data_grid("xyz")
