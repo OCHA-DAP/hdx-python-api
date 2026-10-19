@@ -177,6 +177,110 @@ class TestDatasetNoncore:
         dataset = Dataset({"id": "TEST2"})
         assert dataset.get_fs_check_info() == []
 
+    @pytest.fixture(scope="function")
+    def post_dataset_actions(self):
+        calls = []
+
+        class MockSession:
+            @staticmethod
+            def post(url, data, **kwargs):
+                datadict = json.loads(data.decode("utf-8"))
+                action = url.split("/")[-1]
+                calls.append((action, datadict))
+                package = {
+                    "id": "TEST1",
+                    "name": "test-dataset",
+                    "resources": [{"id": "RES1", "name": "MyResource1"}],
+                }
+                if datadict.get("id", datadict.get("package_id")) == "NOTFOUND":
+                    return MockResponse(
+                        404,
+                        f'{{"success": false, "error": {{"message": "Not found", "__type": "Not Found Error"}}, "help": "http://test-data.humdata.org/api/3/action/help_show?name={action}"}}',
+                    )
+                if action == "shape_info_show":
+                    result = json.dumps([{"MyResource1": {"state": "success"}}])
+                elif action == "hdx_recommend_tags":
+                    result = json.dumps(
+                        [
+                            {"name": "health", "count": 5},
+                            {"name": "cholera", "count": 2},
+                        ]
+                    )
+                elif action == "hdx_is_package_allowed_for_datastore":
+                    result = "true"
+                elif action == "hdx_push_resource_to_datastore":
+                    result = '{"success": false, "message": "No CSV resources found for dataset"}'
+                elif action == "hdx_mark_qa_completed":
+                    package["qa_completed"] = datadict["qa_completed"]
+                    result = json.dumps({"package": package})
+                elif action in (
+                    "hdx_qa_package_revise_resource",
+                    "hdx_fs_check_package_reset",
+                ):
+                    package["resources"][0][datadict["key"]] = datadict.get("value", "")
+                    result = json.dumps({"package": package})
+                else:
+                    return MockResponse(
+                        404,
+                        f'{{"success": false, "error": {{"message": "TEST ERROR: Unexpected {action}", "__type": "TEST ERROR"}}, "help": "http://test-data.humdata.org/api/3/action/help_show?name={action}"}}',
+                    )
+                return MockResponse(
+                    200,
+                    f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name={action}"}}',
+                )
+
+        Configuration.read().remoteckan().session = MockSession()
+        return calls
+
+    def test_read_helpers(self, configuration, post_dataset_actions):
+        dataset = Dataset(
+            {"id": "TEST1", "title": "Cholera cases", "owner_org": "ORG1"}
+        )
+        assert dataset.get_shape_info() == [{"MyResource1": {"state": "success"}}]
+        assert dataset.get_recommended_tags() == ["health", "cholera"]
+        assert post_dataset_actions[-1] == (
+            "hdx_recommend_tags",
+            {"title": "Cholera cases", "organization": "ORG1"},
+        )
+        assert dataset.is_allowed_for_datastore() is True
+        assert post_dataset_actions[-1] == (
+            "hdx_is_package_allowed_for_datastore",
+            {"package_id": "TEST1"},
+        )
+        assert dataset.push_to_datastore() is False
+        assert post_dataset_actions[-1] == (
+            "hdx_push_resource_to_datastore",
+            {"dataset_id": "TEST1"},
+        )
+        dataset = Dataset({"id": "NOTFOUND"})
+        assert dataset.get_shape_info() == []
+        assert dataset.is_allowed_for_datastore() is False
+
+    def test_qa(self, configuration, post_dataset_actions):
+        dataset = Dataset({"id": "TEST1"})
+        dataset.set_qa_completed(True)
+        assert post_dataset_actions[-1] == (
+            "hdx_mark_qa_completed",
+            {"id": "TEST1", "qa_completed": True},
+        )
+        assert dataset["qa_completed"] is True
+        assert dataset.get_resource()["id"] == "RES1"
+        dataset.qa_revise_resources("pii", "false")
+        assert post_dataset_actions[-1] == (
+            "hdx_qa_package_revise_resource",
+            {"id": "TEST1", "key": "pii", "value": "false"},
+        )
+        assert dataset.get_resource()["pii"] == "false"
+        dataset.reset_fs_check()
+        assert post_dataset_actions[-1] == (
+            "hdx_fs_check_package_reset",
+            {"package_id": "TEST1", "key": "fs_check_info"},
+        )
+        assert dataset.get_resource()["fs_check_info"] == ""
+        dataset = Dataset({"id": "NOTFOUND"})
+        with pytest.raises(HDXError):
+            dataset.set_qa_completed(True)
+
     def test_get_name_or_id(self, configuration, hdx_config_yaml, project_config_yaml):
         dataset = Dataset()
         assert dataset.get_name_or_id() is None

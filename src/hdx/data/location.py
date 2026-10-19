@@ -43,6 +43,8 @@ class Location(HDXObject):
             "delete": "group_delete",
             "list": "group_list",
             "autocomplete": "group_autocomplete",
+            "data_grid": "hdx_datagrid_show",
+            "invalidate_data_grid": "invalidate_data_completeness_for_location",
         }
 
     @classmethod
@@ -217,6 +219,47 @@ class Location(HDXObject):
             for group in groups
             if len(group["name"]) == 3 and group.get("data_completeness") == "active"
         )
+
+    @staticmethod
+    def get_data_grid(
+        iso3: str, configuration: Configuration | None = None
+    ) -> dict | None:
+        """Get the Data Grid of a country. The dictionary has keys including
+        title, date, stats and categories. Each category has subcategories,
+        each with a list of datasets. Complementary datasets have
+        is_complementary set to True. Requires sysadmin.
+
+        Args:
+            iso3: Country ISO 3-letter code
+            configuration: HDX configuration. Defaults to global configuration.
+
+        Returns:
+            Data Grid dictionary or None if not found
+        """
+        location = Location(configuration=configuration)
+        success, result = location._read_from_hdx(
+            "location", iso3.lower(), "id", location.actions()["data_grid"]
+        )
+        if success:
+            return result
+        logger.debug(result)
+        return None
+
+    @staticmethod
+    def invalidate_data_grid(
+        iso3: str, configuration: Configuration | None = None
+    ) -> None:
+        """Clear HDX's cached Data Grid of a country. Requires sysadmin.
+
+        Args:
+            iso3: Country ISO 3-letter code
+            configuration: HDX configuration. Defaults to global configuration.
+
+        Returns:
+            None
+        """
+        location = Location(configuration=configuration)
+        location._write_to_hdx("invalidate_data_grid", {"name": iso3.lower()}, "name")
 
     def get_activities(self, all_pages: bool = False, **kwargs: Any) -> list[Activity]:
         """Get the activity stream of this location. One page of results (whose size
