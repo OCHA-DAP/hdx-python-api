@@ -4,13 +4,15 @@ import json
 import logging
 from collections.abc import Iterator, Sequence
 from datetime import datetime
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from typing import Any, Optional
+from urllib.parse import urlsplit
 
 from hdx.utilities.dateparse import now_utc, now_utc_notz, parse_date
 from hdx.utilities.downloader import Download
 from hdx.utilities.file_hashing import get_size_and_hash
 from hdx.utilities.retriever import Retrieve
+from hdx.utilities.session import get_session
 from hdx.utilities.uuid import is_valid_uuid
 
 import hdx.api.utilities.url_utils
@@ -755,6 +757,22 @@ class Resource(HDXObject):
             logger.debug(result)
         return resources
 
+    @staticmethod
+    def _get_safe_filename(filename: str) -> str:
+        """Strip any directory components (/ or \\) from a filename built from
+        resource metadata so downloads cannot be written outside the folder
+
+        Args:
+            filename: Filename to make safe
+
+        Returns:
+            Filename without directory components
+        """
+        safe_filename = PureWindowsPath(filename).name
+        if safe_filename in ("", ".", ".."):
+            raise HDXError(f"Invalid filename {filename} for download!")
+        return safe_filename
+
     def _download_file(
         self,
         url: str,
@@ -773,7 +791,17 @@ class Resource(HDXObject):
         Returns:
             Path to downloaded file
         """
-        session = hdx.api.utilities.url_utils.get_ckan_ready_session(self.configuration)
+        # Only send the HDX API key to the HDX site, not to external resource URLs
+        hdx_site_url = self.configuration.get_hdx_site_url()
+        if urlsplit(url)[:2] == urlsplit(hdx_site_url)[:2]:
+            session = hdx.api.utilities.url_utils.get_ckan_ready_session(
+                self.configuration
+            )
+        else:
+            session = get_session(
+                full_agent=self.configuration.get_user_agent(), use_env=False
+            )
+        filename = self._get_safe_filename(filename)
         with Download(session=session) as downloader:
             if retriever:
                 downloader = retriever.clone(downloader)
