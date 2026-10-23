@@ -1225,6 +1225,44 @@ class TestResource:
         with pytest.raises(DownloadError):
             resource2.download()
 
+    def test_download_security(self, configuration, read, monkeypatch):
+        downloads = []
+
+        def download_file(self, url, folder=None, filename=None, path=None, **kwargs):
+            downloads.append((self.session.headers.get("Authorization"), filename))
+            return Path(folder or "tmp") / filename
+
+        monkeypatch.setattr(Download, "download_file", download_file)
+        Configuration.read().set_api_key("12345")
+        resource = Resource.read_from_hdx("74b74ae1-df0c-4716-829f-4f939a046811")
+        resource.download()
+        site_url = resource.configuration.get_hdx_site_url()
+        resource["url"] = f"{site_url}/dataset/x/resource/y/download/a.csv"
+        resource.download()
+        resource["url"] = site_url.replace("https://", "http://")
+        resource.download()
+        assert downloads == [
+            (None, "MyResource1.csv"),
+            ("12345", "MyResource1.csv"),
+            (None, "MyResource1.csv"),
+        ]
+
+        downloads.clear()
+        resource["name"] = "/home/user/.bashrc"
+        resource.download()
+        resource["name"] = "..\\..\\evil"
+        resource.download_datastore()
+        resource["name"] = "evil"
+        resource["format"] = "csv/../../x"
+        resource.download()
+        assert [filename for _, filename in downloads] == [
+            ".bashrc.csv",
+            "evil.csv",
+            "x",
+        ]
+        with pytest.raises(HDXError):
+            Resource._get_safe_filename("a/..")
+
     def test_download_datastore(self, configuration, read, monkeypatch):
         downloads = []
 
