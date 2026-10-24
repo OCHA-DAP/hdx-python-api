@@ -65,8 +65,8 @@ If the method **set_file_to_upload** is used to supply a file, the resource
 `last_modified` field is set to now automatically regardless of the value of
 `data_updated` or whether **mark_data_updated** has been called.
 
-The file structure check events of a resource (see Dataset Specific
-Operations) can be obtained from its `fs_check_info` field without a call to
+The file structure check events of a resource (see
+[Manage Dataset Resources](../operate-datasets/dataset-resources.md)) can be obtained from its `fs_check_info` field without a call to
 HDX:
 
     events = resource.get_fs_check_info()

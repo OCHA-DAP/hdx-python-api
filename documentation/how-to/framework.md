@@ -5,7 +5,7 @@ about a good structure. Below is framework for starting a project to interact
 with HDX that should work well.
 
 First, pip install the library or alternatively add it to a requirements.txt
-file if you are comfortable with doing so as described above.
+file if you are comfortable with doing so as described in [Install the Library](install.md).
 
 Next create a file called **run.py** and copy into it the code below.
 

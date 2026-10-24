@@ -68,5 +68,5 @@ From 3.7.3, the return type for add_tag, add_tags and clean_tags is now Tuple[Li
 List[str]] (Tuple containing list of added tags and list of deleted tags and tags not
 added).
 
-From 3.7.1, the list of tags must be from a set of approved tags (see under **Tags**
-below).
+From 3.7.1, the list of tags must be from a set of approved tags (see
+[Set Tags](../how-to/operate-datasets/tags.md)).

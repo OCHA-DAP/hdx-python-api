@@ -8,7 +8,7 @@ not modified.
 
 1. If you just want to read data from HDX, then an API key is not necessary. However,
 if you want to write data to HDX, then you need to register on the website to obtain an
-API key. Please see above about where to find it on the website. Once you have it, then
+API key. Please see [Obtain your API Key](../how-to/api-key.md) about where to find it on the website. Once you have it, then
 put it into a file in your home directory:
 
         cd ~
