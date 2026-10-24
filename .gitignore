@@ -66,6 +66,9 @@ instance/
 documentation/_*/
 documentation/source/
 
+# MkDocs documentation
+site/
+
 # PyBuilder
 target/
 
