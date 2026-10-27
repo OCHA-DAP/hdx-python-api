@@ -1,7 +1,7 @@
 """Helper to the Dataset and Resource classes for handling HDX dates."""
 
 from collections.abc import Iterable
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from hdx.utilities.dateparse import now_utc, parse_date
 
@@ -52,7 +52,7 @@ class DateHelper:
                     microsecond=0,
                 )
         else:
-            date = date.astimezone(timezone.utc)
+            date = date.astimezone(UTC)
         if include_microseconds:
             timespec = "microseconds"
         else:
@@ -92,7 +92,7 @@ class DateHelper:
                     hour=23,
                     minute=59,
                     second=59,
-                    tzinfo=timezone.utc,
+                    tzinfo=UTC,
                 )
                 ongoing = True
             else:
@@ -179,8 +179,8 @@ class DateHelper:
             retval = sorted(int(x) for x in list(startyear))
         startyear = retval[0]
         endyear = retval[-1]
-        startdate = datetime(startyear, 1, 1, tzinfo=timezone.utc)
-        enddate = datetime(endyear, 12, 31, 23, 59, 59, tzinfo=timezone.utc)
+        startdate = datetime(startyear, 1, 1, tzinfo=UTC)
+        enddate = datetime(endyear, 12, 31, 23, 59, 59, tzinfo=UTC)
         return (
             cls.get_hdx_time_period(startdate, enddate, ignore_timeinfo=False),
             retval,

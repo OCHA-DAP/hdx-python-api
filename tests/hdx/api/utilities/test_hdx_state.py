@@ -2,7 +2,7 @@
 
 import json
 from copy import deepcopy
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from os import makedirs
 from os.path import exists
 from pathlib import Path
@@ -37,11 +37,11 @@ class TestState:
 
     @pytest.fixture(scope="class")
     def date1(self):
-        return datetime(2020, 9, 23, 0, 0, tzinfo=timezone.utc)
+        return datetime(2020, 9, 23, 0, 0, tzinfo=UTC)
 
     @pytest.fixture(scope="class")
     def date2(self):
-        return datetime(2022, 5, 12, 10, 15, tzinfo=timezone.utc)
+        return datetime(2022, 5, 12, 10, 15, tzinfo=UTC)
 
     @pytest.fixture(scope="function")
     def do_state(self, tempfolder, statefile):
