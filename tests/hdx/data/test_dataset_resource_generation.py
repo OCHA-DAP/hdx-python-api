@@ -1,6 +1,6 @@
 """Dataset Tests (noncore methods)"""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 from hdx.utilities.compare import assert_files_same
@@ -73,8 +73,8 @@ class TestDatasetResourceGeneration:
                 ]
                 assert success is True
                 assert results == {
-                    "startdate": datetime(2001, 1, 1, 0, 0, tzinfo=timezone.utc),
-                    "enddate": datetime(2002, 12, 31, 23, 59, 59, tzinfo=timezone.utc),
+                    "startdate": datetime(2001, 1, 1, 0, 0, tzinfo=UTC),
+                    "enddate": datetime(2002, 12, 31, 23, 59, 59, tzinfo=UTC),
                     "resource": {
                         "description": "Conflict data",
                         "format": "csv",
@@ -289,8 +289,8 @@ class TestDatasetResourceGeneration:
                 )
                 assert success is True
                 assert results == {
-                    "startdate": datetime(2001, 1, 1, 0, 0, tzinfo=timezone.utc),
-                    "enddate": datetime(2002, 12, 31, 23, 59, 59, tzinfo=timezone.utc),
+                    "startdate": datetime(2001, 1, 1, 0, 0, tzinfo=UTC),
+                    "enddate": datetime(2002, 12, 31, 23, 59, 59, tzinfo=UTC),
                     "resource": {
                         "description": "Conflict data",
                         "format": "csv",
@@ -433,11 +433,9 @@ class TestDatasetResourceGeneration:
                     date_function=process_year,
                 )
                 assert success is True
-                assert results["startdate"] == datetime(
-                    2001, 1, 1, 0, 0, tzinfo=timezone.utc
-                )
+                assert results["startdate"] == datetime(2001, 1, 1, 0, 0, tzinfo=UTC)
                 assert results["enddate"] == datetime(
-                    2001, 12, 31, 23, 59, 59, tzinfo=timezone.utc
+                    2001, 12, 31, 23, 59, 59, tzinfo=UTC
                 )
                 assert (
                     dataset["dataset_date"]

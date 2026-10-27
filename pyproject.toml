@@ -18,7 +18,6 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -33,14 +32,14 @@ classifiers = [
 ]
 readme = "README.md"
 dynamic = ["version"]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 
 dependencies = [
     "ckanapi>=4.11",
     "defopt>=7.0.0",
     "email_validator",
-    "hdx-python-country>=4.2.5",
-    "hdx-python-utilities>=4.2.4",
+    "hdx-python-country>=4.2.6",
+    "hdx-python-utilities>=4.2.5",
     "makefun",
     "requests",
 ]
@@ -87,7 +86,7 @@ allow-direct-references = true
 # ----------------------------------------------------------------------------
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py311"
 src = ["src"]
 exclude = ["_version.py"]
 

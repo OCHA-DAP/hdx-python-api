@@ -4,7 +4,7 @@ import copy
 import json
 import logging
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from os import remove
 from os.path import basename
 from pathlib import Path
@@ -912,8 +912,8 @@ class TestResource:
         resource = Resource({"daterange_for_data": "[2020-01-07T00:00:00 TO *]"})
         result = resource.get_date_of_resource(today=datetime(2020, 11, 17))
         assert result == {
-            "startdate": datetime(2020, 1, 7, 0, 0, tzinfo=timezone.utc),
-            "enddate": datetime(2020, 11, 17, 23, 59, 59, tzinfo=timezone.utc),
+            "startdate": datetime(2020, 1, 7, 0, 0, tzinfo=UTC),
+            "enddate": datetime(2020, 11, 17, 23, 59, 59, tzinfo=UTC),
             "startdate_str": "2020-01-07T00:00:00+00:00",
             "enddate_str": "2020-11-17T23:59:59+00:00",
             "ongoing": True,
@@ -921,8 +921,8 @@ class TestResource:
         resource.set_date_of_resource("2020-02-09", "2020-10-20")
         result = resource.get_date_of_resource("%d/%m/%Y")
         assert result == {
-            "startdate": datetime(2020, 2, 9, 0, 0, tzinfo=timezone.utc),
-            "enddate": datetime(2020, 10, 20, 23, 59, 59, tzinfo=timezone.utc),
+            "startdate": datetime(2020, 2, 9, 0, 0, tzinfo=UTC),
+            "enddate": datetime(2020, 10, 20, 23, 59, 59, tzinfo=UTC),
             "startdate_str": "09/02/2020",
             "enddate_str": "20/10/2020",
             "ongoing": False,

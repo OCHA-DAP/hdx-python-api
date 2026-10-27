@@ -2,7 +2,7 @@
 
 import copy
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 from hdx.location.country import Country
@@ -348,8 +348,8 @@ class TestDatasetNoncore:
         dataset = Dataset({"dataset_date": "[2020-01-07T00:00:00 TO *]"})
         result = dataset.get_time_period(today=datetime(2020, 11, 17))
         assert result == {
-            "startdate": datetime(2020, 1, 7, 0, 0, tzinfo=timezone.utc),
-            "enddate": datetime(2020, 11, 17, 23, 59, 59, tzinfo=timezone.utc),
+            "startdate": datetime(2020, 1, 7, 0, 0, tzinfo=UTC),
+            "enddate": datetime(2020, 11, 17, 23, 59, 59, tzinfo=UTC),
             "startdate_str": "2020-01-07T00:00:00+00:00",
             "enddate_str": "2020-11-17T23:59:59+00:00",
             "ongoing": True,
@@ -357,8 +357,8 @@ class TestDatasetNoncore:
         dataset.set_time_period("2020-02-09")
         result = dataset.get_time_period("%d/%m/%Y")
         assert result == {
-            "startdate": datetime(2020, 2, 9, 0, 0, tzinfo=timezone.utc),
-            "enddate": datetime(2020, 2, 9, 23, 59, 59, tzinfo=timezone.utc),
+            "startdate": datetime(2020, 2, 9, 0, 0, tzinfo=UTC),
+            "enddate": datetime(2020, 2, 9, 23, 59, 59, tzinfo=UTC),
             "startdate_str": "09/02/2020",
             "enddate_str": "09/02/2020",
             "ongoing": False,
@@ -366,8 +366,8 @@ class TestDatasetNoncore:
         dataset.set_time_period("2020-02-09", "2020-10-20")
         result = dataset.get_time_period("%d/%m/%Y")
         assert result == {
-            "startdate": datetime(2020, 2, 9, 0, 0, tzinfo=timezone.utc),
-            "enddate": datetime(2020, 10, 20, 23, 59, 59, tzinfo=timezone.utc),
+            "startdate": datetime(2020, 2, 9, 0, 0, tzinfo=UTC),
+            "enddate": datetime(2020, 10, 20, 23, 59, 59, tzinfo=UTC),
             "startdate_str": "09/02/2020",
             "enddate_str": "20/10/2020",
             "ongoing": False,
@@ -375,8 +375,8 @@ class TestDatasetNoncore:
         dataset.set_time_period("2020-02-09", ongoing=True)
         result = dataset.get_time_period("%d/%m/%Y", today=datetime(2020, 3, 9, 0, 0))
         assert result == {
-            "startdate": datetime(2020, 2, 9, 0, 0, tzinfo=timezone.utc),
-            "enddate": datetime(2020, 3, 9, 23, 59, 59, tzinfo=timezone.utc),
+            "startdate": datetime(2020, 2, 9, 0, 0, tzinfo=UTC),
+            "enddate": datetime(2020, 3, 9, 23, 59, 59, tzinfo=UTC),
             "startdate_str": "09/02/2020",
             "enddate_str": "09/03/2020",
             "ongoing": True,

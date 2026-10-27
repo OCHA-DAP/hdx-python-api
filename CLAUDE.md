@@ -33,7 +33,7 @@ Formatted and linted with `ruff` (rules: E, F, I, UP; line-length not enforced).
 pre-commit run --all-files
 ```
 
-- Python ≥ 3.10
+- Python ≥ 3.11
 - Type hints throughout; use `X | Y` union syntax (PEP 604), not `Optional`/`Union`
 - Google-style docstrings with `Args:` and `Returns:` sections
 - No inline comments unless the *why* is non-obvious

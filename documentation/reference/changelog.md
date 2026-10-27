@@ -1,4 +1,5 @@
 # Breaking Changes
+From 6.7.7, Python 3.11 or later is required
 
 From 6.6.5, removed DatasetTitleHelper class and Dataset method remove_dates_from_title
 
