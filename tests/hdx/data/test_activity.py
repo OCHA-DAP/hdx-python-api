@@ -1,6 +1,7 @@
 """Activity Tests"""
 
 import json
+from typing import ClassVar
 
 import pytest
 
@@ -47,7 +48,7 @@ def mocknotfound(action):
 
 
 class TestActivity:
-    calls = []
+    calls: ClassVar[list] = []
 
     @pytest.fixture(scope="function")
     def post_activity(self):

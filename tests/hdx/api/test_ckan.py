@@ -154,7 +154,7 @@ class TestCKAN:
                 resource.set_format("csv")
                 resource.set_file_to_upload(test_data)
             else:
-                wks, url = create_gsheet(
+                _wks, url = create_gsheet(
                     "resource1",
                     [[random.random() for i in range(10)] for j in range(10)],
                 )

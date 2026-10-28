@@ -2,6 +2,7 @@
 
 import logging
 from collections.abc import Sequence
+from contextlib import suppress
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional, Union
 
@@ -303,12 +304,10 @@ class Organization(HDXObject):
             if name in compiled_orgs:
                 final_orgs.append(compiled_orgs[name])
             else:
-                try:
+                with suppress(HDXError):
                     missing_org = organization._write_to_hdx("show", {"id": name})
                     if missing_org:
                         final_orgs.append(missing_org)
-                except Exception:
-                    pass
 
         return final_orgs
 

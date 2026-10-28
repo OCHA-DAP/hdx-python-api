@@ -263,7 +263,7 @@ class User(HDXObject):
             **kwargs,
         )
 
-    def get_organization_dicts(self, permission: str = "read") -> list[dict]:  # noqa: F821
+    def get_organization_dicts(self, permission: str = "read") -> list[dict]:
         """Get organization dictionaries (not organization objects)  in HDX that this user is a member of.
 
         Args:
@@ -340,7 +340,7 @@ class User(HDXObject):
             return user.configuration.call_remoteckan(
                 cls.actions()["listorgs"], {"permission": permission}
             )
-        except Exception:
+        except Exception:  # noqa: BLE001
             return []
 
     @classmethod

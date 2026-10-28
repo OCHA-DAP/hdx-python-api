@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Any,
+    ClassVar,
     Optional,
     Union,
 )
@@ -19,7 +20,6 @@ from hdx.utilities.base_downloader import BaseDownload
 from hdx.utilities.dateparse import (
     default_date,
     default_enddate,
-    now_utc,
     now_utc_notz,
     parse_date,
     parse_date_range,
@@ -34,12 +34,11 @@ import hdx.api.utilities.url_utils
 import hdx.data.organization as org_module
 import hdx.data.resource as res_module
 import hdx.data.showcase as sc_module
-import hdx.data.user as user
-import hdx.data.vocabulary as vocabulary
 from hdx.api.configuration import Configuration
 from hdx.api.locations import Locations
 from hdx.api.utilities.date_helper import DateHelper
 from hdx.api.utilities.filestore_helper import FilestoreHelper
+from hdx.data import user, vocabulary
 from hdx.data.activity import Activity
 from hdx.data.hdxobject import HDXError, HDXObject
 from hdx.data.resource_matcher import ResourceMatcher
@@ -67,7 +66,7 @@ class Dataset(HDXObject):
 
     max_attempts = 5
     max_int = sys.maxsize
-    update_frequencies = {
+    update_frequencies: ClassVar[dict[str, str]] = {
         "-2": "As needed",
         "-1": "Never",
         "0": "Live",
@@ -224,7 +223,7 @@ class Dataset(HDXObject):
             session = hdx.api.utilities.url_utils.get_ckan_ready_session(
                 self.configuration
             )
-            for resource in dataset_dict.get("resources", tuple()):
+            for resource in dataset_dict.get("resources", ()):
                 resource["url"] = hdx.api.utilities.url_utils.follow_url(
                     resource["url"], session=session
                 )
@@ -295,11 +294,10 @@ class Dataset(HDXObject):
             The resource that was added after matching with any existing resource
         """
         resource = self._get_resource_from_obj(resource)
-        if "package_id" in resource:
-            if not ignore_datasetid:
-                raise HDXError(
-                    f"Resource {resource['name']} being added already has a dataset id!"
-                )
+        if "package_id" in resource and not ignore_datasetid:
+            raise HDXError(
+                f"Resource {resource['name']} being added already has a dataset id!"
+            )
         resource.check_both_url_filetoupload()
         resource_index = ResourceMatcher.match_resource_list(self._resources, resource)
         if resource_index is None:
@@ -331,11 +329,10 @@ class Dataset(HDXObject):
         resource_objects = []
         for resource in resources:
             resource = self._get_resource_from_obj(resource)
-            if "package_id" in resource:
-                if not ignore_datasetid:
-                    raise HDXError(
-                        f"Resource {resource['name']} being added already has a dataset id!"
-                    )
+            if "package_id" in resource and not ignore_datasetid:
+                raise HDXError(
+                    f"Resource {resource['name']} being added already has a dataset id!"
+                )
             resource.check_both_url_filetoupload()
             resource_objects.append(resource)
         (
@@ -371,9 +368,8 @@ class Dataset(HDXObject):
         Returns:
             True if resource removed or False if not
         """
-        if isinstance(resource, str):
-            if is_valid_uuid(resource) is False:
-                raise HDXError(f"{resource} is not a valid resource id!")
+        if isinstance(resource, str) and is_valid_uuid(resource) is False:
+            raise HDXError(f"{resource} is not a valid resource id!")
         return self._remove_hdxobject(self._resources, resource, delete=delete)
 
     def get_resources(self) -> list["Resource"]:
@@ -593,8 +589,8 @@ class Dataset(HDXObject):
     def revise(
         match: dict[str, Any],
         filter: Sequence[str] = (),
-        update: dict[str, Any] = {},
-        files_to_upload: dict[str, str] = {},
+        update: dict[str, Any] | None = None,
+        files_to_upload: dict[str, str] | None = None,
         configuration: Configuration | None = None,
         **kwargs: Any,
     ) -> "Dataset":
@@ -611,6 +607,10 @@ class Dataset(HDXObject):
         Returns:
             Dataset object
         """
+        if files_to_upload is None:
+            files_to_upload = {}
+        if update is None:
+            update = {}
         separators = (",", ":")
         data = {"match": json.dumps(match, separators=separators)}
         if filter:
@@ -750,11 +750,11 @@ class Dataset(HDXObject):
             for resource_index in resources_to_delete:
                 del resources_to_update[resource_index]
                 new_fsresources = {}
-                for index in filestore_resources:
+                for index, fsresource in filestore_resources.items():
                     if index > resource_index:
-                        new_fsresources[index - 1] = filestore_resources[index]
+                        new_fsresources[index - 1] = fsresource
                     else:
-                        new_fsresources[index] = filestore_resources[index]
+                        new_fsresources[index] = fsresource
                 filestore_resources = new_fsresources
             for (
                 resource_index,
@@ -1182,15 +1182,13 @@ class Dataset(HDXObject):
         """
         self.check_resources_url_filetoupload()
         loadedid = self.data.get("id")
-        if loadedid is not None:
-            if not self._dataset_load_from_hdx(loadedid):
-                logger.warning(f"Failed to load dataset with id {loadedid}")
-                loadedid = None
+        if loadedid is not None and not self._dataset_load_from_hdx(loadedid):
+            logger.warning(f"Failed to load dataset with id {loadedid}")
+            loadedid = None
         if not loadedid:
             loadedid = self.data.get("name")
-            if loadedid is not None:
-                if not self._dataset_load_from_hdx(loadedid):
-                    loadedid = None
+            if loadedid is not None and not self._dataset_load_from_hdx(loadedid):
+                loadedid = None
         if loadedid:
             statuses, _ = self._dataset_hdx_update(
                 allow_no_resources=allow_no_resources,
@@ -1433,8 +1431,7 @@ class Dataset(HDXObject):
         """
         resources = []
         for dataset in datasets:
-            for resource in dataset.get_resources():
-                resources.append(resource)
+            resources.extend(dataset.get_resources())
         return resources
 
     def get_activities(self, all_pages: bool = False, **kwargs: Any) -> list[Activity]:
@@ -1479,7 +1476,7 @@ class Dataset(HDXObject):
     def get_time_period(
         self,
         date_format: str | None = None,
-        today: datetime = now_utc(),
+        today: datetime | None = None,
     ) -> dict:
         """Get dataset date as datetimes and strings in specified format. If no format is supplied, the ISO 8601
         format is used. Returns a dictionary containing keys startdate (start date as datetime), enddate (end
@@ -1595,7 +1592,7 @@ class Dataset(HDXObject):
             int(update_frequency)
         except ValueError:
             update_frequency = Dataset.transform_update_frequency(update_frequency)
-        if update_frequency not in Dataset.update_frequencies.keys():
+        if update_frequency not in Dataset.update_frequencies:
             raise HDXError("Invalid update frequency supplied!")
         self.data["data_update_frequency"] = update_frequency
 
@@ -1748,7 +1745,7 @@ class Dataset(HDXObject):
         Returns:
             True if country added or False if country already present
         """
-        iso3, match = Country.get_iso3_country_code_fuzzy(country, use_live=use_live)
+        iso3, _match = Country.get_iso3_country_code_fuzzy(country, use_live=use_live)
         if iso3 is None:
             raise HDXError(f"Country: {country} - cannot find iso3 code!")
         return self.add_other_location(
@@ -1883,7 +1880,7 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        if isinstance(maintainer, user.User) or isinstance(maintainer, dict):
+        if isinstance(maintainer, (user.User, dict)):
             if "id" not in maintainer:
                 maintainer = user.User.read_from_hdx(
                     maintainer["name"], configuration=self.configuration
@@ -1918,9 +1915,7 @@ class Dataset(HDXObject):
         Returns:
             None
         """
-        if isinstance(organization, org_module.Organization) or isinstance(
-            organization, dict
-        ):
+        if isinstance(organization, (org_module.Organization, dict)):
             if "id" not in organization:
                 organization = org_module.Organization.read_from_hdx(
                     organization["name"], configuration=self.configuration
@@ -1966,7 +1961,7 @@ class Dataset(HDXObject):
         Returns:
             Dataset showcase dict
         """
-        if isinstance(showcase, sc_module.Showcase) or isinstance(showcase, dict):
+        if isinstance(showcase, (sc_module.Showcase, dict)):
             if "id" not in showcase:
                 showcase = sc_module.Showcase.read_from_hdx(showcase["name"])
             showcase = showcase["id"]
@@ -1981,7 +1976,7 @@ class Dataset(HDXObject):
     def add_showcase(
         self,
         showcase: Union["Showcase", dict, str],
-        showcases_to_check: Sequence["Showcase"] = None,
+        showcases_to_check: Sequence["Showcase"] | None = None,
     ) -> bool:
         """Add dataset to showcase
 
@@ -1995,8 +1990,8 @@ class Dataset(HDXObject):
         dataset_showcase = self._get_dataset_showcase_dict(showcase)
         if showcases_to_check is None:
             showcases_to_check = self.get_showcases()
-        for showcase in showcases_to_check:
-            if dataset_showcase["showcase_id"] == showcase["id"]:
+        for showcase_to_check in showcases_to_check:
+            if dataset_showcase["showcase_id"] == showcase_to_check["id"]:
                 return False
         showcase = sc_module.Showcase(
             {"id": dataset_showcase["showcase_id"]},
@@ -2008,7 +2003,7 @@ class Dataset(HDXObject):
     def add_showcases(
         self,
         showcases: Sequence[Union["Showcase", dict, str]],
-        showcases_to_check: Sequence["Showcase"] = None,
+        showcases_to_check: Sequence["Showcase"] | None = None,
     ) -> bool:
         """Add dataset to multiple showcases
 
@@ -2229,7 +2224,7 @@ class Dataset(HDXObject):
         """
         if isinstance(resource, int) and not isinstance(resource, bool):
             resource = self._resources[resource]
-        if isinstance(resource, res_module.Resource) or isinstance(resource, dict):
+        if isinstance(resource, (res_module.Resource, dict)):
             res = resource.get("id")
             if res is None:
                 resource = resource["name"]
@@ -2576,12 +2571,10 @@ class Dataset(HDXObject):
                 return None
             startdate = result.get("startdate")
             if startdate is not None:
-                if startdate < dates[0]:
-                    dates[0] = startdate
+                dates[0] = min(dates[0], startdate)
             enddate = result.get("enddate")
             if enddate is not None:
-                if enddate > dates[1]:
-                    dates[1] = enddate
+                dates[1] = max(dates[1], enddate)
             return row
 
         filepath = Path(folder) / filename

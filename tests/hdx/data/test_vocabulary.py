@@ -2,6 +2,7 @@
 
 import copy
 import json
+from typing import Any, ClassVar
 
 import pytest
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -1120,7 +1121,7 @@ def vocabulary_mocklist(url, datadict):
 
 
 class TestVocabulary:
-    vocabulary_data = {
+    vocabulary_data: ClassVar[dict[str, Any]] = {
         "tags": [{"name": "economy"}, {"name": "health"}],
         "name": "Things",
     }

@@ -34,7 +34,7 @@ class Vocabulary(HDXObject):
     def __init__(
         self,
         initial_data: dict | None = None,
-        name: str = None,
+        name: str | None = None,
         tags: list | None = None,
         configuration: Configuration | None = None,
     ) -> None:
@@ -361,9 +361,7 @@ class Vocabulary(HDXObject):
         Returns:
             True if tag is approved, False if not
         """
-        if tag.lower() in cls.approved_tags(configuration):
-            return True
-        return False
+        return tag.lower() in cls.approved_tags(configuration)
 
     @classmethod
     def read_tags_mappings(

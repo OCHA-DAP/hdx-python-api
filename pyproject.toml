@@ -39,7 +39,7 @@ dependencies = [
     "defopt>=7.0.0",
     "email_validator",
     "hdx-python-country>=4.2.6",
-    "hdx-python-utilities>=4.2.5",
+    "hdx-python-utilities>=4.2.6",
     "makefun",
     "requests",
 ]
@@ -55,7 +55,7 @@ dev = [
     "pytest-cov",
     "pytest-mock",
     "pre-commit",
-    "ruff==0.14.14",
+    "ruff==0.17.3",
 ]
 
 [project.urls]

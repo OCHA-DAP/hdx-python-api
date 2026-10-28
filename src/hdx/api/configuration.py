@@ -200,7 +200,7 @@ class Configuration(UserDict):
             if hdx_read_only is None:
                 hdx_read_only = False
         self.hdx_read_only = hdx_read_only
-        logger.info(f"Read only access to HDX: {str(self.hdx_read_only)}")
+        logger.info(f"Read only access to HDX: {self.hdx_read_only!s}")
 
         if self.hdx_site == "hdx_custom_site":
             hdx_key = None

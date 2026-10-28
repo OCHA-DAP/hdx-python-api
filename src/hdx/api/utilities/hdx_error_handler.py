@@ -1,6 +1,7 @@
 import logging
 from collections.abc import Sequence
 from os import getenv
+from types import TracebackType
 from typing import Any
 
 from hdx.utilities.dictandlist import dict_of_sets_add
@@ -32,7 +33,7 @@ class HDXErrorHandler(ErrorHandler):
     ):
         super().__init__(should_exit_on_error)
         if write_to_hdx is None:
-            write_to_hdx = getenv("ERR_TO_HDX", True)
+            write_to_hdx = getenv("ERR_TO_HDX", "True")
         if write_to_hdx in (False, 0, "false", "False", "FALSE", "N", "n", ""):
             self._write_to_hdx = False
             logger.info("Errors won't be written to HDX")
@@ -210,7 +211,12 @@ class HDXErrorHandler(ErrorHandler):
         if self._write_to_hdx:
             self.write_errors_to_hdx()
 
-    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None:
         if self._write_to_hdx:
             self.write_errors_to_hdx()
         super().__exit__(exc_type, exc_value, traceback)
