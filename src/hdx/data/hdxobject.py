@@ -425,7 +425,7 @@ class HDXObject(UserDict, ABC):
         try:
             if files_to_upload:
                 for key, value in files_to_upload.items():
-                    open_files_to_upload[key] = open(value, "rb")
+                    open_files_to_upload[key] = open(value, "rb")  # noqa: SIM115
             return self.configuration.call_remoteckan(
                 self.actions()[action], data, files=open_files_to_upload
             )
@@ -603,7 +603,7 @@ class HDXObject(UserDict, ABC):
             return False
         if isinstance(obj, str):
             obj_id = obj
-        elif isinstance(obj, dict) or isinstance(obj, HDXObject):
+        elif isinstance(obj, (dict, HDXObject)):
             obj_id = obj.get(matchon)
         else:
             raise HDXError("Type of object not a string, dict or T<=HDXObject")
@@ -613,7 +613,7 @@ class HDXObject(UserDict, ABC):
             objid = objdata.get(matchon)
             if objid and objid == obj_id:
                 if delete:
-                    objlist[i].delete_from_hdx()
+                    objdata.delete_from_hdx()
                 del objlist[i]
                 return True
         return False

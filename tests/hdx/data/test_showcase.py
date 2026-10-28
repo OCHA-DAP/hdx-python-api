@@ -3,6 +3,7 @@
 import copy
 import json
 from pathlib import Path
+from typing import Any, ClassVar
 
 import pytest
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -161,7 +162,7 @@ def mockallsearch(url, datadict):
 
 
 class TestShowcase:
-    showcase_data = {
+    showcase_data: ClassVar[dict[str, Any]] = {
         "title": "MyShowcase1",
         "notes": "My Showcase",
         "package_id": "6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d",

@@ -2,6 +2,7 @@
 
 import copy
 import json
+from typing import Any, ClassVar
 
 import pytest
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -118,7 +119,7 @@ def resource_view_mockcreate(url, datadict):
 
 
 class TestResourceView:
-    resource_view_data = {
+    resource_view_data: ClassVar[dict[str, Any]] = {
         "resource_id": "25982d1c-f45a-45e1-b14e-87d367413045",
         "title": "Data Explorer",
         "view_type": "recline_view",

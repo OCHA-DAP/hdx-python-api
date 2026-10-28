@@ -8,7 +8,7 @@ from pathlib import Path, PureWindowsPath
 from typing import Any, Optional
 from urllib.parse import urlsplit
 
-from hdx.utilities.dateparse import now_utc, now_utc_notz, parse_date
+from hdx.utilities.dateparse import now_utc_notz, parse_date
 from hdx.utilities.downloader import Download
 from hdx.utilities.file_hashing import get_size_and_hash
 from hdx.utilities.retriever import Retrieve
@@ -132,7 +132,7 @@ class Resource(HDXObject):
     def get_date_of_resource(
         self,
         date_format: str | None = None,
-        today: datetime = now_utc(),
+        today: datetime | None = None,
     ) -> dict:
         """Get resource date as datetimes and strings in specified format. If no format
         is supplied, the ISO 8601 format is used. Returns a dictionary containing keys
@@ -446,7 +446,7 @@ class Resource(HDXObject):
         if self._file_to_upload is None and "url" not in self.data:
             raise HDXError("Either a url or a file to upload must be supplied!")
 
-    def correct_format(self, data: dict = None) -> None:
+    def correct_format(self, data: dict | None = None) -> None:
         """Correct the format of the file
 
         Args:
@@ -744,7 +744,7 @@ class Resource(HDXObject):
 
         resources = []
         resource = Resource(configuration=configuration)
-        success, result = resource._read_from_hdx(
+        _success, result = resource._read_from_hdx(
             "resource", query, "query", Resource.actions()["search"]
         )
         if result:
@@ -1257,7 +1257,7 @@ class Resource(HDXObject):
             if is_valid_uuid(resource_view_id) is False:
                 raise HDXError(f"{resource_view} is not a valid resource view id!")
             ids.append(resource_view_id)
-        _, result = self._read_from_hdx(
+        self._read_from_hdx(
             "resource view",
             self.data["id"],
             "id",

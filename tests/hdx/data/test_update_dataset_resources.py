@@ -1,5 +1,6 @@
 from os.path import join
 from pathlib import Path
+from typing import ClassVar
 
 import pytest
 from hdx.location.country import Country
@@ -13,7 +14,7 @@ from hdx.data.vocabulary import Vocabulary
 
 
 class TestUpdateDatasetResourcesLogic:
-    file_mapping = {
+    file_mapping: ClassVar[dict[str, str]] = {
         "SDG 4 Global and Thematic data": "sdg_data_zwe.csv",
         "SDG 4 Global and Thematic indicator list": "sdg_indicatorlist_zwe.csv",
         "SDG 4 Global and Thematic metadata": "sdg_metadata_zwe.csv",
@@ -143,7 +144,7 @@ class TestUpdateDatasetResourcesLogic:
         )
         results = dataset._revise_dataset(
             False,
-            tuple(),
+            (),
             resources_to_update,
             resources_to_delete,
             filestore_resources,

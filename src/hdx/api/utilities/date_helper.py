@@ -63,7 +63,7 @@ class DateHelper:
     def get_time_period_info(
         hdx_time_period: str,
         date_format: str | None = None,
-        today: datetime = now_utc(),
+        today: datetime | None = None,
     ) -> dict:
         """Get time period as datetimes and strings in specified format.
         If no format is supplied, the ISO 8601 format is used. Returns a
@@ -80,6 +80,8 @@ class DateHelper:
         Returns:
             Dictionary of date information
         """
+        if today is None:
+            today = now_utc()
         result = {}
         if hdx_time_period:
             if hdx_time_period[0] == "[" and hdx_time_period[-1] == "]":

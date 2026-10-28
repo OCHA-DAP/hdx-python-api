@@ -383,15 +383,15 @@ class TestResource:
                     datadict = json.loads(data.decode("utf-8"))
                 if "show" in url:
                     return mockshow(url, datadict)
-                if "resource_id" in datadict:
-                    if (
-                        datadict["resource_id"]
-                        == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
-                    ):
-                        return MockResponse(
-                            200,
-                            '{"success": true, "result": {"fields": [{"type": "text", "id": "code"}, {"type": "text", "id": "title"}, {"type": "float", "id": "value"}, {"type": "timestamp", "id": "latest_date"}, {"type": "text", "id": "source"}, {"type": "text", "id": "source_link"}, {"type": "text", "id": "notes"}, {"type": "text", "id": "explore"}, {"type": "text", "id": "units"}], "method": "insert", "primary_key": "code", "resource_id": "bfa6b55f-10b6-4ba2-8470-33bb9a5194a5"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}',
-                        )
+                if (
+                    "resource_id" in datadict
+                    and datadict["resource_id"]
+                    == "de6549d8-268b-4dfe-adaf-a4ae5c8510d5"
+                ):
+                    return MockResponse(
+                        200,
+                        '{"success": true, "result": {"fields": [{"type": "text", "id": "code"}, {"type": "text", "id": "title"}, {"type": "float", "id": "value"}, {"type": "timestamp", "id": "latest_date"}, {"type": "text", "id": "source"}, {"type": "text", "id": "source_link"}, {"type": "text", "id": "notes"}, {"type": "text", "id": "explore"}, {"type": "text", "id": "units"}], "method": "insert", "primary_key": "code", "resource_id": "bfa6b55f-10b6-4ba2-8470-33bb9a5194a5"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}',
+                    )
                 if "create" not in url:
                     return MockResponse(
                         404,
@@ -446,15 +446,15 @@ class TestResource:
                     datadict = json.loads(data.decode("utf-8"))
                 if "show" in url:
                     return mockshow(url, datadict)
-                if "resource_id" in datadict:
-                    if (
-                        datadict["resource_id"]
-                        == "74b74ae1-df0c-4716-829f-4f939a046811"
-                    ):
-                        return MockResponse(
-                            200,
-                            '{"success": true, "result": {"fields": [{"type": "text", "id": "code"}, {"type": "text", "id": "title"}, {"type": "float", "id": "value"}, {"type": "timestamp", "id": "latest_date"}, {"type": "text", "id": "source"}, {"type": "text", "id": "source_link"}, {"type": "text", "id": "notes"}, {"type": "text", "id": "explore"}, {"type": "text", "id": "units"}], "method": "insert", "primary_key": "code", "resource_id": "bfa6b55f-10b6-4ba2-8470-33bb9a5194a5"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}',
-                        )
+                if (
+                    "resource_id" in datadict
+                    and datadict["resource_id"]
+                    == "74b74ae1-df0c-4716-829f-4f939a046811"
+                ):
+                    return MockResponse(
+                        200,
+                        '{"success": true, "result": {"fields": [{"type": "text", "id": "code"}, {"type": "text", "id": "title"}, {"type": "float", "id": "value"}, {"type": "timestamp", "id": "latest_date"}, {"type": "text", "id": "source"}, {"type": "text", "id": "source_link"}, {"type": "text", "id": "notes"}, {"type": "text", "id": "explore"}, {"type": "text", "id": "units"}], "method": "insert", "primary_key": "code", "resource_id": "bfa6b55f-10b6-4ba2-8470-33bb9a5194a5"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=datastore_create"}',
+                    )
                 if "update" not in url:
                     return MockResponse(
                         404,

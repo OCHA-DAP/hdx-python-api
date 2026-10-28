@@ -304,9 +304,8 @@ class TestDatasetCore:
                         return resource_view_mockshow(url, datadict)
                     if "list" in url:
                         return resource_view_mocklist(url, datadict)
-                    if "create" in url:
-                        if datadict["title"] == "Preview":
-                            return resource_view_mockcreate(url, datadict)
+                    if "create" in url and datadict["title"] == "Preview":
+                        return resource_view_mockcreate(url, datadict)
                     return MockResponse(
                         404,
                         '{"success": false, "error": {"message": "TEST ERROR: Not create", "__type": "TEST ERROR: Not Create Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=resource_view_create"}',
@@ -591,7 +590,7 @@ class TestDatasetCore:
         dataset = Dataset(datasetdata)
         resource = Resource(resourcesdata[0])
         try:
-            file = tempfile.NamedTemporaryFile(delete=False)
+            file = tempfile.NamedTemporaryFile(delete=False)  # noqa: SIM115
             resource.set_file_to_upload(file.name)
             dataset.add_update_resource(resource)
             statuses = dataset.create_in_hdx()

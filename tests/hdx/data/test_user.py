@@ -3,6 +3,7 @@
 import copy
 import json
 from pathlib import Path
+from typing import Any, ClassVar
 
 import pytest
 from hdx.utilities.dictandlist import merge_two_dictionaries
@@ -106,7 +107,7 @@ def mocklist(url):
 
 class TestUser:
     token_valid = True
-    smtp_initargs = {
+    smtp_initargs: ClassVar[dict[str, Any]] = {
         "host": "localhost",
         "port": 123,
         "local_hostname": "mycomputer.fqdn.com",
@@ -115,7 +116,7 @@ class TestUser:
     }
     username = "user@user.com"
     password = "pass"
-    email_config_dict = {
+    email_config_dict: ClassVar[dict[str, Any]] = {
         "connection_type": "ssl",
         "username": username,
         "password": password,
@@ -132,8 +133,8 @@ class TestUser:
 </html>
 """
     sender = "me@gmail.com"
-    mail_options = ["a", "b"]
-    rcpt_options = [1, 2]
+    mail_options: ClassVar[list[str]] = ["a", "b"]
+    rcpt_options: ClassVar[list[int]] = [1, 2]
     email_config_dict.update(smtp_initargs)
 
     @pytest.fixture(scope="class")
@@ -304,17 +305,16 @@ class TestUser:
                             200,
                             f'{{"success": true, "result": {json.dumps(orglist)}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_list"}}',
                         )
-                elif "organization" in url:
-                    if "show" in url:
-                        result = json.dumps(orgdict)
-                        if (
-                            datadict["id"] == "b67e6c74-c185-4f43-b561-0e114a736f19"
-                            or datadict["id"] == "TEST1"
-                        ):
-                            return MockResponse(
-                                200,
-                                f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}}',
-                            )
+                elif "organization" in url and "show" in url:
+                    result = json.dumps(orgdict)
+                    if (
+                        datadict["id"] == "b67e6c74-c185-4f43-b561-0e114a736f19"
+                        or datadict["id"] == "TEST1"
+                    ):
+                        return MockResponse(
+                            200,
+                            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}}',
+                        )
 
         Configuration.read().remoteckan().session = MockSession()
 
@@ -344,17 +344,16 @@ class TestUser:
                             200,
                             f'{{"success": true, "result": {json.dumps(orglist)}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=organization_list"}}',
                         )
-                elif "organization" in url:
-                    if "show" in url:
-                        result = json.dumps(orgdict)
-                        if (
-                            datadict["id"] == "b67e6c74-c185-4f43-b561-0e114a736f19"
-                            or datadict["id"] == "TEST1"
-                        ):
-                            return MockResponse(
-                                200,
-                                f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}}',
-                            )
+                elif "organization" in url and "show" in url:
+                    result = json.dumps(orgdict)
+                    if (
+                        datadict["id"] == "b67e6c74-c185-4f43-b561-0e114a736f19"
+                        or datadict["id"] == "TEST1"
+                    ):
+                        return MockResponse(
+                            200,
+                            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_show"}}',
+                        )
 
         Configuration.read().remoteckan().session = MockSession()
 
@@ -385,13 +384,12 @@ class TestUser:
                 datadict = json.loads(decodedata)
                 if "user" in url:
                     return user_mockshow(url, datadict)
-                elif "token" in url:
-                    if datadict["user_id"] == "MyUser1":
-                        result = json.dumps(user_tokenlist)
-                        return MockResponse(
-                            200,
-                            f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_tokenlist"}}',
-                        )
+                elif "token" in url and datadict["user_id"] == "MyUser1":
+                    result = json.dumps(user_tokenlist)
+                    return MockResponse(
+                        200,
+                        f'{{"success": true, "result": {result}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_tokenlist"}}',
+                    )
                 return MockResponse(
                     404,
                     '{"success": false, "error": {"message": "Not found", "__type": "Not Found Error"}, "help": "http://test-data.humdata.org/api/3/action/help_show?name=user_tokenlist"}',

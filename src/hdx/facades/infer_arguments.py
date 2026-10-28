@@ -85,11 +85,10 @@ def facade(projectmainfn: Callable[[Any], None], **kwargs: Any):
     main_sig = f"{projectmainname}({','.join(param_names)})"
 
     argv = sys.argv[1:]
-    for key in kwargs:
+    for key, value in kwargs.items():
         name = f"--{key.replace('_', '-')}"
         if name not in argv:
             argv.append(name)
-            value = kwargs[key]
             if isinstance(value, Path):
                 value = str(value)
             argv.append(value)

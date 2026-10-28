@@ -2,11 +2,12 @@
 
 import logging
 from collections.abc import Sequence
+from contextlib import suppress
 from typing import Any, Optional
 
 from hdx.api.configuration import Configuration
 from hdx.data.activity import Activity
-from hdx.data.hdxobject import HDXObject
+from hdx.data.hdxobject import HDXError, HDXObject
 
 logger = logging.getLogger(__name__)
 
@@ -187,12 +188,10 @@ class Location(HDXObject):
             if name in compiled_locations:
                 final_locations.append(compiled_locations[name])
             else:
-                try:
+                with suppress(HDXError):
                     missing_location = location._write_to_hdx("show", {"id": name})
                     if missing_location:
                         final_locations.append(missing_location)
-                except Exception:
-                    pass
 
         return final_locations
 

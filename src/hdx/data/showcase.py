@@ -246,7 +246,7 @@ class Showcase(HDXObject):
         Returns:
             showcase dataset dict
         """
-        if isinstance(dataset, hdx.data.dataset.Dataset) or isinstance(dataset, dict):
+        if isinstance(dataset, (hdx.data.dataset.Dataset, dict)):
             if "id" not in dataset:
                 dataset = hdx.data.dataset.Dataset.read_from_hdx(dataset["name"])
             dataset = dataset["id"]
@@ -261,7 +261,7 @@ class Showcase(HDXObject):
     def add_dataset(
         self,
         dataset: Union["Dataset", dict, str],  # noqa: F821
-        datasets_to_check: Sequence["Dataset"] = None,  # noqa: F821
+        datasets_to_check: Sequence["Dataset"] | None = None,  # noqa: F821
     ) -> bool:
         """Add a dataset
 
@@ -275,8 +275,8 @@ class Showcase(HDXObject):
         showcase_dataset = self._get_showcase_dataset_dict(dataset)
         if datasets_to_check is None:
             datasets_to_check = self.get_datasets()
-        for dataset in datasets_to_check:
-            if showcase_dataset["package_id"] == dataset["id"]:
+        for dataset_to_check in datasets_to_check:
+            if showcase_dataset["package_id"] == dataset_to_check["id"]:
                 return False
         self._write_to_hdx("associate", showcase_dataset, "package_id")
         return True
@@ -284,7 +284,7 @@ class Showcase(HDXObject):
     def add_datasets(
         self,
         datasets: Sequence[Union["Dataset", dict, str]],  # noqa: F821
-        datasets_to_check: Sequence["Dataset"] = None,  # noqa: F821
+        datasets_to_check: Sequence["Dataset"] | None = None,  # noqa: F821
     ) -> bool:
         """Add multiple datasets
 
