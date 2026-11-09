@@ -674,9 +674,10 @@ class Dataset(HDXObject):
         resources_to_delete: Sequence[int],
     ):
         """Returns the revise filter parameter adding to it any keys in the
-        dataset metadata and resources that are specified to be deleted. Also compare
-        lists in original and updated metadata to see if any have had elements
-        removed in which case these should be added to the filter
+        dataset metadata and resources that are specified to be deleted. Also
+        adds any non-resource list keys in the existing dataset so that
+        package_revise replaces those lists rather than merging them by
+        position (which keeps the existing elements' ids eg. for groups)
 
         Args:
             dataset_data_to_update: Dataset data to be updated
@@ -690,45 +691,11 @@ class Dataset(HDXObject):
             for resource_index in resources_to_delete:
                 revise_filter.append(f"-resources__{resource_index}")
         for key, value in dataset_data_to_update.items():
-            if not isinstance(value, list):
+            if key == "resources" or not isinstance(value, list):
                 continue
             if key not in self._old_data:
                 continue
-            orig_list = self._old_data[key]
-            elements_to_remove = []
-            for i, orig_value in enumerate(orig_list):
-                if isinstance(orig_value, dict) and any(
-                    x in orig_value for x in ("id", "name")
-                ):
-                    # Where lists have an id or name, we use one of those to
-                    # match elements and work out what needs to be deleted
-                    # ie. any elements in the original list that don't exist
-                    # in the updated list
-                    el_id = orig_value.get("id")
-                    el_name = orig_value.get("name")
-                    present = False
-                    for value_dict in value:
-                        if el_id and "id" in value_dict and value_dict["id"] == el_id:
-                            present = True
-                            break
-                        if (
-                            el_name
-                            and "name" in value_dict
-                            and value_dict["name"] == el_name
-                        ):
-                            present = True
-                            break
-                    if not present:
-                        elements_to_remove.append(i)
-                elif orig_value not in value:
-                    # Otherwise we do a simple exact match of list elements
-                    # and delete any elements that are in the original list but
-                    # not in the updated list
-                    elements_to_remove.append(i)
-            for element_index in reversed(elements_to_remove):
-                del orig_list[element_index]
-                if element_index == len(orig_list):
-                    revise_filter.append(f"-{key}__{element_index}")
+            revise_filter.append(f"-{key}")
         return revise_filter
 
     def _revise_files_to_upload_resource_deletions(

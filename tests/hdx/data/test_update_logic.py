@@ -158,6 +158,27 @@ class TestUpdateLogic:
                 f'Mismatch at index {index}: "{rn}", file to upload is "{fu}"'
             )
 
+    def test_revise_filter_lists(self, configuration, dataset):
+        # HDX returns list elements with ids. package_revise merges an update
+        # list into the existing one by position and CKAN looks up groups by
+        # id before name, so changed lists must be filtered out and replaced
+        dataset._old_data = {
+            "groups": [
+                {"id": "afg-id", "name": "afg", "title": "Afghanistan"},
+                {"id": "zmb-id", "name": "zmb", "title": "Zambia"},
+            ],
+            "tags": [{"id": "tag-id", "name": "health"}],
+            "notes": "old notes",
+        }
+        dataset_data_to_update = {
+            "groups": [{"name": "nru"}, {"name": "zmb"}, {"name": "vut"}],
+            "tags": [{"name": "health"}],
+            "solr_additions": [],
+            "notes": "new notes",
+        }
+        revise_filter = dataset._revise_filter(dataset_data_to_update, ["notes"], [])
+        assert revise_filter == ["-notes", "-groups", "-tags"]
+
     def test_update_logic_1(
         self,
         configuration,
@@ -237,7 +258,7 @@ class TestUpdateLogic:
             "Urban health Indicators for Zambia": 2,
             "World Health Statistics Indicators for Zambia": 2,
         }
-        assert results["filter"] == ["-resources__13"]
+        assert results["filter"] == ["-resources__13", "-groups", "-tags"]
         update = results["update"]
         del update["updated_by_script"]
         assert update == {
@@ -947,7 +968,7 @@ class TestUpdateLogic:
             "Urban health Indicators for Zambia": 2,
             "World Health Statistics Indicators for Zambia": 2,
         }
-        assert results["filter"] == ["-resources__52"]
+        assert results["filter"] == ["-resources__52", "-groups", "-tags"]
         update = results["update"]
         del update["updated_by_script"]
         assert update == {
@@ -1607,7 +1628,12 @@ class TestUpdateLogic:
             "All Health Indicators for Zambia": 2,
             "Millennium Development Goals (MDGs) Indicators for Zambia": 2,
         }
-        assert results["filter"] == ["-resources__2", "-resources__1"]
+        assert results["filter"] == [
+            "-resources__2",
+            "-resources__1",
+            "-groups",
+            "-tags",
+        ]
         update = results["update"]
         del update["updated_by_script"]
         assert update == {
