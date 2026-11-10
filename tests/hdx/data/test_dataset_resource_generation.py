@@ -13,7 +13,7 @@ from hdx.data.hdxobject import HDXError
 
 
 class TestDatasetResourceGeneration:
-    url = "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/test_data.csv"
+    url = "tests/fixtures/test_data.csv"
 
     def test_download_generate_resource(self, configuration, fixturesfolder):
         with temp_dir("test") as folder:
@@ -462,7 +462,7 @@ class TestDatasetResourceGeneration:
                     row_function=process_row,
                 )
                 assert success is True
-                url = "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/empty.csv"
+                url = "tests/fixtures/empty.csv"
                 success, results = dataset.download_generate_resource(
                     downloader,
                     url,
@@ -474,7 +474,7 @@ class TestDatasetResourceGeneration:
                     yearcol="YEAR",
                 )
                 assert success is False
-                url = "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/gen_resource/test_data_no_data.csv"
+                url = "tests/fixtures/gen_resource/test_data_no_data.csv"
                 success, results = dataset.download_generate_resource(
                     downloader,
                     url,
@@ -502,7 +502,7 @@ class TestDatasetResourceGeneration:
                     row_function=process_row,
                 )
                 assert success is False
-                url = "https://raw.githubusercontent.com/OCHA-DAP/hdx-python-api/main/tests/fixtures/gen_resource/test_data_no_years.csv"
+                url = "tests/fixtures/gen_resource/test_data_no_years.csv"
                 success, results = dataset.download_generate_resource(
                     downloader,
                     url,
