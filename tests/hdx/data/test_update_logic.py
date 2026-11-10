@@ -42,23 +42,28 @@ class TestUpdateLogic:
         }
 
     @pytest.fixture(scope="class")
-    def fixture_path(self, fixturesfolder):
+    @classmethod
+    def fixture_path(cls, fixturesfolder):
         return fixturesfolder / "update_logic"
 
     @pytest.fixture(scope="class")
-    def temp_dir(self):
+    @classmethod
+    def temp_dir(cls):
         return get_temp_dir("WHO", delete_if_exists=True)
 
     @pytest.fixture(scope="class")
-    def new_resources_yaml(self, fixture_path):
+    @classmethod
+    def new_resources_yaml(cls, fixture_path):
         return fixture_path / "update_logic_resources_new.yaml"
 
     @pytest.fixture(scope="class")
-    def resources_yaml(self, fixture_path):
+    @classmethod
+    def resources_yaml(cls, fixture_path):
         return fixture_path / "update_logic_resources.yaml"
 
     @pytest.fixture(scope="class")
-    def dataset_data(self):
+    @classmethod
+    def dataset_data(cls):
         return {
             "name": "who-data-for-zambia",
             "title": "Zambia - Health Indicators",

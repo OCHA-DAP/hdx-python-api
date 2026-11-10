@@ -175,11 +175,13 @@ class TestShowcase:
     association = None
 
     @pytest.fixture(scope="class")
-    def static_yaml(self, configfolder):
+    @classmethod
+    def static_yaml(cls, configfolder):
         return configfolder / "hdx_showcase_static.yaml"
 
     @pytest.fixture(scope="class")
-    def static_json(self, configfolder):
+    @classmethod
+    def static_json(cls, configfolder):
         return configfolder / "hdx_showcase_static.json"
 
     @pytest.fixture(scope="function")

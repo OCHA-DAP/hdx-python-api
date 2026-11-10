@@ -138,11 +138,13 @@ class TestUser:
     email_config_dict.update(smtp_initargs)
 
     @pytest.fixture(scope="class")
-    def static_yaml(self, configfolder):
+    @classmethod
+    def static_yaml(cls, configfolder):
         return configfolder / "hdx_user_static.yaml"
 
     @pytest.fixture(scope="class")
-    def static_json(self, configfolder):
+    @classmethod
+    def static_json(cls, configfolder):
         return configfolder / "hdx_user_static.json"
 
     @pytest.fixture(scope="function")
