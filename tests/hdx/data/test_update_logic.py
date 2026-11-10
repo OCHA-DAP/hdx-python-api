@@ -169,24 +169,38 @@ class TestUpdateLogic:
             ],
             "tags": [{"id": "tag-id", "name": "health"}],
             "customviz": [{"url": "a", "extra": 1}],
+            "solr_additions": None,
             "notes": "old notes",
         }
         dataset_data_to_update = {
             "groups": [{"name": "nru"}, {"name": "zmb"}, {"name": "vut"}],
             "tags": [{"name": "health"}],
             "customviz": [{"url": "b"}],
-            "solr_additions": [],
+            "solr_additions": [{"name": "x"}],
             "notes": "new notes",
         }
-        revise_filter = dataset._revise_filter(dataset_data_to_update, ["notes"], [])
-        assert revise_filter == ["-notes", "-groups", "-customviz"]
+        changed_list_keys = dataset._merge_list_fields(dataset_data_to_update)
+        assert changed_list_keys == ["groups", "customviz", "solr_additions"]
+        revise_filter = dataset._revise_filter(["notes"], [], changed_list_keys)
+        assert revise_filter == ["-notes", "-groups", "-customviz", "-solr_additions"]
+        revise_filter = dataset._revise_filter(["groups"], [], changed_list_keys)
+        assert revise_filter == ["-groups", "-customviz", "-solr_additions"]
         assert dataset_data_to_update["groups"] == [
             {"name": "nru"},
             {"id": "zmb-id", "name": "zmb", "title": "Zambia"},
             {"name": "vut"},
         ]
         assert dataset_data_to_update["tags"] == [{"id": "tag-id", "name": "health"}]
-        assert dataset_data_to_update["customviz"] == [{"url": "b", "extra": 1}]
+        assert dataset_data_to_update["customviz"] == [{"url": "b"}]
+        assert dataset_data_to_update["solr_additions"] == [{"name": "x"}]
+
+    def test_merge_list_id_before_name(self):
+        orig_list = [
+            {"id": "1", "name": "x", "f": "A"},
+            {"id": "2", "name": "y", "f": "B"},
+        ]
+        merged_list = Dataset._merge_list(orig_list, [{"id": "2", "name": "x"}])
+        assert merged_list == [{"id": "2", "name": "x", "f": "B"}]
 
     def test_update_logic_1(
         self,

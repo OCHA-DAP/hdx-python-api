@@ -667,51 +667,38 @@ class Dataset(HDXObject):
             if "batch_mode" not in kwargs:
                 kwargs["batch_mode"] = "DONT_GROUP"
 
-    def _revise_filter(
-        self,
-        dataset_data_to_update: dict,
-        keys_to_delete: Sequence[str],
-        resources_to_delete: Sequence[int],
-    ):
-        """Returns the revise filter parameter adding to it any keys in the
-        dataset metadata and resources that are specified to be deleted.
-
-        For each non-resource list key present in both the update and the
-        existing dataset, the update's list is merged with the existing one
-        (see _merge_list) in place. If the merged list differs from the
-        existing one, the key is added to the filter so that package_revise
-        replaces the list rather than merging it by position (which keeps the
-        existing elements' ids eg. for groups).
+    def _merge_list_fields(self, dataset_data_to_update: dict) -> list[str]:
+        """Merges each non-resource list in dataset_data_to_update with the
+        existing list of the same key (see _merge_list) in place.
 
         Args:
             dataset_data_to_update: Dataset data to be updated
-            keys_to_delete: List of top level metadata keys to delete
-            resources_to_delete: List of indexes of resources to delete
+
+        Returns:
+            Keys whose merged list differs from the existing one
         """
-        revise_filter = []
-        for key in keys_to_delete:
-            revise_filter.append(f"-{key}")
-        if not self.is_requestable():
-            for resource_index in resources_to_delete:
-                revise_filter.append(f"-resources__{resource_index}")
+        changed_keys = []
         for key, value in dataset_data_to_update.items():
-            if key == "resources" or not isinstance(value, list):
-                continue
-            if key not in self._old_data:
+            if (
+                key == "resources"
+                or not isinstance(value, list)
+                or key not in self._old_data
+            ):
                 continue
             orig_list = self._old_data[key]
+            if not isinstance(orig_list, list):
+                orig_list = []
             merged_list = self._merge_list(orig_list, value)
             dataset_data_to_update[key] = merged_list
             if merged_list != orig_list:
-                revise_filter.append(f"-{key}")
-        return revise_filter
+                changed_keys.append(key)
+        return changed_keys
 
     @staticmethod
     def _merge_list(orig_list: list, new_list: list) -> list:
-        """Merges each dict in new_list with its matching dict in orig_list so
-        that fields not given in new_list are kept. A dict with an id or name
-        matches the element in orig_list with the same id or name. A dict with
-        neither matches the element at the same position in orig_list.
+        """Merges each dict in new_list that has an id or name with the dict in
+        orig_list with the same id (or failing that, name) so that fields not
+        given in new_list are kept. Other elements of new_list are kept as is.
         Elements of orig_list that are not matched are dropped.
 
         Args:
@@ -722,30 +709,59 @@ class Dataset(HDXObject):
             Merged list
         """
         merged_list = []
-        for i, new_value in enumerate(new_list):
+        for new_value in new_list:
             if not isinstance(new_value, dict):
                 merged_list.append(new_value)
                 continue
-            el_id = new_value.get("id")
-            el_name = new_value.get("name")
-            match = None
-            if el_id or el_name:
-                for orig_value in orig_list:
-                    if not isinstance(orig_value, dict):
-                        continue
-                    if el_id and orig_value.get("id") == el_id:
-                        match = orig_value
-                        break
-                    if el_name and orig_value.get("name") == el_name:
-                        match = orig_value
-                        break
-            elif i < len(orig_list) and isinstance(orig_list[i], dict):
-                match = orig_list[i]
-            if match:
-                merged_list.append(match | new_value)
-            else:
-                merged_list.append(new_value)
+            match = {}
+            for field in ("id", "name"):
+                field_value = new_value.get(field)
+                if not field_value:
+                    continue
+                match = next(
+                    (
+                        orig_value
+                        for orig_value in orig_list
+                        if isinstance(orig_value, dict)
+                        and orig_value.get(field) == field_value
+                    ),
+                    {},
+                )
+                if match:
+                    break
+            merged_list.append(match | new_value)
         return merged_list
+
+    def _revise_filter(
+        self,
+        keys_to_delete: Sequence[str],
+        resources_to_delete: Sequence[int],
+        changed_list_keys: Sequence[str],
+    ) -> list[str]:
+        """Returns the revise filter parameter adding to it any keys in the
+        dataset metadata and resources that are specified to be deleted. Keys
+        of changed lists are also added so that package_revise replaces those
+        lists rather than merging them by position (which keeps the existing
+        elements' ids eg. for groups).
+
+        Args:
+            keys_to_delete: List of top level metadata keys to delete
+            resources_to_delete: List of indexes of resources to delete
+            changed_list_keys: Keys of lists that differ from the existing ones
+
+        Returns:
+            Revise filter
+        """
+        revise_filter = []
+        for key in keys_to_delete:
+            revise_filter.append(f"-{key}")
+        if not self.is_requestable():
+            for resource_index in resources_to_delete:
+                revise_filter.append(f"-resources__{resource_index}")
+        for key in changed_list_keys:
+            if key not in keys_to_delete:
+                revise_filter.append(f"-{key}")
+        return revise_filter
 
     def _revise_files_to_upload_resource_deletions(
         self,
@@ -822,8 +838,9 @@ class Dataset(HDXObject):
         ):  # Whether or not CKAN should perform validation steps (checking fields present)
             dataset_data_to_update["skip_validation"] = kwargs["skip_validation"]
         dataset_data_to_update["state"] = "active"
+        changed_list_keys = self._merge_list_fields(dataset_data_to_update)
         revise_filter = self._revise_filter(
-            dataset_data_to_update, keys_to_delete, resources_to_delete
+            keys_to_delete, resources_to_delete, changed_list_keys
         )
         files_to_upload = self._revise_files_to_upload_resource_deletions(
             resources_to_update,
@@ -1077,7 +1094,6 @@ class Dataset(HDXObject):
                         break
                 if not found:
                     old_tags.append(tag)
-            self._old_data["tags"] = old_tags
         self._prepare_hdx_call(self._old_data, kwargs)
         revise_call = self._revise_dataset(
             allow_no_resources,
