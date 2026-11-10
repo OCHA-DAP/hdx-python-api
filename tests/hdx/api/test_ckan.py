@@ -29,7 +29,8 @@ logger = logging.getLogger(__name__)
 
 class TestCKAN:
     @pytest.fixture(scope="class")
-    def configuration(self):
+    @classmethod
+    def configuration(cls):
         hdx_key = getenv("HDX_KEY_TEST")
         Configuration._create(
             hdx_site="demo",
@@ -47,7 +48,8 @@ class TestCKAN:
         return fixturesfolder / "CKAN" / "hdx_dataset_static.yaml"
 
     @pytest.fixture(scope="class")
-    def params(self):
+    @classmethod
+    def params(cls):
         return {
             "corpora": "teamDrive",
             "teamDriveId": "0AKCBfHI3H-hcUk9PVA",

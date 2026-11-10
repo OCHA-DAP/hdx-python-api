@@ -42,23 +42,28 @@ class TestUpdateLogic:
         }
 
     @pytest.fixture(scope="class")
-    def fixture_path(self, fixturesfolder):
+    @classmethod
+    def fixture_path(cls, fixturesfolder):
         return fixturesfolder / "update_logic"
 
     @pytest.fixture(scope="class")
-    def temp_dir(self):
+    @classmethod
+    def temp_dir(cls):
         return get_temp_dir("WHO", delete_if_exists=True)
 
     @pytest.fixture(scope="class")
-    def new_resources_yaml(self, fixture_path):
+    @classmethod
+    def new_resources_yaml(cls, fixture_path):
         return fixture_path / "update_logic_resources_new.yaml"
 
     @pytest.fixture(scope="class")
-    def resources_yaml(self, fixture_path):
+    @classmethod
+    def resources_yaml(cls, fixture_path):
         return fixture_path / "update_logic_resources.yaml"
 
     @pytest.fixture(scope="class")
-    def dataset_data(self):
+    @classmethod
+    def dataset_data(cls):
         return {
             "name": "who-data-for-zambia",
             "title": "Zambia - Health Indicators",
@@ -157,6 +162,50 @@ class TestUpdateLogic:
             assert name == fu, (
                 f'Mismatch at index {index}: "{rn}", file to upload is "{fu}"'
             )
+
+    def test_revise_filter_lists(self, configuration, dataset):
+        # HDX returns list elements with ids. package_revise merges an update
+        # list into the existing one by position and CKAN looks up groups by
+        # id before name, so changed lists must be filtered out and replaced
+        dataset._old_data = {
+            "groups": [
+                {"id": "afg-id", "name": "afg", "title": "Afghanistan"},
+                {"id": "zmb-id", "name": "zmb", "title": "Zambia"},
+            ],
+            "tags": [{"id": "tag-id", "name": "health"}],
+            "customviz": [{"url": "a", "extra": 1}],
+            "solr_additions": None,
+            "notes": "old notes",
+        }
+        dataset_data_to_update = {
+            "groups": [{"name": "nru"}, {"name": "zmb"}, {"name": "vut"}],
+            "tags": [{"name": "health"}],
+            "customviz": [{"url": "b"}],
+            "solr_additions": [{"name": "x"}],
+            "notes": "new notes",
+        }
+        changed_list_keys = dataset._merge_list_fields(dataset_data_to_update)
+        assert changed_list_keys == ["groups", "customviz", "solr_additions"]
+        revise_filter = dataset._revise_filter(["notes"], [], changed_list_keys)
+        assert revise_filter == ["-notes", "-groups", "-customviz", "-solr_additions"]
+        revise_filter = dataset._revise_filter(["groups"], [], changed_list_keys)
+        assert revise_filter == ["-groups", "-customviz", "-solr_additions"]
+        assert dataset_data_to_update["groups"] == [
+            {"name": "nru"},
+            {"id": "zmb-id", "name": "zmb", "title": "Zambia"},
+            {"name": "vut"},
+        ]
+        assert dataset_data_to_update["tags"] == [{"id": "tag-id", "name": "health"}]
+        assert dataset_data_to_update["customviz"] == [{"url": "b"}]
+        assert dataset_data_to_update["solr_additions"] == [{"name": "x"}]
+
+    def test_merge_list_id_before_name(self):
+        orig_list = [
+            {"id": "1", "name": "x", "f": "A"},
+            {"id": "2", "name": "y", "f": "B"},
+        ]
+        merged_list = Dataset._merge_list(orig_list, [{"id": "2", "name": "x"}])
+        assert merged_list == [{"id": "2", "name": "x", "f": "B"}]
 
     def test_update_logic_1(
         self,
@@ -863,7 +912,6 @@ class TestUpdateLogic:
             ],
             "state": "active",
             "subnational": "0",
-            "tags": [],
             "title": "Zambia - Health Indicators",
         }
         self.check_resources(update, results)
@@ -1573,7 +1621,6 @@ class TestUpdateLogic:
             ],
             "state": "active",
             "subnational": "0",
-            "tags": [],
             "title": "Zambia - Health Indicators",
         }
         self.check_resources(update, results)
@@ -1649,7 +1696,6 @@ class TestUpdateLogic:
             ],
             "state": "active",
             "subnational": "0",
-            "tags": [],
             "title": "Zambia - Health Indicators",
         }
         self.check_resources(update, results)

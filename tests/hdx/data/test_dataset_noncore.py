@@ -55,7 +55,8 @@ class TestDatasetNoncore:
     association = None
 
     @pytest.fixture(scope="class")
-    def static_resource_view_yaml(self, configfolder):
+    @classmethod
+    def static_resource_view_yaml(cls, configfolder):
         return configfolder / "hdx_resource_view_static.yaml"
 
     @pytest.fixture(scope="function")

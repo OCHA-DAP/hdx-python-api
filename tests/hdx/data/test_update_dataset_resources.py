@@ -51,19 +51,23 @@ class TestUpdateDatasetResourcesLogic:
         }
 
     @pytest.fixture(scope="class")
-    def fixture_path(self, fixturesfolder):
+    @classmethod
+    def fixture_path(cls, fixturesfolder):
         return fixturesfolder / "update_dataset_resources"
 
     @pytest.fixture(scope="class")
-    def new_dataset_json(self, fixture_path):
+    @classmethod
+    def new_dataset_json(cls, fixture_path):
         return fixture_path / "unesco_update_dataset.json"
 
     @pytest.fixture(scope="class")
-    def dataset_json(self, fixture_path):
+    @classmethod
+    def dataset_json(cls, fixture_path):
         return fixture_path / "unesco_dataset.json"
 
     @pytest.fixture(scope="class")
-    def expected_resources_to_update_json(self, fixture_path):
+    @classmethod
+    def expected_resources_to_update_json(cls, fixture_path):
         return fixture_path / "expected_resources_to_update.json"
 
     @pytest.fixture(scope="function")
@@ -84,7 +88,8 @@ class TestUpdateDatasetResourcesLogic:
         return dataset
 
     @pytest.fixture(scope="class")
-    def expected_resources_to_update(self, expected_resources_to_update_json):
+    @classmethod
+    def expected_resources_to_update(cls, expected_resources_to_update_json):
         return load_json(expected_resources_to_update_json)
 
     def test_dataset_update_resources(

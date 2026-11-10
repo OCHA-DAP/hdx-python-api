@@ -20,27 +20,33 @@ from hdx.api.utilities.hdx_state import HDXState
 
 class TestState:
     @pytest.fixture(scope="class")
-    def tempfolder(self):
+    @classmethod
+    def tempfolder(cls):
         return Path(gettempdir(), "test_state")
 
     @pytest.fixture(scope="class")
-    def statefolder(self, fixturesfolder):
+    @classmethod
+    def statefolder(cls, fixturesfolder):
         return fixturesfolder / "state"
 
     @pytest.fixture(scope="class")
-    def statefile(self):
+    @classmethod
+    def statefile(cls):
         return "last_build_date.txt"
 
     @pytest.fixture(scope="class")
-    def multidatestatefile(self):
+    @classmethod
+    def multidatestatefile(cls):
         return "analysis_dates.txt"
 
     @pytest.fixture(scope="class")
-    def date1(self):
+    @classmethod
+    def date1(cls):
         return datetime(2020, 9, 23, 0, 0, tzinfo=UTC)
 
     @pytest.fixture(scope="class")
-    def date2(self):
+    @classmethod
+    def date2(cls):
         return datetime(2022, 5, 12, 10, 15, tzinfo=UTC)
 
     @pytest.fixture(scope="function")

@@ -344,19 +344,23 @@ class TestResource:
     datastore_rows_max = None
 
     @pytest.fixture(scope="class")
-    def static_yaml(self, configfolder):
+    @classmethod
+    def static_yaml(cls, configfolder):
         return configfolder / "hdx_resource_static.yaml"
 
     @pytest.fixture(scope="class")
-    def static_json(self, configfolder):
+    @classmethod
+    def static_json(cls, configfolder):
         return configfolder / "hdx_resource_static.json"
 
     @pytest.fixture(scope="class")
-    def topline_yaml(self, configfolder):
+    @classmethod
+    def topline_yaml(cls, configfolder):
         return configfolder / "hdx_datasource_topline.yaml"
 
     @pytest.fixture(scope="class")
-    def topline_json(self, configfolder):
+    @classmethod
+    def topline_json(cls, configfolder):
         return configfolder / "hdx_datasource_topline.json"
 
     @pytest.fixture(scope="function")
