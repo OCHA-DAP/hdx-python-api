@@ -168,16 +168,25 @@ class TestUpdateLogic:
                 {"id": "zmb-id", "name": "zmb", "title": "Zambia"},
             ],
             "tags": [{"id": "tag-id", "name": "health"}],
+            "customviz": [{"url": "a", "extra": 1}],
             "notes": "old notes",
         }
         dataset_data_to_update = {
             "groups": [{"name": "nru"}, {"name": "zmb"}, {"name": "vut"}],
             "tags": [{"name": "health"}],
+            "customviz": [{"url": "b"}],
             "solr_additions": [],
             "notes": "new notes",
         }
         revise_filter = dataset._revise_filter(dataset_data_to_update, ["notes"], [])
-        assert revise_filter == ["-notes", "-groups", "-tags"]
+        assert revise_filter == ["-notes", "-groups", "-customviz"]
+        assert dataset_data_to_update["groups"] == [
+            {"name": "nru"},
+            {"id": "zmb-id", "name": "zmb", "title": "Zambia"},
+            {"name": "vut"},
+        ]
+        assert dataset_data_to_update["tags"] == [{"id": "tag-id", "name": "health"}]
+        assert dataset_data_to_update["customviz"] == [{"url": "b", "extra": 1}]
 
     def test_update_logic_1(
         self,
@@ -258,7 +267,7 @@ class TestUpdateLogic:
             "Urban health Indicators for Zambia": 2,
             "World Health Statistics Indicators for Zambia": 2,
         }
-        assert results["filter"] == ["-resources__13", "-groups", "-tags"]
+        assert results["filter"] == ["-resources__13"]
         update = results["update"]
         del update["updated_by_script"]
         assert update == {
@@ -884,7 +893,6 @@ class TestUpdateLogic:
             ],
             "state": "active",
             "subnational": "0",
-            "tags": [],
             "title": "Zambia - Health Indicators",
         }
         self.check_resources(update, results)
@@ -968,7 +976,7 @@ class TestUpdateLogic:
             "Urban health Indicators for Zambia": 2,
             "World Health Statistics Indicators for Zambia": 2,
         }
-        assert results["filter"] == ["-resources__52", "-groups", "-tags"]
+        assert results["filter"] == ["-resources__52"]
         update = results["update"]
         del update["updated_by_script"]
         assert update == {
@@ -1594,7 +1602,6 @@ class TestUpdateLogic:
             ],
             "state": "active",
             "subnational": "0",
-            "tags": [],
             "title": "Zambia - Health Indicators",
         }
         self.check_resources(update, results)
@@ -1628,12 +1635,7 @@ class TestUpdateLogic:
             "All Health Indicators for Zambia": 2,
             "Millennium Development Goals (MDGs) Indicators for Zambia": 2,
         }
-        assert results["filter"] == [
-            "-resources__2",
-            "-resources__1",
-            "-groups",
-            "-tags",
-        ]
+        assert results["filter"] == ["-resources__2", "-resources__1"]
         update = results["update"]
         del update["updated_by_script"]
         assert update == {
@@ -1675,7 +1677,6 @@ class TestUpdateLogic:
             ],
             "state": "active",
             "subnational": "0",
-            "tags": [],
             "title": "Zambia - Health Indicators",
         }
         self.check_resources(update, results)

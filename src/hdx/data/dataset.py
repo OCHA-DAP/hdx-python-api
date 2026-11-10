@@ -674,10 +674,14 @@ class Dataset(HDXObject):
         resources_to_delete: Sequence[int],
     ):
         """Returns the revise filter parameter adding to it any keys in the
-        dataset metadata and resources that are specified to be deleted. Also
-        adds any non-resource list keys in the existing dataset so that
-        package_revise replaces those lists rather than merging them by
-        position (which keeps the existing elements' ids eg. for groups)
+        dataset metadata and resources that are specified to be deleted.
+
+        For each non-resource list key present in both the update and the
+        existing dataset, the update's list is merged with the existing one
+        (see _merge_list) in place. If the merged list differs from the
+        existing one, the key is added to the filter so that package_revise
+        replaces the list rather than merging it by position (which keeps the
+        existing elements' ids eg. for groups).
 
         Args:
             dataset_data_to_update: Dataset data to be updated
@@ -695,8 +699,53 @@ class Dataset(HDXObject):
                 continue
             if key not in self._old_data:
                 continue
-            revise_filter.append(f"-{key}")
+            orig_list = self._old_data[key]
+            merged_list = self._merge_list(orig_list, value)
+            dataset_data_to_update[key] = merged_list
+            if merged_list != orig_list:
+                revise_filter.append(f"-{key}")
         return revise_filter
+
+    @staticmethod
+    def _merge_list(orig_list: list, new_list: list) -> list:
+        """Merges each dict in new_list with its matching dict in orig_list so
+        that fields not given in new_list are kept. A dict with an id or name
+        matches the element in orig_list with the same id or name. A dict with
+        neither matches the element at the same position in orig_list.
+        Elements of orig_list that are not matched are dropped.
+
+        Args:
+            orig_list: Existing list
+            new_list: Updated list
+
+        Returns:
+            Merged list
+        """
+        merged_list = []
+        for i, new_value in enumerate(new_list):
+            if not isinstance(new_value, dict):
+                merged_list.append(new_value)
+                continue
+            el_id = new_value.get("id")
+            el_name = new_value.get("name")
+            match = None
+            if el_id or el_name:
+                for orig_value in orig_list:
+                    if not isinstance(orig_value, dict):
+                        continue
+                    if el_id and orig_value.get("id") == el_id:
+                        match = orig_value
+                        break
+                    if el_name and orig_value.get("name") == el_name:
+                        match = orig_value
+                        break
+            elif i < len(orig_list) and isinstance(orig_list[i], dict):
+                match = orig_list[i]
+            if match:
+                merged_list.append(match | new_value)
+            else:
+                merged_list.append(new_value)
+        return merged_list
 
     def _revise_files_to_upload_resource_deletions(
         self,
@@ -1015,8 +1064,8 @@ class Dataset(HDXObject):
             **kwargs,
         )
         keep_crisis_tags = kwargs.get("keep_crisis_tags", True)
-        if keep_crisis_tags:
-            old_tags = self._old_data.get("tags", [])
+        if keep_crisis_tags and "tags" in self._old_data:
+            old_tags = self._old_data["tags"]
             for tag in self.data.get("tags", []):
                 tag_name = tag["name"]
                 if tag_name[:7] != "crisis-":
