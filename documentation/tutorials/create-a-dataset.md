@@ -84,8 +84,8 @@ A few notes on these choices:
 - `owner_org` and `maintainer` are the identifiers of an HDX organisation and user. The
   zeros are placeholders, because you can only look up real ones with an account.
 - Tags must come from HDX's approved list. Try `dataset.add_tag("not-a-real-tag")`: it
-  returns the tag in its second list, which holds the tags that were rejected, and logs a
-  warning.
+  returns the tag in its second list, which holds the tags that were rejected, and logs an
+  error message. The error is expected here: the tag is dropped and nothing is raised.
 - Avoid the update frequencies "As needed" and "Never" where you can, because HDX uses
   this field to judge how up to date a dataset is. See
   [Set Expected Update Frequency](../how-to/operate-datasets/update-frequency.md).
