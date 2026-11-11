@@ -10,7 +10,8 @@ upload your datasets to HDX.
 
 ## Tutorials
 
--   [A Quick Example](tutorials/getting-started.md)
+-   [Read a Dataset](tutorials/getting-started.md)
+-   [Create a Dataset from a CSV](tutorials/create-a-dataset.md)
 
 ## How-to Guides
 
