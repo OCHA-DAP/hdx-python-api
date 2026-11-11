@@ -12,7 +12,7 @@ plugins:
 nav:
   - Home: index.md
   - Tutorials:
-    - A Quick Example: tutorials/getting-started.md
+    - Read a Dataset: tutorials/getting-started.md
   - How-to Guides:
     - Set up:
       - Obtain your API Key: how-to/api-key.md

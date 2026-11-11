@@ -10,7 +10,7 @@ upload your datasets to HDX.
 
 ## Tutorials
 
--   [A Quick Example](tutorials/getting-started.md)
+-   [Read a Dataset](tutorials/getting-started.md)
 
 ## How-to Guides
 
