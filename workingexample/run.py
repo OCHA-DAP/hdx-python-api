@@ -19,4 +19,4 @@ def main():
 
 
 if __name__ == "__main__":
-    facade(main, hdx_site="stage")
+    facade(main, hdx_site="demo")

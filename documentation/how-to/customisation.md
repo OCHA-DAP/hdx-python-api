@@ -34,7 +34,7 @@ the table below eg.
 
 |Choose|Argument|Type|Value|Default|
 |---|---|---|---|---|
-| |hdx_site|Optional\[str\]|HDX site to use eg. prod, feature|test|
+| |hdx_site|Optional\[str\]|HDX site to use eg. prod, demo|demo|
 | |hdx_read_only|bool|Read only or read/write access to HDX|False|
 | |hdx_key|Optional\[str\]|HDX key (not needed for read only)||
 |Above or one of:|hdx_config_dict|dict|Dictionary with hdx_site, hdx_read_only, hdx_key||
