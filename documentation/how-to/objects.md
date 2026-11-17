@@ -1,5 +1,8 @@
 # Use HDX Objects
 
+HDX data is organised as organizations, datasets and resources. For more about these
+concepts, see [HDX core concepts](https://docs.humdata.org/build/overview/hdx-core-concepts).
+
 You can read an existing HDX object with the static **read_from_hdx** method
 which takes an identifier parameter and returns the an object of the appropriate HDX
 object type eg. **Dataset** or **None** depending upon whether the object was read eg.

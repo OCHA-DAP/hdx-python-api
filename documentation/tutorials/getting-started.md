@@ -6,9 +6,9 @@ Let's start with a simple example that also ensures that the library is working
 properly. In this tutorial, we use virtualenv, a sandbox, so that your Python install is
 not modified.
 
-1. If you just want to read data from HDX, then an API key is not necessary. However,
+1. If you just want to read data from HDX, then an API token is not necessary. However,
 if you want to write data to HDX, then you need to register on the website to obtain an
-API key. Please see [Obtain your API Key](../how-to/api-key.md) about where to find it on the website. Once you have it, then
+API token. Please see [Provide your API Token](../how-to/api-token.md) about how to create and supply it. Once you have it, then
 put it into a file in your home directory:
 
         cd ~
@@ -66,8 +66,8 @@ virtualenv if not installed:
 
     If you want to write data, then for experimentation, do not use the
     production HDX server. Instead use the HDX demo server. Assuming you have
-    an API key for demo stored in a file **.hdxkey** in the current user's home
-    directory:
+    an API token for demo stored as **hdx_key_demo** in **.hdx_configuration.yaml** in
+    the current user's home directory:
 
         Configuration.create(hdx_site="demo", user_agent="MyOrg_MyProject")
 
@@ -93,7 +93,7 @@ virtualenv if not installed:
         url, path = resources[0].download()
         print("Resource URL %s downloaded to %s" % (url, path))
 
-13. If you have an API key, you can write to HDX. You can try it out on the demo
+13. If you have an API token, you can write to HDX. You can try it out on the demo
     server. With a dataset to which you have permissions, change the dataset date:
 
         dataset = Dataset.read_from_hdx("ID OR NAME OF DATASET")
@@ -102,7 +102,7 @@ virtualenv if not installed:
         print(dataset.get_time_period())
         dataset.update_in_hdx()
 
-14. You can view it on HDX before changing it back (if you have an API key):
+14. You can view it on HDX before changing it back (if you have an API token):
 
         dataset.set_time_period("PREVIOUS DATE")
         dataset.update_in_hdx()
