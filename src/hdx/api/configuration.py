@@ -35,7 +35,7 @@ class Configuration(UserDict):
         user_agent_config_yaml (str): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yaml.
         user_agent_lookup (str): Lookup key for YAML. Ignored if user_agent supplied.
         hdx_url (str): HDX url to use. Overrides hdx_site.
-        hdx_site (str): HDX site to use eg. prod, test. Defaults to stage.
+        hdx_site (str): HDX site to use eg. prod, demo. Defaults to demo.
         hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
         hdx_key (str): Your HDX key. Ignored if hdx_read_only = True.
         hdx_config_dict (dict): HDX configuration dictionary to use instead of above 3 parameters OR
@@ -188,7 +188,7 @@ class Configuration(UserDict):
                 if not hdx_site:
                     hdx_site = self.data.get("hdx_site")
             if not hdx_site:
-                hdx_site = "stage"
+                hdx_site = "demo"
             self.hdx_site = f"hdx_{hdx_site}_site"
             if self.hdx_site not in self.data:
                 raise ConfigurationError(
@@ -506,7 +506,7 @@ class Configuration(UserDict):
             user_agent_config_yaml (str): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yaml.
             user_agent_lookup (str): Lookup key for YAML. Ignored if user_agent supplied.
             hdx_url (str): HDX url to use. Overrides hdx_site.
-            hdx_site (str): HDX site to use eg. prod, test. Defaults to stage.
+            hdx_site (str): HDX site to use eg. prod, demo. Defaults to demo.
             hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
             hdx_key (str): Your HDX key. Ignored if hdx_read_only = True.
             hdx_config_dict (dict): HDX configuration dictionary to use instead of above 3 parameters OR
@@ -546,7 +546,7 @@ class Configuration(UserDict):
             user_agent_config_yaml (str): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yaml.
             user_agent_lookup (str): Lookup key for YAML. Ignored if user_agent supplied.
             hdx_url (str): HDX url to use. Overrides hdx_site.
-            hdx_site (str): HDX site to use eg. prod, test.  Defaults to stage.
+            hdx_site (str): HDX site to use eg. prod, demo. Defaults to demo.
             hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
             hdx_key (str): Your HDX key. Ignored if hdx_read_only = True.
             hdx_config_dict (dict): HDX configuration dictionary to use instead of above 3 parameters OR
@@ -585,7 +585,7 @@ class Configuration(UserDict):
             user_agent_config_yaml (str): Path to YAML user agent configuration. Ignored if user_agent supplied. Defaults to ~/.useragent.yaml.
             user_agent_lookup (str): Lookup key for YAML. Ignored if user_agent supplied.
             hdx_url (str): HDX url to use. Overrides hdx_site.
-            hdx_site (str): HDX site to use eg. prod, test. Defaults to stage.
+            hdx_site (str): HDX site to use eg. prod, demo. Defaults to demo.
             hdx_read_only (bool): Whether to access HDX in read only mode. Defaults to False.
             hdx_key (str): Your HDX key. Ignored if hdx_read_only = True.
             hdx_config_dict (dict): HDX configuration dictionary to use instead of above 3 parameters OR

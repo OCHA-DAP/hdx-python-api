@@ -65,11 +65,14 @@ virtualenv if not installed:
         Configuration.create(hdx_site="prod", user_agent="MyOrg_MyProject", hdx_read_only=True)
 
     If you want to write data, then for experimentation, do not use the
-    production HDX server. Instead you can use one of the test servers.
-    Assuming you have an API key stored in a file **.hdxkey** in the
-    current user's home directory:
+    production HDX server. Instead use the HDX demo server. Assuming you have
+    an API key for demo stored in a file **.hdxkey** in the current user's home
+    directory:
 
-        Configuration.create(hdx_site="stage", user_agent="MyOrg_MyProject")
+        Configuration.create(hdx_site="demo", user_agent="MyOrg_MyProject")
+
+    The demo server is refreshed weekly from production, so any testing must be
+    completed within a week. If you need longer, please contact us at hdx@un.org.
 
 10. Read this dataset
 [Novel Coronavirus (COVID-19) Cases Data](https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases)
@@ -90,7 +93,7 @@ virtualenv if not installed:
         url, path = resources[0].download()
         print("Resource URL %s downloaded to %s" % (url, path))
 
-13. If you have an API key, you can write to HDX. You can try it out on a test
+13. If you have an API key, you can write to HDX. You can try it out on the demo
     server. With a dataset to which you have permissions, change the dataset date:
 
         dataset = Dataset.read_from_hdx("ID OR NAME OF DATASET")

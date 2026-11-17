@@ -1,4 +1,8 @@
 # Breaking Changes
+From 6.8.0, the default HDX site is `demo` rather than `stage`. Code that does not set
+`hdx_site` (or the `HDX_SITE` environment variable) will now connect to demo, where
+a stage API key will not work. To keep the previous behaviour, set `hdx_site="stage"`.
+
 From 6.7.7, Python 3.11 or later is required
 
 From 6.6.5, removed DatasetTitleHelper class and Dataset method remove_dates_from_title

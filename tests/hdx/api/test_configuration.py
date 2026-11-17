@@ -75,7 +75,7 @@ class TestConfiguration:
         assert configuration.hdx_read_only is False
         assert (
             configuration.get_hdx_site_url()
-            == "https://stage.data-humdata-org.ahconu.org"
+            == "https://demo.data-humdata-org.ahconu.org"
         )
         assert configuration.get_user_agent() == f"HDXPythonLibrary/{__version__}-test"
         configuration = Configuration(full_agent="test", hdx_key="test")
