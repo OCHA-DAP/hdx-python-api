@@ -4,7 +4,7 @@ A resource's data can be loaded into the HDX datastore and queried. HDX calls th
 [Tabular Data Endpoints (TDE)](https://docs.humdata.org/build/hdx-apis/tabular-data-endpoints),
 and it is available only for resources with TDE enabled (their `datastore_active`
 field is true). Contact hdx@un.org to request TDE for your datasets. HDX requires an
-API key for all datastore actions and dumps, including reads of public resources,
+API token for all datastore actions and dumps, including reads of public resources,
 and limits each IP address to 60 requests per minute. To create, update or delete
 the datastore for a resource:
 

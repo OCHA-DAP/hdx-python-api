@@ -15,7 +15,7 @@ nav:
     - A Quick Example: tutorials/getting-started.md
   - How-to Guides:
     - Set up:
-      - Obtain your API Key: how-to/api-key.md
+      - Provide your API Token: how-to/api-token.md
       - Install the Library: how-to/install.md
       - Build a Docker image: how-to/docker.md
       - Build a project Framework: how-to/framework.md

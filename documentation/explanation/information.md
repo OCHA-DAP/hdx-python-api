@@ -7,5 +7,8 @@ This library is part of the [Humanitarian Data Exchange](https://data.humdata.or
 (HDX) project. If you have humanitarian related data, please upload your datasets to
 HDX.
 
+For an overview of HDX concepts such as organizations, datasets and resources, see
+[HDX core concepts](https://docs.humdata.org/build/overview/hdx-core-concepts).
+
 The code for the library is [here](https://github.com/OCHA-DAP/hdx-python-api).
 The library has detailed API documentation which can be found in the menu at the top.
